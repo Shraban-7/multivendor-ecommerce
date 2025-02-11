@@ -1,0 +1,71 @@
+/* ======================== 
+    Responsive CSS
+===========================*/
+@media only screen and (min-width: 640px) {
+  /* Theme Buttons */
+  .theme-btn {
+    padding: 0.6rem 3rem;
+    border-radius: 2rem;
+    font-size: 1rem;
+  }
+
+  .section-padding {
+    padding: 2rem 0;
+  }
+
+  /* order progress  */
+  .progress-line {
+    height: 0.5rem;
+  }
+
+  .step-dot {
+    margin: -7px auto 15px;
+  }
+}
+
+/* For tablets: */
+@media only screen and (min-width: 768px) {
+  /* Navbar Menu Effect */
+  .nav-link {
+    position: relative;
+  }
+
+  .nav-link::before {
+    content: "";
+    position: absolute;
+    background-color: var(--primary);
+    width: 0%;
+    height: 1px;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: 300ms cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  .nav-link:hover::before {
+    width: 100%;
+  }
+
+  /* Section Padding */
+  .section-padding {
+    padding: 3rem 0;
+  }
+
+  /* nav active page */
+  .nav-links a[aria-current="page"] {
+    color: var(--primary) !important;
+    background-color: transparent !important;
+  }
+
+  .nav-links a[aria-current="page"]:hover {
+    background-color: transparent !important;
+  }
+}
+
+/* For small screen laptop: */
+@media only screen and (min-width: 1024px) {
+  /* Theme Buttons */
+  .theme-btn {
+    padding: 0.8rem 4.5rem;
+  }
+}

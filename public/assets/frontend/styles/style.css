@@ -1,0 +1,222 @@
+/* google font cdn */
+@import url("https://fonts.googleapis.com/css2?family=Rubik:wght@300..900&display=swap");
+
+@layer utilities {
+  /* ======================== 
+    CSS VARIABLES
+===========================*/
+  :root {
+    /* theme colours */
+    --primary: #fd740f;
+    --theme-light: #f8f8f8;
+    --theme-dark: #232321;
+    --theme-teal: #239698;
+    --persian-red: #d73421;
+    --persian-blue: #002d58;
+    --light-yellow: #ffb321;
+
+    /* typography */
+    --font-primary: "Rubik", serif;
+  }
+
+  /* ======================== 
+    GLOBAL CSS STYLE
+===========================*/
+  /* Custom Selection Colour */
+  ::selection {
+    background-color: var(--primary);
+    color: var(--theme-light);
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 0.625rem;
+  }
+
+  #all-filters-drawer::-webkit-scrollbar {
+    width: 0.425rem;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: whitesmoke;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    height: 10%;
+    border-radius: 25px;
+    background-color: rgba(253, 116, 15, 0.4);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(253, 116, 15, 0.8);
+  }
+
+  ::-webkit-scrollbar-corner {
+    border-radius: 25px;
+  }
+
+  /* Common Styles */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-optical-sizing: auto;
+    --webkit-font-smoothing: antialiased;
+    font-family: var(--font-primary);
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  li {
+    list-style-type: none;
+  }
+
+  .section-padding {
+    padding: 1.5rem 0;
+  }
+
+  header select:not([size])#country-select {
+    background-image: none !important;
+  }
+
+  /* Merlin inject some code autimaticaly if user using merlin AI extention */
+  #merlin-chat {
+    display: none !important;
+  }
+
+  /* Hide the clear icon for the search input */
+  input[type="search"]::-webkit-search-clear-button,
+  input[type="search"]::-webkit-search-cancel-button {
+    display: none;
+    -webkit-appearance: none;
+  }
+
+  input[type="search"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+
+  /* Hide number input arrows */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+
+  /* nav active page */
+  .nav-links a[aria-current="page"] {
+    background-color: var(--primary);
+  }
+
+  /* product thumbnail active */
+  .swiper-slide-thumb-active .slide-thumb {
+    border: 2px solid var(--primary) !important;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Global Transition */
+  .eq {
+    transition: 300ms cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  /* Theme Buttons */
+  .theme-btn {
+    display: inline-block;
+    padding: 0.3rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.8rem;
+    transition: 300ms cubic-bezier(0.25, 1, 0.5, 1);
+    font-weight: 500;
+  }
+
+  .theme-primary-btn {
+    background-color: var(--primary) !important;
+    color: var(--theme-light) !important;
+    border: 1px solid rgba(255, 179, 33, 0.1);
+  }
+
+  .theme-outline-btn {
+    background-color: transparent;
+    color: var(--theme-dark) !important;
+    border: 1px solid rgba(35, 35, 33, 0.1) !important;
+  }
+
+  .theme-outline-btn:hover {
+    background: var(--primary);
+    color: var(--theme-light) !important;
+    border-color: var(--light-yellow) !important;
+  }
+
+  /* order steps system */
+  .step-dot {
+    background: var(--theme-light);
+    border: 2px solid var(--primary) !important;
+    margin: -5px auto 15px;
+  }
+
+  .step.completed .step-dot {
+    background: var(--primary);
+    border-color: var(--primary);
+  }
+
+  .step .step-dot span {
+    display: none;
+  }
+
+  .step.completed .step-dot span {
+    display: block;
+  }
+
+  .step.active .step-dot {
+    background: var(--primary);
+    border-color: var(--theme-light) !important;
+  }
+
+  .progress-line {
+    height: 0.3rem;
+    background: #ffe7d6;
+    flex: 1;
+    position: relative;
+  }
+
+  .progress-line.active {
+    background: var(--primary);
+  }
+
+  .step .step-content {
+    opacity: 0.5;
+  }
+
+  .step.active .step-content {
+    opacity: 1;
+  }
+
+  .step.completed .step-content {
+    opacity: 1;
+  }
+}
