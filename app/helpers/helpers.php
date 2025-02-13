@@ -1,0 +1,67 @@
+<?php
+
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+
+if (!function_exists('redirect_intended')) {
+    function redirect_intended($default = '/')
+    {
+        return redirect()->intended($default);
+    }
+}
+
+if (!function_exists('str_slug')) {
+    function str_slug($table, $column, $title, $separator = '-')
+    {
+        $slug = Str::slug($title, $separator);
+        $originalSlug = $slug;
+        $count = 1;
+
+        while (DB::table($table)->where($column, $slug)->exists()) {
+            $slug = "{$originalSlug}{$separator}{$count}";
+            $count++;
+        }
+
+        return $slug;
+    }
+}
+
+
+if (!function_exists('generateFileName')) {
+    function generateFileName($file)
+    {
+        return time() . rand(1, 9999) . '.' . $file->extension();
+    }
+}
+
+if (!function_exists('upload_file')) {
+    function upload_file($file, $directory, $disk = 'public')
+    {
+        if (!Storage::disk($disk)->exists($directory)) {
+            Storage::disk($disk)->makeDirectory($directory);
+        }
+
+        $fileName =  time() . rand(1, 9999) . '.' . $file->getClientOriginalExtension();
+        $path = $directory . '/' . $fileName;
+        Storage::disk($disk)->put($path, File::get($file));
+
+        return $path;
+    }
+}
+
+if (!function_exists('storage_url')) {
+    function storage_url($file, $disk = 'public')
+    {
+        return Storage::disk($disk)->url($file);
+    }
+}
+
+if (!function_exists('delete_file')) {
+    function delete_file($file)
+    {
+        Storage::disk('public')->delete($file);
+    }
+}
+

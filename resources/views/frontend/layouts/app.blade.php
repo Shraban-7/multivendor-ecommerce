@@ -90,8 +90,28 @@
         document.getElementById("current-year").textContent = currentYear;
     </script>
 
+    <script>
+        function togglePassword(inputId, button) {
+            const input = document.getElementById(inputId);
+            const eyeIcon = button.querySelector('.fa-eye');
+            const eyeSlashIcon = button.querySelector('.fa-eye-slash');
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                eyeIcon.classList.add('hidden');
+                eyeSlashIcon.classList.remove('hidden');
+            } else {
+                input.type = 'password';
+                eyeIcon.classList.remove('hidden');
+                eyeSlashIcon.classList.add('hidden');
+            }
+        }
+    </script>
+
     <!-- Tailwind Global Config JS -->
     <script src="{{ asset('assets/frontend/tailwind.config.js') }}"></script>
+
+    @stack('scripts')
 </body>
 
 </html>
