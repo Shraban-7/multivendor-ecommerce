@@ -58,7 +58,7 @@
         </a>
         @guest
             <!-- sign in -->
-            <a href="#" class="flex items-center gap-1 hover:text-light-yellow eq">
+            <a href="{{ route('login') }}" class="flex items-center gap-1 hover:text-light-yellow eq">
                 <span><i class="fa-regular fa-user"></i></span>
                 <p class="flex flex-col leading-none text-base lg:text-base">
                     <span class="md:text-xs lg:text-sm font-[arial]">Sign In</span>

@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\client;
 
 use App\Models\User;
+use App\Models\Country;
+use User as GlobalUser;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Country;
 use Illuminate\Support\Facades\Auth;
-use User as GlobalUser;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -106,4 +107,23 @@ class AuthController extends Controller
 
         return redirect()->back()->with('success', 'Account update successfully');
     }
+
+    public function updatePassword(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'current_password' => 'required|string',
+            'password' => 'required|string|confirmed',
+        ]);
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return redirect()->back()->with("warning", "Incorrect old password!");
+        }
+
+        $user->update(['password' => Hash::make($request->password)]);
+
+        return redirect()->back()->with("success", "Password updated successfully");
+    }
+
 }

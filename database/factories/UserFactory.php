@@ -2,9 +2,10 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -16,18 +17,28 @@ class UserFactory extends Factory
      */
     protected static ?string $password;
 
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
+    protected $model = User::class;
+
     public function definition(): array
     {
+        static $password;
+
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
+            'fullname' => $this->faker->name(),
+            'username' => $this->faker->unique()->userName(),
+            'displayname' => $this->faker->optional()->word(),
+            'image' => $this->faker->optional()->imageUrl(200, 200, 'people'),
+
+            'email' => $this->faker->unique()->safeEmail(),
+            'secondary_email' => $this->faker->unique()->optional()->safeEmail(),
+            'phone' => $this->faker->optional()->phoneNumber(),
+            'password' => $password ??= Hash::make('password'),
+
+            'country_id' => $this->faker->optional()->numberBetween(1, 250),
+            'state_id' => $this->faker->optional()->numberBetween(1, 500),
+            'zip' => $this->faker->optional()->postcode(),
+
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
         ];
     }

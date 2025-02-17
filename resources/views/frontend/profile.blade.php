@@ -413,14 +413,15 @@
                             </h2>
 
                             <!-- change password form -->
-                            <form spellcheck="false"
+                            <form spellcheck="false" action="{{ route('updatePassword') }}" method="POST"
                                 class="flex sm:flex-cols flex-wrap sm:flex-row gap-y-3 sm:gap-y-5 px-3 py-1.5 md:px-5 md:py-2">
+                                @csrf
                                 <div class="from-ctrl space-y-1 sm:space-y-2 w-full">
                                     <label class="block text-sm" for="current-password">Current Password</label>
                                     <div class="relative">
                                         <input type="password"
                                             class="eq w-full pl-3 pr-10 py-2 border border-gray-300 rounded focus:ring-[1] focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base"
-                                            id="current-password" />
+                                            id="current-password" name="current_password" />
                                         <button type="button"
                                             class="absolute right-3 top-1/2 -translate-y-1/2 text-davy-gray"
                                             onclick="togglePassword('current-password', this)">
@@ -435,7 +436,7 @@
                                     <div class="relative">
                                         <input type="password" id="new-password"
                                             class="eq w-full pl-3 pr-10 py-2 border border-gray-300 rounded focus:ring-[1] focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base"
-                                            placeholder="8+ characters" />
+                                            placeholder="8+ characters" name="password" />
                                         <button type="button"
                                             class="absolute right-3 top-1/2 -translate-y-1/2 text-davy-gray"
                                             onclick="togglePassword('new-password', this)">
@@ -450,7 +451,7 @@
                                     <div class="relative">
                                         <input type="password"
                                             class="eq w-full pl-3 pr-10 py-2 border border-gray-300 rounded focus:ring-[1] focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base"
-                                            id="confirm-password" />
+                                            id="confirm-password" name="password_confirmation" />
                                         <button type="button"
                                             class="absolute right-3 top-1/2 -translate-y-1/2 text-davy-gray"
                                             onclick="togglePassword('confirm-password', this)">
