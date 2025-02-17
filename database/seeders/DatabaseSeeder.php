@@ -16,7 +16,18 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             CategorySeeder::class,
             BrandSeeder::class,
-            ShopSeeder::class
+            ShopSeeder::class,
+            ProductSeeder::class,
+            ProductImageSeeder::class,
+            ProductAttributeSeeder::class,
+            ProductVariantSeeder::class,
+            ProductStockSeeder::class,
+            ProductUnitSeeder::class,
+            OrderSeeder::class,
+            OrderItemSeeder::class,
+            WishlistSeeder::class,
+            ReviewSeeder::class,
+            CouponSeeder::class
         ]);
 
     }
