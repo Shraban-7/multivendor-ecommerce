@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Review;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -11,8 +12,8 @@ class ReviewSeeder extends Seeder
     {
         $reviews = [
             [
-                'product_id' => 1, // Assuming product 1 exists
-                'user_id' => 1, // Assuming user 1 exists
+                'product_id' => 1,
+                'user_id' => 1,
                 'rating' => 5,
                 'review_text' => 'Great product! Highly recommend it. The quality is amazing and works as expected.',
             ],
@@ -49,13 +50,11 @@ class ReviewSeeder extends Seeder
         ];
 
         foreach ($reviews as $review) {
-            DB::table('reviews')->insert([
+            Review::insert([
                 'product_id' => $review['product_id'],
                 'user_id' => $review['user_id'],
                 'rating' => $review['rating'],
                 'review_text' => $review['review_text'],
-                'created_at' => now(),
-                'updated_at' => now(),
             ]);
         }
     }

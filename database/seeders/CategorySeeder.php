@@ -23,9 +23,9 @@ class CategorySeeder extends Seeder
                 'subcategories' => ['Men\'s Clothing', 'Women\'s Clothing', 'Shoes', 'Accessories', 'Jewelry']
             ],
             [
-                'name' => 'Home & Kitchen',
+                'name' => 'Grocery & Essentials',
                 'image' => 'frontend/images/category-3.png',
-                'subcategories' => ['Furniture', 'Appliances', 'Decor', 'Bedding', 'Kitchenware']
+                'subcategories' => ['Oil', 'Vegetable', 'Drinks', 'Meat', 'Rice']
             ],
             [
                 'name' => 'Beauty & Health',
@@ -74,12 +74,10 @@ class CategorySeeder extends Seeder
             ]);
 
             foreach ($categoryData['subcategories'] as $subcategory) {
-                DB::table('categories')->insert([
+                Category::insert([
                     'name' => $subcategory,
-                    'slug' => str_slug('categories', 'slug', $categoryData['name']),
+                    'slug' => str_slug('categories', 'slug', $subcategory),
                     'category_id' => $categoryId,
-                    'created_at' => now(),
-                    'updated_at' => now()
                 ]);
             }
         }

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\OrderItem;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -68,7 +69,7 @@ class OrderItemSeeder extends Seeder
         ];
 
         foreach ($orderItems as $item) {
-            DB::table('order_items')->insert([
+            OrderItem::insert([
                 'order_id' => $item['order_id'],
                 'product_id' => $item['product_id'],
                 'product_variant' => $item['product_variant'],
@@ -78,8 +79,6 @@ class OrderItemSeeder extends Seeder
                 'quantity' => $item['quantity'],
                 'discount' => $item['discount'],
                 'sub_total' => $item['sub_total'],
-                'created_at' => now(),
-                'updated_at' => now(),
             ]);
         }
     }

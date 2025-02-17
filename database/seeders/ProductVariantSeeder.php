@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\ProductVariant;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -52,13 +53,11 @@ class ProductVariantSeeder extends Seeder
         ];
 
         foreach ($variants as $variant) {
-            DB::table('product_variants')->insert([
+            ProductVariant::insert([
                 'product_id' => $variant['product_id'],
                 'attribute_id' => $variant['attribute_id'],
                 'additional_price' => $variant['additional_price'],
                 'description' => $variant['description'],
-                'created_at' => now(),
-                'updated_at' => now(),
             ]);
         }
     }

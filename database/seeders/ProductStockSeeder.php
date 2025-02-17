@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\ProductStock;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -53,15 +54,13 @@ class ProductStockSeeder extends Seeder
         ];
 
         foreach ($stocks as $stock) {
-            DB::table('product_stocks')->insert([
+           ProductStock::insert([
                 'user_id' => $stock['user_id'],
                 'shop_id' => $stock['shop_id'],
                 'product_id' => $stock['product_id'],
                 'quantity' => $stock['quantity'],
                 'buying_price' => $stock['buying_price'],
                 'sub_total' => $stock['sub_total'],
-                'created_at' => now(),
-                'updated_at' => now(),
             ]);
         }
     }

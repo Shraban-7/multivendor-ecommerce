@@ -23,6 +23,10 @@ class ShopSeeder extends Seeder
         foreach ($users as $user) {
             Shop::create([
                 'name' => $user->fullname . "'s Shop",
+                'image' => 'frontend/images/provider-logo-1.png',
+                'total_follower' => rand(100,9999),
+                'total_sold' => rand(100,9999),
+                'total_item' => rand(100,9999),
                 'user_id' => $user->id,
             ]);
         }

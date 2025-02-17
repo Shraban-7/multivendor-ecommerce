@@ -28,12 +28,10 @@ class BrandSeeder extends Seeder
         ];
 
         foreach ($brands as $brand) {
-            DB::table('brands')->insert([
+            Brand::insert([
                 'name' => $brand['name'],
                 'slug' => $brand['slug'],
-                'image' => $brand['image'], // You can replace this with actual image paths or URLs if necessary
-                'created_at' => now(),
-                'updated_at' => now()
+                'image' => $brand['image'],
             ]);
         }
     }

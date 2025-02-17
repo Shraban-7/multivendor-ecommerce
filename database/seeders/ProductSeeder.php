@@ -12,19 +12,19 @@ class ProductSeeder extends Seeder
     {
         $products = [
             [
-                'name' => 'Samsung Galaxy S21',
-                'slug' => Str::slug('Samsung Galaxy S21'),
-                'thumbnail' => 'images/products/electronic-prod-3.png',
-                'short_desc' => 'Latest Samsung Galaxy S21 with a powerful camera and fast performance.',
-                'description' => 'The Samsung Galaxy S21 offers high-end performance with a stunning display and great camera quality.',
+                'name' => 'ASUS Vivo15 OLED K513 Core-i5 11th Gen 15.6″ FHD Laptop',
+                'slug' => Str::slug('ASUS Vivo15 OLED K513 Core-i5 11th Gen 15.6″ FHD Laptop'),
+                'thumbnail' => 'images/products/electronic-prod-1.png',
+                'short_desc' => 'ASUS Vivo15 OLED K513 Core-i5 11th Gen 15.6″ FHD Laptop.',
+                'description' => 'ASUS Vivo15 OLED K513 Core-i5 11th Gen 15.6″ FHD Laptop.',
                 'buying_price' => 700.00,
                 'selling_price' => 750.00,
                 'discount_type' => 'percentage',
                 'discount_amount' => 10.00,
                 'quantity' => 50,
-                'category_id' => 1, // assuming Electronics category
-                'brand_id' => 1, // assuming Samsung brand
-                'shop_id' => 1, // assuming Shop 1
+                'category_id' => 1,
+                'brand_id' => 1,
+                'shop_id' => 1,
                 'sku' => 'SGS21-001',
                 'barcode' => '1234567890123',
                 'top_rated' => 1,
@@ -52,9 +52,9 @@ class ProductSeeder extends Seeder
                 'discount_type' => 'fixed',
                 'discount_amount' => 50.00,
                 'quantity' => 30,
-                'category_id' => 1, // Electronics category
-                'brand_id' => 2, // Apple brand
-                'shop_id' => 1, // Shop 1
+                'category_id' => 1,
+                'brand_id' => 2,
+                'shop_id' => 1,
                 'sku' => 'IP13-001',
                 'barcode' => '9876543210987',
                 'top_rated' => 1,
@@ -82,9 +82,9 @@ class ProductSeeder extends Seeder
                 'discount_type' => 'percentage',
                 'discount_amount' => 15.00,
                 'quantity' => 20,
-                'category_id' => 1, // Electronics category
-                'brand_id' => 3, // Sony brand
-                'shop_id' => 1, // Shop 1
+                'category_id' => 1,
+                'brand_id' => 3,
+                'shop_id' => 1,
                 'sku' => 'WH1000XM4-001',
                 'barcode' => '1112223334445',
                 'top_rated' => 1,
@@ -112,9 +112,9 @@ class ProductSeeder extends Seeder
                 'discount_type' => 'percentage',
                 'discount_amount' => 10.00,
                 'quantity' => 40,
-                'category_id' => 2, // Fashion category
-                'brand_id' => 4, // Nike brand
-                'shop_id' => 2, // Shop 2
+                'category_id' => 2,
+                'brand_id' => 4,
+                'shop_id' => 2,
                 'sku' => 'AM90-001',
                 'barcode' => '7778889990001',
                 'top_rated' => 1,
@@ -142,9 +142,9 @@ class ProductSeeder extends Seeder
                 'discount_type' => 'percentage',
                 'discount_amount' => 10.00,
                 'quantity' => 35,
-                'category_id' => 2, // Fashion category
-                'brand_id' => 5, // Adidas brand
-                'shop_id' => 2, // Shop 2
+                'category_id' => 2,
+                'brand_id' => 5,
+                'shop_id' => 2,
                 'sku' => 'UB21-001',
                 'barcode' => '1122334455667',
                 'top_rated' => 1,
@@ -161,7 +161,6 @@ class ProductSeeder extends Seeder
                 'meta_keywords' => 'Adidas, Ultraboost 21, Sneakers, Fashion',
                 'meta_desc' => 'Get the Adidas Ultraboost 21 for maximum comfort and support with free shipping.',
             ],
-            // More products can be added following this pattern
         ];
 
         foreach ($products as $product) {
@@ -194,8 +193,6 @@ class ProductSeeder extends Seeder
                 'meta_title' => $product['meta_title'],
                 'meta_keywords' => $product['meta_keywords'],
                 'meta_desc' => $product['meta_desc'],
-                'created_at' => now(),
-                'updated_at' => now(),
             ]);
         }
     }

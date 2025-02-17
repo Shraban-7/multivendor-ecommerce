@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\ProductAttribute;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -94,15 +95,12 @@ class ProductAttributeSeeder extends Seeder
                 'name' => 'Screen Size',
                 'value' => '6.7 inches',
             ],
-            // Add more phone-specific attributes as needed
         ];
 
         foreach ($product_attributes as $attribute) {
-            DB::table('product_attributes')->insert([
+            ProductAttribute::insert([
                 'name' => $attribute['name'],
                 'value' => $attribute['value'],
-                'created_at' => now(),
-                'updated_at' => now(),
             ]);
         }
     }
