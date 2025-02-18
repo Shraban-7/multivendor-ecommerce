@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Category;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class CategorySeeder extends Seeder
@@ -13,75 +12,144 @@ class CategorySeeder extends Seeder
     {
         $categories = [
             [
+                'name' => 'Tesko+',
+                'is_nav' => 1
+            ],
+            [
+                'name' => 'Toy Shop',
+                'is_nav' => 1
+            ],
+            [
+                'name' => 'Halloween',
+                'is_nav' => 1,
+                'is_special' => 1
+            ],
+            [
                 'name' => 'Electronics',
-                'image' => 'frontend/images/category-1.png',
-                'subcategories' => ['Mobile Phones', 'Laptops', 'Cameras', 'Headphones', 'Smart Watches']
+                'image' => 'frontend/images/category-4.png',
+                'cover_image' => 'frontend/images/electronics-promo.png',
+                'cover_title' => 'Powering Possibilities, Empowering Lives.',
+                'cover_description' => 'Discounts on living room sets, bedroom furniture, outdoor furniture, and home office desks.',
+                'cover_text_color' => '#FFFFFF',
+                'cover_bg_color' => '#9EB5AF',
+                'cover_button_color' => '#5A422A',
+                'is_nav' => 1,
+                'is_slider' => 1
             ],
             [
                 'name' => 'Fashion',
-                'image' => 'frontend/images/category-2.png',
-                'subcategories' => ['Men\'s Clothing', 'Women\'s Clothing', 'Shoes', 'Accessories', 'Jewelry']
+                'image' => 'frontend/images/category-3.png',
+                'is_nav' => 1,
+                'is_slider' => 1
             ],
             [
                 'name' => 'Grocery & Essentials',
-                'image' => 'frontend/images/category-3.png',
-                'subcategories' => ['Oil', 'Vegetable', 'Drinks', 'Meat', 'Rice']
+                'image' => 'frontend/images/category-1.png',
+                'cover_image' => 'frontend/images/grocery-promo.png',
+                'cover_title' => 'Get 50% CASHBACK ON SHOPPING $250',
+                'cover_description' => 'provides shoppers with an extensive range of groceries, from fresh produce and meats to pantry staples, snacks, and household essentials.',
+                'cover_text_color' => '#FFDB9C',
+                'cover_bg_color' => '#8B2022',
+                'cover_button_color' => '#FD740F',
+                'is_nav' => 1,
+                'is_slider' => 1
             ],
             [
-                'name' => 'Beauty & Health',
-                'image' => 'frontend/images/category-4.png',
-                'subcategories' => ['Makeup', 'Skincare', 'Hair Care', 'Personal Care', 'Health Supplements']
+                'name' => 'Deals',
+                'is_nav' => 1
+            ],
+            [
+                'name' => 'Clothing shoes & Accessories',
+                'image' => 'frontend/images/category-3.png',
+                'is_slider' => 1
+            ],
+            [
+                'name' => 'Toys, Kids And Baby',
+            ],
+            [
+                'name' => 'SmartPhone',
+                'subcategories' => [
+                    'Apple',
+                    'Samsung',
+                    'Google',
+                    'OnePlus',
+                    'Xiaomi',
+                    'Oppo',
+                    'Vivo',
+                    'Realme',
+                    'Motorola',
+                    'Asus',
+                    'Huawei',
+                    'Honor',
+                    'Nothing',
+                    'Infinix',
+                    'Tecno',
+                    'Feature Phones',
+                ]
+            ],
+            [
+                'name' => 'Personal Care',
+                'image' => 'frontend/images/category-5.png',
+                'is_slider' => 1
+            ],
+            [
+                'name' => 'Pharmacy, Health & Wellness',
+            ],
+            [
+                'name' => 'Auto & Tires',
+                'image' => 'frontend/images/category-6.png',
+                'is_slider' => 1
+            ],
+            [
+                'name' => 'Household Essentials',
+                'image' => 'frontend/images/category-2.png',
+                'is_slider' => 1
+            ],
+            [
+                'name' => 'Pets',
             ],
             [
                 'name' => 'Sports & Outdoors',
-                'image' => 'frontend/images/category-5.png',
-                'subcategories' => ['Fitness Equipment', 'Camping Gear', 'Sports Apparel', 'Bikes', 'Outdoor Furniture']
             ],
             [
-                'name' => 'Toys & Games',
-                'image' => 'frontend/images/category-6.png',
-                'subcategories' => ['Action Figures', 'Board Games', 'Educational Toys', 'Outdoor Toys', 'Dolls & Stuffed Animals']
+                'name' => 'School Office & Art Supplies',
             ],
             [
-                'name' => 'Books & Stationery',
-                'image' => 'frontend/images/category-1.png',
-                'subcategories' => ['Fiction', 'Non-fiction', 'Academic Books', 'Stationery', 'Arts & Crafts']
+                'name' => 'Movies Music & Books',
             ],
             [
-                'name' => 'Automotive',
-                'image' => 'frontend/images/category-2.png',
-                'subcategories' => ['Car Accessories', 'Motorcycle Accessories', 'Tools & Equipment', 'Car Electronics', 'Tires & Wheels']
+                'name' => 'Gifts Card',
             ],
             [
-                'name' => 'Groceries',
-                'image' => 'frontend/images/category-3.png',
-                'subcategories' => ['Fresh Produce', 'Snacks & Beverages', 'Dairy & Eggs', 'Frozen Foods', 'Packaged Goods']
-            ],
-            [
-                'name' => 'Books & Media',
-                'image' => 'frontend/images/category-4.png',
-                'subcategories' => ['Fiction', 'Non-fiction', 'Children\'s Books', 'Magazines', 'E-books']
+                'name' => 'Shop With Purpose',
             ],
         ];
 
         foreach ($categories as $categoryData) {
-            $categoryId = DB::table('categories')->insertGetId([
+            $categoryId = Category::insertGetId([
                 'name' => $categoryData['name'],
-                'image' => $categoryData['image'],
-                'slug' => str_slug('categories','slug', $categoryData['name']),
-                'created_at' => now(),
-                'updated_at' => now()
+                'image' => $categoryData['image'] ?? null,
+                'cover_image' => $categoryData['cover_image'] ?? null,
+                'cover_bg_color' => $categoryData['cover_bg_color'] ?? null,
+                'cover_title' => $categoryData['cover_title'] ?? null,
+                'cover_description' => $categoryData['cover_description'] ?? null,
+                'cover_text_color' => $categoryData['cover_text_color'] ?? null,
+                'cover_button_color' => $categoryData['cover_button_color'] ?? null,
+                'is_nav' => $categoryData['is_nav'] ?? 0,
+                'is_special' => $categoryData['is_special'] ?? 0,
+                'is_slider' => $categoryData['is_slider'] ?? 0,
+                'slug' => str_slug('categories', 'slug', $categoryData['name']),
             ]);
 
-            foreach ($categoryData['subcategories'] as $subcategory) {
-                Category::insert([
-                    'name' => $subcategory,
-                    'slug' => str_slug('categories', 'slug', $subcategory),
-                    'category_id' => $categoryId,
-                ]);
+            if (!empty($categoryData['subcategories'])) {
+                foreach ($categoryData['subcategories'] as $subcategory) {
+                    Category::insert([
+                        'name' => $subcategory,
+                        'slug' => str_slug('categories', 'slug', $subcategory),
+                        'category_id' => $categoryId,
+                    ]);
+                }
             }
         }
     }
 }
-
-

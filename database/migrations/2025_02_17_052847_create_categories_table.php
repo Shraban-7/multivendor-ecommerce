@@ -15,7 +15,16 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
-            $table->string('image', 255)->nullable();
+            $table->string('image')->nullable();
+            $table->string('cover_image')->nullable();
+            $table->string('cover_bg_color')->nullable();
+            $table->string('cover_title')->nullable();
+            $table->string('cover_description')->nullable();
+            $table->string('cover_text_color')->nullable();
+            $table->string('cover_button_color')->nullable();
+            $table->boolean('is_nav')->default(0);
+            $table->boolean('is_special')->default(0);
+            $table->boolean('is_slider')->default(0);
             $table->foreignId('category_id')->nullable()->constrained('categories')->nullOnDelete();
             $table->timestamps();
         });

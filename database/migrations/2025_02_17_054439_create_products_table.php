@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name', 255);
             $table->string('slug', 255);
-            $table->string('thumbnail', 255);
+            $table->string('thumbnail', 255)->nullable();
             $table->text('short_desc')->nullable();
             $table->longText('description')->nullable();
             $table->decimal('buying_price', 10, 2);
@@ -28,9 +28,10 @@ return new class extends Migration
             $table->foreignId('shop_id')->nullable()->constrained('shops')->nullOnDelete();
             $table->string('sku', 100)->nullable();
             $table->string('barcode', 255)->nullable();
-            $table->tinyInteger('top_rated')->default(0);
+            $table->tinyInteger('is_trending')->default(0);
             $table->tinyInteger('best_selling')->default(0);
-            $table->tinyInteger('featured')->default(0);
+            $table->tinyInteger('is_featured')->default(0);
+            $table->string('video')->nullable();
             $table->boolean('status')->default(1);
             $table->string('stock_status')->nullable();
             $table->integer('stock_in')->default(0);

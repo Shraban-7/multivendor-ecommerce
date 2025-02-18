@@ -1,29 +1,28 @@
 @extends('frontend.layouts.app')
-@section('title','Grocery & Essentials')
+@section('title', $category->name)
+
 
 @section('content')
 <main class="grocery-essentials-page">
       <!-- Page Promotion Banner Starts -->
       <section class="page-promotion container md:w-full py-5">
         <div
-          class="promo-wrapper md:container bg-[#8B2022] grid grid-cols-1 md:grid-cols-2 rounded-lg md:rounded-3xl overflow-hidden"
+          class="promo-wrapper md:container bg-[{{ $category->cover_bg_color }}] grid grid-cols-1 md:grid-cols-2 rounded-lg md:rounded-3xl overflow-hidden"
         >
           <div
             class="order-2 md:order-1 promo-content flex flex-col gap-3 sm:gap-5 items-start justify-center p-5 md:p-10 lg:p-14 2xl:p-20"
           >
             <h2
-              class="lg:text-3xl md:text-2xl text-xl text-[#FFDB9C] font-bold md:pr-10 lg:pr-14 2xl:pr-20 line-clamp-2"
+              class="lg:text-3xl md:text-2xl text-xl text-[{{ $category->cover_text_color }}] font-bold md:pr-10 lg:pr-14 2xl:pr-20 line-clamp-2"
             >
-              Get 50% CASHBACK ON SHOPPING $250
+              {{ $category->cover_title }}
             </h2>
-            <p class="text-xs text-[#FFDB9C] md:pr-7 lg:pr-14 2xl:pr-20">
-              provides shoppers with an extensive range of groceries, from fresh
-              produce and meats to pantry staples, snacks, and household
-              essentials.
+            <p class="text-xs text-[{{ $category->cover_text_color }}] md:pr-7 lg:pr-14 2xl:pr-20">
+              {{ $category->cover_description }}
             </p>
             <a
               href="#"
-              class="theme-btn bg-primary px-5 py-2 lg:px-7 lg:px-3 rounded-lg text-white hover:bg-theme-light hover:text-theme-dark eq text-xs lg:text-sm"
+              class="theme-btn bg-[{{ $category->cover_button_color }}] px-5 py-2 lg:px-7 lg:px-3 rounded-lg text-white hover:bg-theme-light hover:text-theme-dark eq text-xs lg:text-sm"
               >Learn More</a
             >
           </div>
@@ -34,8 +33,8 @@
               >
                 <a href="#" class="w-full h-full block">
                   <img
-                    src="{{ asset('assets/frontend/images/grocery-promo.png') }}"
-                    alt="Groceries"
+                    src="{{ asset('assets/'.$category->cover_image) }}"
+                    alt="{{ $category->name}}"
                     class="w-full h-full object-cover"
                   />
                 </a>

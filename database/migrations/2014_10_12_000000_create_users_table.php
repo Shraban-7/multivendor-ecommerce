@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\UserType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -22,6 +23,8 @@ return new class extends Migration
             $table->string('secondary_email')->nullable()->unique();
             $table->string('phone')->nullable();
             $table->string('password');
+
+            $table->integer('role')->default(UserType::CUSTOMER);
 
             $table->bigInteger('country_id')->nullable();
             $table->bigInteger('state_id')->nullable();

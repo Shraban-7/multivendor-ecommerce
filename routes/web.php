@@ -1,14 +1,11 @@
 <?php
 
+use App\Http\Controllers\frontend\HomeController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('frontend.pages.home');
-})->name('home');
+Route::get('/', [HomeController::class,'index'])->name('home');
 
-Route::get('/grocery', function () {
-    return view('frontend.pages.grocery');
-})->name('grocery');
+Route::get('/category/{slug}', [HomeController::class, 'category_details'])->name('category_details');
 
 Route::get('/electronics', function () {
     return view('frontend.pages.electronics');

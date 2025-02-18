@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\client;
+namespace App\Http\Controllers\frontend\auth;
 
 use App\Models\User;
 use App\Models\Country;
-use User as GlobalUser;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;

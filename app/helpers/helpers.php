@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Category;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -64,4 +65,25 @@ if (!function_exists('delete_file')) {
         Storage::disk('public')->delete($file);
     }
 }
+
+if (!function_exists('nav_categories')) {
+    function nav_categories()
+    {
+        return Category::nav()->orderBy('id','DESC')->get();
+    }
+}
+
+if (!function_exists('all_department_categories')) {
+    function all_department_categories()
+    {
+        $categories = Category::allDepartment()
+            ->category()
+            ->orderBy('name', 'ASC')
+            ->with('subcategories')
+            ->get();
+
+            return $categories;
+    }
+}
+
 
