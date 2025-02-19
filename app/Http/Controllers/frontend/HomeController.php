@@ -15,6 +15,8 @@ class HomeController extends Controller
         $data['special_category'] = Category::special()->with('banners')->first();
         $data['light_deals'] = Product::lightDeal()->take(8)->get();
         $data['interest_products'] = Product::interest()->take(8)->get();
+        $data['trending_products'] = Product::trending()->take(3)->get();
+
 
         // return $data['interest_products'];
         return view('frontend.pages.home',$data);

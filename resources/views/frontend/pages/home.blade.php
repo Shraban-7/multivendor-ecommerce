@@ -198,7 +198,7 @@
                                         <div class="item-img h-32 sm:h-40 md:h-52 px-10 pt-5 overflow-hidden">
                                             <a href="#">
                                                 <img class="w-full h-full object-contain"
-                                                    src="{{ asset('assets/'.$product->thumbnail) }}"
+                                                    src="{{ asset('assets/' . $product->thumbnail) }}"
                                                     alt="Ladies Large chocolate vanity Bag" />
                                             </a>
                                         </div>
@@ -215,7 +215,8 @@
                                                 <i class="fa-solid fa-star"></i>
                                             </div>
                                             <p class="text-persian-blue">{{ $product->unit }}</p>
-                                            <p class="font-semibold text-sand-brown">{{ currency($product->selling_price) }}</p>
+                                            <p class="font-semibold text-sand-brown">
+                                                {{ currency($product->selling_price) }}</p>
 
                                             <div class="add-cart">
                                                 <button
@@ -707,73 +708,32 @@
                             <div class="trending-phones p-5">
                                 <h3 class="text-lg text-rangoon-green font-semibold mb-4 capitalize">
                                     Trending Products
-
                                     <span class="block w-28 h-[1.85px] bg-theme-teal"></span>
                                 </h3>
-
                                 <div class="trending-items-wrapper space-y-4">
                                     <!-- item 1 -->
-                                    <div class="group/trending py-2 border-dashed border-b trending-item-card flex gap-3">
-                                        <div class="item-image w-1/4">
-                                            <a href="#" target="_blank">
-                                                <img src="{{ asset('assets/frontend/images/trend-prod-1.png') }}"
-                                                    alt="Meatigo Premium Goat Curry"
-                                                    class="w-full h-full object-contain group-hover/trending:rotate-12 eq" />
-                                            </a>
-                                        </div>
-                                        <div class="item-details flex flex-col gap-2 w-3/4 text-xs">
-                                            <h4>
-                                                <a href="#" target="_self"
-                                                    class="text-theme-dark line-clamp-1 group-hover/trending:text-theme-teal font-semibold eq">
-                                                    Meatigo Premium Goat Curry
+                                    @foreach ($trending_products as $product)
+                                        <div
+                                            class="group/trending py-2 border-dashed border-b trending-item-card flex gap-3">
+                                            <div class="item-image w-1/4">
+                                                <a href="#" target="_blank">
+                                                    <img src="{{ asset('assets/'.$product->thumbnail) }}"
+                                                        alt="Meatigo Premium Goat Curry"
+                                                        class="w-full h-full object-contain group-hover/trending:rotate-12 eq" />
                                                 </a>
-                                            </h4>
-                                            <p class="text-jet-gray">450 G</p>
-                                            <p class="text-theme-teal font-semibold">$ 70.00</p>
+                                            </div>
+                                            <div class="item-details flex flex-col gap-2 w-3/4 text-xs">
+                                                <h4>
+                                                    <a href="#" target="_self"
+                                                        class="text-theme-dark line-clamp-1 group-hover/trending:text-theme-teal font-semibold eq">
+                                                        {{ $product->name }}
+                                                    </a>
+                                                </h4>
+                                                <p class="text-jet-gray">{{ $product->unit }}</p>
+                                                <p class="text-theme-teal font-semibold">{{ currency($product->selling_price) }}</p>
+                                            </div>
                                         </div>
-                                    </div>
-
-                                    <!-- item 2 -->
-                                    <div class="group/trending py-2 border-dashed border-b trending-item-card flex gap-3">
-                                        <div class="item-image w-1/4">
-                                            <a href="#" target="_blank">
-                                                <img src="{{ asset('assets/frontend/images/trend-prod-2.png') }}"
-                                                    alt="Coral Bean Bag Chair"
-                                                    class="w-full h-full object-contain group-hover/trending:rotate-12 eq" />
-                                            </a>
-                                        </div>
-                                        <div class="item-details flex flex-col gap-2 w-3/4 text-xs">
-                                            <h4>
-                                                <a href="#" target="_self"
-                                                    class="line-clamp-1 text-theme-dark group-hover/trending:text-theme-teal font-semibold eq">
-                                                    Coral Bean Bag Chair
-                                                </a>
-                                            </h4>
-                                            <p class="text-jet-gray">450 G</p>
-                                            <p class="text-theme-teal font-semibold">$ 40.00</p>
-                                        </div>
-                                    </div>
-
-                                    <!-- item 3 -->
-                                    <div class="group/trending py-2 border-dashed border-b trending-item-card flex gap-3">
-                                        <div class="item-image w-1/4">
-                                            <a href="#" target="_blank">
-                                                <img src="{{ asset('assets/frontend/images/trend-prod-3.png') }}"
-                                                    alt="Benefits of using natural ston"
-                                                    class="w-full h-full object-contain group-hover/trending:rotate-12 eq" />
-                                            </a>
-                                        </div>
-                                        <div class="item-details flex flex-col gap-2 w-3/4 text-xs">
-                                            <h4>
-                                                <a href="#" target="_self"
-                                                    class="line-clamp-1 text-theme-dark group-hover/trending:text-theme-teal font-semibold eq">
-                                                    Benefits of using natural ston adash asb
-                                                </a>
-                                            </h4>
-                                            <p class="text-jet-gray">1 KG</p>
-                                            <p class="text-theme-teal font-semibold">$ 80.00</p>
-                                        </div>
-                                    </div>
+                                    @endforeach
                                 </div>
                             </div>
                         </div>

@@ -23,4 +23,9 @@ class Product extends Model
     {
         return $query->where('is_interest',true);
     }
+
+    public function scopeTrending($query)
+    {
+        return $query->where('is_trending',true);
+    }
 }
