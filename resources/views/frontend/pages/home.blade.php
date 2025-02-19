@@ -88,7 +88,7 @@
                         <!-- slide 1 -->
                         @foreach ($light_deals as $light_deal)
                             <div class="swiper-slide py-5 px-1">
-                                <a href="#" class="block product-card w-full rounded-lg hover:shadow-lg p-3 eq group">
+                                <a href="{{ route('product_details',$light_deal->slug) }}" class="block product-card w-full rounded-lg hover:shadow-lg p-3 eq group">
                                     <!-- slide image -->
                                     <div class="card-image h-[16.5rem] relative rounded-lg overflow-hidden">
                                         <img src="{{ asset('assets/' . $light_deal->thumbnail) }}"
@@ -196,7 +196,7 @@
                                 <div class="block product-card w-full flex flex-col items-center p-2">
                                     <div class="w-full bg-theme-light rounded-md hover:shadow-md eq overflow-hidden">
                                         <div class="item-img h-32 sm:h-40 md:h-52 px-10 pt-5 overflow-hidden">
-                                            <a href="#">
+                                            <a href="{{ route('product_details',$product->slug) }}">
                                                 <img class="w-full h-full object-contain"
                                                     src="{{ asset('assets/' . $product->thumbnail) }}"
                                                     alt="Ladies Large chocolate vanity Bag" />
@@ -205,7 +205,7 @@
                                         <div class="p-2 sm:p-4 space-y-1">
                                             <h2
                                                 class="text-theme-dark group-hover/interest-pro-card:text-persian-blue font-semibold line-clamp-3 md:line-clamp-2 eq text-sm md:text-base h-16 md:h-12">
-                                                <a href="#">{{ $product->name }}</a>
+                                                <a href="{{ route('product_details',$product->slug) }}">{{ $product->name }}</a>
                                             </h2>
                                             <div class="rating-stars text-xs text-light-yellow">
                                                 <i class="fa-solid fa-star"></i>
@@ -406,7 +406,7 @@
                                     <div
                                         class="w-full border border-[jet-gray]/30 rounded-md hover:shadow-md eq overflow-hidden">
                                         <div class="item-img h-32 sm:h-40 md:h-52 pt-5 overflow-hidden">
-                                            <a href="#">
+                                            <a href="{{ route('product_details',$product->slug) }}">
                                                 <img class="w-full h-full object-contain"
                                                     src="{{ asset('assets/' . $product->thumbnail) }}"
                                                     alt="Exclusive Chair with foam seat" />
@@ -424,7 +424,7 @@
                                                 <div class="name-price">
                                                     <h2
                                                         class="text-theme-dark group-hover/new-arriv-pro-card:text-butterfly-blue eq md:text-xl capitalize line-clamp-1 w-full">
-                                                        <a href="#">{{ $product->name }}</a>
+                                                        <a href="{{ route('product_details',$product->slug) }}">{{ $product->name }}</a>
                                                     </h2>
                                                     <div class="flex gap-x-2 flex-wrap sm:text-lg">
                                                         @php
@@ -482,7 +482,7 @@
                                         <div
                                             class="group/trending py-2 border-dashed border-b trending-item-card flex gap-3">
                                             <div class="item-image w-1/4">
-                                                <a href="#" target="_blank">
+                                                <a href="{{ route('product_details',$product->slug) }}" target="_blank">
                                                     <img src="{{ asset('assets/' . $product->thumbnail) }}"
                                                         alt="Meatigo Premium Goat Curry"
                                                         class="w-full h-full object-contain group-hover/trending:rotate-12 eq" />
@@ -490,7 +490,7 @@
                                             </div>
                                             <div class="item-details flex flex-col gap-2 w-3/4 text-xs">
                                                 <h4>
-                                                    <a href="#" target="_self"
+                                                    <a href="{{ route('product_details',$product->slug) }}" target="_self"
                                                         class="text-theme-dark line-clamp-1 group-hover/trending:text-theme-teal font-semibold eq">
                                                         {{ $product->name }}
                                                     </a>
@@ -545,7 +545,7 @@
                                         class="w-full border border-[jet-gray]/30 rounded-md hover:shadow-md eq overflow-hidden">
                                         <div
                                             class="item-img h-32 sm:h-40 md:h-52 md:pt-10 pt-5 px-3 md:px-5 pb-3 md:pb-5 overflow-hidden">
-                                            <a href="#">
+                                            <a href="{{ route('product_details',$product->slug) }}">
                                                 <img class="w-full h-full object-contain"
                                                     src="{{ asset('assets/' . $product->thumbnail) }}"
                                                     alt="Xbox Series S 1TB + Controller" />
@@ -563,7 +563,7 @@
                                                 <div class="name-price">
                                                     <h2
                                                         class="text-theme-dark group-hover/community-pro-card:text-butterfly-blue eq text-sm capitalize line-clamp-2 w-full">
-                                                        <a href="#">{{ $product->name }}</a>
+                                                        <a href="{{ route('product_details',$product->slug) }}">{{ $product->name }}</a>
                                                     </h2>
                                                     <div class="flex gap-x-2 flex-wrap sm:text-lg">
                                                         @php
@@ -706,7 +706,7 @@
                                         class="w-full border border-[jet-gray]/30 rounded-md hover:shadow-md eq overflow-hidden">
                                         <div
                                             class="item-img h-32 sm:h-40 md:h-52 md:pt-10 pt-5 px-3 md:px-5 pb-3 md:pb-5 overflow-hidden">
-                                            <a href="#">
+                                            <a href="{{ route('product_details',$product->slug) }}">
                                                 <img class="w-full h-full object-contain"
                                                     src="{{ asset('assets/' . $product->thumbnail) }}"
                                                     alt="Halloween Black Ladies Dress" />
@@ -724,7 +724,7 @@
                                                 <div class="name-price">
                                                     <h2
                                                         class="text-theme-dark group-hover/community-pro-card:text-butterfly-blue eq text-sm capitalize line-clamp-2 w-full">
-                                                        <a href="#">{{ $product->name }}</a>
+                                                        <a href="{{ route('product_details',$product->slug) }}">{{ $product->name }}</a>
                                                     </h2>
                                                     <div class="flex gap-x-2 flex-wrap sm:text-lg">
                                                         @php

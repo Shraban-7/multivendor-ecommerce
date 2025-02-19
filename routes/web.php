@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Frontend\HomeController;
+use App\Http\Controllers\Frontend\ProductController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class,'index'])->name('home');
@@ -11,9 +12,7 @@ Route::get('/electronics', function () {
     return view('frontend.pages.electronics');
 })->name('electronics');
 
-Route::get('/product-details', function () {
-    return view('frontend.pages.product_details');
-})->name('product_details');
+Route::get('/product-details/{slug}',[ProductController::class,'details'])->name('product_details');
 
 Route::get('/shop-details', function () {
     return view('frontend.pages.shop_details');

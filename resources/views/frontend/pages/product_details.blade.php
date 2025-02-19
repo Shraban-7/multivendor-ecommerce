@@ -1,5 +1,5 @@
 @extends('frontend.layouts.app')
-@section('title', 'Product Detail')
+@section('title', $product->name)
 
 @section('content')
     <main class="product-details-page">
@@ -24,8 +24,8 @@
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="m1 9 4-4-4-4" />
                             </svg>
-                            <a href="#" class="ms-1 text-sm text-davy-gray hover:text-primary eq md:ms-2">Men's
-                                Clothing</a>
+                            <a href="#"
+                                class="ms-1 text-sm text-davy-gray hover:text-primary eq md:ms-2">{{ $product->category->name }}</a>
                         </div>
                     </li>
                     <li aria-current="page">
@@ -35,7 +35,7 @@
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="m1 9 4-4-4-4" />
                             </svg>
-                            <span class="ms-1 text-sm text-davy-gray md:ms-2">Men's Suite</span>
+                            <span class="ms-1 text-sm text-davy-gray md:ms-2">{{ $product->subcategory }}</span>
                         </div>
                     </li>
                 </ol>
@@ -54,47 +54,16 @@
                             <div class="product-thumbnails overflow-hidden xl:h-[37rem] lg:h-[41rem] h-auto">
                                 <div class="swiper-wrapper">
                                     <!-- thumb 1 -->
-                                    <div class="swiper-slide">
-                                        <div
-                                            class="slide-thumb w-full xl:h-24 md:h-22 lg:h-28 h-20 rounded-2xl cursor-pointer border-2 border-transparent hover:border-primary overflow-hidden">
-                                            <img src="{{ asset('assets/frontend/images/prod-details-thumb-1.png') }}"
-                                                alt="Product thumbnail of A Young boy wear a jacket with green T-Shirt & Short Pant"
-                                                class="w-full h-full object-cover" />
+                                    @foreach ($product->images as $thumb)
+                                        <div class="swiper-slide">
+                                            <div
+                                                class="slide-thumb w-full xl:h-24 md:h-22 lg:h-28 h-20 rounded-2xl cursor-pointer border-2 border-transparent hover:border-primary overflow-hidden">
+                                                <img src="{{ asset('assets/'.$thumb->image) }}"
+                                                    alt="Product thumbnail of A Young boy wear a jacket with green T-Shirt & Short Pant"
+                                                    class="w-full h-full object-cover" />
+                                            </div>
                                         </div>
-                                    </div>
-                                    <!-- thumb 2 -->
-                                    <div class="swiper-slide">
-                                        <div
-                                            class="slide-thumb w-full xl:h-24 md:h-22 lg:h-28 h-20 rounded-2xl cursor-pointer border-2 border-transparent hover:border-primary overflow-hidden">
-                                            <img src="{{ asset('assets/frontend/images/prod-details-thumb-2.png') }}" alt="Product thumbnail 2"
-                                                class="w-full h-full object-cover" />
-                                        </div>
-                                    </div>
-                                    <!-- thumb 3 -->
-                                    <div class="swiper-slide">
-                                        <div
-                                            class="slide-thumb w-full xl:h-24 md:h-22 lg:h-28 h-20 rounded-2xl cursor-pointer border-2 border-transparent hover:border-primary overflow-hidden">
-                                            <img src="{{ asset('assets/frontend/images/prod-details-thumb-3.png') }}" alt="Product thumbnail 3"
-                                                class="w-full h-full object-cover" />
-                                        </div>
-                                    </div>
-                                    <!-- thumb 4 -->
-                                    <div class="swiper-slide">
-                                        <div
-                                            class="slide-thumb w-full xl:h-24 md:h-22 lg:h-28 h-20 rounded-2xl cursor-pointer border-2 border-transparent hover:border-primary overflow-hidden">
-                                            <img src="{{ asset('assets/frontend/images/prod-details-thumb-1.png') }}" alt="Product thumbnail 4"
-                                                class="w-full h-full object-cover" />
-                                        </div>
-                                    </div>
-                                    <!-- thumb 5 -->
-                                    <div class="swiper-slide">
-                                        <div
-                                            class="slide-thumb w-full xl:h-24 md:h-22 lg:h-28 h-20 rounded-2xl cursor-pointer border-2 border-transparent hover:border-primary overflow-hidden">
-                                            <img src="{{ asset('assets/frontend/images/prod-details-thumb-2.png') }}" alt="Product thumbnail 5"
-                                                class="w-full h-full object-cover" />
-                                        </div>
-                                    </div>
-
+                                    @endforeach
                                     <!-- Repeat thumb for more thumbnails -->
                                 </div>
                             </div>
@@ -106,40 +75,16 @@
                                 class="product-swiper overflow-hidden w-full h-96 md:h-[37rem] xl:h-[37rem] lg:h-[41rem] rounded-2xl overflow-hidden relative">
                                 <div class="swiper-wrapper">
                                     <!-- product image 1 -->
-                                    <div class="swiper-slide h-full rounded-2xl overflow-hidden">
-                                        <img src="{{ asset('assets/frontend/images/prod-details-img-1.png') }}"
-                                            alt="A Young boy wear a jacket with green T-Shirt & Short Pant"
-                                            class="w-full h-full object-cover" />
-                                    </div>
-                                    <!-- product image 2 -->
-                                    <div class="swiper-slide h-full rounded-2xl overflow-hidden">
-                                        <img src="{{ asset('assets/frontend/images/prod-details-img-2.png') }}"
-                                            alt="A Young boy showing his back side with wear a green colour full sleeve T-Shirt & White Short Pant"
-                                            class="w-full h-full object-cover" />
-                                    </div>
-                                    <!-- product image 3 -->
-                                    <div class="swiper-slide h-full rounded-2xl overflow-hidden">
-                                        <img src="{{ asset('assets/frontend/images/prod-details-img-3.png') }}"
-                                            alt="A Young boy in standing position and one hand under in left pocket with wear a green colour full sleeve T-Shirt & White Short Pant"
-                                            class="w-full h-full object-cover" />
-                                    </div>
-                                    <!-- product image 4 -->
-                                    <div class="swiper-slide h-full rounded-2xl overflow-hidden">
-                                        <img src="{{ asset('assets/frontend/images/prod-details-img-1.png') }}"
-                                            alt="A Young boy wear a jacket with green T-Shirt & Short Pant"
-                                            class="w-full h-full object-cover" />
-                                    </div>
-                                    <!-- product image 5 -->
-                                    <div class="swiper-slide h-full rounded-2xl overflow-hidden">
-                                        <img src="{{ asset('assets/frontend/images/prod-details-img-2.png') }}"
-                                            alt="A Young boy showing his back side with wear a green colour full sleeve T-Shirt & White Short Pant"
-                                            class="w-full h-full object-cover" />
-                                    </div>
-
+                                    @foreach ($product->images as $slider)
+                                        <div class="swiper-slide h-full rounded-2xl overflow-hidden">
+                                            <img src="{{ asset('assets/' . $slider->image) }}"
+                                                alt="A Young boy wear a jacket with green T-Shirt & Short Pant"
+                                                class="w-full h-full object-cover" />
+                                        </div>
+                                    @endforeach
                                     <!-- Repeat product image for more slides -->
                                 </div>
                                 <!-- Navigation Buttons -->
-
                                 <div class="swiper-button-prev text-theme-light"></div>
                                 <div class="swiper-button-next text-theme-light"></div>
                             </div>
@@ -160,21 +105,22 @@
                             </div>
 
                             <h1 class="lg:text-base text-rustic-red text-sm lg:pr-5 xl:pr-16">
-                                Men's Fit Stretch Jaket - Caramel, Woven Fabric, Matching
-                                Washable - Perfect for Business Casual & Summer Wear
+                                {{ $product->name }}
                             </h1>
 
                             <div class="flex flex-wrap items-center gap-2 xsm:gap-5 sm:10 md:gap-2 lg:gap-10 text-sm">
                                 <div class="flex items-center gap-2">
-                                    <span class="text-jet-gray border-r border-gray-400 pr-2">486 sold</span>
+                                    <span
+                                        class="text-jet-gray border-r border-gray-400 pr-2">{{ number_shorten_format($product->stock_out) }}
+                                        sold</span>
                                     <div class="flex items-center gap-2 text-davy-gray">
                                         <span>Provided By</span>
                                         <a href="#"
                                             class="inline-block provider-icon w-6 h-6 overflow-hidden rounded-full">
-                                            <img src="{{ asset('assets/frontend/images/provider-icon-1.png') }}" alt="Louis Vuitton"
-                                                class="h-full w-full object-contain" />
+                                            <img src="{{ asset('assets/frontend/images/provider-icon-1.png') }}"
+                                                alt="Louis Vuitton" class="h-full w-full object-contain" />
                                         </a>
-                                        <span>(3.1K+ sold)</span>
+                                        <span>({{ number_shorten_format($product->stock_out) }}+ sold)</span>
                                     </div>
                                 </div>
 
@@ -194,11 +140,17 @@
                             <div class="flex flex-wrap items-center gap-2">
                                 <div class="new-price flex items-center gap-1 flex-no-wrap">
                                     <i class="fa-solid fa-bolt text-[#ffa755]"></i>
-                                    <span class="align-center text-sm text-[#ffa755]">$</span>
-                                    <h3 class="current-price font-bold text-primary">25.89</h3>
+                                    {{-- <span class="align-center text-sm text-[#ffa755]">$</span> --}}
+                                    @php
+                                        $price = $product->selling_price - $product->discounted_amount;
+                                    @endphp
+                                    <h3 class="current-price font-bold text-primary">{{ currency($price) }}</h3>
                                 </div>
-                                <h6 class="old-price text-jet-gray line-through">$ 49.99</h6>
-                                <span class="text-xs px-2.5 py-0.5 rounded-lg border border-primary">-69% last 2
+                                <h6 class="old-price text-jet-gray line-through">{{ currency($product->selling_price) }}
+                                </h6>
+                                <span
+                                    class="text-xs px-2.5 py-0.5 rounded-lg border border-primary">-{{ currency($product->discounted_amount) }}
+                                    last 2
                                     days</span>
                                 <span class="text-leaf-green text-xs">Almost Sold Out</span>
                             </div>
@@ -259,8 +211,8 @@
                                         <h6 class="sm:text-lg">Size :</h6>
                                         <a href="#"
                                             class="inline-flex items-center hover:text-violet-700 hover:underline eq">
-                                            <img src="{{ asset('assets/frontend/images/size-scale.png') }}" alt="Size Chart"
-                                                class="w-10 xsm:w-14 h-auto" />
+                                            <img src="{{ asset('assets/frontend/images/size-scale.png') }}"
+                                                alt="Size Chart" class="w-10 xsm:w-14 h-auto" />
                                             <span class="text-xs"> Size Chart</span>
                                         </a>
                                         <a href="#"
@@ -440,7 +392,8 @@
                                 <button
                                     class="inline-flex items-center lg:px-4 lg:py-1.5 px-3 py-1 rounded-full border border-jet-gray gap-2">
                                     <span class="flag-wrap h-5 lg:h-7 w-auto"><img class="w-auto h-full object-contain"
-                                            src="{{ asset('assets/frontend/images/us-flag.png') }}" alt="Flag of USA" /></span>
+                                            src="{{ asset('assets/frontend/images/us-flag.png') }}"
+                                            alt="Flag of USA" /></span>
                                     <span>(800)</span>
                                 </button>
                                 <button
@@ -463,14 +416,16 @@
                                 <div class="review-item space-y-2">
                                     <div class="flex items-center gap-3">
                                         <div class="user-avatar w-12 h-12 rounded-full overflow-hidden">
-                                            <img src="{{ asset('assets/frontend/images/user-avatar-1.png') }}" alt="Alan Walker" />
+                                            <img src="{{ asset('assets/frontend/images/user-avatar-1.png') }}"
+                                                alt="Alan Walker" />
                                         </div>
                                         <div class="flex flex-wrap items-center gap-x-5 gap-y-1">
                                             <h3 class="font-medium">Alan Walker</h3>
                                             <span class="flex gap-2 text-gray-400">
                                                 In
                                                 <span class="h-4 lg:h-6 w-auto"><img class="w-auto h-full object-contain"
-                                                        src="{{ asset('assets/frontend/images/us-flag.png') }}" alt="Flag of USA" /></span>
+                                                        src="{{ asset('assets/frontend/images/us-flag.png') }}"
+                                                        alt="Flag of USA" /></span>
                                                 on Jan 20, 2025
                                             </span>
                                         </div>
@@ -540,14 +495,16 @@
                                 <div class="review-item space-y-2">
                                     <div class="flex items-center gap-3">
                                         <div class="user-avatar w-12 h-12 rounded-full overflow-hidden">
-                                            <img src="{{ asset('assets/frontend/images/user-avatar-2.png') }}" alt="Josesph Man" />
+                                            <img src="{{ asset('assets/frontend/images/user-avatar-2.png') }}"
+                                                alt="Josesph Man" />
                                         </div>
                                         <div class="flex flex-wrap items-center gap-x-5 gap-y-1">
                                             <h3 class="font-medium">Josesph Man</h3>
                                             <span class="flex gap-2 text-gray-400">
                                                 In
                                                 <span class="h-4 lg:h-6 w-auto"><img class="w-auto h-full object-contain"
-                                                        src="{{ asset('assets/frontend/images/us-flag.png') }}" alt="Flag of USA" /></span>
+                                                        src="{{ asset('assets/frontend/images/us-flag.png') }}"
+                                                        alt="Flag of USA" /></span>
                                                 on Jan 22, 2025
                                             </span>
                                         </div>
@@ -820,8 +777,8 @@
                         <div
                             class="relative h-60 xsm:h-48 sm:h-56 sm:h-90 lg:h-[17rem] xl:h-[22rem] overflow-hidden rounded-lg">
                             <a href="#" class="block w-full h-full">
-                                <img src="{{ asset('assets/frontend/images/interest-prod-1.png') }}" alt="The Iconic Doeskin Blazer"
-                                    class="w-full h-full object-cover" />
+                                <img src="{{ asset('assets/frontend/images/interest-prod-1.png') }}"
+                                    alt="The Iconic Doeskin Blazer" class="w-full h-full object-cover" />
                             </a>
                             <button
                                 class="absolute bottom-10 xsm:bottom-3 lg:bottom-10 xsm:left-3 lg:left-5 left-5 bg-white hover:bg-primary hover:text-white rounded-full px-4 py-2 flex items-center gap-2 shadow-lg eq">
@@ -844,7 +801,8 @@
                                     <i class="fa-solid fa-star"></i>
                                     <i class="fa-solid fa-star"></i>
                                     <i class="fa-solid fa-star"></i>
-                                    <img src="{{ asset('assets/frontend/images/fire-icon.png') }}" class="w-8 h-auto" alt="Fire Icon" />
+                                    <img src="{{ asset('assets/frontend/images/fire-icon.png') }}" class="w-8 h-auto"
+                                        alt="Fire Icon" />
                                 </div>
 
                                 <span class="text-jet-gray">4.5K+ Sold</span>
@@ -899,7 +857,8 @@
                                     <i class="fa-solid fa-star"></i>
                                     <i class="fa-solid fa-star"></i>
                                     <i class="fa-solid fa-star"></i>
-                                    <img src="{{ asset('assets/frontend/images/fire-icon.png') }}" class="w-8 h-auto" alt="Fire Icon" />
+                                    <img src="{{ asset('assets/frontend/images/fire-icon.png') }}" class="w-8 h-auto"
+                                        alt="Fire Icon" />
                                 </div>
 
                                 <span class="text-jet-gray">2.8K+ Sold</span>
@@ -955,7 +914,8 @@
                                     <i class="fa-solid fa-star"></i>
                                     <i class="fa-solid fa-star"></i>
                                     <i class="fa-solid fa-star"></i>
-                                    <img src="{{ asset('assets/frontend/images/fire-icon.png') }}" class="w-8 h-auto" alt="Fire Icon" />
+                                    <img src="{{ asset('assets/frontend/images/fire-icon.png') }}" class="w-8 h-auto"
+                                        alt="Fire Icon" />
                                 </div>
 
                                 <span class="text-jet-gray">1.2K+ Sold</span>
@@ -1009,7 +969,8 @@
                                     <i class="fa-solid fa-star"></i>
                                     <i class="fa-solid fa-star"></i>
                                     <i class="fa-solid fa-star"></i>
-                                    <img src="{{ asset('assets/frontend/images/fire-icon.png') }}" class="w-8 h-auto" alt="Fire Icon" />
+                                    <img src="{{ asset('assets/frontend/images/fire-icon.png') }}" class="w-8 h-auto"
+                                        alt="Fire Icon" />
                                 </div>
 
                                 <span class="text-jet-gray">6.2K+ Sold</span>
@@ -1039,8 +1000,8 @@
                         <div
                             class="relative h-60 xsm:h-48 sm:h-56 sm:h-90 lg:h-[17rem] xl:h-[22rem] overflow-hidden rounded-lg">
                             <a href="#" class="block w-full h-full">
-                                <img src="{{ asset('assets/frontend/images/interest-prod-5.png') }}" alt="Classic Men Bleech Fleece Short"
-                                    class="w-full h-full object-cover" />
+                                <img src="{{ asset('assets/frontend/images/interest-prod-5.png') }}"
+                                    alt="Classic Men Bleech Fleece Short" class="w-full h-full object-cover" />
                             </a>
                             <button
                                 class="absolute bottom-10 xsm:bottom-3 lg:bottom-10 xsm:left-3 lg:left-5 left-5 bg-white hover:bg-primary hover:text-white rounded-full px-4 py-2 flex items-center gap-2 shadow-lg eq">
@@ -1063,7 +1024,8 @@
                                     <i class="fa-solid fa-star"></i>
                                     <i class="fa-solid fa-star"></i>
                                     <i class="fa-solid fa-star"></i>
-                                    <img src="{{ asset('assets/frontend/images/fire-icon.png') }}" class="w-8 h-auto" alt="Fire Icon" />
+                                    <img src="{{ asset('assets/frontend/images/fire-icon.png') }}" class="w-8 h-auto"
+                                        alt="Fire Icon" />
                                 </div>
 
                                 <span class="text-jet-gray">4.8K+ Sold</span>
@@ -1093,8 +1055,8 @@
                         <div
                             class="relative h-60 xsm:h-48 sm:h-56 sm:h-90 lg:h-[17rem] xl:h-[22rem] overflow-hidden rounded-lg">
                             <a href="#" class="block w-full h-full">
-                                <img src="{{ asset('assets/frontend/images/interest-prod-6.png') }}" alt="Enamel Flag Alay Leather Belt"
-                                    class="w-full h-full object-cover" />
+                                <img src="{{ asset('assets/frontend/images/interest-prod-6.png') }}"
+                                    alt="Enamel Flag Alay Leather Belt" class="w-full h-full object-cover" />
                             </a>
                             <button
                                 class="absolute bottom-10 xsm:bottom-3 lg:bottom-10 xsm:left-3 lg:left-5 left-5 bg-white hover:bg-primary hover:text-white rounded-full px-4 py-2 flex items-center gap-2 shadow-lg eq">
@@ -1117,7 +1079,8 @@
                                     <i class="fa-solid fa-star"></i>
                                     <i class="fa-solid fa-star"></i>
                                     <i class="fa-solid fa-star"></i>
-                                    <img src="{{ asset('assets/frontend/images/fire-icon.png') }}" class="w-8 h-auto" alt="Fire Icon" />
+                                    <img src="{{ asset('assets/frontend/images/fire-icon.png') }}" class="w-8 h-auto"
+                                        alt="Fire Icon" />
                                 </div>
 
                                 <span class="text-jet-gray">8.7K+ Sold</span>

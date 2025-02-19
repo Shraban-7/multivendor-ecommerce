@@ -33,4 +33,14 @@ class Product extends Model
     {
         return $query->where('is_community',true);
     }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function images()
+    {
+        return $this->hasMany(ProductImage::class);
+    }
 }
