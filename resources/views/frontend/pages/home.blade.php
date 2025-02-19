@@ -86,235 +86,59 @@
                 <div class="swiper lightDealsSwiper">
                     <div class="swiper-wrapper">
                         <!-- slide 1 -->
-                        <div class="swiper-slide py-5 px-1">
-                            <a href="#" class="block product-card w-full rounded-lg hover:shadow-lg p-3 eq group">
-                                <!-- slide image -->
-                                <div class="card-image h-[16.5rem] relative rounded-lg overflow-hidden">
-                                    <img src="{{ asset('assets/frontend/images/light-deal-1.png') }}"
-                                        alt="Model wearing a jacket"
-                                        class="w-full h-full object-cover group-hover:scale-125 eq" />
-                                    <span
-                                        class="block absolute bottom-9 left-1/2 -translate-x-1/2 bg-white px-4 py-3 rounded-full text-sm w-3/5 text-center">Almost
-                                        Sold Out</span>
-                                </div>
-                                <!-- Slide Content -->
-                                <div class="card-content mt-2 space-y-1">
-                                    <!-- price & sold info -->
-                                    <div class="price-sold-amount flex items-center gap-2">
-                                        <h2 class="text-2xl font-bold text-primary">
-                                            <span><i class="fa-solid fa-bolt text-[#ffa755]"></i></span>
-                                            <span class="align-middle text-xs text-[#ffa755]">$</span>
-                                            25.00
-                                        </h2>
-                                        <p class="text-base">4.5K+ Sold</p>
-                                    </div>
-                                    <!-- time -->
-                                    <div class="time-progres flex items-center flex-wrap gap-2">
-                                        <div class="w-[60%] bg-gray-200 rounded-full h-2">
-                                            <div class="progress bg-primary h-2 rounded-full" style="width: 95%"></div>
-                                        </div>
+                        @foreach ($light_deals as $light_deal)
+                            <div class="swiper-slide py-5 px-1">
+                                <a href="#" class="block product-card w-full rounded-lg hover:shadow-lg p-3 eq group">
+                                    <!-- slide image -->
+                                    <div class="card-image h-[16.5rem] relative rounded-lg overflow-hidden">
+                                        <img src="{{ asset('assets/' . $light_deal->thumbnail) }}"
+                                            alt="{{ $light_deal->name }}"
+                                            class="w-full h-full object-cover group-hover:scale-125 eq" />
                                         <span
-                                            class="w-[35%] due-time text-sm inline-flex flex-no-wrap gap-1 items-center"><i
-                                                class="fa-regular fa-clock"></i> 1:12:53.55</span>
+                                            class="block absolute bottom-9 left-1/2 -translate-x-1/2 bg-white px-4 py-3 rounded-full text-sm w-3/5 text-center">Almost
+                                            Sold Out</span>
                                     </div>
-                                    <!-- rating -->
-                                    <div class="flex items-center gap-2">
-                                        <div class="rating-stars text-xs text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
+                                    <!-- Slide Content -->
+                                    <div class="card-content mt-2 space-y-1">
+                                        <!-- price & sold info -->
+                                        <div class="price-sold-amount flex items-center gap-2">
+                                            <h2 class="text-2xl font-bold text-primary">
+                                                <span><i class="fa-solid fa-bolt text-[#ffa755]"></i></span>
+                                                <span
+                                                    class="align-middle text-xs text-[#ffa755]">{{ CURRENCY_SYMBOL }}</span>
+                                                {{ number_format($light_deal->selling_price, 2) }}
+                                            </h2>
+                                            <p class="text-base">{{ number_shorten_format($light_deal->stock_out) }}+ Sold
+                                                Out</p>
                                         </div>
-                                        <span class="text-sm text-primary">Final Hours</span>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <!-- slide 2 -->
-                        <div class="swiper-slide py-5 px-1">
-                            <a href="#" class="block product-card w-full rounded-lg hover:shadow-lg p-3 eq group">
-                                <!-- slide image -->
-                                <div class="card-image h-[16.5rem] relative rounded-lg overflow-hidden">
-                                    <img src="{{ asset('assets/frontend/images/light-deal-2.png') }}"
-                                        alt="Ladies Vanity Bag"
-                                        class="w-full h-full object-cover group-hover:scale-125 eq" />
-                                    <span
-                                        class="block absolute bottom-9 left-1/2 -translate-x-1/2 bg-white px-4 py-3 rounded-full text-sm w-3/5 text-center">Almost
-                                        Sold Out</span>
-                                </div>
-                                <!-- Slide Content -->
-                                <div class="card-content mt-2 space-y-1">
-                                    <!-- price & sold info -->
-                                    <div class="price-sold-amount flex items-center gap-2">
-                                        <h2 class="text-2xl font-bold text-primary">
-                                            <span><i class="fa-solid fa-bolt text-[#ffa755]"></i></span>
-                                            <span class="align-middle text-xs text-[#ffa755]">$</span>
-                                            40.00
-                                        </h2>
-                                        <p class="text-base">8.2K+ Sold</p>
-                                    </div>
-                                    <!-- time -->
-                                    <div class="time-progres flex items-center flex-wrap gap-2">
-                                        <div class="w-[60%] bg-gray-200 rounded-full h-2">
-                                            <div class="progress bg-primary h-2 rounded-full" style="width: 95%"></div>
+                                        <!-- time -->
+                                        @php
+                                            $sold_out_progress = ($light_deal->stock_out/($light_deal->stock_out+$light_deal->stock_in))*100;
+                                        @endphp
+                                        <div class="time-progres flex items-center flex-wrap gap-2">
+                                            <div class="w-[60%] bg-gray-200 rounded-full h-2">
+                                                <div class="progress bg-primary h-2 rounded-full" style="width: {{ percentage($sold_out_progress) }}"></div>
+                                            </div>
+                                            <span
+                                                class="w-[35%] due-time text-sm inline-flex flex-no-wrap gap-1 items-center"><i
+                                                    class="fa-regular fa-clock"></i>
+                                                {{ datetime_format($light_deal->lightdeal_expired_at) }}</span>
                                         </div>
-                                        <span
-                                            class="w-[35%] due-time text-sm inline-flex flex-no-wrap gap-1 items-center"><i
-                                                class="fa-regular fa-clock"></i> 0:45:53.55</span>
-                                    </div>
-                                    <!-- rating -->
-                                    <div class="flex items-center gap-2">
-                                        <div class="rating-stars text-xs text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
+                                        <!-- rating -->
+                                        <div class="flex items-center gap-2">
+                                            <div class="rating-stars text-xs text-light-yellow">
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-solid fa-star"></i>
+                                            </div>
+                                            <span class="text-sm text-primary">Final Hours</span>
                                         </div>
-                                        <span class="text-sm text-primary">Final Hours</span>
                                     </div>
-                                </div>
-                            </a>
-                        </div>
-                        <!-- slide 3 -->
-                        <div class="swiper-slide py-5 px-1">
-                            <a href="#" class="block product-card w-full rounded-lg hover:shadow-lg p-3 eq group">
-                                <!-- slide image -->
-                                <div class="card-image h-[16.5rem] relative rounded-lg overflow-hidden">
-                                    <img src="{{ asset('assets/frontend/images/light-deal-3.png') }}"
-                                        alt="Exclusive shoe's for Boy's"
-                                        class="w-full h-full object-cover group-hover:scale-125 eq" />
-                                    <span
-                                        class="block absolute bottom-9 left-1/2 -translate-x-1/2 bg-white px-4 py-3 rounded-full text-sm w-3/5 text-center">Almost
-                                        Sold Out</span>
-                                </div>
-                                <!-- Slide Content -->
-                                <div class="card-content mt-2 space-y-1">
-                                    <!-- price & sold info -->
-                                    <div class="price-sold-amount flex items-center gap-2">
-                                        <h2 class="text-2xl font-bold text-primary">
-                                            <span><i class="fa-solid fa-bolt text-[#ffa755]"></i></span>
-                                            <span class="align-middle text-xs text-[#ffa755]">$</span>
-                                            30.00
-                                        </h2>
-                                        <p class="text-base">1.9K+ Sold</p>
-                                    </div>
-                                    <!-- time -->
-                                    <div class="time-progres flex items-center flex-wrap gap-2">
-                                        <div class="w-[60%] bg-gray-200 rounded-full h-2">
-                                            <div class="progress bg-primary h-2 rounded-full" style="width: 65%"></div>
-                                        </div>
-                                        <span
-                                            class="w-[35%] due-time text-sm inline-flex flex-no-wrap gap-1 items-center"><i
-                                                class="fa-regular fa-clock"></i> 18:13:45.12</span>
-                                    </div>
-                                    <!-- rating -->
-                                    <div class="flex items-center gap-2">
-                                        <div class="rating-stars text-xs text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star-half-stroke"></i>
-                                        </div>
-                                        <span class="text-sm text-primary">Final Hours</span>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <!-- slide 4 -->
-                        <div class="swiper-slide py-5 px-1">
-                            <a href="#" class="block product-card w-full rounded-lg hover:shadow-lg p-3 eq group">
-                                <!-- slide image -->
-                                <div class="card-image h-[16.5rem] relative rounded-lg overflow-hidden">
-                                    <img src="{{ asset('assets/frontend/images/light-deal-4.png') }}"
-                                        alt="A man wearing a Yellow T-Shirt & Black Short Pant"
-                                        class="w-full h-full object-cover group-hover:scale-125 eq" />
-                                    <span
-                                        class="block absolute bottom-9 left-1/2 -translate-x-1/2 bg-white px-4 py-3 rounded-full text-sm w-3/5 text-center">Almost
-                                        Sold Out</span>
-                                </div>
-                                <!-- Slide Content -->
-                                <div class="card-content mt-2 space-y-1">
-                                    <!-- price & sold info -->
-                                    <div class="price-sold-amount flex items-center gap-2">
-                                        <h2 class="text-2xl font-bold text-primary">
-                                            <span><i class="fa-solid fa-bolt text-[#ffa755]"></i></span>
-                                            <span class="align-middle text-xs text-[#ffa755]">$</span>
-                                            99.99
-                                        </h2>
-                                        <p class="text-base">0.5K+ Sold</p>
-                                    </div>
-                                    <!-- time -->
-                                    <div class="time-progres flex items-center flex-wrap gap-2">
-                                        <div class="w-[60%] bg-gray-200 rounded-full h-2">
-                                            <div class="progress bg-primary h-2 rounded-full" style="width: 45%"></div>
-                                        </div>
-                                        <span
-                                            class="w-[35%] due-time text-sm inline-flex flex-no-wrap gap-1 items-center"><i
-                                                class="fa-regular fa-clock"></i> 12:11:14.17</span>
-                                    </div>
-                                    <!-- rating -->
-                                    <div class="flex items-center gap-2">
-                                        <div class="rating-stars text-xs text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                        </div>
-                                        <span class="text-sm text-primary">Final Hours</span>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <!-- slide 5 -->
-                        <div class="swiper-slide py-5 px-1">
-                            <a href="#" class="block product-card w-full rounded-lg hover:shadow-lg p-3 eq group">
-                                <!-- slide image -->
-                                <div class="card-image h-[16.5rem] relative rounded-lg overflow-hidden">
-                                    <img src="{{ asset('assets/frontend/images/light-deal-5.png') }}"
-                                        alt="Electronics Accessories By Apple"
-                                        class="w-full h-full object-cover group-hover:scale-125 eq" />
-                                    <span
-                                        class="block absolute bottom-9 left-1/2 -translate-x-1/2 bg-white px-4 py-3 rounded-full text-sm w-3/5 text-center">Almost
-                                        Sold Out</span>
-                                </div>
-                                <!-- Slide Content -->
-                                <div class="card-content mt-2 space-y-1">
-                                    <!-- price & sold info -->
-                                    <div class="price-sold-amount flex items-center gap-2">
-                                        <h2 class="text-2xl font-bold text-primary">
-                                            <span><i class="fa-solid fa-bolt text-[#ffa755]"></i></span>
-                                            <span class="align-middle text-xs text-[#ffa755]">$</span>
-                                            299.99
-                                        </h2>
-                                        <p class="text-base">10.5K+ Sold</p>
-                                    </div>
-                                    <!-- time -->
-                                    <div class="time-progres flex items-center flex-wrap gap-2">
-                                        <div class="w-[60%] bg-gray-200 rounded-full h-2">
-                                            <div class="progress bg-primary h-2 rounded-full" style="width: 25%"></div>
-                                        </div>
-                                        <span
-                                            class="w-[35%] due-time text-sm inline-flex flex-no-wrap gap-1 items-center"><i
-                                                class="fa-regular fa-clock"></i> 0:50:13.45</span>
-                                    </div>
-                                    <!-- rating -->
-                                    <div class="flex items-center gap-2">
-                                        <div class="rating-stars text-xs text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                        </div>
-                                        <span class="text-sm text-primary">Final Hours</span>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
+                                </a>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -1565,20 +1389,20 @@
                                     @endif
                                 </div>
                             </div>
-                    @elseif($key === 4)
-                        <!-- Layout for the third category (tall single banner) -->
-                        <div class="relative {{ $gridClass }}">
-                            <div class="relative group overflow-hidden rounded-xl h-full">
-                                <div class="w-full h-full">
-                                    <a href="#">
-                                        <img src="{{ asset('assets/' . $banner->image) }}" alt="{{ $category->name }}"
-                                            class="w-full h-full object-cover" />
-                                    </a>
+                        @elseif($key === 4)
+                            <!-- Layout for the third category (tall single banner) -->
+                            <div class="relative {{ $gridClass }}">
+                                <div class="relative group overflow-hidden rounded-xl h-full">
+                                    <div class="w-full h-full">
+                                        <a href="#">
+                                            <img src="{{ asset('assets/' . $banner->image) }}"
+                                                alt="{{ $category->name }}" class="w-full h-full object-cover" />
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    @endif
-                @endforeach
+                        @endif
+                    @endforeach
                 @endif
             </div>
         </section>

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\frontend\auth;
+namespace App\Http\Controllers\frontend\Auth;
 
 use App\Models\User;
 use App\Models\Country;

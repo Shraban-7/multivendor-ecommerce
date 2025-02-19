@@ -4,6 +4,7 @@ namespace App\Http\Controllers\frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -12,8 +13,9 @@ class HomeController extends Controller
     {
         $data['categories'] = Category::slider()->get();
         $data['special_category'] = Category::special()->with('banners')->first();
+        $data['light_deals'] = Product::lightDeal()->get();
 
-        // return $data;
+        // return $data['light_deals'];
         return view('frontend.pages.home',$data);
     }
 
