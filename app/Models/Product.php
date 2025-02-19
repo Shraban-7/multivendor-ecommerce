@@ -19,4 +19,8 @@ class Product extends Model
     {
         return $query->where('is_lightdeal',true);
     }
+    public function scopeInterest($query)
+    {
+        return $query->where('is_interest',true);
+    }
 }

@@ -93,7 +93,7 @@ if (!function_exists('all_department_categories')) {
 if (!function_exists('currency')) {
     function currency($value)
     {
-        return Number::currency($value);
+        return CURRENCY_SYMBOL.' '.number_format($value,2);
     }
 }
 

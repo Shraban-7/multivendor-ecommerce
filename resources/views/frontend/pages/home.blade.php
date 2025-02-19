@@ -113,11 +113,15 @@
                                         </div>
                                         <!-- time -->
                                         @php
-                                            $sold_out_progress = ($light_deal->stock_out/($light_deal->stock_out+$light_deal->stock_in))*100;
+                                            $sold_out_progress =
+                                                ($light_deal->stock_out /
+                                                    ($light_deal->stock_out + $light_deal->stock_in)) *
+                                                100;
                                         @endphp
                                         <div class="time-progres flex items-center flex-wrap gap-2">
                                             <div class="w-[60%] bg-gray-200 rounded-full h-2">
-                                                <div class="progress bg-primary h-2 rounded-full" style="width: {{ percentage($sold_out_progress) }}"></div>
+                                                <div class="progress bg-primary h-2 rounded-full"
+                                                    style="width: {{ percentage($sold_out_progress) }}"></div>
                                             </div>
                                             <span
                                                 class="w-[35%] due-time text-sm inline-flex flex-no-wrap gap-1 items-center"><i
@@ -187,271 +191,52 @@
                 <div class="swiper fiveSlideSwiper mt-10 md:mt-20">
                     <div class="swiper-wrapper">
                         <!-- slide 1 -->
-                        <div class="swiper-slide group/interest-pro-card eq">
-                            <div class="block product-card w-full flex flex-col items-center p-2">
-                                <div class="w-full bg-theme-light rounded-md hover:shadow-md eq overflow-hidden">
-                                    <div class="item-img h-32 sm:h-40 md:h-52 px-10 pt-5 overflow-hidden">
-                                        <a href="#">
-                                            <img class="w-full h-full object-contain"
-                                                src="{{ asset('assets/frontend/images/int-pro-1.png') }}"
-                                                alt="Ladies Large chocolate vanity Bag" />
-                                        </a>
-                                    </div>
-                                    <div class="p-2 sm:p-4 space-y-1">
-                                        <h2
-                                            class="text-theme-dark group-hover/interest-pro-card:text-persian-blue font-semibold line-clamp-3 md:line-clamp-2 eq text-sm md:text-base h-16 md:h-12">
-                                            <a href="#">Muffets & Tuffets Whole Wheat Bread 400 g</a>
-                                        </h2>
-                                        <div class="rating-stars text-xs text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
+                        @foreach ($interest_products as $product)
+                            <div class="swiper-slide group/interest-pro-card eq">
+                                <div class="block product-card w-full flex flex-col items-center p-2">
+                                    <div class="w-full bg-theme-light rounded-md hover:shadow-md eq overflow-hidden">
+                                        <div class="item-img h-32 sm:h-40 md:h-52 px-10 pt-5 overflow-hidden">
+                                            <a href="#">
+                                                <img class="w-full h-full object-contain"
+                                                    src="{{ asset('assets/'.$product->thumbnail) }}"
+                                                    alt="Ladies Large chocolate vanity Bag" />
+                                            </a>
                                         </div>
-                                        <p class="text-persian-blue">1 KG</p>
-                                        <p class="font-semibold text-sand-brown">$ 80.00</p>
+                                        <div class="p-2 sm:p-4 space-y-1">
+                                            <h2
+                                                class="text-theme-dark group-hover/interest-pro-card:text-persian-blue font-semibold line-clamp-3 md:line-clamp-2 eq text-sm md:text-base h-16 md:h-12">
+                                                <a href="#">{{ $product->name }}</a>
+                                            </h2>
+                                            <div class="rating-stars text-xs text-light-yellow">
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-solid fa-star"></i>
+                                            </div>
+                                            <p class="text-persian-blue">{{ $product->unit }}</p>
+                                            <p class="font-semibold text-sand-brown">{{ currency($product->selling_price) }}</p>
 
-                                        <div class="add-cart">
-                                            <button
-                                                class="block bg-white h-10 flex justify-between items-center w-full rounded-full p-2 mt-2 hover:shadow-md eq">
-                                                <span
-                                                    class="w-6 h-6 sm:w-8 sm:h-8 inline-flex items-center justify-center rounded-full bg-primary text-white text-xs md:text-sm"><i
-                                                        class="fa-solid fa-cart-plus"></i></span>
+                                            <div class="add-cart">
+                                                <button
+                                                    class="block bg-white h-10 flex justify-between items-center w-full rounded-full p-2 mt-2 hover:shadow-md eq">
+                                                    <span
+                                                        class="w-6 h-6 sm:w-8 sm:h-8 inline-flex items-center justify-center rounded-full bg-primary text-white text-xs md:text-sm"><i
+                                                            class="fa-solid fa-cart-plus"></i></span>
 
-                                                <span class="text-sm md:text-base">Add</span>
+                                                    <span class="text-sm md:text-base">Add</span>
 
-                                                <span
-                                                    class="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-full bg-[#F9F8F6] text-sand-brown text-xs sm:text-sm"><i
-                                                        class="fa-solid fa-plus"></i></span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- slide 2 -->
-                        <div class="swiper-slide group/interest-pro-card eq">
-                            <div class="block product-card w-full flex flex-col items-center p-2">
-                                <div class="w-full bg-theme-light rounded-md hover:shadow-md eq overflow-hidden">
-                                    <div class="item-img h-32 sm:h-40 md:h-52 px-10 pt-5 overflow-hidden">
-                                        <a href="#">
-                                            <img class="w-full h-full object-contain"
-                                                src="{{ asset('assets/frontend/images/int-pro-2.png') }}"
-                                                alt="Smart Watch" />
-                                        </a>
-                                    </div>
-                                    <div class="p-2 sm:p-4 space-y-1">
-                                        <h2
-                                            class="text-theme-dark group-hover/interest-pro-card:text-persian-blue font-semibold line-clamp-3 md:line-clamp-2 eq text-sm md:text-base h-16 md:h-12">
-                                            <a href="#">Tracker for Android IPhone Devices</a>
-                                        </h2>
-                                        <div class="rating-stars text-xs text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star-half-stroke"></i>
-                                        </div>
-                                        <p class="text-persian-blue">1 piece</p>
-                                        <p class="font-semibold text-sand-brown">$ 120.00</p>
-
-                                        <div class="add-cart">
-                                            <button
-                                                class="block bg-white h-10 flex justify-between items-center w-full rounded-full p-2 mt-2 hover:shadow-md eq">
-                                                <span
-                                                    class="w-6 h-6 sm:w-8 sm:h-8 inline-flex items-center justify-center rounded-full bg-primary text-white text-xs md:text-sm"><i
-                                                        class="fa-solid fa-cart-plus"></i></span>
-
-                                                <span class="text-sm md:text-base">Add</span>
-
-                                                <span
-                                                    class="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-full bg-[#F9F8F6] text-sand-brown text-xs sm:text-sm"><i
-                                                        class="fa-solid fa-plus"></i></span>
-                                            </button>
+                                                    <span
+                                                        class="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-full bg-[#F9F8F6] text-sand-brown text-xs sm:text-sm"><i
+                                                            class="fa-solid fa-plus"></i></span>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <!-- slide 3 -->
-                        <div class="swiper-slide group/interest-pro-card eq">
-                            <div class="block product-card w-full flex flex-col items-center p-2">
-                                <div class="w-full bg-theme-light rounded-md hover:shadow-md eq overflow-hidden">
-                                    <div class="item-img h-32 sm:h-40 md:h-52 px-10 pt-5 overflow-hidden">
-                                        <a href="#">
-                                            <img class="w-full h-full object-contain"
-                                                src="{{ asset('assets/frontend/images/int-pro-3.png') }}"
-                                                alt="Cool Shirt and Pant" />
-                                        </a>
-                                    </div>
-                                    <div class="p-2 sm:p-4 space-y-1">
-                                        <h2
-                                            class="text-theme-dark group-hover/interest-pro-card:text-persian-blue font-semibold line-clamp-3 md:line-clamp-2 eq text-sm md:text-base h-16 md:h-12">
-                                            <a href="#">Exclusive T-Shirt, Shirt, & Gavadin Pant Combo
-                                                offer</a>
-                                        </h2>
-                                        <div class="rating-stars text-xs text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star-half-stroke"></i>
-                                        </div>
-                                        <p class="text-persian-blue">3 piece</p>
-                                        <p class="font-semibold text-sand-brown">$ 299.00</p>
+                        @endforeach
 
-                                        <div class="add-cart">
-                                            <button
-                                                class="block bg-white h-10 flex justify-between items-center w-full rounded-full p-2 mt-2 hover:shadow-md eq">
-                                                <span
-                                                    class="w-6 h-6 sm:w-8 sm:h-8 inline-flex items-center justify-center rounded-full bg-primary text-white text-xs md:text-sm"><i
-                                                        class="fa-solid fa-cart-plus"></i></span>
-
-                                                <span class="text-sm md:text-base">Add</span>
-
-                                                <span
-                                                    class="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-full bg-[#F9F8F6] text-sand-brown text-xs sm:text-sm"><i
-                                                        class="fa-solid fa-plus"></i></span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- slide 4 -->
-                        <div class="swiper-slide group/interest-pro-card eq">
-                            <div class="block product-card w-full flex flex-col items-center p-2">
-                                <div class="w-full bg-theme-light rounded-md hover:shadow-md eq overflow-hidden">
-                                    <div class="item-img h-32 sm:h-40 md:h-52 px-10 pt-5 overflow-hidden">
-                                        <a href="#">
-                                            <img class="w-full h-full object-contain"
-                                                src="{{ asset('assets/frontend/images/int-pro-4.png') }}"
-                                                alt="Winter Shoe" />
-                                        </a>
-                                    </div>
-                                    <div class="p-2 sm:p-4 space-y-1">
-                                        <h2
-                                            class="text-theme-dark group-hover/interest-pro-card:text-persian-blue font-semibold line-clamp-3 md:line-clamp-2 eq text-sm md:text-base h-16 md:h-12">
-                                            <a href="#">Imported Sheep's wool Shoe for Winter</a>
-                                        </h2>
-                                        <div class="rating-stars text-xs text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star-half-stroke"></i>
-                                        </div>
-                                        <p class="text-persian-blue">1 pair</p>
-                                        <p class="font-semibold text-sand-brown">$ 99.00</p>
-
-                                        <div class="add-cart">
-                                            <button
-                                                class="block bg-white h-10 flex justify-between items-center w-full rounded-full p-2 mt-2 hover:shadow-md eq">
-                                                <span
-                                                    class="w-6 h-6 sm:w-8 sm:h-8 inline-flex items-center justify-center rounded-full bg-primary text-white text-xs md:text-sm"><i
-                                                        class="fa-solid fa-cart-plus"></i></span>
-
-                                                <span class="text-sm md:text-base">Add</span>
-
-                                                <span
-                                                    class="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-full bg-[#F9F8F6] text-sand-brown text-xs sm:text-sm"><i
-                                                        class="fa-solid fa-plus"></i></span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- slide 5 -->
-                        <div class="swiper-slide group/interest-pro-card eq">
-                            <div class="block product-card w-full flex flex-col items-center p-2">
-                                <div class="w-full bg-theme-light rounded-md hover:shadow-md eq overflow-hidden">
-                                    <div class="item-img h-32 sm:h-36 md:h-52 px-10 pt-5 overflow-hidden">
-                                        <a href="#">
-                                            <img class="w-full h-full object-contain"
-                                                src="{{ asset('assets/frontend/images/int-pro-5.png') }}"
-                                                alt="Men's Solid Slim Width Necktie" />
-                                        </a>
-                                    </div>
-                                    <div class="p-2 sm:p-4 space-y-1">
-                                        <h2
-                                            class="text-theme-dark group-hover/interest-pro-card:text-persian-blue font-semibold line-clamp-3 md:line-clamp-2 eq text-sm md:text-base h-16 md:h-12">
-                                            <a href="#">Men's Solid Slim Width Necktie</a>
-                                        </h2>
-                                        <div class="rating-stars text-xs text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star-half-stroke"></i>
-                                        </div>
-                                        <p class="text-persian-blue">1 pair</p>
-                                        <p class="font-semibold text-sand-brown">$ 99.00</p>
-
-                                        <div class="add-cart">
-                                            <button
-                                                class="block bg-white h-10 flex justify-between items-center w-full rounded-full p-2 mt-2 hover:shadow-md eq">
-                                                <span
-                                                    class="w-6 h-6 sm:w-8 sm:h-8 inline-flex items-center justify-center rounded-full bg-primary text-white text-xs md:text-sm"><i
-                                                        class="fa-solid fa-cart-plus"></i></span>
-
-                                                <span class="text-sm md:text-base">Add</span>
-
-                                                <span
-                                                    class="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-full bg-[#F9F8F6] text-sand-brown text-xs sm:text-sm"><i
-                                                        class="fa-solid fa-plus"></i></span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- slide 6 -->
-                        <div class="swiper-slide group/interest-pro-card eq">
-                            <div class="block product-card w-full flex flex-col items-center p-2">
-                                <div class="w-full bg-theme-light rounded-md hover:shadow-md eq overflow-hidden">
-                                    <div class="item-img h-32 sm:h-40 md:h-52 px-10 pt-5 overflow-hidden">
-                                        <a href="#">
-                                            <img class="w-full h-full object-contain"
-                                                src="{{ asset('assets/frontend/images/int-pro-3.png') }}"
-                                                alt="Cool Shirt and Pant" />
-                                        </a>
-                                    </div>
-                                    <div class="p-2 sm:p-4 space-y-1">
-                                        <h2
-                                            class="text-theme-dark group-hover/interest-pro-card:text-persian-blue font-semibold line-clamp-3 md:line-clamp-2 eq text-sm md:text-base h-16 md:h-12">
-                                            <a href="#">Exclusive T-Shirt, Shirt, & Gavadin Pant Combo
-                                                offer</a>
-                                        </h2>
-                                        <div class="rating-stars text-xs text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                        </div>
-                                        <p class="text-persian-blue">3 piece</p>
-                                        <p class="font-semibold text-sand-brown">$ 299.00</p>
-
-                                        <div class="add-cart">
-                                            <button
-                                                class="block bg-white h-10 flex justify-between items-center w-full rounded-full p-2 mt-2 hover:shadow-md eq">
-                                                <span
-                                                    class="w-6 h-6 sm:w-8 sm:h-8 inline-flex items-center justify-center rounded-full bg-primary text-white text-xs md:text-sm"><i
-                                                        class="fa-solid fa-cart-plus"></i></span>
-
-                                                <span class="text-sm md:text-base">Add</span>
-
-                                                <span
-                                                    class="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-full bg-[#F9F8F6] text-sand-brown text-xs sm:text-sm"><i
-                                                        class="fa-solid fa-plus"></i></span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

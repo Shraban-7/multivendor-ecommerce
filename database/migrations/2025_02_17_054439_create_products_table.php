@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('discount_type')->nullable();
             $table->double('discount_amount')->nullable();
             $table->integer('quantity')->default(0);
+            $table->string('unit')->nullable();
 
             $table->foreignId('category_id')->nullable()->constrained('categories')->nullOnDelete();
             $table->foreignId('brand_id')->nullable()->constrained('brands')->nullOnDelete();
@@ -34,6 +35,7 @@ return new class extends Migration
             $table->tinyInteger('is_trending')->default(0);
             $table->tinyInteger('best_selling')->default(0);
             $table->tinyInteger('is_featured')->default(0);
+            $table->tinyInteger('is_interest')->default(0);
             $table->tinyInteger('is_lightdeal')->default(0);
             $table->dateTime('lightdeal_expired_at')->nullable();
 
@@ -47,7 +49,7 @@ return new class extends Migration
             $table->decimal('shipping_cost', 10, 2)->default(0.00);
             $table->decimal('tax', 5, 2)->default(0.00);
             $table->bigInteger('views')->default(0);
-            
+
             $table->string('meta_title', 255)->nullable();
             $table->text('meta_keywords')->nullable();
             $table->text('meta_desc')->nullable();
