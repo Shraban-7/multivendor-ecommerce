@@ -12,13 +12,18 @@ class HomeController extends Controller
     public function index()
     {
         $data['categories'] = Category::slider()->get();
-        $data['special_category'] = Category::special()->with('banners')->first();
+        $data['special_category'] = Category::special()->with(['banners','products'])->first();
         $data['light_deals'] = Product::lightDeal()->take(8)->get();
         $data['interest_products'] = Product::interest()->take(8)->get();
         $data['trending_products'] = Product::trending()->take(3)->get();
+        $data['community_products'] = Product::community()->take(8)->get();
+        $data['new_arrival_products'] = Product::orderBy('id', 'DESC')
+        ->skip(6)
+        ->take(Product::count() - 12)
+        ->get();
 
 
-        // return $data['interest_products'];
+        // return $data['community_products'];
         return view('frontend.pages.home',$data);
     }
 

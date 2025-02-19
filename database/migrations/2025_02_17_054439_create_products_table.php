@@ -36,6 +36,7 @@ return new class extends Migration
             $table->tinyInteger('best_selling')->default(0);
             $table->tinyInteger('is_featured')->default(0);
             $table->tinyInteger('is_interest')->default(0);
+            $table->tinyInteger('is_community')->default(0);
             $table->tinyInteger('is_lightdeal')->default(0);
             $table->dateTime('lightdeal_expired_at')->nullable();
 

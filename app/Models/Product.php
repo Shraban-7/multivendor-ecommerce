@@ -28,4 +28,9 @@ class Product extends Model
     {
         return $query->where('is_trending',true);
     }
+
+    public function scopeCommunity($query)
+    {
+        return $query->where('is_community',true);
+    }
 }

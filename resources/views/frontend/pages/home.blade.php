@@ -400,292 +400,58 @@
                 <div class="swiper productCommonSwiper mt-5 md:mt-10">
                     <div class="swiper-wrapper">
                         <!-- slide 1 -->
-                        <div class="swiper-slide group/new-arriv-pro-card eq">
-                            <div class="block product-card w-full flex flex-col items-center p-2">
-                                <div
-                                    class="w-full border border-[jet-gray]/30 rounded-md hover:shadow-md eq overflow-hidden">
-                                    <div class="item-img h-32 sm:h-40 md:h-52 pt-5 overflow-hidden">
-                                        <a href="#">
-                                            <img class="w-full h-full object-contain"
-                                                src="{{ asset('assets/frontend/images/new-arrival-prod-1.png') }}"
-                                                alt="Exclusive Chair with foam seat" />
-                                        </a>
-                                    </div>
-                                    <div class="item-info p-2 sm:p-4 space-y-1">
-                                        <div class="rating-stars sm:text-sm text-xs text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-regular fa-star"></i>
+                        @foreach ($new_arrival_products as $product)
+                            <div class="swiper-slide group/new-arriv-pro-card eq">
+                                <div class="block product-card w-full flex flex-col items-center p-2">
+                                    <div
+                                        class="w-full border border-[jet-gray]/30 rounded-md hover:shadow-md eq overflow-hidden">
+                                        <div class="item-img h-32 sm:h-40 md:h-52 pt-5 overflow-hidden">
+                                            <a href="#">
+                                                <img class="w-full h-full object-contain"
+                                                    src="{{ asset('assets/' . $product->thumbnail) }}"
+                                                    alt="Exclusive Chair with foam seat" />
+                                            </a>
                                         </div>
-                                        <div class="flex items-end justify-between">
-                                            <div class="name-price">
-                                                <h2
-                                                    class="text-theme-dark group-hover/new-arriv-pro-card:text-butterfly-blue eq md:text-xl capitalize line-clamp-1 w-full">
-                                                    <a href="#">Wooden chair</a>
-                                                </h2>
-                                                <div class="flex gap-x-2 flex-wrap sm:text-lg">
-                                                    <p class="new-price text-theme-teal font-medium">
-                                                        $65.21
-                                                    </p>
-                                                    <p class="old-price text-jet-gray line-through">
-                                                        $71.25
-                                                    </p>
-                                                </div>
+                                        <div class="item-info p-2 sm:p-4 space-y-1">
+                                            <div class="rating-stars sm:text-sm text-xs text-light-yellow">
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-regular fa-star"></i>
                                             </div>
+                                            <div class="flex items-end justify-between">
+                                                <div class="name-price">
+                                                    <h2
+                                                        class="text-theme-dark group-hover/new-arriv-pro-card:text-butterfly-blue eq md:text-xl capitalize line-clamp-1 w-full">
+                                                        <a href="#">{{ $product->name }}</a>
+                                                    </h2>
+                                                    <div class="flex gap-x-2 flex-wrap sm:text-lg">
+                                                        @php
+                                                            $new_price =
+                                                                $product->selling_price - $product->discount_amount;
+                                                        @endphp
+                                                        <p class="new-price text-theme-teal font-medium">
+                                                            {{ currency($new_price) }}
+                                                        </p>
+                                                        <p class="old-price text-jet-gray line-through">
+                                                            {{ currency($product->selling_price) }}
+                                                        </p>
+                                                    </div>
+                                                </div>
 
-                                            <div class="add-cart">
-                                                <button
-                                                    class="w-7 h-7 sm:w-10 sm:h-10 flex items-center justify-center rounded bg-primary text-theme-light text-sm sm:text-base hover:bg-light-yellow eq">
-                                                    <span><i class="fa-solid fa-plus"></i></span>
-                                                </button>
+                                                <div class="add-cart">
+                                                    <button
+                                                        class="w-7 h-7 sm:w-10 sm:h-10 flex items-center justify-center rounded bg-primary text-theme-light text-sm sm:text-base hover:bg-light-yellow eq">
+                                                        <span><i class="fa-solid fa-plus"></i></span>
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- slide 2 -->
-                        <div class="swiper-slide group/new-arriv-pro-card eq">
-                            <div class="block product-card w-full flex flex-col items-center p-2">
-                                <div
-                                    class="w-full border border-[jet-gray]/30 rounded-md hover:shadow-md eq overflow-hidden">
-                                    <div class="item-img h-32 sm:h-40 md:h-52 pt-5 overflow-hidden">
-                                        <a href="#">
-                                            <img class="w-full h-full object-contain"
-                                                src="{{ asset('assets/frontend/images/new-arrival-prod-2.png') }}"
-                                                alt="Gaming Console Remote" />
-                                        </a>
-                                    </div>
-                                    <div class="item-info p-2 sm:p-4 space-y-1">
-                                        <div class="rating-stars sm:text-sm text-xs text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-regular fa-star"></i>
-                                        </div>
-                                        <div class="flex items-end justify-between">
-                                            <div class="name-price">
-                                                <h2
-                                                    class="text-theme-dark group-hover/new-arriv-pro-card:text-butterfly-blue eq md:text-xl capitalize line-clamp-1 w-full">
-                                                    <a href="#">Gaming Remote</a>
-                                                </h2>
-                                                <div class="flex gap-x-2 flex-wrap sm:text-lg">
-                                                    <p class="new-price text-theme-teal font-medium">
-                                                        $99.00
-                                                    </p>
-                                                    <p class="old-price text-jet-gray line-through">
-                                                        $220.50
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                            <div class="add-cart">
-                                                <button
-                                                    class="w-7 h-7 sm:w-10 sm:h-10 flex items-center justify-center rounded bg-primary text-theme-light text-sm sm:text-base hover:bg-light-yellow eq">
-                                                    <span><i class="fa-solid fa-plus"></i></span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- slide 3 -->
-                        <div class="swiper-slide group/new-arriv-pro-card eq">
-                            <div class="block product-card w-full flex flex-col items-center p-2">
-                                <div
-                                    class="w-full border border-[jet-gray]/30 rounded-md hover:shadow-md eq overflow-hidden">
-                                    <div class="item-img h-32 sm:h-40 md:h-52 pt-5 overflow-hidden">
-                                        <a href="#">
-                                            <img class="w-full h-full object-contain"
-                                                src="{{ asset('assets/frontend/images/new-arrival-prod-3.png') }}"
-                                                alt="Iphone 15 Pro Max" />
-                                        </a>
-                                    </div>
-                                    <div class="item-info p-2 sm:p-4 space-y-1">
-                                        <div class="rating-stars sm:text-sm text-xs text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                        </div>
-                                        <div class="flex items-end justify-between">
-                                            <div class="name-price">
-                                                <h2
-                                                    class="text-theme-dark group-hover/new-arriv-pro-card:text-butterfly-blue eq md:text-xl capitalize line-clamp-1 w-full">
-                                                    <a href="#">iPhone 15 pro</a>
-                                                </h2>
-                                                <div class="flex gap-x-2 flex-wrap sm:text-lg">
-                                                    <p class="new-price text-theme-teal font-medium">
-                                                        $1350
-                                                    </p>
-                                                    <p class="old-price text-jet-gray line-through">
-                                                        $1599
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                            <div class="add-cart">
-                                                <button
-                                                    class="w-7 h-7 sm:w-10 sm:h-10 flex items-center justify-center rounded bg-primary text-theme-light text-sm sm:text-base hover:bg-light-yellow eq">
-                                                    <span><i class="fa-solid fa-plus"></i></span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- slide 4 -->
-                        <div class="swiper-slide group/new-arriv-pro-card eq">
-                            <div class="block product-card w-full flex flex-col items-center p-2">
-                                <div
-                                    class="w-full border border-[jet-gray]/30 rounded-md hover:shadow-md eq overflow-hidden">
-                                    <div class="item-img h-32 sm:h-40 md:h-52 pt-5 overflow-hidden">
-                                        <a href="#">
-                                            <img class="w-full h-full object-contain"
-                                                src="{{ asset('assets/frontend/images/new-arrival-prod-4.png') }}"
-                                                alt="Ladies Perfum" />
-                                        </a>
-                                    </div>
-                                    <div class="item-info p-2 sm:p-4 space-y-1">
-                                        <div class="rating-stars sm:text-sm text-xs text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-regular fa-star"></i>
-                                        </div>
-                                        <div class="flex items-end justify-between">
-                                            <div class="name-price">
-                                                <h2
-                                                    class="text-theme-dark group-hover/new-arriv-pro-card:text-butterfly-blue eq md:text-xl capitalize line-clamp-1 w-full">
-                                                    <a href="#">Parfum</a>
-                                                </h2>
-                                                <div class="flex gap-x-2 flex-wrap sm:text-lg">
-                                                    <p class="new-price text-theme-teal font-medium">
-                                                        $20.50
-                                                    </p>
-                                                    <p class="old-price text-jet-gray line-through">
-                                                        $59.00
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                            <div class="add-cart">
-                                                <button
-                                                    class="w-7 h-7 sm:w-10 sm:h-10 flex items-center justify-center rounded bg-primary text-theme-light text-sm sm:text-base hover:bg-light-yellow eq">
-                                                    <span><i class="fa-solid fa-plus"></i></span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- slide 5 -->
-                        <div class="swiper-slide group/new-arriv-pro-card eq">
-                            <div class="block product-card w-full flex flex-col items-center p-2">
-                                <div
-                                    class="w-full border border-[jet-gray]/30 rounded-md hover:shadow-md eq overflow-hidden">
-                                    <div class="item-img h-32 sm:h-40 md:h-52 pt-5 overflow-hidden">
-                                        <a href="#">
-                                            <img class="w-full h-full object-contain"
-                                                src="{{ asset('assets/frontend/images/new-arrival-prod-5.png') }}"
-                                                alt="Electronic Bicycle" />
-                                        </a>
-                                    </div>
-                                    <div class="item-info p-2 sm:p-4 space-y-1">
-                                        <div class="rating-stars sm:text-sm text-xs text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                        </div>
-                                        <div class="flex items-end justify-between">
-                                            <div class="name-price">
-                                                <h2
-                                                    class="text-theme-dark group-hover/new-arriv-pro-card:text-butterfly-blue eq md:text-xl capitalize line-clamp-1 w-full">
-                                                    <a href="#">Electronic Bicycle</a>
-                                                </h2>
-                                                <div class="flex gap-x-2 flex-wrap sm:text-lg">
-                                                    <p class="new-price text-theme-teal font-medium">
-                                                        $999
-                                                    </p>
-                                                    <p class="old-price text-jet-gray line-through">
-                                                        $1200
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                            <div class="add-cart">
-                                                <button
-                                                    class="w-7 h-7 sm:w-10 sm:h-10 flex items-center justify-center rounded bg-primary text-theme-light text-sm sm:text-base hover:bg-light-yellow eq">
-                                                    <span><i class="fa-solid fa-plus"></i></span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- slide 6 -->
-                        <div class="swiper-slide group/new-arriv-pro-card eq">
-                            <div class="block product-card w-full flex flex-col items-center p-2">
-                                <div
-                                    class="w-full border border-[jet-gray]/30 rounded-md hover:shadow-md eq overflow-hidden">
-                                    <div class="item-img h-32 sm:h-40 md:h-52 pt-5 overflow-hidden">
-                                        <a href="#">
-                                            <img class="w-full h-full object-contain"
-                                                src="{{ asset('assets/frontend/images/new-arrival-prod-2.png') }}"
-                                                alt="Gaming Console Remote" />
-                                        </a>
-                                    </div>
-                                    <div class="item-info p-2 sm:p-4 space-y-1">
-                                        <div class="rating-stars sm:text-sm text-xs text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-regular fa-star"></i>
-                                        </div>
-                                        <div class="flex items-end justify-between">
-                                            <div class="name-price">
-                                                <h2
-                                                    class="text-theme-dark group-hover/new-arriv-pro-card:text-butterfly-blue eq md:text-xl capitalize line-clamp-1 w-full">
-                                                    <a href="#">Remote</a>
-                                                </h2>
-                                                <div class="flex gap-x-2 flex-wrap sm:text-lg">
-                                                    <p class="new-price text-theme-teal font-medium">
-                                                        $20.00
-                                                    </p>
-                                                    <p class="old-price text-jet-gray line-through">
-                                                        $29.50
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                            <div class="add-cart">
-                                                <button
-                                                    class="w-7 h-7 sm:w-10 sm:h-10 flex items-center justify-center rounded bg-primary text-theme-light text-sm sm:text-base hover:bg-light-yellow eq">
-                                                    <span><i class="fa-solid fa-plus"></i></span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
 
@@ -717,7 +483,7 @@
                                             class="group/trending py-2 border-dashed border-b trending-item-card flex gap-3">
                                             <div class="item-image w-1/4">
                                                 <a href="#" target="_blank">
-                                                    <img src="{{ asset('assets/'.$product->thumbnail) }}"
+                                                    <img src="{{ asset('assets/' . $product->thumbnail) }}"
                                                         alt="Meatigo Premium Goat Curry"
                                                         class="w-full h-full object-contain group-hover/trending:rotate-12 eq" />
                                                 </a>
@@ -730,7 +496,8 @@
                                                     </a>
                                                 </h4>
                                                 <p class="text-jet-gray">{{ $product->unit }}</p>
-                                                <p class="text-theme-teal font-semibold">{{ currency($product->selling_price) }}</p>
+                                                <p class="text-theme-teal font-semibold">
+                                                    {{ currency($product->selling_price) }}</p>
                                             </div>
                                         </div>
                                     @endforeach
@@ -771,298 +538,59 @@
                 <div class="swiper productCommonSwiper mt-5 md:mt-10">
                     <div class="swiper-wrapper">
                         <!-- slide 1 -->
-                        <div class="swiper-slide group/community-pro-card eq">
-                            <div class="block product-card w-full flex flex-col items-center p-2">
-                                <div
-                                    class="w-full border border-[jet-gray]/30 rounded-md hover:shadow-md eq overflow-hidden">
+                        @foreach ($community_products as $product)
+                            <div class="swiper-slide group/community-pro-card eq">
+                                <div class="block product-card w-full flex flex-col items-center p-2">
                                     <div
-                                        class="item-img h-32 sm:h-40 md:h-52 md:pt-10 pt-5 px-3 md:px-5 pb-3 md:pb-5 overflow-hidden">
-                                        <a href="#">
-                                            <img class="w-full h-full object-contain"
-                                                src="{{ asset('assets/frontend/images/community-pro-1.png') }}"
-                                                alt="Xbox Series S 1TB + Controller" />
-                                        </a>
-                                    </div>
-                                    <div class="item-info p-2 sm:p-4 space-y-1">
-                                        <div class="rating-stars sm:text-sm text-xs text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-regular fa-star"></i>
+                                        class="w-full border border-[jet-gray]/30 rounded-md hover:shadow-md eq overflow-hidden">
+                                        <div
+                                            class="item-img h-32 sm:h-40 md:h-52 md:pt-10 pt-5 px-3 md:px-5 pb-3 md:pb-5 overflow-hidden">
+                                            <a href="#">
+                                                <img class="w-full h-full object-contain"
+                                                    src="{{ asset('assets/' . $product->thumbnail) }}"
+                                                    alt="Xbox Series S 1TB + Controller" />
+                                            </a>
                                         </div>
-                                        <div class="flex items-end justify-between">
-                                            <div class="name-price">
-                                                <h2
-                                                    class="text-theme-dark group-hover/community-pro-card:text-butterfly-blue eq text-sm capitalize line-clamp-2 w-full">
-                                                    <a href="#">Xbox Series S 1TB + Controller</a>
-                                                </h2>
-                                                <div class="flex gap-x-2 flex-wrap sm:text-lg">
-                                                    <p class="new-price text-theme-teal font-medium">
-                                                        $20.21
-                                                    </p>
-                                                    <p class="old-price text-jet-gray line-through">
-                                                        $35.25
-                                                    </p>
-                                                </div>
+                                        <div class="item-info p-2 sm:p-4 space-y-1">
+                                            <div class="rating-stars sm:text-sm text-xs text-light-yellow">
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-regular fa-star"></i>
                                             </div>
+                                            <div class="flex items-end justify-between">
+                                                <div class="name-price">
+                                                    <h2
+                                                        class="text-theme-dark group-hover/community-pro-card:text-butterfly-blue eq text-sm capitalize line-clamp-2 w-full">
+                                                        <a href="#">{{ $product->name }}</a>
+                                                    </h2>
+                                                    <div class="flex gap-x-2 flex-wrap sm:text-lg">
+                                                        @php
+                                                            $new_price =
+                                                                $product->selling_price - $product->discount_amount;
+                                                        @endphp
+                                                        <p class="new-price text-theme-teal font-medium">
+                                                            {{ currency($new_price) }}
+                                                        </p>
+                                                        <p class="old-price text-jet-gray line-through">
+                                                            {{ currency($product->selling_price) }}
+                                                        </p>
+                                                    </div>
+                                                </div>
 
-                                            <div class="add-cart">
-                                                <button
-                                                    class="w-7 h-7 sm:w-10 sm:h-10 flex items-center justify-center rounded bg-primary text-theme-light text-sm sm:text-base hover:bg-light-yellow eq">
-                                                    <span><i class="fa-solid fa-plus"></i></span>
-                                                </button>
+                                                <div class="add-cart">
+                                                    <button
+                                                        class="w-7 h-7 sm:w-10 sm:h-10 flex items-center justify-center rounded bg-primary text-theme-light text-sm sm:text-base hover:bg-light-yellow eq">
+                                                        <span><i class="fa-solid fa-plus"></i></span>
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- slide 2 -->
-                        <div class="swiper-slide group/community-pro-card eq">
-                            <div class="block product-card w-full flex flex-col items-center p-2">
-                                <div
-                                    class="w-full border border-[jet-gray]/30 rounded-md hover:shadow-md eq overflow-hidden">
-                                    <div
-                                        class="item-img h-32 sm:h-40 md:h-52 md:pt-10 pt-5 px-3 md:px-5 pb-3 md:pb-5 overflow-hidden">
-                                        <a href="#">
-                                            <img class="w-full h-full object-contain"
-                                                src="{{ asset('assets/frontend/images/community-pro-2.png') }}"
-                                                alt="Great Value Ground Cinnamon, 4.2 oz" />
-                                        </a>
-                                    </div>
-                                    <div class="item-info p-2 sm:p-4 space-y-1">
-                                        <div class="rating-stars sm:text-sm text-xs text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-regular fa-star"></i>
-                                        </div>
-                                        <div class="flex items-end justify-between">
-                                            <div class="name-price">
-                                                <h2
-                                                    class="text-theme-dark group-hover/community-pro-card:text-butterfly-blue eq text-sm capitalize line-clamp-2 w-full">
-                                                    <a href="#">Great Value Ground Cinnamon, 4.2 oz</a>
-                                                </h2>
-                                                <div class="flex gap-x-2 flex-wrap sm:text-lg">
-                                                    <p class="new-price text-theme-teal font-medium">
-                                                        $15.00
-                                                    </p>
-                                                    <p class="old-price text-jet-gray line-through">
-                                                        $20.50
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                            <div class="add-cart">
-                                                <button
-                                                    class="w-7 h-7 sm:w-10 sm:h-10 flex items-center justify-center rounded bg-primary text-theme-light text-sm sm:text-base hover:bg-light-yellow eq">
-                                                    <span><i class="fa-solid fa-plus"></i></span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- slide 3 -->
-                        <div class="swiper-slide group/community-pro-card eq">
-                            <div class="block product-card w-full flex flex-col items-center p-2">
-                                <div
-                                    class="w-full border border-[jet-gray]/30 rounded-md hover:shadow-md eq overflow-hidden">
-                                    <div
-                                        class="item-img h-32 sm:h-40 md:h-52 md:pt-10 pt-5 px-3 md:px-5 pb-3 md:pb-5 overflow-hidden">
-                                        <a href="#">
-                                            <img class="w-full h-full object-contain"
-                                                src="{{ asset('assets/frontend/images/community-pro-3.png') }}"
-                                                alt="2.25 lb Tray, Fresh, All Natural*" />
-                                        </a>
-                                    </div>
-                                    <div class="item-info p-2 sm:p-4 space-y-1">
-                                        <div class="rating-stars sm:text-sm text-xs text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                        </div>
-                                        <div class="flex items-end justify-between">
-                                            <div class="name-price">
-                                                <h2
-                                                    class="text-theme-dark group-hover/community-pro-card:text-butterfly-blue eq text-sm capitalize line-clamp-2 w-full">
-                                                    <a href="#">2.25 lb Tray, Fresh, All Natural*</a>
-                                                </h2>
-                                                <div class="flex gap-x-2 flex-wrap sm:text-lg">
-                                                    <p class="new-price text-theme-teal font-medium">
-                                                        $299
-                                                    </p>
-                                                    <p class="old-price text-jet-gray line-through">
-                                                        $350
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                            <div class="add-cart">
-                                                <button
-                                                    class="w-7 h-7 sm:w-10 sm:h-10 flex items-center justify-center rounded bg-primary text-theme-light text-sm sm:text-base hover:bg-light-yellow eq">
-                                                    <span><i class="fa-solid fa-plus"></i></span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- slide 4 -->
-                        <div class="swiper-slide group/community-pro-card eq">
-                            <div class="block product-card w-full flex flex-col items-center p-2">
-                                <div
-                                    class="w-full border border-[jet-gray]/30 rounded-md hover:shadow-md eq overflow-hidden">
-                                    <div
-                                        class="item-img h-32 sm:h-40 md:h-52 md:pt-10 pt-5 px-3 md:px-5 pb-3 md:pb-5 overflow-hidden">
-                                        <a href="#">
-                                            <img class="w-full h-full object-contain"
-                                                src="{{ asset('assets/frontend/images/community-pro-4.png') }}"
-                                                alt="Hamburger Buns, 8 Count, 11 oz" />
-                                        </a>
-                                    </div>
-                                    <div class="item-info p-2 sm:p-4 space-y-1">
-                                        <div class="rating-stars sm:text-sm text-xs text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-regular fa-star"></i>
-                                        </div>
-                                        <div class="flex items-end justify-between">
-                                            <div class="name-price">
-                                                <h2
-                                                    class="text-theme-dark group-hover/community-pro-card:text-butterfly-blue eq text-sm capitalize line-clamp-2 w-full">
-                                                    <a href="#">Hamburger Buns, 8 Count, 11 oz</a>
-                                                </h2>
-                                                <div class="flex gap-x-2 flex-wrap sm:text-lg">
-                                                    <p class="new-price text-theme-teal font-medium">
-                                                        $49.99
-                                                    </p>
-                                                    <p class="old-price text-jet-gray line-through">
-                                                        $60.00
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                            <div class="add-cart">
-                                                <button
-                                                    class="w-7 h-7 sm:w-10 sm:h-10 flex items-center justify-center rounded bg-primary text-theme-light text-sm sm:text-base hover:bg-light-yellow eq">
-                                                    <span><i class="fa-solid fa-plus"></i></span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- slide 5 -->
-                        <div class="swiper-slide group/community-pro-card eq">
-                            <div class="block product-card w-full flex flex-col items-center p-2">
-                                <div
-                                    class="w-full border border-[jet-gray]/30 rounded-md hover:shadow-md eq overflow-hidden">
-                                    <div
-                                        class="item-img h-32 sm:h-40 md:h-52 md:pt-10 pt-5 px-3 md:px-5 pb-3 md:pb-5 overflow-hidden">
-                                        <a href="#">
-                                            <img class="w-full h-full object-contain"
-                                                src="{{ asset('assets/frontend/images/community-pro-2.png') }}"
-                                                alt="Fully Cooked Chicken Nuggets, 32 " />
-                                        </a>
-                                    </div>
-                                    <div class="item-info p-2 sm:p-4 space-y-1">
-                                        <div class="rating-stars sm:text-sm text-xs text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                        </div>
-                                        <div class="flex items-end justify-between">
-                                            <div class="name-price">
-                                                <h2
-                                                    class="text-theme-dark group-hover/community-pro-card:text-butterfly-blue eq text-sm capitalize line-clamp-2 w-full">
-                                                    <a href="#">Fully Cooked Chicken Nuggets, 32'</a>
-                                                </h2>
-                                                <div class="flex gap-x-2 flex-wrap sm:text-lg">
-                                                    <p class="new-price text-theme-teal font-medium">
-                                                        $30.00
-                                                    </p>
-                                                    <p class="old-price text-jet-gray line-through">
-                                                        $1200
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                            <div class="add-cart">
-                                                <button
-                                                    class="w-7 h-7 sm:w-10 sm:h-10 flex items-center justify-center rounded bg-primary text-theme-light text-sm sm:text-base hover:bg-light-yellow eq">
-                                                    <span><i class="fa-solid fa-plus"></i></span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- slide 6 -->
-                        <div class="swiper-slide group/community-pro-card eq">
-                            <div class="block product-card w-full flex flex-col items-center p-2">
-                                <div
-                                    class="w-full border border-[jet-gray]/30 rounded-md hover:shadow-md eq overflow-hidden">
-                                    <div
-                                        class="item-img h-32 sm:h-40 md:h-52 md:pt-10 pt-5 px-3 md:px-5 pb-3 md:pb-5 overflow-hidden">
-                                        <a href="#">
-                                            <img class="w-full h-full object-contain"
-                                                src="{{ asset('assets/frontend/images/community-pro-2.png') }}"
-                                                alt="Great Value Ground Cinnamon, 4.2 oz" />
-                                        </a>
-                                    </div>
-                                    <div class="item-info p-2 sm:p-4 space-y-1">
-                                        <div class="rating-stars sm:text-sm text-xs text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-regular fa-star"></i>
-                                        </div>
-                                        <div class="flex items-end justify-between">
-                                            <div class="name-price">
-                                                <h2
-                                                    class="text-theme-dark group-hover/community-pro-card:text-butterfly-blue eq text-sm capitalize line-clamp-2 w-full">
-                                                    <a href="#">Great Value Ground Cinnamon, 4.2 oz</a>
-                                                </h2>
-                                                <div class="flex gap-x-2 flex-wrap sm:text-lg">
-                                                    <p class="new-price text-theme-teal font-medium">
-                                                        $15.00
-                                                    </p>
-                                                    <p class="old-price text-jet-gray line-through">
-                                                        $20.50
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                            <div class="add-cart">
-                                                <button
-                                                    class="w-7 h-7 sm:w-10 sm:h-10 flex items-center justify-center rounded bg-primary text-theme-light text-sm sm:text-base hover:bg-light-yellow eq">
-                                                    <span><i class="fa-solid fa-plus"></i></span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -1154,12 +682,13 @@
         <!-- Sessional Promotion Thumbnail Section Ended -->
 
         <!-- Halloween Product Section Starts -->
+
         <section class="halloween-product-section section-padding">
             <div class="container">
                 <!-- Section Title -->
                 <div class="sec-heading relative">
                     <h2 class="font-semibold sm:text-xl xl:text-4xl lg:text-3xl md:text-2xl uppercase text-theme-dark">
-                        Halloween Product
+                        {{ $special_category->name }}
                     </h2>
 
                     <span class="inline-block absolute top-1/2 -translate-y-1/2 right-0"><a href="#"
@@ -1170,302 +699,64 @@
                 <div class="swiper productCommonSwiper mt-5 md:mt-10">
                     <div class="swiper-wrapper">
                         <!-- slide 1 -->
-                        <div class="swiper-slide group/community-pro-card eq">
-                            <div class="block product-card w-full flex flex-col items-center p-2">
-                                <div
-                                    class="w-full border border-[jet-gray]/30 rounded-md hover:shadow-md eq overflow-hidden">
+                        @foreach ($special_category->products as $product)
+                            <div class="swiper-slide group/community-pro-card eq">
+                                <div class="block product-card w-full flex flex-col items-center p-2">
                                     <div
-                                        class="item-img h-32 sm:h-40 md:h-52 md:pt-10 pt-5 px-3 md:px-5 pb-3 md:pb-5 overflow-hidden">
-                                        <a href="#">
-                                            <img class="w-full h-full object-contain"
-                                                src="{{ asset('assets/frontend/images/halloween-product-1.png') }}"
-                                                alt="Halloween Black Ladies Dress" />
-                                        </a>
-                                    </div>
-                                    <div class="item-info p-2 sm:p-4 space-y-1">
-                                        <div class="rating-stars sm:text-sm text-xs text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-regular fa-star"></i>
+                                        class="w-full border border-[jet-gray]/30 rounded-md hover:shadow-md eq overflow-hidden">
+                                        <div
+                                            class="item-img h-32 sm:h-40 md:h-52 md:pt-10 pt-5 px-3 md:px-5 pb-3 md:pb-5 overflow-hidden">
+                                            <a href="#">
+                                                <img class="w-full h-full object-contain"
+                                                    src="{{ asset('assets/' . $product->thumbnail) }}"
+                                                    alt="Halloween Black Ladies Dress" />
+                                            </a>
                                         </div>
-                                        <div class="flex items-end justify-between">
-                                            <div class="name-price">
-                                                <h2
-                                                    class="text-theme-dark group-hover/community-pro-card:text-butterfly-blue eq text-sm capitalize line-clamp-2 w-full">
-                                                    <a href="#">Halloween Black Colour Ladies Frock</a>
-                                                </h2>
-                                                <div class="flex gap-x-2 flex-wrap sm:text-lg">
-                                                    <p class="new-price text-theme-teal font-medium">
-                                                        $49.00
-                                                    </p>
-                                                    <p class="old-price text-jet-gray line-through">
-                                                        $79.50
-                                                    </p>
-                                                </div>
+                                        <div class="item-info p-2 sm:p-4 space-y-1">
+                                            <div class="rating-stars sm:text-sm text-xs text-light-yellow">
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-regular fa-star"></i>
                                             </div>
+                                            <div class="flex items-end justify-between">
+                                                <div class="name-price">
+                                                    <h2
+                                                        class="text-theme-dark group-hover/community-pro-card:text-butterfly-blue eq text-sm capitalize line-clamp-2 w-full">
+                                                        <a href="#">{{ $product->name }}</a>
+                                                    </h2>
+                                                    <div class="flex gap-x-2 flex-wrap sm:text-lg">
+                                                        @php
+                                                            $new_price =
+                                                                $product->selling_price - $product->discount_amount;
+                                                        @endphp
+                                                        <p class="new-price text-theme-teal font-medium">
+                                                            {{ currency($new_price) }}
+                                                        </p>
+                                                        <p class="old-price text-jet-gray line-through">
+                                                            {{ currency($product->selling_price) }}
+                                                        </p>
+                                                    </div>
+                                                </div>
 
-                                            <div class="add-cart">
-                                                <button
-                                                    class="w-7 h-7 sm:w-10 sm:h-10 flex items-center justify-center rounded bg-primary text-theme-light text-sm sm:text-base hover:bg-light-yellow eq">
-                                                    <span><i class="fa-solid fa-plus"></i></span>
-                                                </button>
+                                                <div class="add-cart">
+                                                    <button
+                                                        class="w-7 h-7 sm:w-10 sm:h-10 flex items-center justify-center rounded bg-primary text-theme-light text-sm sm:text-base hover:bg-light-yellow eq">
+                                                        <span><i class="fa-solid fa-plus"></i></span>
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- slide 2 -->
-                        <div class="swiper-slide group/community-pro-card eq">
-                            <div class="block product-card w-full flex flex-col items-center p-2">
-                                <div
-                                    class="w-full border border-[jet-gray]/30 rounded-md hover:shadow-md eq overflow-hidden">
-                                    <div
-                                        class="item-img h-32 sm:h-40 md:h-52 md:pt-10 pt-5 px-3 md:px-5 pb-3 md:pb-5 overflow-hidden">
-                                        <a href="#">
-                                            <img class="w-full h-full object-contain"
-                                                src="{{ asset('assets/frontend/images/halloween-product-2.png') }}"
-                                                alt="Halloween 3D Scary Bats Wall Sticker" />
-                                        </a>
-                                    </div>
-                                    <div class="item-info p-2 sm:p-4 space-y-1">
-                                        <div class="rating-stars sm:text-sm text-xs text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-regular fa-star"></i>
-                                        </div>
-                                        <div class="flex items-end justify-between">
-                                            <div class="name-price">
-                                                <h2
-                                                    class="text-theme-dark group-hover/community-pro-card:text-butterfly-blue eq text-sm capitalize line-clamp-2 w-full">
-                                                    <a href="#">Halloween 3D Scary Bats Wall Sticker</a>
-                                                </h2>
-                                                <div class="flex gap-x-2 flex-wrap sm:text-lg">
-                                                    <p class="new-price text-theme-teal font-medium">
-                                                        $10.50
-                                                    </p>
-                                                    <p class="old-price text-jet-gray line-through">
-                                                        $15.00
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                            <div class="add-cart">
-                                                <button
-                                                    class="w-7 h-7 sm:w-10 sm:h-10 flex items-center justify-center rounded bg-primary text-theme-light text-sm sm:text-base hover:bg-light-yellow eq">
-                                                    <span><i class="fa-solid fa-plus"></i></span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- slide 3 -->
-                        <div class="swiper-slide group/community-pro-card eq">
-                            <div class="block product-card w-full flex flex-col items-center p-2">
-                                <div
-                                    class="w-full border border-[jet-gray]/30 rounded-md hover:shadow-md eq overflow-hidden">
-                                    <div
-                                        class="item-img h-32 sm:h-40 md:h-52 md:pt-10 pt-5 px-3 md:px-5 pb-3 md:pb-5 overflow-hidden">
-                                        <a href="#">
-                                            <img class="w-full h-full object-contain"
-                                                src="{{ asset('assets/frontend/images/halloween-product-3.png') }}"
-                                                alt="Yellow Halloween pumpkin*" />
-                                        </a>
-                                    </div>
-                                    <div class="item-info p-2 sm:p-4 space-y-1">
-                                        <div class="rating-stars sm:text-sm text-xs text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                        </div>
-                                        <div class="flex items-end justify-between">
-                                            <div class="name-price">
-                                                <h2
-                                                    class="text-theme-dark group-hover/community-pro-card:text-butterfly-blue eq text-sm capitalize line-clamp-2 w-full">
-                                                    <a href="#">The Halloween Lighting pumpkin</a>
-                                                </h2>
-                                                <div class="flex gap-x-2 flex-wrap sm:text-lg">
-                                                    <p class="new-price text-theme-teal font-medium">
-                                                        $49.00
-                                                    </p>
-                                                    <p class="old-price text-jet-gray line-through">
-                                                        $99.00
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                            <div class="add-cart">
-                                                <button
-                                                    class="w-7 h-7 sm:w-10 sm:h-10 flex items-center justify-center rounded bg-primary text-theme-light text-sm sm:text-base hover:bg-light-yellow eq">
-                                                    <span><i class="fa-solid fa-plus"></i></span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- slide 4 -->
-                        <div class="swiper-slide group/community-pro-card eq">
-                            <div class="block product-card w-full flex flex-col items-center p-2">
-                                <div
-                                    class="w-full border border-[jet-gray]/30 rounded-md hover:shadow-md eq overflow-hidden">
-                                    <div
-                                        class="item-img h-32 sm:h-40 md:h-52 md:pt-10 pt-5 px-3 md:px-5 pb-3 md:pb-5 overflow-hidden">
-                                        <a href="#">
-                                            <img class="w-full h-full object-contain"
-                                                src="{{ asset('assets/frontend/images/halloween-product-4.png') }}"
-                                                alt="Halloween Hershey candy" />
-                                        </a>
-                                    </div>
-                                    <div class="item-info p-2 sm:p-4 space-y-1">
-                                        <div class="rating-stars sm:text-sm text-xs text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-regular fa-star"></i>
-                                        </div>
-                                        <div class="flex items-end justify-between">
-                                            <div class="name-price">
-                                                <h2
-                                                    class="text-theme-dark group-hover/community-pro-card:text-butterfly-blue eq text-sm capitalize line-clamp-2 w-full">
-                                                    <a href="#">Halloween Hershey candy</a>
-                                                </h2>
-                                                <div class="flex gap-x-2 flex-wrap sm:text-lg">
-                                                    <p class="new-price text-theme-teal font-medium">
-                                                        $30.00
-                                                    </p>
-                                                    <p class="old-price text-jet-gray line-through">
-                                                        $50.00
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                            <div class="add-cart">
-                                                <button
-                                                    class="w-7 h-7 sm:w-10 sm:h-10 flex items-center justify-center rounded bg-primary text-theme-light text-sm sm:text-base hover:bg-light-yellow eq">
-                                                    <span><i class="fa-solid fa-plus"></i></span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- slide 5 -->
-                        <div class="swiper-slide group/community-pro-card eq">
-                            <div class="block product-card w-full flex flex-col items-center p-2">
-                                <div
-                                    class="w-full border border-[jet-gray]/30 rounded-md hover:shadow-md eq overflow-hidden">
-                                    <div
-                                        class="item-img h-32 sm:h-40 md:h-52 md:pt-10 pt-5 px-3 md:px-5 pb-3 md:pb-5 overflow-hidden">
-                                        <a href="#">
-                                            <img class="w-full h-full object-contain"
-                                                src="{{ asset('assets/frontend/images/halloween-product-5.png') }}"
-                                                alt="Halloween Cute White Ghost with Pink Pumpkin" />
-                                        </a>
-                                    </div>
-                                    <div class="item-info p-2 sm:p-4 space-y-1">
-                                        <div class="rating-stars sm:text-sm text-xs text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                        </div>
-                                        <div class="flex items-end justify-between">
-                                            <div class="name-price">
-                                                <h2
-                                                    class="text-theme-dark group-hover/community-pro-card:text-butterfly-blue eq text-sm capitalize line-clamp-2 w-full">
-                                                    <a href="#">Halloween Cutey Pie White Doll</a>
-                                                </h2>
-                                                <div class="flex gap-x-2 flex-wrap sm:text-lg">
-                                                    <p class="new-price text-theme-teal font-medium">
-                                                        $15.00
-                                                    </p>
-                                                    <p class="old-price text-jet-gray line-through">
-                                                        $20.00
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                            <div class="add-cart">
-                                                <button
-                                                    class="w-7 h-7 sm:w-10 sm:h-10 flex items-center justify-center rounded bg-primary text-theme-light text-sm sm:text-base hover:bg-light-yellow eq">
-                                                    <span><i class="fa-solid fa-plus"></i></span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- slide 6 -->
-                        <div class="swiper-slide group/community-pro-card eq">
-                            <div class="block product-card w-full flex flex-col items-center p-2">
-                                <div
-                                    class="w-full border border-[jet-gray]/30 rounded-md hover:shadow-md eq overflow-hidden">
-                                    <div
-                                        class="item-img h-32 sm:h-40 md:h-52 md:pt-10 pt-5 px-3 md:px-5 pb-3 md:pb-5 overflow-hidden">
-                                        <a href="#">
-                                            <img class="w-full h-full object-contain"
-                                                src="{{ asset('assets/frontend/images/halloween-product-2.png') }}"
-                                                alt="Halloween 3D Scary Bats Wall Sticker" />
-                                        </a>
-                                    </div>
-                                    <div class="item-info p-2 sm:p-4 space-y-1">
-                                        <div class="rating-stars sm:text-sm text-xs text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-regular fa-star"></i>
-                                        </div>
-                                        <div class="flex items-end justify-between">
-                                            <div class="name-price">
-                                                <h2
-                                                    class="text-theme-dark group-hover/community-pro-card:text-butterfly-blue eq text-sm capitalize line-clamp-2 w-full">
-                                                    <a href="#">Halloween 3D Scary Bats Wall Sticker</a>
-                                                </h2>
-                                                <div class="flex gap-x-2 flex-wrap sm:text-lg">
-                                                    <p class="new-price text-theme-teal font-medium">
-                                                        $10.50
-                                                    </p>
-                                                    <p class="old-price text-jet-gray line-through">
-                                                        $15.00
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                            <div class="add-cart">
-                                                <button
-                                                    class="w-7 h-7 sm:w-10 sm:h-10 flex items-center justify-center rounded bg-primary text-theme-light text-sm sm:text-base hover:bg-light-yellow eq">
-                                                    <span><i class="fa-solid fa-plus"></i></span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
         </section>
+
         <!-- Halloween Product Section Ended -->
 
         <!-- Featured Videos Section Starts -->
