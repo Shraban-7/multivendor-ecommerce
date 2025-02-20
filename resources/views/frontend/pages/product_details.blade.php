@@ -115,9 +115,9 @@
                                         sold</span>
                                     <div class="flex items-center gap-2 text-davy-gray">
                                         <span>Provided By</span>
-                                        <a href="#"
+                                        <a href="{{ route('seller.shop_details',$product->seller->username) }}"
                                             class="inline-block provider-icon w-6 h-6 overflow-hidden rounded-full">
-                                            <img src="{{ asset('assets/frontend/images/provider-icon-1.png') }}"
+                                            <img src="{{ asset('assets/'.$product->seller->business_logo) }}"
                                                 alt="Louis Vuitton" class="h-full w-full object-contain" />
                                         </a>
                                         <span>({{ number_shorten_format($product->stock_out) }}+ sold)</span>
@@ -694,14 +694,14 @@
             <div class="container">
                 <!-- Header -->
                 <div class="flex flex-wrap items-center gap-2 sm:gap-4">
-                    <a href="{{ route('shop_details') }}"
+                    <a href="{{ route('seller.shop_details',$product->seller->username) }}"
                         class="inline-block provider-dp w-10 h-10 lg:w-14 lg:h-14 rounded-full overflow-hidden">
                         <img src="{{ asset('assets/frontend/images/provider-logo-1.png') }}" alt="Louis Vuitton Logo"
                             class="w-full h-full object-contain" />
                     </a>
                     <div class="provider-info">
                         <h2 class="text-lg md:text-xl lg:text-2xl font-medium flex items-center gap-2 md:gap-5">
-                            <a href="{{ route('shop_details') }}" class="hover:text-butterfly-blue eq">Louis Vuitton</a>
+                            <a href="{{ route('seller.shop_details',$product->seller->username) }}" class="hover:text-butterfly-blue eq">{{ $product->seller->business_name }}</a>
                             <p class="text-sm md:text-base xl:text-lg font-light flex items-center gap-2">
                                 <button class="hover:text-primary eq">
                                     <i class="fa-regular fa-comment-dots"></i>
@@ -728,7 +728,7 @@
                         <i class="fa-solid fa-store"></i>
                         Follow
                     </button>
-                    <a href="{{ route('shop_details') }}"
+                    <a href="{{ route('seller.shop_details',$product->seller->username) }}"
                         class="inline-flex items-center py-1.5 px-5 xsm:px-8 lg:px-10 lg:py-2.5 border border-jet-gray theme-btn gap-2 hover:bg-primary hover:text-white hover:border-transparent eq text-sm md:text-base lg:text-xl font-inherit">
                         <span>Shop All Items</span>
                         (90)

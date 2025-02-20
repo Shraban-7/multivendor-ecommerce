@@ -56,8 +56,8 @@
                 <span class="lg:text-base text-sm font-medium">My Items</span>
             </p>
         </a>
-        @guest
-            <!-- sign in -->
+        @if (!auth('web')->check() && !auth()->guard('seller')->check())
+            <!-- Sign In -->
             <a href="{{ route('login') }}" class="flex items-center gap-1 hover:text-light-yellow eq">
                 <span><i class="fa-regular fa-user"></i></span>
                 <p class="flex flex-col leading-none text-base lg:text-base">
@@ -65,23 +65,27 @@
                     <span class="lg:text-base text-sm font-medium">Account</span>
                 </p>
             </a>
-        @endguest
+        @endif
 
         @auth
-            <!-- profile -->
+            <!-- Profile Dropdown -->
             <div class="relative group">
-                <button type="button" data-dropdown-toggle="dropdown" class="flex items-center gap-2 hover:text-light-yellow profile-dropdown">
+                <button type="button" data-dropdown-toggle="dropdown"
+                    class="flex items-center gap-2 hover:text-light-yellow profile-dropdown">
                     <span><i class="fa-regular fa-user text-lg"></i></span>
                     <p class="flex flex-col leading-none text-base lg:text-base">
-                        <span class="md:text-xs lg:text-sm font-[arial]">Hello, {{ auth()->user()->fullname }}</span>
+                        <span class="md:text-xs lg:text-sm font-[arial]">Hello,
+                            {{ auth('web')->user()->fullname }}
+                        </span>
                     </p>
                 </button>
 
                 <!-- Dropdown Menu -->
-                <div id="dropdown" class="absolute hidden group-hover:block bg-white shadow-lg rounded-md mt-2 w-40 right-0 z-50">
+                <div id="dropdown"
+                    class="absolute hidden group-hover:block bg-white shadow-lg rounded-md mt-2 w-40 right-0 z-50">
                     <ul class="py-2 text-gray-700">
                         <li>
-                            <a href="/profile" class="block px-4 py-2 hover:bg-gray-100">
+                            <a href="{{ route('profile') }}" class="block px-4 py-2 hover:bg-gray-100">
                                 <i class="fa-regular fa-user-circle mr-2"></i> View Profile
                             </a>
                         </li>
@@ -102,8 +106,42 @@
                     </ul>
                 </div>
             </div>
-
         @endauth
+
+        @auth('seller')
+        <!-- Profile Dropdown -->
+        <div class="relative group">
+            <button type="button" data-dropdown-toggle="dropdown"
+                class="flex items-center gap-2 hover:text-light-yellow profile-dropdown">
+                <span><i class="fa-regular fa-user text-lg"></i></span>
+                <p class="flex flex-col leading-none text-base lg:text-base">
+                    <span class="md:text-xs lg:text-sm font-[arial]">Hello,
+                        {{ auth('seller')->user()->fullname }}
+                    </span>
+                </p>
+            </button>
+            <!-- Dropdown Menu -->
+            <div id="dropdown"
+                class="absolute hidden group-hover:block bg-white shadow-lg rounded-md mt-2 w-40 right-0 z-50">
+                <ul class="py-2 text-gray-700">
+                    <li>
+                        <a href="{{ route('seller.dashboard') }}" class="block px-4 py-2 hover:bg-gray-100">
+                            <i class="fa-solid fa-house-user mr-2"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('seller.shop_details', auth('seller')->user()->username) }}"
+                            class="block px-4 py-2 hover:bg-gray-100">
+                            <i class="fa-solid fa-store mr-2"></i> Your Shop
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        @endauth
+
+
 
 
 
