@@ -19,13 +19,13 @@ class ReviewSeeder extends Seeder
             ],
             [
                 'product_id' => 1,
-                'user_id' => 2,
+                'user_id' => 1,
                 'rating' => 4,
                 'review_text' => 'Good quality but a bit expensive. Overall, a solid purchase.',
             ],
             [
                 'product_id' => 2,
-                'user_id' => 3,
+                'user_id' => 1,
                 'rating' => 3,
                 'review_text' => 'Average product. It works fine but there are better options in the market.',
             ],
@@ -37,13 +37,13 @@ class ReviewSeeder extends Seeder
             ],
             [
                 'product_id' => 4,
-                'user_id' => 2,
+                'user_id' => 1,
                 'rating' => 2,
                 'review_text' => 'Not as expected. The quality could be much better, especially for the price.',
             ],
             [
                 'product_id' => 5,
-                'user_id' => 3,
+                'user_id' => 1,
                 'rating' => 5,
                 'review_text' => 'Excellent product! Very durable and the design is top-notch.',
             ],

@@ -86,7 +86,7 @@ class AuthController extends Controller
 
 
         $data['phone'] = $request->phone;
-        $data['displayname'] = $request->displayname;
+        $data['display_name'] = $request->display_name;
         $data['secondary_email'] = $request->secondary_email;
         $data['country_id'] = $request->country_id;
 

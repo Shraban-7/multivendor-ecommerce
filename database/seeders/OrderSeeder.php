@@ -13,7 +13,7 @@ class OrderSeeder extends Seeder
         $orders = [
             [
                 'user_id' => 1,
-                'shop_id' => 1,
+                'seller_id' => 1,
                 'sub_total' => 1500.00,
                 'discount' => 100.00,
                 'tax' => 50.00,
@@ -23,8 +23,8 @@ class OrderSeeder extends Seeder
                 'status' => 2,
             ],
             [
-                'user_id' => 2,
-                'shop_id' => 2,
+                'user_id' => 1,
+                'seller_id' => 1,
                 'sub_total' => 2500.00,
                 'discount' => 200.00,
                 'tax' => 100.00,
@@ -34,8 +34,8 @@ class OrderSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'user_id' => 3,
-                'shop_id' => 3,
+                'user_id' => 1,
+                'seller_id' => 1,
                 'sub_total' => 800.00,
                 'discount' => 50.00,
                 'tax' => 20.00,
@@ -45,8 +45,8 @@ class OrderSeeder extends Seeder
                 'status' => 3,
             ],
             [
-                'user_id' => 4,
-                'shop_id' => 1,
+                'user_id' => 1,
+                'seller_id' => 1,
                 'sub_total' => 4000.00,
                 'discount' => 300.00,
                 'tax' => 150.00,
@@ -56,8 +56,8 @@ class OrderSeeder extends Seeder
                 'status' => 4,
             ],
             [
-                'user_id' => 5,
-                'shop_id' => 2,
+                'user_id' => 1,
+                'seller_id' => 1,
                 'sub_total' => 1200.00,
                 'discount' => 80.00,
                 'tax' => 40.00,
@@ -71,7 +71,7 @@ class OrderSeeder extends Seeder
         foreach ($orders as $order) {
             Order::insert([
                 'user_id' => $order['user_id'],
-                'shop_id' => $order['shop_id'],
+                'seller_id' => $order['seller_id'],
                 'sub_total' => $order['sub_total'],
                 'discount' => $order['discount'],
                 'tax' => $order['tax'],

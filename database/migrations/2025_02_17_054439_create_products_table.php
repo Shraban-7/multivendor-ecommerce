@@ -26,9 +26,9 @@ return new class extends Migration
             $table->integer('quantity')->default(0);
             $table->string('unit')->nullable();
 
-            $table->foreignId('category_id')->nullable()->constrained('categories')->nullOnDelete();
-            $table->foreignId('brand_id')->nullable()->constrained('brands')->nullOnDelete();
-            $table->foreignId('shop_id')->nullable()->constrained('shops')->nullOnDelete();
+            $table->foreignId('category_id')->nullable()->constrained('categories')->cascadeOnDelete();
+            $table->foreignId('brand_id')->nullable()->constrained('brands')->cascadeOnDelete();
+            $table->foreignId('seller_id')->nullable()->constrained()->cascadeOnDelete();
             $table->string('sku')->nullable();
             $table->string('barcode')->nullable();
 

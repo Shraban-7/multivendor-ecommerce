@@ -11,21 +11,27 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('sellers', function (Blueprint $table) {
             $table->id();
             $table->string('fullname');
             $table->string('username')->unique();
-            $table->string('display_name')->nullable();
             $table->string('image')->nullable();
-
             $table->string('email')->unique();
-            $table->string('secondary_email')->nullable()->unique();
             $table->string('phone')->nullable();
             $table->string('password');
+
+            $table->string('business_name')->nullable();
+            $table->string('business_logo')->nullable();
+            $table->string('business_email')->nullable()->unique();
+            $table->text('business_address')->nullable();
 
             $table->bigInteger('country_id')->nullable();
             $table->bigInteger('state_id')->nullable();
             $table->string('zip')->nullable();
+
+            $table->string('total_follower')->nullable();
+            $table->string('total_sold')->nullable();
+            $table->string('total_item')->nullable();
 
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
@@ -39,6 +45,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('sellers');
     }
 };
