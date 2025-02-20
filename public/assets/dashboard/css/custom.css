@@ -1,0 +1,38 @@
+:root {
+    --primaryColor: #03a301;
+}
+
+body {
+    background-color: #f1f5f9;
+}
+
+.text-theme {
+    color: var(--primaryColor) !important;
+}
+
+.btn-theme {
+    background-color: var(--primaryColor) !important;
+    color: white !important;
+}
+
+.btn-theme:focus, .btn-theme:active {
+    background-color: darken(var(--primaryColor), 15%);
+    border-color: darken(var(--primaryColor), 15%);
+}
+
+.btn-outline-theme {
+    background-color: transparent;
+    color: var(--primaryColor);
+    border: 2px solid var(--primaryColor);
+}
+
+.btn-outline-theme:hover {
+    background-color: var(--primaryColor);
+    color: white;
+}
+
+.btn-outline-theme:focus, .btn-outline-theme:active {
+    background-color: var(--primaryColor);
+    border-color: darken(var(--primaryColor), 10%);
+    color: white;
+}
