@@ -711,9 +711,6 @@ class ProductSeeder extends Seeder
                 'tax' => 7.00,
                 'views' => 550,
             ],
-
-
-
         ];
 
         foreach ($products as $product) {

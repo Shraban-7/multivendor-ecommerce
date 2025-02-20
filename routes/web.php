@@ -1,12 +1,13 @@
 <?php
 
+use App\Http\Controllers\Frontend\CategoryController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\ProductController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class,'index'])->name('home');
 
-Route::get('/category/{slug}', [HomeController::class, 'category_details'])->name('category_details');
+Route::get('/category/{slug}', [CategoryController::class, 'category_details'])->name('category_details');
 
 Route::get('/electronics', function () {
     return view('frontend.pages.electronics');
