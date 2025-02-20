@@ -16,7 +16,6 @@ class CountrySeeder extends Seeder
     {
         $json = File::get(database_path('data/countries.json'));
         $countries = json_decode($json, true);
-
         Country::insert($countries);
     }
 }
