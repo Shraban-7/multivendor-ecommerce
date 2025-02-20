@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Seller\AuthController;
 use App\Http\Controllers\Seller\DashboardController;
+use App\Http\Controllers\Seller\ProductController;
 
 Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -13,4 +14,7 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
 Route::middleware('guest')->prefix('seller')->as('seller.')->group(function () {
     Route::match(['get', 'post'], '/signup', [AuthController::class, 'signup'])->name('signup');
     Route::match(['get', 'post'], '/login', [AuthController::class, 'login'])->name('login');
+
+    Route::get('/products', [ProductController::class, 'products'])->name('products');
+
 });

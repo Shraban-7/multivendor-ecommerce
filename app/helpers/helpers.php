@@ -2,6 +2,7 @@
 
 use App\Models\Category;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Number;
 use Illuminate\Support\Facades\DB;
@@ -138,4 +139,8 @@ if (!function_exists('percentage')) {
     }
 }
 
-
+if (!function_exists('seller')) {
+    function seller() {
+        return Auth::guard('seller')->user();
+    }
+}
