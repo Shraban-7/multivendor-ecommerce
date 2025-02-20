@@ -1,11 +1,12 @@
 <?php
 
 use App\Http\Controllers\frontend\Auth\AuthController;
+use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
     Route::match(['get', 'post'], '/signup', [AuthController::class, 'signup'])->name('signup');
-    Route::match(['get', 'post'], '/login', [AuthController::class, 'login'])->name('login');
+    Route::match(['get', 'post'], '/login', [LoginController::class, 'login'])->name('login');
 });
 
 Route::middleware('auth')->group(function () {

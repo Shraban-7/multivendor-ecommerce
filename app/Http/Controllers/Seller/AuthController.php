@@ -1,0 +1,127 @@
+<?php
+
+namespace App\Http\Controllers\Seller;
+
+use App\Models\Seller;
+use App\Models\Country;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+
+class AuthController extends Controller
+{
+    public function signup(Request $request)
+    {
+        if ($request->isMethod('GET')) {
+            return view('seller.auth.signup');
+        }
+
+        $data = $request->validate([
+            'fullname' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:sellers',
+            'password' => 'required|string|min:5|confirmed',
+        ]);
+
+        $data['username'] = str_slug('sellers', 'username', $data['fullname']);
+
+        Seller::create($data);
+
+        return redirect()->route('login')->with('success', 'Signup successful! Please log in.');
+    }
+
+    public function login(Request $request)
+    {
+        if ($request->isMethod('GET')) {
+            return view('seller.auth.login');
+        }
+
+        $seller = Seller::where('email', $request->email)->first();
+
+        if (!$seller) {
+            return redirect()->back()->with('error', 'Incorrect email!');
+        }
+
+        if (!Auth::guard('seller')->attempt($request->only('email', 'password'))) {
+            return redirect()->back()->with('error', 'Incorrect password!');
+        }
+
+        $request->session()->regenerate();
+
+        session()->flash('success', 'Login successful');
+
+        // return redirect_intended('/');
+
+        return redirect()->route('seller.dashboard');
+    }
+
+    public function logout()
+    {
+        Auth::guard('seller')->logout();
+
+        return redirect()->route('login');
+    }
+
+    public function profile()
+    {
+        $countries = Country::all();
+        return view('frontend.profile', compact('countries'));
+    }
+
+    public function updateAccount(Request $request)
+    {
+        $seller = Seller::find(Auth::id());
+
+        $data = $request->validate([
+            'fullname' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:sellers,email,' . $seller->id,
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,svg|max:2048',
+        ]);
+
+        if ($seller->fullname !== $request->fullname) {
+            $data['username'] = str_slug('sellers', 'username', $request->fullname);
+        } else {
+            $data['username'] = $seller->username;
+        }
+
+
+        $data['phone'] = $request->phone;
+        $data['display_name'] = $request->display_name;
+        $data['secondary_email'] = $request->secondary_email;
+        $data['country_id'] = $request->country_id;
+
+        if ($request->hasFile('image')) {
+            if (!empty($seller->image)) {
+                delete_file($seller->image);
+            }
+
+            $filePath = 'images/seller/avatar';
+            $data['image'] = upload_file($request->file('image'), $filePath);
+        } else {
+            $data['image'] = $seller->image;
+        }
+
+
+        $seller->update($data);
+
+        return redirect()->back()->with('success', 'Account update successfully');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $seller = Auth::guard('seller')->user();
+
+        $request->validate([
+            'current_password' => 'required|string',
+            'password' => 'required|string|confirmed',
+        ]);
+
+        if (!Hash::check($request->current_password, $seller->password)) {
+            return redirect()->back()->with("warning", "Incorrect old password!");
+        }
+
+        $seller->update(['password' => Hash::make($request->password)]);
+
+        return redirect()->back()->with("success", "Password updated successfully");
+    }
+}

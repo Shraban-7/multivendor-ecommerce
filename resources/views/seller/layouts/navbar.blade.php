@@ -94,7 +94,7 @@
                         </a>
                     </li>
                     <li>
-                        <form action="" method="POST">
+                        <form action="{{ route('seller.logout') }}" method="POST">
                             @CSRF
                             <button class="dropdown-item" href="javascript:void(0)" onclick="this.form.submit();">
                                 <i class="me-2 icon-xxs dropdown-item-icon"
