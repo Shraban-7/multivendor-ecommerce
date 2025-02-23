@@ -2,7 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Product;
 use App\Models\ProductAttribute;
+use App\Models\ProductAttributeOption;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -10,98 +12,48 @@ class ProductAttributeSeeder extends Seeder
 {
     public function run()
     {
-        // Example product attributes with names and values, including phone-specific attributes
         $product_attributes = [
-            // General product attributes
             [
-                'name' => 'Color',
-                'value' => 'Red',
+                'name' => 'color',
+                'values' => ['White', 'Black', 'Gray', 'Green']
             ],
             [
-                'name' => 'Color',
-                'value' => 'Blue',
+                'name' => 'size',
+                'values' => ['Small', 'Medium', 'Large', 'XL']
             ],
             [
-                'name' => 'Size',
-                'value' => 'M',
+                'name' => 'ram',
+                'values' => ['4GB', '8GB', '16GB', '32GB']
             ],
             [
-                'name' => 'Size',
-                'value' => 'L',
+                'name' => 'storage',
+                'values' => ['64GB', '128GB', '256GB', '512GB', '1TB']
             ],
             [
-                'name' => 'Material',
-                'value' => 'Cotton',
-            ],
-            [
-                'name' => 'Material',
-                'value' => 'Leather',
-            ],
-
-            // Phone-specific attributes
-            [
-                'name' => 'RAM',
-                'value' => '6GB',
-            ],
-            [
-                'name' => 'RAM',
-                'value' => '8GB',
-            ],
-            [
-                'name' => 'RAM',
-                'value' => '12GB',
-            ],
-            [
-                'name' => 'ROM',
-                'value' => '128GB',
-            ],
-            [
-                'name' => 'ROM',
-                'value' => '256GB',
-            ],
-            [
-                'name' => 'ROM',
-                'value' => '512GB',
-            ],
-            [
-                'name' => 'Camera',
-                'value' => '12MP',
-            ],
-            [
-                'name' => 'Camera',
-                'value' => '48MP',
-            ],
-            [
-                'name' => 'Battery',
-                'value' => '4000mAh',
-            ],
-            [
-                'name' => 'Battery',
-                'value' => '5000mAh',
-            ],
-            [
-                'name' => 'Processor',
-                'value' => 'Snapdragon 888',
-            ],
-            [
-                'name' => 'Processor',
-                'value' => 'Exynos 2100',
-            ],
-            [
-                'name' => 'Screen Size',
-                'value' => '6.1 inches',
-            ],
-            [
-                'name' => 'Screen Size',
-                'value' => '6.7 inches',
-            ],
+                'name' => 'material',
+                'values' => ['Cotton', 'Polyester', 'Leather', 'Metal', 'Plastic']
+            ]
         ];
 
-        foreach ($product_attributes as $attribute) {
-            ProductAttribute::insert([
-                'name' => $attribute['name'],
-                'value' => $attribute['value'],
-            ]);
+
+        $products = Product::all();
+
+        foreach ($products as $product) {
+            foreach ($product_attributes as $attribute) {
+                $productAttribute = ProductAttribute::create([
+                    'product_id' => $product->id,
+                    'name' => $attribute['name'],
+                ]);
+
+                foreach ($attribute['values'] as $value) {
+                    ProductAttributeOption::create([
+                        'product_attribute_id' => $productAttribute->id,
+                        'value' => $value,
+                        'additional_price' => rand(10,50)
+                    ]);
+                }
+            }
         }
+
     }
 }

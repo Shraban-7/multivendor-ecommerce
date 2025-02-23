@@ -34,10 +34,15 @@ class Product extends Model
         return $query->where('is_community',true);
     }
 
+    public function scopeWhereCategory($query,Category $category)
+    {
+        return $query->where('category_id',$category->id);
+    }
+
     public function category()
     {
         return $this->belongsTo(Category::class);
-    }    
+    }
     public function brand()
     {
         return $this->belongsTo(Brand::class);
@@ -51,5 +56,10 @@ class Product extends Model
     public function seller()
     {
         return $this->belongsTo(Seller::class);
+    }
+
+    public function product_attributes()
+    {
+        return $this->hasMany(ProductAttribute::class);
     }
 }
