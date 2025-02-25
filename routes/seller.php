@@ -16,4 +16,11 @@ Route::middleware('guest')->prefix('seller')->as('seller.')->group(function () {
 
     Route::get('/products', [ProductController::class, 'products'])->name('products');
 
+    Route::prefix('orders')->as('orders.')->group(function () {
+        Route::get('/pending', [ProductController::class, 'orders'])->name('pending');
+        Route::get('/shipped', [ProductController::class, 'orders'])->name('shipped');        
+        Route::get('/delivered', [ProductController::class, 'orders'])->name('delivered');
+        Route::get('/cancelled', [ProductController::class, 'orders'])->name('cancelled');
+    });
+
 });
