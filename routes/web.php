@@ -15,10 +15,6 @@ Route::get('/electronics', function () {
 
 Route::get('/product-details/{slug}',[ProductController::class,'details'])->name('product_details');
 
-Route::get('/shop-details', function () {
-    return view('frontend.pages.shop_details');
-})->name('shop_details');
-
 Route::get('/shop-review', function () {
     return view('frontend.pages.shop_review');
 })->name('shop_review');

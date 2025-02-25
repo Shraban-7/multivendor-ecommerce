@@ -2,6 +2,9 @@
 @section('title', $product->name)
 
 @section('content')
+    @php
+        use App\Enums\DiscountType;
+    @endphp
     <main class="product-details-page">
         <section class="page-breadcrumb-links container">
             <!-- Page Breadcrumb -->
@@ -58,7 +61,7 @@
                                         <div class="swiper-slide">
                                             <div
                                                 class="slide-thumb w-full xl:h-24 md:h-22 lg:h-28 h-20 rounded-2xl cursor-pointer border-2 border-transparent hover:border-primary overflow-hidden">
-                                                <img src="{{ asset('assets/'.$thumb->image) }}"
+                                                <img src="{{ asset('assets/' . $thumb->image) }}"
                                                     alt="Product thumbnail of A Young boy wear a jacket with green T-Shirt & Short Pant"
                                                     class="w-full h-full object-cover" />
                                             </div>
@@ -115,9 +118,9 @@
                                         sold</span>
                                     <div class="flex items-center gap-2 text-davy-gray">
                                         <span>Provided By</span>
-                                        <a href="#"
+                                        <a href="{{ route('seller.shop_details', $product->seller->username) }}"
                                             class="inline-block provider-icon w-6 h-6 overflow-hidden rounded-full">
-                                            <img src="{{ asset('assets/frontend/images/provider-icon-1.png') }}"
+                                            <img src="{{ asset('assets/' . $product->seller->business_logo) }}"
                                                 alt="Louis Vuitton" class="h-full w-full object-contain" />
                                         </a>
                                         <span>({{ number_shorten_format($product->stock_out) }}+ sold)</span>
@@ -142,14 +145,25 @@
                                     <i class="fa-solid fa-bolt text-[#ffa755]"></i>
                                     {{-- <span class="align-center text-sm text-[#ffa755]">$</span> --}}
                                     @php
-                                        $price = $product->selling_price - $product->discounted_amount;
+                                        if ($product->discount_type != null) {
+                                            if ($product->discount_type == DiscountType::FLAT) {
+                                                $price = $product->selling_price - $product->discount_amount;
+                                            } elseif ($product->discount_type == DiscountType::PERCENTAGE) {
+                                                $price =
+                                                    $product->selling_price -
+                                                    ($product->selling_price * $product->discount_amount) / 100;
+                                            }
+                                        } else {
+                                            $price = $product->selling_price;
+                                        }
                                     @endphp
-                                    <h3 class="current-price font-bold text-primary">{{ currency($price) }}</h3>
+                                    <h3 id="current-price" class="current-price font-bold text-primary">
+                                        {{ currency($price) }}</h3>
                                 </div>
                                 <h6 class="old-price text-jet-gray line-through">{{ currency($product->selling_price) }}
                                 </h6>
                                 <span
-                                    class="text-xs px-2.5 py-0.5 rounded-lg border border-primary">-{{ currency($product->discounted_amount) }}
+                                    class="text-xs px-2.5 py-0.5 rounded-lg border border-primary">-{{ currency($product->discount_amount) }}
                                     last 2
                                     days</span>
                                 <span class="text-leaf-green text-xs">Almost Sold Out</span>
@@ -167,104 +181,40 @@
 
                             <div class="clr-size-qty p-4">
                                 <!-- Color Selection -->
-                                <div class="colour">
-                                    <h6 class="text-davy-gray sm:text-lg">Color :</h6>
-                                    <form class="flex flex-wrap items-center gap-4 sm:gap-5 mt-2">
-                                        <div class="form-ctrl flex flex-col gap-2 items-center">
-                                            <input id="black" type="radio" value="black" name="colour"
-                                                class="hidden peer" />
-                                            <label for="black"
-                                                class="w-6 h-6 sm:w-8 sm:h-8 block peer-checked:ring peer-checked:ring-black bg-black rounded-full peer-checked:border-2 sm:peer-checked:border-4 border border-black peer-checked:border-primary cursor-pointer">
-                                            </label>
-                                            <label for="black"
-                                                class="block cursor-pointer text-davy-gray text-sm sm:text-base">Black</label>
-                                        </div>
-                                        <div class="form-ctrl flex flex-col gap-2 items-center">
-                                            <input id="green" type="radio" value="green" name="colour"
-                                                class="hidden peer" />
-                                            <label for="green"
-                                                class="w-6 h-6 sm:w-8 sm:h-8 block peer-checked:ring peer-checked:ring-green-700 bg-green-700 rounded-full peer-checked:border-2 sm:peer-checked:border-4 border border-green-700 peer-checked:border-primary cursor-pointer"></label>
-                                            <label for="green"
-                                                class="block cursor-pointer text-davy-gray text-sm sm:text-base">Green</label>
-                                        </div>
-                                        <div class="form-ctrl flex flex-col gap-2 items-center">
-                                            <input id="gray" type="radio" value="gray" name="colour"
-                                                class="hidden peer" />
-                                            <label for="gray"
-                                                class="w-6 h-6 sm:w-8 sm:h-8 block peer-checked:ring peer-checked:ring-gray-400 bg-gray-400 rounded-full peer-checked:border-2 sm:peer-checked:border-4 border border-gray-400 peer-checked:border-primary cursor-pointer"></label>
-                                            <label for="gray"
-                                                class="block cursor-pointer text-davy-gray text-sm sm:text-base">Gray</label>
-                                        </div>
-                                        <div class="form-ctrl flex flex-col gap-2 items-center">
-                                            <input id="white" type="radio" value="white" name="colour"
-                                                class="hidden peer" />
-                                            <label for="white"
-                                                class="w-6 h-6 sm:w-8 sm:h-8 block peer-checked:ring peer-checked:ring-primary bg-white rounded-full peer-checked:border-2 sm:peer-checked:border-4 border peer-checked:border-black cursor-pointer"></label>
-                                            <label for="white"
-                                                class="block cursor-pointer text-davy-gray text-sm sm:text-base">White</label>
-                                        </div>
-                                    </form>
-                                </div>
+
                                 <!-- Size Selection -->
-                                <div class="size mt-3">
-                                    <div class="text-davy-gray flex items-center gap-2">
-                                        <h6 class="sm:text-lg">Size :</h6>
-                                        <a href="#"
-                                            class="inline-flex items-center hover:text-violet-700 hover:underline eq">
-                                            <img src="{{ asset('assets/frontend/images/size-scale.png') }}"
-                                                alt="Size Chart" class="w-10 xsm:w-14 h-auto" />
-                                            <span class="text-xs"> Size Chart</span>
-                                        </a>
-                                        <a href="#"
-                                            class="hover:text-light-yellow hover:underline eq ml-2 xsm:ml-4">
-                                            <span class="text-xs"> What's My Size?</span>
-                                        </a>
+                                @foreach ($product->product_attributes as $product_attribute)
+                                    <div class="size mt-3">
+                                        <div class="text-davy-gray flex items-center gap-2">
+                                            <h6 class="sm:text-lg">{{ $product_attribute->name }} :</h6>
+                                            {{-- <a href="#"
+                                                class="inline-flex items-center hover:text-violet-700 hover:underline eq">
+                                                <img src="{{ asset('assets/frontend/images/size-scale.png') }}"
+                                                    alt="Size Chart" class="w-10 xsm:w-14 h-auto" />
+                                                <span class="text-xs"> Size Chart</span>
+                                            </a> --}}
+                                            {{-- <a href="#"
+                                                class="hover:text-light-yellow hover:underline eq ml-2 xsm:ml-4">
+                                                <span class="text-xs"> What's My Size?</span>
+                                            </a> --}}
+                                        </div>
+                                        <form class="flex flex-wrap items-center gap-2 mt-2 text-xs">
+                                            @foreach ($product_attribute->product_attribute_options as $option)
+                                                <div class="form-ctrl">
+                                                    <input id="{{ $option->value }}" type="radio"
+                                                        value="{{ $option->value }}"
+                                                        data-additional-price="{{ $option->additional_price }}"
+                                                        name="product_attribute_{{ $product_attribute->id }}"
+                                                        class="hidden peer option-selector" />
+                                                    <label for="{{ $option->value }}"
+                                                        class="px-4 py-1 sm:px-5 sm:py-1.5 block ring-[1px] hover:bg-gray-100 ring-transparent peer-checked:ring-primary rounded border peer-checked:border-primary peer-checked:text-primary cursor-pointer">{{ strtoupper($option->value) }}
+                                                    </label>
+                                                </div>
+                                            @endforeach
+                                        </form>
+
                                     </div>
-                                    <form class="flex flex-wrap items-center gap-2 mt-2 text-xs">
-                                        <div class="form-ctrl">
-                                            <input id="xs" type="radio" value="XS" name="size"
-                                                class="hidden peer" />
-                                            <label for="xs"
-                                                class="px-4 py-1 sm:px-5 sm:py-1.5 block ring-[1px] hover:bg-gray-100 ring-transparent peer-checked:ring-primary rounded border peer-checked:border-primary peer-checked:text-primary cursor-pointer">XS
-                                            </label>
-                                        </div>
-                                        <div class="form-ctrl">
-                                            <input id="s" type="radio" value="S" name="size"
-                                                class="hidden peer" />
-                                            <label for="s"
-                                                class="px-4 py-1 sm:px-5 sm:py-1.5 block ring-[1px] hover:bg-gray-100 ring-transparent peer-checked:ring-primary rounded border peer-checked:border-primary peer-checked:text-primary cursor-pointer">S
-                                            </label>
-                                        </div>
-                                        <div class="form-ctrl">
-                                            <input id="m" type="radio" value="M" name="size"
-                                                class="hidden peer" />
-                                            <label for="m"
-                                                class="px-4 py-1 sm:px-5 sm:py-1.5 block ring-[1px] hover:bg-gray-100 ring-transparent peer-checked:ring-primary rounded border peer-checked:border-primary peer-checked:text-primary cursor-pointer">M
-                                            </label>
-                                        </div>
-                                        <div class="form-ctrl">
-                                            <input id="l" type="radio" value="L" name="size"
-                                                class="hidden peer" />
-                                            <label for="l"
-                                                class="px-4 py-1 sm:px-5 sm:py-1.5 block ring-[1px] hover:bg-gray-100 ring-transparent peer-checked:ring-primary rounded border peer-checked:border-primary peer-checked:text-primary cursor-pointer">L
-                                            </label>
-                                        </div>
-                                        <div class="form-ctrl">
-                                            <input id="xl" type="radio" value="XL" name="size"
-                                                class="hidden peer" />
-                                            <label for="xl"
-                                                class="px-4 py-1 sm:px-5 sm:py-1.5 block ring-[1px] hover:bg-gray-100 ring-transparent peer-checked:ring-primary rounded border peer-checked:border-primary peer-checked:text-primary cursor-pointer">XL
-                                            </label>
-                                        </div>
-                                        <div class="form-ctrl">
-                                            <input id="xxl" type="radio" value="XXL" name="size"
-                                                class="hidden peer" />
-                                            <label for="xxl"
-                                                class="px-4 py-1 sm:px-5 sm:py-1.5 block ring-[1px] hover:bg-gray-100 ring-transparent peer-checked:ring-primary rounded border peer-checked:border-primary peer-checked:text-primary cursor-pointer">XXL
-                                            </label>
-                                        </div>
-                                    </form>
-                                </div>
+                                @endforeach
                                 <!-- Quantity -->
                                 <div class="quantity mt-3">
                                     <div class="text-davy-gray flex items-center gap-2">
@@ -287,11 +237,14 @@
                             </div>
                         </div>
                         <!-- Action Buttons -->
+                        @php
+                            $discount = ($product->discount_amount / $product->selling_price) * 100;
+                        @endphp
                         <div class="flex gap-4 mt-5 w-full xsm:w-4/5 md:w-11/12 lg:w-4/5">
                             <button
                                 class="text-sm md:text-base font-medium flex-1 px-6 py-1.5 border border-primary text-primary rounded-full hover:bg-primary hover:text-white eq">
                                 Add To Cart
-                                <span class="block text-xs font-light">79% of Discount</span>
+                                <span class="block text-xs font-light">{{ percentage($discount) }} of Discount</span>
                             </button>
                             <button
                                 class="text-sm md:text-base font-medium flex-1 px-6 py-1.5 bg-primary text-white rounded-full hover:bg-theme-dark eq">
@@ -694,14 +647,15 @@
             <div class="container">
                 <!-- Header -->
                 <div class="flex flex-wrap items-center gap-2 sm:gap-4">
-                    <a href="{{ route('shop_details') }}"
+                    <a href="{{ route('seller.shop_details', $product->seller->username) }}"
                         class="inline-block provider-dp w-10 h-10 lg:w-14 lg:h-14 rounded-full overflow-hidden">
                         <img src="{{ asset('assets/frontend/images/provider-logo-1.png') }}" alt="Louis Vuitton Logo"
                             class="w-full h-full object-contain" />
                     </a>
                     <div class="provider-info">
                         <h2 class="text-lg md:text-xl lg:text-2xl font-medium flex items-center gap-2 md:gap-5">
-                            <a href="{{ route('shop_details') }}" class="hover:text-butterfly-blue eq">Louis Vuitton</a>
+                            <a href="{{ route('seller.shop_details', $product->seller->username) }}"
+                                class="hover:text-butterfly-blue eq">{{ $product->seller->business_name }}</a>
                             <p class="text-sm md:text-base xl:text-lg font-light flex items-center gap-2">
                                 <button class="hover:text-primary eq">
                                     <i class="fa-regular fa-comment-dots"></i>
@@ -713,7 +667,7 @@
                         <!-- Metrics -->
                         <div class="flex flex-wrap items-center gap-2 md:gap-4">
                             <span>5.5k+ Followers .</span>
-                            <span>200k+ Sold .</span>
+                            <span>{{ number_shorten_format($total_sell) }} Sold .</span>
                             <span class="flex items-center gap-1">
                                 <span>5.00</span>
                                 <i class="fa-solid fa-star text-theme-dark"></i>
@@ -728,10 +682,10 @@
                         <i class="fa-solid fa-store"></i>
                         Follow
                     </button>
-                    <a href="{{ route('shop_details') }}"
+                    <a href="{{ route('seller.shop_details', $product->seller->username) }}"
                         class="inline-flex items-center py-1.5 px-5 xsm:px-8 lg:px-10 lg:py-2.5 border border-jet-gray theme-btn gap-2 hover:bg-primary hover:text-white hover:border-transparent eq text-sm md:text-base lg:text-xl font-inherit">
                         <span>Shop All Items</span>
-                        (90)
+                        ({{ count($products) }})
                     </a>
                 </div>
 
@@ -740,13 +694,11 @@
                     <div class="mt-5">
                         <h2>Description:</h2>
                         <p class="mt-2">
-                            Combining soft materials in neutral colours, easy closures and
-                            clean lines, the Smart Casual collection is tailor-made for
-                            professional days and informal nights.
+                            {{ $product->description }}
                         </p>
                     </div>
                     <!-- Details -->
-                    <div class="mt-5">
+                    {{-- <div class="mt-5">
                         <h2>Details:</h2>
                         <div class="mt-2">
                             <h3 class="font-extrabold">Highlights</h3>
@@ -756,7 +708,7 @@
                             <h3 class="font-extrabold mt-2">Composition & Care</h3>
                             <p>· 66% cotton, 34% linen</p>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </section>
@@ -770,345 +722,73 @@
                     Explore Your Interest
                 </h1>
 
-                <div class="grid grid-cols-1 xsm:grid-cols-2 md:grid-cols-3 gap-5 xl:gap-8 lg:p-0 p-2 items-start">
+                <div id="product-wrapper"
+                    class="grid grid-cols-1 xsm:grid-cols-2 md:grid-cols-3 gap-5 xl:gap-8 lg:p-0 p-2 items-start">
                     <!-- Product Card 1 -->
-                    <div
-                        class="relative text-base xsm:text-sm sm:text-base md:text-sm lg:text-base xl:text-lg 2xl:text-xl rounded-xl hover:shadow-lg eq">
+                    @foreach ($interest_products as $product)
                         <div
-                            class="relative h-60 xsm:h-48 sm:h-56 sm:h-90 lg:h-[17rem] xl:h-[22rem] overflow-hidden rounded-lg">
-                            <a href="#" class="block w-full h-full">
-                                <img src="{{ asset('assets/frontend/images/interest-prod-1.png') }}"
-                                    alt="The Iconic Doeskin Blazer" class="w-full h-full object-cover" />
-                            </a>
-                            <button
-                                class="absolute bottom-10 xsm:bottom-3 lg:bottom-10 xsm:left-3 lg:left-5 left-5 bg-white hover:bg-primary hover:text-white rounded-full px-4 py-2 flex items-center gap-2 shadow-lg eq">
-                                <i class="fa-regular fa-eye"></i>
-                                Quick View
-                            </button>
-                        </div>
-
-                        <div class="p-4 xsm:p-2 lg:p-5">
-                            <h3
-                                class="font-medium line-clamp-2 xsm:h-10 sm:h-12 md:h-10 lg:h-12 xl:h-14 lg:w-3/4 xl:w-2/3">
-                                <a href="#" class="hover:text-primary eq">The Iconic Doeskin Blazer</a>
-                            </h3>
-                            <p class="text-leaf-green">Almost sold Out</p>
-
-                            <div class="flex flex-wrap items-center gap-x-1">
-                                <div class="flex items-center flex-no-wrap gap-x-1 text-light-yellow">
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <img src="{{ asset('assets/frontend/images/fire-icon.png') }}" class="w-8 h-auto"
-                                        alt="Fire Icon" />
-                                </div>
-
-                                <span class="text-jet-gray">4.5K+ Sold</span>
+                            class="relative text-base xsm:text-sm sm:text-base md:text-sm lg:text-base xl:text-lg 2xl:text-xl rounded-xl hover:shadow-lg eq">
+                            <div
+                                class="relative h-60 xsm:h-48 sm:h-56 sm:h-90 lg:h-[17rem] xl:h-[22rem] overflow-hidden rounded-lg">
+                                <a href="{{ route('product_details', $product->slug) }}" class="block w-full h-full">
+                                    <img src="{{ asset('assets/' . $product->thumbnail) }}"
+                                        alt="The Iconic Doeskin Blazer" class="w-full h-full object-cover" />
+                                </a>
+                                <button
+                                    class="absolute bottom-10 xsm:bottom-3 lg:bottom-10 xsm:left-3 lg:left-5 left-5 bg-white hover:bg-primary hover:text-white rounded-full px-4 py-2 flex items-center gap-2 shadow-lg eq">
+                                    <i class="fa-regular fa-eye"></i>
+                                    Quick View
+                                </button>
                             </div>
 
-                            <div class="flex flex-wrap items-center gap-x-5 xsm:gap-x-1 sm:gap-x-2 xl:mt-2">
-                                <span class="text-primary/80">Final Hours</span>
-                                <div class="flex items-center gap-x-5 xsm:gap-x-2 sm:gap-x-5 xl:gap-x-8">
-                                    <div class="price flex items-center gap-1 flex-no-wrap">
-                                        <i class="fa-solid fa-bolt text-[#ffa755]"></i>
-                                        <span class="align-center text-sm text-[#ffa755]">$</span>
-                                        <h3 class="font-bold text-primary">25.89</h3>
-                                    </div>
-                                    <div>
-                                        <button
-                                            class="text-xs xsm:text-[10px] sm:text-base md:text-xs xl:text-base w-7 h-7 xsm:w-6 xsm:h-6 md:w-8 md:h-8 sm:w-10 sm:h-10 xl:w-10 xl:h-10 flex items-center justify-center bg-primary rounded-full text-white hover:bg-theme-dark eq">
-                                            <i class="fa-solid fa-cart-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Product Card 2 -->
-                    <div
-                        class="relative text-base xsm:text-sm sm:text-base md:text-sm lg:text-base xl:text-lg 2xl:text-xl rounded-xl hover:shadow-lg eq">
-                        <div
-                            class="relative h-60 xsm:h-48 sm:h-56 sm:h-90 lg:h-[17rem] xl:h-[22rem] overflow-hidden rounded-lg">
-                            <a href="#" class="block w-full h-full">
-                                <img src="{{ asset('assets/frontend/images/interest-prod-2.png') }}"
-                                    alt="Solid Polo T-Shirts From Tommy Hilfiger" class="w-full h-full object-cover" />
-                            </a>
-                            <button
-                                class="absolute bottom-10 xsm:bottom-3 lg:bottom-10 xsm:left-3 lg:left-5 left-5 bg-white hover:bg-primary hover:text-white rounded-full px-4 py-2 flex items-center gap-2 shadow-lg eq">
-                                <i class="fa-regular fa-eye"></i>
-                                Quick View
-                            </button>
-                        </div>
+                            <div class="p-4 xsm:p-2 lg:p-5">
+                                <h3
+                                    class="font-medium line-clamp-2 xsm:h-10 sm:h-12 md:h-10 lg:h-12 xl:h-14 lg:w-3/4 xl:w-2/3">
+                                    <a href="{{ route('product_details', $product->slug) }}"
+                                        class="hover:text-primary eq">{{ $product->name }}</a>
+                                </h3>
+                                <p class="text-leaf-green">Almost sold Out</p>
 
-                        <div class="p-4 xsm:p-2 lg:p-5">
-                            <h3
-                                class="font-medium line-clamp-2 xsm:h-10 sm:h-12 md:h-10 lg:h-12 xl:h-14 lg:w-3/4 xl:w-2/3">
-                                <a href="#" class="hover:text-primary eq">Solid Polo T-Shirts From Tommy
-                                    Hilfiger</a>
-                            </h3>
-                            <p class="text-leaf-green">Almost sold Out</p>
+                                <div class="flex flex-wrap items-center gap-x-1">
+                                    <div class="flex items-center flex-no-wrap gap-x-1 text-light-yellow">
+                                        <i class="fa-solid fa-star"></i>
+                                        <i class="fa-solid fa-star"></i>
+                                        <i class="fa-solid fa-star"></i>
+                                        <i class="fa-solid fa-star"></i>
+                                        <i class="fa-solid fa-star"></i>
+                                        <img src="{{ asset('assets/frontend/images/fire-icon.png') }}" class="w-8 h-auto"
+                                            alt="Fire Icon" />
+                                    </div>
 
-                            <div class="flex flex-wrap items-center gap-x-1">
-                                <div class="flex items-center flex-no-wrap gap-x-1 text-light-yellow">
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <img src="{{ asset('assets/frontend/images/fire-icon.png') }}" class="w-8 h-auto"
-                                        alt="Fire Icon" />
+                                    <span class="text-jet-gray">{{ number_shorten_format($product->stock_out) }}
+                                        Sold</span>
                                 </div>
 
-                                <span class="text-jet-gray">2.8K+ Sold</span>
-                            </div>
-
-                            <div class="flex flex-wrap items-center gap-x-5 xsm:gap-x-1 sm:gap-x-2 xl:mt-2">
-                                <span class="text-primary/80">Final Hours</span>
-                                <div class="flex items-center gap-x-5 xsm:gap-x-2 sm:gap-x-5 xl:gap-x-8">
-                                    <div class="price flex items-center gap-1 flex-no-wrap">
-                                        <i class="fa-solid fa-bolt text-[#ffa755]"></i>
-                                        <span class="align-center text-sm text-[#ffa755]">$</span>
-                                        <h3 class="font-bold text-primary">30.50</h3>
-                                    </div>
-                                    <div>
-                                        <button
-                                            class="text-xs xsm:text-[10px] sm:text-base md:text-xs xl:text-base w-7 h-7 xsm:w-6 xsm:h-6 md:w-8 md:h-8 sm:w-10 sm:h-10 xl:w-10 xl:h-10 flex items-center justify-center bg-primary rounded-full text-white hover:bg-theme-dark eq">
-                                            <i class="fa-solid fa-cart-plus"></i>
-                                        </button>
+                                <div class="flex flex-wrap items-center gap-x-5 xsm:gap-x-1 sm:gap-x-2 xl:mt-2">
+                                    <span class="text-primary/80">Final Hours</span>
+                                    <div class="flex items-center gap-x-5 xsm:gap-x-2 sm:gap-x-5 xl:gap-x-8">
+                                        <div class="price flex items-center gap-1 flex-no-wrap">
+                                            <i class="fa-solid fa-bolt text-[#ffa755]"></i>
+                                            {{-- <span class="align-center text-sm text-[#ffa755]">$</span> --}}
+                                            <h3 class="font-bold text-primary">{{ currency($product->selling_price) }}
+                                            </h3>
+                                        </div>
+                                        <div>
+                                            <button
+                                                class="text-xs xsm:text-[10px] sm:text-base md:text-xs xl:text-base w-7 h-7 xsm:w-6 xsm:h-6 md:w-8 md:h-8 sm:w-10 sm:h-10 xl:w-10 xl:h-10 flex items-center justify-center bg-primary rounded-full text-white hover:bg-theme-dark eq">
+                                                <i class="fa-solid fa-cart-plus"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <!-- Product Card 3 -->
-                    <div
-                        class="relative text-base xsm:text-sm sm:text-base md:text-sm lg:text-base xl:text-lg 2xl:text-xl rounded-xl hover:shadow-lg eq">
-                        <div
-                            class="relative h-60 xsm:h-48 sm:h-56 sm:h-90 lg:h-[17rem] xl:h-[22rem] overflow-hidden rounded-lg">
-                            <a href="#" class="block w-full h-full">
-                                <img src="{{ asset('assets/frontend/images/interest-prod-3.png') }}"
-                                    alt="Clark Multiple Color Silicone Navy Dial Watch"
-                                    class="w-full h-full object-cover" />
-                            </a>
-                            <button
-                                class="absolute bottom-10 xsm:bottom-3 lg:bottom-10 xsm:left-3 lg:left-5 left-5 bg-white hover:bg-primary hover:text-white rounded-full px-4 py-2 flex items-center gap-2 shadow-lg eq">
-                                <i class="fa-regular fa-eye"></i>
-                                Quick View
-                            </button>
-                        </div>
-
-                        <div class="p-4 xsm:p-2 lg:p-5">
-                            <h3
-                                class="font-medium line-clamp-2 xsm:h-10 sm:h-12 md:h-10 lg:h-12 xl:h-14 lg:w-3/4 xl:w-2/3">
-                                <a href="#" class="hover:text-primary eq">Clark Multiple Color Silicone Navy Dial
-                                    Watch</a>
-                            </h3>
-                            <p class="text-leaf-green">Almost sold Out</p>
-
-                            <div class="flex flex-wrap items-center gap-x-1">
-                                <div class="flex items-center flex-no-wrap gap-x-1 text-light-yellow">
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <img src="{{ asset('assets/frontend/images/fire-icon.png') }}" class="w-8 h-auto"
-                                        alt="Fire Icon" />
-                                </div>
-
-                                <span class="text-jet-gray">1.2K+ Sold</span>
-                            </div>
-
-                            <div class="flex flex-wrap items-center gap-x-5 xsm:gap-x-1 sm:gap-x-2 xl:mt-2">
-                                <span class="text-primary/80">Final Hours</span>
-                                <div class="flex items-center gap-x-5 xsm:gap-x-2 sm:gap-x-5 xl:gap-x-8">
-                                    <div class="price flex items-center gap-1 flex-no-wrap">
-                                        <i class="fa-solid fa-bolt text-[#ffa755]"></i>
-                                        <span class="align-center text-sm text-[#ffa755]">$</span>
-                                        <h3 class="font-bold text-primary">45.34</h3>
-                                    </div>
-                                    <div>
-                                        <button
-                                            class="text-xs xsm:text-[10px] sm:text-base md:text-xs xl:text-base w-7 h-7 xsm:w-6 xsm:h-6 md:w-8 md:h-8 sm:w-10 sm:h-10 xl:w-10 xl:h-10 flex items-center justify-center bg-primary rounded-full text-white hover:bg-theme-dark eq">
-                                            <i class="fa-solid fa-cart-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Product Card 4 -->
-                    <div
-                        class="relative text-base xsm:text-sm sm:text-base md:text-sm lg:text-base xl:text-lg 2xl:text-xl rounded-xl hover:shadow-lg eq">
-                        <div
-                            class="relative h-60 xsm:h-48 sm:h-56 sm:h-90 lg:h-[17rem] xl:h-[22rem] overflow-hidden rounded-lg">
-                            <a href="#" class="block w-full h-full">
-                                <img src="{{ asset('assets/frontend/images/interest-prod-4.png') }}"
-                                    alt="Rebook Classic Leather Double Sneakers" class="w-full h-full object-cover" />
-                            </a>
-                            <button
-                                class="absolute bottom-10 xsm:bottom-3 lg:bottom-10 xsm:left-3 lg:left-5 left-5 bg-white hover:bg-primary hover:text-white rounded-full px-4 py-2 flex items-center gap-2 shadow-lg eq">
-                                <i class="fa-regular fa-eye"></i>
-                                Quick View
-                            </button>
-                        </div>
-
-                        <div class="p-4 xsm:p-2 lg:p-5">
-                            <h3
-                                class="font-medium line-clamp-2 xsm:h-10 sm:h-12 md:h-10 lg:h-12 xl:h-14 lg:w-3/4 xl:w-2/3">
-                                <a href="#" class="hover:text-primary eq">Rebook Classic Leather Double Sneakers</a>
-                            </h3>
-                            <p class="text-leaf-green">Almost sold Out</p>
-
-                            <div class="flex flex-wrap items-center gap-x-1">
-                                <div class="flex items-center flex-no-wrap gap-x-1 text-light-yellow">
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <img src="{{ asset('assets/frontend/images/fire-icon.png') }}" class="w-8 h-auto"
-                                        alt="Fire Icon" />
-                                </div>
-
-                                <span class="text-jet-gray">6.2K+ Sold</span>
-                            </div>
-
-                            <div class="flex flex-wrap items-center gap-x-5 xsm:gap-x-1 sm:gap-x-2 xl:mt-2">
-                                <span class="text-primary/80">Final Hours</span>
-                                <div class="flex items-center gap-x-5 xsm:gap-x-2 sm:gap-x-5 xl:gap-x-8">
-                                    <div class="price flex items-center gap-1 flex-no-wrap">
-                                        <i class="fa-solid fa-bolt text-[#ffa755]"></i>
-                                        <span class="align-center text-sm text-[#ffa755]">$</span>
-                                        <h3 class="font-bold text-primary">80.00</h3>
-                                    </div>
-                                    <div>
-                                        <button
-                                            class="text-xs xsm:text-[10px] sm:text-base md:text-xs xl:text-base w-7 h-7 xsm:w-6 xsm:h-6 md:w-8 md:h-8 sm:w-10 sm:h-10 xl:w-10 xl:h-10 flex items-center justify-center bg-primary rounded-full text-white hover:bg-theme-dark eq">
-                                            <i class="fa-solid fa-cart-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Product Card 5 -->
-                    <div
-                        class="relative text-base xsm:text-sm sm:text-base md:text-sm lg:text-base xl:text-lg 2xl:text-xl rounded-xl hover:shadow-lg eq">
-                        <div
-                            class="relative h-60 xsm:h-48 sm:h-56 sm:h-90 lg:h-[17rem] xl:h-[22rem] overflow-hidden rounded-lg">
-                            <a href="#" class="block w-full h-full">
-                                <img src="{{ asset('assets/frontend/images/interest-prod-5.png') }}"
-                                    alt="Classic Men Bleech Fleece Short" class="w-full h-full object-cover" />
-                            </a>
-                            <button
-                                class="absolute bottom-10 xsm:bottom-3 lg:bottom-10 xsm:left-3 lg:left-5 left-5 bg-white hover:bg-primary hover:text-white rounded-full px-4 py-2 flex items-center gap-2 shadow-lg eq">
-                                <i class="fa-regular fa-eye"></i>
-                                Quick View
-                            </button>
-                        </div>
-
-                        <div class="p-4 xsm:p-2 lg:p-5">
-                            <h3
-                                class="font-medium line-clamp-2 xsm:h-10 sm:h-12 md:h-10 lg:h-12 xl:h-14 lg:w-3/4 xl:w-2/3">
-                                <a href="#" class="hover:text-primary eq">Classic Men Bleech Fleece Short</a>
-                            </h3>
-                            <p class="text-leaf-green">Almost sold Out</p>
-
-                            <div class="flex flex-wrap items-center gap-x-1">
-                                <div class="flex items-center flex-no-wrap gap-x-1 text-light-yellow">
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <img src="{{ asset('assets/frontend/images/fire-icon.png') }}" class="w-8 h-auto"
-                                        alt="Fire Icon" />
-                                </div>
-
-                                <span class="text-jet-gray">4.8K+ Sold</span>
-                            </div>
-
-                            <div class="flex flex-wrap items-center gap-x-5 xsm:gap-x-1 sm:gap-x-2 xl:mt-2">
-                                <span class="text-primary/80">Final Hours</span>
-                                <div class="flex items-center gap-x-5 xsm:gap-x-2 sm:gap-x-5 xl:gap-x-8">
-                                    <div class="price flex items-center gap-1 flex-no-wrap">
-                                        <i class="fa-solid fa-bolt text-[#ffa755]"></i>
-                                        <span class="align-center text-sm text-[#ffa755]">$</span>
-                                        <h3 class="font-bold text-primary">30.50</h3>
-                                    </div>
-                                    <div>
-                                        <button
-                                            class="text-xs xsm:text-[10px] sm:text-base md:text-xs xl:text-base w-7 h-7 xsm:w-6 xsm:h-6 md:w-8 md:h-8 sm:w-10 sm:h-10 xl:w-10 xl:h-10 flex items-center justify-center bg-primary rounded-full text-white hover:bg-theme-dark eq">
-                                            <i class="fa-solid fa-cart-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Product Card 6 -->
-                    <div
-                        class="relative text-base xsm:text-sm sm:text-base md:text-sm lg:text-base xl:text-lg 2xl:text-xl rounded-xl hover:shadow-lg eq">
-                        <div
-                            class="relative h-60 xsm:h-48 sm:h-56 sm:h-90 lg:h-[17rem] xl:h-[22rem] overflow-hidden rounded-lg">
-                            <a href="#" class="block w-full h-full">
-                                <img src="{{ asset('assets/frontend/images/interest-prod-6.png') }}"
-                                    alt="Enamel Flag Alay Leather Belt" class="w-full h-full object-cover" />
-                            </a>
-                            <button
-                                class="absolute bottom-10 xsm:bottom-3 lg:bottom-10 xsm:left-3 lg:left-5 left-5 bg-white hover:bg-primary hover:text-white rounded-full px-4 py-2 flex items-center gap-2 shadow-lg eq">
-                                <i class="fa-regular fa-eye"></i>
-                                Quick View
-                            </button>
-                        </div>
-
-                        <div class="p-4 xsm:p-2 lg:p-5">
-                            <h3
-                                class="font-medium line-clamp-2 xsm:h-10 sm:h-12 md:h-10 lg:h-12 xl:h-14 lg:w-3/4 xl:w-2/3">
-                                <a href="#" class="hover:text-primary eq">Enamel Flag Alay Leather Belt</a>
-                            </h3>
-                            <p class="text-leaf-green">Almost sold Out</p>
-
-                            <div class="flex flex-wrap items-center gap-x-1">
-                                <div class="flex items-center flex-no-wrap gap-x-1 text-light-yellow">
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <img src="{{ asset('assets/frontend/images/fire-icon.png') }}" class="w-8 h-auto"
-                                        alt="Fire Icon" />
-                                </div>
-
-                                <span class="text-jet-gray">8.7K+ Sold</span>
-                            </div>
-
-                            <div class="flex flex-wrap items-center gap-x-5 xsm:gap-x-1 sm:gap-x-2 xl:mt-2">
-                                <span class="text-primary/80">Final Hours</span>
-                                <div class="flex items-center gap-x-5 xsm:gap-x-2 sm:gap-x-5 xl:gap-x-8">
-                                    <div class="price flex items-center gap-1 flex-no-wrap">
-                                        <i class="fa-solid fa-bolt text-[#ffa755]"></i>
-                                        <span class="align-center text-sm text-[#ffa755]">$</span>
-                                        <h3 class="font-bold text-primary">20.25</h3>
-                                    </div>
-                                    <div>
-                                        <button
-                                            class="text-xs xsm:text-[10px] sm:text-base md:text-xs xl:text-base w-7 h-7 xsm:w-6 xsm:h-6 md:w-8 md:h-8 sm:w-10 sm:h-10 xl:w-10 xl:h-10 flex items-center justify-center bg-primary rounded-full text-white hover:bg-theme-dark eq">
-                                            <i class="fa-solid fa-cart-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
 
                 <!-- Load More Products Button -->
                 <div class="load-more-btn text-center pt-10">
-                    <button
+                    <button id="load-more-products"
                         class="theme-btn bg-theme-teal hover:bg-aqua-deep text-white px-5 py-2 xl:text-xl text-base md:text-lg inline-flex gap-2 items-center eq"
                         type="button">
                         <span>Load More</span>
@@ -1119,4 +799,35 @@
         </section>
         <!-- Explore Interest Section Ended  -->
     </main>
+
+    @push('scripts')
+        <script>
+            $(document).ready(function() {
+                let discountedPrice = parseFloat($('#current-price').text().replace(/[^0-9.]/g, ''));
+
+                let withoutDiscountPrice = parseFloat($('.old-price').text().replace(/[^0-9.]/g, ''));
+
+                $('.option-selector').change(function() {
+                    let totalAdditionalPrice = 0;
+
+                    $('.option-selector:checked').each(function() {
+                        totalAdditionalPrice += parseFloat($(this).data('additional-price')) || 0;
+                    });
+
+                    let newPrice = discountedPrice + totalAdditionalPrice;
+                    let oldPrice = withoutDiscountPrice + totalAdditionalPrice;
+
+                    $('#current-price').text(new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'USD'
+                    }).format(newPrice));
+
+                    $('.old-price').text(new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'USD'
+                    }).format(oldPrice));
+                });
+            });
+        </script>
+    @endpush
 @endsection
