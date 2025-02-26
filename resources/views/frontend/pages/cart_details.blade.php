@@ -133,9 +133,15 @@
                                                         {{ $cart_item['discount_price'] }}
                                                     </h3>
                                                 </div>
+                                                @php
+                                                    $discount =
+                                                        (($cart_item['selling_price'] - $cart_item['discount_price']) /
+                                                            $cart_item['selling_price']) *
+                                                        100;
+                                                @endphp
                                                 <span
                                                     class="text-xs xsm:text-sm px-2.5 py-0.5 rounded-lg border border-primary">-
-                                                    40% last 2 days</span>
+                                                    {{ percentage($discount) }} last 2 days</span>
                                             </div>
                                             <!-- quantity -->
                                             <div class="quantity-controls">
@@ -180,8 +186,9 @@
                                     class="relative text-base xsm:text-sm sm:text-base md:text-sm lg:text-sm xl:text-base rounded-xl hover:shadow-lg eq">
                                     <div
                                         class="relative h-60 xsm:h-48 sm:h-56 lg:h-56 xl:h-64 2xl:h-60 overflow-hidden rounded-lg">
-                                        <a href="{{ route('product_details',$product->slug) }}" class="block w-full h-full">
-                                            <img src="{{ asset('assets/'.$product->thumbnail) }}"
+                                        <a href="{{ route('product_details', $product->slug) }}"
+                                            class="block w-full h-full">
+                                            <img src="{{ asset('assets/' . $product->thumbnail) }}"
                                                 alt="ASUS Vivo15 OLED K513 Core-i5 11th Gen 15.6″ FHD Laptop"
                                                 class="w-full h-full object-cover" />
                                         </a>
@@ -194,7 +201,7 @@
 
                                     <div class="p-4 xsm:p-2 lg:p-5">
                                         <h3 class="font-medium lg:mb-2 xl:mb-0 xsm:h-10 sm:h-12 md:h-10 lg:h-14 xl:h-12">
-                                            <a href="{{ route('product_details',$product->slug) }}"
+                                            <a href="{{ route('product_details', $product->slug) }}"
                                                 class="line-clamp-2 lg:line-clamp-3 xl:line-clamp-2 hover:text-primary eq">{{ $product->name }}</a>
                                         </h3>
                                         <p class="text-leaf-green">Almost sold Out</p>
@@ -218,7 +225,8 @@
                                                 <div class="price flex items-center gap-1 flex-no-wrap">
                                                     <i class="fa-solid fa-bolt text-[#ffa755]"></i>
 
-                                                    <h3 class="font-bold text-primary">{{ currency($product->selling_price) }}</h3>
+                                                    <h3 class="font-bold text-primary">
+                                                        {{ currency($product->selling_price) }}</h3>
                                                 </div>
                                                 <div>
                                                     <input type="hidden" name="quantity" value="1"

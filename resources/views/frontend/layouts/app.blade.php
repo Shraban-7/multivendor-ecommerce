@@ -134,6 +134,9 @@
                     success: function(data) {
                         if (data.success) {
                             toastr.success(data.message);
+                            if ("{{ Route::currentRouteName() }}" === 'cart.details') {
+                                window.location.reload();
+                            }
                         } else {
                             toastr.error(data.error);
                         }
