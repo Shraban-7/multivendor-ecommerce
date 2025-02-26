@@ -64,9 +64,11 @@ class CartController extends Controller
         $discount = $grand_total - $sub_total;
         $total_products_count = count($cart);
 
+        $products = Product::latest()->limit(6)->get();
+
         // return $sub_total;
 
-        return view('frontend.pages.cart_details', compact('cart', 'grand_total', 'total_products_count', 'sub_total', 'discount'));
+        return view('frontend.pages.cart_details', compact('cart', 'grand_total', 'total_products_count', 'sub_total', 'discount', 'products'));
     }
 
     public function update(Request $request)

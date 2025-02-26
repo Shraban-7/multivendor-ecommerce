@@ -175,352 +175,64 @@
 
                         <div class="grid grid-cols-1 xsm:grid-cols-2 md:grid-cols-3 sm:gap-6 gap-3">
                             <!-- Product Card 1 -->
-                            <div
-                                class="relative text-base xsm:text-sm sm:text-base md:text-sm lg:text-sm xl:text-base rounded-xl hover:shadow-lg eq">
+                            @foreach ($products as $product)
                                 <div
-                                    class="relative h-60 xsm:h-48 sm:h-56 lg:h-56 xl:h-64 2xl:h-60 overflow-hidden rounded-lg">
-                                    <a href="#" class="block w-full h-full">
-                                        <img src="{{ asset('assets/frontend/images/electronic-prod-1.png') }}"
-                                            alt="ASUS Vivo15 OLED K513 Core-i5 11th Gen 15.6″ FHD Laptop"
-                                            class="w-full h-full object-cover" />
-                                    </a>
-                                    <button
-                                        class="absolute bottom-10 xsm:bottom-3 lg:bottom-8 xsm:left-3 lg:left-5 left-5 bg-white hover:bg-primary hover:text-white rounded-full px-4 py-2 flex items-center gap-2 shadow-lg eq">
-                                        <i class="fa-regular fa-eye"></i>
-                                        Quick View
-                                    </button>
-                                </div>
-
-                                <div class="p-4 xsm:p-2 lg:p-5">
-                                    <h3 class="font-medium lg:mb-2 xl:mb-0 xsm:h-10 sm:h-12 md:h-10 lg:h-14 xl:h-12">
-                                        <a href="#"
-                                            class="line-clamp-2 lg:line-clamp-3 xl:line-clamp-2 hover:text-primary eq">ASUS
-                                            Vivo15 OLED K513 Core-i5 11th Gen 15.6″ FHD
-                                            Laptop</a>
-                                    </h3>
-                                    <p class="text-leaf-green">Almost sold Out</p>
-
-                                    <div class="flex flex-wrap items-center gap-x-1">
-                                        <div class="flex items-center flex-no-wrap gap-x-1 text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <img src="{{ asset('assets/frontend/images/fire-icon.png') }}"
-                                                class="w-8 h-auto" alt="Fire Icon" />
-                                        </div>
-
-                                        <span class="text-jet-gray">4.5K+ Sold</span>
+                                    class="relative text-base xsm:text-sm sm:text-base md:text-sm lg:text-sm xl:text-base rounded-xl hover:shadow-lg eq">
+                                    <div
+                                        class="relative h-60 xsm:h-48 sm:h-56 lg:h-56 xl:h-64 2xl:h-60 overflow-hidden rounded-lg">
+                                        <a href="{{ route('product_details',$product->slug) }}" class="block w-full h-full">
+                                            <img src="{{ asset('assets/'.$product->thumbnail) }}"
+                                                alt="ASUS Vivo15 OLED K513 Core-i5 11th Gen 15.6″ FHD Laptop"
+                                                class="w-full h-full object-cover" />
+                                        </a>
+                                        <button
+                                            class="absolute bottom-10 xsm:bottom-3 lg:bottom-8 xsm:left-3 lg:left-5 left-5 bg-white hover:bg-primary hover:text-white rounded-full px-4 py-2 flex items-center gap-2 shadow-lg eq">
+                                            <i class="fa-regular fa-eye"></i>
+                                            Quick View
+                                        </button>
                                     </div>
 
-                                    <div class="flex flex-wrap items-center gap-x-5 xsm:gap-x-1 sm:gap-x-2 xl:mt-2">
-                                        <span class="text-primary/80">Final Hours</span>
-                                        <div class="flex items-center gap-x-5 xsm:gap-x-2 sm:gap-x-5 xl:gap-x-8">
-                                            <div class="price flex items-center gap-1 flex-no-wrap">
-                                                <i class="fa-solid fa-bolt text-[#ffa755]"></i>
-                                                <span class="align-center text-sm text-[#ffa755]">$</span>
-                                                <h3 class="font-bold text-primary">25.89</h3>
-                                            </div>
-                                            <div>
-                                                <button
-                                                    class="text-xs xsm:text-[10px] sm:text-base md:text-xs xl:text-base w-7 h-7 xsm:w-6 xsm:h-6 md:w-8 md:h-8 sm:w-10 sm:h-10 xl:w-10 xl:h-10 flex items-center justify-center bg-primary rounded-full text-white hover:bg-theme-dark eq">
-                                                    <i class="fa-solid fa-cart-plus"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Product Card 2 -->
-                            <div
-                                class="relative text-base xsm:text-sm sm:text-base md:text-sm lg:text-sm xl:text-base rounded-xl hover:shadow-lg eq">
-                                <div
-                                    class="relative h-60 xsm:h-48 sm:h-56 lg:h-56 xl:h-64 2xl:h-60 overflow-hidden rounded-lg">
-                                    <a href="#" class="block w-full h-full">
-                                        <img src="{{ asset('assets/frontend/images/electronic-prod-2.png') }}"
-                                            alt="Apple watch series 10 depth rainmaker"
-                                            class="w-full h-full object-cover" />
-                                    </a>
-                                    <button
-                                        class="absolute bottom-10 xsm:bottom-3 lg:bottom-8 xsm:left-3 lg:left-5 left-5 bg-white hover:bg-primary hover:text-white rounded-full px-4 py-2 flex items-center gap-2 shadow-lg eq">
-                                        <i class="fa-regular fa-eye"></i>
-                                        Quick View
-                                    </button>
-                                </div>
+                                    <div class="p-4 xsm:p-2 lg:p-5">
+                                        <h3 class="font-medium lg:mb-2 xl:mb-0 xsm:h-10 sm:h-12 md:h-10 lg:h-14 xl:h-12">
+                                            <a href="{{ route('product_details',$product->slug) }}"
+                                                class="line-clamp-2 lg:line-clamp-3 xl:line-clamp-2 hover:text-primary eq">{{ $product->name }}</a>
+                                        </h3>
+                                        <p class="text-leaf-green">Almost sold Out</p>
 
-                                <div class="p-4 xsm:p-2 lg:p-5">
-                                    <h3 class="font-medium lg:mb-2 xl:mb-0 xsm:h-10 sm:h-12 md:h-10 lg:h-14 xl:h-12">
-                                        <a href="#"
-                                            class="line-clamp-2 lg:line-clamp-3 xl:line-clamp-2 hover:text-primary eq">Apple
-                                            watch series 10 depth rainmaker</a>
-                                    </h3>
-                                    <p class="text-leaf-green">Almost sold Out</p>
-
-                                    <div class="flex flex-wrap items-center gap-x-1">
-                                        <div class="flex items-center flex-no-wrap gap-x-1 text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <img src="{{ asset('assets/frontend/images/fire-icon.png') }}"
-                                                class="w-8 h-auto" alt="Fire Icon" />
+                                        <div class="flex flex-wrap items-center gap-x-1">
+                                            <div class="flex items-center flex-no-wrap gap-x-1 text-light-yellow">
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-solid fa-star"></i>
+                                                <img src="{{ asset('assets/frontend/images/fire-icon.png') }}"
+                                                    class="w-8 h-auto" alt="Fire Icon" />
+                                            </div>
+                                            <span class="text-jet-gray">{{ $product->stock_out }}+ Sold</span>
                                         </div>
 
-                                        <span class="text-jet-gray">2.8K+ Sold</span>
-                                    </div>
+                                        <div class="flex flex-wrap items-center gap-x-5 xsm:gap-x-1 sm:gap-x-2 xl:mt-2">
+                                            <span class="text-primary/80">Final Hours</span>
+                                            <div class="flex items-center gap-x-5 xsm:gap-x-2 sm:gap-x-5 xl:gap-x-8">
+                                                <div class="price flex items-center gap-1 flex-no-wrap">
+                                                    <i class="fa-solid fa-bolt text-[#ffa755]"></i>
 
-                                    <div class="flex flex-wrap items-center gap-x-5 xsm:gap-x-1 sm:gap-x-2 xl:mt-2">
-                                        <span class="text-primary/80">Final Hours</span>
-                                        <div class="flex items-center gap-x-5 xsm:gap-x-2 sm:gap-x-5 xl:gap-x-8">
-                                            <div class="price flex items-center gap-1 flex-no-wrap">
-                                                <i class="fa-solid fa-bolt text-[#ffa755]"></i>
-                                                <span class="align-center text-sm text-[#ffa755]">$</span>
-                                                <h3 class="font-bold text-primary">30.50</h3>
-                                            </div>
-                                            <div>
-                                                <button
-                                                    class="text-xs xsm:text-[10px] sm:text-base md:text-xs xl:text-base w-7 h-7 xsm:w-6 xsm:h-6 md:w-8 md:h-8 sm:w-10 sm:h-10 xl:w-10 xl:h-10 flex items-center justify-center bg-primary rounded-full text-white hover:bg-theme-dark eq">
-                                                    <i class="fa-solid fa-cart-plus"></i>
-                                                </button>
+                                                    <h3 class="font-bold text-primary">{{ currency($product->selling_price) }}</h3>
+                                                </div>
+                                                <div>
+                                                    <input type="hidden" name="quantity" value="1"
+                                                        id="qtyInput{{ $product->id }}">
+                                                    <button data-id="{{ $product->id }}" type="button"
+                                                        class="cartBtn text-xs xsm:text-[10px] sm:text-base md:text-xs xl:text-base w-7 h-7 xsm:w-6 xsm:h-6 md:w-8 md:h-8 sm:w-10 sm:h-10 xl:w-10 xl:h-10 flex items-center justify-center bg-primary rounded-full text-white hover:bg-theme-dark eq">
+                                                        <i class="fa-solid fa-cart-plus"></i>
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <!-- Product Card 3 -->
-                            <div
-                                class="relative text-base xsm:text-sm sm:text-base md:text-sm lg:text-sm xl:text-base rounded-xl hover:shadow-lg eq">
-                                <div
-                                    class="relative h-60 xsm:h-48 sm:h-56 lg:h-56 xl:h-64 2xl:h-60 overflow-hidden rounded-lg">
-                                    <a href="#" class="block w-full h-full">
-                                        <img src="{{ asset('assets/frontend/images/electronic-prod-3.png') }}"
-                                            alt="Quadcopter With Height Hold, App Control, And Obstacle For flying"
-                                            class="w-full h-full object-cover" />
-                                    </a>
-                                    <button
-                                        class="absolute bottom-10 xsm:bottom-3 lg:bottom-8 xsm:left-3 lg:left-5 left-5 bg-white hover:bg-primary hover:text-white rounded-full px-4 py-2 flex items-center gap-2 shadow-lg eq">
-                                        <i class="fa-regular fa-eye"></i>
-                                        Quick View
-                                    </button>
-                                </div>
-
-                                <div class="p-4 xsm:p-2 lg:p-5">
-                                    <h3 class="font-medium lg:mb-2 xl:mb-0 xsm:h-10 sm:h-12 md:h-10 lg:h-14 xl:h-12">
-                                        <a href="#"
-                                            class="line-clamp-2 lg:line-clamp-3 xl:line-clamp-2 hover:text-primary eq">Quadcopter
-                                            With Height Hold, App Control, And Obstacle
-                                            For flying</a>
-                                    </h3>
-                                    <p class="text-leaf-green">Almost sold Out</p>
-
-                                    <div class="flex flex-wrap items-center gap-x-1">
-                                        <div class="flex items-center flex-no-wrap gap-x-1 text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <img src="{{ asset('assets/frontend/images/fire-icon.png') }}"
-                                                class="w-8 h-auto" alt="Fire Icon" />
-                                        </div>
-
-                                        <span class="text-jet-gray">1.2K+ Sold</span>
-                                    </div>
-
-                                    <div class="flex flex-wrap items-center gap-x-5 xsm:gap-x-1 sm:gap-x-2 xl:mt-2">
-                                        <span class="text-primary/80">Final Hours</span>
-                                        <div class="flex items-center gap-x-5 xsm:gap-x-2 sm:gap-x-5 xl:gap-x-8">
-                                            <div class="price flex items-center gap-1 flex-no-wrap">
-                                                <i class="fa-solid fa-bolt text-[#ffa755]"></i>
-                                                <span class="align-center text-sm text-[#ffa755]">$</span>
-                                                <h3 class="font-bold text-primary">45.34</h3>
-                                            </div>
-                                            <div>
-                                                <button
-                                                    class="text-xs xsm:text-[10px] sm:text-base md:text-xs xl:text-base w-7 h-7 xsm:w-6 xsm:h-6 md:w-8 md:h-8 sm:w-10 sm:h-10 xl:w-10 xl:h-10 flex items-center justify-center bg-primary rounded-full text-white hover:bg-theme-dark eq">
-                                                    <i class="fa-solid fa-cart-plus"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Product Card 4 -->
-                            <div
-                                class="relative text-base xsm:text-sm sm:text-base md:text-sm lg:text-sm xl:text-base rounded-xl hover:shadow-lg eq">
-                                <div
-                                    class="relative h-60 xsm:h-48 sm:h-56 lg:h-56 xl:h-64 2xl:h-60 overflow-hidden rounded-lg">
-                                    <a href="#" class="block w-full h-full">
-                                        <img src="{{ asset('assets/frontend/images/electronic-prod-4.png') }}"
-                                            alt="Sports Wireless Headphones, ANC and ENC Headphone"
-                                            class="w-full h-full object-cover" />
-                                    </a>
-                                    <button
-                                        class="absolute bottom-10 xsm:bottom-3 lg:bottom-8 xsm:left-3 lg:left-5 left-5 bg-white hover:bg-primary hover:text-white rounded-full px-4 py-2 flex items-center gap-2 shadow-lg eq">
-                                        <i class="fa-regular fa-eye"></i>
-                                        Quick View
-                                    </button>
-                                </div>
-
-                                <div class="p-4 xsm:p-2 lg:p-5">
-                                    <h3 class="font-medium lg:mb-2 xl:mb-0 xsm:h-10 sm:h-12 md:h-10 lg:h-14 xl:h-12">
-                                        <a href="#"
-                                            class="line-clamp-2 lg:line-clamp-3 xl:line-clamp-2 hover:text-primary eq">Sports
-                                            Wireless Headphones, ANC and ENC Headphone</a>
-                                    </h3>
-                                    <p class="text-leaf-green">Almost sold Out</p>
-
-                                    <div class="flex flex-wrap items-center gap-x-1">
-                                        <div class="flex items-center flex-no-wrap gap-x-1 text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <img src="{{ asset('assets/frontend/images/fire-icon.png') }}"
-                                                class="w-8 h-auto" alt="Fire Icon" />
-                                        </div>
-
-                                        <span class="text-jet-gray">6.2K+ Sold</span>
-                                    </div>
-
-                                    <div class="flex flex-wrap items-center gap-x-5 xsm:gap-x-1 sm:gap-x-2 xl:mt-2">
-                                        <span class="text-primary/80">Final Hours</span>
-                                        <div class="flex items-center gap-x-5 xsm:gap-x-2 sm:gap-x-5 xl:gap-x-8">
-                                            <div class="price flex items-center gap-1 flex-no-wrap">
-                                                <i class="fa-solid fa-bolt text-[#ffa755]"></i>
-                                                <span class="align-center text-sm text-[#ffa755]">$</span>
-                                                <h3 class="font-bold text-primary">80.00</h3>
-                                            </div>
-                                            <div>
-                                                <button
-                                                    class="text-xs xsm:text-[10px] sm:text-base md:text-xs xl:text-base w-7 h-7 xsm:w-6 xsm:h-6 md:w-8 md:h-8 sm:w-10 sm:h-10 xl:w-10 xl:h-10 flex items-center justify-center bg-primary rounded-full text-white hover:bg-theme-dark eq">
-                                                    <i class="fa-solid fa-cart-plus"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Product Card 5 -->
-                            <div
-                                class="relative text-base xsm:text-sm sm:text-base md:text-sm lg:text-sm xl:text-base rounded-xl hover:shadow-lg eq">
-                                <div
-                                    class="relative h-60 xsm:h-48 sm:h-56 lg:h-56 xl:h-64 2xl:h-60 overflow-hidden rounded-lg">
-                                    <a href="#" class="block w-full h-full">
-                                        <img src="{{ asset('assets/frontend/images/electronic-prod-5.png') }}"
-                                            alt="SAMSUNG GALAXY A15 LTE Blue 6 +128GB Dual Sim, Smartphone"
-                                            class="w-full h-full object-cover" />
-                                    </a>
-                                    <button
-                                        class="absolute bottom-10 xsm:bottom-3 lg:bottom-8 xsm:left-3 lg:left-5 left-5 bg-white hover:bg-primary hover:text-white rounded-full px-4 py-2 flex items-center gap-2 shadow-lg eq">
-                                        <i class="fa-regular fa-eye"></i>
-                                        Quick View
-                                    </button>
-                                </div>
-
-                                <div class="p-4 xsm:p-2 lg:p-5">
-                                    <h3 class="font-medium lg:mb-2 xl:mb-0 xsm:h-10 sm:h-12 md:h-10 lg:h-14 xl:h-12">
-                                        <a href="#"
-                                            class="line-clamp-2 lg:line-clamp-3 xl:line-clamp-2 hover:text-primary eq">SAMSUNG
-                                            GALAXY A15 LTE Blue 6 +128GB Dual Sim,
-                                            Smartphone</a>
-                                    </h3>
-                                    <p class="text-leaf-green">Almost sold Out</p>
-
-                                    <div class="flex flex-wrap items-center gap-x-1">
-                                        <div class="flex items-center flex-no-wrap gap-x-1 text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <img src="{{ asset('assets/frontend/images/fire-icon.png') }}"
-                                                class="w-8 h-auto" alt="Fire Icon" />
-                                        </div>
-
-                                        <span class="text-jet-gray">4.8K+ Sold</span>
-                                    </div>
-
-                                    <div class="flex flex-wrap items-center gap-x-5 xsm:gap-x-1 sm:gap-x-2 xl:mt-2">
-                                        <span class="text-primary/80">Final Hours</span>
-                                        <div class="flex items-center gap-x-5 xsm:gap-x-2 sm:gap-x-5 xl:gap-x-8">
-                                            <div class="price flex items-center gap-1 flex-no-wrap">
-                                                <i class="fa-solid fa-bolt text-[#ffa755]"></i>
-                                                <span class="align-center text-sm text-[#ffa755]">$</span>
-                                                <h3 class="font-bold text-primary">30.50</h3>
-                                            </div>
-                                            <div>
-                                                <button
-                                                    class="text-xs xsm:text-[10px] sm:text-base md:text-xs xl:text-base w-7 h-7 xsm:w-6 xsm:h-6 md:w-8 md:h-8 sm:w-10 sm:h-10 xl:w-10 xl:h-10 flex items-center justify-center bg-primary rounded-full text-white hover:bg-theme-dark eq">
-                                                    <i class="fa-solid fa-cart-plus"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Product Card 6 -->
-                            <div
-                                class="relative text-base xsm:text-sm sm:text-base md:text-sm lg:text-sm xl:text-base rounded-xl hover:shadow-lg eq">
-                                <div
-                                    class="relative h-60 xsm:h-48 sm:h-56 lg:h-56 xl:h-64 2xl:h-60 overflow-hidden rounded-lg">
-                                    <a href="#" class="block w-full h-full">
-                                        <img src="{{ asset('assets/frontend/images/electronic-prod-6.png') }}"
-                                            alt="Electric
-                  Bike, 500W Motor, 14'' Tire Folding Mini Ebikes"
-                                            class="w-full h-full object-cover" />
-                                    </a>
-                                    <button
-                                        class="absolute bottom-10 xsm:bottom-3 lg:bottom-8 xsm:left-3 lg:left-5 left-5 bg-white hover:bg-primary hover:text-white rounded-full px-4 py-2 flex items-center gap-2 shadow-lg eq">
-                                        <i class="fa-regular fa-eye"></i>
-                                        Quick View
-                                    </button>
-                                </div>
-
-                                <div class="p-4 xsm:p-2 lg:p-5">
-                                    <h3 class="font-medium lg:mb-2 xl:mb-0 xsm:h-10 sm:h-12 md:h-10 lg:h-14 xl:h-12">
-                                        <a href="#"
-                                            class="line-clamp-2 lg:line-clamp-3 xl:line-clamp-2 hover:text-primary eq">Electric
-                                            Bike, 500W Motor, 14" Tire Folding Mini
-                                            Ebikes</a>
-                                    </h3>
-                                    <p class="text-leaf-green">Almost sold Out</p>
-
-                                    <div class="flex flex-wrap items-center gap-x-1">
-                                        <div class="flex items-center flex-no-wrap gap-x-1 text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <img src="{{ asset('assets/frontend/images/fire-icon.png') }}"
-                                                class="w-8 h-auto" alt="Fire Icon" />
-                                        </div>
-
-                                        <span class="text-jet-gray">8.7K+ Sold</span>
-                                    </div>
-
-                                    <div class="flex flex-wrap items-center gap-x-5 xsm:gap-x-1 sm:gap-x-2 xl:mt-2">
-                                        <span class="text-primary/80">Final Hours</span>
-                                        <div class="flex items-center gap-x-5 xsm:gap-x-2 sm:gap-x-5 xl:gap-x-8">
-                                            <div class="price flex items-center gap-1 flex-no-wrap">
-                                                <i class="fa-solid fa-bolt text-[#ffa755]"></i>
-                                                <span class="align-center text-sm text-[#ffa755]">$</span>
-                                                <h3 class="font-bold text-primary">20.25</h3>
-                                            </div>
-                                            <div>
-                                                <button
-                                                    class="text-xs xsm:text-[10px] sm:text-base md:text-xs xl:text-base w-7 h-7 xsm:w-6 xsm:h-6 md:w-8 md:h-8 sm:w-10 sm:h-10 xl:w-10 xl:h-10 flex items-center justify-center bg-primary rounded-full text-white hover:bg-theme-dark eq">
-                                                    <i class="fa-solid fa-cart-plus"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
