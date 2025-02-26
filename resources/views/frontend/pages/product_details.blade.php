@@ -38,7 +38,7 @@
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="m1 9 4-4-4-4" />
                             </svg>
-                            <span class="ms-1 text-sm text-davy-gray md:ms-2">{{ $product->subcategory }}</span>
+                            <span class="ms-1 text-sm text-davy-gray md:ms-2">{{ optional($product->subcategory)->name }}</span>
                         </div>
                     </li>
                 </ol>
@@ -241,13 +241,14 @@
                             $discount = ($product->discount_amount / $product->selling_price) * 100;
                         @endphp
                         <div class="flex gap-4 mt-5 w-full xsm:w-4/5 md:w-11/12 lg:w-4/5">
-                            <button
-                                class="text-sm md:text-base font-medium flex-1 px-6 py-1.5 border border-primary text-primary rounded-full hover:bg-primary hover:text-white eq">
+                            <input type="hidden" name="quantity" value="1" id="qtyInput{{ $product->id }}">
+                            <button data-id="{{ $product->id }}" type="button"
+                                class="cartBtn text-sm md:text-base font-medium flex-1 px-6 py-1.5 border border-primary text-primary rounded-full hover:bg-primary hover:text-white eq">
                                 Add To Cart
                                 <span class="block text-xs font-light">{{ percentage($discount) }} of Discount</span>
                             </button>
                             <button
-                                class="text-sm md:text-base font-medium flex-1 px-6 py-1.5 bg-primary text-white rounded-full hover:bg-theme-dark eq">
+                                class="cartBtn text-sm md:text-base font-medium flex-1 px-6 py-1.5 bg-primary text-white rounded-full hover:bg-theme-dark eq">
                                 Buy Now
                                 <span class="block text-xs font-light">Faster Dispatch</span>
                             </button>

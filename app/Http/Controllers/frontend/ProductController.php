@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
-use App\Models\ProductVariant;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -15,7 +14,6 @@ class ProductController extends Controller
         $products = Product::where('seller_id',$product->seller->id)->get();
         $total_sell = Product::where('seller_id', $product->seller->id)->sum('stock_out');
         $interest_products = Product::whereCategory($product->category)->where('id', '!=', $product->id)->paginate(6);
-        // $product_variants = ProductVariant::whereProduct($product)->with('product_attributes')->get();
 
         return view('frontend.pages.product_details',compact('product','products', 'total_sell', 'interest_products',));
     }

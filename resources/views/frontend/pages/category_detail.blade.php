@@ -203,17 +203,20 @@
                 <div class="flex flex-nowrap items-start justify-between">
                     <div class="flex flex-wrap items-center gap-2 sm:gap-4 xl:w-auto lg:w-9/12 lg:w-auto w-10/12">
                         <!-- All Categories -->
-                        <form
+                        <form method="GET" action="{{ route('category_details', $category->slug) }}"
                             class="flex items-center gap-1 rounded-3xl bg-aqua-deep hover:bg-rangoon-green eq sm:text-sm text-xs md:text-base sm:pl-5 pl-3 sm:!pr-2 !pr-1 py-2.5 sm:py-3 inline-flex text-white cursor-pointer">
-                            <label for="sort-by" class="sr-only block whitespace-nowrap">
-                                All Categories</label>
-                            <select id="sort-by"
+                            <label for="sort-by" class="sr-only block whitespace-nowrap">All Categories</label>
+                            <select name="subcategory" id="sort-by" onchange="this.form.submit()"
                                 class="block w-full bg-inherit appearance-none border-0 focus:outline-none focus:ring-0 focus:border-gray-200 peer cursor-pointer">
-                                <option selected>All Categories</option>
+                                <option value="all" {{ request('subcategory') == 'all' ? 'selected' : '' }}>All
+                                    Categories</option>
                                 @foreach ($category->subcategories as $subcategory)
-                                    <option value="{{ $subcategory->id }}">{{ $subcategory->name }}</option>
+                                    <option value="{{ $subcategory->slug }}"
+                                        {{ request('subcategory') == $subcategory->slug ? 'selected' : '' }}>
+                                        {{ $subcategory->name }}</option>
                                 @endforeach
                             </select>
+                            <button type="submit" class="hidden">Search</button>
                         </form>
 
                         <!-- Relevance -->
@@ -231,7 +234,7 @@
                         </form>
 
                         <!-- Color -->
-                        <div class="flex items-center gap-4">
+                        {{-- <div class="flex items-center gap-4">
                             <!-- Dropdown Menu -->
                             <div class="relative">
                                 <button id="colorSortButton" data-dropdown-toggle="colorSortDropdown"
@@ -282,23 +285,29 @@
                                     </ul>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
 
                         <!-- Material -->
-                        <form
-                            class="flex items-center gap-1 rounded-3xl bg-theme-light/90 hover:bg-aqua-deep/10 eq sm:text-sm text-xs sm:pl-5 pl-4 sm:!pr-2 pr-1 sm:py-3 py-2.5 inline-flex text-jet-gray">
-                            <label for="sort-by" class="sr-only block whitespace-nowrap">Material</label>
-                            <select id="sort-by"
-                                class="block w-full bg-transparent appearance-none border-0 focus:outline-none focus:ring-0 focus:border-gray-200 peer cursor-pointer">
-                                <option selected>Material</option>
-                                <option value="organic">Organic</option>
-                                <option value="fresh">Fresh</option>
-                                <option value="grain">Grain</option>
-                                <option value="dairy">Dairy</option>
-                                <option value="plant">Plant</option>
-                                <option value="alant">Animal</option>
-                            </select>
-                        </form>
+
+                        @foreach ($product_attributes as $product_attribute)
+                            <form method="GET" action="{{ route('category_details', $category->slug) }}"
+                                class="flex items-center gap-1 rounded-3xl bg-theme-light/90 hover:bg-aqua-deep/10 eq sm:text-sm text-xs sm:pl-5 pl-4 sm:!pr-2 pr-1 sm:py-3 py-2.5 inline-flex text-jet-gray">
+                                <label for="attribute-{{ $product_attribute->name }}"
+                                    class="sr-only block whitespace-nowrap">{{ $product_attribute->name }}</label>
+                                <select name="{{ strtolower($product_attribute->name) }}"
+                                    id="attribute-{{ $product_attribute->name }}" onchange="this.form.submit()"
+                                    class="block w-full bg-transparent appearance-none border-0 focus:outline-none focus:ring-0 focus:border-gray-200 peer cursor-pointer">
+                                    <option value="all"
+                                        {{ request(strtolower($product_attribute->name)) == 'all' ? 'selected' : '' }}>
+                                        {{ $product_attribute->name }}</option>
+                                    @foreach ($product_attribute->product_attribute_options as $option)
+                                        <option value="{{ $option->value }}"
+                                            {{ request(strtolower($product_attribute->name)) == $option->value ? 'selected' : '' }}>
+                                            {{ strtoupper($option->value) }}</option>
+                                    @endforeach
+                                </select>
+                            </form>
+                        @endforeach
 
                         <!-- Review -->
                         <form
@@ -352,19 +361,19 @@
             <!-- Product Card's Wrapper -->
             <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-6 gap-3">
                 <!-- Product Card 1 -->
-                @foreach ($category->products as $product)
+                @foreach ($products as $product)
                     <div
                         class="group/product-card bg-white rounded-xl sm:rounded-2xl shadow hover:shadow-lg eq p-3 sm:p-8 relative">
                         <!-- product image -->
-                        <a href="{{ route('product_details',$product->slug) }}" class="prod-image sm:h-40 h-32 block">
-                            <img src="{{ asset('assets/'.$product->thumbnail) }}" alt="Italian Avocado"
+                        <a href="{{ route('product_details', $product->slug) }}" class="prod-image sm:h-40 h-32 block">
+                            <img src="{{ asset('assets/' . $product->thumbnail) }}" alt="Italian Avocado"
                                 class="w-full h-full object-contain" />
                         </a>
                         <!-- product contents -->
                         <div class="prod-details flex flex-col items-center text-black">
                             <div class="z-20 flex gap-1 flex-col items-center">
                                 <h3 class="font-medium sm:text-xl xsm:text-lg text-sm line-clamp-1">
-                                    <a href="{{ route('product_details',$product->slug) }}">{{ $product->name }}</a>
+                                    <a href="{{ route('product_details', $product->slug) }}">{{ $product->name }}</a>
                                 </h3>
                                 <p class="sm:text-base text-sm">(local shop)</p>
                                 <p class="text-jet-gray">{{ $product->unit }}.</p>

@@ -9,7 +9,16 @@ class ProductAttribute extends Model
 {
     use HasFactory;
 
+    const MATERIAL = 'material';
+    const COLOR = 'color';
+    const SIZE = 'size';
+
     protected $guarded = ['id'];
+
+    public function scopeMaterial($query)
+    {
+        return $query->where('name',ProductAttribute::MATERIAL);
+    }
 
     public function product_attribute_options()
     {

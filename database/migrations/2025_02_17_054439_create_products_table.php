@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('category_id')->nullable()->constrained('categories')->cascadeOnDelete();
+            $table->foreignId('subcategory_id')->nullable()->constrained('categories')->cascadeOnDelete();
+            $table->foreignId('brand_id')->nullable()->constrained('brands')->cascadeOnDelete();
+            $table->foreignId('seller_id')->nullable()->constrained()->cascadeOnDelete();
+
             $table->string('name');
             $table->string('slug');
             $table->string('thumbnail')->nullable();
@@ -26,9 +31,7 @@ return new class extends Migration
             $table->integer('quantity')->default(0);
             $table->string('unit')->nullable();
 
-            $table->foreignId('category_id')->nullable()->constrained('categories')->cascadeOnDelete();
-            $table->foreignId('brand_id')->nullable()->constrained('brands')->cascadeOnDelete();
-            $table->foreignId('seller_id')->nullable()->constrained()->cascadeOnDelete();
+
             $table->string('sku')->nullable();
             $table->string('barcode')->nullable();
 

@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf_token" content="{{ csrf_token() }}" />
     <link rel="shortcut icon" href="{{ asset('assets/frontend/images/favicon.ico') }}" type="image/x-icon" />
     <!-- Link Tailwind CSS's CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -50,9 +51,23 @@
     <!-- Swiper JS Custom Cacarousel slider Script's-->
     <script src="{{ asset('assets/frontend/js/swiperSliders.js') }}"></script>
 
+    <!-- Tailwind Global Config JS -->
+    <script src="{{ asset('assets/frontend/tailwind.config.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- Toastr CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     <!-- custom scripts -->
     <script>
-        // custom videos frame script
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf_token"]').attr('content')
+            }
+        })
         document.querySelectorAll("video").forEach((video) => {
             const playBtn = video.parentElement.querySelector(".play-btn");
             const muteBtn = video.parentElement.querySelector(".mute-btn");
@@ -67,7 +82,6 @@
                 }
             });
 
-            // initialy video not muted
             video.muted = false;
 
             function updateMuteButton(muteBtn) {
@@ -80,12 +94,9 @@
                 video.muted = !video.muted;
                 updateMuteButton(muteBtn);
             });
-
-            // Initialize mute button state
             updateMuteButton(muteBtn);
         });
 
-        // Current Year In the Footer Section
         const currentYear = new Date().getFullYear();
         document.getElementById("current-year").textContent = currentYear;
     </script>
@@ -108,11 +119,32 @@
         }
     </script>
 
-    <!-- Tailwind Global Config JS -->
-    <script src="{{ asset('assets/frontend/tailwind.config.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        $(document).ready(function() {
+            $('.cartBtn').click(function() {
+                var product_id = $(this).data('id');
+                var qtyInput = $('#qtyInput' + product_id).val();
+                $.ajax({
+                    url: "{{ route('cart.add') }}",
+                    type: "POST",
+                    data: {
+                        product_id: product_id,
+                        quantity: qtyInput
+                    },
+                    success: function(data) {
+                        if (data.success) {
+                            toastr.success(data.message);
+                        } else {
+                            toastr.error(data.error);
+                        }
+                    },
+                    error: function() {
+                        toastr.error('Something went wrong!');
+                    }
+                });
+            });
+        });
+    </script>
 
     @stack('scripts')
 </body>

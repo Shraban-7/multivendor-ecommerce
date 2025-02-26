@@ -35,7 +35,6 @@ class ProductAttributeSeeder extends Seeder
             ]
         ];
 
-
         $products = Product::all();
 
         foreach ($products as $product) {

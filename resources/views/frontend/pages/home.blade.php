@@ -88,7 +88,8 @@
                         <!-- slide 1 -->
                         @foreach ($light_deals as $light_deal)
                             <div class="swiper-slide py-5 px-1">
-                                <a href="{{ route('product_details',$light_deal->slug) }}" class="block product-card w-full rounded-lg hover:shadow-lg p-3 eq group">
+                                <a href="{{ route('product_details', $light_deal->slug) }}"
+                                    class="block product-card w-full rounded-lg hover:shadow-lg p-3 eq group">
                                     <!-- slide image -->
                                     <div class="card-image h-[16.5rem] relative rounded-lg overflow-hidden">
                                         <img src="{{ asset('assets/' . $light_deal->thumbnail) }}"
@@ -196,16 +197,17 @@
                                 <div class="block product-card w-full flex flex-col items-center p-2">
                                     <div class="w-full bg-theme-light rounded-md hover:shadow-md eq overflow-hidden">
                                         <div class="item-img h-32 sm:h-40 md:h-52 px-10 pt-5 overflow-hidden">
-                                            <a href="{{ route('product_details',$product->slug) }}">
+                                            <a href="{{ route('product_details', $product->slug) }}">
                                                 <img class="w-full h-full object-contain"
                                                     src="{{ asset('assets/' . $product->thumbnail) }}"
-                                                    alt="Ladies Large chocolate vanity Bag" />
+                                                    alt="{{ $product->name }}" />
                                             </a>
                                         </div>
                                         <div class="p-2 sm:p-4 space-y-1">
                                             <h2
                                                 class="text-theme-dark group-hover/interest-pro-card:text-persian-blue font-semibold line-clamp-3 md:line-clamp-2 eq text-sm md:text-base h-16 md:h-12">
-                                                <a href="{{ route('product_details',$product->slug) }}">{{ $product->name }}</a>
+                                                <a
+                                                    href="{{ route('product_details', $product->slug) }}">{{ $product->name }}</a>
                                             </h2>
                                             <div class="rating-stars text-xs text-light-yellow">
                                                 <i class="fa-solid fa-star"></i>
@@ -219,17 +221,19 @@
                                                 {{ currency($product->selling_price) }}</p>
 
                                             <div class="add-cart">
-                                                <button
-                                                    class="block bg-white h-10 flex justify-between items-center w-full rounded-full p-2 mt-2 hover:shadow-md eq">
+                                                <input type="hidden" name="quantity" value="1"
+                                                    id="qtyInput{{ $product->id }}">
+                                                <button data-id="{{ $product->id }}" type="button"
+                                                    class="cartBtn block bg-white h-10 flex justify-between items-center w-full rounded-full p-2 mt-2 hover:shadow-md eq">
                                                     <span
-                                                        class="w-6 h-6 sm:w-8 sm:h-8 inline-flex items-center justify-center rounded-full bg-primary text-white text-xs md:text-sm"><i
-                                                            class="fa-solid fa-cart-plus"></i></span>
-
+                                                        class="w-6 h-6 sm:w-8 sm:h-8 inline-flex items-center justify-center rounded-full bg-primary text-white text-xs md:text-sm">
+                                                        <i class="fa-solid fa-cart-plus"></i>
+                                                    </span>
                                                     <span class="text-sm md:text-base">Add</span>
-
                                                     <span
-                                                        class="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-full bg-[#F9F8F6] text-sand-brown text-xs sm:text-sm"><i
-                                                            class="fa-solid fa-plus"></i></span>
+                                                        class="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-full bg-[#F9F8F6] text-sand-brown text-xs sm:text-sm">
+                                                        <i class="fa-solid fa-plus"></i>
+                                                    </span>
                                                 </button>
                                             </div>
                                         </div>
@@ -237,7 +241,6 @@
                                 </div>
                             </div>
                         @endforeach
-
                     </div>
                 </div>
             </div>
@@ -406,7 +409,7 @@
                                     <div
                                         class="w-full border border-[jet-gray]/30 rounded-md hover:shadow-md eq overflow-hidden">
                                         <div class="item-img h-32 sm:h-40 md:h-52 pt-5 overflow-hidden">
-                                            <a href="{{ route('product_details',$product->slug) }}">
+                                            <a href="{{ route('product_details', $product->slug) }}">
                                                 <img class="w-full h-full object-contain"
                                                     src="{{ asset('assets/' . $product->thumbnail) }}"
                                                     alt="Exclusive Chair with foam seat" />
@@ -424,15 +427,35 @@
                                                 <div class="name-price">
                                                     <h2
                                                         class="text-theme-dark group-hover/new-arriv-pro-card:text-butterfly-blue eq md:text-xl capitalize line-clamp-1 w-full">
-                                                        <a href="{{ route('product_details',$product->slug) }}">{{ $product->name }}</a>
+                                                        <a
+                                                            href="{{ route('product_details', $product->slug) }}">{{ $product->name }}</a>
                                                     </h2>
                                                     <div class="flex gap-x-2 flex-wrap sm:text-lg">
                                                         @php
-                                                            $new_price =
-                                                                $product->selling_price - $product->discount_amount;
+                                                            if ($product->discount_type != null) {
+                                                                if (
+                                                                    $product->discount_type ==
+                                                                    \App\Enums\DiscountType::FLAT
+                                                                ) {
+                                                                    $price =
+                                                                        $product->selling_price -
+                                                                        $product->discount_amount;
+                                                                } elseif (
+                                                                    $product->discount_type ==
+                                                                    \App\Enums\DiscountType::PERCENTAGE
+                                                                ) {
+                                                                    $price =
+                                                                        $product->selling_price -
+                                                                        ($product->selling_price *
+                                                                            $product->discount_amount) /
+                                                                            100;
+                                                                }
+                                                            } else {
+                                                                $price = $product->selling_price;
+                                                            }
                                                         @endphp
                                                         <p class="new-price text-theme-teal font-medium">
-                                                            {{ currency($new_price) }}
+                                                            {{ currency($price) }}
                                                         </p>
                                                         <p class="old-price text-jet-gray line-through">
                                                             {{ currency($product->selling_price) }}
@@ -441,8 +464,10 @@
                                                 </div>
 
                                                 <div class="add-cart">
-                                                    <button
-                                                        class="w-7 h-7 sm:w-10 sm:h-10 flex items-center justify-center rounded bg-primary text-theme-light text-sm sm:text-base hover:bg-light-yellow eq">
+                                                    <input type="hidden" name="quantity" value="1"
+                                                        id="qtyInput{{ $product->id }}">
+                                                    <button data-id="{{ $product->id }}" type="button"
+                                                        class="cartBtn w-7 h-7 sm:w-10 sm:h-10 flex items-center justify-center rounded bg-primary text-theme-light text-sm sm:text-base hover:bg-light-yellow eq">
                                                         <span><i class="fa-solid fa-plus"></i></span>
                                                     </button>
                                                 </div>
@@ -482,7 +507,7 @@
                                         <div
                                             class="group/trending py-2 border-dashed border-b trending-item-card flex gap-3">
                                             <div class="item-image w-1/4">
-                                                <a href="{{ route('product_details',$product->slug) }}" target="_blank">
+                                                <a href="{{ route('product_details', $product->slug) }}" target="_blank">
                                                     <img src="{{ asset('assets/' . $product->thumbnail) }}"
                                                         alt="Meatigo Premium Goat Curry"
                                                         class="w-full h-full object-contain group-hover/trending:rotate-12 eq" />
@@ -490,7 +515,8 @@
                                             </div>
                                             <div class="item-details flex flex-col gap-2 w-3/4 text-xs">
                                                 <h4>
-                                                    <a href="{{ route('product_details',$product->slug) }}" target="_self"
+                                                    <a href="{{ route('product_details', $product->slug) }}"
+                                                        target="_self"
                                                         class="text-theme-dark line-clamp-1 group-hover/trending:text-theme-teal font-semibold eq">
                                                         {{ $product->name }}
                                                     </a>
@@ -545,7 +571,7 @@
                                         class="w-full border border-[jet-gray]/30 rounded-md hover:shadow-md eq overflow-hidden">
                                         <div
                                             class="item-img h-32 sm:h-40 md:h-52 md:pt-10 pt-5 px-3 md:px-5 pb-3 md:pb-5 overflow-hidden">
-                                            <a href="{{ route('product_details',$product->slug) }}">
+                                            <a href="{{ route('product_details', $product->slug) }}">
                                                 <img class="w-full h-full object-contain"
                                                     src="{{ asset('assets/' . $product->thumbnail) }}"
                                                     alt="Xbox Series S 1TB + Controller" />
@@ -563,15 +589,35 @@
                                                 <div class="name-price">
                                                     <h2
                                                         class="text-theme-dark group-hover/community-pro-card:text-butterfly-blue eq text-sm capitalize line-clamp-2 w-full">
-                                                        <a href="{{ route('product_details',$product->slug) }}">{{ $product->name }}</a>
+                                                        <a
+                                                            href="{{ route('product_details', $product->slug) }}">{{ $product->name }}</a>
                                                     </h2>
                                                     <div class="flex gap-x-2 flex-wrap sm:text-lg">
                                                         @php
-                                                            $new_price =
-                                                                $product->selling_price - $product->discount_amount;
+                                                            if ($product->discount_type != null) {
+                                                                if (
+                                                                    $product->discount_type ==
+                                                                    \App\Enums\DiscountType::FLAT
+                                                                ) {
+                                                                    $price =
+                                                                        $product->selling_price -
+                                                                        $product->discount_amount;
+                                                                } elseif (
+                                                                    $product->discount_type ==
+                                                                    \App\Enums\DiscountType::PERCENTAGE
+                                                                ) {
+                                                                    $price =
+                                                                        $product->selling_price -
+                                                                        ($product->selling_price *
+                                                                            $product->discount_amount) /
+                                                                            100;
+                                                                }
+                                                            } else {
+                                                                $price = $product->selling_price;
+                                                            }
                                                         @endphp
                                                         <p class="new-price text-theme-teal font-medium">
-                                                            {{ currency($new_price) }}
+                                                            {{ currency($price) }}
                                                         </p>
                                                         <p class="old-price text-jet-gray line-through">
                                                             {{ currency($product->selling_price) }}
@@ -580,10 +626,14 @@
                                                 </div>
 
                                                 <div class="add-cart">
-                                                    <button
-                                                        class="w-7 h-7 sm:w-10 sm:h-10 flex items-center justify-center rounded bg-primary text-theme-light text-sm sm:text-base hover:bg-light-yellow eq">
+
+                                                    <input type="hidden" name="quantity" value="1"
+                                                        id="qtyInput{{ $product->id }}">
+                                                    <button data-id="{{ $product->id }}" type="button"
+                                                        class="cartBtn w-7 h-7 sm:w-10 sm:h-10 flex items-center justify-center rounded bg-primary text-theme-light text-sm sm:text-base hover:bg-light-yellow eq">
                                                         <span><i class="fa-solid fa-plus"></i></span>
                                                     </button>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -706,7 +756,7 @@
                                         class="w-full border border-[jet-gray]/30 rounded-md hover:shadow-md eq overflow-hidden">
                                         <div
                                             class="item-img h-32 sm:h-40 md:h-52 md:pt-10 pt-5 px-3 md:px-5 pb-3 md:pb-5 overflow-hidden">
-                                            <a href="{{ route('product_details',$product->slug) }}">
+                                            <a href="{{ route('product_details', $product->slug) }}">
                                                 <img class="w-full h-full object-contain"
                                                     src="{{ asset('assets/' . $product->thumbnail) }}"
                                                     alt="Halloween Black Ladies Dress" />
@@ -724,15 +774,35 @@
                                                 <div class="name-price">
                                                     <h2
                                                         class="text-theme-dark group-hover/community-pro-card:text-butterfly-blue eq text-sm capitalize line-clamp-2 w-full">
-                                                        <a href="{{ route('product_details',$product->slug) }}">{{ $product->name }}</a>
+                                                        <a
+                                                            href="{{ route('product_details', $product->slug) }}">{{ $product->name }}</a>
                                                     </h2>
                                                     <div class="flex gap-x-2 flex-wrap sm:text-lg">
                                                         @php
-                                                            $new_price =
-                                                                $product->selling_price - $product->discount_amount;
+                                                            if ($product->discount_type != null) {
+                                                                if (
+                                                                    $product->discount_type ==
+                                                                    \App\Enums\DiscountType::FLAT
+                                                                ) {
+                                                                    $price =
+                                                                        $product->selling_price -
+                                                                        $product->discount_amount;
+                                                                } elseif (
+                                                                    $product->discount_type ==
+                                                                    \App\Enums\DiscountType::PERCENTAGE
+                                                                ) {
+                                                                    $price =
+                                                                        $product->selling_price -
+                                                                        ($product->selling_price *
+                                                                            $product->discount_amount) /
+                                                                            100;
+                                                                }
+                                                            } else {
+                                                                $price = $product->selling_price;
+                                                            }
                                                         @endphp
                                                         <p class="new-price text-theme-teal font-medium">
-                                                            {{ currency($new_price) }}
+                                                            {{ currency($price) }}
                                                         </p>
                                                         <p class="old-price text-jet-gray line-through">
                                                             {{ currency($product->selling_price) }}
@@ -741,8 +811,10 @@
                                                 </div>
 
                                                 <div class="add-cart">
-                                                    <button
-                                                        class="w-7 h-7 sm:w-10 sm:h-10 flex items-center justify-center rounded bg-primary text-theme-light text-sm sm:text-base hover:bg-light-yellow eq">
+                                                    <input type="hidden" name="quantity" value="1"
+                                                        id="qtyInput{{ $product->id }}">
+                                                    <button data-id="{{ $product->id }}" type="button"
+                                                        class="cartBtn w-7 h-7 sm:w-10 sm:h-10 flex items-center justify-center rounded bg-primary text-theme-light text-sm sm:text-base hover:bg-light-yellow eq">
                                                         <span><i class="fa-solid fa-plus"></i></span>
                                                     </button>
                                                 </div>
@@ -969,4 +1041,9 @@
         </section>
         <!-- Featured Videos Section Ended -->
     </main>
+
+    @push('scripts')
+        <!-- cart-->
+        
+    @endpush
 @endsection

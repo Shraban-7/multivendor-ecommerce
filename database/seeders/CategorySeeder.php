@@ -13,16 +13,31 @@ class CategorySeeder extends Seeder
         $categories = [
             [
                 'name' => 'Tesko+',
-                'is_nav' => 1
+                'is_nav' => 1,
+                'subcategories' => [
+                    'Tesko Fresh',
+                    'Tesko Home',
+                    'Tesko Fashion'
+                ]
             ],
             [
                 'name' => 'Toy Shop',
-                'is_nav' => 1
+                'is_nav' => 1,
+                'subcategories' => [
+                    'Action Figures',
+                    'Board Games',
+                    'Outdoor Toys'
+                ]
             ],
             [
                 'name' => 'Halloween',
                 'is_nav' => 1,
-                'is_special' => 1
+                'is_special' => 1,
+                'subcategories' => [
+                    'Costumes',
+                    'Decorations',
+                    'Party Supplies'
+                ]
             ],
             [
                 'name' => 'Electronics',
@@ -34,29 +49,49 @@ class CategorySeeder extends Seeder
                 'cover_bg_color' => '#9EB5AF',
                 'cover_button_color' => '#5A422A',
                 'is_nav' => 1,
-                'is_slider' => 1
+                'is_slider' => 1,
+                'subcategories' => [
+                    'Laptops',
+                    'Smartphones',
+                    'Accessories'
+                ]
             ],
             [
                 'name' => 'Fashion',
                 'image' => 'frontend/images/category-3.png',
                 'is_nav' => 1,
-                'is_slider' => 1
+                'is_slider' => 1,
+                'subcategories' => [
+                    'Men\'s Wear',
+                    'Women\'s Wear',
+                    'Kids\' Fashion'
+                ]
             ],
             [
                 'name' => 'Grocery & Essentials',
                 'image' => 'frontend/images/category-1.png',
                 'cover_image' => 'frontend/images/grocery-promo.png',
                 'cover_title' => 'Get 50% CASHBACK ON SHOPPING $250',
-                'cover_description' => 'provides shoppers with an extensive range of groceries, from fresh produce and meats to pantry staples, snacks, and household essentials.',
+                'cover_description' => 'Provides shoppers with an extensive range of groceries, from fresh produce and meats to pantry staples, snacks, and household essentials.',
                 'cover_text_color' => '#FFDB9C',
                 'cover_bg_color' => '#8B2022',
                 'cover_button_color' => '#FD740F',
                 'is_nav' => 1,
-                'is_slider' => 1
+                'is_slider' => 1,
+                'subcategories' => [
+                    'Fruits & Vegetables',
+                    'Dairy Products',
+                    'Snacks & Beverages'
+                ]
             ],
             [
                 'name' => 'Deals',
-                'is_nav' => 1
+                'is_nav' => 1,
+                'subcategories' => [
+                    'Daily Deals',
+                    'Seasonal Sales',
+                    'Clearance'
+                ]
             ],
             [
                 'name' => 'Clothing shoes & Accessories',
