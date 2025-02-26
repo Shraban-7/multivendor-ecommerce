@@ -134,7 +134,7 @@
                     success: function(data) {
                         if (data.success) {
                             toastr.success(data.message);
-                            if ("{{ Route::currentRouteName() }}" === 'cart.details') {
+                            if ("{{ Route::currentRouteName() }}" === 'cart.details' && data.action === 'add_to_cart') {
                                 window.location.reload();
                             }
                         } else {

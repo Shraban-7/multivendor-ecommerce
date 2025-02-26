@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\CategoryController;
+use App\Http\Controllers\Frontend\CheckoutController;
 use App\Http\Controllers\Frontend\ProductController;
 use Illuminate\Support\Facades\Route;
 
@@ -13,10 +14,6 @@ Route::get('/product-details/{slug}', [ProductController::class, 'details'])->na
 Route::get('/shop-review', function () {
     return view('frontend.pages.shop_review');
 })->name('shop_review');
-
-Route::get('/checkout', function () {
-    return view('frontend.pages.checkout');
-})->name('checkout');
 
 Route::get('/no-order', function () {
     return view('frontend.pages.no_order');
@@ -44,3 +41,10 @@ Route::prefix('cart')->as('cart.')->group(function () {
     Route::post('/delete', [CartController::class, 'delete'])->name('delete');
     Route::get('/details', [CartController::class, 'details'])->name('details');
 });
+
+Route::middleware('auth')->prefix('checkout')->as('checkout.')->group(function () {
+    Route::get('/', [CheckoutController::class, 'index'])->name('index');
+    Route::post('/store', [CheckoutController::class, 'store'])->name('store');
+});
+
+

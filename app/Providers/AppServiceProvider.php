@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -21,5 +22,15 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useBootstrap();
+        View::composer('*', function ($view) {
+            $cart = session()->get('cart', []);
+            $cartCount = count($cart);
+            $totalPrice = 0;
+            foreach ($cart as $item) {
+                $totalPrice += $item['quantity'] * $item['selling_price'];
+            }
+
+            $view->with('cartCount', $cartCount)->with('totalPrice', $totalPrice);
+        });
     }
 }

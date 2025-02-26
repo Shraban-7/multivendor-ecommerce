@@ -56,121 +56,171 @@
                         <span class="text-leaf-green italic font-light">Exclusive offer</span>
                     </div>
 
-                    <!-- Select All Checkbox -->
-                    <label for="selectAll"
-                        class="w-full flex items-center justify-between cursor-pointer text-black hover:text-black/80 my-3 md:my-4">
-                        <p class="md:text-lg flex items-center gap-2">
-                            <input type="checkbox" id="selectAll" class="hidden form-checkbox peer/selectAll" />
-                            <label for="selectAll"
-                                class="inline-block stroke-black peer-checked/selectAll:stroke-white rounded-full text-white peer-checked/selectAll:text-black border-2 border-black cursor-pointer">
-                                <svg width="32" height="32" class="w-6 md:w-7 h-6 md:h-7" viewBox="0 0 32 32"
-                                    stroke-width="0" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                    <circle cx="16" cy="16" r="16" fill="currentColor" />
-                                    <path
-                                        d="M9.58789 18.2939C9.58789 18.2939 10.9629 18.2939 12.7962 21.5023C12.7962 21.5023 17.892 13.0992 22.4212 11.4189"
-                                        stroke-width="1.79853" stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                            </label>
-
-                            Select All (<span id="selectedCount">0</span>)
-                        </p>
-
-                        <i class="fa-solid fa-list-ul"></i>
-                    </label>
-
                     <!-- Cart Items Container -->
                     <div id="cart-wrapper">
-                        <!-- Cart Item 1 -->
-                        @foreach ($cart as $key => $cart_item)
-                            <div class="md:py-5 py-3 cart-item border-t border-jet-gray/20"
-                                data-price="{{ $cart_item['discount_price'] }}"
-                                data-discounted-price="{{ $cart_item['discount_price'] }}">
-                                <div class="flex gap-2 sm:gap-4">
-                                    <!-- Item Image -->
-                                    <div
-                                        class="item-image-wrap w-24 h-28 xsm:w-36 xsm:h-40 rounded-md relative overflow-hidden">
-                                        <a href="#">
-                                            <img src="{{ asset('assets/' . $cart_item['thumbnail']) }}" alt="Product"
-                                                class="w-full h-full object-cover" />
-                                        </a>
-                                        <span
-                                            class="w-10/12 xsm:w-7/12 text-center text-leaf-green text-[8px] inline-block absolute bottom-3 xsm:bottom-5 left-1/2 -translate-x-1/2 bg-theme-dark text-white rounded-3xl py-1">Almost
-                                            Sold Out</span>
-                                    </div>
-                                    <!-- Item Content -->
-                                    <div class="flex flex-col gap-2 sm:gap-5 flex-1">
-                                        <div class="space-y-1 sm:space-y-2">
-                                            <!-- title -->
-                                            <div class="flex items-start justify-between">
-                                                <h1
-                                                    class="md:text-base text-rustic-red text-sm w-11/12 xsm:w-10/12 md:w-3/4 lg:w-11/12 xl:w-3/4 line-clamp-3 sm:line-clamp-2">
-                                                    {{ $cart_item['name'] }}
-                                                </h1>
-                                                <form>
-                                                    <input type="hidden" class="product-id" value="{{ $key }}">
-                                                    <button type="button"
-                                                        class="delete-product hover:text-persian-red eq lg:text-xl xsm:text-lg">
-                                                        <i class="fa-regular fa-trash-can"></i>
-                                                    </button>
-                                                </form>
-                                            </div>
-                                            <!-- limited time -->
-                                            <p class="text-xs xsm:text-sm text-persian-red">
-                                                Big Sale / Limited Time
-                                            </p>
-                                        </div>
+                        @php
+                            $groupedItems = [];
+                            foreach ($cart as $key => $cart_item) {
+                                $sellerId = $cart_item['seller_id'] ?? 0;
+                                if (!isset($groupedItems[$sellerId])) {
+                                    $seller = \App\Models\Seller::find($sellerId);
+                                    $groupedItems[$sellerId] = [
+                                        'seller_name' => $seller ? $seller->business_name : 'Store ' . $sellerId,
+                                        'items' => [],
+                                    ];
+                                }
+                                $groupedItems[$sellerId]['items'][$key] = $cart_item;
+                            }
+                        @endphp
+                        @foreach ($groupedItems as $sellerId => $sellerData)
+                            <!-- Store/Seller Header with Select All for this seller -->
+                            <div class="seller-section mb-4 mt-6">
+                                <label for="selectSeller{{ $sellerId }}"
+                                    class="w-full flex items-center justify-between cursor-pointer text-black hover:text-black/80 py-2 px-3 bg-gray-100 rounded-md">
+                                    <p class="md:text-base flex items-center gap-2">
+                                        <input type="checkbox" id="selectSeller{{ $sellerId }}"
+                                            class="hidden form-checkbox seller-checkbox peer/seller{{ $sellerId }}"
+                                            data-seller-id="{{ $sellerId }}" />
+                                        <label for="selectSeller{{ $sellerId }}"
+                                            class="inline-block stroke-black peer-checked/seller{{ $sellerId }}:stroke-white rounded-full text-white peer-checked/seller{{ $sellerId }}:text-black border-2 border-black cursor-pointer">
+                                            <svg width="28" height="28" class="w-5 md:w-6 h-5 md:h-6"
+                                                viewBox="0 0 32 32" stroke-width="0" fill="currentColor"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <circle cx="16" cy="16" r="16" fill="currentColor" />
+                                                <path
+                                                    d="M9.58789 18.2939C9.58789 18.2939 10.9629 18.2939 12.7962 21.5023C12.7962 21.5023 17.892 13.0992 22.4212 11.4189"
+                                                    stroke-width="1.79853" stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </label>
 
-                                        <!-- Prices & Quantity Controls -->
-                                        <div class="flex flex-wrap gap-y-3 items-center justify-between">
-                                            <!-- price  -->
-                                            <div class="flex flex-wrap items-center gap-2">
-                                                <div class="new-price flex items-center gap-1 flex-no-wrap">
-                                                    <i class="fa-solid fa-bolt text-[#ffa755] lg:text-lg"></i>
-                                                    <span
-                                                        class="align-center text-xs xsm:text-sm lg:text-base text-[#ffa755]">$</span>
-                                                    <h3
-                                                        class="current-price text-sm xsm:text-lg md:text-xl font-bold text-primary">
-                                                        {{ $cart_item['discount_price'] }}
-                                                    </h3>
+                                        <span class="font-medium">{{ $sellerData['seller_name'] }}</span>
+                                        (<span class="seller-count"
+                                            data-seller-id="{{ $sellerId }}">0</span>/<span>{{ count($sellerData['items']) }}</span>)
+                                    </p>
+
+                                    <i class="fa-solid fa-store text-sm"></i>
+                                </label>
+
+                                <!-- Items for this seller -->
+                                <div class="seller-items seller-{{ $sellerId }}">
+                                    @foreach ($sellerData['items'] as $key => $cart_item)
+                                        <div class="md:py-5 py-3 cart-item border-t border-jet-gray/20"
+                                            data-price="{{ $cart_item['selling_price'] }}"
+                                            data-seller-id="{{ $sellerId }}"
+                                            data-discounted-price="{{ $cart_item['discount_price'] }}">
+                                            <div class="flex gap-2 sm:gap-4">
+                                                <!-- Item Checkbox -->
+                                                <div class="flex items-start pt-2">
+                                                    <input type="checkbox" id="item{{ $key }}"
+                                                        class="hidden form-checkbox item-checkbox peer/item{{ $key }}"
+                                                        data-item-id="{{ $key }}"
+                                                        data-seller-id="{{ $sellerId }}" />
+                                                    <label for="item{{ $key }}"
+                                                        class="inline-block stroke-black peer-checked/item{{ $key }}:stroke-white rounded-full text-white peer-checked/item{{ $key }}:text-black border-2 border-black cursor-pointer">
+                                                        <svg width="24" height="24" class="w-5 h-5"
+                                                            viewBox="0 0 32 32" stroke-width="0" fill="currentColor"
+                                                            xmlns="http://www.w3.org/2000/svg">
+                                                            <circle cx="16" cy="16" r="16"
+                                                                fill="currentColor" />
+                                                            <path
+                                                                d="M9.58789 18.2939C9.58789 18.2939 10.9629 18.2939 12.7962 21.5023C12.7962 21.5023 17.892 13.0992 22.4212 11.4189"
+                                                                stroke-width="1.79853" stroke-linecap="round"
+                                                                stroke-linejoin="round" />
+                                                        </svg>
+                                                    </label>
                                                 </div>
-                                                @php
-                                                    $discount =
-                                                        (($cart_item['selling_price'] - $cart_item['discount_price']) /
-                                                            $cart_item['selling_price']) *
-                                                        100;
-                                                @endphp
-                                                <span
-                                                    class="text-xs xsm:text-sm px-2.5 py-0.5 rounded-lg border border-primary">-
-                                                    {{ percentage($discount) }} last 2 days</span>
-                                            </div>
-                                            <!-- quantity -->
-                                            <div class="quantity-controls">
-                                                <div class="text-davy-gray flex flex-nowrap items-center gap-2">
-                                                    <h6 class="text-sm xsm:text-base sm:text-lg">Quantity :</h6>
-                                                    <div class="flex items-center border rounded p-1">
-                                                        <input type="hidden" class="product-id"
-                                                            value="{{ $key }}">
-                                                        <button type="button"
-                                                            class="decrease-qty w-5 h-5 flex items-center justify-center text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 active:text-primary rounded text-sm font-bold">
-                                                            <i class="fa-solid fa-minus"></i>
-                                                        </button>
-                                                        <input readonly type="number" value="{{ $cart_item['quantity'] }}"
-                                                            min="1"
-                                                            class="quantity-input text-center text-persian-blue w-12 h-5 text-sm font-medium border-0 focus:ring-0" />
-                                                        <button type="button"
-                                                            class="increase-qty w-5 h-5 flex items-center justify-center text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 active:text-primary rounded text-sm font-bold">
-                                                            <i class="fa-solid fa-plus"></i>
-                                                        </button>
+
+                                                <!-- Item Image -->
+                                                <div
+                                                    class="item-image-wrap w-24 h-28 xsm:w-36 xsm:h-40 rounded-md relative overflow-hidden">
+                                                    <a href="#">
+                                                        <img src="{{ asset('assets/' . $cart_item['thumbnail']) }}"
+                                                            alt="Product" class="w-full h-full object-cover" />
+                                                    </a>
+                                                    <span
+                                                        class="w-10/12 xsm:w-7/12 text-center text-leaf-green text-[8px] inline-block absolute bottom-3 xsm:bottom-5 left-1/2 -translate-x-1/2 bg-theme-dark text-white rounded-3xl py-1">Almost
+                                                        Sold Out</span>
+                                                </div>
+                                                <!-- Item Content -->
+                                                <div class="flex flex-col gap-2 sm:gap-5 flex-1">
+                                                    <div class="space-y-1 sm:space-y-2">
+                                                        <!-- title -->
+                                                        <div class="flex items-start justify-between">
+                                                            <h1
+                                                                class="md:text-base text-rustic-red text-sm w-11/12 xsm:w-10/12 md:w-3/4 lg:w-11/12 xl:w-3/4 line-clamp-3 sm:line-clamp-2">
+                                                                {{ $cart_item['name'] }}
+                                                            </h1>
+                                                            <form>
+                                                                <input type="hidden" class="product-id"
+                                                                    value="{{ $key }}">
+                                                                <button type="button"
+                                                                    class="delete-product hover:text-persian-red eq lg:text-xl xsm:text-lg">
+                                                                    <i class="fa-regular fa-trash-can"></i>
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                        <!-- limited time -->
+                                                        <p class="text-xs xsm:text-sm text-persian-red">
+                                                            Big Sale / Limited Time
+                                                        </p>
+                                                    </div>
+
+                                                    <!-- Prices & Quantity Controls -->
+                                                    <div class="flex flex-wrap gap-y-3 items-center justify-between">
+                                                        <!-- price  -->
+                                                        <div class="flex flex-wrap items-center gap-2">
+                                                            <div class="new-price flex items-center gap-1 flex-no-wrap">
+                                                                <i class="fa-solid fa-bolt text-[#ffa755] lg:text-lg"></i>
+                                                                <span
+                                                                    class="align-center text-xs xsm:text-sm lg:text-base text-[#ffa755]">$</span>
+                                                                <h3
+                                                                    class="current-price text-sm xsm:text-lg md:text-xl font-bold text-primary">
+                                                                    {{ $cart_item['discount_price'] }}
+                                                                </h3>
+                                                            </div>
+                                                            @php
+                                                                $discount =
+                                                                    (($cart_item['selling_price'] -
+                                                                        $cart_item['discount_price']) /
+                                                                        $cart_item['selling_price']) *
+                                                                    100;
+                                                            @endphp
+                                                            <span
+                                                                class="text-xs xsm:text-sm px-2.5 py-0.5 rounded-lg border border-primary">-
+                                                                {{ percentage($discount) }} last 2 days</span>
+                                                        </div>
+                                                        <!-- quantity -->
+                                                        <div class="quantity-controls">
+                                                            <div
+                                                                class="text-davy-gray flex flex-nowrap items-center gap-2">
+                                                                <h6 class="text-sm xsm:text-base sm:text-lg">Quantity :
+                                                                </h6>
+                                                                <div class="flex items-center border rounded p-1">
+                                                                    <input type="hidden" class="product-id"
+                                                                        value="{{ $key }}">
+                                                                    <button type="button"
+                                                                        class="decrease-qty w-5 h-5 flex items-center justify-center text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 active:text-primary rounded text-sm font-bold">
+                                                                        <i class="fa-solid fa-minus"></i>
+                                                                    </button>
+                                                                    <input readonly type="number"
+                                                                        value="{{ $cart_item['quantity'] }}"
+                                                                        min="1"
+                                                                        class="quantity-input text-center text-persian-blue w-12 h-5 text-sm font-medium border-0 focus:ring-0" />
+                                                                    <button type="button"
+                                                                        class="increase-qty w-5 h-5 flex items-center justify-center text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 active:text-primary rounded text-sm font-bold">
+                                                                        <i class="fa-solid fa-plus"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-
                                         </div>
-                                    </div>
+                                    @endforeach
                                 </div>
                             </div>
                         @endforeach
-
                     </div>
 
                     <!-- Recommendations section -->
@@ -276,10 +326,9 @@
 
                         <!-- order action btn -->
                         <div class="mt-4 sm:mt-6 space-y-2 sm:space-y-3">
-                            <a href="./checkout.html">
+                            <a href="{{ route('checkout.index') }}">
                                 <button id="checkoutBtn"
-                                    class="eq w-full flex flex-col items-center bg-jet-gray/40 text-white sm:py-3 py-2 rounded-full cursor-not-allowed"
-                                    disabled>
+                                    class="eq w-full flex flex-col items-center bg-primary text-white sm:py-3 py-2 rounded-full hover:bg-theme-dark">
                                     Checkout (0) <span class="text-xs">Almost Sold Out</span>
                                 </button>
                             </a>
@@ -459,6 +508,7 @@
     @push('scripts')
         <script>
             $(document).ready(function() {
+                // Quantity update handler
                 $('.increase-qty, .decrease-qty').click(function() {
                     let parent = $(this).closest('.quantity-controls');
                     let productId = parent.find('.product-id').val();
@@ -471,23 +521,60 @@
                         currentQuantity--;
                     }
 
+                    updateCartQuantity(productId, currentQuantity, quantityInput);
+                });
+
+                // Delete product handler
+                $('.delete-product').click(function() {
+                    let productId = $(this).siblings('.product-id').val();
+                    deleteCartItem(productId);
+                });
+
+                // Checkbox handlers
+                const selectAllCheckbox = $('#selectAll');
+                const sellerCheckboxes = $('.seller-checkbox');
+                const itemCheckboxes = $('.item-checkbox');
+
+                selectAllCheckbox.on('change', function() {
+                    const isChecked = $(this).prop('checked');
+                    sellerCheckboxes.prop('checked', isChecked);
+                    itemCheckboxes.prop('checked', isChecked);
+                    updateCounts();
+                    updateOrderSummary();
+                });
+
+                sellerCheckboxes.on('change', function() {
+                    const sellerId = $(this).data('seller-id');
+                    const isChecked = $(this).prop('checked');
+                    $(`.item-checkbox[data-seller-id="${sellerId}"]`).prop('checked', isChecked);
+                    updateSellerCheckboxes();
+                    updateCounts();
+                    updateOrderSummary();
+                });
+
+                itemCheckboxes.on('change', function() {
+                    const sellerId = $(this).data('seller-id');
+                    updateSellerCheckbox(sellerId);
+                    updateSelectAllCheckbox();
+                    updateCounts();
+                    updateOrderSummary();
+                });
+
+                // Helper functions
+                function updateCartQuantity(productId, quantity, input) {
                     $.ajax({
-                        url: "{{ route('cart.update') }}",
+                        url: "/cart/update",
                         type: "POST",
                         data: {
-                            _token: "{{ csrf_token() }}",
+                            _token: $('meta[name="csrf-token"]').attr('content'),
                             product_id: productId,
-                            quantity: currentQuantity
+                            quantity: quantity
                         },
                         success: function(response) {
-                            quantityInput.val(currentQuantity);
+                            input.val(quantity);
                             if (response.success) {
                                 toastr.success(response.message);
-
-                                $('#itemsTotal').text(response.order_total);
-                                $('#estimatedTotal').text(response.order_subtotal);
-                                $('#itemDiscount').text(response.discount);
-                                $('#selectedItemsCount').text(response.total_products_count);
+                                updateOrderTotals(response);
                             } else {
                                 toastr.error(response.message);
                             }
@@ -496,16 +583,14 @@
                             toastr.error('An error occurred while updating the cart.');
                         }
                     });
-                });
+                }
 
-
-                $('.delete-product').click(function() {
-                    let productId = $(this).siblings('.product-id').val();
-
+                function deleteCartItem(productId) {
                     $.ajax({
-                        url: "{{ route('cart.delete') }}",
+                        url: "/cart/delete",
                         type: "POST",
                         data: {
+                            _token: $('meta[name="csrf-token"]').attr('content'),
                             product_id: productId
                         },
                         success: function(response) {
@@ -520,7 +605,84 @@
                             toastr.error('An error occurred while deleting the product.');
                         }
                     });
-                });
+                }
+
+                function updateOrderTotals(response) {
+                    $('#itemsTotal').text(response.order_total);
+                    $('#estimatedTotal').text(response.order_subtotal);
+                    $('#itemDiscount').text(response.discount);
+                    $('#selectedItemsCount').text(response.total_products_count);
+                }
+
+                function updateSellerCheckbox(sellerId) {
+                    const sellerItems = $(`.item-checkbox[data-seller-id="${sellerId}"]`);
+                    const allSellerItemsChecked = sellerItems.length === sellerItems.filter(':checked').length;
+                    $(`.seller-checkbox[data-seller-id="${sellerId}"]`).prop('checked', allSellerItemsChecked);
+                }
+
+                function updateSellerCheckboxes() {
+                    const allSellersSelected = sellerCheckboxes.length === $('.seller-checkbox:checked').length;
+                    selectAllCheckbox.prop('checked', allSellersSelected);
+                }
+
+                function updateSelectAllCheckbox() {
+                    const allItemsChecked = itemCheckboxes.length === itemCheckboxes.filter(':checked').length;
+                    selectAllCheckbox.prop('checked', allItemsChecked);
+                }
+
+                function updateCounts() {
+                    const selectedItems = $('.item-checkbox:checked');
+                    $('#selectedCount').text(selectedItems.length);
+
+                    $('.seller-count').each(function() {
+                        const sellerId = $(this).data('seller-id');
+                        const sellerItems = $(`.item-checkbox[data-seller-id="${sellerId}"]:checked`);
+                        $(this).text(sellerItems.length);
+                    });
+                }
+
+                function updateOrderSummary() {
+                    let discountedTotal = 0;
+                    let originalTotal = 0;
+                    let selectedCount = 0;
+
+                    $('.item-checkbox:checked').each(function() {
+                        const cartItem = $(this).closest('.cart-item');
+                        if (cartItem.length) {
+                            const price = parseFloat(cartItem.data('price'));
+                            const discountedPrice = parseFloat(cartItem.data('discounted-price'));
+                            const quantity = parseInt(cartItem.find('.quantity-input').val(), 10);
+
+                            discountedTotal += discountedPrice * quantity;
+                            originalTotal += price * quantity;
+                            selectedCount += quantity;
+                        }
+                    });
+
+                    const discount = originalTotal - discountedTotal;
+
+                    $('#itemsTotal').text(formatCurrency(originalTotal));
+                    $('#itemDiscount').text('-' + formatCurrency(discount));
+                    $('#estimatedTotal').text(formatCurrency(discountedTotal));
+                    $('#selectedItemsCount').text(selectedCount);
+
+                    const checkoutBtn = $('#checkoutBtn');
+                    checkoutBtn.html(`Checkout (${selectedCount}) <span class="text-xs">Almost Sold Out</span>`);
+
+                    if (selectedCount === 0) {
+                        checkoutBtn.prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
+                    } else {
+                        checkoutBtn.prop('disabled', false).removeClass('opacity-50 cursor-not-allowed');
+                    }
+                }
+
+                function formatCurrency(amount) {
+                    return '$' + amount.toFixed(2);
+                }
+
+                // Initialize
+                updateOrderSummary();
+                updateCounts();
             });
         </script>
     @endpush

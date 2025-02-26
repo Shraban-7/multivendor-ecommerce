@@ -44,6 +44,7 @@ class CartController extends Controller
         } else {
             $cart[$product->id] = [
                 "name" => $product->name,
+                "seller_id" => $product->seller_id,
                 "quantity" => $request->quantity ?? 1,
                 "discount_price" => $price,
                 "selling_price" => $product->selling_price,
@@ -53,7 +54,7 @@ class CartController extends Controller
 
         $request->session()->put('cart', $cart);
 
-        return response()->json(['success' => true, 'message' => 'Product added to cart']);
+        return response()->json(['success' => true, 'message' => 'Product added to cart', 'action' => 'add_to_cart']);
     }
 
     public function details(Request $request)

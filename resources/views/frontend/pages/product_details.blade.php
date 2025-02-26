@@ -248,7 +248,7 @@
                                 <span class="block text-xs font-light">{{ percentage($discount) }} of Discount</span>
                             </button>
                             <button
-                                class="cartBtn text-sm md:text-base font-medium flex-1 px-6 py-1.5 bg-primary text-white rounded-full hover:bg-theme-dark eq">
+                                class="text-sm md:text-base font-medium flex-1 px-6 py-1.5 bg-primary text-white rounded-full hover:bg-theme-dark eq">
                                 Buy Now
                                 <span class="block text-xs font-light">Faster Dispatch</span>
                             </button>
