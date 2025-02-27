@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/category/{slug}', [CategoryController::class, 'category_details'])->name('category_details');
 
-Route::get('/product-details/{slug}', [ProductController::class, 'details'])->name('product_details');
+Route::get('/product-details/{slug}', [ProductController::class, 'details'])->name('product.details');
 
 Route::get('/shop-review', function () {
     return view('frontend.pages.shop_review');
@@ -35,16 +35,14 @@ Route::get('/wishlist', function () {
     return view('frontend.pages.wishlist');
 })->name('wishlist');
 
-Route::prefix('cart')->as('cart.')->group(function () {
-    Route::post('/add', [CartController::class, 'add'])->name('add');
-    Route::post('/update', [CartController::class, 'update'])->name('update');
-    Route::post('/delete', [CartController::class, 'delete'])->name('delete');
-    Route::get('/details', [CartController::class, 'details'])->name('details');
+
+Route::middleware('auth')->group(function () {
+    Route::prefix('cart')->as('cart.')->group(function () {
+        Route::post('/add', [CartController::class, 'add'])->name('add');
+        Route::post('/update', [CartController::class, 'update'])->name('update');
+        Route::post('/delete', [CartController::class, 'delete'])->name('delete');
+        Route::get('/details', [CartController::class, 'details'])->name('details');
+    });
+
+    Route::match(['get', 'post'], 'checkout/', [CheckoutController::class, 'checkout'])->name('checkout');
 });
-
-Route::middleware('auth')->prefix('checkout')->as('checkout.')->group(function () {
-    Route::get('/', [CheckoutController::class, 'index'])->name('index');
-    Route::post('/store', [CheckoutController::class, 'store'])->name('store');
-});
-
-

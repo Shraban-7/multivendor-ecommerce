@@ -365,7 +365,7 @@
                     <div
                         class="group/product-card bg-white rounded-xl sm:rounded-2xl shadow hover:shadow-lg eq p-3 sm:p-8 relative">
                         <!-- product image -->
-                        <a href="{{ route('product_details', $product->slug) }}" class="prod-image sm:h-40 h-32 block">
+                        <a href="{{ route('product.details', $product->slug) }}" class="prod-image sm:h-40 h-32 block">
                             <img src="{{ asset('assets/' . $product->thumbnail) }}" alt="Italian Avocado"
                                 class="w-full h-full object-contain" />
                         </a>
@@ -373,7 +373,7 @@
                         <div class="prod-details flex flex-col items-center text-black">
                             <div class="z-20 flex gap-1 flex-col items-center">
                                 <h3 class="font-medium sm:text-xl xsm:text-lg text-sm line-clamp-1">
-                                    <a href="{{ route('product_details', $product->slug) }}">{{ $product->name }}</a>
+                                    <a href="{{ route('product.details', $product->slug) }}">{{ $product->name }}</a>
                                 </h3>
                                 <p class="sm:text-base text-sm">(local shop)</p>
                                 <p class="text-jet-gray">{{ $product->unit }}.</p>

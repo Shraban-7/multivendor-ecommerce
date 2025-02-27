@@ -16,4 +16,9 @@ class Order extends Model
     const DELIVERED = 3;
     const CANCELLED = 4;
 
+    public function items()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
 }

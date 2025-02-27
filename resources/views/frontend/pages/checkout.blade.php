@@ -316,7 +316,7 @@
                     e.preventDefault();
                     $.ajax({
                         type: 'POST',
-                        url: "{{ route('checkout.store') }}",
+                        url: "{{ route('checkout') }}",
                         data: $('#checkout-form').serialize(),
                         success: function(response) {
                             console.log(response);

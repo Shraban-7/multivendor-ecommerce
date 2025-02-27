@@ -2,69 +2,64 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Seller;
 use App\Models\Product;
+use App\Enums\DiscountType;
 use Illuminate\Http\Request;
+use App\Models\CustomerAddress;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\CustomerAddress;
 use Illuminate\Support\Facades\Auth;
 
 class CheckoutController extends Controller
 {
-    public function index()
+    public function checkout(Request $request)
     {
         $user = Auth::user();
-        $cart = collect(session()->get('cart', []));
 
-        $groupedCart = $cart->groupBy('seller_id')->map(function ($items) {
-            $seller = Seller::find($items->first()['seller_id']);
+        if ($request->isMethod('GET')) {
+            return view('frontend.pages.checkout', compact('user'));
+        }
 
-            return [
-                'seller' => $seller,
-                'items' => $items,
-                'subtotal' => $items->sum(fn($item) => $item['quantity'] * $item['discount_price']),
-                'total' => $items->sum(fn($item) => $item['quantity'] * $item['selling_price']),
-                'discount' => $items->sum(fn($item) => $item['quantity'] * ($item['selling_price'] - $item['discount_price'])),
-                'item_count' => $items->sum('quantity')
-            ];
-        });
+        $carts = Cart::where('user_id', $user->id)
+            ->with('cartItems.product')
+            ->get()
+            ->groupBy(fn($cart) => $cart->cartItems->first()->product->seller_id ?? null);
 
-        $sub_total = $groupedCart->sum('subtotal');
-        $grand_total = $groupedCart->sum('total');
-        $discount = $groupedCart->sum('discount');
-        $total_products_count = $groupedCart->sum('item_count');
-
-        return view('frontend.pages.checkout', compact('user', 'groupedCart', 'sub_total', 'grand_total', 'discount', 'total_products_count'));
-    }
-
-    public function store(Request $request)
-    {
-        $user = Auth::user();
-        $cart = collect(session()->get('cart', []));
-        $selectedSellers = collect($request->seller_ids);
-
+        $selectedSellers = $carts->keys();
 
         CustomerAddress::create([
-            'user_id'=>$user->id,
+            'user_id' => $user->id,
             'type' => $request->type,
             'address' => $request->address
         ]);
 
-        $orders = $cart->groupBy('seller_id')
-        ->filter(fn($items, $sellerId) => $selectedSellers->contains($sellerId))
-            ->map(function ($items, $sellerId) use ($request, $user) {
+        $orders = $carts->filter(fn($cartGroup, $sellerId) => $selectedSellers->contains($sellerId))
+            ->map(function ($cartGroup, $sellerId) use ($user) {
                 $seller = Seller::find($sellerId);
-                $subtotal = $items->sum(fn($item) => $item['quantity'] * $item['discount_price']);
-                $discount = $items->sum(fn($item) => $item['quantity'] * ($item['selling_price'] - $item['discount_price']));
+
+                $discountPrice = function ($product) {
+                    if ($product->discount_type === DiscountType::FLAT) {
+                        return $product->selling_price - $product->discount_amount;
+                    } elseif ($product->discount_type === DiscountType::PERCENTAGE) {
+                        return $product->selling_price - ($product->selling_price * $product->discount_amount) / 100;
+                    }
+                    return $product->selling_price;
+                };
+
+                $subtotal = $cartGroup->sum(fn($cart) => $cart->cartItems->sum(fn($item) => $item->quantity * $discountPrice($item->product)));
+
+
+                $discount = $cartGroup->sum(fn($cart) => $cart->cartItems->sum(fn($item) => $item->quantity * ($item->product->selling_price - $discountPrice($item->product))));
                 $shippingFee = $seller->shipping_cost ?? 0;
 
                 $order = Order::create([
                     'user_id' => $user->id,
                     'seller_id' => $sellerId,
                     'tracking_id' => 'TRK-' . strtoupper(uniqid()),
-                    'sub_total' => $subtotal,
+                    'sub_total' => 0,
                     'discount' => $discount,
                     'tax' => 0,
                     'shipping_fee' => $shippingFee,
@@ -73,27 +68,33 @@ class CheckoutController extends Controller
                     'status' => 1
                 ]);
 
-                foreach ($items as $item) {
-                    $product = Product::find($item['id']);
+                foreach ($cartGroup as $cart) {
+                    foreach ($cart->cartItems as $item) {
+                        $product = Product::find($item->product_id);
 
-                    $order->items()->create([
-                        'product_id' => $item['id'],
-                        'product_variant' => $item['variant'] ?? null,
-                        'product_variant_price' => $item['selling_price'],
-                        'buying_price' => $product->buying_price ?? 0,
-                        'unit_price' => $item['discount_price'],
-                        'quantity' => $item['quantity'],
-                        'discount' => $item['quantity'] * ($item['selling_price'] - $item['discount_price']),
-                        'sub_total' => $item['quantity'] * $item['discount_price']
-                    ]);
+                        $order->items()->create([
+                            'product_id' => $item->product_id,
+                            'product_variant' => $item->variant ?? null,
+                            'product_variant_price' => $item->product->selling_price,
+                            'buying_price' => $product->buying_price ?? 0,
+                            'unit_price' => $discountPrice($item->product) ?? $item->product->selling_price,
+                            'quantity' => $item->quantity,
+                            'discount' => $item->quantity * ($item->product->selling_price - $item->product->discount_price),
+                            'sub_total' => $item->quantity * $item->product->discount_price
+                        ]);
 
-                    $product->decrement('stock', $item['quantity']);
+                        $product->decrement('stock_in', $item->quantity);
+                        $product->increment('stock_out', $item->quantity);
+                    }
+
+                    // Delete cart items and cart after order creation
+                    $cart->cartItems()->delete();
+                    $cart->delete();
                 }
 
                 return $order;
             });
 
-        session()->put('cart', $cart->reject(fn($item) => $selectedSellers->contains($item['seller_id']))->toArray());
 
         return response()->json([
             'success' => true,
