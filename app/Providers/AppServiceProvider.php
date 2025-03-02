@@ -26,15 +26,22 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useBootstrap();
         View::composer('*', function ($view) {
-            $carts = Cart::where('user_id', Auth::user()->id)
-            ->with('cartItems.product')
-            ->get()
-            ->groupBy(function ($cart) {
-                return $cart->cartItems->first()->product->seller_id ?? null;
-            });
-            $cartCount = count($carts);
+            if (Auth::check()) {
+                $carts = Cart::where('user_id', Auth::user()->id)
+                    ->with('cartItems.product')
+                    ->get()
+                    ->groupBy(function ($cart) {
+                        return $cart->cartItems->first()->product->seller_id ?? null;
+                    });
+                $cartCount = count($carts);
+            }
+            else{
+                $carts =[];
+                $cartCount = 0;
+            }
+
             $sub_total = 0;
-            $grand_total =0 ;
+            $grand_total = 0;
             $totalPrice = 0;
             foreach ($carts as $seller_id => $cartGroup) {
                 foreach ($cartGroup as $cart) {
