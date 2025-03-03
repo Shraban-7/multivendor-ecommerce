@@ -56,7 +56,7 @@
 
         <!-- Checkout Main Section Starts -->
         <section class="checkout-section container section-padding">
-            <form id="checkout-form" class="block grid gap-5 xl:gap-10 2xl:gap-20 lg:grid-cols-3">
+            <form id="checkout-form" class="block lg:grid gap-5 xl:gap-10 2xl:gap-20 lg:grid-cols-3">
                 <!-- Billing information -->
                 <div class="lg:col-span-2">
                     <div class="space-y-6 text-theme-dark">

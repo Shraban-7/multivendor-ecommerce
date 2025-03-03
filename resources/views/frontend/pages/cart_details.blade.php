@@ -48,7 +48,7 @@
                 <div class="lg:col-span-2">
                     <!-- Free Shipping Banner -->
                     <div
-                        class="text-sm justify-center lg:text-base text-rustic-red bg-[#E6F3E5] px-4 py-3 flex flex-wrap flex-col xsm:flex-row justify-between items-center my-2 md:my-5">
+                        class="text-sm justify-center lg:text-base text-rustic-red bg-[#E6F3E5] px-4 py-3 flex flex-wrap flex-col xsm:flex-row xsm:justify-between items-center my-2 md:my-5">
                         <div class="flex items-center gap-2 text-center">
                             <i class="fa-solid fa-check text-theme-teal"></i>
                             <span>Free shipping special for you</span>

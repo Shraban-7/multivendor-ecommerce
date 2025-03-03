@@ -58,7 +58,7 @@
 
         <!-- Account Settings Main Section Starts -->
         <section class="checkout-section container section-padding">
-            <div class="block grid lg:grid-cols-4">
+            <div class="block lg:grid lg:grid-cols-4">
                 <div class="lg:col-span-3">
                     <div class="space-y-5 md:space-y-8 text-theme-dark">
                         <!--  Account Settings -->
@@ -186,7 +186,7 @@
                                     </div>
 
                                     <button type="submit"
-                                        class="bg-primary text-white px-5 py-2 border-2 border-transparent rounded active:ring-[1] active:ring-light-yellow active:border-light-yellow text-xs md:text-sm uppercase font-bold mt-3 mt-5 hover:bg-theme-dark eq">
+                                        class="bg-primary text-white px-5 py-2 border-2 border-transparent rounded active:ring-[1] active:ring-light-yellow active:border-light-yellow text-xs md:text-sm uppercase font-bold mt-3 md:mt-5 hover:bg-theme-dark eq">
                                         save changes
                                     </button>
                                 </div>
@@ -294,7 +294,7 @@
                                     </div>
 
                                     <button type="submit"
-                                        class="bg-primary text-white px-5 py-2 border-2 border-transparent rounded active:ring-[1] active:ring-light-yellow active:border-light-yellow text-xs md:text-sm uppercase font-bold mt-1 mt-2 hover:bg-theme-dark eq">
+                                        class="bg-primary text-white px-5 py-2 border-2 border-transparent rounded active:ring-[1] active:ring-light-yellow active:border-light-yellow text-xs md:text-sm uppercase font-bold mt-1 md:mt-2 hover:bg-theme-dark eq">
                                         save changes
                                     </button>
                                 </form>
@@ -399,7 +399,7 @@
                                     </div>
 
                                     <button type="submit"
-                                        class="bg-primary text-white px-5 py-2 border-2 border-transparent rounded active:ring-[1] active:ring-light-yellow active:border-light-yellow text-xs md:text-sm uppercase font-bold mt-1 mt-2 hover:bg-theme-dark eq">
+                                        class="bg-primary text-white px-5 py-2 border-2 border-transparent rounded active:ring-[1] active:ring-light-yellow active:border-light-yellow text-xs md:text-sm uppercase font-bold mt-1 md:mt-2 hover:bg-theme-dark eq">
                                         save changes
                                     </button>
                                 </form>
@@ -462,7 +462,7 @@
                                 </div>
 
                                 <button type="submit"
-                                    class="bg-primary text-white px-5 py-2 border-2 border-transparent rounded active:ring-[1] active:ring-light-yellow active:border-light-yellow text-xs md:text-sm uppercase font-bold mt-1 mt-2 hover:bg-theme-dark eq">
+                                    class="bg-primary text-white px-5 py-2 border-2 border-transparent rounded active:ring-[1] active:ring-light-yellow active:border-light-yellow text-xs md:text-sm uppercase font-bold mt-1 md:mt-2 hover:bg-theme-dark eq">
                                     Change Passowrd
                                 </button>
                             </form>

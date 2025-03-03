@@ -9,11 +9,10 @@ use App\Models\Product;
 use App\Enums\DiscountType;
 use Illuminate\Http\Request;
 use App\Models\CustomerAddress;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
-class CheckoutController extends Controller
+class OrderController extends Controller
 {
     public function checkout(Request $request)
     {
@@ -95,12 +94,7 @@ class CheckoutController extends Controller
                 return $order;
             });
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Orders placed successfully',
-            'orders' => $orders->pluck('tracking_id')
-        ]);
+       return redirect()->route('order.success')->with('Order placed successfully');
     }
-
 
 }

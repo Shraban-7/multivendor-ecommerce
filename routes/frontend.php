@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\CategoryController;
-use App\Http\Controllers\Frontend\CheckoutController;
+use App\Http\Controllers\Frontend\OrderController;
 use App\Http\Controllers\Frontend\ProductController;
 use Illuminate\Support\Facades\Route;
 
@@ -44,5 +44,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/details', [CartController::class, 'details'])->name('details');
     });
 
-    Route::match(['get', 'post'], 'checkout/', [CheckoutController::class, 'checkout'])->name('checkout');
+    Route::match(['get', 'post'], 'checkout/', [OrderController::class, 'checkout'])->name('checkout');
+
+    Route::prefix('order')->as('order.')->group(function () {
+        Route::post('/success', [OrderController::class, 'success'])->name('success');
+    });
 });
