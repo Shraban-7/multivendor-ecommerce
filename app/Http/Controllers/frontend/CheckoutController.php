@@ -51,7 +51,6 @@ class CheckoutController extends Controller
 
                 $subtotal = $cartGroup->sum(fn($cart) => $cart->cartItems->sum(fn($item) => $item->quantity * $discountPrice($item->product)));
 
-
                 $discount = $cartGroup->sum(fn($cart) => $cart->cartItems->sum(fn($item) => $item->quantity * ($item->product->selling_price - $discountPrice($item->product))));
                 $shippingFee = $seller->shipping_cost ?? 0;
 
@@ -59,7 +58,7 @@ class CheckoutController extends Controller
                     'user_id' => $user->id,
                     'seller_id' => $sellerId,
                     'tracking_id' => 'TRK-' . strtoupper(uniqid()),
-                    'sub_total' => 0,
+                    'sub_total' => $subtotal,
                     'discount' => $discount,
                     'tax' => 0,
                     'shipping_fee' => $shippingFee,
@@ -72,22 +71,23 @@ class CheckoutController extends Controller
                     foreach ($cart->cartItems as $item) {
                         $product = Product::find($item->product_id);
 
+                        $unitPrice = $discountPrice($item->product);
+
                         $order->items()->create([
                             'product_id' => $item->product_id,
                             'product_variant' => $item->variant ?? null,
                             'product_variant_price' => $item->product->selling_price,
                             'buying_price' => $product->buying_price ?? 0,
-                            'unit_price' => $discountPrice($item->product) ?? $item->product->selling_price,
+                            'unit_price' => $unitPrice,
                             'quantity' => $item->quantity,
-                            'discount' => $item->quantity * ($item->product->selling_price - $item->product->discount_price),
-                            'sub_total' => $item->quantity * $item->product->discount_price
+                            'discount' => $item->quantity * ($item->product->selling_price - $unitPrice),
+                            'sub_total' => $item->quantity * $unitPrice
                         ]);
 
                         $product->decrement('stock_in', $item->quantity);
                         $product->increment('stock_out', $item->quantity);
                     }
 
-                    // Delete cart items and cart after order creation
                     $cart->cartItems()->delete();
                     $cart->delete();
                 }
@@ -95,11 +95,12 @@ class CheckoutController extends Controller
                 return $order;
             });
 
-
         return response()->json([
             'success' => true,
             'message' => 'Orders placed successfully',
             'orders' => $orders->pluck('tracking_id')
         ]);
     }
+
+
 }

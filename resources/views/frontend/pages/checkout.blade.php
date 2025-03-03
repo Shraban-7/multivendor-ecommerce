@@ -319,6 +319,8 @@
                         url: "{{ route('checkout') }}",
                         data: $('#checkout-form').serialize(),
                         success: function(response) {
+                            toastr.success(response.message);
+                            window.location.reload();
                             console.log(response);
                         },
                         error: function(xhr, status, error) {

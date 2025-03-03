@@ -132,17 +132,24 @@
                         quantity: qtyInput
                     },
                     success: function(data) {
-                        if (data.success) {
+                        if (data.unauthorized) {
+                            window.location.href = "{{ route('login') }}";
+                        } else if (data.success) {
                             toastr.success(data.message);
-                            if ("{{ Route::currentRouteName() }}" === 'cart.details' && data.action === 'add_to_cart') {
+                            if ("{{ Route::currentRouteName() }}" === 'cart.details' && data
+                                .action === 'add_to_cart') {
                                 window.location.reload();
                             }
                         } else {
                             toastr.error(data.error);
                         }
                     },
-                    error: function() {
-                        toastr.error('Something went wrong!');
+                    error: function(xhr) {
+                        if (xhr.status === 401) {
+                            window.location.href = "{{ route('login') }}";
+                        } else {
+                            toastr.error('Something went wrong!');
+                        }
                     }
                 });
             });
