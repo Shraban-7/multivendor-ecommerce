@@ -33,7 +33,7 @@ class LoginController extends Controller
             $request->session()->regenerate();
             session()->flash('success', 'Login successful');
 
-            return redirect()->route('profile');
+            return redirect()->intended('profile');
         }
 
         if ($seller) {
@@ -44,7 +44,7 @@ class LoginController extends Controller
             $request->session()->regenerate();
             session()->flash('success', 'Login successful');
 
-            return redirect()->route('seller.dashboard');
+            return redirect()->route('seller.dashboard')->with('success','You successfully login');
         }
 
         if ($admin) {
@@ -58,7 +58,7 @@ class LoginController extends Controller
             return redirect()->route('admin.dashboard');
         }
 
-        return redirect()->back()->with('error', 'Something went wrong.');
+        return redirect()->back()->with('error', 'Something went wrong.')->with('success', 'You successfully login');
     }
 
 }

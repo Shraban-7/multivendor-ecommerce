@@ -15,7 +15,7 @@ class CategoryProductSeeder extends Seeder
      */
     public function run(): void
     {
-        $categories = Category::category()->get();
+        $categories = Category::category()->with('subcategories')->get();
 
         $thumbnails = [
             "frontend/images/grocery-prod-1.png",
@@ -44,32 +44,65 @@ class CategoryProductSeeder extends Seeder
         ];
 
         foreach ($categories as $category) {
-            for ($i = 1; $i <= 8; $i++) {
-                Product::create([
-                    'name' => $category->name . ' Product ' . $i,
-                    'slug' => Str::slug($category->name . '-product-' . $i),
-                    'thumbnail' => $thumbnails[array_rand($thumbnails)],
-                    'short_description' => 'Short description for ' . $category->name . ' product ' . $i,
-                    'description' => 'Detailed description for ' . $category->name . ' product ' . $i,
-                    'buying_price' => rand(50, 500),
-                    'selling_price' => rand(100, 1000),
-                    'discount_type' => 'percentage',
-                    'discount_amount' => rand(5, 30),
-                    'quantity' => rand(10, 100),
-                    'unit' => rand(1,100) .$units[array_rand($units)],
-                    'category_id' => $category->id,
-                    'brand_id' => null,
-                    'seller_id' => 1,
-                    'sku' => 'SKU-' . strtoupper(Str::random(8)),
-                    'barcode' => 'BAR-' . strtoupper(Str::random(10)),
-                    'status' => 1,
-                    'stock_status' => 'in_stock',
-                    'stock_in' => rand(5, 50),
-                    'stock_out' => rand(0, 10),
-                    'shipping_cost' => rand(20, 100),
-                    'tax' => rand(5, 15),
-                    'views' => rand(100, 5000),
-                ]);
+            if (!empty($category->subcategories)) {
+                foreach ($category->subcategories as $subcategory) {
+                    for ($i = 1; $i <= 8; $i++) {
+                        Product::create([
+                            'name' =>trim($subcategory->name .' Product '. $i) ,
+                            'slug' => Str::slug(trim($subcategory->name . ' ' . $category->name . ' Product ' . $i)),
+                            'thumbnail' => $thumbnails[array_rand($thumbnails)],
+                            'short_description' => 'Short description for ' . $subcategory->name . ' ' . substr($category->name, 0, 3) . ' product ' . $i,
+                            'description' => 'Detailed description for ' . $subcategory->name . ' ' . substr($category->name, 0, 3) . ' product ' . $i,
+                            'buying_price' => rand(50, 500),
+                            'selling_price' => rand(100, 1000),
+                            'discount_type' => 'percentage',
+                            'discount_amount' => rand(5, 30),
+                            'quantity' => rand(10, 100),
+                            'unit' => rand(1, 100) . $units[array_rand($units)],
+                            'category_id' => $category->id,
+                            'subcategory_id' => $subcategory->id,
+                            'brand_id' => null,
+                            'seller_id' => 1,
+                            'sku' => 'SKU-' . strtoupper(Str::random(8)),
+                            'barcode' => 'BAR-' . strtoupper(Str::random(10)),
+                            'status' => 1,
+                            'stock_status' => 'in_stock',
+                            'stock_in' => rand(5, 50),
+                            'stock_out' => rand(0, 10),
+                            'shipping_cost' => rand(20, 100),
+                            'tax' => rand(5, 15),
+                            'views' => rand(100, 5000),
+                        ]);
+                    }
+                }
+            } else {
+                for ($i = 1; $i <= 8; $i++) {
+                    Product::create([
+                        'name' => substr($category->name, 0, 3) . ' Product ' . $i,
+                        'slug' => Str::slug(substr($category->name, 0, 3) . '-product-' . $i),
+                        'thumbnail' => $thumbnails[array_rand($thumbnails)],
+                        'short_description' => 'Short description for ' . substr($category->name, 0, 3) . ' product ' . $i,
+                        'description' => 'Detailed description for ' . substr($category->name, 0, 3) . ' product ' . $i,
+                        'buying_price' => rand(50, 500),
+                        'selling_price' => rand(100, 1000),
+                        'discount_type' => 'percentage',
+                        'discount_amount' => rand(5, 30),
+                        'quantity' => rand(10, 100),
+                        'unit' => rand(1, 100) . $units[array_rand($units)],
+                        'category_id' => $category->id,
+                        'brand_id' => null,
+                        'seller_id' => 1,
+                        'sku' => 'SKU-' . strtoupper(Str::random(8)),
+                        'barcode' => 'BAR-' . strtoupper(Str::random(10)),
+                        'status' => 1,
+                        'stock_status' => 'in_stock',
+                        'stock_in' => rand(5, 50),
+                        'stock_out' => rand(0, 10),
+                        'shipping_cost' => rand(20, 100),
+                        'tax' => rand(5, 15),
+                        'views' => rand(100, 5000),
+                    ]);
+                }
             }
         }
     }

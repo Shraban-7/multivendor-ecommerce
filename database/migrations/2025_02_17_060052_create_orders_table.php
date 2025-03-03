@@ -13,14 +13,15 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
+            $table->string('tracking_id')->nullable();
             $table->foreignId('user_id')->nullable()->constrained('users')->cascadeOnDelete();
             $table->foreignId('seller_id')->nullable()->constrained('sellers')->cascadeOnDelete();
             $table->decimal('sub_total', 10, 2);
-            $table->decimal('discount', 10, 2)->default(0.00);
-            $table->decimal('tax', 10, 2)->default(0.00);
-            $table->decimal('shipping_fee', 10, 2)->default(0.00);
-            $table->decimal('payable', 10, 2)->default(0.00);
-            $table->decimal('due', 10, 2)->default(0.00);
+            $table->decimal('discount', 10, 2)->nullable();
+            $table->decimal('tax', 10, 2)->nullable();
+            $table->decimal('shipping_fee', 10, 2)->nullable();
+            $table->decimal('payable', 10, 2)->nullable();
+            $table->decimal('due', 10, 2)->nullable();
             $table->integer('status')->default(1);
             $table->timestamps();
         });

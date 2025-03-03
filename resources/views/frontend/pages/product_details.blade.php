@@ -38,7 +38,7 @@
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="m1 9 4-4-4-4" />
                             </svg>
-                            <span class="ms-1 text-sm text-davy-gray md:ms-2">{{ $product->subcategory }}</span>
+                            <span class="ms-1 text-sm text-davy-gray md:ms-2">{{ optional($product->subcategory)->name }}</span>
                         </div>
                     </li>
                 </ol>
@@ -241,8 +241,9 @@
                             $discount = ($product->discount_amount / $product->selling_price) * 100;
                         @endphp
                         <div class="flex gap-4 mt-5 w-full xsm:w-4/5 md:w-11/12 lg:w-4/5">
-                            <button
-                                class="text-sm md:text-base font-medium flex-1 px-6 py-1.5 border border-primary text-primary rounded-full hover:bg-primary hover:text-white eq">
+                            <input type="hidden" name="quantity" value="1" id="qtyInput{{ $product->id }}">
+                            <button data-id="{{ $product->id }}" type="button"
+                                class="cartBtn text-sm md:text-base font-medium flex-1 px-6 py-1.5 border border-primary text-primary rounded-full hover:bg-primary hover:text-white eq">
                                 Add To Cart
                                 <span class="block text-xs font-light">{{ percentage($discount) }} of Discount</span>
                             </button>
@@ -730,7 +731,7 @@
                             class="relative text-base xsm:text-sm sm:text-base md:text-sm lg:text-base xl:text-lg 2xl:text-xl rounded-xl hover:shadow-lg eq">
                             <div
                                 class="relative h-60 xsm:h-48 sm:h-56 sm:h-90 lg:h-[17rem] xl:h-[22rem] overflow-hidden rounded-lg">
-                                <a href="{{ route('product_details', $product->slug) }}" class="block w-full h-full">
+                                <a href="{{ route('product.details', $product->slug) }}" class="block w-full h-full">
                                     <img src="{{ asset('assets/' . $product->thumbnail) }}"
                                         alt="The Iconic Doeskin Blazer" class="w-full h-full object-cover" />
                                 </a>
@@ -744,7 +745,7 @@
                             <div class="p-4 xsm:p-2 lg:p-5">
                                 <h3
                                     class="font-medium line-clamp-2 xsm:h-10 sm:h-12 md:h-10 lg:h-12 xl:h-14 lg:w-3/4 xl:w-2/3">
-                                    <a href="{{ route('product_details', $product->slug) }}"
+                                    <a href="{{ route('product.details', $product->slug) }}"
                                         class="hover:text-primary eq">{{ $product->name }}</a>
                                 </h3>
                                 <p class="text-leaf-green">Almost sold Out</p>

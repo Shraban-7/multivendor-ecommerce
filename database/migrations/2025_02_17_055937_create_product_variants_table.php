@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('product_variants', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
-            $table->foreignId('attribute_id')->nullable()->constrained('product_attributes')->onDelete('cascade');
+            $table->foreignId('product_attribute_id')->nullable()->constrained('product_attributes')->onDelete('cascade');
             $table->decimal('additional_price', 10, 2)->default(0.00);
             $table->text('description')->nullable();
             $table->timestamps();

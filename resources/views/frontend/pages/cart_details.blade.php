@@ -56,236 +56,187 @@
                         <span class="text-leaf-green italic font-light">Exclusive offer</span>
                     </div>
 
-                    <!-- Select All Checkbox -->
-                    <label for="selectAll"
-                        class="w-full flex items-center justify-between cursor-pointer text-black hover:text-black/80 my-3 md:my-4">
-                        <p class="md:text-lg flex items-center gap-2">
-                            <input type="checkbox" id="selectAll" class="hidden form-checkbox peer/selectAll" />
-                            <label for="selectAll"
-                                class="inline-block stroke-black peer-checked/selectAll:stroke-white rounded-full text-white peer-checked/selectAll:text-black border-2 border-black cursor-pointer">
-                                <svg width="32" height="32" class="w-6 md:w-7 h-6 md:h-7" viewBox="0 0 32 32"
-                                    stroke-width="0" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                    <circle cx="16" cy="16" r="16" fill="currentColor" />
-                                    <path
-                                        d="M9.58789 18.2939C9.58789 18.2939 10.9629 18.2939 12.7962 21.5023C12.7962 21.5023 17.892 13.0992 22.4212 11.4189"
-                                        stroke-width="1.79853" stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                            </label>
-
-                            Select All (<span id="selectedCount">0</span>)
-                        </p>
-
-                        <i class="fa-solid fa-list-ul"></i>
-                    </label>
-
                     <!-- Cart Items Container -->
                     <div id="cart-wrapper">
-                        <!-- Cart Item 1 -->
-                        <div class="md:py-5 py-3 cart-item border-t border-jet-gray/20" data-price="1599.50"
-                            data-discounted-price="959.70">
-                            <div class="flex gap-2 sm:gap-4">
-                                <!-- Item Image -->
-                                <div
-                                    class="item-image-wrap w-24 h-28 xsm:w-36 xsm:h-40 rounded-md relative overflow-hidden">
-                                    <a href="#">
-                                        <img src="{{ asset('assets/frontend/images/cart-prod-1.png') }}" alt="Product"
-                                            class="w-full h-full object-cover" />
-                                    </a>
-                                    <span
-                                        class="w-10/12 xsm:w-7/12 text-center text-leaf-green text-[8px] inline-block absolute bottom-3 xsm:bottom-5 left-1/2 -translate-x-1/2 bg-theme-dark text-white rounded-3xl py-1">Almost
-                                        Sold Out</span>
-                                    <!-- Custom Check Icon -->
-                                    <label for="item-1"
-                                        class="inline-flex items-center justify-between cursor-pointer text-black hover:text-black/80 absolute top-2 left-2">
-                                        <input id="item-1" type="checkbox"
-                                            class="product-checkbox hidden form-checkbox peer/item-1" />
-                                        <label for="item-1"
-                                            class="inline-block stroke-black peer-checked/item-1:stroke-white rounded-full text-white peer-checked/item-1:text-black border-2 border-black cursor-pointer">
-                                            <svg width="32" height="32" class="w-6 md:w-7 h-6 md:h-7"
-                                                viewBox="0 0 32 32" stroke-width="0" fill="currentColor"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <circle cx="16" cy="16" r="16" fill="currentColor" />
-                                                <path
-                                                    d="M9.58789 18.2939C9.58789 18.2939 10.9629 18.2939 12.7962 21.5023C12.7962 21.5023 17.892 13.0992 22.4212 11.4189"
-                                                    stroke-width="1.79853" stroke-linecap="round" stroke-linejoin="round" />
-                                            </svg>
-                                        </label>
-                                    </label>
-                                </div>
-                                <!-- Item Content -->
-                                <div class="flex flex-col gap-2 sm:gap-5 flex-1">
-                                    <div class="space-y-1 sm:space-y-2">
-                                        <!-- title -->
-                                        <div class="flex items-start justify-between">
-                                            <h1
-                                                class="md:text-base text-rustic-red text-sm w-11/12 xsm:w-10/12 md:w-3/4 lg:w-11/12 xl:w-3/4 line-clamp-3 sm:line-clamp-2">
-                                                Men's Fit Stretch Jaket - Caramel, Woven Fabric,
-                                                Matching Washable - Perfect for Business Casual &
-                                                Summer Wear
-                                            </h1>
-                                            <button class="hover:text-persian-red eq lg:text-xl xsm:text-lg">
-                                                <i class="fa-regular fa-trash-can"></i>
-                                            </button>
-                                        </div>
-                                        <!-- size -->
-                                        <p class="text-xs xsm:text-sm text-gray-500 uppercase">
-                                            Label Size: XL
-                                        </p>
-                                        <!-- limited time -->
-                                        <p class="text-xs xsm:text-sm text-persian-red">
-                                            Big Sale / Limited Time
-                                        </p>
-                                    </div>
+                        @foreach ($carts as $sellerId => $cartGroup)
+                            @php
+                                $seller = \App\Models\Seller::find($sellerId);
+                                $sellerName = $seller ? $seller->business_name : '';
+                            @endphp
+                            <!-- Store/Seller Header with Select All for this seller -->
+                            <div class="seller-section mb-4 mt-6">
+                                @if ($seller)
+                                    <label for="selectSeller{{ $sellerId }}"
+                                        class="w-full flex items-center justify-between cursor-pointer text-black hover:text-black/80 py-2 px-3 bg-gray-100 rounded-md">
+                                        <p class="md:text-base flex items-center gap-2">
+                                            <input type="checkbox" id="selectSeller{{ $sellerId }}"
+                                                class="hidden form-checkbox seller-checkbox peer/seller{{ $sellerId }}"
+                                                data-seller-id="{{ $sellerId }}" />
+                                            <label for="selectSeller{{ $sellerId }}"
+                                                class="inline-block stroke-black peer-checked/seller{{ $sellerId }}:stroke-white rounded-full text-white peer-checked/seller{{ $sellerId }}:text-black border-2 border-black cursor-pointer">
+                                                <svg width="28" height="28" class="w-5 md:w-6 h-5 md:h-6"
+                                                    viewBox="0 0 32 32" stroke-width="0" fill="currentColor"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <circle cx="16" cy="16" r="16" fill="currentColor" />
+                                                    <path
+                                                        d="M9.58789 18.2939C9.58789 18.2939 10.9629 18.2939 12.7962 21.5023C12.7962 21.5023 17.892 13.0992 22.4212 11.4189"
+                                                        stroke-width="1.79853" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                </svg>
+                                            </label>
 
-                                    <!-- Prices & Quantity Controls -->
-                                    <div class="flex flex-wrap gap-y-3 items-center justify-between">
-                                        <!-- price  -->
-                                        <div class="flex flex-wrap items-center gap-2">
-                                            <div class="new-price flex items-center gap-1 flex-no-wrap">
-                                                <i class="fa-solid fa-bolt text-[#ffa755] lg:text-lg"></i>
-                                                <span
-                                                    class="align-center text-xs xsm:text-sm lg:text-base text-[#ffa755]">$</span>
-                                                <h3
-                                                    class="current-price text-sm xsm:text-lg md:text-xl font-bold text-primary">
-                                                    959.70
-                                                </h3>
-                                            </div>
-                                            <h6
-                                                class="old-price text-xs xsm:text-sm xsm:text-base text-jet-gray line-through">
-                                                $ 1599.50
-                                            </h6>
-                                            <span
-                                                class="text-xs xsm:text-sm px-2.5 py-0.5 rounded-lg border border-primary">-
-                                                40% last 2 days</span>
-                                        </div>
-                                        <!-- quantity -->
-                                        <div class="quantity-controls">
-                                            <div class="text-davy-gray flex flex-nowrap items-center gap-2">
-                                                <h6 class="text-sm xsm:text-base sm:text-lg">
-                                                    Quantity :
-                                                </h6>
-                                                <div class="flex items-center border rounded p-1">
-                                                    <button
-                                                        class="decrease-qty w-5 h-5 flex items-center justify-center text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 eq active:text-primary rounded text-sm font-bold">
-                                                        <i class="fa-solid fa-minus"></i>
-                                                    </button>
-                                                    <input readonly type="number" value="1" min="1"
-                                                        class="quantity-input text-center text-persian-blue w-12 h-5 text-sm font-medium border-0 focus:ring-0" />
-                                                    <button
-                                                        class="increase-qty w-5 h-5 flex items-center justify-center text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 eq active:text-primary rounded text-sm font-bold">
-                                                        <i class="fa-solid fa-plus"></i>
-                                                    </button>
+                                            <span class="font-medium">{{ $sellerName }}</span>
+                                            (<span class="seller-count"
+                                                data-seller-id="{{ $sellerId }}">0</span>/<span>{{ count($cartGroup->flatMap->cartItems) }}</span>)
+                                        </p>
+
+                                        <i class="fa-solid fa-store text-sm"></i>
+                                    </label>
+                                @endif
+
+                                <!-- Items for this seller -->
+                                <div class="seller-items seller-{{ $sellerId }}">
+                                    @foreach ($cartGroup as $key => $cart)
+                                        @foreach ($cart->cartItems as $item)
+                                            @php
+                                                if ($item->product->discount_type != null) {
+                                                    if (
+                                                        $item->product->discount_type == \App\Enums\DiscountType::FLAT
+                                                    ) {
+                                                        $discount_price =
+                                                            $item->product->selling_price -
+                                                            $item->product->discount_amount;
+                                                    } elseif (
+                                                        $item->product->discount_type ==
+                                                        \App\Enums\DiscountType::PERCENTAGE
+                                                    ) {
+                                                        $discount_price =
+                                                            $item->product->selling_price -
+                                                            ($item->product->selling_price *
+                                                                $item->product->discount_amount) /
+                                                                100;
+                                                    }
+                                                } else {
+                                                    $discount_price = $item->product->selling_price;
+                                                }
+                                            @endphp
+                                            <div class="md:py-5 py-3 border-t border-jet-gray/20 cart-item"
+                                                data-price="{{ $item->product->selling_price }}"
+                                                data-seller-id="{{ $sellerId }}"
+                                                data-discounted-price="{{ $discount_price }}"
+                                                data-id="{{ $item->id }}">
+                                                <div class="flex gap-2 sm:gap-4">
+                                                    <!-- Item Checkbox -->
+                                                    <div class="flex items-start pt-2">
+                                                        <input type="checkbox" id="item{{ $key }}"
+                                                            class="hidden form-checkbox item-checkbox peer/item{{ $key }}"
+                                                            data-item-id="{{ $key }}"
+                                                            data-seller-id="{{ $sellerId }}" />
+                                                        <label for="item{{ $key }}"
+                                                            class="inline-block stroke-black peer-checked/item{{ $key }}:stroke-white rounded-full text-white peer-checked/item{{ $key }}:text-black border-2 border-black cursor-pointer">
+                                                            <svg width="24" height="24" class="w-5 h-5"
+                                                                viewBox="0 0 32 32" stroke-width="0" fill="currentColor"
+                                                                xmlns="http://www.w3.org/2000/svg">
+                                                                <circle cx="16" cy="16" r="16"
+                                                                    fill="currentColor" />
+                                                                <path
+                                                                    d="M9.58789 18.2939C9.58789 18.2939 10.9629 18.2939 12.7962 21.5023C12.7962 21.5023 17.892 13.0992 22.4212 11.4189"
+                                                                    stroke-width="1.79853" stroke-linecap="round"
+                                                                    stroke-linejoin="round" />
+                                                            </svg>
+                                                        </label>
+                                                    </div>
+
+                                                    <!-- Item Image -->
+                                                    <div
+                                                        class="item-image-wrap w-24 h-28 xsm:w-36 xsm:h-40 rounded-md relative overflow-hidden">
+                                                        <a href="{{ route('product.details', $item->product->slug) }}">
+                                                            <img src="{{ asset('assets/' . $item->product->thumbnail) }}"
+                                                                alt="Product" class="w-full h-full object-cover" />
+                                                        </a>
+                                                        <span
+                                                            class="w-10/12 xsm:w-7/12 text-center text-leaf-green text-[8px] inline-block absolute bottom-3 xsm:bottom-5 left-1/2 -translate-x-1/2 bg-theme-dark text-white rounded-3xl py-1">Almost
+                                                            Sold Out</span>
+                                                    </div>
+                                                    <!-- Item Content -->
+                                                    <div class="flex flex-col gap-2 sm:gap-5 flex-1">
+                                                        <div class="space-y-1 sm:space-y-2">
+                                                            <!-- title -->
+                                                            <div class="flex items-start justify-between">
+                                                                <h1
+                                                                    class="md:text-base text-rustic-red text-sm w-11/12 xsm:w-10/12 md:w-3/4 lg:w-11/12 xl:w-3/4 line-clamp-3 sm:line-clamp-2">
+                                                                    {{ $item->product->name }}
+                                                                </h1>
+                                                                <div class="delete-item">
+                                                                    <button type="button" data-id="{{ $item->id }}"
+                                                                        class="delete-btn hover:text-persian-red eq lg:text-xl xsm:text-lg">
+                                                                        <i class="fa-regular fa-trash-can"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                            <!-- limited time -->
+                                                            <p class="text-xs xsm:text-sm text-persian-red">
+                                                                Big Sale / Limited Time
+                                                            </p>
+                                                        </div>
+
+                                                        <!-- Prices & Quantity Controls -->
+                                                        <div class="flex flex-wrap gap-y-3 items-center justify-between">
+                                                            <!-- price  -->
+                                                            <div class="flex flex-wrap items-center gap-2">
+                                                                <div
+                                                                    class="new-price flex items-center gap-1 flex-no-wrap">
+                                                                    <i
+                                                                        class="fa-solid fa-bolt text-[#ffa755] lg:text-lg"></i>
+
+                                                                    <h3
+                                                                        class="current-price text-sm xsm:text-lg md:text-xl font-bold text-primary">
+                                                                        {{ currency($discount_price) }}
+                                                                    </h3>
+                                                                </div>
+                                                                @php
+                                                                    $discount =
+                                                                        (($item->product->selling_price -
+                                                                            $discount_price) /
+                                                                            $item->product->selling_price) *
+                                                                        100;
+                                                                @endphp
+                                                                <span
+                                                                    class="text-xs xsm:text-sm px-2.5 py-0.5 rounded-lg border border-primary">-
+                                                                    {{ percentage($discount) }} last 2 days</span>
+                                                            </div>
+                                                            <!-- quantity -->
+                                                            <div class="quantity-controls" data-id="{{ $item->id }}">
+                                                                <div
+                                                                    class="text-davy-gray flex flex-nowrap items-center gap-2">
+                                                                    <h6 class="text-sm xsm:text-base sm:text-lg">Quantity :
+                                                                    </h6>
+                                                                    <div class="flex items-center border rounded p-1">
+                                                                        <input type="hidden" class="product-id"
+                                                                            value="{{ $key }}">
+                                                                        <button type="button"
+                                                                            class="decrease-qty w-5 h-5 flex items-center justify-center text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 active:text-primary rounded text-sm font-bold">
+                                                                            <i class="fa-solid fa-minus"></i>
+                                                                        </button>
+                                                                        <input readonly type="number"
+                                                                            value="{{ $item->quantity }}" min="1"
+                                                                            class="quantity-input text-center text-persian-blue w-12 h-5 text-sm font-medium border-0 focus:ring-0" />
+                                                                        <button type="button"
+                                                                            class="increase-qty w-5 h-5 flex items-center justify-center text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 active:text-primary rounded text-sm font-bold">
+                                                                            <i class="fa-solid fa-plus"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
+                                        @endforeach
+                                    @endforeach
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- Cart Item 2 -->
-                        <div class="md:py-5 py-3 cart-item border-t border-jet-gray/20" data-price="2500.00"
-                            data-discounted-price="2000.00">
-                            <div class="flex gap-2 sm:gap-4">
-                                <!-- Item Image -->
-                                <div
-                                    class="item-image-wrap w-24 h-28 xsm:w-36 xsm:h-40 rounded-md relative overflow-hidden">
-                                    <a href="#">
-                                        <img src="{{ asset('assets/frontend/images/cart-prod-2.png') }}" alt="Product"
-                                            class="w-full h-full object-cover" />
-                                    </a>
-                                    <span
-                                        class="w-10/12 xsm:w-7/12 text-center text-leaf-green text-[8px] inline-block absolute bottom-3 xsm:bottom-5 left-1/2 -translate-x-1/2 bg-theme-dark text-white rounded-3xl py-1">Almost
-                                        Sold Out</span>
-                                    <!-- Custom Check Icon -->
-                                    <label for="item-2"
-                                        class="inline-flex items-center justify-between cursor-pointer text-black hover:text-black/80 absolute top-2 left-2">
-                                        <input id="item-2" type="checkbox"
-                                            class="product-checkbox hidden form-checkbox peer/item-2" />
-                                        <label for="item-2"
-                                            class="inline-block stroke-black peer-checked/item-2:stroke-white rounded-full text-white peer-checked/item-2:text-black border-2 border-black cursor-pointer">
-                                            <svg width="32" height="32" class="w-6 md:w-7 h-6 md:h-7"
-                                                viewBox="0 0 32 32" stroke-width="0" fill="currentColor"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <circle cx="16" cy="16" r="16" fill="currentColor" />
-                                                <path
-                                                    d="M9.58789 18.2939C9.58789 18.2939 10.9629 18.2939 12.7962 21.5023C12.7962 21.5023 17.892 13.0992 22.4212 11.4189"
-                                                    stroke-width="1.79853" stroke-linecap="round"
-                                                    stroke-linejoin="round" />
-                                            </svg>
-                                        </label>
-                                    </label>
-                                </div>
-                                <!-- Item Content -->
-                                <div class="flex flex-col gap-2 sm:gap-5 flex-1">
-                                    <div class="space-y-1 sm:space-y-2">
-                                        <!-- title -->
-                                        <div class="flex items-start justify-between">
-                                            <h1
-                                                class="md:text-base text-rustic-red text-sm w-11/12 xsm:w-10/12 md:w-3/4 lg:w-11/12 xl:w-3/4 line-clamp-3 sm:line-clamp-2">
-                                                The Iconic Doeskin Blazer - Caramel, Woven Fabric,
-                                                Machine Washable - Perfect for Business Casual &
-                                                Summer Wear
-                                            </h1>
-                                            <button class="hover:text-persian-red eq lg:text-xl xsm:text-lg">
-                                                <i class="fa-regular fa-trash-can"></i>
-                                            </button>
-                                        </div>
-                                        <!-- size -->
-                                        <p class="text-xs xsm:text-sm text-gray-500 uppercase">
-                                            Label Size: L
-                                        </p>
-                                        <!-- limited time -->
-                                        <p class="text-xs xsm:text-sm text-persian-red">
-                                            Big Sale / Limited Time
-                                        </p>
-                                    </div>
-
-                                    <!-- Prices & Quantity Controls -->
-                                    <div class="flex flex-wrap gap-y-3 items-center justify-between">
-                                        <!-- price  -->
-                                        <div class="flex flex-wrap items-center gap-2">
-                                            <div class="new-price flex items-center gap-1 flex-no-wrap">
-                                                <i class="fa-solid fa-bolt text-[#ffa755] lg:text-lg"></i>
-                                                <span
-                                                    class="align-center text-xs xsm:text-sm lg:text-base text-[#ffa755]">$</span>
-                                                <h3
-                                                    class="current-price text-sm xsm:text-lg md:text-xl font-bold text-primary">
-                                                    2000.00
-                                                </h3>
-                                            </div>
-                                            <h6
-                                                class="old-price text-xs xsm:text-sm xsm:text-base text-jet-gray line-through">
-                                                $ 2500.00
-                                            </h6>
-                                            <span
-                                                class="text-xs xsm:text-sm px-2.5 py-0.5 rounded-lg border border-primary">-
-                                                20% last 2 days</span>
-                                        </div>
-                                        <!-- quantity -->
-                                        <div class="quantity-controls">
-                                            <div class="text-davy-gray flex flex-nowrap items-center gap-2">
-                                                <h6 class="text-sm xsm:text-base sm:text-lg">
-                                                    Quantity :
-                                                </h6>
-                                                <div class="flex items-center border rounded p-1">
-                                                    <button
-                                                        class="decrease-qty w-5 h-5 flex items-center justify-center text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 eq active:text-primary rounded text-sm font-bold">
-                                                        <i class="fa-solid fa-minus"></i>
-                                                    </button>
-                                                    <input readonly type="number" value="1" min="1"
-                                                        class="quantity-input text-center text-persian-blue w-12 h-5 text-sm font-medium border-0 focus:ring-0" />
-                                                    <button
-                                                        class="increase-qty w-5 h-5 flex items-center justify-center text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 eq active:text-primary rounded text-sm font-bold">
-                                                        <i class="fa-solid fa-plus"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
 
                     <!-- Recommendations section -->
@@ -296,352 +247,66 @@
 
                         <div class="grid grid-cols-1 xsm:grid-cols-2 md:grid-cols-3 sm:gap-6 gap-3">
                             <!-- Product Card 1 -->
-                            <div
-                                class="relative text-base xsm:text-sm sm:text-base md:text-sm lg:text-sm xl:text-base rounded-xl hover:shadow-lg eq">
+                            @foreach ($products as $product)
                                 <div
-                                    class="relative h-60 xsm:h-48 sm:h-56 lg:h-56 xl:h-64 2xl:h-60 overflow-hidden rounded-lg">
-                                    <a href="#" class="block w-full h-full">
-                                        <img src="{{ asset('assets/frontend/images/electronic-prod-1.png') }}"
-                                            alt="ASUS Vivo15 OLED K513 Core-i5 11th Gen 15.6″ FHD Laptop"
-                                            class="w-full h-full object-cover" />
-                                    </a>
-                                    <button
-                                        class="absolute bottom-10 xsm:bottom-3 lg:bottom-8 xsm:left-3 lg:left-5 left-5 bg-white hover:bg-primary hover:text-white rounded-full px-4 py-2 flex items-center gap-2 shadow-lg eq">
-                                        <i class="fa-regular fa-eye"></i>
-                                        Quick View
-                                    </button>
-                                </div>
-
-                                <div class="p-4 xsm:p-2 lg:p-5">
-                                    <h3 class="font-medium lg:mb-2 xl:mb-0 xsm:h-10 sm:h-12 md:h-10 lg:h-14 xl:h-12">
-                                        <a href="#"
-                                            class="line-clamp-2 lg:line-clamp-3 xl:line-clamp-2 hover:text-primary eq">ASUS
-                                            Vivo15 OLED K513 Core-i5 11th Gen 15.6″ FHD
-                                            Laptop</a>
-                                    </h3>
-                                    <p class="text-leaf-green">Almost sold Out</p>
-
-                                    <div class="flex flex-wrap items-center gap-x-1">
-                                        <div class="flex items-center flex-no-wrap gap-x-1 text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <img src="{{ asset('assets/frontend/images/fire-icon.png') }}" class="w-8 h-auto"
-                                                alt="Fire Icon" />
-                                        </div>
-
-                                        <span class="text-jet-gray">4.5K+ Sold</span>
+                                    class="relative text-base xsm:text-sm sm:text-base md:text-sm lg:text-sm xl:text-base rounded-xl hover:shadow-lg eq">
+                                    <div
+                                        class="relative h-60 xsm:h-48 sm:h-56 lg:h-56 xl:h-64 2xl:h-60 overflow-hidden rounded-lg">
+                                        <a href="{{ route('product.details', $product->slug) }}"
+                                            class="block w-full h-full">
+                                            <img src="{{ asset('assets/' . $product->thumbnail) }}"
+                                                alt="ASUS Vivo15 OLED K513 Core-i5 11th Gen 15.6″ FHD Laptop"
+                                                class="w-full h-full object-cover" />
+                                        </a>
+                                        <button
+                                            class="absolute bottom-10 xsm:bottom-3 lg:bottom-8 xsm:left-3 lg:left-5 left-5 bg-white hover:bg-primary hover:text-white rounded-full px-4 py-2 flex items-center gap-2 shadow-lg eq">
+                                            <i class="fa-regular fa-eye"></i>
+                                            Quick View
+                                        </button>
                                     </div>
 
-                                    <div class="flex flex-wrap items-center gap-x-5 xsm:gap-x-1 sm:gap-x-2 xl:mt-2">
-                                        <span class="text-primary/80">Final Hours</span>
-                                        <div class="flex items-center gap-x-5 xsm:gap-x-2 sm:gap-x-5 xl:gap-x-8">
-                                            <div class="price flex items-center gap-1 flex-no-wrap">
-                                                <i class="fa-solid fa-bolt text-[#ffa755]"></i>
-                                                <span class="align-center text-sm text-[#ffa755]">$</span>
-                                                <h3 class="font-bold text-primary">25.89</h3>
-                                            </div>
-                                            <div>
-                                                <button
-                                                    class="text-xs xsm:text-[10px] sm:text-base md:text-xs xl:text-base w-7 h-7 xsm:w-6 xsm:h-6 md:w-8 md:h-8 sm:w-10 sm:h-10 xl:w-10 xl:h-10 flex items-center justify-center bg-primary rounded-full text-white hover:bg-theme-dark eq">
-                                                    <i class="fa-solid fa-cart-plus"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Product Card 2 -->
-                            <div
-                                class="relative text-base xsm:text-sm sm:text-base md:text-sm lg:text-sm xl:text-base rounded-xl hover:shadow-lg eq">
-                                <div
-                                    class="relative h-60 xsm:h-48 sm:h-56 lg:h-56 xl:h-64 2xl:h-60 overflow-hidden rounded-lg">
-                                    <a href="#" class="block w-full h-full">
-                                        <img src="{{ asset('assets/frontend/images/electronic-prod-2.png') }}"
-                                            alt="Apple watch series 10 depth rainmaker"
-                                            class="w-full h-full object-cover" />
-                                    </a>
-                                    <button
-                                        class="absolute bottom-10 xsm:bottom-3 lg:bottom-8 xsm:left-3 lg:left-5 left-5 bg-white hover:bg-primary hover:text-white rounded-full px-4 py-2 flex items-center gap-2 shadow-lg eq">
-                                        <i class="fa-regular fa-eye"></i>
-                                        Quick View
-                                    </button>
-                                </div>
+                                    <div class="p-4 xsm:p-2 lg:p-5">
+                                        <h3 class="font-medium lg:mb-2 xl:mb-0 xsm:h-10 sm:h-12 md:h-10 lg:h-14 xl:h-12">
+                                            <a href="{{ route('product.details', $product->slug) }}"
+                                                class="line-clamp-2 lg:line-clamp-3 xl:line-clamp-2 hover:text-primary eq">{{ $product->name }}</a>
+                                        </h3>
+                                        <p class="text-leaf-green">Almost sold Out</p>
 
-                                <div class="p-4 xsm:p-2 lg:p-5">
-                                    <h3 class="font-medium lg:mb-2 xl:mb-0 xsm:h-10 sm:h-12 md:h-10 lg:h-14 xl:h-12">
-                                        <a href="#"
-                                            class="line-clamp-2 lg:line-clamp-3 xl:line-clamp-2 hover:text-primary eq">Apple
-                                            watch series 10 depth rainmaker</a>
-                                    </h3>
-                                    <p class="text-leaf-green">Almost sold Out</p>
-
-                                    <div class="flex flex-wrap items-center gap-x-1">
-                                        <div class="flex items-center flex-no-wrap gap-x-1 text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <img src="{{ asset('assets/frontend/images/fire-icon.png') }}" class="w-8 h-auto"
-                                                alt="Fire Icon" />
+                                        <div class="flex flex-wrap items-center gap-x-1">
+                                            <div class="flex items-center flex-no-wrap gap-x-1 text-light-yellow">
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-solid fa-star"></i>
+                                                <img src="{{ asset('assets/frontend/images/fire-icon.png') }}"
+                                                    class="w-8 h-auto" alt="Fire Icon" />
+                                            </div>
+                                            <span class="text-jet-gray">{{ $product->stock_out }}+ Sold</span>
                                         </div>
 
-                                        <span class="text-jet-gray">2.8K+ Sold</span>
-                                    </div>
+                                        <div class="flex flex-wrap items-center gap-x-5 xsm:gap-x-1 sm:gap-x-2 xl:mt-2">
+                                            <span class="text-primary/80">Final Hours</span>
+                                            <div class="flex items-center gap-x-5 xsm:gap-x-2 sm:gap-x-5 xl:gap-x-8">
+                                                <div class="price flex items-center gap-1 flex-no-wrap">
+                                                    <i class="fa-solid fa-bolt text-[#ffa755]"></i>
 
-                                    <div class="flex flex-wrap items-center gap-x-5 xsm:gap-x-1 sm:gap-x-2 xl:mt-2">
-                                        <span class="text-primary/80">Final Hours</span>
-                                        <div class="flex items-center gap-x-5 xsm:gap-x-2 sm:gap-x-5 xl:gap-x-8">
-                                            <div class="price flex items-center gap-1 flex-no-wrap">
-                                                <i class="fa-solid fa-bolt text-[#ffa755]"></i>
-                                                <span class="align-center text-sm text-[#ffa755]">$</span>
-                                                <h3 class="font-bold text-primary">30.50</h3>
-                                            </div>
-                                            <div>
-                                                <button
-                                                    class="text-xs xsm:text-[10px] sm:text-base md:text-xs xl:text-base w-7 h-7 xsm:w-6 xsm:h-6 md:w-8 md:h-8 sm:w-10 sm:h-10 xl:w-10 xl:h-10 flex items-center justify-center bg-primary rounded-full text-white hover:bg-theme-dark eq">
-                                                    <i class="fa-solid fa-cart-plus"></i>
-                                                </button>
+                                                    <h3 class="font-bold text-primary">
+                                                        {{ currency($product->selling_price) }}</h3>
+                                                </div>
+                                                <div>
+                                                    <input type="hidden" name="quantity" value="1"
+                                                        id="qtyInput{{ $product->id }}">
+                                                    <button data-id="{{ $product->id }}" type="button"
+                                                        class="cartBtn text-xs xsm:text-[10px] sm:text-base md:text-xs xl:text-base w-7 h-7 xsm:w-6 xsm:h-6 md:w-8 md:h-8 sm:w-10 sm:h-10 xl:w-10 xl:h-10 flex items-center justify-center bg-primary rounded-full text-white hover:bg-theme-dark eq">
+                                                        <i class="fa-solid fa-cart-plus"></i>
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <!-- Product Card 3 -->
-                            <div
-                                class="relative text-base xsm:text-sm sm:text-base md:text-sm lg:text-sm xl:text-base rounded-xl hover:shadow-lg eq">
-                                <div
-                                    class="relative h-60 xsm:h-48 sm:h-56 lg:h-56 xl:h-64 2xl:h-60 overflow-hidden rounded-lg">
-                                    <a href="#" class="block w-full h-full">
-                                        <img src="{{ asset('assets/frontend/images/electronic-prod-3.png') }}"
-                                            alt="Quadcopter With Height Hold, App Control, And Obstacle For flying"
-                                            class="w-full h-full object-cover" />
-                                    </a>
-                                    <button
-                                        class="absolute bottom-10 xsm:bottom-3 lg:bottom-8 xsm:left-3 lg:left-5 left-5 bg-white hover:bg-primary hover:text-white rounded-full px-4 py-2 flex items-center gap-2 shadow-lg eq">
-                                        <i class="fa-regular fa-eye"></i>
-                                        Quick View
-                                    </button>
-                                </div>
-
-                                <div class="p-4 xsm:p-2 lg:p-5">
-                                    <h3 class="font-medium lg:mb-2 xl:mb-0 xsm:h-10 sm:h-12 md:h-10 lg:h-14 xl:h-12">
-                                        <a href="#"
-                                            class="line-clamp-2 lg:line-clamp-3 xl:line-clamp-2 hover:text-primary eq">Quadcopter
-                                            With Height Hold, App Control, And Obstacle
-                                            For flying</a>
-                                    </h3>
-                                    <p class="text-leaf-green">Almost sold Out</p>
-
-                                    <div class="flex flex-wrap items-center gap-x-1">
-                                        <div class="flex items-center flex-no-wrap gap-x-1 text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <img src="{{ asset('assets/frontend/images/fire-icon.png') }}" class="w-8 h-auto"
-                                                alt="Fire Icon" />
-                                        </div>
-
-                                        <span class="text-jet-gray">1.2K+ Sold</span>
-                                    </div>
-
-                                    <div class="flex flex-wrap items-center gap-x-5 xsm:gap-x-1 sm:gap-x-2 xl:mt-2">
-                                        <span class="text-primary/80">Final Hours</span>
-                                        <div class="flex items-center gap-x-5 xsm:gap-x-2 sm:gap-x-5 xl:gap-x-8">
-                                            <div class="price flex items-center gap-1 flex-no-wrap">
-                                                <i class="fa-solid fa-bolt text-[#ffa755]"></i>
-                                                <span class="align-center text-sm text-[#ffa755]">$</span>
-                                                <h3 class="font-bold text-primary">45.34</h3>
-                                            </div>
-                                            <div>
-                                                <button
-                                                    class="text-xs xsm:text-[10px] sm:text-base md:text-xs xl:text-base w-7 h-7 xsm:w-6 xsm:h-6 md:w-8 md:h-8 sm:w-10 sm:h-10 xl:w-10 xl:h-10 flex items-center justify-center bg-primary rounded-full text-white hover:bg-theme-dark eq">
-                                                    <i class="fa-solid fa-cart-plus"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Product Card 4 -->
-                            <div
-                                class="relative text-base xsm:text-sm sm:text-base md:text-sm lg:text-sm xl:text-base rounded-xl hover:shadow-lg eq">
-                                <div
-                                    class="relative h-60 xsm:h-48 sm:h-56 lg:h-56 xl:h-64 2xl:h-60 overflow-hidden rounded-lg">
-                                    <a href="#" class="block w-full h-full">
-                                        <img src="{{ asset('assets/frontend/images/electronic-prod-4.png') }}"
-                                            alt="Sports Wireless Headphones, ANC and ENC Headphone"
-                                            class="w-full h-full object-cover" />
-                                    </a>
-                                    <button
-                                        class="absolute bottom-10 xsm:bottom-3 lg:bottom-8 xsm:left-3 lg:left-5 left-5 bg-white hover:bg-primary hover:text-white rounded-full px-4 py-2 flex items-center gap-2 shadow-lg eq">
-                                        <i class="fa-regular fa-eye"></i>
-                                        Quick View
-                                    </button>
-                                </div>
-
-                                <div class="p-4 xsm:p-2 lg:p-5">
-                                    <h3 class="font-medium lg:mb-2 xl:mb-0 xsm:h-10 sm:h-12 md:h-10 lg:h-14 xl:h-12">
-                                        <a href="#"
-                                            class="line-clamp-2 lg:line-clamp-3 xl:line-clamp-2 hover:text-primary eq">Sports
-                                            Wireless Headphones, ANC and ENC Headphone</a>
-                                    </h3>
-                                    <p class="text-leaf-green">Almost sold Out</p>
-
-                                    <div class="flex flex-wrap items-center gap-x-1">
-                                        <div class="flex items-center flex-no-wrap gap-x-1 text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <img src="{{ asset('assets/frontend/images/fire-icon.png') }}" class="w-8 h-auto"
-                                                alt="Fire Icon" />
-                                        </div>
-
-                                        <span class="text-jet-gray">6.2K+ Sold</span>
-                                    </div>
-
-                                    <div class="flex flex-wrap items-center gap-x-5 xsm:gap-x-1 sm:gap-x-2 xl:mt-2">
-                                        <span class="text-primary/80">Final Hours</span>
-                                        <div class="flex items-center gap-x-5 xsm:gap-x-2 sm:gap-x-5 xl:gap-x-8">
-                                            <div class="price flex items-center gap-1 flex-no-wrap">
-                                                <i class="fa-solid fa-bolt text-[#ffa755]"></i>
-                                                <span class="align-center text-sm text-[#ffa755]">$</span>
-                                                <h3 class="font-bold text-primary">80.00</h3>
-                                            </div>
-                                            <div>
-                                                <button
-                                                    class="text-xs xsm:text-[10px] sm:text-base md:text-xs xl:text-base w-7 h-7 xsm:w-6 xsm:h-6 md:w-8 md:h-8 sm:w-10 sm:h-10 xl:w-10 xl:h-10 flex items-center justify-center bg-primary rounded-full text-white hover:bg-theme-dark eq">
-                                                    <i class="fa-solid fa-cart-plus"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Product Card 5 -->
-                            <div
-                                class="relative text-base xsm:text-sm sm:text-base md:text-sm lg:text-sm xl:text-base rounded-xl hover:shadow-lg eq">
-                                <div
-                                    class="relative h-60 xsm:h-48 sm:h-56 lg:h-56 xl:h-64 2xl:h-60 overflow-hidden rounded-lg">
-                                    <a href="#" class="block w-full h-full">
-                                        <img src="{{ asset('assets/frontend/images/electronic-prod-5.png') }}"
-                                            alt="SAMSUNG GALAXY A15 LTE Blue 6 +128GB Dual Sim, Smartphone"
-                                            class="w-full h-full object-cover" />
-                                    </a>
-                                    <button
-                                        class="absolute bottom-10 xsm:bottom-3 lg:bottom-8 xsm:left-3 lg:left-5 left-5 bg-white hover:bg-primary hover:text-white rounded-full px-4 py-2 flex items-center gap-2 shadow-lg eq">
-                                        <i class="fa-regular fa-eye"></i>
-                                        Quick View
-                                    </button>
-                                </div>
-
-                                <div class="p-4 xsm:p-2 lg:p-5">
-                                    <h3 class="font-medium lg:mb-2 xl:mb-0 xsm:h-10 sm:h-12 md:h-10 lg:h-14 xl:h-12">
-                                        <a href="#"
-                                            class="line-clamp-2 lg:line-clamp-3 xl:line-clamp-2 hover:text-primary eq">SAMSUNG
-                                            GALAXY A15 LTE Blue 6 +128GB Dual Sim,
-                                            Smartphone</a>
-                                    </h3>
-                                    <p class="text-leaf-green">Almost sold Out</p>
-
-                                    <div class="flex flex-wrap items-center gap-x-1">
-                                        <div class="flex items-center flex-no-wrap gap-x-1 text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <img src="{{ asset('assets/frontend/images/fire-icon.png') }}" class="w-8 h-auto"
-                                                alt="Fire Icon" />
-                                        </div>
-
-                                        <span class="text-jet-gray">4.8K+ Sold</span>
-                                    </div>
-
-                                    <div class="flex flex-wrap items-center gap-x-5 xsm:gap-x-1 sm:gap-x-2 xl:mt-2">
-                                        <span class="text-primary/80">Final Hours</span>
-                                        <div class="flex items-center gap-x-5 xsm:gap-x-2 sm:gap-x-5 xl:gap-x-8">
-                                            <div class="price flex items-center gap-1 flex-no-wrap">
-                                                <i class="fa-solid fa-bolt text-[#ffa755]"></i>
-                                                <span class="align-center text-sm text-[#ffa755]">$</span>
-                                                <h3 class="font-bold text-primary">30.50</h3>
-                                            </div>
-                                            <div>
-                                                <button
-                                                    class="text-xs xsm:text-[10px] sm:text-base md:text-xs xl:text-base w-7 h-7 xsm:w-6 xsm:h-6 md:w-8 md:h-8 sm:w-10 sm:h-10 xl:w-10 xl:h-10 flex items-center justify-center bg-primary rounded-full text-white hover:bg-theme-dark eq">
-                                                    <i class="fa-solid fa-cart-plus"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Product Card 6 -->
-                            <div
-                                class="relative text-base xsm:text-sm sm:text-base md:text-sm lg:text-sm xl:text-base rounded-xl hover:shadow-lg eq">
-                                <div
-                                    class="relative h-60 xsm:h-48 sm:h-56 lg:h-56 xl:h-64 2xl:h-60 overflow-hidden rounded-lg">
-                                    <a href="#" class="block w-full h-full">
-                                        <img src="{{ asset('assets/frontend/images/electronic-prod-6.png') }}"
-                                            alt="Electric
-                  Bike, 500W Motor, 14'' Tire Folding Mini Ebikes"
-                                            class="w-full h-full object-cover" />
-                                    </a>
-                                    <button
-                                        class="absolute bottom-10 xsm:bottom-3 lg:bottom-8 xsm:left-3 lg:left-5 left-5 bg-white hover:bg-primary hover:text-white rounded-full px-4 py-2 flex items-center gap-2 shadow-lg eq">
-                                        <i class="fa-regular fa-eye"></i>
-                                        Quick View
-                                    </button>
-                                </div>
-
-                                <div class="p-4 xsm:p-2 lg:p-5">
-                                    <h3 class="font-medium lg:mb-2 xl:mb-0 xsm:h-10 sm:h-12 md:h-10 lg:h-14 xl:h-12">
-                                        <a href="#"
-                                            class="line-clamp-2 lg:line-clamp-3 xl:line-clamp-2 hover:text-primary eq">Electric
-                                            Bike, 500W Motor, 14" Tire Folding Mini
-                                            Ebikes</a>
-                                    </h3>
-                                    <p class="text-leaf-green">Almost sold Out</p>
-
-                                    <div class="flex flex-wrap items-center gap-x-1">
-                                        <div class="flex items-center flex-no-wrap gap-x-1 text-light-yellow">
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <i class="fa-solid fa-star"></i>
-                                            <img src="{{ asset('assets/frontend/images/fire-icon.png') }}" class="w-8 h-auto"
-                                                alt="Fire Icon" />
-                                        </div>
-
-                                        <span class="text-jet-gray">8.7K+ Sold</span>
-                                    </div>
-
-                                    <div class="flex flex-wrap items-center gap-x-5 xsm:gap-x-1 sm:gap-x-2 xl:mt-2">
-                                        <span class="text-primary/80">Final Hours</span>
-                                        <div class="flex items-center gap-x-5 xsm:gap-x-2 sm:gap-x-5 xl:gap-x-8">
-                                            <div class="price flex items-center gap-1 flex-no-wrap">
-                                                <i class="fa-solid fa-bolt text-[#ffa755]"></i>
-                                                <span class="align-center text-sm text-[#ffa755]">$</span>
-                                                <h3 class="font-bold text-primary">20.25</h3>
-                                            </div>
-                                            <div>
-                                                <button
-                                                    class="text-xs xsm:text-[10px] sm:text-base md:text-xs xl:text-base w-7 h-7 xsm:w-6 xsm:h-6 md:w-8 md:h-8 sm:w-10 sm:h-10 xl:w-10 xl:h-10 flex items-center justify-center bg-primary rounded-full text-white hover:bg-theme-dark eq">
-                                                    <i class="fa-solid fa-cart-plus"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -657,35 +322,37 @@
                             <div class="item-info space-y-2">
                                 <p class="flex justify-between">
                                     <span class="text-theme-dark">Item's total:</span>
-                                    <span id="itemsTotal" class="text-jet-gray line-through">$0.00</span>
+                                    <span id="itemsTotal"
+                                        class="text-jet-gray line-through">{{ currency($grand_total) }}</span>
                                 </p>
                                 <p class="flex justify-between">
                                     <span class="text-theme-dark">Item Discount:</span>
-                                    <span id="itemDiscount" class="text-primary font-bold">-$0.00</span>
+                                    <span id="itemDiscount"
+                                        class="text-primary font-bold">-{{ currency($discount) }}</span>
                                 </p>
                             </div>
                             <!-- estimated total -->
                             <div
                                 class="total border-t-2 border-jet-gray/50 border-dashed pt-3 mt-6 flex justify-between font-medium">
-                                <span>Estimated Total (<span id="selectedItemsCount">0</span>
+                                <span>Estimated Total (<span id="selectedItemsCount">{{ $total_products_count }}</span>
                                     Items)</span>
-                                <span id="estimatedTotal" class="text-xl">$0.00</span>
+                                <span id="estimatedTotal" class="text-xl">{{ currency($sub_total) }}</span>
                             </div>
                         </div>
 
                         <!-- order action btn -->
                         <div class="mt-4 sm:mt-6 space-y-2 sm:space-y-3">
-                            <a href="./checkout.html">
+                            <a href="{{ route('checkout') }}">
                                 <button id="checkoutBtn"
-                                    class="eq w-full flex flex-col items-center bg-jet-gray/40 text-white sm:py-3 py-2 rounded-full cursor-not-allowed"
-                                    disabled>
+                                    class="eq w-full flex flex-col items-center bg-primary text-white sm:py-3 py-2 rounded-full hover:bg-theme-dark">
                                     Checkout (0) <span class="text-xs">Almost Sold Out</span>
                                 </button>
                             </a>
                             <button
                                 class="eq w-full border border-jet-gray/50 text-theme-dark sm:py-3 py-2 rounded-full font-bold flex items-center justify-center xl:gap-2 gap-1 hover:bg-jet-gray/10 text-sm sm:text-base">
                                 Express checkout with
-                                <img src="{{ asset('assets/frontend/images/cart-paypal.png') }}" alt="PayPal" class="sm:h-9 h-6 w-auto" />
+                                <img src="{{ asset('assets/frontend/images/cart-paypal.png') }}" alt="PayPal"
+                                    class="sm:h-9 h-6 w-auto" />
                             </button>
                         </div>
 
@@ -732,20 +399,20 @@
                                     01. <span class="font-medium">Payment Method</span>
                                 </h4>
                                 <div class="flex flex-wrap gap-x-2 gap-y-1 mt-2">
-                                    <img src="{{ asset('assets/frontend/images/cart-payment-method-1.png') }}" alt="Visa card"
-                                        class="w-auto h-8 sm:h-10 border rounded" />
-                                    <img src="{{ asset('assets/frontend/images/cart-payment-method-2.png') }}" alt="mastercard"
-                                        class="w-auto h-8 sm:h-10 border rounded" />
-                                    <img src="{{ asset('assets/frontend/images/cart-payment-method-3.png') }}" alt="American Express"
-                                        class="w-auto h-8 sm:h-10 border rounded" />
-                                    <img src="{{ asset('assets/frontend/images/cart-payment-method-4.png') }}" alt="Discover"
-                                        class="w-auto h-8 sm:h-10 border rounded" />
-                                    <img src="{{ asset('assets/frontend/images/cart-payment-method-5.png') }}" alt="Paypal"
-                                        class="w-auto h-8 sm:h-10 border rounded" />
-                                    <img src="{{ asset('assets/frontend/images/cart-payment-method-6.png') }}" alt="Apple Pay"
-                                        class="w-auto h-8 sm:h-10 border rounded" />
-                                    <img src=".{{ asset('assets/frontend/images/cart-payment-method-7.png') }}" alt="G Pay"
-                                        class="w-auto h-8 sm:h-10 border rounded" />
+                                    <img src="{{ asset('assets/frontend/images/cart-payment-method-1.png') }}"
+                                        alt="Visa card" class="w-auto h-8 sm:h-10 border rounded" />
+                                    <img src="{{ asset('assets/frontend/images/cart-payment-method-2.png') }}"
+                                        alt="mastercard" class="w-auto h-8 sm:h-10 border rounded" />
+                                    <img src="{{ asset('assets/frontend/images/cart-payment-method-3.png') }}"
+                                        alt="American Express" class="w-auto h-8 sm:h-10 border rounded" />
+                                    <img src="{{ asset('assets/frontend/images/cart-payment-method-4.png') }}"
+                                        alt="Discover" class="w-auto h-8 sm:h-10 border rounded" />
+                                    <img src="{{ asset('assets/frontend/images/cart-payment-method-5.png') }}"
+                                        alt="Paypal" class="w-auto h-8 sm:h-10 border rounded" />
+                                    <img src="{{ asset('assets/frontend/images/cart-payment-method-6.png') }}"
+                                        alt="Apple Pay" class="w-auto h-8 sm:h-10 border rounded" />
+                                    <img src="{{ asset('assets/frontend/images/cart-payment-method-7.png') }}"
+                                        alt="G Pay" class="w-auto h-8 sm:h-10 border rounded" />
                                 </div>
                             </div>
                             <!-- security certification -->
@@ -758,10 +425,10 @@
                                         class="w-auto h-7 sm:h-9 border rounded" />
                                     <img src="{{ asset('assets/frontend/images/security-2.png') }}" alt="Visa Secure"
                                         class="w-auto h-7 sm:h-9 border rounded" />
-                                    <img src="{{ asset('assets/frontend/images/security-3.png') }}" alt="Mastercard ID check"
-                                        class="w-auto h-7 sm:h-9 border rounded" />
-                                    <img src="{{ asset('assets/frontend/images/security-4.png') }}" alt="American Express SafeKey"
-                                        class="w-auto h-7 sm:h-9 border rounded" />
+                                    <img src="{{ asset('assets/frontend/images/security-3.png') }}"
+                                        alt="Mastercard ID check" class="w-auto h-7 sm:h-9 border rounded" />
+                                    <img src="{{ asset('assets/frontend/images/security-4.png') }}"
+                                        alt="American Express SafeKey" class="w-auto h-7 sm:h-9 border rounded" />
                                 </div>
                             </div>
                             <!-- secure privacy -->
@@ -853,4 +520,201 @@
         </section>
         <!-- Cart Details Main Section Ended -->
     </main>
+
+    @push('scripts')
+        <script>
+            $(document).ready(function() {
+                $('.increase-qty, .decrease-qty').click(function() {
+                    var cartItem = $(this).closest('.quantity-controls');
+                    var cartItemId = cartItem.data('id');
+
+                    let quantityInput = cartItem.find('.quantity-input');
+                    let currentQuantity = parseInt(quantityInput.val());
+
+                    if ($(this).hasClass('increase-qty')) {
+                        currentQuantity++;
+                    } else if ($(this).hasClass('decrease-qty') && currentQuantity > 1) {
+                        currentQuantity--;
+                    }
+
+                    updateCartQuantity(cartItemId, currentQuantity, quantityInput);
+                });
+
+                $('.delete-btn').click(function() {
+                    var cartItemId = $(this).data('id');
+                    deleteCartItem(cartItemId);
+                });
+
+                // Checkbox handlers
+                const selectAllCheckbox = $('#selectAll');
+                const sellerCheckboxes = $('.seller-checkbox');
+                const itemCheckboxes = $('.item-checkbox');
+
+                selectAllCheckbox.on('change', function() {
+                    const isChecked = $(this).prop('checked');
+                    sellerCheckboxes.prop('checked', isChecked);
+                    itemCheckboxes.prop('checked', isChecked);
+                    updateCounts();
+                    updateOrderSummary();
+                });
+
+                sellerCheckboxes.on('change', function() {
+                    const sellerId = $(this).data('seller-id');
+                    const isChecked = $(this).prop('checked');
+                    $(`.item-checkbox[data-seller-id="${sellerId}"]`).prop('checked',
+                    isChecked); // Fixed template literal
+                    updateSellerCheckboxes();
+                    updateCounts();
+                    updateOrderSummary();
+                });
+
+                itemCheckboxes.on('change', function() {
+                    const sellerId = $(this).data('seller-id');
+                    updateSellerCheckbox(sellerId);
+                    updateSelectAllCheckbox();
+                    updateCounts();
+                    updateOrderSummary();
+                });
+
+                // Helper functions
+                function updateCartQuantity(cartItemId, quantity, input) {
+                    $.ajax({
+                        url: "{{ route('cart.update') }}", // Use the route as defined in your original code
+                        type: "POST",
+                        data: {
+                            id: cartItemId,
+                            quantity: quantity,
+                            _token: $('meta[name="csrf-token"]').attr('content') // Add CSRF token
+                        },
+                        success: function(response) {
+                            input.val(quantity); // Update the input immediately
+
+                            if (response.success) {
+                                updateOrderTotals(response);
+                                toastr.success(response.message);
+                            } else {
+                                toastr.error(response.message);
+                            }
+                        },
+                        error: function() {
+                            toastr.error('An error occurred while updating the cart.');
+                        }
+                    });
+                }
+
+                function deleteCartItem(cartItemId) {
+                    $.ajax({
+                        url: "{{ route('cart.delete') }}", // Use the route as defined in your original code
+                        type: "POST",
+                        data: {
+                            id: cartItemId,
+                            _token: $('meta[name="csrf-token"]').attr('content') // Add CSRF token
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                toastr.success(response.message);
+                                location.reload();
+                            } else {
+                                toastr.error(response.message);
+                            }
+                        },
+                        error: function() {
+                            toastr.error('An error occurred while deleting the product.');
+                        }
+                    });
+                }
+
+                function updateOrderTotals(response) {
+                    // Make sure we're not adding $ if the response already includes currency formatting
+                    $('#itemsTotal').text(response.order_total);
+                    $('#estimatedTotal').text(response.order_subtotal);
+                    $('#itemDiscount').text('-' + response.discount);
+                    $('#selectedItemsCount').text(response.total_products_count);
+
+                    // Update the checkout button text
+                    const checkoutBtn = $('#checkoutBtn');
+                    checkoutBtn.html(
+                        `Checkout (${response.total_products_count}) <span class="text-xs">Almost Sold Out</span>`);
+
+                    if (parseInt(response.total_products_count) === 0) {
+                        checkoutBtn.prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
+                    } else {
+                        checkoutBtn.prop('disabled', false).removeClass('opacity-50 cursor-not-allowed');
+                    }
+                }
+
+                function updateSellerCheckbox(sellerId) {
+                    const sellerItems = $(`.item-checkbox[data-seller-id="${sellerId}"]`); // Fixed template literal
+                    const allSellerItemsChecked = sellerItems.length === sellerItems.filter(':checked').length;
+                    $(`.seller-checkbox[data-seller-id="${sellerId}"]`).prop('checked',
+                    allSellerItemsChecked); // Fixed template literal
+                }
+
+                function updateSellerCheckboxes() {
+                    const allSellersSelected = sellerCheckboxes.length === $('.seller-checkbox:checked').length;
+                    selectAllCheckbox.prop('checked', allSellersSelected);
+                }
+
+                function updateSelectAllCheckbox() {
+                    const allItemsChecked = itemCheckboxes.length === itemCheckboxes.filter(':checked').length;
+                    selectAllCheckbox.prop('checked', allItemsChecked);
+                }
+
+                function updateCounts() {
+                    const selectedItems = $('.item-checkbox:checked');
+                    $('#selectedCount').text(selectedItems.length);
+
+                    $('.seller-count').each(function() {
+                        const sellerId = $(this).data('seller-id');
+                        const sellerItems = $(
+                        `.item-checkbox[data-seller-id="${sellerId}"]:checked`); // Fixed template literal
+                        $(this).text(sellerItems.length);
+                    });
+                }
+
+                function updateOrderSummary() {
+                    let discountedTotal = 0;
+                    let originalTotal = 0;
+                    let selectedCount = 0;
+
+                    $('.item-checkbox:checked').each(function() {
+                        const cartItem = $(this).closest('.cart-item');
+                        if (cartItem.length) {
+                            const price = parseFloat(cartItem.data('price'));
+                            const discountedPrice = parseFloat(cartItem.data('discounted-price'));
+                            const quantity = parseInt(cartItem.find('.quantity-input').val(), 10);
+
+                            discountedTotal += discountedPrice * quantity;
+                            originalTotal += price * quantity;
+                            selectedCount += quantity;
+                        }
+                    });
+
+                    const discount = originalTotal - discountedTotal;
+
+                    $('#itemsTotal').text(formatCurrency(originalTotal));
+                    $('#itemDiscount').text('-' + formatCurrency(discount));
+                    $('#estimatedTotal').text(formatCurrency(discountedTotal));
+                    $('#selectedItemsCount').text(selectedCount);
+
+                    const checkoutBtn = $('#checkoutBtn');
+                    checkoutBtn.html(`Checkout (${selectedCount}) <span class="text-xs">Almost Sold Out</span>`);
+
+                    if (selectedCount === 0) {
+                        checkoutBtn.prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
+                    } else {
+                        checkoutBtn.prop('disabled', false).removeClass('opacity-50 cursor-not-allowed');
+                    }
+                }
+
+                function formatCurrency(amount) {
+                    return '$' + amount.toFixed(2);
+                }
+
+                // Initialize
+                updateOrderSummary();
+                updateCounts();
+            });
+        </script>
+    @endpush
 @endsection

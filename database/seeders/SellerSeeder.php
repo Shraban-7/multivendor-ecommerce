@@ -27,6 +27,19 @@ class SellerSeeder extends Seeder
                 'country_id' => 2,
                 'zip' => '1400'
             ],
+            [
+                'fullname' => 'Seller User 2',
+                'image' => 'frontend/images/user-avatar-1.png',
+                'email' => 'seller2@example.com',
+                'phone' => '12345670',
+                'password' => 'password',
+                'business_name' => 'Ranger',
+                'business_logo' => 'frontend/images/provider-logo-2.png',
+                'business_email' => 'ranger@example.com',
+                'business_address' => 'Lorem ipsum dolor sit amet',
+                'country_id' => 3,
+                'zip' => '1200'
+            ],
         ];
 
         foreach ($sellers as $seller) {
