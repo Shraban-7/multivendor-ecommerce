@@ -17,21 +17,24 @@
 
             <li class="nav-item">
                 <a class="nav-link has-arrow  collapsed " href="#!" data-bs-toggle="collapse"
-                    data-bs-target="#navUsers" aria-expanded="false" aria-controls="navUsers">
+                    data-bs-target="#navOrders" aria-expanded="false" aria-controls="navOrders">
                     <i data-feather="shopping-cart" class="nav-icon icon-xs me-2">
                     </i> Manage Orders
                 </a>
-                <div id="navUsers" class=""
+                <div id="navOrders" class="collapse {{ request()->routeIs('seller.orders.*') ? 'show' : '' }}"
                     data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
-                        <x-dashboard.nav-item-link :route="'seller.dashboard'">
+                        <x-dashboard.nav-item-link :route="'seller.orders.pending'">
                             Pending
                         </x-dashboard.nav-item-link>
-                        <x-dashboard.nav-item-link :route="'seller.dashboard'">
-                            Cancelled
+                        <x-dashboard.nav-item-link :route="'seller.orders.shipped'">
+                            Shipped
                         </x-dashboard.nav-item-link>
-                        <x-dashboard.nav-item-link :route="'seller.dashboard'">
+                        <x-dashboard.nav-item-link :route="'seller.orders.delivered'">
                             Delivered
+                        </x-dashboard.nav-item-link>
+                        <x-dashboard.nav-item-link :route="'seller.orders.cancelled'">
+                            Cancelled
                         </x-dashboard.nav-item-link>
                     </ul>
                 </div>
