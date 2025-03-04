@@ -11,14 +11,32 @@ class Order extends Model
 
     protected $guarded = ['id'];
 
+    // Status
     const PENDING = 1;
     const SHIPPED = 2;
-    const DELIVERED = 3;
-    const CANCELLED = 4;
+    const CANCELLED = 3;
+    const DELIVERED = 4;
+
+    // Delivery Status
+
+    const ORDER_PLACED = 1;
+    const PACKAGING = 2;
+    const ON_THE_ROAD = 3;
+
 
     public function items()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function products()
+    {
+        return $this->hasManyThrough(Product::class, OrderItem::class);
+    }
+
+    public function seller()
+    {
+        return $this->belongsTo(Seller::class);
     }
 
 }

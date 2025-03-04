@@ -127,7 +127,7 @@
                                                 data-id="{{ $item->id }}">
                                                 <div class="flex gap-2 sm:gap-4">
                                                     <!-- Item Checkbox -->
-                                                    <div class="flex items-start pt-2">
+                                                    <div class="flex items-start pt-2 hidden">
                                                         <input type="checkbox" id="item{{ $key }}"
                                                             class="hidden form-checkbox item-checkbox peer/item{{ $key }}"
                                                             data-item-id="{{ $key }}"

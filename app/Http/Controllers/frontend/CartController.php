@@ -125,4 +125,25 @@ class CartController extends Controller
 
         return response()->json(['success' => false, 'message' => 'Product not found in cart']);
     }
+
+    public function getLiveCartData()
+    {
+            $carts = Cart::where('user_id', Auth::id())
+                ->with('cartItems.product')
+                ->get();
+
+            $cartCount = $carts->count();
+            $grand_total = 0;
+
+            foreach ($carts as $cart) {
+                foreach ($cart->cartItems as $item) {
+                    $grand_total += $item->quantity * $item->product->selling_price;
+                }
+            }
+
+            return response()->json([
+                'cartCount' => $cartCount,
+                'totalPrice' => $grand_total
+            ]);
+    }
 }

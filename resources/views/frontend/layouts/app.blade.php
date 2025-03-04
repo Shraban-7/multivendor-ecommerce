@@ -136,6 +136,7 @@
                             window.location.href = "{{ route('login') }}";
                         } else if (data.success) {
                             toastr.success(data.message);
+                            updateCartData();
                             if ("{{ Route::currentRouteName() }}" === 'cart.details' && data
                                 .action === 'add_to_cart') {
                                 window.location.reload();
@@ -153,6 +154,20 @@
                     }
                 });
             });
+
+            function updateCartData() {
+                $.ajax({
+                    url: "{{ route('cart.data') }}",
+                    type: "GET",
+                    success: function(data) {
+                        $('#cartCount').text(data.cartCount);
+                        $('#totalPrice').text(data.totalPrice);
+                    },
+                    error: function() {
+                        toastr.error('Failed to update cart data.');
+                    }
+                });
+            }
         });
     </script>
 

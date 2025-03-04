@@ -14,12 +14,34 @@ use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
+    public function index(Request $request)
+    {
+        $status = $request->input('status', 'all');
+
+        $query = Order::with('seller')->withCount('items')->where('user_id', Auth::user()->id)->where('tracking_id', '!=', null);
+
+        if ($status !== 'all') {
+            $query->where('status', $status);
+        }
+
+        $orders = $query->paginate(10);
+
+        return view('frontend.orders.index', compact('orders', 'status'));
+    }
+
+    public function details(Order $order)
+    {
+        $order->load('items.product');
+        return view('frontend.orders.details', compact('order'));
+    }
+
     public function checkout(Request $request)
     {
         $user = Auth::user();
 
         if ($request->isMethod('GET')) {
-            return view('frontend.pages.checkout', compact('user'));
+            $customer_addresses = CustomerAddress::where('user_id', $user->id)->get();
+            return view('frontend.pages.checkout', compact('user', 'customer_addresses'));
         }
 
         $carts = Cart::where('user_id', $user->id)
@@ -29,14 +51,18 @@ class OrderController extends Controller
 
         $selectedSellers = $carts->keys();
 
-        CustomerAddress::create([
-            'user_id' => $user->id,
-            'type' => $request->type,
-            'address' => $request->address
-        ]);
+        CustomerAddress::updateOrCreate(
+            [
+                'user_id' => $user->id,
+                'type' => $request->type,
+            ],
+            [
+                'address' => $request->address
+            ]
+        );
 
         $orders = $carts->filter(fn($cartGroup, $sellerId) => $selectedSellers->contains($sellerId))
-            ->map(function ($cartGroup, $sellerId) use ($user) {
+            ->map(function ($cartGroup, $sellerId) use ($user, $request) {
                 $seller = Seller::find($sellerId);
 
                 $discountPrice = function ($product) {
@@ -56,8 +82,13 @@ class OrderController extends Controller
                 $order = Order::create([
                     'user_id' => $user->id,
                     'seller_id' => $sellerId,
+                    'customer_name' => $request->customer_name,
+                    'customer_email' => $request->customer_email,
+                    'customer_phone' => $request->customer_phone,
+                    'customer_address' => $request->address,
                     'tracking_id' => 'TRK-' . strtoupper(uniqid()),
                     'sub_total' => $subtotal,
+                    'total' => $subtotal,
                     'discount' => $discount,
                     'tax' => 0,
                     'shipping_fee' => $shippingFee,
@@ -94,7 +125,21 @@ class OrderController extends Controller
                 return $order;
             });
 
-       return redirect()->route('order.success')->with('Order placed successfully');
+        return response()->json([
+            'status' => true,
+            'message' => 'Order placed successfully!',
+            'orders' => $orders,
+        ]);
     }
 
+    public function success()
+    {
+        return view('frontend.orders.success');
+    }
+
+    public function tracking($tracking_id)
+    {
+        $order = Order::withCount('items')->where('tracking_id', $tracking_id)->first();
+        return view('frontend.orders.tracking', compact('order'));
+    }
 }

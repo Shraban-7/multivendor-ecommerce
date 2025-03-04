@@ -29,22 +29,16 @@ class AppServiceProvider extends ServiceProvider
             if (Auth::check()) {
                 $carts = Cart::where('user_id', Auth::user()->id)
                     ->with('cartItems.product')
-                    ->get()
-                    ->groupBy(function ($cart) {
-                        return $cart->cartItems->first()->product->seller_id ?? null;
-                    });
+                    ->get();
                 $cartCount = count($carts);
-            }
-            else{
-                $carts =[];
+            } else {
+                $carts = [];
                 $cartCount = 0;
             }
 
             $sub_total = 0;
             $grand_total = 0;
-            $totalPrice = 0;
-            foreach ($carts as $seller_id => $cartGroup) {
-                foreach ($cartGroup as $cart) {
+            foreach ($carts as $cart) {
                     foreach ($cart->cartItems as $item) {
                         $item_grand_total = $item->quantity * $item->product->selling_price;
                         $grand_total += $item_grand_total;
@@ -61,12 +55,9 @@ class AppServiceProvider extends ServiceProvider
 
                         $sub_total += $item_sub_total;
                     }
-                }
             }
 
-            $totalPrice = $grand_total;
-
-            $view->with('cartCount', $cartCount)->with('totalPrice', $totalPrice);
+            $view->with('cartCount', $cartCount)->with('totalPrice', $grand_total);
         });
     }
 }

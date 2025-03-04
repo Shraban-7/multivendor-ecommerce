@@ -64,34 +64,54 @@
                         <div class="space-y-4">
                             <h2 class="sm:text-lg font-semibold">Billing Information</h2>
 
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <!-- User Name -->
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <!-- Customer Name -->
                                 <div class="space-y-2">
-                                    <label for="first-name" class="block text-sm">User name</label>
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <input type="text" id="first-name" name="username" value="{{ $user->username }}"
-                                            readonly placeholder="First name"
-                                            class="eq w-full px-4 py-2 border border-gray-300 rounded focus:ring-[1] focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
-                                        <input type="text" placeholder="Last name"
-                                            class="eq w-full px-4 py-2 border border-gray-300 rounded focus:ring-[1] focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
-                                    </div>
+                                    <label for="customer-name" class="block text-sm">Customer Name</label>
+                                    <input type="text" id="customer-name" name="customer_name"
+                                        placeholder="Enter customer name"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
                                 </div>
 
-                                <!-- Company Name -->
+                                <!-- Customer Email -->
                                 <div class="space-y-2">
-                                    <label for="company-name" class="block text-sm">Company Name
-                                        <span class="text-jet-gray">(Optional)</span></label>
-                                    <input type="text" id="company-name"
-                                        class="eq w-full px-4 py-2 border border-gray-300 rounded focus:ring-[1] focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
+                                    <label for="customer-email" class="block text-sm">Customer Email</label>
+                                    <input type="email" id="customer-email" name="customer_email"
+                                        placeholder="customer@example.com"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
+                                </div>
+
+                                <!-- Customer Phone -->
+                                <div class="space-y-2">
+                                    <label for="customer-phone" class="block text-sm">Customer Phone</label>
+                                    <input type="text" id="customer-phone" name="customer_phone"
+                                        placeholder="+88012364899"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
                                 </div>
                             </div>
 
                             <!-- Address -->
-                            <div class="space-y-2">
-                                <label class="block text-sm" for="address">Address</label>
-                                <input type="hidden" name="type" value="home">
-                                <input required type="text" id="address" name="address"
-                                    class="eq w-full px-4 py-2 border border-gray-300 rounded focus:ring-[1] focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
+                            <div class="flex space-x-4">
+                                <div class="w-1/4 space-y-2">
+                                    <label class="block text-sm" for="type">Type</label>
+                                    <select id="type" required name="type"
+                                        class="eq w-full px-4 py-2 border border-gray-300 rounded focus:ring-[1] focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
+                                        <option value="home">Home</option>
+                                        <option value="office">Office</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+
+                                <div class="w-3/4 space-y-2">
+                                    <label class="block text-sm" for="address">Address</label>
+                                    <input required list="addressList" id="address" name="address"
+                                        class="eq w-full px-4 py-2 border border-gray-300 rounded focus:ring-[1] focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
+                                    <datalist id="addressList">
+                                        @foreach ($customer_addresses as $customer_address)
+                                            <option value="{{ $customer_address->address }}">
+                                        @endforeach
+                                    </datalist>
+                                </div>
                             </div>
 
                             <!-- Location Details -->
@@ -129,20 +149,6 @@
                                 <div class="space-y-2">
                                     <label class="block text-sm" for="zip-code">Zip Code</label>
                                     <input type="text" id="zip-code"
-                                        class="eq w-full px-4 py-2 border border-gray-300 rounded focus:ring-[1] focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
-                                </div>
-                            </div>
-
-                            <!-- Contact Information -->
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div class="space-y-2">
-                                    <label class="block text-sm" for="email">Email</label>
-                                    <input id="email" type="email"
-                                        class="eq w-full px-4 py-2 border border-gray-300 rounded focus:ring-[1] focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
-                                </div>
-                                <div class="space-y-2">
-                                    <label class="block text-sm" for="phone">Phone Number</label>
-                                    <input type="tel" id="phone"
                                         class="eq w-full px-4 py-2 border border-gray-300 rounded focus:ring-[1] focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
                                 </div>
                             </div>
@@ -320,9 +326,9 @@
                         data: $('#checkout-form').serialize(),
                         success: function(response) {
                             toastr.success(response.message);
-                            window.location.reload();
-                            console.log(response);
+                            window.location.href = "{{ route('orders.success') }}";
                         },
+
                         error: function(xhr, status, error) {
                             console.error(xhr.responseText);
                         }

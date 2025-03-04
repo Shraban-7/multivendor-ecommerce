@@ -19,17 +19,11 @@ Route::get('/no-order', function () {
     return view('frontend.pages.no_order');
 })->name('no_order');
 
-Route::get('/order-success', function () {
-    return view('frontend.pages.order_success');
-})->name('order_success');
-
 Route::get('/tracking', function () {
     return view('frontend.pages.tracking');
 })->name('tracking');
 
-Route::get('/tracking-order', function () {
-    return view('frontend.pages.tracking_order');
-})->name('tracking_order');
+
 
 Route::get('/wishlist', function () {
     return view('frontend.pages.wishlist');
@@ -42,11 +36,15 @@ Route::middleware('auth')->group(function () {
         Route::post('/update', [CartController::class, 'update'])->name('update');
         Route::post('/delete', [CartController::class, 'delete'])->name('delete');
         Route::get('/details', [CartController::class, 'details'])->name('details');
+        Route::get('/data',[CartController::class, 'getLiveCartData'])->name('data');
     });
 
     Route::match(['get', 'post'], 'checkout/', [OrderController::class, 'checkout'])->name('checkout');
 
-    Route::prefix('order')->as('order.')->group(function () {
-        Route::post('/success', [OrderController::class, 'success'])->name('success');
+    Route::prefix('orders')->as('orders.')->group(function () {
+        Route::get('/',[OrderController::class, 'index'])->name('index');
+        Route::get('/details/{order}',[OrderController::class, 'details'])->name('details');
+        Route::get('/success', [OrderController::class, 'success'])->name('success');
+        Route::get('/tracking/{tracking_id}', [OrderController::class, 'tracking'])->name('tracking');
     });
 });

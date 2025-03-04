@@ -145,12 +145,12 @@
         <a href="{{ route('cart.details') }}" class="flex flex-col items-center leading-none hover:text-light-yellow eq">
             <span class="block relative">
                 <i class="fa-solid fa-cart-arrow-down"></i>
-                <span
+                <span id="cartCount"
                     class="absolute flex items-center justify-center w-5 h-5 bg-theme-light text-light-yellow rounded-full -top-3 -end-4 font-[arial] font-bold text-[10px]">
                     {{ $cartCount }}
                 </span>
             </span>
-            <span class="lg:text-base text-sm font-medium">{{ currency($totalPrice) }}</span>
+            <span class="lg:text-base text-sm font-medium" id="totalPrice">{{ currency($totalPrice) }}</span>
         </a>
     </div>
 </div>

@@ -72,27 +72,41 @@
                     <div
                         class="p-4 sm:p-6 bg-light-yellow/10 rounded border border-light-yellow flex flex-wrap gap-y-2 justify-between items-center">
                         <div class="space-y-2">
-                            <h1 class="text-lg sm:text-xl">#96459761</h1>
+                            <h1 class="text-lg sm:text-xl">#{{ $order->tracking_id }}</h1>
                             <p class="text-xs xsm:text-sm text-davy-gray">
-                                2 Products · Order Placed in 10 Fab, 2025 at 11:08 AM
+                                {{ $order->items_count }} Products · Order Placed in
+                                {{ \Carbon\Carbon::parse($order->created_at)->format('F j, Y \a\t h:i A') }}
                             </p>
                         </div>
                         <h2 class="text-xl sm:text-2xl font-semibold text-light-yellow">
-                            $1199.00
+                            {{ currency($order->sub_total) }}
                         </h2>
                     </div>
                     <p class="text-sm text-davy-gray">
                         Order expected arrival
-                        <span class="text-theme-dark">12 Fab, 2025</span>
+                        <span
+                            class="text-theme-dark">{{ \Carbon\Carbon::parse($order->estimated_arrival)->format('F j, Y') }}</span>
                     </p>
                 </div>
 
                 <!-- Progress Tracker -->
                 <div class="progress-container px-3 sm:px-5">
                     <div class="flex items-center justify-between relative mx-7 -mb-2">
-                        <div class="progress-line active"></div>
-                        <div class="progress-line active"></div>
-                        <div class="progress-line"></div>
+                        @if ($order->delivery_status == \App\Models\Order::PACKAGING)
+                            <div class="progress-line active"></div>
+                        @else
+                            <div class="progress-line"></div>
+                        @endif
+                        @if ($order->delivery_status == \App\Models\Order::ON_THE_ROAD)
+                            <div class="progress-line active"></div>
+                        @else
+                            <div class="progress-line"></div>
+                        @endif
+                        @if ($order->delivery_status == \App\Models\Order::DELIVERED)
+                            <div class="progress-line active"></div>
+                        @else
+                            <div class="progress-line"></div>
+                        @endif
                     </div>
                     <div class="steps relative flex justify-between">
                         <!-- Order Placed -->
@@ -127,11 +141,19 @@
 
                         <!-- Packaging -->
                         <div class="step packaging relative z-[1] completed">
-                            <div class="step-dot flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full">
-                                <span>
-                                    <i class="fa-solid fa-check text-white text-xs sm:text-sm"></i>
-                                </span>
-                            </div>
+                            @if ($order->delivery_status == \App\Models\Order::PACKAGING)
+                                <div class="step-dot flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full">
+                                    <span>
+                                        <i class="fa-solid fa-check text-white text-xs sm:text-sm"></i>
+                                    </span>
+                                </div>
+                            @else
+                                <div class="step-dot flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full">
+                                    <span>
+                                        <i class="fa-solid fa-check text-white text-xs sm:text-sm"></i>
+                                    </span>
+                                </div>
+                            @endif
                             <div class="step-content flex items-center flex-col gap-y-2 sm:gap-y-3 mt-4 sm:mt-6">
                                 <!-- packing icon -->
                                 <svg class="step-icon text-primary w-6 h-6 sm:w-8 sm:h-8" width="32" height="32"
@@ -157,11 +179,19 @@
 
                         <!-- On The Road -->
                         <div class="step on-road relative z-[1] active">
-                            <div class="step-dot flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full">
-                                <span>
-                                    <i class="fa-solid fa-check text-white text-xs sm:text-sm"></i>
-                                </span>
-                            </div>
+                            @if ($order->delivery_status == \App\Models\Order::ON_THE_ROAD)
+                                <div class="step-dot flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full">
+                                    <span>
+                                        <i class="fa-solid fa-check text-white text-xs sm:text-sm"></i>
+                                    </span>
+                                </div>
+                            @else
+                                <div class="step-dot flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full">
+                                    <span>
+                                        <i class="fa-solid fa-check text-white text-xs sm:text-sm"></i>
+                                    </span>
+                                </div>
+                            @endif
                             <div class="step-content flex items-center flex-col gap-y-2 sm:gap-y-3 mt-4 sm:mt-6">
                                 <!-- packaging icon -->
                                 <svg class="step-icon text-butterfly-blue w-6 h-6 sm:w-8 sm:h-8" width="32"
@@ -203,11 +233,19 @@
 
                         <!-- Delivered -->
                         <div class="step delivered relative z-[1]">
-                            <div class="step-dot flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full">
-                                <span>
-                                    <i class="fa-solid fa-check text-white text-xs sm:text-sm"></i>
-                                </span>
-                            </div>
+                            @if ($order->delivery_status == \App\Models\Order::DELIVERED)
+                                <div class="step-dot flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full">
+                                    <span>
+                                        <i class="fa-solid fa-check text-white text-xs sm:text-sm"></i>
+                                    </span>
+                                </div>
+                            @else
+                                <div class="step-dot flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full">
+                                    <span>
+                                        <i class="fa-solid fa-check text-white text-xs sm:text-sm"></i>
+                                    </span>
+                                </div>
+                            @endif
                             <div class="step-content flex items-center flex-col gap-y-2 sm:gap-y-3 mt-4 sm:mt-6">
                                 <!--  delivered icon -->
                                 <svg class="step-icon text-leaf-green w-6 h-6 sm:w-8 sm:h-8" width="32"
