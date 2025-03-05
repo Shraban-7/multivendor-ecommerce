@@ -30,19 +30,19 @@
                             class="px-4 py-2 {{ $status == 'all' ? 'bg-primary text-white' : 'bg-white border border-gray-200' }} rounded-md">All
                             Orders</button>
                     </a>
-                    <a href="{{ route('orders.index', ['status' => \App\Models\Order::PENDING]) }}">
+                    <a href="{{ route('orders.index', ['status' => \App\Enums\OrderStatus::PENDING->value]) }}">
                         <button
                             class="px-4 py-2 {{ $status == 'pending' ? 'bg-primary text-white' : 'bg-white border border-gray-200' }} rounded-md hover:bg-gray-50 eq">Pending</button>
                     </a>
-                    <a href="{{ route('orders.index', ['status' => \App\Models\Order::SHIPPED]) }}">
+                    <a href="{{ route('orders.index', ['status' => \App\Enums\OrderStatus::SHIPPED->value]) }}">
                         <button
                             class="px-4 py-2 {{ $status == 'shipped' ? 'bg-primary text-white' : 'bg-white border border-gray-200' }} rounded-md hover:bg-gray-50 eq">Shipped</button>
                     </a>
-                    <a href="{{ route('orders.index', ['status' => \App\Models\Order::DELIVERED]) }}">
+                    <a href="{{ route('orders.index', ['status' => \App\Enums\OrderStatus::DELIVERED->value]) }}">
                         <button
                             class="px-4 py-2 {{ $status == 'delivered' ? 'bg-primary text-white' : 'bg-white border border-gray-200' }} rounded-md hover:bg-gray-50 eq">Delivered</button>
                     </a>
-                    <a href="{{ route('orders.index', ['status' => \App\Models\Order::CANCELLED]) }}">
+                    <a href="{{ route('orders.index', ['status' => \App\Enums\OrderStatus::CANCELLED->value]) }}">
                         <button
                             class="px-4 py-2 {{ $status == 'canceled' ? 'bg-primary text-white' : 'bg-white border border-gray-200' }} rounded-md hover:bg-gray-50 eq">Canceled</button>
                     </a>
@@ -59,15 +59,15 @@
                                     <div class="flex items-center gap-2">
                                         <h3 class="font-medium">Order #{{ $order->id }}</h3>
                                         <!-- Dynamic status badge -->
-                                        @if ($order->status == \App\Models\Order::DELIVERED)
+                                        @if ($order->status == \App\Enums\OrderStatus::DELIVERED->value)
                                             <span
                                                 class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">Delivered</span>
-                                        @elseif ($order->status == \App\Models\Order::PENDING)
+                                        @elseif ($order->status == \App\Enums\OrderStatus::PENDING->value)
                                             <span
                                                 class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded">Pending</span>
-                                        @elseif ($order->status == \App\Models\Order::SHIPPED)
+                                        @elseif ($order->status == \App\Enums\OrderStatus::SHIPPED->value)
                                             <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">Shipped</span>
-                                        @elseif ($order->status == \App\Models\Order::CANCELLED)
+                                        @elseif ($order->status == \App\Enums\OrderStatus::CANCELLED->value)
                                             <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded">Cancelled</span>
                                         @endif
                                     </div>

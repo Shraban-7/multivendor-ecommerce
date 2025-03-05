@@ -92,7 +92,7 @@
                 <!-- Progress Tracker -->
                 <div class="progress-container px-3 sm:px-5">
                     <div class="flex items-center justify-between relative mx-7 -mb-2">
-                        @if ($order->delivery_status == \App\Models\Order::PACKAGING)
+                        @if ($order->delivery_status == \App\Enums\Order::PACKAGING)
                             <div class="progress-line active"></div>
                         @else
                             <div class="progress-line"></div>

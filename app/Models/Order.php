@@ -17,17 +17,12 @@ class Order extends Model
         'status' => OrderStatus::class,
     ];
 
-    // Status
-    const PENDING = 1;
-    const SHIPPED = 2;
-    const CANCELLED = 3;
-    const DELIVERED = 4;
-
     // Delivery Status
 
     const ORDER_PLACED = 1;
     const PACKAGING = 2;
     const ON_THE_ROAD = 3;
+    const DELIVERED = 4;
 
     public function scopePending($query)
     {
