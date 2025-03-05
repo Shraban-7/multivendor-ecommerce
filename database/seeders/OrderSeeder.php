@@ -53,7 +53,7 @@ class OrderSeeder extends Seeder
                 'shipping_fee' => 100.00,
                 'payable' => 4000.00 - 300.00 + 150.00 + 100.00,
                 'due' => 3950.00,
-                'status' => 4,
+                'status' => 0,
             ],
             [
                 'user_id' => 1,

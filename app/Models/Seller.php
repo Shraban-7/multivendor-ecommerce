@@ -24,6 +24,11 @@ class Seller extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+    
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'seller_id');
+    }
 
     public function products()
     {

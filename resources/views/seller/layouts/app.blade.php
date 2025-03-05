@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/frontend/images/favicon.ico') }}">
     <link rel="stylesheet" href="{{asset('assets/dashboard/css/theme.css')}}">
     <link rel="stylesheet" href="{{asset('assets/dashboard/libs/bootstrap-icons/font/bootstrap-icons.css')}}">
@@ -29,6 +30,7 @@
                 </div>
 
                 <div class="container-fluid my-3 px-sm-4">
+                    <x-flash-message />
                     @yield('content')
                 </div>
 
@@ -54,6 +56,32 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     @stack('footer')
     @stack('scripts')
+    <script>
+        $(document).ready(function() {
+            $(document).on("click", ".image-preview", function() {
+                $(this).closest(".form-group").find(".file-input").click();
+            });
+            $(document).on("change", ".file-input", function(event) {
+                let input = $(this);
+                let file = event.target.files[0];
+                if (file) {
+                    let reader = new FileReader();
+                    reader.onload = function(e) {
+                        let previewDiv = input.closest(".form-group").find(".image-preview");
+                        previewDiv.html(`<img src="${e.target.result}" class="img-fluid" style="max-width: 100%; max-height: 100%;">`);
+                        input.closest(".form-group").find(".remove-image").removeClass("d-none");
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            $(document).on("click", ".remove-image", function() {
+                let formGroup = $(this).closest(".form-group");
+                formGroup.find(".image-preview").html(`<span class="text-muted">Click to Upload</span>`);
+                formGroup.find(".file-input").val("");
+                $(this).addClass("d-none");
+            });
+        });
+    </script>
 </body>
 
 </html>
