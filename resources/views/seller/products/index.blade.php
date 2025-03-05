@@ -65,7 +65,7 @@
                     <button class="btn btn-light border btn-sm me-1" title="Details">
                         <i data-feather="file-text" class="icon-xs"></i> Details
                     </button>
-                    <form action="" method="POST">
+                    <form action="{{ route('seller.products.delete', $product->id ) }}" method="POST">
                         @csrf
                         @method('DELETE')
                         <button class="btn btn-danger border btn-sm" title="Delete" type="submit">
