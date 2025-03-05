@@ -4,6 +4,9 @@
 
 <div class="d-flex justify-content-between align-items-end mb-3">
     <h4 class="mb-0">Products</h4>
+    <a href="{{ route('seller.products.add') }}" class="btn btn-theme">
+        <i data-feather="plus" class="icon-xs"></i> Add Product 
+    </a>
 </div>
 
 <div class="table-responsive">
@@ -23,7 +26,7 @@
             <tr>
                 <td>
                     <div class="d-flex align-items-center">
-                        <img src="{{ asset('assets/'. $product->thumbnail) }}" 
+                        <img src="{{ storage_url($product->thumbnail) }}" 
                         class="rounded-circle border" alt="Image" style="height:80px; width:80px" >
                         
                         <div class="ms-3 mt-2">
@@ -56,9 +59,9 @@
                 </td>
                 <td>  </td>
                 <td class="d-flex">
-                    <button class="btn btn-light border btn-sm me-1" title="Edit">
+                    <a href="{{ route('seller.products.edit', $product->id ) }}" class="btn btn-light border btn-sm me-1" title="Edit">
                         <i data-feather="edit" class="icon-xs"></i> Edit
-                    </button>
+                    </a>
                     <button class="btn btn-light border btn-sm me-1" title="Details">
                         <i data-feather="file-text" class="icon-xs"></i> Details
                     </button>
@@ -80,4 +83,75 @@
 <div>
     {{ $products->links() }}
 </div>
+
+<div class="modal fade" id="addModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog  modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Add Product</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ route('seller.products.store') }}" method="post">
+                @CSRF
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Category</label>
+                            <select name="game_id" class="form-select w-100" id="gameSelect" required>
+                                <option value="" selected disabled>--Choose--</option>
+                                @foreach ($categories as $category)
+                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Subcategory</label>
+                            <select name="game_id" class="form-select w-100" id="gameSelect" required>
+                                <option value="" selected disabled>--Choose--</option>
+                               
+                                <option value=""></option>
+                                
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Brand</label>
+                            <select name="game_id" class="form-select w-100" id="gameSelect" required>
+                                <option value="" selected disabled>--Choose--</option>
+                                @foreach ($brands as $brand)
+                                <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Name</label>
+                            <input name="name" type="text" value="" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Buying Price</label>
+                            <input name="name" type="text" value="" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Selling Price</label>
+                            <input name="name" type="text" value="" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Quantity</label>
+                            <input name="name" type="text" value="" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Stock in</label>
+                            <input name="name" type="text" value="" class="form-control" required>
+                        </div>
+
+                    </div>
+                    <button type="submit" class="btn btn-theme">Save Contest</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @endsection

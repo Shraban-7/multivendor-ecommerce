@@ -10,7 +10,7 @@
                 <i data-feather="home" class="nav-icon icon-xs me-2"></i> Dashboard
             </x-dashboard.nav-item-link>
             
-            <x-dashboard.nav-item-link :route="'seller.products'">
+            <x-dashboard.nav-item-link :route="'seller.products.index'">
                 <i data-feather="package" class="nav-icon icon-xs me-2"></i> Manage Product
             </x-dashboard.nav-item-link>
 

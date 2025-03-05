@@ -16,8 +16,16 @@ Route::middleware('guest')->prefix('seller')->as('seller.')->group(function () {
     Route::match(['get', 'post'], '/signup', [AuthController::class, 'signup'])->name('signup');
     Route::match(['get', 'post'], '/login', [AuthController::class, 'login'])->name('login');
 
-    Route::get('/products', [ProductController::class, 'products'])->name('products');
 
+    Route::prefix('products')->as('products.')->group(function () {
+        Route::get('/', [ProductController::class, 'index'])->name('index');
+        Route::get('/create', [ProductController::class, 'create'])->name('add');
+        Route::post('/store', [ProductController::class, 'store'])->name('store');
+        Route::get('/{product}/edit', [ProductController::class, 'edit'])->name('edit');
+        Route::post('/{product}/update', [ProductController::class, 'update'])->name('update');
+        Route::delete('/{productImage}/delete', [ProductController::class, 'deleteImage'])->name('image.delete');
+    });
+    
     Route::prefix('orders')->as('orders.')->group(function () {
         Route::get('/pending', [OrderController::class, 'orders'])->name('pending');
         Route::get('/shipped', [OrderController::class, 'orders'])->name('shipped');        

@@ -144,3 +144,50 @@ if (!function_exists('seller')) {
         return Auth::guard('seller')->user();
     }
 }
+
+if (!function_exists('apiResponse')) {
+    function apiResponse(object|array $data, string|null $message = null, int $statusCode = 200)
+    {
+        $response['status'] = true;
+
+        if (isset($message)) $response['message'] = $message;
+        if (!empty($data)) $response['data'] = $data;
+
+        return response()->json($response, $statusCode);
+    }
+}
+
+if (!function_exists('successResponse')) {
+    function successResponse(string $message, int $statusCode = 200)
+    {
+        $response['status'] = true;
+
+        if (isset($message)) $response['message'] = $message;
+
+        return response()->json($response, $statusCode);
+    }
+}
+
+if (!function_exists('errorResponse')) {
+    function errorResponse(string $message, int $statusCode = 400)
+    {
+        return response()->json([
+            'status' => false,
+            'message' => $message ?? 'Something went wrong!',
+        ], $statusCode);
+    }
+}
+
+if (!function_exists('apiResourceResponse')) {
+    function apiResourceResponse(object $collection, string|null $message = null, array $extraData = [], int $statusCode = 200)
+    {
+        $response['status'] = true;
+        if (isset($message)) $response['message'] = $message;
+        if (!empty($extraData)) $response['extraData'] = $extraData;
+        if (!empty($collection)) {
+            $collection = $collection->additional($response)->response()->getData();
+        }
+
+        return response()->json($collection, $statusCode);
+    }
+}
