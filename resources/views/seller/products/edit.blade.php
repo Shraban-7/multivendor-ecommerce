@@ -193,14 +193,12 @@
             data: formData,
             contentType: false, 
             processData: false,
-            success: function(response) {                
-                if (response.success) {
-                    alert('Product updated successfully!');
-                    location.reload(); 
-                } else {                    
-                    printErrorMsg(response.errors);
-                }
+            success: function(response) {
+                location.reload(); 
             },
+            error: function(error) {
+                alert('Something went wrong');
+            }
         });
     });
 
@@ -214,12 +212,10 @@
                 url: url,
                 method: "DELETE",
                 success: function(response) {
-                    if (response.success) {
-                        alert('Product image deleted successfully!');
-                        location.reload(); 
-                    } else {                    
-                        printErrorMsg(response.errors);
-                    }
+                    location.reload(); 
+                },
+                error: function(error) {
+                    alert('Something went wrong');
                 }
             });
         }
