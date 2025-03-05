@@ -45,7 +45,7 @@ Route::middleware('auth')->group(function () {
         Route::match(['get', 'post'], 'checkout/', [OrderController::class, 'checkout'])->name('checkout');
         Route::get('/',[OrderController::class, 'index'])->name('index');
         Route::get('/details/{order}',[OrderController::class, 'details'])->name('details');
-        Route::get('/success', [OrderController::class, 'success'])->name('success');
+        Route::get('/success/', [OrderController::class, 'success'])->name('success');
         Route::get('/tracking/{tracking_id}', [OrderController::class, 'tracking'])->name('tracking');
         Route::match(['get','post'],'/review/{order}',[OrderController::class,'review'])->name('review');
     });

@@ -69,9 +69,9 @@
                                     <label for="selectSeller{{ $sellerId }}"
                                         class="w-full flex items-center justify-between cursor-pointer text-black hover:text-black/80 py-2 px-3 bg-gray-100 rounded-md">
                                         <p class="md:text-base flex items-center gap-2">
-                                            <input type="checkbox" id="selectSeller{{ $sellerId }}"
+                                            <input type="radio" name="seller_id" id="selectSeller{{ $sellerId }}"
                                                 class="hidden form-checkbox seller-checkbox peer/seller{{ $sellerId }}"
-                                                data-seller-id="{{ $sellerId }}" />
+                                                data-seller-id="{{ $sellerId }}" value="{{ $sellerId }}" />
                                             <label for="selectSeller{{ $sellerId }}"
                                                 class="inline-block stroke-black peer-checked/seller{{ $sellerId }}:stroke-white rounded-full text-white peer-checked/seller{{ $sellerId }}:text-black border-2 border-black cursor-pointer">
                                                 <svg width="28" height="28" class="w-5 md:w-6 h-5 md:h-6"
@@ -342,9 +342,10 @@
 
                         <!-- order action btn -->
                         <div class="mt-4 sm:mt-6 space-y-2 sm:space-y-3">
-                            <a href="{{ route('orders.checkout') }}">
+                            <a href="{{ route('orders.checkout') }}" id="checkoutLink">
                                 <button id="checkoutBtn"
-                                    class="eq w-full flex flex-col items-center bg-primary text-white sm:py-3 py-2 rounded-full hover:bg-theme-dark">
+                                    class="eq w-full flex flex-col items-center bg-primary text-white sm:py-3 py-2 rounded-full hover:bg-theme-dark"
+                                    data-seller-id="">
                                     Checkout (0) <span class="text-xs">Almost Sold Out</span>
                                 </button>
                             </a>
@@ -524,6 +525,48 @@
     @push('scripts')
         <script>
             $(document).ready(function() {
+                $('.seller-checkbox').on('change', function() {
+                    const sellerId = $(this).data('seller-id');
+                    const isChecked = $(this).prop('checked');
+
+                    $('.seller-checkbox').not(this).prop('checked', false);
+
+                    $('.seller-items').hide();
+                    $(`.seller-items.seller-${sellerId}`).show();
+
+                    updateSellerSelection();
+                });
+
+                function updateSellerSelection() {
+                    $('.item-checkbox').prop('checked', false);
+                    updateCounts();
+                    updateOrderSummary();
+                }
+
+                $('.seller-checkbox').on('change', function() {
+                    const sellerId = $(this).data('seller-id');
+                    const selectedCount = $('.item-checkbox:checked').length;
+
+                    $('#checkoutBtn')
+                        .attr('data-seller-id', sellerId)
+                        .find('span:first-child').text(`Checkout (${selectedCount})`);
+
+                    const checkoutRoute = "{{ route('orders.checkout') }}";
+                    $('#checkoutLink').attr('href', `${checkoutRoute}?seller_id=${sellerId}`);
+                });
+
+                $('.item-checkbox').on('change', function() {
+                    const selectedSellerId = $('.seller-checkbox:checked').data('seller-id');
+                    const selectedCount = $('.item-checkbox:checked').length;
+
+                    $('#checkoutBtn')
+                        .attr('data-seller-id', selectedSellerId)
+                        .find('span:first-child').text(`Checkout (${selectedCount})`);
+
+                    const checkoutRoute = "{{ route('orders.checkout') }}";
+                    $('#checkoutLink').attr('href', `${checkoutRoute}?seller_id=${selectedSellerId}`);
+                });
+
                 $('.increase-qty, .decrease-qty').click(function() {
                     var cartItem = $(this).closest('.quantity-controls');
                     var cartItemId = cartItem.data('id');
@@ -562,7 +605,7 @@
                     const sellerId = $(this).data('seller-id');
                     const isChecked = $(this).prop('checked');
                     $(`.item-checkbox[data-seller-id="${sellerId}"]`).prop('checked',
-                    isChecked); // Fixed template literal
+                        isChecked); // Fixed template literal
                     updateSellerCheckboxes();
                     updateCounts();
                     updateOrderSummary();
@@ -579,15 +622,14 @@
                 // Helper functions
                 function updateCartQuantity(cartItemId, quantity, input) {
                     $.ajax({
-                        url: "{{ route('cart.update') }}", // Use the route as defined in your original code
+                        url: "{{ route('cart.update') }}",
                         type: "POST",
                         data: {
                             id: cartItemId,
                             quantity: quantity,
-                            _token: $('meta[name="csrf-token"]').attr('content') // Add CSRF token
                         },
                         success: function(response) {
-                            input.val(quantity); // Update the input immediately
+                            input.val(quantity);
 
                             if (response.success) {
                                 updateOrderTotals(response);
@@ -604,11 +646,10 @@
 
                 function deleteCartItem(cartItemId) {
                     $.ajax({
-                        url: "{{ route('cart.delete') }}", // Use the route as defined in your original code
+                        url: "{{ route('cart.delete') }}",
                         type: "POST",
                         data: {
                             id: cartItemId,
-                            _token: $('meta[name="csrf-token"]').attr('content') // Add CSRF token
                         },
                         success: function(response) {
                             if (response.success) {
@@ -642,10 +683,10 @@
                 }
 
                 function updateSellerCheckbox(sellerId) {
-                    const sellerItems = $(`.item-checkbox[data-seller-id="${sellerId}"]`); // Fixed template literal
+                    const sellerItems = $(`.item-checkbox[data-seller-id="${sellerId}"]`);
                     const allSellerItemsChecked = sellerItems.length === sellerItems.filter(':checked').length;
                     $(`.seller-checkbox[data-seller-id="${sellerId}"]`).prop('checked',
-                    allSellerItemsChecked); // Fixed template literal
+                        allSellerItemsChecked);
                 }
 
                 function updateSellerCheckboxes() {
@@ -665,7 +706,7 @@
                     $('.seller-count').each(function() {
                         const sellerId = $(this).data('seller-id');
                         const sellerItems = $(
-                        `.item-checkbox[data-seller-id="${sellerId}"]:checked`); // Fixed template literal
+                            `.item-checkbox[data-seller-id="${sellerId}"]:checked`); // Fixed template literal
                         $(this).text(sellerItems.length);
                     });
                 }
@@ -709,7 +750,6 @@
                     return '$' + amount.toFixed(2);
                 }
 
-                // Initialize
                 updateOrderSummary();
                 updateCounts();
             });

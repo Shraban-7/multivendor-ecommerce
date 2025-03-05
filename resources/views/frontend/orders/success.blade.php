@@ -79,7 +79,7 @@
                     with us.
                 </p>
                 <div class="flex items-center gap-2 xsm:gap-5 text-xs xsm:text-sm mt-3">
-                    <a href="./trackOrder.html"
+                    <a href="{{ route('orders.tracking',$order->tracking_id) }}"
                         class="inline-flex items-center gap-1 xsm:gap-2 text-primary sm:py-2.5 sm:px-5 py-1.5 px-4 border-2 border-primary/30 hover:bg-primary text-primary hover:text-white rounded-sm font-bold uppercase eq">
                         <span><svg width="20" height="20" viewBox="0 0 20 20" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -98,10 +98,10 @@
                         </span>
                         Track Order
                     </a>
-                    <button
+                    <a href="{{ route('orders.details',$order->id) }}"
                         class="sm:py-2.5 sm:px-5 py-1.5 px-4 bg-primary text-white hover:bg-theme-dark rounded-sm font-bold uppercase eq border-2 border-primary hover:border-theme-dark">
                         View Order
-                    </button>
+                    </a>
                 </div>
             </div>
         </section>

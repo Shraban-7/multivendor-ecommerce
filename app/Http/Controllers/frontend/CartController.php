@@ -20,13 +20,20 @@ class CartController extends Controller
             return response()->json(['success' => false, 'error' => 'Product not found']);
         }
 
-        $newCart = Cart::create([
+        $cart = Cart::where([
             'user_id' => Auth::user()->id,
             'seller_id' => $product->seller_id
-        ]);
+        ])->first();
+
+        if(!$cart) {
+            $cart = Cart::create([
+                'user_id' => Auth::user()->id,
+                'seller_id' => $product->seller_id
+            ]);
+        }
 
         CartItem::create([
-            'cart_id' => $newCart->id,
+            'cart_id' => $cart->id,
             'product_id' => $product->id,
             'quantity' => $request->quantity ?? 1
         ]);

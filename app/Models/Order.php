@@ -17,13 +17,6 @@ class Order extends Model
         'status' => OrderStatus::class,
     ];
 
-    // Delivery Status
-
-    const ORDER_PLACED = 1;
-    const PACKAGING = 2;
-    const ON_THE_ROAD = 3;
-    const DELIVERED = 4;
-
     public function scopePending($query)
     {
         return $query->where('status', OrderStatus::PENDING->value);

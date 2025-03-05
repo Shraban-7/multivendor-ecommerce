@@ -112,6 +112,7 @@
                                         @endforeach
                                     </datalist>
                                 </div>
+                                <input type="hidden" name="seller_id" id="" value="{{ $selectedSellerId }}">
                             </div>
 
                             <!-- Location Details -->
@@ -255,7 +256,7 @@
                     <!-- Security Info -->
                     <div class="space-y-2">
                         <!-- checkout btn -->
-                        <button id="continue-payment-btn" type="button"
+                        <button id="continue-payment-btn" type="button" data-seller-id="{{ $selectedSellerId }}"
                             class="eq 2xl:text-2xl lg:text-xl text-lg w-full flex flex-col items-center bg-primary hover:bg-theme-dark text-white sm:py-4 py-3 rounded-full font-medium">
                             Continue Payment
                         </button>
@@ -322,13 +323,12 @@
                     e.preventDefault();
                     $.ajax({
                         type: 'POST',
-                        url: "{{ route('checkout') }}",
+                        url: "{{ route('orders.checkout') }}",
                         data: $('#checkout-form').serialize(),
                         success: function(response) {
                             toastr.success(response.message);
                             window.location.href = "{{ route('orders.success') }}";
                         },
-
                         error: function(xhr, status, error) {
                             console.error(xhr.responseText);
                         }

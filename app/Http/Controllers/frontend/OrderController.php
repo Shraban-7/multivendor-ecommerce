@@ -41,102 +41,104 @@ class OrderController extends Controller
     {
         $user = Auth::user();
 
+        $selectedSellerId = $request->input('seller_id');
+
+        $cart = Cart::where('user_id', $user->id)
+            ->where('seller_id', $selectedSellerId)
+            ->with('cartItems.product')
+            ->first();
+
+        // return $cart;
+
         if ($request->isMethod('GET')) {
             $customer_addresses = CustomerAddress::where('user_id', $user->id)->get();
-            return view('frontend.pages.checkout', compact('user', 'customer_addresses'));
+            return view('frontend.pages.checkout', compact('user', 'customer_addresses', 'selectedSellerId'));
         }
 
-        $carts = Cart::where('user_id', $user->id)
-            ->with('cartItems.product')
-            ->get()
-            ->groupBy(fn($cart) => $cart->cartItems->first()->product->seller_id ?? null);
+        if (!$cart) {
+            return response()->json([
+                'status' => false,
+                'message' => 'No cart found for the selected seller.',
+            ], 404);
+        }
 
-        $selectedSellers = $carts->keys();
+        $discountPrice = function ($product) {
+            if ($product->discount_type === 'percentage') {
+                return $product->selling_price - ($product->selling_price * $product->discount_amount / 100);
+            } elseif ($product->discount_type === 'flat') {
+                return $product->selling_price - $product->discount_amount;
+            }
+            return $product->selling_price;
+        };
 
-        CustomerAddress::updateOrCreate(
-            [
-                'user_id' => $user->id,
-                'type' => $request->type,
-            ],
-            [
-                'address' => $request->address
-            ]
-        );
+        $total = 0;
+        $discount = 0;
+        $shippingFee = 0;
+        $tax = 0;
+        $orderItems = [];
 
-        $orders = $carts->filter(fn($cartGroup, $sellerId) => $selectedSellers->contains($sellerId))
-            ->map(function ($cartGroup, $sellerId) use ($user, $request) {
-                $seller = Seller::find($sellerId);
+        foreach ($cart->cartItems as $cartItem) {
+            $product = $cartItem->product;
 
-                $discountPrice = function ($product) {
-                    if ($product->discount_type === DiscountType::FLAT) {
-                        return $product->selling_price - $product->discount_amount;
-                    } elseif ($product->discount_type === DiscountType::PERCENTAGE) {
-                        return $product->selling_price - ($product->selling_price * $product->discount_amount) / 100;
-                    }
-                    return $product->selling_price;
-                };
+            $unitPrice = $discountPrice($product);
+            $itemTotal = $cartItem->quantity * $unitPrice;
+            $itemDiscount = $cartItem->quantity * ($product->selling_price - $unitPrice);
 
-                $subtotal = $cartGroup->sum(fn($cart) => $cart->cartItems->sum(fn($item) => $item->quantity * $discountPrice($item->product)));
+            $shippingFee += floatval($product->shipping_cost);
+            $tax += floatval($product->tax) * $cartItem->quantity;
 
-                $discount = $cartGroup->sum(fn($cart) => $cart->cartItems->sum(fn($item) => $item->quantity * ($item->product->selling_price - $discountPrice($item->product))));
-                $shippingFee = $seller->shipping_cost ?? 0;
+            $total += $itemTotal;
+            $discount += $itemDiscount;
 
-                $order = Order::create([
-                    'user_id' => $user->id,
-                    'seller_id' => $sellerId,
-                    'customer_name' => $request->customer_name,
-                    'customer_email' => $request->customer_email,
-                    'customer_phone' => $request->customer_phone,
-                    'customer_address' => $request->address,
-                    'tracking_id' => 'TRK-' . strtoupper(uniqid()),
-                    'sub_total' => $subtotal,
-                    'total' => $subtotal,
-                    'discount' => $discount,
-                    'tax' => 0,
-                    'shipping_fee' => $shippingFee,
-                    'payable' => $subtotal + $shippingFee,
-                    'due' => $subtotal + $shippingFee,
-                    'status' => 1
-                ]);
+            $orderItems[] = [
+                'product_id' => $product->id,
+                'product_variant' => null,
+                'product_variant_price' => $product->selling_price,
+                'buying_price' => $product->buying_price,
+                'unit_price' => $unitPrice,
+                'quantity' => $cartItem->quantity,
+                'discount' => $itemDiscount,
+                'sub_total' => $itemTotal
+            ];
 
-                foreach ($cartGroup as $cart) {
-                    foreach ($cart->cartItems as $item) {
-                        $product = Product::find($item->product_id);
+            $product->decrement('stock_in', $cartItem->quantity);
+            $product->increment('stock_out', $cartItem->quantity);
+        }
 
-                        $unitPrice = $discountPrice($item->product);
+        $order = Order::create([
+            'user_id' => $user->id,
+            'seller_id' => $selectedSellerId,
+            'customer_name' => $request->input('customer_name', $user->name),
+            'customer_email' => $request->input('customer_email', $user->email),
+            'customer_phone' => $request->input('customer_phone'),
+            'customer_address' => $request->input('address'),
+            'tracking_id' => 'TRK-' . strtoupper(uniqid()),
+            'sub_total' => $total,
+            'total' => $total - $discount,
+            'discount' => $discount,
+            'tax' => $tax,
+            'shipping_fee' => $shippingFee,
+            'payable' => $total + $shippingFee + $tax - $discount,
+            'due' => $total + $shippingFee + $tax - $discount,
+            'status' => 1
+        ]);
 
-                        $order->items()->create([
-                            'product_id' => $item->product_id,
-                            'product_variant' => $item->variant ?? null,
-                            'product_variant_price' => $item->product->selling_price,
-                            'buying_price' => $product->buying_price ?? 0,
-                            'unit_price' => $unitPrice,
-                            'quantity' => $item->quantity,
-                            'discount' => $item->quantity * ($item->product->selling_price - $unitPrice),
-                            'sub_total' => $item->quantity * $unitPrice
-                        ]);
+        $order->items()->createMany($orderItems);
 
-                        $product->decrement('stock_in', $item->quantity);
-                        $product->increment('stock_out', $item->quantity);
-                    }
-
-                    $cart->cartItems()->delete();
-                    $cart->delete();
-                }
-
-                return $order;
-            });
+        $cart->cartItems()->delete();
+        $cart->delete();
 
         return response()->json([
             'status' => true,
             'message' => 'Order placed successfully!',
-            'orders' => $orders,
+            'order' => $order,
         ]);
     }
 
     public function success()
     {
-        return view('frontend.orders.success');
+        $order = Order::latest()->first();
+        return view('frontend.orders.success', compact('order'));
     }
 
     public function tracking($tracking_id)
@@ -150,7 +152,7 @@ class OrderController extends Controller
         $user = Auth::user();
 
         if ($request->isMethod('GET')) {
-            return view('frontend.orders.review', compact('user','order'));
+            return view('frontend.orders.review', compact('user', 'order'));
         }
 
         $request->validate([

@@ -92,17 +92,17 @@
                 <!-- Progress Tracker -->
                 <div class="progress-container px-3 sm:px-5">
                     <div class="flex items-center justify-between relative mx-7 -mb-2">
-                        @if ($order->delivery_status == \App\Enums\Order::PACKAGING)
+                        @if ($order->delivery_status == \App\Enums\OrderStatus::PACKAGING->value)
                             <div class="progress-line active"></div>
                         @else
                             <div class="progress-line"></div>
                         @endif
-                        @if ($order->delivery_status == \App\Models\Order::ON_THE_ROAD)
+                        @if ($order->delivery_status == \App\Enums\OrderStatus::ON_THE_ROAD->value)
                             <div class="progress-line active"></div>
                         @else
                             <div class="progress-line"></div>
                         @endif
-                        @if ($order->delivery_status == \App\Models\Order::DELIVERED)
+                        @if ($order->delivery_status == \App\Enums\OrderStatus::DELIVERED->value)
                             <div class="progress-line active"></div>
                         @else
                             <div class="progress-line"></div>
@@ -141,7 +141,7 @@
 
                         <!-- Packaging -->
                         <div class="step packaging relative z-[1] completed">
-                            @if ($order->delivery_status == \App\Models\Order::PACKAGING)
+                            @if ($order->delivery_status == \App\Enums\OrderStatus::PACKAGING->value)
                                 <div class="step-dot flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full">
                                     <span>
                                         <i class="fa-solid fa-check text-white text-xs sm:text-sm"></i>
@@ -179,7 +179,7 @@
 
                         <!-- On The Road -->
                         <div class="step on-road relative z-[1] active">
-                            @if ($order->delivery_status == \App\Models\Order::ON_THE_ROAD)
+                            @if ($order->delivery_status == \App\Enums\OrderStatus::ON_THE_ROAD->value)
                                 <div class="step-dot flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full">
                                     <span>
                                         <i class="fa-solid fa-check text-white text-xs sm:text-sm"></i>
@@ -233,7 +233,7 @@
 
                         <!-- Delivered -->
                         <div class="step delivered relative z-[1]">
-                            @if ($order->delivery_status == \App\Models\Order::DELIVERED)
+                            @if ($order->delivery_status == \App\Enums\OrderStatus::DELIVERED->value)
                                 <div class="step-dot flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full">
                                     <span>
                                         <i class="fa-solid fa-check text-white text-xs sm:text-sm"></i>
