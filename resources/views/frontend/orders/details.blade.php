@@ -200,7 +200,7 @@
                         <a href="#"
                             class="inline-block capitalize bg-primary text-theme-light md:text-lg lg:text-xl w-full py-2.5 md:py-3 lg:py-4 text-center rounded-full hover:bg-theme-dark eq">Return
                             or refund</a>
-                        <a href="/review.html"
+                        <a href="{{ route('orders.review',$order->id) }}"
                             class="inline-block capitalize border border-theme-dark text-theme-dark md:text-lg lg:text-xl w-full py-2.5 md:py-3 lg:py-4 text-center rounded-full hover:bg-theme-dark hover:text-theme-light eq">Leave
                             a feedback</a>
                     </div>

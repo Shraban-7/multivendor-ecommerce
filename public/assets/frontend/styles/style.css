@@ -14,6 +14,7 @@
     --persian-red: #d73421;
     --persian-blue: #002d58;
     --light-yellow: #ffb321;
+    --leaf-green: #66bc03;
 
     /* typography */
     --font-primary: "Rubik", serif;
@@ -218,5 +219,23 @@
 
   .step.completed .step-content {
     opacity: 1;
+  }
+
+  /* order details page */
+  .order-details-menus li[aria-current="page"] a {
+    background: var(--leaf-green) !important;
+    color: var(--theme-light) !important;
+  }
+
+  /* review star  */
+  .review-star {
+    color: #d8dbdf;
+    transition: 300ms cubic-bezier(0.25, 1, 0.5, 1);
+  }
+  .review-star.active {
+    color: var(--light-yellow);
+  }
+  .review-star.hover {
+    color: var(--light-yellow);
   }
 }

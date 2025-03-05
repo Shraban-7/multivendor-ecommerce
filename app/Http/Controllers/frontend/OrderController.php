@@ -10,6 +10,8 @@ use App\Enums\DiscountType;
 use Illuminate\Http\Request;
 use App\Models\CustomerAddress;
 use App\Http\Controllers\Controller;
+use App\Models\Review;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
@@ -141,5 +143,31 @@ class OrderController extends Controller
     {
         $order = Order::withCount('items')->where('tracking_id', $tracking_id)->first();
         return view('frontend.orders.tracking', compact('order'));
+    }
+
+    public function review(Order $order, Request $request)
+    {
+        $user = Auth::user();
+
+        if ($request->isMethod('GET')) {
+            return view('frontend.orders.review', compact('user','order'));
+        }
+
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'review_text' => 'required|string'
+        ]);
+
+
+        foreach ($order->items as $item) {
+            Review::create([
+                'product_id' => $item->product_id,
+                'user_id' => $order->user_id,
+                'rating' => $request->rating,
+                'review_text' => $request->review_text
+            ]);
+        }
+
+        return response()->json(['success' => true, 'message' => 'Review submitted successfully']);
     }
 }

@@ -342,7 +342,7 @@
 
                         <!-- order action btn -->
                         <div class="mt-4 sm:mt-6 space-y-2 sm:space-y-3">
-                            <a href="{{ route('checkout') }}">
+                            <a href="{{ route('orders.checkout') }}">
                                 <button id="checkoutBtn"
                                     class="eq w-full flex flex-col items-center bg-primary text-white sm:py-3 py-2 rounded-full hover:bg-theme-dark">
                                     Checkout (0) <span class="text-xs">Almost Sold Out</span>
@@ -625,13 +625,11 @@
                 }
 
                 function updateOrderTotals(response) {
-                    // Make sure we're not adding $ if the response already includes currency formatting
                     $('#itemsTotal').text(response.order_total);
                     $('#estimatedTotal').text(response.order_subtotal);
                     $('#itemDiscount').text('-' + response.discount);
                     $('#selectedItemsCount').text(response.total_products_count);
 
-                    // Update the checkout button text
                     const checkoutBtn = $('#checkoutBtn');
                     checkoutBtn.html(
                         `Checkout (${response.total_products_count}) <span class="text-xs">Almost Sold Out</span>`);

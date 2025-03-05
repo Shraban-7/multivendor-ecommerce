@@ -90,6 +90,11 @@
                             </a>
                         </li>
                         <li>
+                            <a href="{{ route('orders.index') }}" class="block px-4 py-2 hover:bg-gray-100">
+                                <i class="fa-solid fa-basket-shopping mr-2"></i> My Orders
+                            </a>
+                        </li>
+                        <li>
                             <a href="/settings" class="block px-4 py-2 hover:bg-gray-100">
                                 <i class="fa-solid fa-cog mr-2"></i> Settings
                             </a>

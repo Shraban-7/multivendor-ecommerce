@@ -33,7 +33,7 @@ class LoginController extends Controller
             $request->session()->regenerate();
             session()->flash('success', 'Login successful');
 
-            return redirect()->intended('profile');
+            return redirect()->intended(route('profile'));
         }
 
         if ($seller) {
