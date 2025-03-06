@@ -303,8 +303,8 @@
                                     class="w-auto h-8 sm:h-10 border rounded" />
                                 <img src="{{ asset('assets/frontend/images/cart-payment-method-5.png') }}" alt="Paypal"
                                     class="w-auto h-8 sm:h-10 border rounded" />
-                                <img src="{{ asset('assets/frontend/images/cart-payment-method-6.png') }}" alt="Apple Pay"
-                                    class="w-auto h-8 sm:h-10 border rounded" />
+                                <img src="{{ asset('assets/frontend/images/cart-payment-method-6.png') }}"
+                                    alt="Apple Pay" class="w-auto h-8 sm:h-10 border rounded" />
                                 <img src="{{ asset('assets/frontend/images/cart-payment-method-7.png') }}" alt="G Pay"
                                     class="w-auto h-8 sm:h-10 border rounded" />
                             </div>
@@ -327,7 +327,8 @@
                         data: $('#checkout-form').serialize(),
                         success: function(response) {
                             toastr.success(response.message);
-                            window.location.href = "{{ route('orders.success') }}";
+                            window.location.href = "{{ route('orders.success', ':orderId') }}"
+                                .replace(':orderId', response.order.id);
                         },
                         error: function(xhr, status, error) {
                             console.error(xhr.responseText);

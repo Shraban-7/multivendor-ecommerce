@@ -135,9 +135,9 @@ class OrderController extends Controller
         ]);
     }
 
-    public function success()
+    public function success(Order $order)
     {
-        $order = Order::latest()->first();
+        // return $order;
         return view('frontend.orders.success', compact('order'));
     }
 
