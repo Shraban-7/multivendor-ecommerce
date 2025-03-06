@@ -20,7 +20,6 @@
                 <th scope="col">Action</th>
             </tr>
         </thead>
-
         <tbody>
             @foreach ($products as $product)
             <tr>
@@ -28,18 +27,15 @@
                     <div class="d-flex align-items-center">
                         <img src="{{ storage_url($product->thumbnail) }}"
                             class="rounded-circle border" alt="Image" style="height:80px; width:80px">
-
                         <div class="ms-3 mt-2">
                             <div>{{ $product->name }}</div>
                             <div class="mt-2">
                                 <small>Category: <strong>{{ $product->category->name }}</strong></small><br>
                                 <small>Brand: <strong>{{ $product->brand?->name }}</strong></small><br>
-
                             </div>
                         </div>
                     </div>
                 </td>
-
                 <td>
                     Buy: {{ $product->buying_price }} <br>
                     Sell: {{ $product->selling_price }}

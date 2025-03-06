@@ -82,7 +82,7 @@
                 <div class="px-4 pb-0 pt-2">
                     <div class="lh-1 ">
                         <h5 class="mb-1">Name</h5>
-                        <a href="#" class="text-inherit fs-6">Profile</a>
+                        <a href="{{ route('seller.profile',seller()->username) }}" class="text-inherit fs-6">Profile</a>
                     </div>
                     <div class=" dropdown-divider mt-3 mb-2"></div>
                 </div>
