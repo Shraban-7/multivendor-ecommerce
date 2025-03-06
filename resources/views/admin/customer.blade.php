@@ -33,7 +33,7 @@
                 <td> {{ $customer->created_at->format('d/m/Y h:i A') }} </td>
                 <td>
                     <div>
-                        <button class="btn btn-light border  btn-sm me-1 mb-1" data-bs-toggle="modal"
+                        <button class="btn btn-light border  btn-sm mb-1" data-bs-toggle="modal"
                             data-bs-target=""><i data-feather="edit"
                                 class="icon-xs"></i> Edit
                         </button>
