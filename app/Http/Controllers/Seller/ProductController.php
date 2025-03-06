@@ -104,22 +104,6 @@ class ProductController extends Controller
         }
         $product->update($validated);
 
-        if ($request->hasFile('files')) {
-            if($product->images() != null){
-                foreach ($product->images() as $image){
-                    delete_file($image);
-                }
-
-                foreach ($request->file('files') as $file) {
-                    ProductImage::create([
-                        'product_id' => $product->id,
-                        'image' => upload_file($file, 'images/products')
-                    ]);
-                }
-            }
-            
-        }
-
         if ($request->hasFile('files')){
             $product->images->each(function ($image) {
                 delete_file($image->image);
@@ -139,14 +123,29 @@ class ProductController extends Controller
         return successResponse("Product Updated successfully!");
     }
 
-    public function deleteImage(ProductImage $productImage)
+    public function delete(Product $product)
     {
-         
-        delete_file($productImage->image);
 
-        $productImage->delete();
+        if($product->thumbnail != null) {
+            delete_file($product->thumbnail);
+        }
+
+        $product->images->each(function ($image) {
+            delete_file($image->image);
+            $image->delete();
+        });
+
+        $product->delete();
+
+        return redirect()->back()->with('success','Product Removed Successfully');
+    }
+
+    public function deleteImage(ProductImage $image)
+    {         
+        delete_file($image->image);
+
+        $image->delete();
 
         return successResponse("Product image deleted successfully!");
-
     }
 }

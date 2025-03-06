@@ -204,15 +204,13 @@
 
     function deleteImage(imageId) {
         var url = "{{ route('seller.products.image.delete', ':id') }}".replace(':id', imageId);
-        alert('Deleting image with ID: ' + imageId); 
-
         if (confirm("Are you sure you want to delete this image?")) {
             $.ajax({
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 url: url,
                 method: "DELETE",
                 success: function(response) {
-                    location.reload(); 
+                    location.reload();
                 },
                 error: function(error) {
                     alert('Something went wrong');
