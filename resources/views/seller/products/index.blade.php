@@ -5,7 +5,7 @@
 <div class="d-flex justify-content-between align-items-end mb-3">
     <h4 class="mb-0">Products</h4>
     <a href="{{ route('seller.products.add') }}" class="btn btn-theme">
-        <i data-feather="plus" class="icon-xs"></i> Add Product 
+        <i data-feather="plus" class="icon-xs"></i> Add Product
     </a>
 </div>
 
@@ -26,38 +26,38 @@
             <tr>
                 <td>
                     <div class="d-flex align-items-center">
-                        <img src="{{ storage_url($product->thumbnail) }}" 
-                        class="rounded-circle border" alt="Image" style="height:80px; width:80px" >
-                        
+                        <img src="{{ storage_url($product->thumbnail) }}"
+                            class="rounded-circle border" alt="Image" style="height:80px; width:80px">
+
                         <div class="ms-3 mt-2">
                             <div>{{ $product->name }}</div>
                             <div class="mt-2">
                                 <small>Category: <strong>{{ $product->category->name }}</strong></small><br>
                                 <small>Brand: <strong>{{ $product->brand->name }}</strong></small><br>
-                                
+
                             </div>
                         </div>
                     </div>
                 </td>
 
-                <td> 
+                <td>
                     Buy: {{ $product->buying_price }} <br>
                     Sell: {{ $product->selling_price }}
                 </td>
-                <td> 
+                <td>
                     <div class="mb-2">
                         @if ($product->stock_status == 'in_stock')
-                            <span class="badge text-bg-success text-white">In Stock</span>
+                        <span class="badge text-bg-success text-white">In Stock</span>
                         @else
-                            <span class="badge text-bg-danger text-white">Stock Out</span>
+                        <span class="badge text-bg-danger text-white">Stock Out</span>
                         @endif
-                    </div>  
-                    Qty: <strong> {{ $product->quantity }}</strong> <br>              
+                    </div>
+                    Qty: <strong> {{ $product->quantity }}</strong> <br>
 
                     <span> In: {{ $product->stock_in }} | Out: <span class="text-danger">{{ $product->stock_out }}</span></span>
 
                 </td>
-                <td>  </td>
+                <td> </td>
                 <td class="d-flex">
                     <a href="{{ route('seller.products.edit', $product->id ) }}" class="btn btn-light border btn-sm me-1" title="Edit">
                         <i data-feather="edit" class="icon-xs"></i> Edit
@@ -65,16 +65,47 @@
                     <button class="btn btn-light border btn-sm me-1" title="Details">
                         <i data-feather="file-text" class="icon-xs"></i> Details
                     </button>
-                    <form action="{{ route('seller.products.delete', $product->id ) }}" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <button class="btn btn-danger border btn-sm" title="Delete" type="submit">
-                            <i data-feather="trash-2" class="icon-xs"></i> Delete
-                        </button>
-                    </form>
+                    <button class="btn btn-danger border btn-sm" title="Delete" data-bs-toggle="modal"
+                        data-bs-target="#deleteModal-{{ $product->id }}">
+                        <i data-feather="trash-2" class="icon-xs"></i> Delete
+                    </button>
 
                 </td>
             </tr>
+
+            <!-- Delete Modal -->
+            <div class="modal fade" id="deleteModal-{{ $product->id }}" tabindex="-1"
+                aria-labelledby="deleteModalLabel-{{ $product->id }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteModalLabel-{{ $product->id }}">Confirm
+                                Delete</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <div class="alert alert-warning d-flex" role="alert">
+                                <i class="bi bi-exclamation-circle-fill me-2 text-danger"
+                                    style="font-size: 1.5rem;"></i>
+                                <p class="mt-1 text-secondary">
+                                    Are you sure you want to delete this Product?
+                                </p>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">Cancel</button>
+                            <form action="{{ route('seller.products.delete', $product->id ) }}"
+                                method="POST">
+                                @method('DELETE')
+                                @csrf
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
             @endforeach
         </tbody>
     </table>
@@ -109,9 +140,9 @@
                             <label class="form-label">Subcategory</label>
                             <select name="game_id" class="form-select w-100" id="gameSelect" required>
                                 <option value="" selected disabled>--Choose--</option>
-                               
+
                                 <option value=""></option>
-                                
+
                             </select>
                         </div>
 
