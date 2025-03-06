@@ -11,12 +11,6 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
     Route::get('/shop-details/{username}', [SellerController::class, 'shop_details'])->name('shop_details');
-});
-
-Route::middleware('guest')->prefix('seller')->as('seller.')->group(function () {
-    Route::match(['get', 'post'], '/signup', [AuthController::class, 'signup'])->name('signup');
-    Route::match(['get', 'post'], '/login', [AuthController::class, 'login'])->name('login');
-
 
     Route::prefix('products')->as('products.')->group(function () {
         Route::get('/', [ProductController::class, 'index'])->name('index');
@@ -31,10 +25,16 @@ Route::middleware('guest')->prefix('seller')->as('seller.')->group(function () {
     });
 
     Route::prefix('orders')->as('orders.')->group(function () {
-        Route::get('/pending', [OrderController::class, 'orders'])->name('pending');
-        Route::get('/shipped', [OrderController::class, 'orders'])->name('shipped');
-        Route::get('/delivered', [OrderController::class, 'orders'])->name('delivered');
-        Route::get('/cancelled', [OrderController::class, 'orders'])->name('cancelled');
+        Route::get('/pending', [OrderController::class, 'index'])->name('pending');
+        Route::get('/shipped', [OrderController::class, 'index'])->name('shipped');
+        Route::get('/delivered', [OrderController::class, 'index'])->name('delivered');
+        Route::get('/cancelled', [OrderController::class, 'index'])->name('cancelled');
+        Route::get('/details/{order}', [OrderController::class, 'details'])->name('details');
+        Route::Post('/update-status/{order}', [OrderController::class, 'updateStatus'])->name('updateStatus');
     });
+});
 
+Route::middleware('guest')->prefix('seller')->as('seller.')->group(function () {
+    Route::match(['get', 'post'], '/signup', [AuthController::class, 'signup'])->name('signup');
+    Route::match(['get', 'post'], '/login', [AuthController::class, 'login'])->name('login');
 });

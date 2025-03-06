@@ -4,14 +4,12 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Models\Cart;
 use App\Models\Order;
-use App\Models\Seller;
-use App\Models\Product;
 use App\Enums\DiscountType;
+use App\Enums\OrderStatus;
 use Illuminate\Http\Request;
 use App\Models\CustomerAddress;
 use App\Http\Controllers\Controller;
 use App\Models\Review;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
@@ -20,7 +18,7 @@ class OrderController extends Controller
     {
         $status = $request->input('status', 'all');
 
-        $query = Order::with('seller')->withCount('items')->where('user_id', Auth::user()->id)->where('tracking_id', '!=', null);
+        $query = Order::with('seller')->withCount('items')->where('user_id', Auth::user()->id)->where('invoice_id', '!=', null);
 
         if ($status !== 'all') {
             $query->where('status', $status);
@@ -48,8 +46,6 @@ class OrderController extends Controller
             ->with('cartItems.product')
             ->first();
 
-        // return $cart;
-
         if ($request->isMethod('GET')) {
             $customer_addresses = CustomerAddress::where('user_id', $user->id)->get();
             return view('frontend.pages.checkout', compact('user', 'customer_addresses', 'selectedSellerId'));
@@ -63,9 +59,9 @@ class OrderController extends Controller
         }
 
         $discountPrice = function ($product) {
-            if ($product->discount_type === 'percentage') {
+            if ($product->discount_type === DiscountType::PERCENTAGE) {
                 return $product->selling_price - ($product->selling_price * $product->discount_amount / 100);
-            } elseif ($product->discount_type === 'flat') {
+            } elseif ($product->discount_type === DiscountType::FLAT) {
                 return $product->selling_price - $product->discount_amount;
             }
             return $product->selling_price;
@@ -112,7 +108,7 @@ class OrderController extends Controller
             'customer_email' => $request->input('customer_email', $user->email),
             'customer_phone' => $request->input('customer_phone'),
             'customer_address' => $request->input('address'),
-            'tracking_id' => 'TRK-' . strtoupper(uniqid()),
+            'invoice_id' => strtoupper(uniqid()),
             'sub_total' => $total,
             'total' => $total - $discount,
             'discount' => $discount,
@@ -120,7 +116,8 @@ class OrderController extends Controller
             'shipping_fee' => $shippingFee,
             'payable' => $total + $shippingFee + $tax - $discount,
             'due' => $total + $shippingFee + $tax - $discount,
-            'status' => 1
+            'status' => OrderStatus::PENDING->value,
+            'delivery_status' => OrderStatus::ORDER_PLACED->value
         ]);
 
         $order->items()->createMany($orderItems);
@@ -137,13 +134,12 @@ class OrderController extends Controller
 
     public function success(Order $order)
     {
-        // return $order;
         return view('frontend.orders.success', compact('order'));
     }
 
-    public function tracking($tracking_id)
+    public function tracking($invoice_id)
     {
-        $order = Order::withCount('items')->where('tracking_id', $tracking_id)->first();
+        $order = Order::withCount('items')->where('invoice_id', $invoice_id)->first();
         return view('frontend.orders.tracking', compact('order'));
     }
 

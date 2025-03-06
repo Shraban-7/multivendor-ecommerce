@@ -75,7 +75,7 @@
                                         {{ \Carbon\Carbon::parse($order->created_at)->format('F j, Y') }}</p>
                                 </div>
                                 <div class="order-actions flex gap-2">
-                                    <a href="{{ route('orders.tracking',$order->tracking_id) }}" class="text-butterfly-blue hover:text-primary eq text-sm">Track
+                                    <a href="{{ route('orders.tracking',$order->invoice_id) }}" class="text-butterfly-blue hover:text-primary eq text-sm">Track
                                         Order</a>
                                     <span class="text-gray-300">|</span>
                                     <a href="{{ route('orders.details',$order->id) }}" class="text-butterfly-blue hover:text-primary eq text-sm">View

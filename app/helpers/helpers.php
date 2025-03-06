@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
-define('CURRENCY_SYMBOL', '$');
+define('CURRENCY_SYMBOL', '৳');
 
 if (!function_exists('redirect_intended')) {
     function redirect_intended($default = '/')

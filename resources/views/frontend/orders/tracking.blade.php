@@ -72,7 +72,7 @@
                     <div
                         class="p-4 sm:p-6 bg-light-yellow/10 rounded border border-light-yellow flex flex-wrap gap-y-2 justify-between items-center">
                         <div class="space-y-2">
-                            <h1 class="text-lg sm:text-xl">#{{ $order->tracking_id }}</h1>
+                            <h1 class="text-lg sm:text-xl">#{{ $order->invoice_id }}</h1>
                             <p class="text-xs xsm:text-sm text-davy-gray">
                                 {{ $order->items_count }} Products · Order Placed in
                                 {{ \Carbon\Carbon::parse($order->created_at)->format('F j, Y \a\t h:i A') }}

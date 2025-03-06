@@ -5,7 +5,7 @@
 <div class="d-flex justify-content-between align-items-end mb-3">
     <h4 class="mb-0">Products</h4>
     <a href="{{ route('seller.products.add') }}" class="btn btn-theme">
-        <i data-feather="plus" class="icon-xs"></i> Add Product 
+        <i data-feather="plus" class="icon-xs"></i> Add Product
     </a>
 </div>
 
@@ -26,33 +26,33 @@
             <tr>
                 <td>
                     <div class="d-flex align-items-center">
-                        <img src="{{ storage_url($product->thumbnail) }}" 
+                        <img src="{{ storage_url($product->thumbnail) }}"
                         class="rounded-circle border" alt="Image" style="height:80px; width:80px" >
-                        
+
                         <div class="ms-3 mt-2">
                             <div>{{ $product->name }}</div>
                             <div class="mt-2">
                                 <small>Category: <strong>{{ $product->category->name }}</strong></small><br>
-                                <small>Brand: <strong>{{ $product->brand->name }}</strong></small><br>
-                                
+                                <small>Brand: <strong>{{ $product->brand?->name }}</strong></small><br>
+
                             </div>
                         </div>
                     </div>
                 </td>
 
-                <td> 
+                <td>
                     Buy: {{ $product->buying_price }} <br>
                     Sell: {{ $product->selling_price }}
                 </td>
-                <td> 
+                <td>
                     <div class="mb-2">
                         @if ($product->stock_status == 'in_stock')
                             <span class="badge text-bg-success text-white">In Stock</span>
                         @else
                             <span class="badge text-bg-danger text-white">Stock Out</span>
                         @endif
-                    </div>  
-                    Qty: <strong> {{ $product->quantity }}</strong> <br>              
+                    </div>
+                    Qty: <strong> {{ $product->quantity }}</strong> <br>
 
                     <span> In: {{ $product->stock_in }} | Out: <span class="text-danger">{{ $product->stock_out }}</span></span>
 
@@ -109,9 +109,9 @@
                             <label class="form-label">Subcategory</label>
                             <select name="game_id" class="form-select w-100" id="gameSelect" required>
                                 <option value="" selected disabled>--Choose--</option>
-                               
+
                                 <option value=""></option>
-                                
+
                             </select>
                         </div>
 

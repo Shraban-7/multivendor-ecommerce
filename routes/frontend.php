@@ -23,12 +23,9 @@ Route::get('/tracking', function () {
     return view('frontend.pages.tracking');
 })->name('tracking');
 
-
-
 Route::get('/wishlist', function () {
     return view('frontend.pages.wishlist');
 })->name('wishlist');
-
 
 Route::middleware('auth')->group(function () {
     Route::prefix('cart')->as('cart.')->group(function () {
@@ -39,14 +36,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/data',[CartController::class, 'getLiveCartData'])->name('data');
     });
 
-
-
     Route::prefix('orders')->as('orders.')->group(function () {
         Route::match(['get', 'post'], 'checkout/', [OrderController::class, 'checkout'])->name('checkout');
         Route::get('/',[OrderController::class, 'index'])->name('index');
         Route::get('/details/{order}',[OrderController::class, 'details'])->name('details');
         Route::get('/success/{order}', [OrderController::class, 'success'])->name('success');
-        Route::get('/tracking/{tracking_id}', [OrderController::class, 'tracking'])->name('tracking');
+        Route::get('/tracking/{invoice_id}', [OrderController::class, 'tracking'])->name('tracking');
         Route::match(['get','post'],'/review/{order}',[OrderController::class,'review'])->name('review');
     });
 });

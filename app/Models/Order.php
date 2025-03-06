@@ -57,4 +57,15 @@ class Order extends Model
         return $this->belongsTo(Seller::class);
     }
 
+    public function review()
+    {
+        return $this->hasOneThrough(
+            Review::class,
+            OrderItem::class,
+            'order_id',
+            'product_id',
+            'id',
+            'product_id'
+        );
+    }
 }
