@@ -33,8 +33,12 @@
                 <!-- Product Overview Card -->
                 <div class="col-lg-8">
                     <div class="shadow-sm card">
-                        <div class="bg-white card-header">
+                        <div class="bg-white card-header d-flex justify-content-between">
                             <h5 class="mb-0 card-title">Product Overview</h5>
+                            <button class="btn btn-outline-danger btn-sm" title="Delete" data-bs-toggle="modal"
+                                data-bs-target="#deleteModal-{{ $product->id }}">
+                                <i data-feather="trash-2" class="icon-xs"></i> Delete
+                            </button>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -54,8 +58,8 @@
                                                         <a href="{{ storage_url($image->image) }}"
                                                             data-lightbox="product-gallery"
                                                             data-title="{{ $product->name }}">
-                                                            <img src="{{ storage_url($image->image) }}"
-                                                                alt="Gallery image" class="border rounded img-fluid"
+                                                            <img src="{{ storage_url($image->image) }}" alt="Gallery image"
+                                                                class="border rounded img-fluid"
                                                                 style="height: 80px; object-fit: cover; width: 100%;">
                                                         </a>
                                                     </div>
@@ -159,40 +163,22 @@
                         <div class="bg-white card-header d-flex justify-content-between align-items-center">
                             <h5 class="mb-0 card-title">Inventory Status</h5>
                             <div>
-                                <button type="button" class="btn btn-sm btn-outline-primary"
-                                    onclick="updateStock({{ $product->id }})">
+                                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                                    data-bs-target="#stockUpdateModal">
                                     <i class="fas fa-plus-circle me-1"></i> Update Stock
                                 </button>
                             </div>
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <div class="mb-3 col-12">
-                                    @if ($product->stock_in > 20)
-                                        <div class="alert alert-success d-flex align-items-center" role="alert">
-                                            <i class="fas fa-check-circle me-2"></i>
-                                            <div>In Stock ({{ $product->stock_in }} units)</div>
-                                        </div>
-                                    @elseif($product->stock_in > 5)
-                                        <div class="alert alert-warning d-flex align-items-center" role="alert">
-                                            <i class="fas fa-exclamation-triangle me-2"></i>
-                                            <div>Low Stock ({{ $product->stock_in }} units)</div>
-                                        </div>
-                                    @elseif($product->stock_in > 0)
-                                        <div class="alert alert-danger d-flex align-items-center" role="alert">
-                                            <i class="fas fa-exclamation-circle me-2"></i>
-                                            <div>Critical Stock ({{ $product->stock_in }} units)</div>
-                                        </div>
-                                    @else
-                                        <div class="alert alert-dark d-flex align-items-center" role="alert">
-                                            <i class="fas fa-ban me-2"></i>
-                                            <div>Out of Stock</div>
-                                        </div>
-                                    @endif
-                                </div>
-
                                 <div class="col-12">
-                                    <h6 class="mb-3 text-muted fw-bold small">STOCK HISTORY</h6>
+                                    <div class="d-flex justify-content-between">
+                                        <h6 class="mb-3 text-muted fw-bold small">STOCK HISTORY</h6>
+                                        <div class="d-flex align-items-center " >
+                                            <i class="fas fa-exclamation-triangle me-2"></i>
+                                            <div>In Stock ({{ $product->stock_in }} )</div>
+                                        </div>
+                                    </div>
 
                                     <div class="table-responsive">
                                         <table class="table table-sm table-bordered">
@@ -207,13 +193,15 @@
                                                 @if (isset($stockHistory) && count($stockHistory) > 0)
                                                     @foreach ($stockHistory as $history)
                                                         <tr>
-                                                            <td>{{ $history->created_at->format('M d, Y') }}</td>
+                                                            <td>{{ $history->created_at->format('M d, Y h:i A') }}</td>
                                                             <td class="text-center">{{ abs($history->quantity) }}</td>
                                                             <td class="text-center">
-                                                                @if ($history->quantity > 0)
+                                                                @if ($history->type == \App\Enums\StockType::ADD_STOCK)
                                                                     <span class="badge bg-success">Added</span>
-                                                                @else
+                                                                @elseif ($history->type == \App\Enums\StockType::REMOVE_STOCK)
                                                                     <span class="badge bg-danger">Removed</span>
+                                                                @elseif ($history->type == \App\Enums\StockType::SET_EXACT_STOCK)
+                                                                    <span class="badge bg-warning">Set Exact Stock</span>
                                                                 @endif
                                                             </td>
                                                         </tr>
@@ -273,8 +261,38 @@
         </div>
     </div>
 
+    <!-- product delete modal -->
+    <div class="modal fade" id="deleteModal-{{ $product->id }}" tabindex="-1"
+        aria-labelledby="deleteModalLabel-{{ $product->id }}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel-{{ $product->id }}">Confirm
+                        Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="text-center modal-body">
+                    <div class="alert alert-warning d-flex" role="alert">
+                        <i class="bi bi-exclamation-circle-fill me-2 text-danger" style="font-size: 1.5rem;"></i>
+                        <p class="mt-1 text-secondary">
+                            Are you sure you want to delete this Product?
+                        </p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form action="{{ route('seller.products.delete', $product->id) }}" method="POST">
+                        @method('DELETE')
+                        @csrf
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Stock Update Modal -->
-    <div class="modal fade" id="stockUpdateModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="stockUpdateModal" tabindex="-1" aria-hidden="true" data-id="{{ $product->id }}">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -292,9 +310,12 @@
                         <div class="mb-3">
                             <label class="form-label">Action</label>
                             <select class="form-select" id="stockAction" name="stock_action">
-                                <option value="add">Add Stock</option>
-                                <option value="remove">Remove Stock</option>
-                                <option value="set">Set Exact Stock</option>
+                                <option value="{{ \App\Enums\StockType::ADD_STOCK->value }}">
+                                    {{ \App\Enums\StockType::ADD_STOCK->label() }}</option>
+                                <option value="{{ \App\Enums\StockType::REMOVE_STOCK->value }}">
+                                    {{ \App\Enums\StockType::REMOVE_STOCK->label() }}</option>
+                                <option value="{{ \App\Enums\StockType::SET_EXACT_STOCK->value }}">
+                                    {{ \App\Enums\StockType::SET_EXACT_STOCK->label() }}</option>
                             </select>
                         </div>
 
@@ -321,26 +342,49 @@
 
     @push('scripts')
         <script>
-            function updateStock(productId) {
-                $('#stockUpdateModal').modal('show');
-            }
+            $('#saveStockUpdate').click(function(e) {
+                e.preventDefault();
 
-            function printBarcode() {
-                const printWindow = window.open('', '_blank');
-                printWindow.document.write('<html><head><title>Print Barcode</title>');
-                printWindow.document.write(
-                    '<style>body { text-align: center; margin: 20px; } .barcode-container { margin-bottom: 10px; }</style>');
-                printWindow.document.write('</head><body>');
-                printWindow.document.write('<div class="barcode-container"><img src="' + $('#barcodeImage img').attr('src') +
-                    '"></div>');
-                printWindow.document.write('<div>' + '{{ $product->name }}' + '</div>');
-                printWindow.document.write('<div>SKU: ' + '{{ $product->sku }}' + '</div>');
-                printWindow.document.write('</body></html>');
-                printWindow.document.close();
-                printWindow.focus();
-                printWindow.print();
-                printWindow.close();
-            }
+                var productId = $('#stockUpdateModal').data('id');
+                var stockAction = $('#stockAction').val();
+                var stockQuantity = $('#stockQuantity').val();
+                var stockNote = $('#stockNote').val();
+
+                if (stockQuantity <= 0) {
+                    alert("Please enter a valid quantity.");
+                    return;
+                }
+
+                var data = {
+                    product_id: productId,
+                    stock_action: stockAction,
+                    stock_quantity: stockQuantity,
+                    stock_note: stockNote,
+                };
+
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: '{{ route('seller.products.stockUpdate', $product->id) }}',
+                    method: 'POST',
+                    data: data,
+                    success: function(response) {
+                        if (response.status) {
+                            $('#stockUpdateModal').modal('hide');
+                            location.reload();
+                        } else {
+                            $('#stockUpdateModal').modal('hide');
+                            location.reload();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        $('#stockUpdateModal').modal('hide');
+                        location.reload();
+                        console.error("Error: " + error);
+                    }
+                });
+            });
         </script>
     @endpush
 

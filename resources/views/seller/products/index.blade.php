@@ -56,53 +56,12 @@
                         </td>
                         <td> </td>
                         <td class="d-flex">
-                            <a href="{{ route('seller.products.edit', $product->id) }}"
-                                class="border btn btn-light btn-sm me-1" title="Edit">
-                                <i data-feather="edit" class="icon-xs"></i> Edit
-                            </a>
                             <a href="{{ route('seller.products.details', $product->id) }}"
                                 class="border btn btn-light btn-sm me-1" title="Details">
                                 <i data-feather="file-text" class="icon-xs"></i> Details
                             </a>
-                            <button class="border btn btn-danger btn-sm" title="Delete" data-bs-toggle="modal"
-                                data-bs-target="#deleteModal-{{ $product->id }}">
-                                <i data-feather="trash-2" class="icon-xs"></i> Delete
-                            </button>
-
                         </td>
                     </tr>
-
-                    <!-- Delete Modal -->
-                    <div class="modal fade" id="deleteModal-{{ $product->id }}" tabindex="-1"
-                        aria-labelledby="deleteModalLabel-{{ $product->id }}" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="deleteModalLabel-{{ $product->id }}">Confirm
-                                        Delete</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                                </div>
-                                <div class="text-center modal-body">
-                                    <div class="alert alert-warning d-flex" role="alert">
-                                        <i class="bi bi-exclamation-circle-fill me-2 text-danger"
-                                            style="font-size: 1.5rem;"></i>
-                                        <p class="mt-1 text-secondary">
-                                            Are you sure you want to delete this Product?
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                    <form action="{{ route('seller.products.delete', $product->id) }}" method="POST">
-                                        @method('DELETE')
-                                        @csrf
-                                        <button type="submit" class="btn btn-danger">Delete</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 @endforeach
             </tbody>
         </table>
