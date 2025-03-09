@@ -6,9 +6,9 @@
         use App\Enums\DiscountType;
     @endphp
     <main class="product-details-page">
-        <section class="page-breadcrumb-links container">
+        <section class="container page-breadcrumb-links">
             <!-- Page Breadcrumb -->
-            <nav class="flex my-7 container" aria-label="Breadcrumb">
+            <nav class="container flex my-7" aria-label="Breadcrumb">
                 <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                     <li class="inline-flex items-center">
                         <a href="/" class="inline-flex items-center text-sm text-davy-gray hover:text-primary eq">
@@ -22,23 +22,23 @@
                     </li>
                     <li>
                         <div class="flex items-center">
-                            <svg class="rtl:rotate-180 w-3 h-3 text-davy-gray mx-1" aria-hidden="true"
+                            <svg class="w-3 h-3 mx-1 rtl:rotate-180 text-davy-gray" aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="m1 9 4-4-4-4" />
                             </svg>
                             <a href="#"
-                                class="ms-1 text-sm text-davy-gray hover:text-primary eq md:ms-2">{{ $product->category->name }}</a>
+                                class="text-sm ms-1 text-davy-gray hover:text-primary eq md:ms-2">{{ $product->category->name }}</a>
                         </div>
                     </li>
                     <li aria-current="page">
                         <div class="flex items-center">
-                            <svg class="rtl:rotate-180 w-3 h-3 text-davy-gray mx-1" aria-hidden="true"
+                            <svg class="w-3 h-3 mx-1 rtl:rotate-180 text-davy-gray" aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="m1 9 4-4-4-4" />
                             </svg>
-                            <span class="ms-1 text-sm text-davy-gray md:ms-2">{{ optional($product->subcategory)->name }}</span>
+                            <span class="text-sm ms-1 text-davy-gray md:ms-2">{{ optional($product->subcategory)->name }}</span>
                         </div>
                     </li>
                 </ol>
@@ -49,21 +49,21 @@
         <section class="product-main-sec">
             <div class="container">
                 <!-- Product Contents  -->
-                <div class="flex flex-col md:flex-row gap-5">
+                <div class="flex flex-col gap-5 md:flex-row">
                     <!-- Product Images Section -->
                     <div class="lg:w-[55%] md:w-[50%] w-full flex flex-col lg:flex-row gap-3 lg:gap-5">
                         <!-- Thumbnails -->
-                        <div class="lg:w-1/6 w-full space-y-3 order-2 lg:order-1">
+                        <div class="order-2 w-full space-y-3 lg:w-1/6 lg:order-1">
                             <div class="product-thumbnails overflow-hidden xl:h-[37rem] lg:h-[41rem] h-auto">
                                 <div class="swiper-wrapper">
                                     <!-- thumb 1 -->
                                     @foreach ($product->images as $thumb)
                                         <div class="swiper-slide">
                                             <div
-                                                class="slide-thumb w-full xl:h-24 md:h-22 lg:h-28 h-20 rounded-2xl cursor-pointer border-2 border-transparent hover:border-primary overflow-hidden">
-                                                <img src="{{ asset('assets/' . $thumb->image) }}"
+                                                class="w-full h-20 overflow-hidden border-2 border-transparent cursor-pointer slide-thumb xl:h-24 md:h-22 lg:h-28 rounded-2xl hover:border-primary">
+                                                <img src="{{ storage_url($thumb->image) }}"
                                                     alt="Product thumbnail of A Young boy wear a jacket with green T-Shirt & Short Pant"
-                                                    class="w-full h-full object-cover" />
+                                                    class="object-cover w-full h-full" />
                                             </div>
                                         </div>
                                     @endforeach
@@ -73,16 +73,16 @@
                         </div>
 
                         <!-- Main Image Slider -->
-                        <div class="lg:w-5/6 w-full relative order-1 lg:order-2">
+                        <div class="relative order-1 w-full lg:w-5/6 lg:order-2">
                             <div
                                 class="product-swiper overflow-hidden w-full h-96 md:h-[37rem] xl:h-[37rem] lg:h-[41rem] rounded-2xl overflow-hidden relative">
                                 <div class="swiper-wrapper">
                                     <!-- product image 1 -->
                                     @foreach ($product->images as $slider)
-                                        <div class="swiper-slide h-full rounded-2xl overflow-hidden">
-                                            <img src="{{ asset('assets/' . $slider->image) }}"
+                                        <div class="h-full overflow-hidden swiper-slide rounded-2xl">
+                                            <img src="{{ storage_url($slider->image) }}"
                                                 alt="A Young boy wear a jacket with green T-Shirt & Short Pant"
-                                                class="w-full h-full object-cover" />
+                                                class="object-cover w-full h-full" />
                                         </div>
                                     @endforeach
                                     <!-- Repeat product image for more slides -->
@@ -104,24 +104,24 @@
                                     <i class="fa-solid fa-check text-theme-teal"></i>
                                     <span>Free shipping special for you</span>
                                 </div>
-                                <span class="text-jet-gray font-light">Exclusive offer</span>
+                                <span class="font-light text-jet-gray">Exclusive offer</span>
                             </div>
 
-                            <h1 class="lg:text-base text-rustic-red text-sm lg:pr-5 xl:pr-16">
+                            <h1 class="text-sm lg:text-base text-rustic-red lg:pr-5 xl:pr-16">
                                 {{ $product->name }}
                             </h1>
 
-                            <div class="flex flex-wrap items-center gap-2 xsm:gap-5 sm:10 md:gap-2 lg:gap-10 text-sm">
+                            <div class="flex flex-wrap items-center gap-2 text-sm xsm:gap-5 sm:10 md:gap-2 lg:gap-10">
                                 <div class="flex items-center gap-2">
                                     <span
-                                        class="text-jet-gray border-r border-gray-400 pr-2">{{ number_shorten_format($product->stock_out) }}
+                                        class="pr-2 border-r border-gray-400 text-jet-gray">{{ number_shorten_format($product->stock_out) }}
                                         sold</span>
                                     <div class="flex items-center gap-2 text-davy-gray">
                                         <span>Provided By</span>
                                         <a href="{{ route('seller.shop_details', $product->seller->username) }}"
-                                            class="inline-block provider-icon w-6 h-6 overflow-hidden rounded-full">
+                                            class="inline-block w-6 h-6 overflow-hidden rounded-full provider-icon">
                                             <img src="{{ asset('assets/' . $product->seller->business_logo) }}"
-                                                alt="Louis Vuitton" class="h-full w-full object-contain" />
+                                                alt="Louis Vuitton" class="object-contain w-full h-full" />
                                         </a>
                                         <span>({{ number_shorten_format($product->stock_out) }}+ sold)</span>
                                     </div>
@@ -137,11 +137,11 @@
 
                             <div class="flex items-center gap-2">
                                 <span class="bg-leaf-green text-white text-xs px-2.5 py-1 rounded-full">Best Seller</span>
-                                <p class="text-davy-gray text-sm">From this provider</p>
+                                <p class="text-sm text-davy-gray">From this provider</p>
                             </div>
 
                             <div class="flex flex-wrap items-center gap-2">
-                                <div class="new-price flex items-center gap-1 flex-no-wrap">
+                                <div class="flex flex-no-wrap items-center gap-1 new-price">
                                     <i class="fa-solid fa-bolt text-[#ffa755]"></i>
                                     {{-- <span class="align-center text-sm text-[#ffa755]">$</span> --}}
                                     @php
@@ -157,44 +157,44 @@
                                             $price = $product->selling_price;
                                         }
                                     @endphp
-                                    <h3 id="current-price" class="current-price font-bold text-primary">
+                                    <h3 id="current-price" class="font-bold current-price text-primary">
                                         {{ currency($price) }}</h3>
                                 </div>
-                                <h6 class="old-price text-jet-gray line-through">{{ currency($product->selling_price) }}
+                                <h6 class="line-through old-price text-jet-gray">{{ currency($product->selling_price) }}
                                 </h6>
                                 <span
                                     class="text-xs px-2.5 py-0.5 rounded-lg border border-primary">-{{ currency($product->discount_amount) }}
                                     last 2
                                     days</span>
-                                <span class="text-leaf-green text-xs">Almost Sold Out</span>
+                                <span class="text-xs text-leaf-green">Almost Sold Out</span>
                             </div>
                         </div>
 
                         <div
-                            class="user-action rounded-lg border-primary border-2 overflow-hidden mt-5 w-full xsm:w-4/5 md:w-11/12 lg:w-4/5">
+                            class="w-full mt-5 overflow-hidden border-2 rounded-lg user-action border-primary xsm:w-4/5 md:w-11/12 lg:w-4/5">
                             <!-- Special Sale Banner -->
                             <div
-                                class="bg-primary text-sm md:text-base text-white px-4 py-1 flex justify-between items-center">
+                                class="flex items-center justify-between px-4 py-1 text-sm text-white bg-primary md:text-base">
                                 <span>Special Sale | Two Days Left</span>
                                 <i class="fa-solid fa-arrow-right"></i>
                             </div>
 
-                            <div class="clr-size-qty p-4">
+                            <div class="p-4 clr-size-qty">
                                 <!-- Color Selection -->
 
                                 <!-- Size Selection -->
                                 @foreach ($product->product_attributes as $product_attribute)
-                                    <div class="size mt-3">
-                                        <div class="text-davy-gray flex items-center gap-2">
+                                    <div class="mt-3 size">
+                                        <div class="flex items-center gap-2 text-davy-gray">
                                             <h6 class="sm:text-lg">{{ $product_attribute->name }} :</h6>
                                             {{-- <a href="#"
                                                 class="inline-flex items-center hover:text-violet-700 hover:underline eq">
                                                 <img src="{{ asset('assets/frontend/images/size-scale.png') }}"
-                                                    alt="Size Chart" class="w-10 xsm:w-14 h-auto" />
+                                                    alt="Size Chart" class="w-10 h-auto xsm:w-14" />
                                                 <span class="text-xs"> Size Chart</span>
                                             </a> --}}
                                             {{-- <a href="#"
-                                                class="hover:text-light-yellow hover:underline eq ml-2 xsm:ml-4">
+                                                class="ml-2 hover:text-light-yellow hover:underline eq xsm:ml-4">
                                                 <span class="text-xs"> What's My Size?</span>
                                             </a> --}}
                                         </div>
@@ -216,22 +216,22 @@
                                     </div>
                                 @endforeach
                                 <!-- Quantity -->
-                                <div class="quantity mt-3">
-                                    <div class="text-davy-gray flex items-center gap-2">
+                                <div class="mt-3 quantity">
+                                    <div class="flex items-center gap-2 text-davy-gray">
                                         <h6 class="sm:text-lg">Quantity :</h6>
-                                        <div class="flex items-center border rounded p-1">
+                                        <div class="flex items-center p-1 border rounded">
                                             <button id="decreaseBtn"
-                                                class="w-5 h-5 flex items-center justify-center text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 eq active:text-primary rounded text-sm font-bold">
+                                                class="flex items-center justify-center w-5 h-5 text-sm font-bold rounded text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 eq active:text-primary">
                                                 <i class="fa-solid fa-minus"></i>
                                             </button>
                                             <input readonly id="quantity" type="number" min="1"
-                                                class="text-center text-persian-blue w-12 h-5 text-sm font-medium border-0 focus:ring-0" />
+                                                class="w-12 h-5 text-sm font-medium text-center border-0 text-persian-blue focus:ring-0" />
                                             <button id="increaseBtn"
-                                                class="w-5 h-5 flex items-center justify-center text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 eq active:text-primary rounded text-sm font-bold">
+                                                class="flex items-center justify-center w-5 h-5 text-sm font-bold rounded text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 eq active:text-primary">
                                                 <i class="fa-solid fa-plus"></i>
                                             </button>
                                         </div>
-                                        <span class="text-davy-gray text-xs">In Stock</span>
+                                        <span class="text-xs text-davy-gray">In Stock</span>
                                     </div>
                                 </div>
                             </div>
@@ -240,7 +240,7 @@
                         @php
                             $discount = ($product->discount_amount / $product->selling_price) * 100;
                         @endphp
-                        <div class="flex gap-4 mt-5 w-full xsm:w-4/5 md:w-11/12 lg:w-4/5">
+                        <div class="flex w-full gap-4 mt-5 xsm:w-4/5 md:w-11/12 lg:w-4/5">
                             <input type="hidden" name="quantity" value="1" id="qtyInput{{ $product->id }}">
                             <button data-id="{{ $product->id }}" type="button"
                                 class="cartBtn text-sm md:text-base font-medium flex-1 px-6 py-1.5 border border-primary text-primary rounded-full hover:bg-primary hover:text-white eq">
@@ -257,7 +257,7 @@
                 </div>
 
                 <!-- Rating Overview Section -->
-                <div class="flex flex-col md:flex-row gap-5 items-start py-8 md:py-10">
+                <div class="flex flex-col items-start gap-5 py-8 md:flex-row md:py-10">
                     <!-- Left Column -->
                     <div class="order-2 md:order-1 lg:w-[55%] md:w-[50%] w-full">
                         <!-- Overall Rating -->
@@ -266,19 +266,19 @@
                                 <div class="text-4xl md:text-5xl text-persian-blue">
                                     94.0%
                                 </div>
-                                <div class="flex text-yellow-400 text-3xl md:text-4xl">
+                                <div class="flex text-3xl text-yellow-400 md:text-4xl">
                                     ★★★★★
                                 </div>
-                                <div class="text-davy-gray text-xs sm:text-sm">
+                                <div class="text-xs text-davy-gray sm:text-sm">
                                     (Positive reviews)
-                                    <span class="text-primary/80 font-semibold lg:pl-4">Top</span>
+                                    <span class="font-semibold text-primary/80 lg:pl-4">Top</span>
                                 </div>
                             </div>
 
                             <!-- Rating Bars -->
-                            <div class="ratings-wrap w-full sm:w-2/4 md:w-3/4 2xl:w-1/2 lg:w-2/3 space-y-1 md:space-y-2">
+                            <div class="w-full space-y-1 ratings-wrap sm:w-2/4 md:w-3/4 2xl:w-1/2 lg:w-2/3 md:space-y-2">
                                 <!-- 5 star -->
-                                <div class="flex gap-2 md:gap-5 w-full items-center gap-2">
+                                <div class="flex items-center w-full gap-2 md:gap-5">
                                     <div class="w-1/2 sm:w-5/12 md:w-7/12 lg:w-1/2 2xl:w-7/12">
                                         <div class="w-full bg-gray-200 rounded-full h-2 lg:h-2.5">
                                             <div class="bg-yellow-400 h-2 rounded-full lg:h-2.5" style="width: 90%"></div>
@@ -287,7 +287,7 @@
                                     <span class="text-xs sm:text-sm text-persian-blue">(05 star)</span>
                                 </div>
                                 <!-- 4 star -->
-                                <div class="flex gap-2 md:gap-5 w-full items-center gap-2">
+                                <div class="flex items-center w-full gap-2 md:gap-5">
                                     <div class="w-1/2 sm:w-5/12 md:w-7/12 lg:w-1/2 2xl:w-7/12">
                                         <div class="w-full bg-gray-200 rounded-full h-2 lg:h-2.5">
                                             <div class="bg-yellow-400 h-2 rounded-full lg:h-2.5" style="width: 75%"></div>
@@ -296,7 +296,7 @@
                                     <span class="text-xs sm:text-sm text-persian-blue">(04 star)</span>
                                 </div>
                                 <!-- 3 star -->
-                                <div class="flex gap-2 md:gap-5 w-full items-center gap-2">
+                                <div class="flex items-center w-full gap-2 md:gap-5">
                                     <div class="w-1/2 sm:w-5/12 md:w-7/12 lg:w-1/2 2xl:w-7/12">
                                         <div class="w-full bg-gray-200 rounded-full h-2 lg:h-2.5">
                                             <div class="bg-yellow-400 h-2 rounded-full lg:h-2.5" style="width: 55%"></div>
@@ -305,7 +305,7 @@
                                     <span class="text-xs sm:text-sm text-persian-blue">(03 star)</span>
                                 </div>
                                 <!-- 2 star -->
-                                <div class="flex gap-2 md:gap-5 w-full items-center gap-2">
+                                <div class="flex items-center w-full gap-2 md:gap-5">
                                     <div class="w-1/2 sm:w-5/12 md:w-7/12 lg:w-1/2 2xl:w-7/12">
                                         <div class="w-full bg-gray-200 rounded-full h-2 lg:h-2.5">
                                             <div class="bg-yellow-400 h-2 rounded-full lg:h-2.5" style="width: 40%"></div>
@@ -314,7 +314,7 @@
                                     <span class="text-xs sm:text-sm text-persian-blue">(02 star)</span>
                                 </div>
                                 <!-- 1 star -->
-                                <div class="flex gap-2 md:gap-5 w-full items-center gap-2">
+                                <div class="flex items-center w-full gap-2 md:gap-5">
                                     <div class="w-1/2 sm:w-5/12 md:w-7/12 lg:w-1/2 2xl:w-7/12">
                                         <div class="w-full bg-gray-200 rounded-full h-2 lg:h-2.5">
                                             <div class="bg-yellow-400 h-2 rounded-full lg:h-2.5" style="width: 20%"></div>
@@ -327,25 +327,25 @@
 
                         <!-- Average Rating -->
                         <div class="flex flex-wrap items-center gap-3 my-3 md:my-5">
-                            <span class="text-davy-gray text-xl sm:text-2xl font-medium">4.8</span>
-                            <div class="flex flex-nowrap gap-1 text-xs md:text-sm">
+                            <span class="text-xl font-medium text-davy-gray sm:text-2xl">4.8</span>
+                            <div class="flex gap-1 text-xs flex-nowrap md:text-sm">
                                 <i class="fa-solid fa-star"></i>
                                 <i class="fa-solid fa-star"></i>
                                 <i class="fa-solid fa-star"></i>
                                 <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star text-gray-400"></i>
+                                <i class="text-gray-400 fa-solid fa-star"></i>
                             </div>
                             <span class="text-sm sm:text-base text-jet-gray">(5K+ Review)</span>
                         </div>
 
                         <!-- Review Section -->
-                        <div class="comments-tags text-sm lg:text-base text-davy-gray">
+                        <div class="text-sm comments-tags lg:text-base text-davy-gray">
                             <h4>Item Reviews</h4>
                             <!-- review tags -->
-                            <div class="review-tags flex flex-wrap gap-2 lg:gap-3 my-3 md:my-5 font-medium">
+                            <div class="flex flex-wrap gap-2 my-3 font-medium review-tags lg:gap-3 md:my-5">
                                 <button
                                     class="inline-flex items-center lg:px-4 lg:py-1.5 px-3 py-1 rounded-full border border-jet-gray gap-2">
-                                    <span class="flag-wrap h-5 lg:h-7 w-auto"><img class="w-auto h-full object-contain"
+                                    <span class="w-auto h-5 flag-wrap lg:h-7"><img class="object-contain w-auto h-full"
                                             src="{{ asset('assets/frontend/images/us-flag.png') }}"
                                             alt="Flag of USA" /></span>
                                     <span>(800)</span>
@@ -365,11 +365,11 @@
                             </div>
 
                             <!-- User Reviews -->
-                            <div class="reviews-wrapper space-y-5 pt-5">
+                            <div class="pt-5 space-y-5 reviews-wrapper">
                                 <!-- review 1 -->
-                                <div class="review-item space-y-2">
+                                <div class="space-y-2 review-item">
                                     <div class="flex items-center gap-3">
-                                        <div class="user-avatar w-12 h-12 rounded-full overflow-hidden">
+                                        <div class="w-12 h-12 overflow-hidden rounded-full user-avatar">
                                             <img src="{{ asset('assets/frontend/images/user-avatar-1.png') }}"
                                                 alt="Alan Walker" />
                                         </div>
@@ -377,7 +377,7 @@
                                             <h3 class="font-medium">Alan Walker</h3>
                                             <span class="flex gap-2 text-gray-400">
                                                 In
-                                                <span class="h-4 lg:h-6 w-auto"><img class="w-auto h-full object-contain"
+                                                <span class="w-auto h-4 lg:h-6"><img class="object-contain w-auto h-full"
                                                         src="{{ asset('assets/frontend/images/us-flag.png') }}"
                                                         alt="Flag of USA" /></span>
                                                 on Jan 20, 2025
@@ -385,26 +385,26 @@
                                         </div>
                                     </div>
                                     <!-- Rating -->
-                                    <div class="rating flex flex-wrap items-center gap-3">
-                                        <div class="flex flex-nowrap gap-1 text-theme-dark text-xs md:text-sm">
+                                    <div class="flex flex-wrap items-center gap-3 rating">
+                                        <div class="flex gap-1 text-xs flex-nowrap text-theme-dark md:text-sm">
                                             <i class="fa-solid fa-star"></i>
                                             <i class="fa-solid fa-star"></i>
                                             <i class="fa-solid fa-star"></i>
                                             <i class="fa-solid fa-star"></i>
                                             <i class="fa-solid fa-star"></i>
                                         </div>
-                                        <span class="text-davy-gray text-lg sm:text-xl font-medium">5.0</span>
+                                        <span class="text-lg font-medium text-davy-gray sm:text-xl">5.0</span>
                                     </div>
 
                                     <h6 class="product-colour">Purchased : Black</h6>
-                                    <p class="product-feedback w-10/12 sm:w-3/5 md:w-4/5 xl:w-3/5">
+                                    <p class="w-10/12 product-feedback sm:w-3/5 md:w-4/5 xl:w-3/5">
                                         Absolutely beautiful, good price perfect, perfect
                                         excellent product, very nice quality 😇😇
                                     </p>
 
                                     <div
-                                        class="flex justify-center items-center text-black text-xs xsm:text-sm lg:text-base xl:text-lg w-10/12 sm:w-3/5 md:w-4/5 xl:w-3/5">
-                                        <div class="flex items-start divide-x divide-black gap-3">
+                                        class="flex items-center justify-center w-10/12 text-xs text-black xsm:text-sm lg:text-base xl:text-lg sm:w-3/5 md:w-4/5 xl:w-3/5">
+                                        <div class="flex items-start gap-3 divide-x divide-black">
                                             <button class="flex items-center gap-2 hover:text-primary eq">
                                                 <svg class="w-5 h-5" width="26" height="32" viewBox="0 0 26 32"
                                                     fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -415,7 +415,7 @@
                                                 </svg>
                                                 Share
                                             </button>
-                                            <button class="pl-2 flex items-center gap-2 hover:text-butterfly-blue eq">
+                                            <button class="flex items-center gap-2 pl-2 hover:text-butterfly-blue eq">
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor"
                                                     viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -433,12 +433,12 @@
                                         <div id="alan-walker-comment-dropdown"
                                             class="z-30 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-lg w-38 md:w-44">
                                             <div class="py-2 text-sm text-gray-700" aria-labelledby="alan-walker-btn">
-                                                <button class="block w-full text-left px-4 py-2 hover:bg-gray-100">
+                                                <button class="block w-full px-4 py-2 text-left hover:bg-gray-100">
                                                     Not Helpful
                                                 </button>
 
                                                 <button
-                                                    class="block w-full text-left px-4 py-2 hover:bg-gray-100 text-persian-red">
+                                                    class="block w-full px-4 py-2 text-left hover:bg-gray-100 text-persian-red">
                                                     Report Abuse
                                                 </button>
                                             </div>
@@ -446,9 +446,9 @@
                                     </div>
                                 </div>
                                 <!-- review 2 -->
-                                <div class="review-item space-y-2">
+                                <div class="space-y-2 review-item">
                                     <div class="flex items-center gap-3">
-                                        <div class="user-avatar w-12 h-12 rounded-full overflow-hidden">
+                                        <div class="w-12 h-12 overflow-hidden rounded-full user-avatar">
                                             <img src="{{ asset('assets/frontend/images/user-avatar-2.png') }}"
                                                 alt="Josesph Man" />
                                         </div>
@@ -456,7 +456,7 @@
                                             <h3 class="font-medium">Josesph Man</h3>
                                             <span class="flex gap-2 text-gray-400">
                                                 In
-                                                <span class="h-4 lg:h-6 w-auto"><img class="w-auto h-full object-contain"
+                                                <span class="w-auto h-4 lg:h-6"><img class="object-contain w-auto h-full"
                                                         src="{{ asset('assets/frontend/images/us-flag.png') }}"
                                                         alt="Flag of USA" /></span>
                                                 on Jan 22, 2025
@@ -464,27 +464,27 @@
                                         </div>
                                     </div>
                                     <!-- Rating -->
-                                    <div class="rating flex flex-wrap items-center gap-3">
-                                        <div class="flex flex-nowrap gap-1 text-theme-dark text-xs md:text-sm">
+                                    <div class="flex flex-wrap items-center gap-3 rating">
+                                        <div class="flex gap-1 text-xs flex-nowrap text-theme-dark md:text-sm">
                                             <i class="fa-solid fa-star"></i>
                                             <i class="fa-solid fa-star"></i>
                                             <i class="fa-solid fa-star"></i>
                                             <i class="fa-solid fa-star"></i>
                                             <i class="fa-solid fa-star"></i>
                                         </div>
-                                        <span class="text-davy-gray text-lg sm:text-xl font-medium">5.0</span>
+                                        <span class="text-lg font-medium text-davy-gray sm:text-xl">5.0</span>
                                     </div>
 
                                     <h6 class="product-colour">Purchased : Green</h6>
-                                    <p class="product-feedback w-10/12 sm:w-3/5 md:w-4/5 xl:w-3/5">
+                                    <p class="w-10/12 product-feedback sm:w-3/5 md:w-4/5 xl:w-3/5">
                                         Fantastic product at a great price. Truly impressed with
                                         the exceptional quality. Beautifully crafted and exceeds
                                         expectations 🥰 Highly recommend✅
                                     </p>
 
                                     <div
-                                        class="flex justify-center items-center text-black text-xs xsm:text-sm lg:text-base xl:text-lg w-10/12 sm:w-3/5 md:w-4/5 xl:w-3/5">
-                                        <div class="flex items-start divide-x divide-black gap-3">
+                                        class="flex items-center justify-center w-10/12 text-xs text-black xsm:text-sm lg:text-base xl:text-lg sm:w-3/5 md:w-4/5 xl:w-3/5">
+                                        <div class="flex items-start gap-3 divide-x divide-black">
                                             <button class="flex items-center gap-2 hover:text-primary eq">
                                                 <svg class="w-5 h-5" width="26" height="32" viewBox="0 0 26 32"
                                                     fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -495,7 +495,7 @@
                                                 </svg>
                                                 Share
                                             </button>
-                                            <button class="pl-2 flex items-center gap-2 hover:text-butterfly-blue eq">
+                                            <button class="flex items-center gap-2 pl-2 hover:text-butterfly-blue eq">
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor"
                                                     viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -513,12 +513,12 @@
                                         <div id="josesph-man-comment-dropdown"
                                             class="z-30 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-lg w-38 md:w-44">
                                             <div class="py-2 text-sm text-gray-700" aria-labelledby="josesph-man-btn">
-                                                <button class="block w-full text-left px-4 py-2 hover:bg-gray-100">
+                                                <button class="block w-full px-4 py-2 text-left hover:bg-gray-100">
                                                     Not Helpful
                                                 </button>
 
                                                 <button
-                                                    class="block w-full text-left px-4 py-2 hover:bg-gray-100 text-persian-red">
+                                                    class="block w-full px-4 py-2 text-left hover:bg-gray-100 text-persian-red">
                                                     Report Abuse
                                                 </button>
                                             </div>
@@ -535,19 +535,19 @@
                             <span
                                 class="bg-leaf-green inline-flex items-center gap-2 text-white text-xs px-2.5 py-1 rounded-full"><img
                                     src="{{ asset('assets/frontend/images/top-rated-icon.png') }}" alt="Top rated icon"
-                                    class="w-3 h-3 object-contain" />
+                                    class="object-contain w-3 h-3" />
                                 #Top Rated</span>
-                            <p class="text-davy-gray text-sm">In Men's Iteams</p>
+                            <p class="text-sm text-davy-gray">In Men's Iteams</p>
                         </div>
                         <!-- Shipping Info -->
                         <div class="flex items-center gap-2 mb-5">
                             <img src="{{ asset('assets/frontend/images/carbon_delivery.png') }}" alt="Shipping"
-                                class="w-7 h-7 object-contain" />
+                                class="object-contain w-7 h-7" />
                             <span class="font-medium text-davy-gray">Ships From Tesco</span>
                         </div>
 
                         <!-- Shipping Options -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 xl:grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-1 xl:grid-cols-2">
                             <!-- Standard Shipping -->
                             <div class="bg-[#F5F5F5] p-4 rounded-lg text-davy-gray lg:space-y-2 space-y-1">
                                 <h4 class="text-sm font-semibold text-black">
@@ -557,13 +557,13 @@
                                     <span class="text-sm">Delivery :</span> Fastest Delivery in
                                     5 Business days
                                 </p>
-                                <div class="text-xs flex items-center gap-1">
+                                <div class="flex items-center gap-1 text-xs">
                                     <span class="text-sm">Courier Company :</span>
                                     <img src="{{ asset('assets/frontend/images/dhl-logo.png') }}" alt="DHL"
-                                        class="h-4 w-auto object-contain" />
+                                        class="object-contain w-auto h-4" />
                                     <span>DHL</span>
                                     <img src="{{ asset('assets/frontend/images/ups-logo.png') }}" alt="UPS"
-                                        class="h-4 w-auto object-contain" />
+                                        class="object-contain w-auto h-4" />
                                     <span>UPS</span>
                                 </div>
                             </div>
@@ -577,10 +577,10 @@
                                     <span class="text-sm">Delivery :</span> Fastest Delivery in
                                     3 Business days
                                 </p>
-                                <div class="text-xs flex items-center gap-1">
+                                <div class="flex items-center gap-1 text-xs">
                                     <span class="text-sm">Courier Company :</span>
                                     <img src="{{ asset('assets/frontend/images/dhl-logo.png') }}" alt="DHL"
-                                        class="h-4 w-auto object-contain" />
+                                        class="object-contain w-auto h-4" />
                                     <span>DHL</span>
                                 </div>
                             </div>
@@ -589,19 +589,19 @@
                         <!-- Commitments -->
                         <div class="mt-5">
                             <div class="flex items-center gap-2 mb-5">
-                                <div class="tesko-icon w-10 h-10 overflow-hidden">
+                                <div class="w-10 h-10 overflow-hidden tesko-icon">
                                     <img src="{{ asset('assets/frontend/images/tesko-icon.png') }}" alt="Tesko Icon"
-                                        class="w-full h-full object-contain" />
+                                        class="object-contain w-full h-full" />
                                 </div>
                                 <span class="font-medium text-davy-gray">Our Commitments</span>
                             </div>
 
                             <div
-                                class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 xl:grid-cols-2 gap-4 w-full xsm:w-4/5 md:w-11/12 lg:w-4/6 xl:w-11/12 2xl:w-4/5">
+                                class="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-1 xl:grid-cols-2 xsm:w-4/5 md:w-11/12 lg:w-4/6 xl:w-11/12 2xl:w-4/5">
                                 <!-- Security & Privacy -->
                                 <div class="bg-[#F5F5F5] p-4 rounded-lg">
-                                    <h3 class="text-leaf-green mb-2">Security & Privacy</h3>
-                                    <ul class="space-y-1 lg:space-y-2 text-sm text-davy-gray">
+                                    <h3 class="mb-2 text-leaf-green">Security & Privacy</h3>
+                                    <ul class="space-y-1 text-sm lg:space-y-2 text-davy-gray">
                                         <li class="flex items-center gap-3">
                                             <i class="fa-solid fa-check text-leaf-green"></i>
                                             <span> Safe Payments </span>
@@ -614,8 +614,8 @@
                                 </div>
                                 <!-- Delivery Guarantee -->
                                 <div class="bg-[#F5F5F5] p-4 rounded-lg">
-                                    <h3 class="text-leaf-green mb-2">Delivery Guarantee</h3>
-                                    <ul class="space-y-1 lg:space-y-2 text-sm text-davy-gray">
+                                    <h3 class="mb-2 text-leaf-green">Delivery Guarantee</h3>
+                                    <ul class="space-y-1 text-sm lg:space-y-2 text-davy-gray">
                                         <li class="flex items-center gap-3">
                                             <i class="fa-solid fa-check text-leaf-green"></i>
                                             <span> Return Item If Damaged</span>
@@ -632,32 +632,32 @@
                 </div>
 
                 <!-- Load More Comment Button -->
-                <div class="load-more-btn text-center border-b-2 border-gray-400 border-dashed pb-10">
+                <div class="pb-10 text-center border-b-2 border-gray-400 border-dashed load-more-btn">
                     <button
-                        class="theme-btn bg-theme-teal hover:bg-aqua-deep text-white px-5 py-2 xl:text-xl text-base md:text-lg inline-flex gap-2 items-center eq"
+                        class="inline-flex items-center gap-2 px-5 py-2 text-base text-white theme-btn bg-theme-teal hover:bg-aqua-deep xl:text-xl md:text-lg eq"
                         type="button">
                         <span>Load More</span>
-                        <i class="fa-solid fa-chevron-down text-sm"></i>
+                        <i class="text-sm fa-solid fa-chevron-down"></i>
                     </button>
                 </div>
             </div>
         </section>
 
         <!-- Product Provider Section Starts -->
-        <section class="product-provider-sec py-5 md:py-8 text-sm md:text-base xl:text-lg text-davy-gray">
+        <section class="py-5 text-sm product-provider-sec md:py-8 md:text-base xl:text-lg text-davy-gray">
             <div class="container">
                 <!-- Header -->
                 <div class="flex flex-wrap items-center gap-2 sm:gap-4">
                     <a href="{{ route('seller.shop_details', $product->seller->username) }}"
-                        class="inline-block provider-dp w-10 h-10 lg:w-14 lg:h-14 rounded-full overflow-hidden">
+                        class="inline-block w-10 h-10 overflow-hidden rounded-full provider-dp lg:w-14 lg:h-14">
                         <img src="{{ asset('assets/frontend/images/provider-logo-1.png') }}" alt="Louis Vuitton Logo"
-                            class="w-full h-full object-contain" />
+                            class="object-contain w-full h-full" />
                     </a>
                     <div class="provider-info">
-                        <h2 class="text-lg md:text-xl lg:text-2xl font-medium flex items-center gap-2 md:gap-5">
+                        <h2 class="flex items-center gap-2 text-lg font-medium md:text-xl lg:text-2xl md:gap-5">
                             <a href="{{ route('seller.shop_details', $product->seller->username) }}"
                                 class="hover:text-butterfly-blue eq">{{ $product->seller->business_name }}</a>
-                            <p class="text-sm md:text-base xl:text-lg font-light flex items-center gap-2">
+                            <p class="flex items-center gap-2 text-sm font-light md:text-base xl:text-lg">
                                 <button class="hover:text-primary eq">
                                     <i class="fa-regular fa-comment-dots"></i>
                                 </button>
@@ -677,7 +677,7 @@
                     </div>
                 </div>
                 <!-- Buttons -->
-                <div class="flex flex-wrap font-medium items-center gap-2 md:gap-4 mt-4">
+                <div class="flex flex-wrap items-center gap-2 mt-4 font-medium md:gap-4">
                     <button
                         class="inline-flex items-center py-1.5 px-5 xsm:px-8 lg:px-10 lg:py-2.5 border border-jet-gray theme-btn gap-2 hover:bg-leaf-green hover:text-white hover:border-transparent eq text-sm md:text-base lg:text-xl font-inherit">
                         <i class="fa-solid fa-store"></i>
@@ -690,7 +690,7 @@
                     </a>
                 </div>
 
-                <div class="shop-decriptions w-full md:w-2/3 lg:w-1/2">
+                <div class="w-full shop-decriptions md:w-2/3 lg:w-1/2">
                     <!-- Description -->
                     <div class="mt-5">
                         <h2>Description:</h2>
@@ -704,9 +704,9 @@
                         <div class="mt-2">
                             <h3 class="font-extrabold">Highlights</h3>
                             <p>· Cotton linen · Garment dyed · Two-button closure</p>
-                            <h3 class="font-extrabold mt-2">Shape & Fit</h3>
+                            <h3 class="mt-2 font-extrabold">Shape & Fit</h3>
                             <p>· Regular fit · Our model is 1.86m and wears size 50</p>
-                            <h3 class="font-extrabold mt-2">Composition & Care</h3>
+                            <h3 class="mt-2 font-extrabold">Composition & Care</h3>
                             <p>· 66% cotton, 34% linen</p>
                         </div>
                     </div> --}}
@@ -719,12 +719,12 @@
         <section class="explore-interest section-padding">
             <div class="container">
                 <!-- Section Tittle -->
-                <h1 class="text-xl sm:text-2xl lg:text-3xl font-medium text-jet-gray mb-5 md:mb-8 lg:mb-10">
+                <h1 class="mb-5 text-xl font-medium sm:text-2xl lg:text-3xl text-jet-gray md:mb-8 lg:mb-10">
                     Explore Your Interest
                 </h1>
 
                 <div id="product-wrapper"
-                    class="grid grid-cols-1 xsm:grid-cols-2 md:grid-cols-3 gap-5 xl:gap-8 lg:p-0 p-2 items-start">
+                    class="grid items-start grid-cols-1 gap-5 p-2 xsm:grid-cols-2 md:grid-cols-3 xl:gap-8 lg:p-0">
                     <!-- Product Card 1 -->
                     @foreach ($interest_products as $product)
                         <div
@@ -732,11 +732,11 @@
                             <div
                                 class="relative h-60 xsm:h-48 sm:h-56 sm:h-90 lg:h-[17rem] xl:h-[22rem] overflow-hidden rounded-lg">
                                 <a href="{{ route('product.details', $product->slug) }}" class="block w-full h-full">
-                                    <img src="{{ asset('assets/' . $product->thumbnail) }}"
-                                        alt="The Iconic Doeskin Blazer" class="w-full h-full object-cover" />
+                                    <img src="{{ storage_url($product->thumbnail) }}"
+                                        alt="The Iconic Doeskin Blazer" class="object-cover w-full h-full" />
                                 </a>
                                 <button
-                                    class="absolute bottom-10 xsm:bottom-3 lg:bottom-10 xsm:left-3 lg:left-5 left-5 bg-white hover:bg-primary hover:text-white rounded-full px-4 py-2 flex items-center gap-2 shadow-lg eq">
+                                    class="absolute flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-lg bottom-10 xsm:bottom-3 lg:bottom-10 xsm:left-3 lg:left-5 left-5 hover:bg-primary hover:text-white eq">
                                     <i class="fa-regular fa-eye"></i>
                                     Quick View
                                 </button>
@@ -751,7 +751,7 @@
                                 <p class="text-leaf-green">Almost sold Out</p>
 
                                 <div class="flex flex-wrap items-center gap-x-1">
-                                    <div class="flex items-center flex-no-wrap gap-x-1 text-light-yellow">
+                                    <div class="flex flex-no-wrap items-center gap-x-1 text-light-yellow">
                                         <i class="fa-solid fa-star"></i>
                                         <i class="fa-solid fa-star"></i>
                                         <i class="fa-solid fa-star"></i>
@@ -768,7 +768,7 @@
                                 <div class="flex flex-wrap items-center gap-x-5 xsm:gap-x-1 sm:gap-x-2 xl:mt-2">
                                     <span class="text-primary/80">Final Hours</span>
                                     <div class="flex items-center gap-x-5 xsm:gap-x-2 sm:gap-x-5 xl:gap-x-8">
-                                        <div class="price flex items-center gap-1 flex-no-wrap">
+                                        <div class="flex flex-no-wrap items-center gap-1 price">
                                             <i class="fa-solid fa-bolt text-[#ffa755]"></i>
                                             {{-- <span class="align-center text-sm text-[#ffa755]">$</span> --}}
                                             <h3 class="font-bold text-primary">{{ currency($product->selling_price) }}
@@ -788,9 +788,9 @@
                 </div>
 
                 <!-- Load More Products Button -->
-                <div class="load-more-btn text-center pt-10">
+                <div class="pt-10 text-center load-more-btn">
                     <button id="load-more-products"
-                        class="theme-btn bg-theme-teal hover:bg-aqua-deep text-white px-5 py-2 xl:text-xl text-base md:text-lg inline-flex gap-2 items-center eq"
+                        class="inline-flex items-center gap-2 px-5 py-2 text-base text-white theme-btn bg-theme-teal hover:bg-aqua-deep xl:text-xl md:text-lg eq"
                         type="button">
                         <span>Load More</span>
                         <i class="fa-solid fa-caret-down"></i>

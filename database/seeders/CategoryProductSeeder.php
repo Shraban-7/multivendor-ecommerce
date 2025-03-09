@@ -18,22 +18,22 @@ class CategoryProductSeeder extends Seeder
         $categories = Category::category()->with('subcategories')->get();
 
         $thumbnails = [
-            "frontend/images/grocery-prod-1.png",
-            "frontend/images/grocery-prod-2.png",
-            "frontend/images/grocery-prod-3.png",
-            "frontend/images/grocery-prod-4.png",
-            "frontend/images/grocery-prod-5.png",
-            "frontend/images/grocery-prod-6.png",
-            "frontend/images/grocery-prod-7.png",
-            "frontend/images/grocery-prod-8.png",
-            "frontend/images/electronic-prod-1.png",
-            "frontend/images/electronic-prod-2.png",
-            "frontend/images/electronic-prod-3.png",
-            "frontend/images/electronic-prod-4.png",
-            "frontend/images/electronic-prod-5.png",
-            "frontend/images/electronic-prod-6.png",
-            "frontend/images/electronic-prod-7.png",
-            "frontend/images/electronic-prod-8.png",
+            "images/products/grocery-prod-1.png",
+            "images/products/grocery-prod-2.png",
+            "images/products/grocery-prod-3.png",
+            "images/products/grocery-prod-4.png",
+            "images/products/grocery-prod-5.png",
+            "images/products/grocery-prod-6.png",
+            "images/products/grocery-prod-7.png",
+            "images/products/grocery-prod-8.png",
+            "images/products/electronic-prod-1.png",
+            "images/products/electronic-prod-2.png",
+            "images/products/electronic-prod-3.png",
+            "images/products/electronic-prod-4.png",
+            "images/products/electronic-prod-5.png",
+            "images/products/electronic-prod-6.png",
+            "images/products/electronic-prod-7.png",
+            "images/products/electronic-prod-8.png",
         ];
 
         $units = [

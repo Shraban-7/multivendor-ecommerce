@@ -2,183 +2,184 @@
 @section('title', 'Products')
 @section('content')
 
-<div class="d-flex justify-content-between align-items-end mb-3">
-    <h4 class="mb-0">Products</h4>
-    <a href="{{ route('seller.products.add') }}" class="btn btn-theme">
-        <i data-feather="plus" class="icon-xs"></i> Add Product
-    </a>
-</div>
+    <div class="mb-3 d-flex justify-content-between align-items-end">
+        <h4 class="mb-0">Products</h4>
+        <a href="{{ route('seller.products.add') }}" class="btn btn-theme">
+            <i data-feather="plus" class="icon-xs"></i> Add Product
+        </a>
+    </div>
 
-<div class="table-responsive">
-    <table class="table table-bordered bg-white mb-3">
-        <thead>
-            <tr>
-                <th scope="col">Product</th>
-                <th scope="col">Price</th>
-                <th scope="col">Stock</th>
-                <th scope="col">Date</th>
-                <th scope="col">Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($products as $product)
-            <tr>
-                <td>
-                    <div class="d-flex align-items-center">
-                        <img src="{{ storage_url($product->thumbnail) }}"
-                            class="rounded-circle border" alt="Image" style="height:80px; width:80px">
-                        <div class="ms-3 mt-2">
-                            <div>{{ $product->name }}</div>
-                            <div class="mt-2">
-                                <small>Category: <strong>{{ $product->category->name }}</strong></small><br>
-                                <small>Brand: <strong>{{ $product->brand?->name }}</strong></small><br>
+    <div class="table-responsive">
+        <table class="table mb-3 bg-white table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">Product</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Stock</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($products as $product)
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <img src="{{ storage_url($product->thumbnail) }}" class="border rounded-circle"
+                                    alt="Image" style="height:80px; width:80px">
+                                <div class="mt-2 ms-3">
+                                    <div>{{ $product->name }}</div>
+                                    <div class="mt-2">
+                                        <small>Category: <strong>{{ $product->category->name }}</strong></small><br>
+                                        <small>Brand: <strong>{{ $product->brand?->name }}</strong></small><br>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            Buy: {{ $product->buying_price }} <br>
+                            Sell: {{ $product->selling_price }}
+                        </td>
+                        <td>
+                            <div class="mb-2">
+                                @if ($product->stock_status == 'in_stock')
+                                    <span class="text-white badge text-bg-success">In Stock</span>
+                                @else
+                                    <span class="text-white badge text-bg-danger">Stock Out</span>
+                                @endif
+                            </div>
+                            Qty: <strong> {{ $product->quantity }}</strong> <br>
+
+                            <span> In: {{ $product->stock_in }} | Out: <span
+                                    class="text-danger">{{ $product->stock_out }}</span></span>
+
+                        </td>
+                        <td> </td>
+                        <td class="d-flex">
+                            <a href="{{ route('seller.products.edit', $product->id) }}"
+                                class="border btn btn-light btn-sm me-1" title="Edit">
+                                <i data-feather="edit" class="icon-xs"></i> Edit
+                            </a>
+                            <a href="{{ route('seller.products.details', $product->id) }}"
+                                class="border btn btn-light btn-sm me-1" title="Details">
+                                <i data-feather="file-text" class="icon-xs"></i> Details
+                            </a>
+                            <button class="border btn btn-danger btn-sm" title="Delete" data-bs-toggle="modal"
+                                data-bs-target="#deleteModal-{{ $product->id }}">
+                                <i data-feather="trash-2" class="icon-xs"></i> Delete
+                            </button>
+
+                        </td>
+                    </tr>
+
+                    <!-- Delete Modal -->
+                    <div class="modal fade" id="deleteModal-{{ $product->id }}" tabindex="-1"
+                        aria-labelledby="deleteModalLabel-{{ $product->id }}" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="deleteModalLabel-{{ $product->id }}">Confirm
+                                        Delete</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="text-center modal-body">
+                                    <div class="alert alert-warning d-flex" role="alert">
+                                        <i class="bi bi-exclamation-circle-fill me-2 text-danger"
+                                            style="font-size: 1.5rem;"></i>
+                                        <p class="mt-1 text-secondary">
+                                            Are you sure you want to delete this Product?
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <form action="{{ route('seller.products.delete', $product->id) }}" method="POST">
+                                        @method('DELETE')
+                                        @csrf
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </td>
-                <td>
-                    Buy: {{ $product->buying_price }} <br>
-                    Sell: {{ $product->selling_price }}
-                </td>
-                <td>
-                    <div class="mb-2">
-                        @if ($product->stock_status == 'in_stock')
-                        <span class="badge text-bg-success text-white">In Stock</span>
-                        @else
-                        <span class="badge text-bg-danger text-white">Stock Out</span>
-                        @endif
-                    </div>
-                    Qty: <strong> {{ $product->quantity }}</strong> <br>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
 
-                    <span> In: {{ $product->stock_in }} | Out: <span class="text-danger">{{ $product->stock_out }}</span></span>
+    <div>
+        {{ $products->links() }}
+    </div>
 
-                </td>
-                <td> </td>
-                <td class="d-flex">
-                    <a href="{{ route('seller.products.edit', $product->id ) }}" class="btn btn-light border btn-sm me-1" title="Edit">
-                        <i data-feather="edit" class="icon-xs"></i> Edit
-                    </a>
-                    <button class="btn btn-light border btn-sm me-1" title="Details">
-                        <i data-feather="file-text" class="icon-xs"></i> Details
-                    </button>
-                    <button class="btn btn-danger border btn-sm" title="Delete" data-bs-toggle="modal"
-                        data-bs-target="#deleteModal-{{ $product->id }}">
-                        <i data-feather="trash-2" class="icon-xs"></i> Delete
-                    </button>
-
-                </td>
-            </tr>
-
-            <!-- Delete Modal -->
-            <div class="modal fade" id="deleteModal-{{ $product->id }}" tabindex="-1"
-                aria-labelledby="deleteModalLabel-{{ $product->id }}" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="deleteModalLabel-{{ $product->id }}">Confirm
-                                Delete</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body text-center">
-                            <div class="alert alert-warning d-flex" role="alert">
-                                <i class="bi bi-exclamation-circle-fill me-2 text-danger"
-                                    style="font-size: 1.5rem;"></i>
-                                <p class="mt-1 text-secondary">
-                                    Are you sure you want to delete this Product?
-                                </p>
+    <div class="modal fade" id="addModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Add Product</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('seller.products.store') }}" method="post">
+                    @CSRF
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label">Category</label>
+                                <select name="game_id" class="form-select w-100" id="gameSelect" required>
+                                    <option value="" selected disabled>--Choose--</option>
+                                    @foreach ($categories as $category)
+                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
+
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label">Subcategory</label>
+                                <select name="game_id" class="form-select w-100" id="gameSelect" required>
+                                    <option value="" selected disabled>--Choose--</option>
+
+                                    <option value=""></option>
+
+                                </select>
+                            </div>
+
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label">Brand</label>
+                                <select name="game_id" class="form-select w-100" id="gameSelect" required>
+                                    <option value="" selected disabled>--Choose--</option>
+                                    @foreach ($brands as $brand)
+                                        <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label">Name</label>
+                                <input name="name" type="text" value="" class="form-control" required>
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label">Buying Price</label>
+                                <input name="name" type="text" value="" class="form-control" required>
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label">Selling Price</label>
+                                <input name="name" type="text" value="" class="form-control" required>
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label">Quantity</label>
+                                <input name="name" type="text" value="" class="form-control" required>
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label">Stock in</label>
+                                <input name="name" type="text" value="" class="form-control" required>
+                            </div>
+
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary"
-                                data-bs-dismiss="modal">Cancel</button>
-                            <form action="{{ route('seller.products.delete', $product->id ) }}"
-                                method="POST">
-                                @method('DELETE')
-                                @csrf
-                                <button type="submit" class="btn btn-danger">Delete</button>
-                            </form>
-                        </div>
+                        <button type="submit" class="btn btn-theme">Save Contest</button>
                     </div>
-                </div>
+                </form>
             </div>
-            @endforeach
-        </tbody>
-    </table>
-</div>
-
-<div>
-    {{ $products->links() }}
-</div>
-
-<div class="modal fade" id="addModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog  modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5">Add Product</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form action="{{ route('seller.products.store') }}" method="post">
-                @CSRF
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Category</label>
-                            <select name="game_id" class="form-select w-100" id="gameSelect" required>
-                                <option value="" selected disabled>--Choose--</option>
-                                @foreach ($categories as $category)
-                                <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Subcategory</label>
-                            <select name="game_id" class="form-select w-100" id="gameSelect" required>
-                                <option value="" selected disabled>--Choose--</option>
-
-                                <option value=""></option>
-
-                            </select>
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Brand</label>
-                            <select name="game_id" class="form-select w-100" id="gameSelect" required>
-                                <option value="" selected disabled>--Choose--</option>
-                                @foreach ($brands as $brand)
-                                <option value="{{ $brand->id }}">{{ $brand->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Name</label>
-                            <input name="name" type="text" value="" class="form-control" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Buying Price</label>
-                            <input name="name" type="text" value="" class="form-control" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Selling Price</label>
-                            <input name="name" type="text" value="" class="form-control" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Quantity</label>
-                            <input name="name" type="text" value="" class="form-control" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Stock in</label>
-                            <input name="name" type="text" value="" class="form-control" required>
-                        </div>
-
-                    </div>
-                    <button type="submit" class="btn btn-theme">Save Contest</button>
-                </div>
-            </form>
         </div>
     </div>
-</div>
 
 @endsection

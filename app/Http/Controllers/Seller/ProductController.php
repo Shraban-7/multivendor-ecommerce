@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Seller;
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\ProductImage;
 use Illuminate\Http\Request;
@@ -50,7 +51,7 @@ class ProductController extends Controller
         ]);
 
         $validated['thumbnail'] = upload_file($request->file('thumbnail'), 'images/products');
-        $validated['seller_id'] = seller()->id ;
+        $validated['seller_id'] = seller()->id;
 
         $product = Product::create($validated);
 
@@ -66,7 +67,17 @@ class ProductController extends Controller
         session()->flash('success', 'Product added successfully');
 
         return successResponse("Product added successfully");
+    }
 
+    public function details(Product $product)
+    {
+        $product->load('images');
+        $sold = OrderItem::where('product_id', $product->id)->count();
+        $revenue = $sold * $product->selling_price;
+        $profit = $revenue - ($sold * $product->buying_price);
+        $last_order = OrderItem::where('product_id', $product->id)->latest('created_at')->first();
+        $last_sale = $last_order?->created_at;
+        return view('seller.products.details', compact('product', 'sold', 'revenue', 'profit', 'last_sale'));
     }
 
     public function edit(Product $product)
@@ -74,11 +85,10 @@ class ProductController extends Controller
         $categories = Category::category()->with('subcategories')->get();
         $brands = Brand::all();
 
-        return view('seller.products.edit', compact('product','categories', 'brands'));
-
+        return view('seller.products.edit', compact('product', 'categories', 'brands'));
     }
-    
-    public function update(Product $product , Request $request)
+
+    public function update(Product $product, Request $request)
     {
         $validated = $request->validate([
             'category_id' => 'required|integer|exists:categories,id',
@@ -96,15 +106,15 @@ class ProductController extends Controller
         ]);
 
         if ($request->hasFile('thumbnail')) {
-            if($product->thumbnail != null) {
+            if ($product->thumbnail != null) {
                 delete_file($product->thumbnail);
-            }    
-            
+            }
+
             $validated['thumbnail'] = upload_file($request->file('thumbnail'), 'images/products');
         }
         $product->update($validated);
 
-        if ($request->hasFile('files')){
+        if ($request->hasFile('files')) {
             $product->images->each(function ($image) {
                 delete_file($image->image);
                 $image->delete();
@@ -126,7 +136,7 @@ class ProductController extends Controller
     public function delete(Product $product)
     {
 
-        if($product->thumbnail != null) {
+        if ($product->thumbnail != null) {
             delete_file($product->thumbnail);
         }
 
@@ -137,11 +147,11 @@ class ProductController extends Controller
 
         $product->delete();
 
-        return redirect()->back()->with('success','Product Removed Successfully');
+        return redirect()->back()->with('success', 'Product Removed Successfully');
     }
 
     public function deleteImage(ProductImage $image)
-    {         
+    {
         delete_file($image->image);
 
         $image->delete();

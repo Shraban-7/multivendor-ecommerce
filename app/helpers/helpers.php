@@ -191,3 +191,10 @@ if (!function_exists('apiResourceResponse')) {
         return response()->json($collection, $statusCode);
     }
 }
+
+if (!function_exists('money')) {
+    function money($amount)
+    {
+        return number_format($amount, 2) .' ' .  CURRENCY_SYMBOL;
+    }
+}

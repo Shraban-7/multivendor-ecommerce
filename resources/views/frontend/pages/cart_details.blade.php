@@ -2,23 +2,23 @@
 @section('title', 'Card Details')
 
 @section('content')
-    <main class="cart-details-page pb-5 sm:pb-10">
+    <main class="pb-5 cart-details-page sm:pb-10">
         <!-- Promotional Header Starts -->
         <section>
-            <a href="#" class="block promo-header bg-light-yellow text-white py-3 sm:py-4">
-                <div class="container flex flex-wrap justify-center xsm:justify-start items-center gap-x-2">
-                    <i class="fa-solid fa-truck-fast text-lg"></i>
+            <a href="#" class="block py-3 text-white promo-header bg-light-yellow sm:py-4">
+                <div class="container flex flex-wrap items-center justify-center xsm:justify-start gap-x-2">
+                    <i class="text-lg fa-solid fa-truck-fast"></i>
                     <h3 class="text-sm">Free Shipping Special For You</h3>
-                    <p class="text-xs ml-2 xsm:ml-3">Limited Offer</p>
+                    <p class="ml-2 text-xs xsm:ml-3">Limited Offer</p>
                 </div>
             </a>
         </section>
         <!-- Promotional Header Ended -->
 
         <!-- Cart Details Main Section Starts -->
-        <section class="page-breadcrumb-links container">
+        <section class="container page-breadcrumb-links">
             <!-- Page Breadcrumb -->
-            <nav class="flex container my-2 md:my-5" aria-label="Breadcrumb">
+            <nav class="container flex my-2 md:my-5" aria-label="Breadcrumb">
                 <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                     <li class="inline-flex items-center">
                         <a href="/" class="inline-flex items-center text-sm text-davy-gray hover:text-primary eq">
@@ -32,12 +32,12 @@
                     </li>
                     <li aria-current="page">
                         <div class="flex items-center">
-                            <svg class="rtl:rotate-180 w-3 h-3 text-davy-gray mx-1" aria-hidden="true"
+                            <svg class="w-3 h-3 mx-1 rtl:rotate-180 text-davy-gray" aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="m1 9 4-4-4-4" />
                             </svg>
-                            <span class="ms-1 text-sm text-davy-gray md:ms-2">Cart</span>
+                            <span class="text-sm ms-1 text-davy-gray md:ms-2">Cart</span>
                         </div>
                     </li>
                 </ol>
@@ -53,7 +53,7 @@
                             <i class="fa-solid fa-check text-theme-teal"></i>
                             <span>Free shipping special for you</span>
                         </div>
-                        <span class="text-leaf-green italic font-light">Exclusive offer</span>
+                        <span class="italic font-light text-leaf-green">Exclusive offer</span>
                     </div>
 
                     <!-- Cart Items Container -->
@@ -64,17 +64,17 @@
                                 $sellerName = $seller ? $seller->business_name : '';
                             @endphp
                             <!-- Store/Seller Header with Select All for this seller -->
-                            <div class="seller-section mb-4 mt-6">
+                            <div class="mt-6 mb-4 seller-section">
                                 @if ($seller)
                                     <label for="selectSeller{{ $sellerId }}"
-                                        class="w-full flex items-center justify-between cursor-pointer text-black hover:text-black/80 py-2 px-3 bg-gray-100 rounded-md">
-                                        <p class="md:text-base flex items-center gap-2">
+                                        class="flex items-center justify-between w-full px-3 py-2 text-black bg-gray-100 rounded-md cursor-pointer hover:text-black/80">
+                                        <p class="flex items-center gap-2 md:text-base">
                                             <input type="radio" name="seller_id" id="selectSeller{{ $sellerId }}"
                                                 class="hidden form-checkbox seller-checkbox peer/seller{{ $sellerId }}"
                                                 data-seller-id="{{ $sellerId }}" value="{{ $sellerId }}" />
                                             <label for="selectSeller{{ $sellerId }}"
                                                 class="inline-block stroke-black peer-checked/seller{{ $sellerId }}:stroke-white rounded-full text-white peer-checked/seller{{ $sellerId }}:text-black border-2 border-black cursor-pointer">
-                                                <svg width="28" height="28" class="w-5 md:w-6 h-5 md:h-6"
+                                                <svg width="28" height="28" class="w-5 h-5 md:w-6 md:h-6"
                                                     viewBox="0 0 32 32" stroke-width="0" fill="currentColor"
                                                     xmlns="http://www.w3.org/2000/svg">
                                                     <circle cx="16" cy="16" r="16" fill="currentColor" />
@@ -90,7 +90,7 @@
                                                 data-seller-id="{{ $sellerId }}">0</span>/<span>{{ count($cartGroup->flatMap->cartItems) }}</span>)
                                         </p>
 
-                                        <i class="fa-solid fa-store text-sm"></i>
+                                        <i class="text-sm fa-solid fa-store"></i>
                                     </label>
                                 @endif
 
@@ -120,14 +120,14 @@
                                                     $discount_price = $item->product->selling_price;
                                                 }
                                             @endphp
-                                            <div class="md:py-5 py-3 border-t border-jet-gray/20 cart-item"
+                                            <div class="py-3 border-t md:py-5 border-jet-gray/20 cart-item"
                                                 data-price="{{ $item->product->selling_price }}"
                                                 data-seller-id="{{ $sellerId }}"
                                                 data-discounted-price="{{ $discount_price }}"
                                                 data-id="{{ $item->id }}">
                                                 <div class="flex gap-2 sm:gap-4">
                                                     <!-- Item Checkbox -->
-                                                    <div class="flex items-start pt-2 hidden">
+                                                    <div class="flex items-start hidden pt-2">
                                                         <input type="checkbox" id="item{{ $key }}"
                                                             class="hidden form-checkbox item-checkbox peer/item{{ $key }}"
                                                             data-item-id="{{ $key }}"
@@ -149,22 +149,22 @@
 
                                                     <!-- Item Image -->
                                                     <div
-                                                        class="item-image-wrap w-24 h-28 xsm:w-36 xsm:h-40 rounded-md relative overflow-hidden">
+                                                        class="relative w-24 overflow-hidden rounded-md item-image-wrap h-28 xsm:w-36 xsm:h-40">
                                                         <a href="{{ route('product.details', $item->product->slug) }}">
-                                                            <img src="{{ asset('assets/' . $item->product->thumbnail) }}"
-                                                                alt="Product" class="w-full h-full object-cover" />
+                                                            <img src="{{ storage_url($item->product->thumbnail) }}"
+                                                                alt="Product" class="object-cover w-full h-full" />
                                                         </a>
                                                         <span
                                                             class="w-10/12 xsm:w-7/12 text-center text-leaf-green text-[8px] inline-block absolute bottom-3 xsm:bottom-5 left-1/2 -translate-x-1/2 bg-theme-dark text-white rounded-3xl py-1">Almost
                                                             Sold Out</span>
                                                     </div>
                                                     <!-- Item Content -->
-                                                    <div class="flex flex-col gap-2 sm:gap-5 flex-1">
+                                                    <div class="flex flex-col flex-1 gap-2 sm:gap-5">
                                                         <div class="space-y-1 sm:space-y-2">
                                                             <!-- title -->
                                                             <div class="flex items-start justify-between">
                                                                 <h1
-                                                                    class="md:text-base text-rustic-red text-sm w-11/12 xsm:w-10/12 md:w-3/4 lg:w-11/12 xl:w-3/4 line-clamp-3 sm:line-clamp-2">
+                                                                    class="w-11/12 text-sm md:text-base text-rustic-red xsm:w-10/12 md:w-3/4 lg:w-11/12 xl:w-3/4 line-clamp-3 sm:line-clamp-2">
                                                                     {{ $item->product->name }}
                                                                 </h1>
                                                                 <div class="delete-item">
@@ -181,16 +181,16 @@
                                                         </div>
 
                                                         <!-- Prices & Quantity Controls -->
-                                                        <div class="flex flex-wrap gap-y-3 items-center justify-between">
+                                                        <div class="flex flex-wrap items-center justify-between gap-y-3">
                                                             <!-- price  -->
                                                             <div class="flex flex-wrap items-center gap-2">
                                                                 <div
-                                                                    class="new-price flex items-center gap-1 flex-no-wrap">
+                                                                    class="flex flex-no-wrap items-center gap-1 new-price">
                                                                     <i
                                                                         class="fa-solid fa-bolt text-[#ffa755] lg:text-lg"></i>
 
                                                                     <h3
-                                                                        class="current-price text-sm xsm:text-lg md:text-xl font-bold text-primary">
+                                                                        class="text-sm font-bold current-price xsm:text-lg md:text-xl text-primary">
                                                                         {{ currency($discount_price) }}
                                                                     </h3>
                                                                 </div>
@@ -208,21 +208,21 @@
                                                             <!-- quantity -->
                                                             <div class="quantity-controls" data-id="{{ $item->id }}">
                                                                 <div
-                                                                    class="text-davy-gray flex flex-nowrap items-center gap-2">
+                                                                    class="flex items-center gap-2 text-davy-gray flex-nowrap">
                                                                     <h6 class="text-sm xsm:text-base sm:text-lg">Quantity :
                                                                     </h6>
-                                                                    <div class="flex items-center border rounded p-1">
+                                                                    <div class="flex items-center p-1 border rounded">
                                                                         <input type="hidden" class="product-id"
                                                                             value="{{ $key }}">
                                                                         <button type="button"
-                                                                            class="decrease-qty w-5 h-5 flex items-center justify-center text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 active:text-primary rounded text-sm font-bold">
+                                                                            class="flex items-center justify-center w-5 h-5 text-sm font-bold rounded decrease-qty text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 active:text-primary">
                                                                             <i class="fa-solid fa-minus"></i>
                                                                         </button>
                                                                         <input readonly type="number"
                                                                             value="{{ $item->quantity }}" min="1"
-                                                                            class="quantity-input text-center text-persian-blue w-12 h-5 text-sm font-medium border-0 focus:ring-0" />
+                                                                            class="w-12 h-5 text-sm font-medium text-center border-0 quantity-input text-persian-blue focus:ring-0" />
                                                                         <button type="button"
-                                                                            class="increase-qty w-5 h-5 flex items-center justify-center text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 active:text-primary rounded text-sm font-bold">
+                                                                            class="flex items-center justify-center w-5 h-5 text-sm font-bold rounded increase-qty text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 active:text-primary">
                                                                             <i class="fa-solid fa-plus"></i>
                                                                         </button>
                                                                     </div>
@@ -240,26 +240,26 @@
                     </div>
 
                     <!-- Recommendations section -->
-                    <div class="border-t pt-10">
-                        <h2 class="md:text-2xl text-xl font-semibold mb-4">
+                    <div class="pt-10 border-t">
+                        <h2 class="mb-4 text-xl font-semibold md:text-2xl">
                             You May Like to ADD
                         </h2>
 
-                        <div class="grid grid-cols-1 xsm:grid-cols-2 md:grid-cols-3 sm:gap-6 gap-3">
+                        <div class="grid grid-cols-1 gap-3 xsm:grid-cols-2 md:grid-cols-3 sm:gap-6">
                             <!-- Product Card 1 -->
                             @foreach ($products as $product)
                                 <div
                                     class="relative text-base xsm:text-sm sm:text-base md:text-sm lg:text-sm xl:text-base rounded-xl hover:shadow-lg eq">
                                     <div
-                                        class="relative h-60 xsm:h-48 sm:h-56 lg:h-56 xl:h-64 2xl:h-60 overflow-hidden rounded-lg">
+                                        class="relative overflow-hidden rounded-lg h-60 xsm:h-48 sm:h-56 lg:h-56 xl:h-64 2xl:h-60">
                                         <a href="{{ route('product.details', $product->slug) }}"
                                             class="block w-full h-full">
-                                            <img src="{{ asset('assets/' . $product->thumbnail) }}"
+                                            <img src="{{ storage_url($product->thumbnail) }}"
                                                 alt="ASUS Vivo15 OLED K513 Core-i5 11th Gen 15.6″ FHD Laptop"
-                                                class="w-full h-full object-cover" />
+                                                class="object-cover w-full h-full" />
                                         </a>
                                         <button
-                                            class="absolute bottom-10 xsm:bottom-3 lg:bottom-8 xsm:left-3 lg:left-5 left-5 bg-white hover:bg-primary hover:text-white rounded-full px-4 py-2 flex items-center gap-2 shadow-lg eq">
+                                            class="absolute flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-lg bottom-10 xsm:bottom-3 lg:bottom-8 xsm:left-3 lg:left-5 left-5 hover:bg-primary hover:text-white eq">
                                             <i class="fa-regular fa-eye"></i>
                                             Quick View
                                         </button>
@@ -273,7 +273,7 @@
                                         <p class="text-leaf-green">Almost sold Out</p>
 
                                         <div class="flex flex-wrap items-center gap-x-1">
-                                            <div class="flex items-center flex-no-wrap gap-x-1 text-light-yellow">
+                                            <div class="flex flex-no-wrap items-center gap-x-1 text-light-yellow">
                                                 <i class="fa-solid fa-star"></i>
                                                 <i class="fa-solid fa-star"></i>
                                                 <i class="fa-solid fa-star"></i>
@@ -288,7 +288,7 @@
                                         <div class="flex flex-wrap items-center gap-x-5 xsm:gap-x-1 sm:gap-x-2 xl:mt-2">
                                             <span class="text-primary/80">Final Hours</span>
                                             <div class="flex items-center gap-x-5 xsm:gap-x-2 sm:gap-x-5 xl:gap-x-8">
-                                                <div class="price flex items-center gap-1 flex-no-wrap">
+                                                <div class="flex flex-no-wrap items-center gap-1 price">
                                                     <i class="fa-solid fa-bolt text-[#ffa755]"></i>
 
                                                     <h3 class="font-bold text-primary">
@@ -314,26 +314,26 @@
                 <!-- Order Summary -->
                 <div class="lg:col-span-1">
                     <div class="mt-2 md:mt-5">
-                        <h2 class="lg:text-xl md:text-lg font-semibold mb-4">
+                        <h2 class="mb-4 font-semibold lg:text-xl md:text-lg">
                             Order Summary
                         </h2>
                         <div class="order-summary">
                             <!-- summary -->
-                            <div class="item-info space-y-2">
+                            <div class="space-y-2 item-info">
                                 <p class="flex justify-between">
                                     <span class="text-theme-dark">Item's total:</span>
                                     <span id="itemsTotal"
-                                        class="text-jet-gray line-through">{{ currency($grand_total) }}</span>
+                                        class="line-through text-jet-gray">{{ currency($grand_total) }}</span>
                                 </p>
                                 <p class="flex justify-between">
                                     <span class="text-theme-dark">Item Discount:</span>
                                     <span id="itemDiscount"
-                                        class="text-primary font-bold">-{{ currency($discount) }}</span>
+                                        class="font-bold text-primary">-{{ currency($discount) }}</span>
                                 </p>
                             </div>
                             <!-- estimated total -->
                             <div
-                                class="total border-t-2 border-jet-gray/50 border-dashed pt-3 mt-6 flex justify-between font-medium">
+                                class="flex justify-between pt-3 mt-6 font-medium border-t-2 border-dashed total border-jet-gray/50">
                                 <span>Estimated Total (<span id="selectedItemsCount">{{ $total_products_count }}</span>
                                     Items)</span>
                                 <span id="estimatedTotal" class="text-xl">{{ currency($sub_total) }}</span>
@@ -341,24 +341,24 @@
                         </div>
 
                         <!-- order action btn -->
-                        <div class="mt-4 sm:mt-6 space-y-2 sm:space-y-3">
+                        <div class="mt-4 space-y-2 sm:mt-6 sm:space-y-3">
                             <a href="{{ route('orders.checkout') }}" id="checkoutLink">
                                 <button id="checkoutBtn"
-                                    class="eq w-full flex flex-col items-center bg-primary text-white sm:py-3 py-2 rounded-full hover:bg-theme-dark"
+                                    class="flex flex-col items-center w-full py-2 text-white rounded-full eq bg-primary sm:py-3 hover:bg-theme-dark"
                                     data-seller-id="">
                                     Checkout (0) <span class="text-xs">Almost Sold Out</span>
                                 </button>
                             </a>
                             <button
-                                class="eq w-full border border-jet-gray/50 text-theme-dark sm:py-3 py-2 rounded-full font-bold flex items-center justify-center xl:gap-2 gap-1 hover:bg-jet-gray/10 text-sm sm:text-base">
+                                class="flex items-center justify-center w-full gap-1 py-2 text-sm font-bold border rounded-full eq border-jet-gray/50 text-theme-dark sm:py-3 xl:gap-2 hover:bg-jet-gray/10 sm:text-base">
                                 Express checkout with
                                 <img src="{{ asset('assets/frontend/images/cart-paypal.png') }}" alt="PayPal"
-                                    class="sm:h-9 h-6 w-auto" />
+                                    class="w-auto h-6 sm:h-9" />
                             </button>
                         </div>
 
                         <!-- more info -->
-                        <div class="text-davy-gray text-xs p-4">
+                        <div class="p-4 text-xs text-davy-gray">
                             <div class="space-y-3 sm:space-y-4">
                                 <p class="space-x-1">
                                     <i class="fa-solid fa-circle-exclamation text-jet-gray/50"></i>
@@ -367,15 +367,15 @@
                                         payment is final.
                                     </span>
                                 </p>
-                                <h2 class="text-xs sm:text-sm font-medium flex items-center gap-2">
-                                    <i class="fa-solid fa-lock text-xl sm:text-2xl text-leaf-green"></i>
+                                <h2 class="flex items-center gap-2 text-xs font-medium sm:text-sm">
+                                    <i class="text-xl fa-solid fa-lock sm:text-2xl text-leaf-green"></i>
                                     <span>
                                         You will not be charged until you review this order on the
                                         next page
                                     </span>
                                 </h2>
-                                <h2 class="text-xs sm:text-sm font-medium flex items-center gap-2">
-                                    <svg width="22" height="26" class="text-leaf-green w-6 h-6 sm:w-8 sm:h-8"
+                                <h2 class="flex items-center gap-2 text-xs font-medium sm:text-sm">
+                                    <svg width="22" height="26" class="w-6 h-6 text-leaf-green sm:w-8 sm:h-8"
                                         viewBox="0 0 22 26" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path fill-rule="evenodd" clip-rule="evenodd"
                                             d="M9.82462 0.150834C10.2917 -0.0243682 10.8022 -0.0475726 11.2833 0.0845311L11.4869 0.150834L19.7747 3.25877C20.1948 3.41626 20.5615 3.68983 20.8321 4.04763C21.1027 4.40543 21.2661 4.83275 21.3033 5.27981L21.3115 5.47635V11.826C21.3113 13.7443 20.7932 15.627 19.8119 17.2754C18.8306 18.9237 17.4225 20.2766 15.7362 21.1912L15.4213 21.357L11.4502 23.3413C11.2317 23.4507 10.9929 23.5138 10.7488 23.5266C10.5047 23.5394 10.2607 23.5018 10.0318 23.4159L9.86133 23.3425L5.89027 21.3558C4.17423 20.4978 2.72169 19.1923 1.68598 17.5773C0.650278 15.9623 0.0698315 14.0976 0.00592001 12.18L0 11.8248V5.47754C6.88487e-06 5.02896 0.127427 4.58962 0.367427 4.21065C0.607427 3.83168 0.950134 3.52867 1.35565 3.33691L1.5368 3.25995L9.82462 0.150834ZM9.64111 7.20377L7.28381 11.1322C7.17483 11.3137 7.11597 11.5208 7.11325 11.7325C7.11052 11.9441 7.16402 12.1527 7.26828 12.3369C7.37255 12.5211 7.52384 12.6743 7.70671 12.781C7.88958 12.8876 8.09746 12.9437 8.30913 12.9437H10.9328L9.64111 15.0973C9.49026 15.3659 9.45006 15.6828 9.52903 15.9805C9.60799 16.2783 9.79991 16.5336 10.064 16.6921C10.3282 16.8507 10.6437 16.9001 10.9436 16.8298C11.2436 16.7595 11.5043 16.5751 11.6704 16.3156L14.0277 12.3872C14.1367 12.2057 14.1956 11.9986 14.1983 11.787C14.201 11.5753 14.1475 11.3667 14.0433 11.1825C13.939 10.9983 13.7877 10.8451 13.6048 10.7385C13.422 10.6319 13.2141 10.5757 13.0024 10.5757H10.3787L11.6716 8.42208C11.8332 8.15266 11.8811 7.8301 11.8048 7.52535C11.7286 7.2206 11.5343 6.95863 11.2649 6.79707C10.9955 6.63552 10.6729 6.5876 10.3682 6.66387C10.0634 6.74014 9.80266 6.93435 9.64111 7.20377Z"
@@ -384,7 +384,7 @@
                                     <span> Safe Payment Options </span>
                                 </h2>
                             </div>
-                            <div class="mt-2 sm:mt-3 space-y-2">
+                            <div class="mt-2 space-y-2 sm:mt-3">
                                 <p class="text-sm text-leaf-green">
                                     Tesco is committed to protecting your payment information.
                                 </p>
@@ -399,21 +399,21 @@
                                 <h4 class="text-sm">
                                     01. <span class="font-medium">Payment Method</span>
                                 </h4>
-                                <div class="flex flex-wrap gap-x-2 gap-y-1 mt-2">
+                                <div class="flex flex-wrap mt-2 gap-x-2 gap-y-1">
                                     <img src="{{ asset('assets/frontend/images/cart-payment-method-1.png') }}"
-                                        alt="Visa card" class="w-auto h-8 sm:h-10 border rounded" />
+                                        alt="Visa card" class="w-auto h-8 border rounded sm:h-10" />
                                     <img src="{{ asset('assets/frontend/images/cart-payment-method-2.png') }}"
-                                        alt="mastercard" class="w-auto h-8 sm:h-10 border rounded" />
+                                        alt="mastercard" class="w-auto h-8 border rounded sm:h-10" />
                                     <img src="{{ asset('assets/frontend/images/cart-payment-method-3.png') }}"
-                                        alt="American Express" class="w-auto h-8 sm:h-10 border rounded" />
+                                        alt="American Express" class="w-auto h-8 border rounded sm:h-10" />
                                     <img src="{{ asset('assets/frontend/images/cart-payment-method-4.png') }}"
-                                        alt="Discover" class="w-auto h-8 sm:h-10 border rounded" />
+                                        alt="Discover" class="w-auto h-8 border rounded sm:h-10" />
                                     <img src="{{ asset('assets/frontend/images/cart-payment-method-5.png') }}"
-                                        alt="Paypal" class="w-auto h-8 sm:h-10 border rounded" />
+                                        alt="Paypal" class="w-auto h-8 border rounded sm:h-10" />
                                     <img src="{{ asset('assets/frontend/images/cart-payment-method-6.png') }}"
-                                        alt="Apple Pay" class="w-auto h-8 sm:h-10 border rounded" />
+                                        alt="Apple Pay" class="w-auto h-8 border rounded sm:h-10" />
                                     <img src="{{ asset('assets/frontend/images/cart-payment-method-7.png') }}"
-                                        alt="G Pay" class="w-auto h-8 sm:h-10 border rounded" />
+                                        alt="G Pay" class="w-auto h-8 border rounded sm:h-10" />
                                 </div>
                             </div>
                             <!-- security certification -->
@@ -421,21 +421,21 @@
                                 <h4 class="text-sm">
                                     02. <span class="font-medium">Security Certification</span>
                                 </h4>
-                                <div class="flex flex-wrap gap-x-2 gap-y-1 mt-2">
+                                <div class="flex flex-wrap mt-2 gap-x-2 gap-y-1">
                                     <img src="{{ asset('assets/frontend/images/security-1.png') }}" alt="PCI DDS"
-                                        class="w-auto h-7 sm:h-9 border rounded" />
+                                        class="w-auto border rounded h-7 sm:h-9" />
                                     <img src="{{ asset('assets/frontend/images/security-2.png') }}" alt="Visa Secure"
-                                        class="w-auto h-7 sm:h-9 border rounded" />
+                                        class="w-auto border rounded h-7 sm:h-9" />
                                     <img src="{{ asset('assets/frontend/images/security-3.png') }}"
-                                        alt="Mastercard ID check" class="w-auto h-7 sm:h-9 border rounded" />
+                                        alt="Mastercard ID check" class="w-auto border rounded h-7 sm:h-9" />
                                     <img src="{{ asset('assets/frontend/images/security-4.png') }}"
-                                        alt="American Express SafeKey" class="w-auto h-7 sm:h-9 border rounded" />
+                                        alt="American Express SafeKey" class="w-auto border rounded h-7 sm:h-9" />
                                 </div>
                             </div>
                             <!-- secure privacy -->
                             <div class="mt-5 space-y-2 sm:space-y-3">
-                                <h4 class="text-sm font-medium flex items-center gap-2">
-                                    <i class="fa-solid fa-lock text-xl sm:text-2xl text-leaf-green"></i>
+                                <h4 class="flex items-center gap-2 text-sm font-medium">
+                                    <i class="text-xl fa-solid fa-lock sm:text-2xl text-leaf-green"></i>
                                     <span> Secure privacy </span>
                                 </h4>
 
@@ -452,8 +452,8 @@
                                     More <i class="fa-solid fa-chevron-right"></i></a>
                             </div>
                             <!-- tesco purchase protection  -->
-                            <div class="mt-3 sm:mt-5 space-y-2 sm:space-y-3">
-                                <h4 class="text-sm font-medium flex items-center gap-1">
+                            <div class="mt-3 space-y-2 sm:mt-5 sm:space-y-3">
+                                <h4 class="flex items-center gap-1 text-sm font-medium">
                                     <!-- cart icon -->
                                     <span class="text-leaf-green">
                                         <svg width="32" height="34" class="w-7 h-7 sm:w-9 sm:h-9"
@@ -482,7 +482,7 @@
                             </div>
                             <!-- delivary guarantee -->
                             <div class="mt-3 sm:mt-5">
-                                <h4 class="text-sm font-medium flex items-center gap-2">
+                                <h4 class="flex items-center gap-2 text-sm font-medium">
                                     <!-- truck icon -->
                                     <span class="text-leaf-green">
                                         <svg width="24" height="24" class="w-6 h-6 sm:w-7 sm:h-7"
@@ -495,21 +495,21 @@
                                     <span> Delivery guarantee </span>
                                 </h4>
 
-                                <ul class="list-disc list-inside grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2 sm:mt-3">
+                                <ul class="grid grid-cols-1 gap-2 mt-2 list-disc list-inside sm:grid-cols-2 sm:mt-3">
                                     <li class="inline-flex items-center gap-2">
-                                        <i class="fa-solid fa-check text-lg sm:text-xl text-leaf-green"></i>
+                                        <i class="text-lg fa-solid fa-check sm:text-xl text-leaf-green"></i>
                                         <span>$5.00 Credit for delay</span>
                                     </li>
                                     <li class="inline-flex items-center gap-2">
-                                        <i class="fa-solid fa-check text-lg sm:text-xl text-leaf-green"></i>
+                                        <i class="text-lg fa-solid fa-check sm:text-xl text-leaf-green"></i>
                                         <span>15-day no update refund</span>
                                     </li>
                                     <li class="inline-flex items-center gap-2">
-                                        <i class="fa-solid fa-check text-lg sm:text-xl text-leaf-green"></i>
+                                        <i class="text-lg fa-solid fa-check sm:text-xl text-leaf-green"></i>
                                         <span> Return if item damaged</span>
                                     </li>
                                     <li class="inline-flex items-center gap-2">
-                                        <i class="fa-solid fa-check text-lg sm:text-xl text-leaf-green"></i>
+                                        <i class="text-lg fa-solid fa-check sm:text-xl text-leaf-green"></i>
                                         <span>30-day no delivery refund</span>
                                     </li>
                                 </ul>
@@ -605,7 +605,7 @@
                     const sellerId = $(this).data('seller-id');
                     const isChecked = $(this).prop('checked');
                     $(`.item-checkbox[data-seller-id="${sellerId}"]`).prop('checked',
-                        isChecked); // Fixed template literal
+                        isChecked); 
                     updateSellerCheckboxes();
                     updateCounts();
                     updateOrderSummary();
@@ -619,7 +619,6 @@
                     updateOrderSummary();
                 });
 
-                // Helper functions
                 function updateCartQuantity(cartItemId, quantity, input) {
                     $.ajax({
                         url: "{{ route('cart.update') }}",
@@ -634,6 +633,8 @@
                             if (response.success) {
                                 updateOrderTotals(response);
                                 toastr.success(response.message);
+                                updateCartData();
+                                updateOrderSummary();
                             } else {
                                 toastr.error(response.message);
                             }
@@ -706,7 +707,7 @@
                     $('.seller-count').each(function() {
                         const sellerId = $(this).data('seller-id');
                         const sellerItems = $(
-                            `.item-checkbox[data-seller-id="${sellerId}"]:checked`); // Fixed template literal
+                            `.item-checkbox[data-seller-id="${sellerId}"]:checked`);
                         $(this).text(sellerItems.length);
                     });
                 }
@@ -746,8 +747,22 @@
                     }
                 }
 
+                function updateCartData() {
+                $.ajax({
+                    url: "{{ route('cart.data') }}",
+                    type: "GET",
+                    success: function(data) {
+                        $('#cartCount').text(data.cartCount);
+                        $('#totalPrice').text(data.totalPrice);
+                    },
+                    error: function() {
+                        toastr.error('Failed to update cart data.');
+                    }
+                });
+            }
+
                 function formatCurrency(amount) {
-                    return '$' + amount.toFixed(2);
+                    return '৳ ' + amount.toFixed(2);
                 }
 
                 updateOrderSummary();

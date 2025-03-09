@@ -5,11 +5,11 @@
 @section('content')
     <main class="grocery-essentials-page">
         <!-- Page Promotion Banner Starts -->
-        <section class="page-promotion container md:w-full py-5">
+        <section class="container py-5 page-promotion md:w-full">
             <div
                 class="promo-wrapper md:container bg-[{{ $category->cover_bg_color }}] grid grid-cols-1 md:grid-cols-2 rounded-lg md:rounded-3xl overflow-hidden">
                 <div
-                    class="order-2 md:order-1 promo-content flex flex-col gap-3 sm:gap-5 items-start justify-center p-5 md:p-10 lg:p-14 2xl:p-20">
+                    class="flex flex-col items-start justify-center order-2 gap-3 p-5 md:order-1 promo-content sm:gap-5 md:p-10 lg:p-14 2xl:p-20">
                     <h2
                         class="lg:text-3xl md:text-2xl text-xl text-[{{ $category->cover_text_color }}] font-bold md:pr-10 lg:pr-14 2xl:pr-20 line-clamp-2">
                         {{ $category->cover_title }}
@@ -21,12 +21,12 @@
                         class="theme-btn bg-[{{ $category->cover_button_color }}] px-5 py-2 lg:px-7 lg:px-3 rounded-lg text-white hover:bg-theme-light hover:text-theme-dark eq text-xs lg:text-sm">Learn
                         More</a>
                 </div>
-                <div class="promo-image order-1">
-                    <div class="img-wrap w-full">
-                        <div class="w-full lg:h-96 md:h-80 h-40 rounded-lg md:rounded-3xl overflow-hidden">
-                            <a href="#" class="w-full h-full block">
+                <div class="order-1 promo-image">
+                    <div class="w-full img-wrap">
+                        <div class="w-full h-40 overflow-hidden rounded-lg lg:h-96 md:h-80 md:rounded-3xl">
+                            <a href="#" class="block w-full h-full">
                                 <img src="{{ asset('assets/' . $category->cover_image) }}" alt="{{ $category->name }}"
-                                    class="w-full h-full object-cover" />
+                                    class="object-cover w-full h-full" />
                             </a>
                         </div>
                     </div>
@@ -53,7 +53,7 @@
             <form action="#" class="space-y-5">
                 <!-- Categories -->
                 <div>
-                    <h3 class="text-lg mb-3 border-dashed border-b border-jet-gray pb-2">
+                    <h3 class="pb-2 mb-3 text-lg border-b border-dashed border-jet-gray">
                         Categories
                     </h3>
                     <div class="space-y-2">
@@ -74,7 +74,7 @@
 
                 <!-- Brand -->
                 <div>
-                    <h3 class="text-lg mb-3 border-dashed border-b border-jet-gray pb-2">
+                    <h3 class="pb-2 mb-3 text-lg border-b border-dashed border-jet-gray">
                         Brand
                     </h3>
                     <div class="space-y-2">
@@ -95,20 +95,20 @@
 
                 <!-- Review -->
                 <div>
-                    <h3 class="text-lg mb-3 border-dashed border-b border-jet-gray pb-2">
+                    <h3 class="pb-2 mb-3 text-lg border-b border-dashed border-jet-gray">
                         Review
                     </h3>
                     <div class="space-y-2">
                         <label class="flex items-center">
                             <input type="radio" name="review" class="w-4 h-4 text-primary focus:ring-primary" />
-                            <div class="ml-2 flex items-center">
+                            <div class="flex items-center ml-2">
                                 <div class="flex text-light-yellow">★★★★★</div>
                                 <span class="ml-1 text-sm text-jet-gray">5 Star</span>
                             </div>
                         </label>
                         <label class="flex items-center">
                             <input type="radio" name="review" class="w-4 h-4 text-primary focus:ring-primary" />
-                            <div class="ml-2 flex items-center">
+                            <div class="flex items-center ml-2">
                                 <div class="flex text-light-yellow">
                                     ★★★★<span class="text-gray-300">★</span>
                                 </div>
@@ -117,7 +117,7 @@
                         </label>
                         <label class="flex items-center">
                             <input type="radio" name="review" class="w-4 h-4 text-primary focus:ring-primary" />
-                            <div class="ml-2 flex items-center">
+                            <div class="flex items-center ml-2">
                                 <div class="flex text-light-yellow">
                                     ★★★<span class="text-gray-300">★★</span>
                                 </div>
@@ -129,7 +129,7 @@
 
                 <!-- Price -->
                 <div>
-                    <h3 class="text-lg mb-3 border-dashed border-b border-jet-gray pb-2">
+                    <h3 class="pb-2 mb-3 text-lg border-b border-dashed border-jet-gray">
                         Price
                     </h3>
                     <div class="space-y-2">
@@ -165,7 +165,7 @@
 
                 <!-- Ships From -->
                 <div>
-                    <h3 class="text-lg mb-3 border-dashed border-b border-jet-gray pb-2">
+                    <h3 class="pb-2 mb-3 text-lg border-b border-dashed border-jet-gray">
                         Ships From
                     </h3>
 
@@ -180,10 +180,10 @@
                 <!-- Action Buttons -->
                 <div class="flex items-start gap-3">
                     <button type="reset"
-                        class="px-5 py-2 border-2 border-theme-dark rounded-full text-sm text-gray-600 hover:bg-persian-red hover:text-theme-light eq">
+                        class="px-5 py-2 text-sm text-gray-600 border-2 rounded-full border-theme-dark hover:bg-persian-red hover:text-theme-light eq">
                         Reset
                     </button>
-                    <button class="flex-1 px-4 py-2 bg-primary text-white rounded-full text-sm hover:bg-theme-dark eq">
+                    <button class="flex-1 px-4 py-2 text-sm text-white rounded-full bg-primary hover:bg-theme-dark eq">
                         Show 150 Result
                     </button>
                 </div>
@@ -192,22 +192,22 @@
         <!-- All Filterts Sidebar Ended-->
 
         <!-- Page Main Content Starts -->
-        <section class="products-section section-padding container">
+        <section class="container products-section section-padding">
             <!-- Page Title -->
-            <div class="md:mb-11 mb-8">
-                <h1 class="text-xl sm:text-2xl font-medium text-jet-gray mb-5 md:mb-10">
+            <div class="mb-8 md:mb-11">
+                <h1 class="mb-5 text-xl font-medium sm:text-2xl text-jet-gray md:mb-10">
                     {{ strtoupper($category->name) }}/ALL CATEGORIES
                 </h1>
 
                 <!-- Filters action btns -->
-                <div class="flex flex-nowrap items-start justify-between">
-                    <div class="flex flex-wrap items-center gap-2 sm:gap-4 xl:w-auto lg:w-9/12 lg:w-auto w-10/12">
+                <div class="flex items-start justify-between flex-nowrap">
+                    <div class="flex flex-wrap items-center w-10/12 gap-2 sm:gap-4 xl:w-auto lg:w-9/12 lg:w-auto">
                         <!-- All Categories -->
                         <form method="GET" action="{{ route('category_details', $category->slug) }}"
                             class="flex items-center gap-1 rounded-3xl bg-aqua-deep hover:bg-rangoon-green eq sm:text-sm text-xs md:text-base sm:pl-5 pl-3 sm:!pr-2 !pr-1 py-2.5 sm:py-3 inline-flex text-white cursor-pointer">
-                            <label for="sort-by" class="sr-only block whitespace-nowrap">All Categories</label>
+                            <label for="sort-by" class="block sr-only whitespace-nowrap">All Categories</label>
                             <select name="subcategory" id="sort-by" onchange="this.form.submit()"
-                                class="block w-full bg-inherit appearance-none border-0 focus:outline-none focus:ring-0 focus:border-gray-200 peer cursor-pointer">
+                                class="block w-full border-0 appearance-none cursor-pointer bg-inherit focus:outline-none focus:ring-0 focus:border-gray-200 peer">
                                 <option value="all" {{ request('subcategory') == 'all' ? 'selected' : '' }}>All
                                     Categories</option>
                                 @foreach ($category->subcategories as $subcategory)
@@ -224,7 +224,7 @@
                             class="flex items-center gap-1 rounded-3xl bg-theme-light/90 hover:bg-aqua-deep/10 eq sm:text-sm text-xs sm:pl-5 pl-4 sm:!pr-2 pr-1 sm:py-3 py-2.5 inline-flex text-jet-gray">
                             <label for="sort-by" class="block whitespace-nowrap">Sort By:</label>
                             <select id="sort-by"
-                                class="block w-full bg-transparent appearance-none border-0 focus:outline-none focus:ring-0 focus:border-gray-200 peer cursor-pointer">
+                                class="block w-full bg-transparent border-0 appearance-none cursor-pointer focus:outline-none focus:ring-0 focus:border-gray-200 peer">
                                 <option selected>Relevance</option>
                                 <option value="best-selling">Best Selling</option>
                                 <option value="trending">Trending</option>
@@ -250,35 +250,35 @@
 
                                 <!-- Dropdown Content -->
                                 <div id="colorSortDropdown"
-                                    class="hidden z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow">
+                                    class="z-10 hidden bg-white divide-y divide-gray-100 rounded shadow w-44">
                                     <ul class="py-1 text-sm text-gray-700" aria-labelledby="colorSortButton">
                                         <li>
-                                            <button class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 w-full">
-                                                <span class="h-4 w-4 rounded-full bg-red-500"></span>
+                                            <button class="flex items-center w-full gap-2 px-4 py-2 hover:bg-gray-100">
+                                                <span class="w-4 h-4 bg-red-500 rounded-full"></span>
                                                 Red
                                             </button>
                                         </li>
                                         <li>
-                                            <button class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 w-full">
-                                                <span class="h-4 w-4 rounded-full bg-blue-500"></span>
+                                            <button class="flex items-center w-full gap-2 px-4 py-2 hover:bg-gray-100">
+                                                <span class="w-4 h-4 bg-blue-500 rounded-full"></span>
                                                 Blue
                                             </button>
                                         </li>
                                         <li>
-                                            <button class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 w-full">
-                                                <span class="h-4 w-4 rounded-full bg-green-500"></span>
+                                            <button class="flex items-center w-full gap-2 px-4 py-2 hover:bg-gray-100">
+                                                <span class="w-4 h-4 bg-green-500 rounded-full"></span>
                                                 Green
                                             </button>
                                         </li>
                                         <li>
-                                            <button class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 w-full">
-                                                <span class="h-4 w-4 rounded-full bg-yellow-500"></span>
+                                            <button class="flex items-center w-full gap-2 px-4 py-2 hover:bg-gray-100">
+                                                <span class="w-4 h-4 bg-yellow-500 rounded-full"></span>
                                                 Yellow
                                             </button>
                                         </li>
                                         <li>
-                                            <button class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 w-full">
-                                                <span class="h-4 w-4 rounded-full bg-purple-500"></span>
+                                            <button class="flex items-center w-full gap-2 px-4 py-2 hover:bg-gray-100">
+                                                <span class="w-4 h-4 bg-purple-500 rounded-full"></span>
                                                 Purple
                                             </button>
                                         </li>
@@ -293,10 +293,10 @@
                             <form method="GET" action="{{ route('category_details', $category->slug) }}"
                                 class="flex items-center gap-1 rounded-3xl bg-theme-light/90 hover:bg-aqua-deep/10 eq sm:text-sm text-xs sm:pl-5 pl-4 sm:!pr-2 pr-1 sm:py-3 py-2.5 inline-flex text-jet-gray">
                                 <label for="attribute-{{ $product_attribute->name }}"
-                                    class="sr-only block whitespace-nowrap">{{ $product_attribute->name }}</label>
+                                    class="block sr-only whitespace-nowrap">{{ $product_attribute->name }}</label>
                                 <select name="{{ strtolower($product_attribute->name) }}"
                                     id="attribute-{{ $product_attribute->name }}" onchange="this.form.submit()"
-                                    class="block w-full bg-transparent appearance-none border-0 focus:outline-none focus:ring-0 focus:border-gray-200 peer cursor-pointer">
+                                    class="block w-full bg-transparent border-0 appearance-none cursor-pointer focus:outline-none focus:ring-0 focus:border-gray-200 peer">
                                     <option value="all"
                                         {{ request(strtolower($product_attribute->name)) == 'all' ? 'selected' : '' }}>
                                         {{ $product_attribute->name }}</option>
@@ -312,9 +312,9 @@
                         <!-- Review -->
                         <form
                             class="flex items-center gap-1 rounded-3xl bg-theme-light/90 hover:bg-aqua-deep/10 eq sm:text-sm text-xs sm:pl-5 pl-4 sm:!pr-2 pr-1 sm:py-3 py-2.5 inline-flex text-jet-gray">
-                            <label for="sort-by" class="sr-only block whitespace-nowrap">Review</label>
+                            <label for="sort-by" class="block sr-only whitespace-nowrap">Review</label>
                             <select id="sort-by"
-                                class="block w-full bg-transparent appearance-none border-0 focus:outline-none focus:ring-0 focus:border-gray-200 peer cursor-pointer">
+                                class="block w-full bg-transparent border-0 appearance-none cursor-pointer focus:outline-none focus:ring-0 focus:border-gray-200 peer">
                                 <option selected>Review</option>
                                 <option value="highest-rated">Highest Rated</option>
                                 <option value="most-reviewed">Most Reviewed</option>
@@ -328,9 +328,9 @@
                         <!-- Recommended -->
                         <form
                             class="flex items-center gap-1 rounded-3xl bg-theme-light/90 hover:bg-aqua-deep/10 eq sm:text-sm text-xs sm:pl-5 pl-4 sm:!pr-2 pr-1 sm:py-3 py-2.5 inline-flex text-jet-gray">
-                            <label for="sort-by" class="sr-only block whitespace-nowrap">Recommended</label>
+                            <label for="sort-by" class="block sr-only whitespace-nowrap">Recommended</label>
                             <select id="sort-by"
-                                class="block w-full bg-transparent appearance-none border-0 focus:outline-none focus:ring-0 focus:border-gray-200 peer cursor-pointer">
+                                class="block w-full bg-transparent border-0 appearance-none cursor-pointer focus:outline-none focus:ring-0 focus:border-gray-200 peer">
                                 <option selected>Recommended</option>
                                 <option value="best-sellers">Best Sellers</option>
                                 <option value="editor-pick">Editor's Pick</option>
@@ -344,7 +344,7 @@
                     <div class="w-2/12 lg:w-3/12 xl:w-auto">
                         <button data-drawer-target="all-filters-drawer" data-drawer-show="all-filters-drawer"
                             aria-controls="all-filters-drawer"
-                            class="ml-auto w-10 h-10 md:w-auto md:w-auto rounded-full md:rounded-3xl text-sm bg-primary text-white hover:bg-theme-dark eq md:px-5 md:py-3 flex gap-1 items-center justify-center">
+                            class="flex items-center justify-center w-10 h-10 gap-1 ml-auto text-sm text-white rounded-full md:w-auto md:rounded-3xl bg-primary hover:bg-theme-dark eq md:px-5 md:py-3">
                             <span class="hidden md:block">All Filters</span>
 
                             <svg width="12" height="10" viewBox="0 0 12 10" fill="none" stroke="currentColor"
@@ -359,40 +359,40 @@
             </div>
 
             <!-- Product Card's Wrapper -->
-            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-6 gap-3">
+            <div class="grid grid-cols-2 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-6">
                 <!-- Product Card 1 -->
                 @foreach ($products as $product)
                     <div
-                        class="group/product-card bg-white rounded-xl sm:rounded-2xl shadow hover:shadow-lg eq p-3 sm:p-8 relative">
+                        class="relative p-3 bg-white shadow group/product-card rounded-xl sm:rounded-2xl hover:shadow-lg eq sm:p-8">
                         <!-- product image -->
-                        <a href="{{ route('product.details', $product->slug) }}" class="prod-image sm:h-40 h-32 block">
-                            <img src="{{ asset('assets/' . $product->thumbnail) }}" alt="Italian Avocado"
-                                class="w-full h-full object-contain" />
+                        <a href="{{ route('product.details', $product->slug) }}" class="block h-32 prod-image sm:h-40">
+                            <img src="{{ storage_url($product->thumbnail) }}" alt="Italian Avocado"
+                                class="object-contain w-full h-full" />
                         </a>
                         <!-- product contents -->
-                        <div class="prod-details flex flex-col items-center text-black">
-                            <div class="z-20 flex gap-1 flex-col items-center">
-                                <h3 class="font-medium sm:text-xl xsm:text-lg text-sm line-clamp-1">
+                        <div class="flex flex-col items-center text-black prod-details">
+                            <div class="z-20 flex flex-col items-center gap-1">
+                                <h3 class="text-sm font-medium sm:text-xl xsm:text-lg line-clamp-1">
                                     <a href="{{ route('product.details', $product->slug) }}">{{ $product->name }}</a>
                                 </h3>
-                                <p class="sm:text-base text-sm">(local shop)</p>
+                                <p class="text-sm sm:text-base">(local shop)</p>
                                 <p class="text-jet-gray">{{ $product->unit }}.</p>
                                 <h4 class="text-sm sm:text-sm">
-                                    {{-- 14.<sup class="align-middle text-xs">29$</sup> --}}
+                                    {{-- 14.<sup class="text-xs align-middle">29$</sup> --}}
                                     {{ currency($product->selling_price) }}
                                 </h4>
                             </div>
                             <!-- user action btns -->
                             <div
                                 class="action-btn bg-theme-light group-hover/product-card:bg-slime-green w-full after:content-[''] after:block after:w-full after:h-32 after:absolute after:bottom-[20%] after:left-0 after:rounded-[35%] sm:after:rounded-[45%] after:!z-[0] z-10 after:bg-white -mt-5 sm:rounded-b-xl rounded-b-lg eq">
-                                <p class="flex items-center justify-center gap-3 xsm:gap-5 pb-3 mt-8">
+                                <p class="flex items-center justify-center gap-3 pb-3 mt-8 xsm:gap-5">
                                     <button
-                                        class="w-5 h-5 sm:w-7 sm:h-7 text-base sm:text-lg rounded-full border border-black flex items-center justify-center hover:bg-black hover:text-white eq">
+                                        class="flex items-center justify-center w-5 h-5 text-base border border-black rounded-full sm:w-7 sm:h-7 sm:text-lg hover:bg-black hover:text-white eq">
                                         —
                                     </button>
-                                    <span class="text-lg sm:text-xl font-medium">01</span>
+                                    <span class="text-lg font-medium sm:text-xl">01</span>
                                     <button
-                                        class="w-5 h-5 sm:w-7 sm:h-7 text-base sm:text-lg rounded-full border border-black flex items-center justify-center hover:bg-black hover:text-white eq">
+                                        class="flex items-center justify-center w-5 h-5 text-base border border-black rounded-full sm:w-7 sm:h-7 sm:text-lg hover:bg-black hover:text-white eq">
                                         +
                                     </button>
                                 </p>
@@ -404,12 +404,12 @@
             </div>
 
             <!-- Load More Btn -->
-            <div class="load-more-btn text-center mt-10">
+            <div class="mt-10 text-center load-more-btn">
                 <button
-                    class="theme-btn bg-theme-teal hover:bg-aqua-deep text-white px-5 py-2 xl:text-xl text-base md:text-lg inline-flex gap-2 items-center eq"
+                    class="inline-flex items-center gap-2 px-5 py-2 text-base text-white theme-btn bg-theme-teal hover:bg-aqua-deep xl:text-xl md:text-lg eq"
                     type="button">
                     <span>Load More</span>
-                    <i class="fa-solid fa-chevron-down text-sm"></i>
+                    <i class="text-sm fa-solid fa-chevron-down"></i>
                 </button>
             </div>
         </section>
