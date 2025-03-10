@@ -20,6 +20,7 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::get('/{product}/details', [ProductController::class, 'details'])->name('details');
         Route::get('/{product}/edit', [ProductController::class, 'edit'])->name('edit');
         Route::post('/{product}/update', [ProductController::class, 'update'])->name('update');
+        Route::post('/{product}/stock-update', [ProductController::class, 'stockUpdate'])->name('stockUpdate');
 
         Route::delete('images/{image}/delete', [ProductController::class, 'deleteImage'])->name('image.delete');
 

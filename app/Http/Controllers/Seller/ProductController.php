@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Seller;
 
+use App\Enums\StockType;
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\ProductImage;
+use App\Models\StockHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -77,7 +79,8 @@ class ProductController extends Controller
         $profit = $revenue - ($sold * $product->buying_price);
         $last_order = OrderItem::where('product_id', $product->id)->latest('created_at')->first();
         $last_sale = $last_order?->created_at;
-        return view('seller.products.details', compact('product', 'sold', 'revenue', 'profit', 'last_sale'));
+        $stockHistory = StockHistory::where('product_id',$product->id)->latest()->get();
+        return view('seller.products.details', compact('product', 'sold', 'revenue', 'profit', 'last_sale', 'stockHistory'));
     }
 
     public function edit(Product $product)
@@ -147,7 +150,7 @@ class ProductController extends Controller
 
         $product->delete();
 
-        return redirect()->back()->with('success', 'Product Removed Successfully');
+        return redirect()->route('seller.products.index')->with('success', 'Product Removed Successfully');
     }
 
     public function deleteImage(ProductImage $image)
@@ -157,5 +160,40 @@ class ProductController extends Controller
         $image->delete();
 
         return successResponse("Product image deleted successfully!");
+    }
+
+    public function stockUpdate(Request $request, Product $product)
+    {
+        $request->validate([
+            'stock_quantity' => 'required|numeric',
+            'stock_action' => 'required|numeric',  // Make sure you're checking 'stock_action'
+        ]);
+
+        if($request->stock_quantity>$product->stock_in)
+        {
+            session()->flash('error', 'Not enough stock to remove.');
+            return errorResponse('Not enough stock to remove.');
+        }
+        $log = StockHistory::create([
+            'product_id' => $product->id,
+            'quantity' => $request->stock_quantity,
+            'type' => $request->stock_action,
+            'note' => $request->stock_note,
+        ]);
+        $new_stock = 0;
+        if ($log->type == StockType::SET_EXACT_STOCK) {
+            $new_stock = $request->stock_quantity;
+        } elseif ($log->type == StockType::ADD_STOCK) {
+            $new_stock = $product->stock_in + $request->stock_quantity;
+        } elseif ($log->type == StockType::REMOVE_STOCK) {
+            $new_stock = $product->stock_in - $request->stock_quantity;
+        }
+
+
+        $product->update(['stock_in' => $new_stock]);
+
+        session()->flash('success', 'Quantity Updated successfully!');
+
+        return successResponse("Quantity Update successfully!");
     }
 }
