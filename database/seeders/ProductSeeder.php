@@ -714,7 +714,7 @@ class ProductSeeder extends Seeder
         ];
 
         foreach ($products as $product) {
-            Product::insert([
+            Product::create([
                 'name' => $product['name'],
                 'slug' => $product['slug'],
                 'thumbnail' => $product['thumbnail'],
@@ -725,7 +725,7 @@ class ProductSeeder extends Seeder
                 'discount_type' => $product['discount_type'],
                 'discount_amount' => $product['discount_amount'],
                 'quantity' => $product['quantity'],
-                'unit' => $product['unit'] ?? null,
+                'unit_id' => rand(1,10),
                 'category_id' => $product['category_id'],
                 'brand_id' => $product['brand_id'] ?? null,
                 'seller_id' => $product['seller_id'],

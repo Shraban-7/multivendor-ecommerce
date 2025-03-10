@@ -1,7 +1,6 @@
 @extends('seller.layouts.app')
 @section('title', 'Product Details')
 @section('content')
-
     <div class="content-header">
         <div class="container-fluid">
             <div class="row align-items-center">
@@ -32,13 +31,18 @@
             <div class="row">
                 <!-- Product Overview Card -->
                 <div class="col-lg-8">
-                    <div class="shadow-sm card">
+                    <div class="mb-4 shadow-sm card">
                         <div class="bg-white card-header d-flex justify-content-between">
                             <h5 class="mb-0 card-title">Product Overview</h5>
-                            <button class="btn btn-outline-danger btn-sm" title="Delete" data-bs-toggle="modal"
-                                data-bs-target="#deleteModal-{{ $product->id }}">
-                                <i data-feather="trash-2" class="icon-xs"></i> Delete
-                            </button>
+                            <div>
+                                <a href="#" class="btn btn-outline-success btn-sm">
+                                    <i data-feather="plus" class="icon-xs"></i> Add Attribute
+                                </a>
+                                <button class="btn btn-outline-danger btn-sm" title="Delete" data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal-{{ $product->id }}">
+                                    <i data-feather="trash-2" class="icon-xs"></i> Delete
+                                </button>
+                            </div>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -49,24 +53,6 @@
                                             class="border rounded shadow-sm img-fluid"
                                             style="width: 100%; height: 250px; object-fit: contain;">
                                     </div>
-                                    @if (count($product->images) > 0)
-                                        <div class="product-gallery">
-                                            <h6 class="mb-2 text-muted fw-bold small">Gallery Images</h6>
-                                            <div class="row g-2">
-                                                @foreach ($product->images as $image)
-                                                    <div class="col-4">
-                                                        <a href="{{ storage_url($image->image) }}"
-                                                            data-lightbox="product-gallery"
-                                                            data-title="{{ $product->name }}">
-                                                            <img src="{{ storage_url($image->image) }}" alt="Gallery image"
-                                                                class="border rounded img-fluid"
-                                                                style="height: 80px; object-fit: cover; width: 100%;">
-                                                        </a>
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        </div>
-                                    @endif
                                 </div>
                                 <!-- Product Details -->
                                 <div class="col-md-7">
@@ -89,7 +75,7 @@
                                     <table class="table mb-0 table-sm product-info">
                                         <tbody>
                                             <tr>
-                                                <td class="fw-bold pe-3" style="width: 120px;">SKU</td>
+                                                <td class="fw-bold pe-3" style="width: 30%;">SKU</td>
                                                 <td>{{ $product->sku }}</td>
                                             </tr>
                                             <tr>
@@ -118,15 +104,6 @@
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td class="fw-bold pe-3">Current Stock</td>
-                                                <td>
-                                                    <span
-                                                        class="fw-bold {{ $product->stock_in > 20 ? 'text-success' : ($product->stock_in > 5 ? 'text-warning' : 'text-danger') }}">
-                                                        {{ $product->stock_in }} units
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                            <tr>
                                                 <td class="fw-bold pe-3">Created On</td>
                                                 <td>{{ $product->created_at->format('M d, Y') }}</td>
                                             </tr>
@@ -137,9 +114,51 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                @if (count($product->product_attributes) > 0)
+                                    <div class="mt-4 col-md-12">
+                                        <div class="row">
+                                            <h5 class="text-muted fw-bold small">Product Attributes:</h5>
+                                            @foreach ($product->product_attributes as $attribute)
+                                                <div class="col-4 g-2">
+                                                    <strong>{{ $attribute->name }}:</strong>
+                                                    @foreach ($attribute->product_attribute_options as $option)
+                                                    <div>
+                                                        {{ $option->value }}
+                                                        @if ($option->additional_price)
+                                                            <span class="text-muted">(
+                                                                {{ money($option->additional_price) }})</span>
+                                                        @endif
+                                                    </div>
+                                                    @endforeach
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </div>
+
+                    @if (count($product->images) > 0)
+                        <div class="card card-body">
+                            <div class="product-gallery">
+                                <h6 class="mb-2 text-muted fw-bold small">Gallery Images</h6>
+                                <div class="gap-3 d-flex">
+                                    @foreach ($product->images as $image)
+                                        <div class="">
+                                            <a href="{{ storage_url($image->image) }}" data-lightbox="product-gallery"
+                                                data-title="{{ $product->name }}">
+                                                <img src="{{ storage_url($image->image) }}" alt="Gallery image"
+                                                    class="border rounded img-fluid"
+                                                    style="height: 100px; object-fit: cover; width: 100px;">
+                                            </a>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
 
                     <!-- Product Description Card (if applicable) -->
                     @if ($product->description)
@@ -174,7 +193,7 @@
                                 <div class="col-12">
                                     <div class="d-flex justify-content-between">
                                         <h6 class="mb-3 text-muted fw-bold small">STOCK HISTORY</h6>
-                                        <div class="d-flex align-items-center " >
+                                        <div class="d-flex align-items-center ">
                                             <i class="fas fa-exclamation-triangle me-2"></i>
                                             <div>In Stock ({{ $product->stock_in }} )</div>
                                         </div>

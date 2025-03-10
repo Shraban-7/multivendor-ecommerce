@@ -12,7 +12,7 @@ class Product extends Model
     protected $guarded = ['id'];
 
     protected $casts = [
-        'lightdeal_expired__at' => 'datetime',
+        'lightdeal_expired_at' => 'datetime',
     ];
 
     public function scopeLightDeal($query)
@@ -65,5 +65,10 @@ class Product extends Model
     public function product_attributes()
     {
         return $this->hasMany(ProductAttribute::class);
+    }
+
+    public function unit()
+    {
+        return $this->belongsTo(ProductUnit::class);
     }
 }

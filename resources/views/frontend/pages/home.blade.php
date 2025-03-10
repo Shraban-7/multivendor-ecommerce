@@ -216,7 +216,7 @@
                                                 <i class="fa-solid fa-star"></i>
                                                 <i class="fa-solid fa-star"></i>
                                             </div>
-                                            <p class="text-persian-blue">{{ $product->unit }}</p>
+                                            <p class="text-persian-blue">{{ $product->quantity }} {{ $product->unit->name }}</p>
                                             <p class="font-semibold text-sand-brown">
                                                 {{ currency($product->selling_price) }}</p>
 
@@ -521,7 +521,7 @@
                                                         {{ $product->name }}
                                                     </a>
                                                 </h4>
-                                                <p class="text-jet-gray">{{ $product->unit }}</p>
+                                                <p class="text-jet-gray">{{ $product->quantity }} {{ $product->unit->name }}</p>
                                                 <p class="font-semibold text-theme-teal">
                                                     {{ currency($product->selling_price) }}</p>
                                             </div>
