@@ -35,7 +35,7 @@
                         <div class="bg-white card-header d-flex justify-content-between">
                             <h5 class="mb-0 card-title">Product Overview</h5>
                             <div>
-                                <a href="#" class="btn btn-outline-success btn-sm">
+                                <a href="{{ route('seller.products.addAttributes',$product->id) }}" class="btn btn-outline-success btn-sm">
                                     <i data-feather="plus" class="icon-xs"></i> Add Attribute
                                 </a>
                                 <button class="btn btn-outline-danger btn-sm" title="Delete" data-bs-toggle="modal"
@@ -121,7 +121,7 @@
                                             @foreach ($product->product_attributes as $attribute)
                                                 <div class="col-4 g-2">
                                                     <strong>{{ $attribute->name }}:</strong>
-                                                    @foreach ($attribute->product_attribute_options as $option)
+                                                    @foreach ($attribute->options as $option)
                                                     <div>
                                                         {{ $option->value }}
                                                         @if ($option->additional_price)

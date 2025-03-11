@@ -49,7 +49,7 @@ class ProductStockSeeder extends Seeder
         ];
 
         foreach ($stocks as $stock) {
-           ProductStock::insert([
+           ProductStock::create([
                 'seller_id' => $stock['seller_id'],
                 'product_id' => $stock['product_id'],
                 'quantity' => $stock['quantity'],

@@ -300,7 +300,7 @@
                                     <option value="all"
                                         {{ request(strtolower($product_attribute->name)) == 'all' ? 'selected' : '' }}>
                                         {{ $product_attribute->name }}</option>
-                                    @foreach ($product_attribute->product_attribute_options as $option)
+                                    @foreach ($product_attribute->options as $option)
                                         <option value="{{ $option->value }}"
                                             {{ request(strtolower($product_attribute->name)) == $option->value ? 'selected' : '' }}>
                                             {{ strtoupper($option->value) }}</option>

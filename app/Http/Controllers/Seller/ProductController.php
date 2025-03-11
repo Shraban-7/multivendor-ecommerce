@@ -8,8 +8,11 @@ use App\Models\Brand;
 use App\Models\Category;
 use App\Models\OrderItem;
 use App\Models\Product;
+use App\Models\ProductAttribute;
+use App\Models\ProductAttributeOption;
 use App\Models\ProductImage;
 use App\Models\ProductUnit;
+use App\Models\ProductVariant;
 use App\Models\StockHistory;
 use Illuminate\Http\Request;
 
@@ -92,7 +95,7 @@ class ProductController extends Controller
 
     public function details(Product $product)
     {
-        $product->load('images', 'product_attributes.product_attribute_options');
+        $product->load('images', 'product_attributes.options');
         $sold = OrderItem::where('product_id', $product->id)->count();
         $revenue = $sold * $product->selling_price;
         $profit = $revenue - ($sold * $product->buying_price);
@@ -236,5 +239,43 @@ class ProductController extends Controller
         session()->flash('success', 'Quantity Updated successfully!');
 
         return successResponse("Quantity Update successfully!");
+    }
+
+    public function addAttributes(Request $request, Product $product)
+    {
+        $productAttributes = ProductAttribute::distinct()->get('name');
+
+
+
+        if ($request->isMethod('GET')) {
+            return view('seller.products.attributes', compact('product', 'productAttributes'));
+        }
+
+
+        $request->validate([
+            'name' => 'nullable|string|max:255',
+            'options' => 'required|array',
+            'options.*.value' => 'required|string|max:255',
+            'options.*.additional_price' => 'required|numeric',
+        ]);
+
+        $productAttribute = ProductAttribute::create([
+            'product_id' => $product->id,
+            'name' => $request->name ?? $request->attribute_name
+        ]);
+
+
+        foreach ($request->options as $option) {
+            $productAttribute->options()->create([
+                'product_attribute_id' => $productAttribute->id,
+                'name' => $productAttribute->name,
+                'value' => $option['value'],
+                'additional_price' => $option['additional_price'],
+            ]);
+        }
+
+        session()->flash('success', 'Attribute added successfully!');
+
+        return successResponse('Attribute added successfully!');
     }
 }

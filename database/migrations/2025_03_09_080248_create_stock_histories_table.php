@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('stock_histories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained()->onDelete('cascade');
+            $table->unsignedBigInteger('product_id')->nullable();
             $table->integer('quantity');
             $table->tinyInteger('type');
             $table->string('note')->nullable();

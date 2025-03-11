@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('category_banners', function (Blueprint $table) {
             $table->id();
             $table->string('image')->nullable();
-            $table->foreignId('category_id')->nullable()->constrained()->onDelete('cascade');
+            $table->unsignedBigInteger('category_id')->nullable();
             $table->timestamps();
         });
     }

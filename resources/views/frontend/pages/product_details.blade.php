@@ -199,7 +199,7 @@
                                             </a> --}}
                                         </div>
                                         <form class="flex flex-wrap items-center gap-2 mt-2 text-xs">
-                                            @foreach ($product_attribute->product_attribute_options as $option)
+                                            @foreach ($product_attribute->options as $option)
                                                 <div class="form-ctrl">
                                                     <input id="{{ $option->value }}" type="radio"
                                                         value="{{ $option->value }}"

@@ -24,14 +24,14 @@ class DatabaseSeeder extends Seeder
             CategoryProductSeeder::class,
             ProductImageSeeder::class,
             ProductAttributeSeeder::class,
-            // ProductVariantSeeder::class,
             ProductStockSeeder::class,
             OrderSeeder::class,
             OrderItemSeeder::class,
             WishlistSeeder::class,
             ReviewSeeder::class,
             CouponSeeder::class,
-            CategoryBannerSeeder::class
+            CategoryBannerSeeder::class,
+            ProductVariantSeeder::class,
         ]);
 
     }

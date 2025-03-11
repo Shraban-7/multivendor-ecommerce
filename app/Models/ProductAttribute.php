@@ -20,7 +20,7 @@ class ProductAttribute extends Model
         return $query->where('name',ProductAttribute::MATERIAL);
     }
 
-    public function product_attribute_options()
+    public function options()
     {
         return $this->hasMany(ProductAttributeOption::class);
     }

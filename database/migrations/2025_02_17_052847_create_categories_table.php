@@ -25,7 +25,7 @@ return new class extends Migration
             $table->boolean('is_nav')->default(0);
             $table->boolean('is_special')->default(0);
             $table->boolean('is_slider')->default(0);
-            $table->foreignId('category_id')->nullable()->constrained('categories')->nullOnDelete();
+            $table->unsignedBigInteger('category_id')->nullable();
             $table->timestamps();
         });
     }
