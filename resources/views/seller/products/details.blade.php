@@ -35,7 +35,8 @@
                         <div class="bg-white card-header d-flex justify-content-between">
                             <h5 class="mb-0 card-title">Product Overview</h5>
                             <div>
-                                <a href="{{ route('seller.products.addAttributes',$product->id) }}" class="btn btn-outline-success btn-sm">
+                                <a href="{{ route('seller.products.addAttributes', $product->id) }}"
+                                    class="btn btn-outline-success btn-sm">
                                     <i data-feather="plus" class="icon-xs"></i> Add Attribute
                                 </a>
                                 <button class="btn btn-outline-danger btn-sm" title="Delete" data-bs-toggle="modal"
@@ -114,24 +115,165 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                @if (count($product->product_attributes) > 0)
+                                @if (count($productVariants) > 0)
                                     <div class="mt-4 col-md-12">
                                         <div class="row">
-                                            <h5 class="text-muted fw-bold small">Product Attributes:</h5>
-                                            @foreach ($product->product_attributes as $attribute)
-                                                <div class="col-4 g-2">
-                                                    <strong>{{ $attribute->name }}:</strong>
-                                                    @foreach ($attribute->options as $option)
-                                                    <div>
-                                                        {{ $option->value }}
-                                                        @if ($option->additional_price)
-                                                            <span class="text-muted">(
-                                                                {{ money($option->additional_price) }})</span>
-                                                        @endif
+                                            <div class="d-flex justify-content-between">
+                                                <h5 class="border-bottom text-muted fw-bold small">Product variant:</h5>
+                                                <a class="btn btn-outline-success btn-sm" data-bs-toggle="modal"
+                                                    data-bs-target="#addVariantModal">
+                                                    <i data-feather="plus" class="icon-xs"></i> Add Variant
+                                                </a>
+                                            </div>
+
+                                            @foreach ($productVariants as $variant)
+                                                <div class="col-4 g-3">
+                                                    <div class="d-flex justify-content-between">
+                                                        <small><strong class="me-1">Sku</strong>:
+                                                            {{ $variant->sku }}</small>
+                                                        <div>
+                                                            <a class="btn btn-light border btn-sm me-1"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#editVariantModal{{ $variant->id }}">
+                                                                <i data-feather="edit" class="icon-xs"></i>
+                                                            </a>
+                                                            <button class="btn btn-danger border btn-sm"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#deleteVariantModal{{ $variant->id }}"><i
+                                                                    data-feather="trash" class="icon-xs"></i></button>
+                                                        </div>
                                                     </div>
+                                                    <hr>
+                                                    @php
+                                                        $variantAttributes = json_decode($variant->attributes, true);
+                                                    @endphp
+                                                    @foreach ($variantAttributes as $key => $value)
+                                                        <p> <small>{{ ucfirst($key) }}: {{ $value }}</small></p>
                                                     @endforeach
                                                 </div>
+
+                                                <!-- variant edit modal -->
+                                                <div class="modal fade" id="editVariantModal{{ $variant->id }}"
+                                                    tabindex="-1" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">Edit Variant</h5>
+                                                                <button type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <form id="variantEditForm{{ $variant->id }}" method="POST"
+                                                                action="{{ route('seller.products.updateVariant', [$product->id, $variant->id]) }}">
+                                                                <div class="modal-body">
+                                                                    @csrf
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label">SKU</label>
+                                                                        <input type="text" class="form-control"
+                                                                            name="sku" value="{{ $variant->sku }}"
+                                                                            placeholder="Enter SKU" required>
+                                                                    </div>
+
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label">Price</label>
+                                                                        <input type="number" class="form-control"
+                                                                            name="price" step="0.01"
+                                                                            value="{{ $variant->price }}"
+                                                                            placeholder="Enter Price" required>
+                                                                    </div>
+
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label">Stock</label>
+                                                                        <input type="number" class="form-control"
+                                                                            name="stock" min="1"
+                                                                            value="{{ $variant->stock }}"
+                                                                            placeholder="Enter Stock Quantity" required>
+                                                                    </div>
+
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label">Attributes</label>
+                                                                        <div class="row">
+                                                                            @foreach ($product->productAttributes as $productAttribute)
+                                                                                <div class="col-6">
+                                                                                    <label
+                                                                                        class="form-label">{{ $productAttribute->name }}</label>
+                                                                                    <select class="form-select"
+                                                                                        name="attributes[{{ $productAttribute->name }}]"
+                                                                                        required>
+                                                                                        <option value="" disable>
+                                                                                            Select Options</option>
+                                                                                        @foreach ($productAttribute->options as $option)
+                                                                                            <option
+                                                                                                value="{{ $option->value }}"
+                                                                                                {{ isset($variantAttributes[$productAttribute->name]) && $variantAttributes[$productAttribute->name] == $option->value ? 'selected' : '' }}>
+                                                                                                {{ $option->value }}
+                                                                                            </option>
+                                                                                        @endforeach
+                                                                                    </select>
+                                                                                </div>
+                                                                            @endforeach
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label">Description
+                                                                            (Optional)
+                                                                        </label>
+                                                                        <textarea class="form-control" name="description" rows="2" placeholder="Additional details">{{ $variant->description }}</textarea>
+                                                                    </div>
+
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary"
+                                                                        data-bs-dismiss="modal">Cancel</button>
+                                                                    <button type="submit" class="btn btn-primary"
+                                                                        id="saveVariant">Save Variant</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- variant delete modal -->
+                                                <div class="modal fade" id="deleteVariantModal{{ $variant->id }}"
+                                                    tabindex="-1" aria-labelledby="deleteModalLabel-{{ $variant->id }}"
+                                                    aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title"
+                                                                    id="deleteModalLabel-{{ $variant->id }}">
+                                                                    Confirm
+                                                                    Delete</h5>
+                                                                <button type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="text-center modal-body">
+                                                                <div class="alert alert-warning d-flex" role="alert">
+                                                                    <i class="bi bi-exclamation-circle-fill me-2 text-danger"
+                                                                        style="font-size: 1.5rem;"></i>
+                                                                    <p class="mt-1 text-secondary">
+                                                                        Are you sure you want to delete this Product
+                                                                        Variant?
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal">Cancel</button>
+                                                                <form
+                                                                    action="{{ route('seller.products.deleteVariant', $variant->id) }}"
+                                                                    method="POST">
+                                                                    @method('DELETE')
+                                                                    @csrf
+                                                                    <button type="submit"
+                                                                        class="btn btn-danger">Delete</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             @endforeach
+
                                         </div>
                                     </div>
                                 @endif
@@ -192,7 +334,8 @@
                             <div class="row">
                                 <div class="col-12">
                                     <div class="d-flex justify-content-between">
-                                        <h6 class="mb-3 text-muted fw-bold small">STOCK HISTORY</h6>
+                                        <h6 class="mb-3 text-muted fw-bold small">STOCK HISTORY
+                                        </h6>
                                         <div class="d-flex align-items-center ">
                                             <i class="fas fa-exclamation-triangle me-2"></i>
                                             <div>In Stock ({{ $product->stock_in }} )</div>
@@ -212,22 +355,26 @@
                                                 @if (isset($stockHistory) && count($stockHistory) > 0)
                                                     @foreach ($stockHistory as $history)
                                                         <tr>
-                                                            <td>{{ $history->created_at->format('M d, Y h:i A') }}</td>
-                                                            <td class="text-center">{{ abs($history->quantity) }}</td>
+                                                            <td>{{ $history->created_at->format('M d, Y h:i A') }}
+                                                            </td>
+                                                            <td class="text-center">
+                                                                {{ abs($history->quantity) }}</td>
                                                             <td class="text-center">
                                                                 @if ($history->type == \App\Enums\StockType::ADD_STOCK)
                                                                     <span class="badge bg-success">Added</span>
-                                                                @elseif ($history->type == \App\Enums\StockType::REMOVE_STOCK)
+                                                                    @elseif($history->type == \App\Enums\StockType::REMOVE_STOCK)
                                                                     <span class="badge bg-danger">Removed</span>
-                                                                @elseif ($history->type == \App\Enums\StockType::SET_EXACT_STOCK)
-                                                                    <span class="badge bg-warning">Set Exact Stock</span>
+                                                                    @elseif($history->type == \App\Enums\StockType::SET_EXACT_STOCK)
+                                                                    <span class="badge bg-warning">Set
+                                                                        Exact Stock</span>
                                                                 @endif
                                                             </td>
                                                         </tr>
                                                     @endforeach
                                                 @else
                                                     <tr>
-                                                        <td colspan="3" class="text-center">No stock history available
+                                                        <td colspan="3" class="text-center">No
+                                                            stock history available
                                                         </td>
                                                     </tr>
                                                 @endif
@@ -353,8 +500,75 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="saveStockUpdate">Save Changes</button>
+                    <button type="button" class="btn btn-primary" id="saveStockUpdate">Save
+                        Changes</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- variant add modal -->
+    <div class="modal fade" id="addVariantModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Variant</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="variantForm" method="POST">
+                    <div class="modal-body">
+
+                        @csrf
+                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+
+                        <div class="mb-3">
+                            <label class="form-label">SKU</label>
+                            <input type="text" class="form-control" name="sku" placeholder="Enter SKU" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Price</label>
+                            <input type="number" class="form-control" name="price" step="0.01"
+                                placeholder="Enter Price" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Stock</label>
+                            <input type="number" class="form-control" name="stock" min="1"
+                                placeholder="Enter Stock Quantity" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Attributes</label>
+                            <div class="row">
+                                @foreach ($product->productAttributes as $productAttribute)
+                                    <div class="col-6">
+                                        <label class="form-label">{{ $productAttribute->name }}</label>
+                                        <select class="form-select" name="attributes[{{ $productAttribute->name }}]"
+                                            required>
+                                            <option value="" disable>Select Options</option>
+                                            @foreach ($productAttribute->options as $option)
+                                                <option value="{{ $option->value }}">
+                                                    {{ $option->value }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Description (Optional)</label>
+                            <textarea class="form-control" name="description" rows="2" placeholder="Additional details"></textarea>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="saveVariant">Save
+                            Variant</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -404,6 +618,68 @@
                     }
                 });
             });
+
+            $('#variantForm').submit(function(e) {
+                e.preventDefault();
+                var formData = new FormData(this);
+
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: '{{ route('seller.products.addVariant', $product->id) }}',
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if (response.status) {
+                            $('#addVariantModal').modal('hide');
+                            location.reload();
+                        } else {
+                            $('#addVariantModal').modal('hide');
+                            location.reload();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        $('#addVariantModal').modal('hide');
+                        location.reload();
+                        console.error("Error: " + error);
+                    }
+                });
+            });
+
+            // $('#variantEditForm{{ $variant->id }}').submit(function(e) {
+            //     e.preventDefault();
+
+            //     var formData = new FormData(this); // Capture form data
+
+            //     $.ajax({
+            //         headers: {
+            //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            //         },
+            //         url: '{{ route('seller.products.updateVariant', [$product->id, $variant->id]) }}',
+            //         method: 'POST',
+            //         data: formData,
+            //         processData: false,
+            //         contentType: false,
+            //         success: function(response) {
+            //             if (response.status) {
+            //                 $('#editVariantModal{{ $variant->id }}').modal('hide');
+            //                 location.reload();
+            //             } else {
+            //                 alert(response.message || 'Failed to update variant!');
+            //                 $('#editVariantModal{{ $variant->id }}').modal('hide');
+            //                 location.reload();
+            //             }
+            //         },
+            //         error: function(xhr, status, error) {
+            //             $('#editVariantModal{{ $variant->id }}').modal('hide');
+            //             location.reload();
+            //             console.error("Error: " + error);
+            //         }
+            //     });
+            // });
         </script>
     @endpush
 

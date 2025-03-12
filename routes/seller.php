@@ -21,7 +21,12 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::get('/{product}/edit', [ProductController::class, 'edit'])->name('edit');
         Route::post('/{product}/update', [ProductController::class, 'update'])->name('update');
         Route::post('/{product}/stock-update', [ProductController::class, 'stockUpdate'])->name('stockUpdate');
+        Route::post('/{product}/add-variant', [ProductController::class, 'addVariant'])->name('addVariant');
+        Route::post('/{product}/update-variant/{variant}', [ProductController::class, 'updateVariant'])->name('updateVariant');
+        Route::delete('/delete-variant/{variant}', [ProductController::class, 'deleteVariant'])->name('deleteVariant');
         Route::match(['get','post'],'/{product}/add-attributes', [ProductController::class, 'addAttributes'])->name('addAttributes');
+        Route::match(['get','post'],'/{productAttribute}/update-attributes', [ProductController::class, 'updateAttributes'])->name('updateAttributes');
+        Route::delete('/{productAttribute}/delete-attributes', [ProductController::class, 'deleteAttributes'])->name('deleteAttributes');
 
         Route::delete('images/{image}/delete', [ProductController::class, 'deleteImage'])->name('image.delete');
 

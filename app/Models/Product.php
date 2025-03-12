@@ -17,26 +17,26 @@ class Product extends Model
 
     public function scopeLightDeal($query)
     {
-        return $query->where('is_lightdeal',true);
+        return $query->where('is_lightdeal', true);
     }
     public function scopeInterest($query)
     {
-        return $query->where('is_interest',true);
+        return $query->where('is_interest', true);
     }
 
     public function scopeTrending($query)
     {
-        return $query->where('is_trending',true);
+        return $query->where('is_trending', true);
     }
 
     public function scopeCommunity($query)
     {
-        return $query->where('is_community',true);
+        return $query->where('is_community', true);
     }
 
-    public function scopeWhereCategory($query,Category $category)
+    public function scopeWhereCategory($query, Category $category)
     {
-        return $query->where('category_id',$category->id);
+        return $query->where('category_id', $category->id);
     }
 
     public function category()
@@ -45,7 +45,7 @@ class Product extends Model
     }
     public function subcategory()
     {
-        return $this->belongsTo(Category::class,'subcategory_id');
+        return $this->belongsTo(Category::class, 'subcategory_id');
     }
     public function brand()
     {
@@ -62,7 +62,12 @@ class Product extends Model
         return $this->belongsTo(Seller::class);
     }
 
-    public function product_attributes()
+    public function productAttributes()
+    {
+        return $this->hasMany(ProductAttribute::class);
+    }
+
+    public function variants()
     {
         return $this->hasMany(ProductAttribute::class);
     }

@@ -13,7 +13,7 @@ class CategoryController extends Controller
     public function category_details($slug, Request $request)
     {
         $category = Category::where('slug', $slug)
-            ->with(['products.product_attributes.options', 'subcategories'])
+            ->with(['products.productAttributes.options', 'subcategories'])
             ->first();
 
         $query = $category->products();
@@ -24,20 +24,20 @@ class CategoryController extends Controller
             });
         }
 
-        $product_attributes = ProductAttribute::with('options')->get()->unique('name');
+        $productAttributes = ProductAttribute::with('options')->get()->unique('name');
 
         // return $product_attributes;
 
         foreach ($request->all() as $key => $value) {
-            if (in_array($key, $product_attributes->pluck('name')->map('strtolower')->toArray()) && $value != 'all') {
-                $query->whereHas('product_attributes.options', function ($q) use ($key, $value) {
+            if (in_array($key, $productAttributes->pluck('name')->map('strtolower')->toArray()) && $value != 'all') {
+                $query->whereHas('productAttributes.options', function ($q) use ($key, $value) {
                     $q->where('name', ucfirst($key))->where('value', $value);
                 });
             }
         }
 
-        $products = $query->with('product_attributes.options')->get();
+        $products = $query->with('productAttributes.options')->get();
 
-        return view('frontend.pages.category_detail', compact('category', 'product_attributes', 'products'));
+        return view('frontend.pages.category_detail', compact('category', 'productAttributes', 'products'));
     }
 }
