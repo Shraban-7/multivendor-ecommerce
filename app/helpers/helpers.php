@@ -135,7 +135,7 @@ if (!function_exists('datetime_format')) {
 if (!function_exists('percentage')) {
     function percentage($number)
     {
-        return Number::percentage($number);
+        return $number . '%';
     }
 }
 
