@@ -10,7 +10,7 @@ class ProductImageSeeder extends Seeder
 {
     public function run()
     {
-        $productImages = [
+        $images = [
             'images/products/light-deal-1.png',
             'images/products/light-deal-1.png',
             'images/products/light-deal-1.png',
@@ -46,16 +46,22 @@ class ProductImageSeeder extends Seeder
 
         ];
 
-        $products = Product::all();
+        $products = Product::get();
+
+        $productImages = [];
 
         for($i=1;$i<=5;++$i)
         {
             foreach ($products as $product) {
-                ProductImage::create([
+                $productImages[] =[
                     'product_id' => $product->id,
-                    'image' => $productImages[array_rand($productImages)],
-                ]);
+                    'image' => $images[array_rand($images)],
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ];
             }
         }
+
+        ProductImage::insert($productImages);
     }
 }

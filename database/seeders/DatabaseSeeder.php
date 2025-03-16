@@ -19,19 +19,19 @@ class DatabaseSeeder extends Seeder
             SellerSeeder::class,
             CategorySeeder::class,
             BrandSeeder::class,
+            ProductUnitSeeder::class,
             ProductSeeder::class,
             CategoryProductSeeder::class,
             ProductImageSeeder::class,
             ProductAttributeSeeder::class,
-            // ProductVariantSeeder::class,
             ProductStockSeeder::class,
-            ProductUnitSeeder::class,
             OrderSeeder::class,
             OrderItemSeeder::class,
             WishlistSeeder::class,
             ReviewSeeder::class,
             CouponSeeder::class,
-            CategoryBannerSeeder::class
+            CategoryBannerSeeder::class,
+            ProductVariantSeeder::class,
         ]);
 
     }

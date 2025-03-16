@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('product_attributes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger('product_id')->nullable();
             $table->string('name')->nullable();
             $table->timestamps();
         });

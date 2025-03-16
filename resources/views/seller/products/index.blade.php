@@ -54,11 +54,11 @@
                                     class="text-danger">{{ $product->stock_out }}</span></span>
 
                         </td>
-                        <td> </td>
+                        <td>{{ $product->created_at->format('d-m-y h:i A') }} </td>
                         <td class="d-flex">
                             <a href="{{ route('seller.products.details', $product->id) }}"
                                 class="border btn btn-light btn-sm me-1" title="Details">
-                                <i data-feather="file-text" class="icon-xs"></i> Details
+                                <i data-feather="eye" class="icon-xs"></i> Details
                             </a>
                         </td>
                     </tr>

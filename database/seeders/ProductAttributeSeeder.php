@@ -6,7 +6,6 @@ use App\Models\Product;
 use App\Models\ProductAttribute;
 use App\Models\ProductAttributeOption;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class ProductAttributeSeeder extends Seeder
 {
@@ -35,24 +34,29 @@ class ProductAttributeSeeder extends Seeder
             ]
         ];
 
-        $products = Product::all();
+        $productIds = Product::pluck('id')->toArray();
 
-        foreach ($products as $product) {
-            foreach ($product_attributes as $attribute) {
+        $productAttributeOptionsData = [];
+
+        foreach ($productIds as $productId) {
+            foreach ($product_attributes as $product_attribute) {
                 $productAttribute = ProductAttribute::create([
-                    'product_id' => $product->id,
-                    'name' => $attribute['name'],
+                    'product_id' => $productId,
+                    'name' => $product_attribute['name'],
                 ]);
 
-                foreach ($attribute['values'] as $value) {
-                    ProductAttributeOption::create([
+                foreach ($product_attribute['values'] as $value) {
+                    $productAttributeOptionsData[] = [
                         'product_attribute_id' => $productAttribute->id,
                         'value' => $value,
-                        'additional_price' => rand(10,50)
-                    ]);
+                        'additional_price' => rand(10, 50),
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ];
                 }
             }
         }
 
+        ProductAttributeOption::insert($productAttributeOptionsData);
     }
 }

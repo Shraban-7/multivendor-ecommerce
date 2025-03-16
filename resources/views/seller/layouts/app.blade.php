@@ -6,13 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/frontend/images/favicon.ico') }}">
-    <link rel="stylesheet" href="{{asset('assets/dashboard/css/theme.css')}}">
-    <link rel="stylesheet" href="{{asset('assets/dashboard/libs/bootstrap-icons/font/bootstrap-icons.css')}}">
-    <link rel="stylesheet" href="{{asset('assets/dashboard/libs/dropzone/dist/dropzone.css')}}">
-    <link rel="stylesheet" href="{{asset('assets/dashboard/css/custom.css')}}">
+    <link rel="stylesheet" href="{{ asset('assets/dashboard/css/theme.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/dashboard/libs/bootstrap-icons/font/bootstrap-icons.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/dashboard/libs/dropzone/dist/dropzone.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/dashboard/css/custom.css') }}">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+
 
     <!-- <link href="assets/dashboard/libs/@mdi/font/css/materialdesignicons.min.css" rel="stylesheet" />
         <link href="assets/dashboard/libs/prismjs/themes/okaidia.css" rel="stylesheet"> -->
@@ -29,7 +31,7 @@
                     @include('seller.layouts.navbar')
                 </div>
 
-                <div class="container-fluid my-3 px-sm-4">
+                <div class="my-3 container-fluid px-sm-4">
                     <x-flash-message />
                     @yield('content')
                 </div>
@@ -68,7 +70,9 @@
                     let reader = new FileReader();
                     reader.onload = function(e) {
                         let previewDiv = input.closest(".form-group").find(".image-preview");
-                        previewDiv.html(`<img src="${e.target.result}" class="img-fluid" style="max-width: 100%; max-height: 100%;">`);
+                        previewDiv.html(
+                            `<img src="${e.target.result}" class="img-fluid" style="max-width: 100%; max-height: 100%;">`
+                            );
                         input.closest(".form-group").find(".remove-image").removeClass("d-none");
                     };
                     reader.readAsDataURL(file);

@@ -13,11 +13,11 @@ class HomeController extends Controller
     {
         $data['categories'] = Category::slider()->get();
         $data['special_category'] = Category::special()->with(['banners','products'])->first();
-        $data['light_deals'] = Product::lightDeal()->take(8)->get();
-        $data['interest_products'] = Product::interest()->take(8)->get();
-        $data['trending_products'] = Product::trending()->take(3)->get();
-        $data['community_products'] = Product::community()->take(8)->get();
-        $data['new_arrival_products'] = Product::orderBy('id', 'DESC')
+        $data['light_deals'] = Product::lightDeal()->with('unit')->take(8)->get();
+        $data['interest_products'] = Product::interest()->with('unit')->take(8)->get();
+        $data['trending_products'] = Product::trending()->with('unit')->take(3)->get();
+        $data['community_products'] = Product::community()->with('unit')->take(8)->get();
+        $data['new_arrival_products'] = Product::orderBy('id', 'DESC')->with('unit')
         ->skip(6)
         ->take(Product::count() - 12)
         ->get();

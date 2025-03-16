@@ -289,20 +289,20 @@
 
                         <!-- Material -->
 
-                        @foreach ($product_attributes as $product_attribute)
+                        @foreach ($productAttributes as $productAttribute)
                             <form method="GET" action="{{ route('category_details', $category->slug) }}"
                                 class="flex items-center gap-1 rounded-3xl bg-theme-light/90 hover:bg-aqua-deep/10 eq sm:text-sm text-xs sm:pl-5 pl-4 sm:!pr-2 pr-1 sm:py-3 py-2.5 inline-flex text-jet-gray">
-                                <label for="attribute-{{ $product_attribute->name }}"
-                                    class="block sr-only whitespace-nowrap">{{ $product_attribute->name }}</label>
-                                <select name="{{ strtolower($product_attribute->name) }}"
-                                    id="attribute-{{ $product_attribute->name }}" onchange="this.form.submit()"
+                                <label for="attribute-{{ $productAttribute->name }}"
+                                    class="block sr-only whitespace-nowrap">{{ $productAttribute->name }}</label>
+                                <select name="{{ strtolower($productAttribute->name) }}"
+                                    id="attribute-{{ $productAttribute->name }}" onchange="this.form.submit()"
                                     class="block w-full bg-transparent border-0 appearance-none cursor-pointer focus:outline-none focus:ring-0 focus:border-gray-200 peer">
                                     <option value="all"
-                                        {{ request(strtolower($product_attribute->name)) == 'all' ? 'selected' : '' }}>
-                                        {{ $product_attribute->name }}</option>
-                                    @foreach ($product_attribute->product_attribute_options as $option)
+                                        {{ request(strtolower($productAttribute->name)) == 'all' ? 'selected' : '' }}>
+                                        {{ $productAttribute->name }}</option>
+                                    @foreach ($productAttribute->options as $option)
                                         <option value="{{ $option->value }}"
-                                            {{ request(strtolower($product_attribute->name)) == $option->value ? 'selected' : '' }}>
+                                            {{ request(strtolower($productAttribute->name)) == $option->value ? 'selected' : '' }}>
                                             {{ strtoupper($option->value) }}</option>
                                     @endforeach
                                 </select>

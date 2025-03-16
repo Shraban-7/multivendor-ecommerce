@@ -58,7 +58,7 @@ class CategoryProductSeeder extends Seeder
                             'discount_type' => 'percentage',
                             'discount_amount' => rand(5, 30),
                             'quantity' => rand(10, 100),
-                            'unit' => rand(1, 100) . $units[array_rand($units)],
+                            'unit_id' => rand(1, 10),
                             'category_id' => $category->id,
                             'subcategory_id' => $subcategory->id,
                             'brand_id' => null,

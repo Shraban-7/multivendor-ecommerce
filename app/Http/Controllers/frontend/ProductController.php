@@ -10,7 +10,7 @@ class ProductController extends Controller
 {
     public function details($slug,Request $request)
     {
-        $product = Product::where('slug', $slug)->with(['category.subcategories','images','seller', 'product_attributes.product_attribute_options'])->first();
+        $product = Product::where('slug', $slug)->with(['category.subcategories','images','seller', 'productAttributes.options'])->first();
         $products = Product::where('seller_id',$product->seller->id)->get();
         $total_sell = Product::where('seller_id', $product->seller->id)->sum('stock_out');
         $interest_products = Product::whereCategory($product->category)->where('id', '!=', $product->id)->paginate(6);
