@@ -139,6 +139,7 @@ if (!function_exists('percentage')) {
     }
 }
 
+
 if (!function_exists('seller')) {
     function seller() {
         return Auth::guard('seller')->user();
