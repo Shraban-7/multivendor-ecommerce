@@ -160,7 +160,7 @@
             <!-- create new acc -->
             <p class="text-davy-gray/80 mt-3 md:mt-4 text-center">
               Don't have account?
-              <a href="#" class="text-butterfly-blue hover:underline eq"
+              <a href="{{ route('signup') }}" class="text-butterfly-blue hover:underline eq"
                 >Sign Up here!</a
               >
             </p>
