@@ -92,9 +92,14 @@ if (!function_exists('all_department_categories')) {
 }
 
 if (!function_exists('currency')) {
-    function currency($value)
+    function currency($key = 'symbol')
     {
-        return CURRENCY_SYMBOL.' '.number_format($value,2);
+        $currency = array(
+            'name' => 'BDT',
+            'symbol' => '৳',
+        );
+
+        return $currency[$key];
     }
 }
 
@@ -195,6 +200,6 @@ if (!function_exists('apiResourceResponse')) {
 if (!function_exists('money')) {
     function money($amount)
     {
-        return number_format($amount, 2) .' ' .  CURRENCY_SYMBOL;
+        return CURRENCY_SYMBOL .' '. number_format($amount, 2);
     }
 }

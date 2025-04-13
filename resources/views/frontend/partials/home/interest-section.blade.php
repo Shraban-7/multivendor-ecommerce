@@ -17,7 +17,7 @@
                         <!-- slide 1 -->
                         @foreach ($categories as $category)
                             <div class="swiper-slide group/categores eq">
-                                <a href="#" class="flex flex-col items-center block w-full product-card">
+                                <a href="{{ route('category_details', $category->slug) }}" class="flex flex-col items-center block w-full product-card">
                                     <!-- slide image -->
                                     <div class="relative w-16 h-16 card-image lg:h-28 lg:w-28 md:w-24 md:h-24">
                                         <img src="{{ asset('assets/' . $category->image) }}" alt="Grocery"
@@ -66,7 +66,7 @@
                                             <p class="text-persian-blue">{{ $product->quantity }}
                                                 {{ $product->unit->name }}</p>
                                             <p class="font-semibold text-sand-brown">
-                                                {{ currency($product->selling_price) }}</p>
+                                                {{ money($product->selling_price) }}</p>
 
                                             <div class="add-cart">
                                                 <input type="hidden" name="quantity" value="1"

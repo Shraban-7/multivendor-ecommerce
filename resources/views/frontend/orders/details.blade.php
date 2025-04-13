@@ -157,7 +157,7 @@
                                                 </p>
                                                 <p class="text-sm text-jet-gray">Quantity: {{ $item->quantity }}</p>
                                                 <p class="flex items-center gap-1 text-aqua-deep mt-1">
-                                                    <span class="text-lg md:text-2xl font-medium">{{ currency($item->unit_price) }}</span>
+                                                    <span class="text-lg md:text-2xl font-medium">{{ money($item->unit_price) }}</span>
                                                 </p>
                                             </div>
                                         </div>
@@ -176,11 +176,11 @@
                                 <div class="text-davy-gray md:space-y-3 md:pt-5 space-y-2 pt-3">
                                     <p class="flex justify-between">
                                         <span>Subtotal</span>
-                                        <span>{{ currency($order->sub_total) }}</span>
+                                        <span>{{ money($order->sub_total) }}</span>
                                     </p>
                                     <p class="flex justify-between">
                                         <span>Tax</span>
-                                        <span>{{ currency($order->tax) }}</span>
+                                        <span>{{ money($order->tax) }}</span>
                                     </p>
                                     <p class="flex justify-between">
                                         <span class="">Delivery</span>
@@ -189,7 +189,7 @@
                                     <h2
                                         class="flex md:text-lg justify-between font-medium border-t-2 border-davy-gray/10 pt-2 md:pt-3">
                                         <span>Total</span>
-                                        <span>{{ currency($order->total) }}</span>
+                                        <span>{{ money($order->total) }}</span>
                                     </h2>
                                 </div>
                             </div>

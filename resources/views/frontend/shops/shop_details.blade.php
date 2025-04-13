@@ -178,7 +178,7 @@
                                     <div class="price flex items-center gap-1 flex-no-wrap">
                                         <i class="fa-solid fa-bolt text-[#ffa755]"></i>
                                         {{-- <span class="align-center text-sm text-[#ffa755]">$</span> --}}
-                                        <h3 class="font-bold text-primary">{{ currency($product->selling_price) }}</h3>
+                                        <h3 class="font-bold text-primary">{{ money($product->selling_price) }}</h3>
                                     </div>
                                     <div>
                                         <button

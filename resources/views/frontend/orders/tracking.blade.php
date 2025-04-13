@@ -79,7 +79,7 @@
                             </p>
                         </div>
                         <h2 class="text-xl sm:text-2xl font-semibold text-light-yellow">
-                            {{ currency($order->sub_total) }}
+                            {{ money($order->sub_total) }}
                         </h2>
                     </div>
                     <p class="text-sm text-davy-gray">

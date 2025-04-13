@@ -191,7 +191,7 @@
 
                                                                     <h3
                                                                         class="text-sm font-bold current-price xsm:text-lg md:text-xl text-primary">
-                                                                        {{ currency($discount_price) }}
+                                                                        {{ money($discount_price) }}
                                                                     </h3>
                                                                 </div>
                                                                 @php
@@ -292,7 +292,7 @@
                                                     <i class="fa-solid fa-bolt text-[#ffa755]"></i>
 
                                                     <h3 class="font-bold text-primary">
-                                                        {{ currency($product->selling_price) }}</h3>
+                                                        {{ money($product->selling_price) }}</h3>
                                                 </div>
                                                 <div>
                                                     <input type="hidden" name="quantity" value="1"
@@ -323,12 +323,12 @@
                                 <p class="flex justify-between">
                                     <span class="text-theme-dark">Item's total:</span>
                                     <span id="itemsTotal"
-                                        class="line-through text-jet-gray">{{ currency($grand_total) }}</span>
+                                        class="line-through text-jet-gray">{{ money($grand_total) }}</span>
                                 </p>
                                 <p class="flex justify-between">
                                     <span class="text-theme-dark">Item Discount:</span>
                                     <span id="itemDiscount"
-                                        class="font-bold text-primary">-{{ currency($discount) }}</span>
+                                        class="font-bold text-primary">-{{ money($discount) }}</span>
                                 </p>
                             </div>
                             <!-- estimated total -->
@@ -336,7 +336,7 @@
                                 class="flex justify-between pt-3 mt-6 font-medium border-t-2 border-dashed total border-jet-gray/50">
                                 <span>Estimated Total (<span id="selectedItemsCount">{{ $total_products_count }}</span>
                                     Items)</span>
-                                <span id="estimatedTotal" class="text-xl">{{ currency($sub_total) }}</span>
+                                <span id="estimatedTotal" class="text-xl">{{ money($sub_total) }}</span>
                             </div>
                         </div>
 
@@ -605,7 +605,7 @@
                     const sellerId = $(this).data('seller-id');
                     const isChecked = $(this).prop('checked');
                     $(`.item-checkbox[data-seller-id="${sellerId}"]`).prop('checked',
-                        isChecked); 
+                        isChecked);
                     updateSellerCheckboxes();
                     updateCounts();
                     updateOrderSummary();

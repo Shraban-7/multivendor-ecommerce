@@ -26,8 +26,6 @@ class CategoryController extends Controller
 
         $productAttributes = ProductAttribute::with('options')->get()->unique('name');
 
-        // return $product_attributes;
-
         foreach ($request->all() as $key => $value) {
             if (in_array($key, $productAttributes->pluck('name')->map('strtolower')->toArray()) && $value != 'all') {
                 $query->whereHas('productAttributes.options', function ($q) use ($key, $value) {
@@ -36,7 +34,9 @@ class CategoryController extends Controller
             }
         }
 
-        $products = $query->with('productAttributes.options')->get();
+        $products = $query->with('productAttributes.options','unit')->get();
+
+        // return $products;
 
         return view('frontend.pages.category_detail', compact('category', 'productAttributes', 'products'));
     }

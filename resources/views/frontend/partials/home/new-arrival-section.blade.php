@@ -66,10 +66,10 @@
                                                             }
                                                         @endphp
                                                         <p class="font-medium new-price text-theme-teal">
-                                                            {{ currency($price) }}
+                                                            {{ money($price) }}
                                                         </p>
                                                         <p class="line-through old-price text-jet-gray">
-                                                            {{ currency($product->selling_price) }}
+                                                            {{ money($product->selling_price) }}
                                                         </p>
                                                     </div>
                                                 </div>
@@ -135,7 +135,7 @@
                                                 <p class="text-jet-gray">{{ $product->quantity }}
                                                     {{ $product->unit->name }}</p>
                                                 <p class="font-semibold text-theme-teal">
-                                                    {{ currency($product->selling_price) }}</p>
+                                                    {{ money($product->selling_price) }}</p>
                                             </div>
                                         </div>
                                     @endforeach

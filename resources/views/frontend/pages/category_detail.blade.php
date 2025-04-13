@@ -1,7 +1,6 @@
 @extends('frontend.layouts.app')
 @section('title', $category->name)
 
-
 @section('content')
     <main class="grocery-essentials-page">
         <!-- Page Promotion Banner Starts -->
@@ -376,10 +375,10 @@
                                     <a href="{{ route('product.details', $product->slug) }}">{{ $product->name }}</a>
                                 </h3>
                                 <p class="text-sm sm:text-base">(local shop)</p>
-                                <p class="text-jet-gray">{{ $product->unit }}.</p>
+                                <p class="text-jet-gray">{{ $product->quantity }} {{ $product->unit->short_name }}.</p>
                                 <h4 class="text-sm sm:text-sm">
                                     {{-- 14.<sup class="text-xs align-middle">29$</sup> --}}
-                                    {{ currency($product->selling_price) }}
+                                    {{ money($product->selling_price) }}
                                 </h4>
                             </div>
                             <!-- user action btns -->
