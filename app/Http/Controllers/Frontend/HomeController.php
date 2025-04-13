@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
-
 class HomeController extends Controller
 {
     public function index()
@@ -22,8 +21,6 @@ class HomeController extends Controller
         ->take(Product::count() - 12)
         ->get();
 
-
-        // return $data['community_products'];
         return view('frontend.pages.home',$data);
     }
 
