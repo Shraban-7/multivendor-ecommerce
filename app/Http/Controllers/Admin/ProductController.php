@@ -16,6 +16,6 @@ class ProductController extends Controller
         $categories = Category::category()->with('subcategories')->get();
         $brands = Brand::all();
 
-        return view('Admin.products.index', compact('products', 'categories', 'brands'));
+        return view('admin.products.index', compact('products', 'categories', 'brands'));
     }
 }
