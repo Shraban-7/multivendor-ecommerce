@@ -2,12 +2,15 @@
 
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\CategoryController;
+use App\Http\Controllers\Frontend\ContactUsController;
 use App\Http\Controllers\Frontend\OrderController;
 use App\Http\Controllers\Frontend\ProductController;
 use Illuminate\Support\Facades\Route;
 
 
 Route::get('/category/{slug}', [CategoryController::class, 'category_details'])->name('category_details');
+
+Route::get('/contact-us',[ContactUsController::class,'contactUs'])->name('contactUs');
 
 Route::get('/product-details/{slug}', [ProductController::class, 'details'])->name('product.details');
 
