@@ -2,35 +2,42 @@
 @section('title', 'Customers')
 @section('content')
 
-    <div class="mb-2 rounded">
-        <h4 class="mb-0">Customers</h4>
-    </div>
+<div class="d-flex justify-content-between align-items-end mb-3">
+    <h4 class="mb-0">Customers</h4>
+</div>
 
-    <div class="table-responsive">
-        <table class="table table-bordered bg-white mb-3 text-nowrap">
-            <thead>
-                <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Phone</th>
-                    <th scope="col">Country</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($users as $user)
-                    <tr>
-                        <td>
-                            <img src="{{ storage_url($user->image) ?? asset('default-user.png') }}" alt="User Image"
-                                width="40" height="40" class="rounded-circle object-fit-cover">
-                            {{ $user->fullname }}
-                        </td>
-                        <td>{{ $user->email }}</td>
-                        <td>{{ $user->phone }}</td>
-                        <td>{{ $user?->country?->name }}</td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
+<div class="table-responsive">
+    <table class="table table-bordered bg-white mb-3">
+        <thead>
+            <tr>
+                <th scope="col">Customer</th>
+                <th scope="col">Country</th>
+                <th scope="col">Phone Code</th>
+                <th scope="col">Phone</th>
+                <th scope="col">Email</th>
+                <th scope="col">Registration Date</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach ($customers as $customer)
+            <tr>
+                <td>
+                    <x-user :user="$customer" />
+                </td>
+
+
+                <td> {{ $customer->country->name ?? '' }} </td>
+                <td> {{ $customer->country->phone_code ?? '' }} </td>
+                <td> {{ $customer->phone }} </td>
+                <td> {{ $customer->email }} </td>
+                <td> {{ $customer->created_at->format('d/m/Y h:i A') }} </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
+
+{{ $customers->links() }}
 
 @endsection

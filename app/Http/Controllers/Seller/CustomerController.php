@@ -17,8 +17,8 @@ class CustomerController extends Controller
         $orders = Order::where('seller_id', $seller->id)->get();
         $userIds = $orders->pluck('user_id')->unique();
 
-        $users = User::with('country')->whereIn('id', $userIds)->get();
+        $customers = User::with('country')->whereIn('id', $userIds)->paginate();
 
-        return view('seller.customers.index', compact('users'));
+        return view('seller.customers.index', compact('customers'));
     }
 }

@@ -26,8 +26,10 @@
                 <td>
                     <x-user :user="$customer" />
                 </td>
-                <td> {{ $customer->country->name }} </td>
-                <td> {{ $customer->country->phone_code }} </td>
+
+
+                <td> {{ $customer->country->name ?? '' }} </td>
+                <td> {{ $customer->country->phone_code ?? '' }} </td>
                 <td> {{ $customer->phone }} </td>
                 <td> {{ $customer->email }} </td>
                 <td> {{ $customer->created_at->format('d/m/Y h:i A') }} </td>

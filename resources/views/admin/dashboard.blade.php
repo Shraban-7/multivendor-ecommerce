@@ -15,7 +15,7 @@
                         <div class="mt-2 mb-2">
                             <h3 class="fw-bold mb-0">{{ $pending_orders }}</h3>
                         </div>
-                        <a href="{{ route('seller.orders.cancelled') }}"><small>View Orders</small> </a>
+                        <a href="#"><small>View Orders</small> </a>
                     </div>
                 </div>
             </div>
@@ -29,7 +29,7 @@
                         <div class="mt-2 mb-2">
                             <h3 class="fw-bold mb-0">{{ $delivered_orders }}</h3>
                         </div>
-                        <a href="{{ route('seller.orders.delivered') }}"><small>View Orders</small> </a>
+                        <a href="#"><small>View Orders</small> </a>
                     </div>
                 </div>
             </div>
@@ -43,7 +43,7 @@
                         <div class="mt-2 mb-2">
                             <h3 class="fw-bold mb-0">{{ $shipped_orders }}</h3>
                         </div>
-                        <a href="{{ route('seller.orders.shipped') }}"><small>View Orders</small> </a>
+                        <a href="#"><small>View Orders</small> </a>
                     </div>
                 </div>
             </div>
@@ -57,7 +57,7 @@
                         <div class="mt-2 mb-2">
                             <h3 class="fw-bold mb-0">{{ $cancelled_orders }}</h3>
                         </div>
-                        <a href="{{ route('seller.orders.cancelled') }}"><small>View Orders</small> </a>
+                        <a href="#"><small>View Orders</small> </a>
                     </div>
                 </div>
             </div>
@@ -71,7 +71,7 @@
                         <div class="mt-2 mb-2">
                             <h3 class="fw-bold mb-0">{{ $total_products }}</h3>
                         </div>
-                        <a href="{{ route('seller.products.index') }}"><small>Total products listed</small></a>
+                        <a href="#"><small>Total products listed</small></a>
                     </div>
                 </div>
             </div>
@@ -97,7 +97,7 @@
                             <i data-feather="dollar-sign" class="text-success"></i>
                         </div>
                         <div class="mt-2 mb-2">
-                            <h3 class="fw-bold mb-0">{{ currency($total_sales) }}</h3>
+                            <h3 class="fw-bold mb-0">{{ money($total_sales) }}</h3>
                         </div>
                         <small>Total earnings from sales</small>
                     </div>
