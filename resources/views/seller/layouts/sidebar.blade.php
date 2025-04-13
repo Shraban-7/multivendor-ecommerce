@@ -9,7 +9,7 @@
             <x-dashboard.nav-item-link :route="'seller.dashboard'">
                 <i data-feather="home" class="nav-icon icon-xs me-2"></i> Dashboard
             </x-dashboard.nav-item-link>
-            
+
             <x-dashboard.nav-item-link :route="'seller.products.index'">
                 <i data-feather="package" class="nav-icon icon-xs me-2"></i> Manage Product
             </x-dashboard.nav-item-link>
@@ -40,7 +40,7 @@
                 </div>
             </li>
 
-            <x-dashboard.nav-item-link :route="'seller.dashboard'">
+            <x-dashboard.nav-item-link :route="'seller.customers'">
                 <i data-feather="users" class="nav-icon icon-xs me-2"></i> Manage Customers
             </x-dashboard.nav-item-link>
             <x-dashboard.nav-item-link :route="'seller.dashboard'">

@@ -30,31 +30,6 @@ class AuthController extends Controller
         return redirect()->route('login')->with('success', 'Signup successful! Please log in.');
     }
 
-    public function login(Request $request)
-    {
-        if ($request->isMethod('GET')) {
-            return view('seller.auth.login');
-        }
-
-        $seller = Seller::where('email', $request->email)->first();
-
-        if (!$seller) {
-            return redirect()->back()->with('error', 'Incorrect email!');
-        }
-
-        if (!Auth::guard('seller')->attempt($request->only('email', 'password'))) {
-            return redirect()->back()->with('error', 'Incorrect password!');
-        }
-
-        $request->session()->regenerate();
-
-        session()->flash('success', 'Login successful');
-
-        // return redirect_intended('/');
-
-        return redirect()->route('seller.dashboard');
-    }
-
     public function logout()
     {
         Auth::guard('seller')->logout();

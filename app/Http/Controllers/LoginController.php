@@ -26,14 +26,14 @@ class LoginController extends Controller
         }
 
         if ($user) {
+            session(['url.intended' => url()->previous()]);
             if (!Auth::attempt($request->only('email', 'password'))) {
                 return redirect()->back()->with('error', 'Incorrect password!');
             }
 
             $request->session()->regenerate();
-            session()->flash('success', 'Login successful');
 
-            return redirect()->intended(route('profile'));
+            return redirect()->intended(route('home'));
         }
 
         if ($seller) {

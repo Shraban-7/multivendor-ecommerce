@@ -128,6 +128,7 @@
                     return;
                 }
                 var qtyInput = $('#qtyInput' + product_id).val();
+
                 $.ajax({
                     url: "{{ route('cart.add') }}",
                     type: "POST",

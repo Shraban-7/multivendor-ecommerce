@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Seller\AuthController;
+use App\Http\Controllers\Seller\CustomerController;
 use App\Http\Controllers\Seller\DashboardController;
 use App\Http\Controllers\Seller\OrderController;
 use App\Http\Controllers\Seller\ProductController;
@@ -12,6 +13,10 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
     Route::match(['get','post'],'/profile/{username}', [SellerController::class, 'profile'])->name('profile');
     Route::get('/shop-details/{username}', [SellerController::class, 'shop_details'])->name('shop_details');
+
+    Route::get('/customers', [CustomerController::class, 'index'])->name('customers');
+
+
 
     Route::prefix('products')->as('products.')->group(function () {
         Route::get('/', [ProductController::class, 'index'])->name('index');
