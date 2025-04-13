@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductAttribute;
-
 class CategoryController extends Controller
 {
     public function category_details($slug, Request $request)

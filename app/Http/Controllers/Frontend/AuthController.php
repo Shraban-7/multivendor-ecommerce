@@ -30,31 +30,6 @@ class AuthController extends Controller
         return redirect()->route('login')->with('success', 'Signup successful! Please log in.');
     }
 
-    public function login(Request $request)
-    {
-        if ($request->isMethod('GET')) {
-            return view('frontend.auth.login');
-        }
-
-        $user = User::where('email', $request->email)->first();
-
-        if (!$user) {
-            return redirect()->back()->with('error', 'Incorrect email!');
-        }
-
-        if (!Auth::attempt($request->only('email', 'password'))) {
-            return redirect()->back()->with('error', 'Incorrect password!');
-        }
-
-        $request->session()->regenerate();
-
-        session()->flash('success', 'Login successful');
-
-        // return redirect_intended('/');
-
-        return redirect()->route('profile');
-    }
-
     public function logout()
     {
         Auth::logout();

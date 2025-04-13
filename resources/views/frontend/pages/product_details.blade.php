@@ -38,7 +38,8 @@
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="m1 9 4-4-4-4" />
                             </svg>
-                            <span class="text-sm ms-1 text-davy-gray md:ms-2">{{ optional($product->subcategory)->name }}</span>
+                            <span
+                                class="text-sm ms-1 text-davy-gray md:ms-2">{{ optional($product->subcategory)->name }}</span>
                         </div>
                     </li>
                 </ol>
@@ -216,22 +217,22 @@
                                     </div>
                                 @endforeach
                                 <!-- Quantity -->
-                                <div class="mt-3 quantity">
-                                    <div class="flex items-center gap-2 text-davy-gray">
+                                <div class="quantity mt-3">
+                                    <div class="text-davy-gray flex items-center gap-2">
                                         <h6 class="sm:text-lg">Quantity :</h6>
-                                        <div class="flex items-center p-1 border rounded">
+                                        <div class="flex items-center border rounded p-1">
                                             <button id="decreaseBtn"
-                                                class="flex items-center justify-center w-5 h-5 text-sm font-bold rounded text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 eq active:text-primary">
+                                                class="w-5 h-5 flex items-center justify-center text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 eq active:text-primary rounded text-sm font-bold">
                                                 <i class="fa-solid fa-minus"></i>
                                             </button>
                                             <input readonly id="quantity" type="number" min="1"
-                                                class="w-12 h-5 text-sm font-medium text-center border-0 text-persian-blue focus:ring-0" />
+                                                class="text-center text-persian-blue w-12 h-5 text-sm font-medium border-0 focus:ring-0" />
                                             <button id="increaseBtn"
-                                                class="flex items-center justify-center w-5 h-5 text-sm font-bold rounded text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 eq active:text-primary">
+                                                class="w-5 h-5 flex items-center justify-center text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 eq active:text-primary rounded text-sm font-bold">
                                                 <i class="fa-solid fa-plus"></i>
                                             </button>
                                         </div>
-                                        <span class="text-xs text-davy-gray">In Stock</span>
+                                        <span class="text-davy-gray text-xs">In Stock</span>
                                     </div>
                                 </div>
                             </div>
@@ -241,7 +242,7 @@
                             $discount = ($product->discount_amount / $product->selling_price) * 100;
                         @endphp
                         <div class="flex w-full gap-4 mt-5 xsm:w-4/5 md:w-11/12 lg:w-4/5">
-                            <input type="hidden" name="quantity" value="1" id="qtyInput{{ $product->id }}">
+                            <input type="hidden" name="quantity" class="qtyInputValue" value="" id="qtyInput{{ $product->id }}">
                             <button data-id="{{ $product->id }}" type="button"
                                 class="cartBtn text-sm md:text-base font-medium flex-1 px-6 py-1.5 border border-primary text-primary rounded-full hover:bg-primary hover:text-white eq">
                                 Add To Cart
@@ -732,8 +733,8 @@
                             <div
                                 class="relative h-60 xsm:h-48 sm:h-56 sm:h-90 lg:h-[17rem] xl:h-[22rem] overflow-hidden rounded-lg">
                                 <a href="{{ route('product.details', $product->slug) }}" class="block w-full h-full">
-                                    <img src="{{ storage_url($product->thumbnail) }}"
-                                        alt="The Iconic Doeskin Blazer" class="object-cover w-full h-full" />
+                                    <img src="{{ storage_url($product->thumbnail) }}" alt="The Iconic Doeskin Blazer"
+                                        class="object-cover w-full h-full" />
                                 </a>
                                 <button
                                     class="absolute flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-lg bottom-10 xsm:bottom-3 lg:bottom-10 xsm:left-3 lg:left-5 left-5 hover:bg-primary hover:text-white eq">
@@ -775,8 +776,9 @@
                                             </h3>
                                         </div>
                                         <div>
-                                            <button
-                                                class="text-xs xsm:text-[10px] sm:text-base md:text-xs xl:text-base w-7 h-7 xsm:w-6 xsm:h-6 md:w-8 md:h-8 sm:w-10 sm:h-10 xl:w-10 xl:h-10 flex items-center justify-center bg-primary rounded-full text-white hover:bg-theme-dark eq">
+                                            <input type="hidden" name="quantity" value="" id="qtyInput{{ $product->id }}">
+                                            <button type="button" data-id="{{ $product->id }}"
+                                                class="cartBtn text-xs xsm:text-[10px] sm:text-base md:text-xs xl:text-base w-7 h-7 xsm:w-6 xsm:h-6 md:w-8 md:h-8 sm:w-10 sm:h-10 xl:w-10 xl:h-10 flex items-center justify-center bg-primary rounded-full text-white hover:bg-theme-dark eq">
                                                 <i class="fa-solid fa-cart-plus"></i>
                                             </button>
                                         </div>
@@ -802,6 +804,41 @@
     </main>
 
     @push('scripts')
+        <script>
+            $(document).ready(function() {
+                var quantity = 1;
+
+                const quantityElement = $('#quantity');
+                const decreaseBtn = $('#decreaseBtn');
+                const increaseBtn = $('#increaseBtn');
+                const hiddenInput = $('.qtyInputValue');
+
+                const updateQuantity = () => {
+                    quantityElement.val(quantity.toString().padStart(2, "0"));
+                    hiddenInput.val(quantity);
+                };
+
+                increaseBtn.on('click', function() {
+                    quantity++;
+                    updateQuantity();
+                });
+
+                decreaseBtn.on('click', function() {
+                    if (quantity > 1) {
+                        quantity--;
+                        updateQuantity();
+                    }
+                });
+
+                quantityElement.on('input', function() {
+                    var newQuantity = $(this).val();
+                    quantity = parseInt(newQuantity) || 1;
+                    updateQuantity();
+                });
+
+                updateQuantity();
+            });
+        </script>
         <script>
             $(document).ready(function() {
                 let discountedPrice = parseFloat($('#current-price').text().replace(/[^0-9.]/g, ''));

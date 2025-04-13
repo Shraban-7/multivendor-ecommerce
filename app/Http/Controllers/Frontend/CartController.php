@@ -25,18 +25,26 @@ class CartController extends Controller
             'seller_id' => $product->seller_id
         ])->first();
 
-        if(!$cart) {
+        if (!$cart) {
             $cart = Cart::create([
                 'user_id' => Auth::user()->id,
                 'seller_id' => $product->seller_id
             ]);
         }
 
-        CartItem::create([
-            'cart_id' => $cart->id,
-            'product_id' => $product->id,
-            'quantity' => $request->quantity ?? 1
-        ]);
+        $existItem = CartItem::where('cart_id', $cart->id)->where('product_id', $product->id)->first();
+
+        if ($existItem) {
+            $existItem->update([
+                'quantity' => $request->quantity + $existItem->quantity
+            ]);
+        } else {
+            CartItem::create([
+                'cart_id' => $cart->id,
+                'product_id' => $product->id,
+                'quantity' => $request->quantity ?? 1
+            ]);
+        }
 
         return response()->json(['success' => true, 'message' => 'Product added to cart', 'action' => 'add_to_cart']);
     }
@@ -73,7 +81,7 @@ class CartController extends Controller
                 }
             }
         }
-
+        
         $discount = $grand_total - $sub_total;
         $total_products_count = $carts->flatten()->pluck('cartItems')->flatten()->count();
 
@@ -135,22 +143,22 @@ class CartController extends Controller
 
     public function getLiveCartData()
     {
-            $carts = Cart::where('user_id', Auth::id())
-                ->with('cartItems.product')
-                ->get();
+        $carts = Cart::where('user_id', Auth::id())
+            ->with('cartItems.product')
+            ->get();
 
-            $cartCount = $carts->count();
-            $grand_total = 0;
+        $cartCount = $carts->count();
+        $grand_total = 0;
 
-            foreach ($carts as $cart) {
-                foreach ($cart->cartItems as $item) {
-                    $grand_total += $item->quantity * $item->product->selling_price;
-                }
+        foreach ($carts as $cart) {
+            foreach ($cart->cartItems as $item) {
+                $grand_total += $item->quantity * $item->product->selling_price;
             }
+        }
 
-            return response()->json([
-                'cartCount' => $cartCount,
-                'totalPrice' => $grand_total
-            ]);
+        return response()->json([
+            'cartCount' => $cartCount,
+            'totalPrice' => $grand_total
+        ]);
     }
 }

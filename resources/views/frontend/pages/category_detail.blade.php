@@ -362,39 +362,53 @@
                 <!-- Product Card 1 -->
                 @foreach ($products as $product)
                     <div
-                        class="relative p-3 bg-white shadow group/product-card rounded-xl sm:rounded-2xl hover:shadow-lg eq sm:p-8">
-                        <!-- product image -->
-                        <a href="{{ route('product.details', $product->slug) }}" class="block h-32 prod-image sm:h-40">
-                            <img src="{{ storage_url($product->thumbnail) }}" alt="Italian Avocado"
-                                class="object-contain w-full h-full" />
-                        </a>
-                        <!-- product contents -->
-                        <div class="flex flex-col items-center text-black prod-details">
-                            <div class="z-20 flex flex-col items-center gap-1">
-                                <h3 class="text-sm font-medium sm:text-xl xsm:text-lg line-clamp-1">
-                                    <a href="{{ route('product.details', $product->slug) }}">{{ $product->name }}</a>
+                        class="relative overflow-hidden bg-white rounded-xl shadow-sm transition-all duration-300 hover:shadow-lg group">
+                        <div class="relative h-48 overflow-hidden bg-gray-50">
+                            <a href="{{ route('product.details', $product->slug) }}" class="block w-full h-full">
+                                <img src="{{ storage_url($product->thumbnail) }}" alt="{{ $product->name }}"
+                                    class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105" />
+
+                                <div
+                                    class="absolute inset-0 bg-black bg-opacity-0 transition-opacity duration-300 group-hover:bg-opacity-5">
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="p-5">
+                            <div class="space-y-2 text-center">
+                                <h3 class="font-medium text-lg line-clamp-1 tracking-tight">
+                                    <a href="{{ route('product.details', $product->slug) }}"
+                                        class="hover:text-primary transition-colors">
+                                        {{ $product->name }}
+                                    </a>
                                 </h3>
-                                <p class="text-sm sm:text-base">(local shop)</p>
-                                <p class="text-jet-gray">{{ $product->quantity }} {{ $product->unit->short_name }}.</p>
-                                <h4 class="text-sm sm:text-sm">
-                                    {{-- 14.<sup class="text-xs align-middle">29$</sup> --}}
+
+                                <div class="flex items-center justify-center space-x-1 text-gray-500">
+                                    <span class="text-sm">{{ $product->quantity }}
+                                        {{ $product->unit->short_name }}.</span>
+                                    <span class="text-xs">•</span>
+                                    <span class="text-sm">Local Shop</span>
+                                </div>
+
+                                <div class="font-semibold text-lg text-primary">
                                     {{ money($product->selling_price) }}
-                                </h4>
+                                </div>
                             </div>
-                            <!-- user action btns -->
-                            <div
-                                class="action-btn bg-theme-light group-hover/product-card:bg-slime-green w-full after:content-[''] after:block after:w-full after:h-32 after:absolute after:bottom-[20%] after:left-0 after:rounded-[35%] sm:after:rounded-[45%] after:!z-[0] z-10 after:bg-white -mt-5 sm:rounded-b-xl rounded-b-lg eq">
-                                <p class="flex items-center justify-center gap-3 pb-3 mt-8 xsm:gap-5">
-                                    <button
-                                        class="flex items-center justify-center w-5 h-5 text-base border border-black rounded-full sm:w-7 sm:h-7 sm:text-lg hover:bg-black hover:text-white eq">
-                                        —
-                                    </button>
-                                    <span class="text-lg font-medium sm:text-xl">01</span>
-                                    <button
-                                        class="flex items-center justify-center w-5 h-5 text-base border border-black rounded-full sm:w-7 sm:h-7 sm:text-lg hover:bg-black hover:text-white eq">
-                                        +
-                                    </button>
-                                </p>
+
+                            <div class="mt-4">
+                                <input type="hidden" name="quantity" value="1" id="qtyInput{{ $product->id }}">
+                                <button data-id="{{ $product->id }}" type="button"
+                                    class="cartBtn flex items-center justify-between w-full px-4 py-3 bg-white border border-gray-100 rounded-full shadow-sm transition-all hover:shadow-md hover:border-primary">
+                                    <span
+                                        class="flex items-center justify-center w-7 h-7 text-white bg-primary rounded-full">
+                                        <i class="fa-solid fa-cart-plus text-xs"></i>
+                                    </span>
+                                    <span class="font-medium text-gray-800">Add to Cart</span>
+                                    <span
+                                        class="flex items-center justify-center w-7 h-7 bg-gray-50 text-primary rounded-full">
+                                        <i class="fa-solid fa-plus text-xs"></i>
+                                    </span>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -414,4 +428,42 @@
         </section>
         <!-- Page Main Content Ended -->
     </main>
+
+    @push('scripts')
+        <script>
+            $(document).ready(function() {
+                var quantity = 1;
+
+                const quantityElement = $('#quantity');
+                const decreaseBtn = $('#decreaseBtn');
+                const increaseBtn = $('#increaseBtn');
+                const hiddenInput = $('.qtyInputValue');
+
+                const updateQuantity = () => {
+                    quantityElement.val(quantity.toString().padStart(2, "0"));
+                    hiddenInput.val(quantity);
+                };
+
+                increaseBtn.on('click', function() {
+                    quantity++;
+                    updateQuantity();
+                });
+
+                decreaseBtn.on('click', function() {
+                    if (quantity > 1) {
+                        quantity--;
+                        updateQuantity();
+                    }
+                });
+
+                quantityElement.on('input', function() {
+                    var newQuantity = $(this).val();
+                    quantity = parseInt(newQuantity) || 1;
+                    updateQuantity();
+                });
+
+                updateQuantity();
+            });
+        </script>
+    @endpush
 @endsection

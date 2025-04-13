@@ -191,7 +191,7 @@
 
                                                                     <h3
                                                                         class="text-sm font-bold current-price xsm:text-lg md:text-xl text-primary">
-                                                                        {{ money($discount_price) }}
+                                                                        {{ money($discount_price*$item->quantity) }}
                                                                     </h3>
                                                                 </div>
                                                                 @php
@@ -340,7 +340,6 @@
                             </div>
                         </div>
 
-                        <!-- order action btn -->
                         <div class="mt-4 space-y-2 sm:mt-6 sm:space-y-3">
                             <a href="{{ route('orders.checkout') }}" id="checkoutLink">
                                 <button id="checkoutBtn"
@@ -588,7 +587,6 @@
                     deleteCartItem(cartItemId);
                 });
 
-                // Checkbox handlers
                 const selectAllCheckbox = $('#selectAll');
                 const sellerCheckboxes = $('.seller-checkbox');
                 const itemCheckboxes = $('.item-checkbox');
