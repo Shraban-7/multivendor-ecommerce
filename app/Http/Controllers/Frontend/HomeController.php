@@ -20,7 +20,7 @@ class HomeController extends Controller
         ->skip(6)
         ->take(Product::count() - 12)
         ->get();
-
+        
         return view('frontend.pages.home',$data);
     }
 
