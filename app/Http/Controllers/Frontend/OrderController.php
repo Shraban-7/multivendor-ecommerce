@@ -9,6 +9,7 @@ use App\Enums\OrderStatus;
 use Illuminate\Http\Request;
 use App\Models\CustomerAddress;
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use App\Models\Review;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,22 +17,48 @@ class OrderController extends Controller
 {
     public function index(Request $request)
     {
-        $status = $request->input('status', 'all');
+        $statusLabel = (string) $request->input('status', 'all');
 
-        $query = Order::with('seller')->withCount('items')->where('user_id', Auth::user()->id)->where('invoice_id', '!=', null);
+        $statusValue = OrderStatus::valueFromLabel($statusLabel);
 
-        if ($status !== 'all') {
-            $query->where('status', $status);
+        $query = Order::with('seller')->withCount('items')
+            ->where('user_id', Auth::user()->id)
+            ->where('invoice_id', '!=', null);
+
+        if ($statusLabel !== 'all') {
+            $query->where('status', $statusValue);
         }
 
         $orders = $query->paginate(10);
 
-        return view('frontend.orders.index', compact('orders', 'status'));
+        $interest_products = Product::with(['category.subcategories', 'images', 'seller', 'productAttributes.options'])->inRandomOrder()->limit(6)->get();
+
+        $products = [];
+
+        foreach ($interest_products as  $product) {
+            $products[] = [
+                'id' => $product->id,
+                'slug' => $product->slug,
+                'name' => $product->name,
+                'image' => storage_url($product->thumbnail),
+                'sold_out' => number_shorten_format($product->stock_out),
+                'price' => number_format($product->selling_price)
+            ];
+        }
+
+        $products = collect($products);
+
+        return view('frontend.orders.index', [
+            'orders' => $orders,
+            'status' => $statusLabel,
+            'products' => $products
+        ]);
     }
 
     public function details(Order $order)
     {
         $order->load('items.product');
+
         return view('frontend.orders.details', compact('order'));
     }
 

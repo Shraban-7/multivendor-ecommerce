@@ -155,7 +155,7 @@
                     {{ $cartCount }}
                 </span>
             </span>
-            <span class="lg:text-base text-sm font-medium" id="totalPrice">{{ currency($totalPrice) }}</span>
+            <span class="lg:text-base text-sm font-medium" id="totalPrice">{{ money($totalPrice) }}</span>
         </a>
     </div>
 </div>

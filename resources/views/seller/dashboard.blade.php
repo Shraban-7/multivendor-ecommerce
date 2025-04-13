@@ -96,7 +96,7 @@
                                 <i data-feather="dollar-sign" class="text-success"></i>
                             </div>
                             <div class="mt-2 mb-2">
-                                <h3 class="fw-bold mb-0">{{ currency($total_revenue) }}</h3>
+                                <h3 class="fw-bold mb-0">{{ money($total_revenue) }}</h3>
                             </div>
                             <small>Total earnings from sales</small>
                         </div>

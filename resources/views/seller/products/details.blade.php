@@ -402,13 +402,13 @@
                                 <div class="col-6">
                                     <div class="p-3 text-center border rounded">
                                         <div class="text-muted small">Revenue</div>
-                                        <div class="fs-4 fw-bold">{{ currency($revenue) }}</div>
+                                        <div class="fs-4 fw-bold">{{ money($revenue) }}</div>
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="p-3 text-center border rounded">
                                         <div class="text-muted small">Profit</div>
-                                        <div class="fs-4 fw-bold">{{ currency($profit) }}</div>
+                                        <div class="fs-4 fw-bold">{{ money($profit) }}</div>
                                     </div>
                                 </div>
                                 <div class="col-6">

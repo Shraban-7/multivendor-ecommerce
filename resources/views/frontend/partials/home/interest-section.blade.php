@@ -66,7 +66,7 @@
                                             <p class="text-persian-blue">{{ $product->quantity }}
                                                 {{ $product->unit->name }}</p>
                                             <p class="font-semibold text-sand-brown">
-                                                {{ currency($product->selling_price) }}</p>
+                                                {{ money($product->selling_price) }}</p>
 
                                             <div class="add-cart">
                                                 <input type="hidden" name="quantity" value="1"

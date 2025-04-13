@@ -158,12 +158,12 @@
                                         }
                                     @endphp
                                     <h3 id="current-price" class="font-bold current-price text-primary">
-                                        {{ currency($price) }}</h3>
+                                        {{ money($price) }}</h3>
                                 </div>
-                                <h6 class="line-through old-price text-jet-gray">{{ currency($product->selling_price) }}
+                                <h6 class="line-through old-price text-jet-gray">{{ money($product->selling_price) }}
                                 </h6>
                                 <span
-                                    class="text-xs px-2.5 py-0.5 rounded-lg border border-primary">-{{ currency($product->discount_amount) }}
+                                    class="text-xs px-2.5 py-0.5 rounded-lg border border-primary">-{{ money($product->discount_amount) }}
                                     last 2
                                     days</span>
                                 <span class="text-xs text-leaf-green">Almost Sold Out</span>
@@ -771,7 +771,7 @@
                                         <div class="flex flex-no-wrap items-center gap-1 price">
                                             <i class="fa-solid fa-bolt text-[#ffa755]"></i>
                                             {{-- <span class="align-center text-sm text-[#ffa755]">$</span> --}}
-                                            <h3 class="font-bold text-primary">{{ currency($product->selling_price) }}
+                                            <h3 class="font-bold text-primary">{{ money($product->selling_price) }}
                                             </h3>
                                         </div>
                                         <div>

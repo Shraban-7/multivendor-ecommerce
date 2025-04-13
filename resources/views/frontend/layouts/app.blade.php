@@ -123,6 +123,10 @@
         $(document).ready(function() {
             $('.cartBtn').click(function() {
                 var product_id = $(this).data('id');
+                if(!product_id) {
+                    alert("No Product Selected!");
+                    return;
+                }
                 var qtyInput = $('#qtyInput' + product_id).val();
                 $.ajax({
                     url: "{{ route('cart.add') }}",

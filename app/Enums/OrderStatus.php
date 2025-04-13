@@ -36,4 +36,10 @@ enum OrderStatus : int
             static::ON_THE_ROAD->label(),
         ];
     }
+
+    public static function valueFromLabel(string $label): ?int
+    {
+        return collect(self::cases())
+            ->first(fn(self $case) => $case->label() === $label)?->value;
+    }
 }
