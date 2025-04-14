@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\Product;
 use App\Models\Seller;
 use Illuminate\Http\Request;
 
@@ -11,10 +13,10 @@ class SellerController extends Controller
 
     public function profile($username, Request $request)
     {
-        $seller = Seller::where('username',$username)->first();
+        $seller = Seller::where('username', $username)->first();
 
         if ($request->isMethod('GET')) {
-            return view('seller.profile',compact('seller'));
+            return view('seller.profile', compact('seller'));
         }
 
         $data = $request->validate([
@@ -57,17 +59,36 @@ class SellerController extends Controller
 
         $seller->update($data);
 
-        return redirect()->back()->with('success','Profile Updated Successfully');
+        return redirect()->back()->with('success', 'Profile Updated Successfully');
     }
 
-    public function shop_details($username)
+    public function shop_details($username, Request $request)
     {
-        $seller = Seller::where('username', $username)
-            ->with(['products' => function ($query) {
-                $query->latest()->take(8);
-            }])
-            ->first();
+        $seller = Seller::where('username', $username)->firstOrFail();
 
-        return view('frontend.shops.shop_details', compact('seller'));
+        $limit = 8;
+        $page = $request->get('page', 1);
+        $skip = ($page - 1) * $limit;
+
+        $products = Product::with('category')
+            ->where('seller_id', $seller->id)
+            ->latest()
+            ->skip($skip)
+            ->take($limit)
+            ->get();
+
+        $categoryIds = Product::with('category')
+            ->where('seller_id', $seller->id)->pluck('category_id')->unique()->values()->all();
+
+        $categories = Category::whereIn('id', $categoryIds)->get();
+
+        if ($request->ajax()) {
+            if ($products->isEmpty()) {
+                return '';
+            }
+            return view('frontend.shops.partials.product-card', compact('products'))->render();
+        }
+
+        return view('frontend.shops.shop_details', compact('seller', 'products', 'categories'));
     }
 }

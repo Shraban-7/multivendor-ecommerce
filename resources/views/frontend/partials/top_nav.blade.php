@@ -69,8 +69,8 @@
 
         @auth
             <!-- Profile Dropdown -->
-            <div class="relative group">
-                <button type="button" data-dropdown-toggle="dropdown"
+            <div class="relative">
+                <button type="button" data-dropdown-toggle="profileDropdown"
                     class="flex items-center gap-2 hover:text-light-yellow profile-dropdown">
                     <span><i class="fa-regular fa-user text-lg"></i></span>
                     <p class="flex flex-col leading-none text-base lg:text-base">
@@ -81,8 +81,8 @@
                 </button>
 
                 <!-- Dropdown Menu -->
-                <div id="dropdown"
-                    class="absolute hidden group-hover:block bg-white shadow-lg rounded-md mt-2 w-40 right-0 z-50">
+                <div id="profileDropdown"
+                    class="absolute hidden bg-white shadow-lg rounded-md mt-10 transform translate-y-2 w-40 right-0 z-50">
                     <ul class="py-2 text-gray-700">
                         <li>
                             <a href="{{ route('profile') }}" class="block px-4 py-2 hover:bg-gray-100">
@@ -116,7 +116,7 @@
         @auth('seller')
         <!-- Profile Dropdown -->
         <div class="relative group">
-            <button type="button" data-dropdown-toggle="dropdown"
+            <button type="button" data-dropdown-toggle="profileDropdown"
                 class="flex items-center gap-2 hover:text-light-yellow profile-dropdown">
                 <span><i class="fa-regular fa-user text-lg"></i></span>
                 <p class="flex flex-col leading-none text-base lg:text-base">
@@ -126,8 +126,8 @@
                 </p>
             </button>
             <!-- Dropdown Menu -->
-            <div id="dropdown"
-                class="absolute hidden group-hover:block bg-white shadow-lg rounded-md mt-2 w-40 right-0 z-50">
+            <div id="profileDropdown"
+                class="absolute hidden  bg-white shadow-lg rounded-md mt-2 w-40 right-0 z-50">
                 <ul class="py-2 text-gray-700">
                     <li>
                         <a href="{{ route('seller.dashboard') }}" class="block px-4 py-2 hover:bg-gray-100">
@@ -136,7 +136,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('seller.shop_details', auth('seller')->user()->username) }}"
+                        <a href="{{ route('shop_details', auth('seller')->user()->username) }}"
                             class="block px-4 py-2 hover:bg-gray-100">
                             <i class="fa-solid fa-store mr-2"></i> Your Shop
                         </a>

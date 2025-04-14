@@ -3,7 +3,7 @@
         <!-- All Departments -->
         <div class="group relative h-full py-5 flex">
             <!-- mega menu trigure btn -->
-            <button
+            <button data-dropdown-toggle="dropdown"
                 class="flex items-center flex-no-wrap space-x-2 pr-5 text-persian-blue border-r border-butterfly-blue font-semibold text-base md:text-sm lg:text-base whitespace-nowrap">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
@@ -15,11 +15,11 @@
             </button>
 
             <!-- mega menu container -->
-            <div
-                class="hidden text-jet-gray group-hover:flex absolute left-0 top-full w-60 bg-white shadow-lg z-50 text-sm">
+            <div id="dropdown"
+                class="hidden text-jet-gray absolute left-0 top-full w-60 bg-white shadow-lg z-50 text-sm">
                 <!-- Categories Column -->
                 <div class="border border-[#E4E7E9] rounded w-full h-[31.2rem]">
-                    <ul class="py-4">
+                    <ul class="py-2">
                         @foreach (all_department_categories() as $category)
                             @if ($category->subcategories->isNotEmpty())
                                 <li

@@ -90,11 +90,38 @@
                 <nav
                     class="flex flex-wrap items-center text-jet-gray/70 gap-x-4 gap-y-2 lg:gap-8 border-theme-dark/50 border-y py-2 pl-3">
                     <a href="#" class="text-black hover:text-black eq">Items</a>
-                    <a href="#" class="hover:text-black eq">Mens hoodies</a>
-                    <a href="#" class="hover:text-black eq">Mens T-shirt</a>
-                    <a href="#" class="hover:text-black eq">More Selection
-                        <i class="fa-solid fa-chevron-down"></i>
-                    </a>
+                    @php
+                        $firstTwo = $categories->take(2);
+                        $remaining = $categories->skip(2);
+                    @endphp
+
+                    <div class="flex items-center gap-4 relative">
+                        {{-- Show first two --}}
+                        @foreach ($firstTwo as $category)
+                            <a href="#" class="hover:text-black eq">
+                                {{ $category->name }}
+                            </a>
+                        @endforeach
+
+                        {{-- More dropdown --}}
+                        @if ($remaining->count())
+                            <div class="more-dropdown-wrapper relative">
+                                <a href="#" class="hover:text-black eq more-toggle inline-flex items-center gap-1">
+                                    More Selection <i class="fa-solid fa-chevron-down text-xs"></i>
+                                </a>
+                                <div
+                                    class="dropdown-menu absolute top-full mt-2 left-0 bg-white border rounded shadow-lg z-50 min-w-max px-4 py-2 space-y-2 hidden">
+                                    @foreach ($remaining as $category)
+                                        <a href="#"
+                                            class="block hover:text-primary">
+                                            {{ $category->name }}
+                                        </a>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+
                     <a href="/shopReviews.html"
                         class="hover:text-black eq inline-flex items-center gap-1 flex-nowrap">Reviews (5.00<i
                             class="fa-solid fa-star text-xs"></i>)</a>
@@ -134,69 +161,13 @@
             </div>
 
             <!-- Product Card's Wrapper -->
-            <div class="mt-8 grid grid-cols-1 xsm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-6 gap-3">
-                <!-- Product Card 1 -->
-                @foreach ($seller->products as $product)
-                    <div
-                        class="relative text-base xsm:text-sm sm:text-base md:text-sm lg:text-base xl:text-lg 2xl:text-xl rounded-xl hover:shadow-lg eq">
-                        <div class="relative h-60 xsm:h-48 sm:h-56 lg:h-64 xl:h-72 overflow-hidden rounded-lg">
-                            <a href="{{ route('product.details',$product->slug) }}" class="block w-full h-full">
-                                <img src="{{ asset('assets/'.$product->thumbnail) }}"
-                                    alt="ASUS Vivo15 OLED K513 Core-i5 11th Gen 15.6″ FHD Laptop"
-                                    class="w-full h-full object-cover" />
-                            </a>
-                            <button
-                                class="absolute bottom-10 xsm:bottom-3 lg:bottom-8 xsm:left-3 lg:left-5 left-5 bg-white hover:bg-primary hover:text-white rounded-full px-4 py-2 flex items-center gap-2 shadow-lg eq">
-                                <i class="fa-regular fa-eye"></i>
-                                Quick View
-                            </button>
-                        </div>
-
-                        <div class="p-4 xsm:p-2 lg:p-5">
-                            <h3 class="font-medium line-clamp-2 xsm:h-10 sm:h-12 md:h-10 lg:h-12 xl:h-14">
-                                <a href="{{ route('product.details',$product->slug) }}" class="hover:text-primary eq">{{ $product->name }}</a>
-                            </h3>
-                            <p class="text-leaf-green">Almost sold Out</p>
-
-                            <div class="flex flex-wrap items-center gap-x-1">
-                                <div class="flex items-center flex-no-wrap gap-x-1 text-light-yellow">
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <img src="{{ asset('assets/frontend/images/fire-icon.png') }}" class="w-8 h-auto"
-                                        alt="Fire Icon" />
-                                </div>
-
-                                <span class="text-jet-gray">{{ number_shorten_format($product->stock_out) }} Sold</span>
-                            </div>
-
-                            <div class="flex flex-wrap items-center gap-x-5 xsm:gap-x-1 sm:gap-x-2 xl:mt-2">
-                                <span class="text-primary/80">Final Hours</span>
-                                <div class="flex items-center gap-x-5 xsm:gap-x-2 sm:gap-x-5 xl:gap-x-8">
-                                    <div class="price flex items-center gap-1 flex-no-wrap">
-                                        <i class="fa-solid fa-bolt text-[#ffa755]"></i>
-                                        {{-- <span class="align-center text-sm text-[#ffa755]">$</span> --}}
-                                        <h3 class="font-bold text-primary">{{ money($product->selling_price) }}</h3>
-                                    </div>
-                                    <div>
-                                        <button
-                                            class="text-xs xsm:text-[10px] sm:text-base md:text-xs xl:text-base w-7 h-7 xsm:w-6 xsm:h-6 md:w-8 md:h-8 sm:w-10 sm:h-10 xl:w-10 xl:h-10 flex items-center justify-center bg-primary rounded-full text-white hover:bg-theme-dark eq">
-                                            <i class="fa-solid fa-cart-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-
+            <div id="product-list"
+                class="mt-8 grid grid-cols-1 xsm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-6 gap-3">
+                @include('frontend.shops.partials.product-card', ['products' => $products])
             </div>
 
-            <!-- Load More Btn -->
             <div class="load-more-btn text-center mt-10">
-                <button
+                <button id="loadMoreBtn" data-page="1" data-url="{{ route('shop_details', $seller->username) }}"
                     class="theme-btn bg-theme-teal hover:bg-aqua-deep text-white px-5 py-2 xl:text-xl text-base md:text-lg inline-flex gap-2 items-center eq"
                     type="button">
                     <span>Load More</span>
@@ -206,4 +177,56 @@
         </section>
         <!-- Page Main Content Ended -->
     </main>
+
+    @push('scripts')
+        <script>
+            $(document).ready(function() {
+                $('.more-toggle').on('click', function(e) {
+                    e.preventDefault();
+                    $(this).next('.dropdown-menu').toggle();
+                });
+
+                $(document).on('click', function(e) {
+                    if (!$(e.target).closest('.more-dropdown-wrapper').length) {
+                        $('.dropdown-menu').hide();
+                    }
+                });
+            });
+        </script>
+
+        <script>
+            $('#loadMoreBtn').on('click', function() {
+                let button = $(this);
+                let page = parseInt(button.data('page')) + 1;
+                let url = button.data('url');
+
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                    data: {
+                        page: page
+                    },
+                    beforeSend: function() {
+                        button.prop('disabled', true).html(
+                            '<i class="fa fa-spinner fa-spin"></i> Loading...');
+                    },
+                    success: function(response) {
+                        if (response.trim() !== '') {
+                            $('#product-list').append(response);
+                            button.data('page', page);
+                            button.prop('disabled', false).html(
+                                '<span>Load More</span> <i class="fa-solid fa-chevron-down text-sm"></i>'
+                            );
+                        } else {
+                            button.hide();
+                        }
+                    },
+                    error: function() {
+                        button.prop('disabled', false).text('Load More');
+                        alert('Something went wrong. Please try again.');
+                    }
+                });
+            });
+        </script>
+    @endpush
 @endsection
