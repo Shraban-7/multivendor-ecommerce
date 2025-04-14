@@ -81,8 +81,7 @@
                                     <!-- product image 1 -->
                                     @foreach ($product->images as $slider)
                                         <div class="h-full overflow-hidden swiper-slide rounded-2xl">
-                                            <img src="{{ storage_url($slider->image) }}"
-                                                alt="A Young boy wear a jacket with green T-Shirt & Short Pant"
+                                            <img src="{{ storage_url($slider->image) }}" alt=""
                                                 class="object-cover w-full h-full" />
                                         </div>
                                     @endforeach
@@ -122,7 +121,7 @@
                                         <a href="{{ route('shop_details', $product->seller->username) }}"
                                             class="inline-block w-6 h-6 overflow-hidden rounded-full provider-icon">
                                             <img src="{{ asset('assets/' . $product->seller->business_logo) }}"
-                                                alt="Louis Vuitton" class="object-contain w-full h-full" />
+                                                alt="{{ $product->seller->business_name }}" class="object-contain w-full h-full" />
                                         </a>
                                         <span>({{ number_shorten_format($product->stock_out) }}+ sold)</span>
                                     </div>
@@ -148,10 +147,10 @@
                                     @php
                                         if ($product->discount_type != null) {
                                             if ($product->discount_type == DiscountType::FLAT) {
-                                                $price = $product->selling_price - $product->discount_amount;
+                                                $price = (float) $product->selling_price - $product->discount_amount;
                                             } elseif ($product->discount_type == DiscountType::PERCENTAGE) {
                                                 $price =
-                                                    $product->selling_price -
+                                                    (float) $product->selling_price -
                                                     ($product->selling_price * $product->discount_amount) / 100;
                                             }
                                         } else {
@@ -242,7 +241,8 @@
                             $discount = ($product->discount_amount / $product->selling_price) * 100;
                         @endphp
                         <div class="flex w-full gap-4 mt-5 xsm:w-4/5 md:w-11/12 lg:w-4/5">
-                            <input type="hidden" name="quantity" class="qtyInputValue" value="" id="qtyInput{{ $product->id }}">
+                            <input type="hidden" name="quantity" class="qtyInputValue" value=""
+                                id="qtyInput{{ $product->id }}">
                             <button data-id="{{ $product->id }}" type="button"
                                 class="cartBtn text-sm md:text-base font-medium flex-1 px-6 py-1.5 border border-primary text-primary rounded-full hover:bg-primary hover:text-white eq">
                                 Add To Cart
@@ -776,7 +776,8 @@
                                             </h3>
                                         </div>
                                         <div>
-                                            <input type="hidden" name="quantity" value="" id="qtyInput{{ $product->id }}">
+                                            <input type="hidden" name="quantity" value=""
+                                                id="qtyInput{{ $product->id }}">
                                             <button type="button" data-id="{{ $product->id }}"
                                                 class="cartBtn text-xs xsm:text-[10px] sm:text-base md:text-xs xl:text-base w-7 h-7 xsm:w-6 xsm:h-6 md:w-8 md:h-8 sm:w-10 sm:h-10 xl:w-10 xl:h-10 flex items-center justify-center bg-primary rounded-full text-white hover:bg-theme-dark eq">
                                                 <i class="fa-solid fa-cart-plus"></i>

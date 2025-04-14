@@ -26,23 +26,34 @@ class CartController extends Controller
         ])->first();
 
         if (!$cart) {
-            $cart = Cart::create([
-                'user_id' => Auth::user()->id,
-                'seller_id' => $product->seller_id
-            ]);
+            if ($product->stock_in > 0) {
+                $cart = Cart::create([
+                    'user_id' => Auth::user()->id,
+                    'seller_id' => $product->seller_id
+                ]);
+            }
         }
 
         $existItem = CartItem::where('cart_id', $cart->id)->where('product_id', $product->id)->first();
-
         if ($existItem) {
             $existItem->update([
                 'quantity' => $request->quantity + $existItem->quantity
+            ]);
+
+            $product->update([
+                'stock_out' => $product->stock_out + ($request->quantity + $existItem->quantity),
+                'stock_in' => $product->stock_in - ($request->quantity + $existItem->quantity),
             ]);
         } else {
             CartItem::create([
                 'cart_id' => $cart->id,
                 'product_id' => $product->id,
                 'quantity' => $request->quantity ?? 1
+            ]);
+
+            $product->update([
+                'stock_out' => $product->stock_out + ($request->quantity),
+                'stock_in' => $product->stock_in - ($request->quantity),
             ]);
         }
 
@@ -81,7 +92,7 @@ class CartController extends Controller
                 }
             }
         }
-        
+
         $discount = $grand_total - $sub_total;
         $total_products_count = $carts->flatten()->pluck('cartItems')->flatten()->count();
 

@@ -142,6 +142,7 @@
                         } else if (data.success) {
                             toastr.success(data.message);
                             updateCartData();
+                            $('#quick-view-modal-' + product_id).addClass('hidden').removeClass('flex');
                             if ("{{ Route::currentRouteName() }}" === 'cart.details' && data
                                 .action === 'add_to_cart') {
                                 window.location.reload();

@@ -361,57 +361,8 @@
             <div class="grid grid-cols-2 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-6">
                 <!-- Product Card 1 -->
                 @foreach ($products as $product)
-                    <div
-                        class="relative overflow-hidden bg-white rounded-xl shadow-sm transition-all duration-300 hover:shadow-lg group">
-                        <div class="relative h-48 overflow-hidden bg-gray-50">
-                            <a href="{{ route('product.details', $product->slug) }}" class="block w-full h-full">
-                                <img src="{{ storage_url($product->thumbnail) }}" alt="{{ $product->name }}"
-                                    class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105" />
-
-                                <div
-                                    class="absolute inset-0 bg-black bg-opacity-0 transition-opacity duration-300 group-hover:bg-opacity-5">
-                                </div>
-                            </a>
-                        </div>
-
-                        <div class="p-5">
-                            <div class="space-y-2 text-center">
-                                <h3 class="font-medium text-lg line-clamp-1 tracking-tight">
-                                    <a href="{{ route('product.details', $product->slug) }}"
-                                        class="hover:text-primary transition-colors">
-                                        {{ $product->name }}
-                                    </a>
-                                </h3>
-
-                                <div class="flex items-center justify-center space-x-1 text-gray-500">
-                                    <span class="text-sm">{{ $product->quantity }}
-                                        {{ $product->unit->short_name }}.</span>
-                                    <span class="text-xs">•</span>
-                                    <span class="text-sm">Local Shop</span>
-                                </div>
-
-                                <div class="font-semibold text-lg text-primary">
-                                    {{ money($product->selling_price) }}
-                                </div>
-                            </div>
-
-                            <div class="mt-4">
-                                <input type="hidden" name="quantity" value="1" id="qtyInput{{ $product->id }}">
-                                <button data-id="{{ $product->id }}" type="button"
-                                    class="cartBtn flex items-center justify-between w-full px-4 py-3 bg-white border border-gray-100 rounded-full shadow-sm transition-all hover:shadow-md hover:border-primary">
-                                    <span
-                                        class="flex items-center justify-center w-7 h-7 text-white bg-primary rounded-full">
-                                        <i class="fa-solid fa-cart-plus text-xs"></i>
-                                    </span>
-                                    <span class="font-medium text-gray-800">Add to Cart</span>
-                                    <span
-                                        class="flex items-center justify-center w-7 h-7 bg-gray-50 text-primary rounded-full">
-                                        <i class="fa-solid fa-plus text-xs"></i>
-                                    </span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                    @include('frontend.partials.categories.product-card', ['product' => $product])
+                    @include('frontend.partials.quick-view-modal', ['product' => $product])
                 @endforeach
 
             </div>
@@ -432,37 +383,38 @@
     @push('scripts')
         <script>
             $(document).ready(function() {
-                var quantity = 1;
+                $('.quantity').each(function() {
+                    const $container = $(this);
+                    const quantityInput = $container.find('input[type="number"]');
+                    const increaseBtn = $container.find('button[id^="increaseBtn"]');
+                    const decreaseBtn = $container.find('button[id^="decreaseBtn"]');
 
-                const quantityElement = $('#quantity');
-                const decreaseBtn = $('#decreaseBtn');
-                const increaseBtn = $('#increaseBtn');
-                const hiddenInput = $('.qtyInputValue');
+                    let quantity = 1;
 
-                const updateQuantity = () => {
-                    quantityElement.val(quantity.toString().padStart(2, "0"));
-                    hiddenInput.val(quantity);
-                };
+                    const updateQuantity = () => {
+                        quantityInput.val(quantity.toString().padStart(2, '0'));
+                    };
 
-                increaseBtn.on('click', function() {
-                    quantity++;
-                    updateQuantity();
-                });
-
-                decreaseBtn.on('click', function() {
-                    if (quantity > 1) {
-                        quantity--;
+                    increaseBtn.on('click', function() {
+                        quantity++;
                         updateQuantity();
-                    }
-                });
+                    });
 
-                quantityElement.on('input', function() {
-                    var newQuantity = $(this).val();
-                    quantity = parseInt(newQuantity) || 1;
+                    decreaseBtn.on('click', function() {
+                        if (quantity > 1) {
+                            quantity--;
+                            updateQuantity();
+                        }
+                    });
+
+                    quantityInput.on('input', function() {
+                        const newQuantity = parseInt($(this).val());
+                        quantity = newQuantity > 0 ? newQuantity : 1;
+                        updateQuantity();
+                    });
+
                     updateQuantity();
                 });
-
-                updateQuantity();
             });
         </script>
     @endpush

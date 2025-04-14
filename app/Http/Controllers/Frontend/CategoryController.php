@@ -33,9 +33,7 @@ class CategoryController extends Controller
             }
         }
 
-        $products = $query->with('productAttributes.options','unit')->get();
-
-        // return $products;
+        $products = $query->with('productAttributes.options','unit','images')->get();
 
         return view('frontend.pages.category_detail', compact('category', 'productAttributes', 'products'));
     }
