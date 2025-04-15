@@ -121,18 +121,36 @@
                                         <a href="{{ route('shop_details', $product->seller->username) }}"
                                             class="inline-block w-6 h-6 overflow-hidden rounded-full provider-icon">
                                             <img src="{{ storage_url($product->seller->business_logo) }}"
-                                                alt="{{ $product->seller->business_name }}" class="object-contain w-full h-full" />
+                                                alt="{{ $product->seller->business_name }}"
+                                                class="object-contain w-full h-full" />
                                         </a>
                                         <span>({{ number_shorten_format($product->stock_out) }}+ sold)</span>
                                     </div>
                                 </div>
 
                                 <div class="flex items-center gap-2">
-                                    <!-- 5 star rating -->
-                                    <span class="text-xs">5.00 Star</span>
-                                    <!-- Repeat for 5 stars -->
-                                    <span>★★★★★</span>
+                                    @php
+                                        $avg = $product->reviews->avg('rating');
+                                        $rounded = floor($avg);
+                                    @endphp
+
+                                    <span class="text-xs">{{ number_format($avg, 1) }} Star</span>
+
+                                    <span class="flex text-yellow-400 text-sm">
+                                        @for ($i = 1; $i <= 5; $i++)
+                                            @if ($i <= floor($avg))
+                                                ★
+                                            @elseif ($i - $avg < 1)
+                                                <span class="relative -mx-0.5">★<span
+                                                        class="absolute inset-0 overflow-hidden"
+                                                        style="width: 50%">★</span></span>
+                                            @else
+                                                <span class="text-gray-300">★</span>
+                                            @endif
+                                        @endfor
+                                    </span>
                                 </div>
+
                             </div>
 
                             <div class="flex items-center gap-2">
@@ -187,16 +205,6 @@
                                     <div class="mt-3 size">
                                         <div class="flex items-center gap-2 text-davy-gray">
                                             <h6 class="sm:text-lg">{{ $productAttribute->name }} :</h6>
-                                            {{-- <a href="#"
-                                                class="inline-flex items-center hover:text-violet-700 hover:underline eq">
-                                                <img src="{{ asset('assets/frontend/images/size-scale.png') }}"
-                                                    alt="Size Chart" class="w-10 h-auto xsm:w-14" />
-                                                <span class="text-xs"> Size Chart</span>
-                                            </a> --}}
-                                            {{-- <a href="#"
-                                                class="ml-2 hover:text-light-yellow hover:underline eq xsm:ml-4">
-                                                <span class="text-xs"> What's My Size?</span>
-                                            </a> --}}
                                         </div>
                                         <form class="flex flex-wrap items-center gap-2 mt-2 text-xs">
                                             @foreach ($productAttribute->options as $option)
@@ -265,79 +273,86 @@
                         <div class="flex items-start gap-4">
                             <div class="font-[arial] space-y-1">
                                 <div class="text-4xl md:text-5xl text-persian-blue">
-                                    94.0%
+                                    {{ number_format($product->reviews->avg('rating') * 20, 1) . '%' }}
                                 </div>
-                                <div class="flex text-3xl text-yellow-400 md:text-4xl">
-                                    ★★★★★
-                                </div>
+
+                                @if ($product->reviews->count() > 0)
+                                    <div class="flex text-3xl text-yellow-400 md:text-4xl">
+                                        @php
+                                            $average = round($product->reviews->avg('rating'));
+                                        @endphp
+                                        {!! str_repeat('★', $average) . str_repeat('☆', 5 - $average) !!}
+                                    </div>
+                                @else
+                                    <div class="flex text-3xl text-yellow-400 md:text-4xl">
+                                        {!! str_repeat('☆', 5) !!}
+                                    </div>
+                                @endif
+
                                 <div class="text-xs text-davy-gray sm:text-sm">
                                     (Positive reviews)
                                     <span class="font-semibold text-primary/80 lg:pl-4">Top</span>
                                 </div>
                             </div>
 
+
                             <!-- Rating Bars -->
+
+                            @php
+                                $total = $product->reviews_count ?: 1;
+                                $ratings = [
+                                    5 => $product->five_star,
+                                    4 => $product->four_star,
+                                    3 => $product->three_star,
+                                    2 => $product->two_star,
+                                    1 => $product->one_star,
+                                ];
+                            @endphp
+
                             <div class="w-full space-y-1 ratings-wrap sm:w-2/4 md:w-3/4 2xl:w-1/2 lg:w-2/3 md:space-y-2">
-                                <!-- 5 star -->
-                                <div class="flex items-center w-full gap-2 md:gap-5">
-                                    <div class="w-1/2 sm:w-5/12 md:w-7/12 lg:w-1/2 2xl:w-7/12">
-                                        <div class="w-full bg-gray-200 rounded-full h-2 lg:h-2.5">
-                                            <div class="bg-yellow-400 h-2 rounded-full lg:h-2.5" style="width: 90%"></div>
+                                @foreach ($ratings as $star => $count)
+                                    @php
+                                        $percentage = round(($count / $total) * 100);
+                                    @endphp
+                                    <div class="flex items-center w-full gap-2 md:gap-5">
+                                        <div class="w-1/2 sm:w-5/12 md:w-7/12 lg:w-1/2 2xl:w-7/12">
+                                            <div class="w-full bg-gray-200 rounded-full h-2 lg:h-2.5">
+                                                <div class="bg-yellow-400 h-2 rounded-full lg:h-2.5"
+                                                    style="width: {{ $percentage }}%"></div>
+                                            </div>
                                         </div>
+                                        <span class="text-xs sm:text-sm text-persian-blue">
+                                            {{ $count }} ({{ str_pad($star, 2, '0', STR_PAD_LEFT) }} star)
+                                        </span>
+
                                     </div>
-                                    <span class="text-xs sm:text-sm text-persian-blue">(05 star)</span>
-                                </div>
-                                <!-- 4 star -->
-                                <div class="flex items-center w-full gap-2 md:gap-5">
-                                    <div class="w-1/2 sm:w-5/12 md:w-7/12 lg:w-1/2 2xl:w-7/12">
-                                        <div class="w-full bg-gray-200 rounded-full h-2 lg:h-2.5">
-                                            <div class="bg-yellow-400 h-2 rounded-full lg:h-2.5" style="width: 75%"></div>
-                                        </div>
-                                    </div>
-                                    <span class="text-xs sm:text-sm text-persian-blue">(04 star)</span>
-                                </div>
-                                <!-- 3 star -->
-                                <div class="flex items-center w-full gap-2 md:gap-5">
-                                    <div class="w-1/2 sm:w-5/12 md:w-7/12 lg:w-1/2 2xl:w-7/12">
-                                        <div class="w-full bg-gray-200 rounded-full h-2 lg:h-2.5">
-                                            <div class="bg-yellow-400 h-2 rounded-full lg:h-2.5" style="width: 55%"></div>
-                                        </div>
-                                    </div>
-                                    <span class="text-xs sm:text-sm text-persian-blue">(03 star)</span>
-                                </div>
-                                <!-- 2 star -->
-                                <div class="flex items-center w-full gap-2 md:gap-5">
-                                    <div class="w-1/2 sm:w-5/12 md:w-7/12 lg:w-1/2 2xl:w-7/12">
-                                        <div class="w-full bg-gray-200 rounded-full h-2 lg:h-2.5">
-                                            <div class="bg-yellow-400 h-2 rounded-full lg:h-2.5" style="width: 40%"></div>
-                                        </div>
-                                    </div>
-                                    <span class="text-xs sm:text-sm text-persian-blue">(02 star)</span>
-                                </div>
-                                <!-- 1 star -->
-                                <div class="flex items-center w-full gap-2 md:gap-5">
-                                    <div class="w-1/2 sm:w-5/12 md:w-7/12 lg:w-1/2 2xl:w-7/12">
-                                        <div class="w-full bg-gray-200 rounded-full h-2 lg:h-2.5">
-                                            <div class="bg-yellow-400 h-2 rounded-full lg:h-2.5" style="width: 20%"></div>
-                                        </div>
-                                    </div>
-                                    <span class="text-xs sm:text-sm text-persian-blue">(01 star)</span>
-                                </div>
+                                @endforeach
                             </div>
                         </div>
 
                         <!-- Average Rating -->
                         <div class="flex flex-wrap items-center gap-3 my-3 md:my-5">
-                            <span class="text-xl font-medium text-davy-gray sm:text-2xl">4.8</span>
-                            <div class="flex gap-1 text-xs flex-nowrap md:text-sm">
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="text-gray-400 fa-solid fa-star"></i>
-                            </div>
-                            <span class="text-sm sm:text-base text-jet-gray">(5K+ Review)</span>
+                            @if ($totalReviews > 0)
+                                <span class="text-xl font-medium text-davy-gray sm:text-2xl">
+                                    {{ number_format($averageRating, 1) }}
+                                </span>
+                                <div class="flex gap-1 text-xs flex-nowrap md:text-sm">
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        @if ($i <= floor($averageRating))
+                                            <i class="fa-solid fa-star text-yellow-400"></i>
+                                        @elseif ($i - $averageRating < 1)
+                                            <i class="fa-solid fa-star-half-stroke text-yellow-400"></i>
+                                        @else
+                                            <i class="fa-solid fa-star text-gray-400"></i>
+                                        @endif
+                                    @endfor
+                                </div>
+                                <span class="text-sm sm:text-base text-jet-gray">
+                                    ({{ $totalReviews }} {{ Str::plural('Review', $totalReviews) }})
+                                </span>
+                            @endif
                         </div>
+
 
                         <!-- Review Section -->
                         <div class="text-sm comments-tags lg:text-base text-davy-gray">
@@ -729,17 +744,18 @@
                     @include('frontend.partials.product-card-load', ['products' => $interest_products])
                 </div>
 
-               @if ($products->count() >= 8)
-                <!-- Load More Btn -->
-                <div class="mt-10 text-center load-more-btn">
-                    <button data-page="1" data-url="{{ route('product.details', $product->slug) }}" id="loadMoreBtn"
-                        class="inline-flex items-center gap-2 px-5 py-2 text-base text-white theme-btn bg-theme-teal hover:bg-aqua-deep xl:text-xl md:text-lg eq"
-                        type="button">
-                        <span>Load More</span>
-                        <i class="text-sm fa-solid fa-chevron-down"></i>
-                    </button>
-                </div>
-            @endif
+                @if ($products->count() >= 8)
+                    <!-- Load More Btn -->
+                    <div class="mt-10 text-center load-more-btn">
+                        <button data-page="1" data-url="{{ route('product.details', $product->slug) }}"
+                            id="loadMoreBtn"
+                            class="inline-flex items-center gap-2 px-5 py-2 text-base text-white theme-btn bg-theme-teal hover:bg-aqua-deep xl:text-xl md:text-lg eq"
+                            type="button">
+                            <span>Load More</span>
+                            <i class="text-sm fa-solid fa-chevron-down"></i>
+                        </button>
+                    </div>
+                @endif
             </div>
         </section>
         <!-- Explore Interest Section Ended  -->
