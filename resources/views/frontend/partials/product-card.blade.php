@@ -1,7 +1,7 @@
 <div
     class="relative text-base xsm:text-sm sm:text-base md:text-sm lg:text-base xl:text-lg 2xl:text-xl rounded-xl hover:shadow-lg eq">
     <div class="relative h-60 xsm:h-48 sm:h-56 lg:h-64 xl:h-72 overflow-hidden rounded-lg">
-        <a href="#" class="block w-full h-full">
+        <a href="{{ route('product.details', $product->slug) }}" class="block w-full h-full">
             <img src="{{ storage_url($product->thumbnail) }}"
                 alt="{{ $product->name }}" class="w-full h-full object-cover" />
         </a>
@@ -16,7 +16,7 @@
 
     <div class="p-4 xsm:p-2 lg:p-5">
         <h3 class="font-medium line-clamp-2 xsm:h-10 sm:h-12 md:h-10 lg:h-12 xl:h-14">
-            <a href="#" class="hover:text-primary eq">{{ $product->name }}</a>
+            <a href="{{ route('product.details', $product->slug) }}" class="hover:text-primary eq">{{ $product->name }}</a>
         </h3>
         <p class="text-leaf-green">Almost sold Out</p>
 

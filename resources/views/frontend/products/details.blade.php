@@ -726,79 +726,20 @@
 
                 <div id="product-wrapper"
                     class="grid items-start grid-cols-1 gap-5 p-2 xsm:grid-cols-2 md:grid-cols-4 xl:gap-8 lg:p-0">
-                    <!-- Product Card 1 -->
-                    @foreach ($interest_products as $product)
-                        <div
-                            class="relative text-base xsm:text-sm sm:text-base md:text-sm lg:text-base xl:text-lg 2xl:text-xl rounded-xl hover:shadow-lg eq">
-                            <div
-                                class="relative h-60 xsm:h-48 sm:h-56 sm:h-90 lg:h-[17rem] xl:h-[22rem] overflow-hidden rounded-lg">
-                                <a href="{{ route('product.details', $product->slug) }}" class="block w-full h-full">
-                                    <img src="{{ storage_url($product->thumbnail) }}" alt="The Iconic Doeskin Blazer"
-                                        class="object-cover w-full h-full" />
-                                </a>
-                                <button
-                                    class="absolute flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-lg bottom-10 xsm:bottom-3 lg:bottom-10 xsm:left-3 lg:left-5 left-5 hover:bg-primary hover:text-white eq">
-                                    <i class="fa-regular fa-eye"></i>
-                                    Quick View
-                                </button>
-                            </div>
-
-                            <div class="p-4 xsm:p-2 lg:p-5">
-                                <h3
-                                    class="font-medium line-clamp-2 xsm:h-10 sm:h-12 md:h-10 lg:h-12 xl:h-14 lg:w-3/4 xl:w-2/3">
-                                    <a href="{{ route('product.details', $product->slug) }}"
-                                        class="hover:text-primary eq">{{ $product->name }}</a>
-                                </h3>
-                                <p class="text-leaf-green">Almost sold Out</p>
-
-                                <div class="flex flex-wrap items-center gap-x-1">
-                                    <div class="flex flex-no-wrap items-center gap-x-1 text-light-yellow">
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <img src="{{ asset('assets/frontend/images/fire-icon.png') }}" class="w-8 h-auto"
-                                            alt="Fire Icon" />
-                                    </div>
-
-                                    <span class="text-jet-gray">{{ number_shorten_format($product->stock_out) }}
-                                        Sold</span>
-                                </div>
-
-                                <div class="flex flex-wrap items-center gap-x-5 xsm:gap-x-1 sm:gap-x-2 xl:mt-2">
-                                    <span class="text-primary/80">Final Hours</span>
-                                    <div class="flex items-center gap-x-5 xsm:gap-x-2 sm:gap-x-5 xl:gap-x-8">
-                                        <div class="flex flex-no-wrap items-center gap-1 price">
-                                            <i class="fa-solid fa-bolt text-[#ffa755]"></i>
-                                            {{-- <span class="align-center text-sm text-[#ffa755]">$</span> --}}
-                                            <h3 class="font-bold text-primary">{{ money($product->selling_price) }}
-                                            </h3>
-                                        </div>
-                                        <div>
-                                            <input type="hidden" name="quantity" value=""
-                                                id="qtyInput{{ $product->id }}">
-                                            <button type="button" data-id="{{ $product->id }}"
-                                                class="cartBtn text-xs xsm:text-[10px] sm:text-base md:text-xs xl:text-base w-7 h-7 xsm:w-6 xsm:h-6 md:w-8 md:h-8 sm:w-10 sm:h-10 xl:w-10 xl:h-10 flex items-center justify-center bg-primary rounded-full text-white hover:bg-theme-dark eq">
-                                                <i class="fa-solid fa-cart-plus"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
+                    @include('frontend.partials.product-card-load', ['products' => $interest_products])
                 </div>
 
-                <!-- Load More Products Button -->
-                <div class="pt-10 text-center load-more-btn">
-                    <button id="load-more-products"
+               @if ($products->count() >= 8)
+                <!-- Load More Btn -->
+                <div class="mt-10 text-center load-more-btn">
+                    <button data-page="1" data-url="{{ route('product.details', $product->slug) }}" id="loadMoreBtn"
                         class="inline-flex items-center gap-2 px-5 py-2 text-base text-white theme-btn bg-theme-teal hover:bg-aqua-deep xl:text-xl md:text-lg eq"
                         type="button">
                         <span>Load More</span>
-                        <i class="fa-solid fa-caret-down"></i>
+                        <i class="text-sm fa-solid fa-chevron-down"></i>
                     </button>
                 </div>
+            @endif
             </div>
         </section>
         <!-- Explore Interest Section Ended  -->
@@ -865,6 +806,41 @@
                         style: 'currency',
                         currency: 'USD'
                     }).format(oldPrice));
+                });
+            });
+        </script>
+
+        <script>
+            $('#loadMoreBtn').on('click', function() {
+                let button = $(this);
+                let page = parseInt(button.data('page')) + 1;
+                let url = button.data('url');
+
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                    data: {
+                        page: page
+                    },
+                    beforeSend: function() {
+                        button.prop('disabled', true).html(
+                            '<i class="fa fa-spinner fa-spin"></i> Loading...');
+                    },
+                    success: function(response) {
+                        if (response.trim() !== '') {
+                            $('#product-wrapper').append(response);
+                            button.data('page', page);
+                            button.prop('disabled', false).html(
+                                '<span>Load More</span> <i class="fa-solid fa-chevron-down text-sm"></i>'
+                            );
+                        } else {
+                            button.hide();
+                        }
+                    },
+                    error: function() {
+                        button.prop('disabled', false).text('Load More');
+                        alert('Something went wrong. Please try again.');
+                    }
                 });
             });
         </script>
