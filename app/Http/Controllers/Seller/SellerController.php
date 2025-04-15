@@ -86,7 +86,7 @@ class SellerController extends Controller
             if ($products->isEmpty()) {
                 return '';
             }
-            return view('frontend.shops.partials.product-card', compact('products'))->render();
+            return view('frontend.partials.product-card-load', compact('products'))->render();
         }
 
         return view('frontend.shops.shop_details', compact('seller', 'products', 'categories'));

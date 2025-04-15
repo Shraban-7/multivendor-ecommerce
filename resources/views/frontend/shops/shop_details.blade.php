@@ -163,7 +163,7 @@
             <!-- Product Card's Wrapper -->
             <div id="product-list"
                 class="mt-8 grid grid-cols-1 xsm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-6 gap-3">
-                @include('frontend.shops.partials.product-card', ['products' => $products])
+                @include('frontend.partials.product-card-load', ['products' => $products])
             </div>
 
             <div class="load-more-btn text-center mt-10">

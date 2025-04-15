@@ -7,10 +7,15 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductAttribute;
+
 class CategoryController extends Controller
 {
     public function category_details($slug, Request $request)
     {
+        $limit = 8;
+        $page = $request->get('page', 1);
+        $skip = ($page - 1) * $limit;
+
         $category = Category::where('slug', $slug)
             ->with(['products.productAttributes.options', 'subcategories'])
             ->first();
@@ -33,8 +38,18 @@ class CategoryController extends Controller
             }
         }
 
-        $products = $query->with('productAttributes.options','unit','images')->get();
+        $products = $query->with('productAttributes.options', 'unit', 'images')
+            ->latest()
+            ->skip($skip)
+            ->take($limit)->get();
 
-        return view('frontend.pages.category_detail', compact('category', 'productAttributes', 'products'));
+        if ($request->ajax()) {
+            if ($products->isEmpty()) {
+                return '';
+            }
+            return view('frontend.partials.product-card-load', compact('products'))->render();
+        }
+
+        return view('frontend.categories.details', compact('category', 'productAttributes', 'products'));
     }
 }

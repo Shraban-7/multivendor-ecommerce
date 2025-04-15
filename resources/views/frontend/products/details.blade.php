@@ -120,7 +120,7 @@
                                         <span>Provided By</span>
                                         <a href="{{ route('shop_details', $product->seller->username) }}"
                                             class="inline-block w-6 h-6 overflow-hidden rounded-full provider-icon">
-                                            <img src="{{ asset('assets/' . $product->seller->business_logo) }}"
+                                            <img src="{{ storage_url($product->seller->business_logo) }}"
                                                 alt="{{ $product->seller->business_name }}" class="object-contain w-full h-full" />
                                         </a>
                                         <span>({{ number_shorten_format($product->stock_out) }}+ sold)</span>
@@ -246,7 +246,7 @@
                             <button data-id="{{ $product->id }}" type="button"
                                 class="cartBtn text-sm md:text-base font-medium flex-1 px-6 py-1.5 border border-primary text-primary rounded-full hover:bg-primary hover:text-white eq">
                                 Add To Cart
-                                <span class="block text-xs font-light">{{ percentage($discount) }} of Discount</span>
+                                <span class="block text-xs font-light">{{ number_format($discount) }}% of Discount</span>
                             </button>
                             <button
                                 class="text-sm md:text-base font-medium flex-1 px-6 py-1.5 bg-primary text-white rounded-full hover:bg-theme-dark eq">
@@ -651,7 +651,7 @@
                 <div class="flex flex-wrap items-center gap-2 sm:gap-4">
                     <a href="{{ route('shop_details', $product->seller->username) }}"
                         class="inline-block w-10 h-10 overflow-hidden rounded-full provider-dp lg:w-14 lg:h-14">
-                        <img src="{{ asset('assets/frontend/images/provider-logo-1.png') }}" alt="Louis Vuitton Logo"
+                        <img src="{{ storage_url($product->seller->business_logo) }}" alt="Louis Vuitton Logo"
                             class="object-contain w-full h-full" />
                     </a>
                     <div class="provider-info">
@@ -725,7 +725,7 @@
                 </h1>
 
                 <div id="product-wrapper"
-                    class="grid items-start grid-cols-1 gap-5 p-2 xsm:grid-cols-2 md:grid-cols-3 xl:gap-8 lg:p-0">
+                    class="grid items-start grid-cols-1 gap-5 p-2 xsm:grid-cols-2 md:grid-cols-4 xl:gap-8 lg:p-0">
                     <!-- Product Card 1 -->
                     @foreach ($interest_products as $product)
                         <div

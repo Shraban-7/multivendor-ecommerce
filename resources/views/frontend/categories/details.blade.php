@@ -358,24 +358,23 @@
             </div>
 
             <!-- Product Card's Wrapper -->
-            <div class="grid grid-cols-2 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-6">
+            <div id="product-list" class="grid grid-cols-2 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-6">
+
+                @include('frontend.partials.product-card-load', ['products' => $products])
                 <!-- Product Card 1 -->
-                @foreach ($products as $product)
-                    @include('frontend.partials.categories.product-card', ['product' => $product])
-                    @include('frontend.partials.quick-view-modal', ['product' => $product])
-                @endforeach
-
             </div>
 
-            <!-- Load More Btn -->
-            <div class="mt-10 text-center load-more-btn">
-                <button
-                    class="inline-flex items-center gap-2 px-5 py-2 text-base text-white theme-btn bg-theme-teal hover:bg-aqua-deep xl:text-xl md:text-lg eq"
-                    type="button">
-                    <span>Load More</span>
-                    <i class="text-sm fa-solid fa-chevron-down"></i>
-                </button>
-            </div>
+            @if ($products->count() >= 8)
+                <!-- Load More Btn -->
+                <div class="mt-10 text-center load-more-btn">
+                    <button data-page="1" data-url="{{ route('category_details', $category->slug) }}" id="loadMoreBtn"
+                        class="inline-flex items-center gap-2 px-5 py-2 text-base text-white theme-btn bg-theme-teal hover:bg-aqua-deep xl:text-xl md:text-lg eq"
+                        type="button">
+                        <span>Load More</span>
+                        <i class="text-sm fa-solid fa-chevron-down"></i>
+                    </button>
+                </div>
+            @endif
         </section>
         <!-- Page Main Content Ended -->
     </main>
@@ -414,6 +413,40 @@
                     });
 
                     updateQuantity();
+                });
+            });
+        </script>
+        <script>
+            $('#loadMoreBtn').on('click', function() {
+                let button = $(this);
+                let page = parseInt(button.data('page')) + 1;
+                let url = button.data('url');
+
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                    data: {
+                        page: page
+                    },
+                    beforeSend: function() {
+                        button.prop('disabled', true).html(
+                            '<i class="fa fa-spinner fa-spin"></i> Loading...');
+                    },
+                    success: function(response) {
+                        if (response.trim() !== '') {
+                            $('#product-list').append(response);
+                            button.data('page', page);
+                            button.prop('disabled', false).html(
+                                '<span>Load More</span> <i class="fa-solid fa-chevron-down text-sm"></i>'
+                            );
+                        } else {
+                            button.hide();
+                        }
+                    },
+                    error: function() {
+                        button.prop('disabled', false).text('Load More');
+                        alert('Something went wrong. Please try again.');
+                    }
                 });
             });
         </script>
