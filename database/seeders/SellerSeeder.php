@@ -16,7 +16,7 @@ class SellerSeeder extends Seeder
         $sellers = [
             [
                 'fullname' => 'Seller User',
-                'image' => 'frontend/images/user-avatar-2.png',
+                'image' => '/images/seller/business_logo/provider-logo-1.png',
                 'email' => 'seller@example.com',
                 'phone' => '12345679',
                 'password' => 'password',
@@ -29,7 +29,7 @@ class SellerSeeder extends Seeder
             ],
             [
                 'fullname' => 'Seller User 2',
-                'image' => 'frontend/images/user-avatar-1.png',
+                'image' => '/images/seller/business_logo/provider-logo-1.png',
                 'email' => 'seller2@example.com',
                 'phone' => '12345670',
                 'password' => 'password',

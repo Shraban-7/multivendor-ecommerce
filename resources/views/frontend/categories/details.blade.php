@@ -49,25 +49,23 @@
                         d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
                 </svg>
             </button>
-            <form action="#" class="space-y-5">
+            <form method="GET" action="{{ route('category_details', $category->slug) }}" class="space-y-5">
                 <!-- Categories -->
                 <div>
                     <h3 class="pb-2 mb-3 text-lg border-b border-dashed border-jet-gray">
                         Categories
                     </h3>
                     <div class="space-y-2">
-                        <label class="flex items-center">
-                            <input type="radio" name="category" class="w-4 h-4 text-primary focus:ring-primary" />
-                            <span class="ml-2 text-sm">Frozen Snacks</span>
-                        </label>
-                        <label class="flex items-center">
-                            <input type="radio" name="category" class="w-4 h-4 text-primary focus:ring-primary" />
-                            <span class="ml-2 text-sm">Gluten Free</span>
-                        </label>
-                        <label class="flex items-center">
-                            <input type="radio" name="category" class="w-4 h-4 text-primary focus:ring-primary" />
-                            <span class="ml-2 text-sm">Meat Style</span>
-                        </label>
+                        @foreach ($category->subcategories as $subCategory)
+                            <label class="flex items-center">
+                                <input type="radio" {{ request('subcategory') == $subCategory->slug ? 'checked' : '' }}
+                                    name="subcategory" value="{{ $subCategory->slug }}"
+                                    class="w-4 h-4 text-primary focus:ring-primary" />
+                                <span class="ml-2 text-sm">{{ $subCategory->name }}</span>
+                            </label>
+                        @endforeach
+
+
                     </div>
                 </div>
 
@@ -77,18 +75,14 @@
                         Brand
                     </h3>
                     <div class="space-y-2">
-                        <label class="flex items-center">
-                            <input type="radio" name="brand" class="w-4 h-4 text-primary focus:ring-primary" />
-                            <span class="ml-2 text-sm">Gardein</span>
-                        </label>
-                        <label class="flex items-center">
-                            <input type="radio" name="brand" class="w-4 h-4 text-primary focus:ring-primary" />
-                            <span class="ml-2 text-sm">Maggie</span>
-                        </label>
-                        <label class="flex items-center">
-                            <input type="radio" name="brand" class="w-4 h-4 text-primary focus:ring-primary" />
-                            <span class="ml-2 text-sm">Kroger</span>
-                        </label>
+                        @foreach ($brands as $brand)
+                            <label class="flex items-center">
+                                <input type="radio" {{ request('brand') == $brand->slug ? 'checked' : '' }}
+                                    name="brand" value="{{ $brand->slug }}"
+                                    class="w-4 h-4 text-primary focus:ring-primary" />
+                                <span class="ml-2 text-sm">{{ $brand->name }}</span>
+                            </label>
+                        @endforeach
                     </div>
                 </div>
 
@@ -98,31 +92,19 @@
                         Review
                     </h3>
                     <div class="space-y-2">
-                        <label class="flex items-center">
-                            <input type="radio" name="review" class="w-4 h-4 text-primary focus:ring-primary" />
-                            <div class="flex items-center ml-2">
-                                <div class="flex text-light-yellow">★★★★★</div>
-                                <span class="ml-1 text-sm text-jet-gray">5 Star</span>
-                            </div>
-                        </label>
-                        <label class="flex items-center">
-                            <input type="radio" name="review" class="w-4 h-4 text-primary focus:ring-primary" />
-                            <div class="flex items-center ml-2">
-                                <div class="flex text-light-yellow">
-                                    ★★★★<span class="text-gray-300">★</span>
+                        @for ($i = 5; $i >= 1; $i--)
+                            <label class="flex items-center">
+                                <input type="radio" name="review" value="{{ $i }}"
+                                    {{ request('review') == $i ? 'checked' : '' }}
+                                    class="w-4 h-4 text-primary focus:ring-primary" />
+                                <div class="flex items-center ml-2">
+                                    <div class="flex text-light-yellow">
+                                        {!! str_repeat('★', $i) . str_repeat('☆', 5 - $i) !!}
+                                    </div>
+                                    <span class="ml-1 text-sm text-jet-gray">{{ $i }} Star</span>
                                 </div>
-                                <span class="ml-1 text-sm text-jet-gray">4 Star</span>
-                            </div>
-                        </label>
-                        <label class="flex items-center">
-                            <input type="radio" name="review" class="w-4 h-4 text-primary focus:ring-primary" />
-                            <div class="flex items-center ml-2">
-                                <div class="flex text-light-yellow">
-                                    ★★★<span class="text-gray-300">★★</span>
-                                </div>
-                                <span class="ml-1 text-sm text-jet-gray">3 Star</span>
-                            </div>
-                        </label>
+                            </label>
+                        @endfor
                     </div>
                 </div>
 
@@ -133,31 +115,43 @@
                     </h3>
                     <div class="space-y-2">
                         <label class="flex items-center">
-                            <input type="radio" name="price" class="w-4 h-4 text-primary focus:ring-primary" />
-                            <span class="ml-2 text-sm">Under $ 23</span>
+                            <input type="radio" name="price" value="under"
+                                {{ request('price') == 'under' ? 'checked' : '' }}
+                                class="w-4 h-4 text-primary focus:ring-primary" />
+                            <span class="ml-2 text-sm">Under {{ money(500) }}</span>
                         </label>
+
                         <label class="flex items-center">
-                            <input type="radio" name="price" class="w-4 h-4 text-primary focus:ring-primary" />
-                            <span class="ml-2 text-sm">$25-$50</span>
+                            <input type="radio" name="price" value="range"
+                                {{ request('price') == 'range' ? 'checked' : '' }}
+                                class="w-4 h-4 text-primary focus:ring-primary" />
+                            <span class="ml-2 text-sm">{{ money(500) }} - {{ money(5000) }}</span>
                         </label>
+
                         <label class="flex items-center">
-                            <input type="radio" name="price" class="w-4 h-4 text-primary focus:ring-primary" />
-                            <span class="ml-2 text-sm">$50-$100</span>
+                            <input type="radio" name="price" value="upper"
+                                {{ request('price') == 'upper' ? 'checked' : '' }}
+                                class="w-4 h-4 text-primary focus:ring-primary" />
+                            <span class="ml-2 text-sm">{{ money(5000) }}+</span>
                         </label>
                     </div>
 
                     <div class="flex gap-2 mt-5">
                         <div class="inline-flex items-center">
-                            <input id="min" type="radio" value="min" name="price" class="sr-only peer" />
+                            <input id="min" type="radio" value="min" name="price"
+                                {{ request('price') == 'min' ? 'checked' : '' }} class="sr-only peer" />
                             <label for="min"
-                                class="px-5 border rounded-3xl py-1 text-base text-jet-gray border-gray-300 peer-checked:ring-primary peer-checked:ring-[1px] peer-checked:!border-primary peer-checked:text-primary">$
-                                Min</label>
+                                class="px-5 border rounded-3xl py-1 text-base text-jet-gray border-gray-300 peer-checked:ring-primary peer-checked:ring-[1px] peer-checked:!border-primary peer-checked:text-primary">
+                                {{ currency() }} Min
+                            </label>
                         </div>
                         <div class="inline-flex items-center">
-                            <input id="max" type="radio" value="max" name="price" class="sr-only peer" />
+                            <input id="max" type="radio" value="max" name="price"
+                                {{ request('price') == 'max' ? 'checked' : '' }} class="sr-only peer" />
                             <label for="max"
-                                class="px-5 border rounded-3xl py-1 text-base text-jet-gray border-gray-300 peer-checked:ring-primary peer-checked:ring-[1px] peer-checked:!border-primary peer-checked:text-primary">$
-                                Max</label>
+                                class="px-5 border rounded-3xl py-1 text-base text-jet-gray border-gray-300 peer-checked:ring-primary peer-checked:ring-[1px] peer-checked:!border-primary peer-checked:text-primary">
+                                {{ currency() }} Max
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -178,12 +172,13 @@
 
                 <!-- Action Buttons -->
                 <div class="flex items-start gap-3">
-                    <button type="reset"
+                    <a href="{{ route('category_details', $category->slug) }}"
                         class="px-5 py-2 text-sm text-gray-600 border-2 rounded-full border-theme-dark hover:bg-persian-red hover:text-theme-light eq">
                         Reset
-                    </button>
-                    <button class="flex-1 px-4 py-2 text-sm text-white rounded-full bg-primary hover:bg-theme-dark eq">
-                        Show 150 Result
+                    </a>
+                    <button type="submit"
+                        class="flex-1 px-4 py-2 text-sm text-white rounded-full bg-primary hover:bg-theme-dark eq">
+                        Filter
                     </button>
                 </div>
             </form>
