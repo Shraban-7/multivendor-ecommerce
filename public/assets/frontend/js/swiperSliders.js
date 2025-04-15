@@ -1,5 +1,5 @@
 /*======================
-  Home Page 
+  Home Page
   ======================
 */
 
@@ -147,7 +147,7 @@ let featuredVideoSwiper = new Swiper(".featuredVideoSwiper", {
 });
 
 /*======================
-  Product Details Page 
+  Product Details Page
   ======================
 */
 
@@ -183,3 +183,8 @@ const productSwiper = new Swiper(".product-swiper", {
     swiper: productThumbs,
   },
 });
+
+// Fix this selector to match your actual thumbnail class
+
+
+

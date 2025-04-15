@@ -237,3 +237,43 @@
         </div>
     </div>
 </div>
+
+
+@push('scripts')
+    <script>
+        $(document).ready(function() {
+            $('.quantity').each(function() {
+                const $container = $(this);
+                const quantityInput = $container.find('input[type="number"]');
+                const increaseBtn = $container.find('button[id^="increaseBtn"]');
+                const decreaseBtn = $container.find('button[id^="decreaseBtn"]');
+
+                let quantity = 1;
+
+                const updateQuantity = () => {
+                    quantityInput.val(quantity.toString().padStart(2, '0'));
+                };
+
+                increaseBtn.on('click', function() {
+                    quantity++;
+                    updateQuantity();
+                });
+
+                decreaseBtn.on('click', function() {
+                    if (quantity > 1) {
+                        quantity--;
+                        updateQuantity();
+                    }
+                });
+
+                quantityInput.on('input', function() {
+                    const newQuantity = parseInt($(this).val());
+                    quantity = newQuantity > 0 ? newQuantity : 1;
+                    updateQuantity();
+                });
+
+                updateQuantity();
+            });
+        });
+    </script>
+@endpush
