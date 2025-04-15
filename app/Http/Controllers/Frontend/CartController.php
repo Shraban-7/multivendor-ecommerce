@@ -39,21 +39,11 @@ class CartController extends Controller
             $existItem->update([
                 'quantity' => $request->quantity + $existItem->quantity
             ]);
-
-            $product->update([
-                'stock_out' => $product->stock_out + ($request->quantity + $existItem->quantity),
-                'stock_in' => $product->stock_in - ($request->quantity + $existItem->quantity),
-            ]);
         } else {
             CartItem::create([
                 'cart_id' => $cart->id,
                 'product_id' => $product->id,
                 'quantity' => $request->quantity ?? 1
-            ]);
-
-            $product->update([
-                'stock_out' => $product->stock_out + ($request->quantity),
-                'stock_in' => $product->stock_in - ($request->quantity),
             ]);
         }
 

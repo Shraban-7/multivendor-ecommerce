@@ -123,7 +123,7 @@
         $(document).ready(function() {
             $('.cartBtn').click(function() {
                 var product_id = $(this).data('id');
-                if(!product_id) {
+                if (!product_id) {
                     alert("No Product Selected!");
                     return;
                 }
@@ -140,9 +140,10 @@
                         if (data.unauthorized) {
                             window.location.href = "{{ route('login') }}";
                         } else if (data.success) {
+                            $('button[data-modal-hide="quick-view-modal-' + product_id + '"]').trigger('click');
                             toastr.success(data.message);
                             updateCartData();
-                            $('#quick-view-modal-' + product_id).addClass('hidden').removeClass('flex');
+
                             if ("{{ Route::currentRouteName() }}" === 'cart.details' && data
                                 .action === 'add_to_cart') {
                                 window.location.reload();
