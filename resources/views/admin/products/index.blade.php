@@ -10,7 +10,7 @@
 </div>
 
 <div class="table-responsive">
-    <table class="table mb-3 bg-white table-bordered">
+    <table id="product-table" class="table mb-3 bg-white table-bordered">
         <thead>
             <tr>
                 <th scope="col">Product</th>
@@ -62,10 +62,6 @@
             @endforeach
         </tbody>
     </table>
-</div>
-
-<div>
-    {{ $products->links() }}
 </div>
 
 <div class="modal fade" id="addModal" tabindex="-1" aria-hidden="true">
@@ -137,5 +133,11 @@
         </div>
     </div>
 </div>
+
+ @push('scripts')
+        <script>
+            new DataTable('#product-table');
+        </script>
+    @endpush
 
 @endsection

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Seller;
 
+use App\DataTables\ProductsDataTable;
 use App\Enums\StockType;
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
@@ -15,6 +16,7 @@ use App\Models\ProductUnit;
 use App\Models\ProductVariant;
 use App\Models\StockHistory;
 use Illuminate\Http\Request;
+use Yajra\DataTables\DataTables;
 
 class ProductController extends Controller
 {
@@ -22,7 +24,7 @@ class ProductController extends Controller
     {
         $seller_id = seller()->id;
 
-        $products = Product::where('seller_id', $seller_id)->latest('id')->paginate(15);
+        $products = Product::where('seller_id', $seller_id)->latest('id')->get();
         $categories = Category::category()->with('subcategories')->get();
         $brands = Brand::all();
 
@@ -333,7 +335,6 @@ class ProductController extends Controller
 
     public function addVariant(Request $request, Product $product)
     {
-        //dd($request->all());
         $data = $request->validate([
             'sku' => 'nullable|string',
             'stock' => 'required|numeric',
@@ -351,8 +352,6 @@ class ProductController extends Controller
         $data['price'] = $product->selling_price + $request->price;
 
         $data['attributes'] = json_encode($data['attributes']);
-
-        // dd($data);
 
         ProductVariant::create($data);
 
@@ -363,7 +362,6 @@ class ProductController extends Controller
 
     public function updateVariant(Request $request, Product $product, ProductVariant $variant)
     {
-        //dd($request->all());
         $data = $request->validate([
             'sku' => 'nullable|string',
             'stock' => 'required|numeric',
@@ -371,8 +369,6 @@ class ProductController extends Controller
             'attributes' => 'required|array',
             'description' => 'nullable|string'
         ]);
-
-
 
         $data['product_id'] = $product->id;
 
@@ -384,14 +380,7 @@ class ProductController extends Controller
 
         $data['attributes'] = json_encode($data['attributes']);
 
-        // dd($data);
-
-
         $variant->update($data);
-
-        // session()->flash('success', 'Variant Updated Successfully!');
-
-        // return successResponse('Variant Updated Successfully!');
 
         return redirect()->route('seller.products.details',$product->id)->with('success', 'Variant Updated Successfully!');
     }

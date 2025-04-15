@@ -10,7 +10,7 @@ class SellerController extends Controller
 {
     public function index()
     {
-        $sellers = Seller::paginate(10);
+        $sellers = Seller::get();
 
         return view('admin.seller', compact('sellers'));
     }

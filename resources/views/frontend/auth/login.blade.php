@@ -61,6 +61,7 @@
                   id="email"
                   type="email"
                   name="email"
+                  value="{{ old('email') }}"
                   placeholder="tescocommunity@gmail.com"
                   class="eq w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[1] focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base"
                 />

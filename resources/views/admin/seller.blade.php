@@ -7,7 +7,7 @@
 </div>
 
 <div class="table-responsive">
-    <table class="table table-bordered bg-white mb-3">
+    <table id="seller-table" class="table table-bordered bg-white mb-3">
         <thead>
             <tr>
                 <th scope="col">Seller</th>
@@ -61,6 +61,10 @@
     </table>
 </div>
 
-{{ $sellers->links() }}
+ @push('scripts')
+        <script>
+            new DataTable('#seller-table');
+        </script>
+    @endpush
 
 @endsection

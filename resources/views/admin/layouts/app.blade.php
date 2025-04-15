@@ -13,6 +13,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 
+    <!-- Datatable -->
+    <link rel="stylesheet" href="{{ asset('assets/dashboard/libs/data-table/datatables.min.css') }}" >
+
+
     <!-- <link href="assets/dashboard/libs/@mdi/font/css/materialdesignicons.min.css" rel="stylesheet" />
         <link href="assets/dashboard/libs/prismjs/themes/okaidia.css" rel="stylesheet"> -->
 
@@ -52,6 +56,9 @@
     <script src="{{ asset('assets/dashboard/js/theme.min.js') }}"></script>
     <script src="{{ asset('assets/dashboard/js/feather.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <!-- Datatable -->
+    <script src="{{ asset('assets/dashboard/libs/data-table/datatables.min.js') }} "></script>
     @stack('footer')
     @stack('scripts')
 </body>

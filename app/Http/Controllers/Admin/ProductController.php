@@ -12,7 +12,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::with('seller')->latest('id')->paginate(15);
+        $products = Product::with('seller')->latest('id')->get();
         $categories = Category::category()->with('subcategories')->get();
         $brands = Brand::all();
 

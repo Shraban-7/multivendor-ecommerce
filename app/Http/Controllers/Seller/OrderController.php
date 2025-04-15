@@ -22,7 +22,7 @@ class OrderController extends Controller
 
         $orders->$type();
 
-        $orders = $orders->latest('id')->paginate(10);
+        $orders = $orders->latest('id')->get();
 
         return view('seller.orders.index', compact('orders','type'));
     }

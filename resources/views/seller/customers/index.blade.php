@@ -7,7 +7,7 @@
 </div>
 
 <div class="table-responsive">
-    <table class="table table-bordered bg-white mb-3">
+    <table id="customer-table" class="table table-bordered bg-white mb-3">
         <thead>
             <tr>
                 <th scope="col">Customer</th>
@@ -25,8 +25,6 @@
                 <td>
                     <x-user :user="$customer" />
                 </td>
-
-
                 <td> {{ $customer->country->name ?? '' }} </td>
                 <td> {{ $customer->country->phone_code ?? '' }} </td>
                 <td> {{ $customer->phone }} </td>
@@ -38,6 +36,10 @@
     </table>
 </div>
 
-{{ $customers->links() }}
+ @push('scripts')
+        <script>
+            new DataTable('#customer-table');
+        </script>
+    @endpush
 
 @endsection
