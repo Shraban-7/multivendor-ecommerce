@@ -25,7 +25,7 @@
                     <div class="lg:w-[55%] md:w-[50%] w-full flex flex-col lg:flex-row gap-3 lg:gap-5">
                         <!-- Thumbnails -->
                         <div class="lg:w-2/12 xl:w-1/6 w-full order-2 lg:order-1">
-                            <div class="product-thumbnails overflow-hidden lg:h-[34rem] xl:h-[32rem] h-auto">
+                            <div class="modal-product-thumbnails overflow-hidden lg:h-[34rem] xl:h-[32rem] h-auto">
                                 <div class="swiper-wrapper">
                                     @foreach ($product->images as $thumb)
                                         <!-- thumb 1 -->
@@ -43,7 +43,7 @@
                         <!-- Main Image Slider -->
                         <div class="lg:w-10/12 xl:w-5/6 w-full relative order-1 lg:order-2">
                             <div
-                                class="product-swiper w-full h-80 sm:h-[28rem] md:h-[37rem] lg:h-[34rem] xl:h-[32rem] rounded-2xl overflow-hidden relative">
+                                class="modal-product-swiper w-full h-80 sm:h-[28rem] md:h-[37rem] lg:h-[34rem] xl:h-[32rem] rounded-2xl overflow-hidden relative">
                                 <div class="swiper-wrapper">
                                     @foreach ($product->images as $slider)
                                         <!-- product image 1 -->

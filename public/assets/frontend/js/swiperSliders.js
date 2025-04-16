@@ -184,7 +184,39 @@ const productSwiper = new Swiper(".product-swiper", {
   },
 });
 
-// Fix this selector to match your actual thumbnail class
+
+// Vertical Product Image Thumbnails for modal
+const modalProductThumbs = new Swiper(".modal-product-thumbnails", {
+  spaceBetween: 10,
+  slidesPerView: 5,
+  watchSlidesProgress: true,
+  direction: "horizontal",
+  spaceBetween: 10,
+  grabCursor: true,
+  breakpoints: {
+    1024: {
+      direction: "vertical",
+      spaceBetween: 5,
+    },
+    1280: {
+      direction: "vertical",
+      spaceBetween: 10,
+    },
+  },
+});
+
+// Product Images Slider for modal
+const modalProductSwiper = new Swiper(".modal-product-swiper", {
+  spaceBetween: 10,
+  grabCursor: true,
+  navigation: {
+    nextEl: ".swiper-button-next",
+    prevEl: ".swiper-button-prev",
+  },
+  thumbs: {
+    swiper: productThumbs,
+  },
+});
 
 
 
