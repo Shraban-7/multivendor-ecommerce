@@ -248,20 +248,31 @@
                         @php
                             $discount = ($product->discount_amount / $product->selling_price) * 100;
                         @endphp
-                        <div class="flex w-full gap-4 mt-5 xsm:w-4/5 md:w-11/12 lg:w-4/5">
+                        <div class="flex flex-wrap w-full gap-3 mt-5 xsm:w-4/5 md:w-11/12 lg:w-4/5">
                             <input type="hidden" name="quantity" class="qtyInputValue" value=""
                                 id="qtyInput{{ $product->id }}">
-                            <button data-id="{{ $product->id }}" type="button"
-                                class="cartBtn text-sm md:text-base font-medium flex-1 px-6 py-1.5 border border-primary text-primary rounded-full hover:bg-primary hover:text-white eq">
-                                Add To Cart
-                                <span class="block text-xs font-light">{{ number_format($discount) }}% of Discount</span>
-                            </button>
+
+                            @if ($product->stock_in > 0)
+                                <button data-id="{{ $product->id }}" type="button"
+                                    class="cartBtn text-sm md:text-base font-medium flex-1 px-6 py-2 border border-primary text-primary rounded-full hover:bg-primary hover:text-white transition-all">
+                                    Add To Cart
+                                    <span class="block text-xs font-light">{{ number_format($discount) }}% Discount</span>
+                                </button>
+                            @else
+                                <button data-id="{{ $product->id }}" type="button"
+                                    class="wishlistBtn text-sm md:text-base font-medium flex-1 px-6 py-2 border border-primary text-primary rounded-full hover:bg-primary hover:text-white transition-all">
+                                    <i class="fa-regular fa-heart"></i>
+                                    <span>Wishlist</span>
+                                </button>
+                            @endif
+
                             <button
-                                class="text-sm md:text-base font-medium flex-1 px-6 py-1.5 bg-primary text-white rounded-full hover:bg-theme-dark eq">
+                                class="text-sm md:text-base font-medium flex-1 px-6 py-2 bg-primary text-white rounded-full hover:bg-theme-dark transition-all">
                                 Buy Now
                                 <span class="block text-xs font-light">Faster Dispatch</span>
                             </button>
                         </div>
+
                     </div>
                 </div>
 

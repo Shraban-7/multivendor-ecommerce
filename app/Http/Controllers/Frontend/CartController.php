@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use App\Models\Cart;
 use App\Models\Product;
 use App\Models\CartItem;
+use App\Models\Wishlist;
 use App\Enums\DiscountType;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -19,7 +20,7 @@ class CartController extends Controller
         if (!$product) {
             return response()->json(['success' => false, 'error' => 'Product not found']);
         }
-
+        
         $cart = Cart::where([
             'user_id' => Auth::user()->id,
             'seller_id' => $product->seller_id
@@ -34,17 +35,26 @@ class CartController extends Controller
             }
         }
 
-        $existItem = CartItem::where('cart_id', $cart->id)->where('product_id', $product->id)->first();
-        if ($existItem) {
-            $existItem->update([
-                'quantity' => $request->quantity + $existItem->quantity
+        $cartItem = CartItem::where('cart_id', $cart->id)->where('product_id', $product->id)->first();
+        if ($cartItem) {
+            $cartItem->update([
+                'quantity' => $request->quantity + $cartItem->quantity
             ]);
         } else {
-            CartItem::create([
+           $cartItem = CartItem::create([
                 'cart_id' => $cart->id,
                 'product_id' => $product->id,
                 'quantity' => $request->quantity ?? 1
             ]);
+        }
+
+        $wishlist = Wishlist::where([
+            'user_id' => Auth::user()->id,
+            'product_id' => $cartItem->product_id
+        ])->first();
+
+        if ($wishlist) {
+            $wishlist->delete();
         }
 
         return response()->json(['success' => true, 'message' => 'Product added to cart', 'action' => 'add_to_cart']);

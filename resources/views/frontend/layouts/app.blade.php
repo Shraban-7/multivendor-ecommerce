@@ -178,6 +178,42 @@
         });
     </script>
 
+    <script>
+        $(document).ready(function() {
+            $('.wishlistBtn').click(function() {
+                var product_id = $(this).data('id');
+                if (!product_id) {
+                    alert("No Product Selected!");
+                    return;
+                }
+
+                $.ajax({
+                    url: "{{ route('wishlist.store') }}",
+                    type: "POST",
+                    data: {
+                        product_id: product_id,
+                    },
+                    success: function(data) {
+                        if (data.unauthorized) {
+                            window.location.href = "{{ route('login') }}";
+                        } else if (data.success) {
+                            toastr.success(data.message);
+                        } else {
+                            toastr.error(data.error);
+                        }
+                    },
+                    error: function(xhr) {
+                        if (xhr.status === 401) {
+                            window.location.href = "{{ route('login') }}";
+                        } else {
+                            toastr.error('Something went wrong!');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+
     @stack('scripts')
 </body>
 

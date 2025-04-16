@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Models\Review;
 use App\Models\Product;
+use App\Models\Wishlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -80,4 +82,5 @@ class ProductController extends Controller
             'averageRating',
         ));
     }
+
 }

@@ -49,13 +49,15 @@
     <!-- User Activity Section -->
     <div class="flex items-center justify-evenly order-2 md:order-3 lg:gap-5 gap-2 text-xs lg:text-sm">
         <!-- my items -->
-        <a href="#" class="flex items-center gap-1 hover:text-light-yellow eq">
-            <span><i class="fa-regular fa-heart"></i></span>
-            <p class="flex flex-col leading-none text-sm lg:text-base">
-                <span class="md:text-xs lg:text-sm font-[arial]">Recorder</span>
-                <span class="lg:text-base text-sm font-medium">My Items</span>
-            </p>
-        </a>
+        @auth
+            <a href="{{ route('wishlist.index') }}" class="flex items-center gap-1 hover:text-light-yellow eq">
+                <span><i class="fa-regular fa-heart"></i></span>
+                <p class="flex flex-col leading-none text-sm lg:text-base">
+                    <span class="md:text-xs lg:text-sm font-[arial]">Recorder</span>
+                    <span class="lg:text-base text-sm font-medium">My Items</span>
+                </p>
+            </a>
+        @endauth
         @if (!auth('web')->check() && !auth()->guard('seller')->check())
             <!-- Sign In -->
             <a href="{{ route('login') }}" class="flex items-center gap-1 hover:text-light-yellow eq">
@@ -114,40 +116,40 @@
         @endauth
 
         @auth('seller')
-        <!-- Profile Dropdown -->
-        <div class="relative group">
-            <button type="button" data-dropdown-toggle="profileDropdown"
-                class="flex items-center gap-2 hover:text-light-yellow profile-dropdown">
-                <span><i class="fa-regular fa-user text-lg"></i></span>
-                <p class="flex flex-col leading-none text-base lg:text-base">
-                    <span class="md:text-xs lg:text-sm font-[arial]">Hello,
-                        {{ auth('seller')->user()->fullname }}
-                    </span>
-                </p>
-            </button>
-            <!-- Dropdown Menu -->
-            <div id="profileDropdown"
-                class="absolute hidden  bg-white shadow-lg rounded-md mt-2 w-40 right-0 z-50">
-                <ul class="py-2 text-gray-700">
-                    <li>
-                        <a href="{{ route('seller.dashboard') }}" class="block px-4 py-2 hover:bg-gray-100">
-                            <i class="fa-solid fa-house-user mr-2"></i>
-                            Dashboard
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('sellers.shop', auth('seller')->user()->username) }}"
-                            class="block px-4 py-2 hover:bg-gray-100">
-                            <i class="fa-solid fa-store mr-2"></i> Your Shop
-                        </a>
-                    </li>
-                </ul>
+            <!-- Profile Dropdown -->
+            <div class="relative group">
+                <button type="button" data-dropdown-toggle="profileDropdown"
+                    class="flex items-center gap-2 hover:text-light-yellow profile-dropdown">
+                    <span><i class="fa-regular fa-user text-lg"></i></span>
+                    <p class="flex flex-col leading-none text-base lg:text-base">
+                        <span class="md:text-xs lg:text-sm font-[arial]">Hello,
+                            {{ auth('seller')->user()->fullname }}
+                        </span>
+                    </p>
+                </button>
+                <!-- Dropdown Menu -->
+                <div id="profileDropdown" class="absolute hidden  bg-white shadow-lg rounded-md mt-2 w-40 right-0 z-50">
+                    <ul class="py-2 text-gray-700">
+                        <li>
+                            <a href="{{ route('seller.dashboard') }}" class="block px-4 py-2 hover:bg-gray-100">
+                                <i class="fa-solid fa-house-user mr-2"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('sellers.shop', auth('seller')->user()->username) }}"
+                                class="block px-4 py-2 hover:bg-gray-100">
+                                <i class="fa-solid fa-store mr-2"></i> Your Shop
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </div>
         @endauth
 
         <!-- cart icon -->
-        <a href="{{ route('cart.details') }}" class="flex flex-col items-center leading-none hover:text-light-yellow eq">
+        <a href="{{ route('cart.details') }}"
+            class="flex flex-col items-center leading-none hover:text-light-yellow eq">
             <span class="block relative">
                 <i class="fa-solid fa-cart-arrow-down"></i>
                 <span id="cartCount"

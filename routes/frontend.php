@@ -6,6 +6,7 @@ use App\Http\Controllers\Frontend\ContactUsController;
 use App\Http\Controllers\Frontend\OrderController;
 use App\Http\Controllers\Frontend\ProductController;
 use App\Http\Controllers\Frontend\SellerController;
+use App\Http\Controllers\Frontend\WishlistController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -27,9 +28,7 @@ Route::get('/tracking', function () {
     return view('frontend.pages.tracking');
 })->name('tracking');
 
-Route::get('/wishlist', function () {
-    return view('frontend.pages.wishlist');
-})->name('wishlist');
+
 
 Route::prefix('sellers')->as('sellers.')->group(function () {
     Route::get('{seller:username}/shop', [SellerController::class, 'shop'])->name('shop');
@@ -46,6 +45,15 @@ Route::middleware('auth')->group(function () {
         Route::get('/data', [CartController::class, 'getLiveCartData'])->name('data');
     });
 
+
+    Route::prefix('wishlist')->as('wishlist.')->group(function () {
+        Route::get('/', [WishlistController::class, 'index'])->name('index');
+        Route::post('/store', [WishlistController::class, 'store'])->name('store');
+        Route::delete('{wishlist}/delete', [WishlistController::class, 'delete'])->name('delete');
+    });
+
+
+
     Route::prefix('orders')->as('orders.')->group(function () {
         Route::match(['get', 'post'], 'checkout/', [OrderController::class, 'checkout'])->name('checkout');
         Route::get('/', [OrderController::class, 'index'])->name('index');
@@ -54,4 +62,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/tracking/{invoice_id}', [OrderController::class, 'tracking'])->name('tracking');
         Route::match(['get', 'post'], '/review/{order}', [OrderController::class, 'review'])->name('review');
     });
+
+
 });

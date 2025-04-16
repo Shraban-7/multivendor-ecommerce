@@ -3,290 +3,164 @@
 @section('title', 'Wishlist')
 
 @section('content')
-<main class="wishlist-page">
-      <!-- Promotional Header Starts -->
-      <section>
-        <a
-          href="#"
-          class="block promo-header bg-light-yellow text-white py-3 sm:py-4"
-        >
-          <div
-            class="container flex flex-wrap justify-center xsm:justify-start items-center gap-x-2"
-          >
-            <i class="fa-solid fa-truck-fast text-lg"></i>
-            <h3 class="text-sm">Free Shipping Special For You</h3>
-            <p class="text-xs ml-2 xsm:ml-3">Limited Offer</p>
-          </div>
-        </a>
-      </section>
-      <!-- Promotional Header Ended -->
-
-      <!-- Page Breadcrumb -->
-      <section class="page-breadcrumb-links bg-jet-gray/10 py-4 md:py-6">
-        <nav class="flex container" aria-label="Breadcrumb">
-          <ol
-            class="inline-flex flex-wrap items-center space-x-1 md:space-x-2 rtl:space-x-reverse"
-          >
-            <li class="inline-flex items-center">
-              <a
-                href="/"
-                class="inline-flex items-center text-sm text-davy-gray hover:text-primary eq"
-              >
-                <svg
-                  class="w-3 h-3 me-2.5"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"
-                  />
-                </svg>
-                Home
-              </a>
-            </li>
-            <li class="inline-flex items-center">
-              <a
-                href="#"
-                class="inline-flex items-center text-sm text-davy-gray hover:text-primary eq"
-              >
-                <svg
-                  class="rtl:rotate-180 w-3 h-3 text-davy-gray mx-1"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 6 10"
-                >
-                  <path
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="m1 9 4-4-4-4"
-                  />
-                </svg>
-                Account
-              </a>
-            </li>
-            <li aria-current="page">
-              <div class="flex items-center">
-                <svg
-                  class="rtl:rotate-180 w-3 h-3 text-davy-gray mx-1"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 6 10"
-                >
-                  <path
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="m1 9 4-4-4-4"
-                  />
-                </svg>
-                <span class="ms-1 text-sm text-butterfly-blue md:ms-2"
-                  >Track Order</span
-                >
-              </div>
-            </li>
-          </ol>
-        </nav>
-      </section>
-
-      <!-- Track Order Main Section Starts -->
-      <section class="track-order-section container section-padding">
-        <div class="border rounded-lg">
-          <h1 class="text-lg font-medium px-6 py-4 text-theme-dark">
-            Wishlist
-          </h1>
-
-          <!-- Table Header -->
-          <div
-            class="hidden md:grid md:grid-cols-[2fr,1fr,1fr,1fr] gap-4 bg-jet-gray/10 border px-6 py-3 font-medium text-davy-gray text-sm"
-          >
-            <h4>PRODUCTS</h4>
-            <h4>PRICE</h4>
-            <h4>STOCK STATUS</h4>
-            <h4>ACTIONS</h4>
-          </div>
-
-          <!-- Product Items -->
-          <div class="divide-y divide-gray-200 text-sm rounded-b-lg shadow">
-            <!-- Popsnap Camera -->
-            <div
-              class="grid md:grid-cols-[2fr,1fr,1fr,1fr] gap-4 px-6 py-3 items-center"
-            >
-              <div class="flex gap-4 items-center">
-                <div
-                  class="img-wrap w-20 h-20 flex items-center justify-center"
-                >
-                  <img
-                    src="{{ asset('assets/frontend/images/wishlist-prod-1.png') }}"
-                    alt="Popsnap Camera"
-                    class="object-contain"
-                  />
+    <main class="wishlist-page">
+        <!-- Promotional Header Starts -->
+        <section>
+            <a href="#" class="block promo-header bg-light-yellow text-white py-3 sm:py-4">
+                <div class="container flex flex-wrap justify-center xsm:justify-start items-center gap-x-2">
+                    <i class="fa-solid fa-truck-fast text-lg"></i>
+                    <h3 class="text-sm">Free Shipping Special For You</h3>
+                    <p class="text-xs ml-2 xsm:ml-3">Limited Offer</p>
                 </div>
-                <p class="flex-1 pr-12">
-                  Popsnap Camera, Pink, Ultra-High-Resolution Portable Video
-                  Creator with Intuitive Controls, Durable Build, Adjustable
-                  Lighting Settings
-                </p>
-              </div>
-              <div class="flex items-center gap-2">
-                <span class="text-gray-400 line-through">$1299</span>
-                <span class="font-semibold">$999</span>
-              </div>
-              <div class="text-green-600 font-medium">IN STOCK</div>
-              <div class="flex items-center gap-4">
-                <button
-                  class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600"
-                >
-                  ADD TO CARD
-                </button>
-                <button class="text-gray-400 hover:text-gray-600">
-                  &times;
-                </button>
-              </div>
-            </div>
+            </a>
+        </section>
+        <!-- Promotional Header Ended -->
 
-            <!-- Michael Kors Bag -->
-            <div
-              class="grid md:grid-cols-[2fr,1fr,1fr,1fr] gap-4 px-6 py-3 items-center"
-            >
-              <div class="flex gap-4 items-center">
-                <div
-                  class="img-wrap w-20 h-20 flex items-center justify-center"
-                >
-                  <img
-                    src="{{ asset('assets/frontend/images/wishlist-prod-2.png') }}"
-                    alt="Michael Kors Bag"
-                    class="w-full h-full object-contain"
-                  />
-                </div>
-                <p class="flex-1 pr-12">
-                  Michael Kors Jet Set Travel Large Logo Tote-Vanilla
-                </p>
-              </div>
-              <div class="font-semibold">$2,300.00</div>
-              <div class="text-green-600 font-medium">IN STOCK</div>
-              <div class="flex items-center gap-4">
-                <button
-                  class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600"
-                >
-                  ADD TO CARD
-                </button>
-                <button class="text-gray-400 hover:text-gray-600">
-                  &times;
-                </button>
-              </div>
-            </div>
+        <!-- Page Breadcrumb -->
+        <section class="page-breadcrumb-links bg-jet-gray/10 py-4 md:py-6">
+            <nav class="flex container" aria-label="Breadcrumb">
+                <ol class="inline-flex flex-wrap items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
+                    <li class="inline-flex items-center">
+                        <a href="/" class="inline-flex items-center text-sm text-davy-gray hover:text-primary eq">
+                            <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                    d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
+                            </svg>
+                            Home
+                        </a>
+                    </li>
+                    <li class="inline-flex items-center">
+                        <a href="#" class="inline-flex items-center text-sm text-davy-gray hover:text-primary eq">
+                            <svg class="rtl:rotate-180 w-3 h-3 text-davy-gray mx-1" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="m1 9 4-4-4-4" />
+                            </svg>
+                            Account
+                        </a>
+                    </li>
+                    <li aria-current="page">
+                        <div class="flex items-center">
+                            <svg class="rtl:rotate-180 w-3 h-3 text-davy-gray mx-1" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="m1 9 4-4-4-4" />
+                            </svg>
+                            <span class="ms-1 text-sm text-butterfly-blue md:ms-2">Track Order</span>
+                        </div>
+                    </li>
+                </ol>
+            </nav>
+        </section>
 
-            <!-- eos Lotion -->
-            <div
-              class="grid md:grid-cols-[2fr,1fr,1fr,1fr] gap-4 px-6 py-3 items-center"
-            >
-              <div class="flex gap-4 items-center">
-                <div
-                  class="img-wrap w-20 h-20 flex items-center justify-center"
-                >
-                  <img
-                    src="{{ asset('assets/frontend/images/wishlist-prod-3.png') }}"
-                    alt="eos Lotion"
-                    class="object-contain"
-                  />
-                </div>
-                <p class="flex-1 pr-12">
-                  eos Shea Better Body Lotion for Dry Skin, Vanilla Cashmere, 16
-                  fl oz
-                </p>
-              </div>
-              <div class="font-semibold">$70.00</div>
-              <div class="text-green-600 font-medium">IN STOCK</div>
-              <div class="flex items-center gap-4">
-                <button
-                  class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600"
-                >
-                  ADD TO CARD
-                </button>
-                <button class="text-gray-400 hover:text-gray-600">
-                  &times;
-                </button>
-              </div>
-            </div>
+        <!-- Track Order Main Section Starts -->
+        <section class="track-order-section container section-padding">
+            <div class="border rounded-lg">
+                <h1 class="text-lg font-medium px-6 py-4 text-theme-dark">
+                    Wishlist
+                </h1>
 
-            <!-- HORMEL GATHERINGS -->
-            <div
-              class="grid md:grid-cols-[2fr,1fr,1fr,1fr] gap-4 px-6 py-3 items-center"
-            >
-              <div class="flex gap-4 items-center">
+                <!-- Table Header -->
                 <div
-                  class="img-wrap w-20 h-20 flex items-center justify-center"
-                >
-                  <img
-                    src="{{ asset('assets/frontend/images/wishlist-prod-4.png') }}"
-                    alt="HORMEL GATHERINGS"
-                    class="object-contain"
-                  />
+                    class="hidden md:grid md:grid-cols-[2fr,1fr,1fr,1fr] gap-4 bg-jet-gray/10 border px-6 py-3 font-medium text-davy-gray text-sm">
+                    <h4>PRODUCTS</h4>
+                    <h4>PRICE</h4>
+                    <h4>STOCK STATUS</h4>
+                    <h4>ACTIONS</h4>
                 </div>
-                <p class="flex-1 pr-12">
-                  HORMEL GATHERINGS, Honey Ham and Turkey with Cheese and
-                  Crackers, Deli Party, 28 oz Plastic Tray
-                </p>
-              </div>
-              <div class="flex items-center gap-2">
-                <span class="text-gray-400 line-through">$250.00</span>
-                <span class="font-semibold">$220.00</span>
-              </div>
-              <div class="text-red-500 text-sm font-medium">OUT OF STOCK</div>
-              <div class="flex items-center gap-4">
-                <button
-                  class="bg-gray-300 text-gray-600 px-4 py-2 rounded cursor-not-allowed text-sm"
-                >
-                  ADD TO CARD
-                </button>
-                <button class="text-gray-400 hover:text-gray-600">
-                  &times;
-                </button>
-              </div>
-            </div>
 
-            <!-- No Boundaries Set -->
-            <div
-              class="grid md:grid-cols-[2fr,1fr,1fr,1fr] gap-4 px-6 py-3 items-center"
-            >
-              <div class="flex gap-4 items-center">
-                <div
-                  class="img-wrap w-20 h-20 flex items-center justify-center"
-                >
-                  <img
-                    src="{{ asset('assets/frontend/images/wishlist-prod-5.png') }}"
-                    alt="No Boundaries Set"
-                    class="object-contain"
-                  />
+                <!-- Product Items -->
+                <div class="divide-y divide-gray-200 text-sm rounded-b-lg shadow">
+                    <!-- Popsnap Camera -->
+                    @foreach ($wishlists as $wishlist)
+                        <div class="grid md:grid-cols-[2fr,1fr,1fr,1fr] gap-4 px-6 py-3 items-center">
+                            <div class="flex gap-4 items-center">
+                                <div class="img-wrap w-20 h-20 flex items-center justify-center">
+                                    <img src="{{ storage_url($wishlist->product->thumbnail) }}" alt="Popsnap Camera"
+                                        class="object-contain" />
+                                </div>
+                                <p class="flex-1 pr-12">
+                                    {{ $wishlist->product->name }}
+                                </p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                @php
+                                    if ($wishlist->product->discount_type != null) {
+                                        if ($wishlist->product->discount_type == \App\Enums\DiscountType::FLAT) {
+                                            $discount_price =
+                                                $wishlist->product->selling_price - $wishlist->product->discount_amount;
+                                        } elseif (
+                                            $wishlist->product->discount_type == \App\Enums\DiscountType::PERCENTAGE
+                                        ) {
+                                            $discount_price =
+                                                $wishlist->product->selling_price -
+                                                ($wishlist->product->selling_price *
+                                                    $wishlist->product->discount_amount) /
+                                                    100;
+                                        }
+                                    } else {
+                                        $discount_price = $wishlist->product->selling_price;
+                                    }
+                                @endphp
+                                <span
+                                    class="text-gray-400 line-through">{{ money($wishlist->product->selling_price) }}</span>
+                                <span class="font-semibold">{{ money($discount_price) }}</span>
+                            </div>
+                            @if ($wishlist->product->stock_in > 0)
+                                <div class="text-green-600 font-medium">IN STOCK</div>
+                            @else
+                                <div class="text-orange-600 font-medium">STOCK OUT</div>
+                            @endif
+                            <div class="flex items-center gap-4">
+                                <input type="hidden" name="quantity" class="qtyInputValue" value=""
+                                    id="qtyInput{{ $wishlist->product->id }}">
+                                <button data-id="{{ $wishlist->product->id }}" type="button"
+                                    class="cartBtn bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600">
+                                    ADD TO CARD
+                                </button>
+                                <button class="text-gray-400 hover:text-gray-600">
+                                    <i class="fas fa-x"></i>
+                                </button>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
-                <p class="flex-1 pr-12">
-                  No Boundaries Fairisle Jacquard Pullover and Beanie Set,
-                  2-Piece, Women's and Women's Plus
-                </p>
-              </div>
-              <div class="font-semibold">$1,499.99</div>
-              <div class="text-green-600 font-medium">IN STOCK</div>
-              <div class="flex items-center gap-4">
-                <button
-                  class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600"
-                >
-                  ADD TO CARD
-                </button>
-                <button class="text-gray-400 hover:text-gray-600">
-                  &times;
-                </button>
-              </div>
             </div>
-          </div>
-        </div>
-      </section>
-      <!-- Track Order Main Section Ended -->
+        </section>
+        <!-- Track Order Main Section Ended -->
     </main>
+
+    @push('scripts')
+        <script>
+            $(document).ready(function() {
+                $('.wishlistRemoveBtn').on('click', function() {
+                    let wishlistId = $(this).data('id');
+                    let $row = $(this).closest('.grid');
+
+                    if (!wishlistId) return;
+
+                    $.ajax({
+                        url: `/wishlist/${wishlistId}`,
+                        type: 'DELETE',
+                        data: {
+                            _token: $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                $row.fadeOut(300, function() {
+                                    $(this).remove();
+                                });
+                            } else {
+                                alert(response.message || 'Failed to remove item');
+                            }
+                        },
+                        error: function() {
+                            alert('Something went wrong. Please try again.');
+                        }
+                    });
+                });
+            });
+        </script>
+    @endpush
 @endsection
