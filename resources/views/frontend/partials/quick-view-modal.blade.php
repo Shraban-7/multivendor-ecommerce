@@ -101,10 +101,30 @@
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-2">
-                                    <!-- 5 star rating -->
-                                    <span class="text-xs">5.00 Star</span>
-                                    <!-- Repeat for 5 stars -->
-                                    <span>★★★★★</span>
+                                    @php
+                                        $averageRating = $product->reviews->avg('rating');
+                                        $averageRating = number_format($averageRating, 2); // Format to 2 decimal places
+                                        $fullStars = floor($averageRating);
+                                        $halfStar = $averageRating - $fullStars >= 0.5 ? true : false;
+                                        $emptyStars = 5 - $fullStars - ($halfStar ? 1 : 0);
+                                    @endphp
+
+                                    <span class="text-xs">{{ $averageRating }} Star</span>
+
+                                    <!-- Star display -->
+                                    <span class="text-yellow-500 text-sm">
+                                        @for ($i = 0; $i < $fullStars; $i++)
+                                            ★
+                                        @endfor
+
+                                        @if ($halfStar)
+                                            <span class="opacity-50">★</span>
+                                        @endif
+
+                                        @for ($i = 0; $i < $emptyStars; $i++)
+                                            <span class="text-gray-300">★</span>
+                                        @endfor
+                                    </span>
                                 </div>
                             </div>
                             <div class="flex items-center gap-2">
@@ -210,7 +230,8 @@
                                                 class="w-5 h-5 flex items-center justify-center text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 eq active:text-primary rounded text-sm font-bold">
                                                 <i class="fa-solid fa-minus"></i>
                                             </button>
-                                            <input readonly id="quantity-{{ $product->id }}" type="number" min="1"
+                                            <input readonly id="quantity-{{ $product->id }}" type="number"
+                                                min="1"
                                                 class="text-center text-persian-blue w-12 h-5 text-sm font-medium border-0 focus:ring-0" />
                                             <button id="increaseBtn-{{ $product->id }}"
                                                 class="w-5 h-5 flex items-center justify-center text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 eq active:text-primary rounded text-sm font-bold">

@@ -213,8 +213,8 @@ const modalProductSwiper = new Swiper(".modal-product-swiper", {
     nextEl: ".swiper-button-next",
     prevEl: ".swiper-button-prev",
   },
-  thumbs: {
-    swiper: productThumbs,
+  modalThumbs: {
+    swiper: modalProductThumbs,
   },
 });
 
