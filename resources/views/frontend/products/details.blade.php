@@ -747,7 +747,7 @@
                 @if ($products->count() >= 8)
                     <!-- Load More Btn -->
                     <div class="mt-10 text-center load-more-btn">
-                        <button data-page="1" data-url="{{ route('product.details', $product->slug) }}"
+                        <button data-page="1" data-url="{{ route('products.details', $product->slug) }}"
                             id="loadMoreBtn"
                             class="inline-flex items-center gap-2 px-5 py-2 text-base text-white theme-btn bg-theme-teal hover:bg-aqua-deep xl:text-xl md:text-lg eq"
                             type="button">

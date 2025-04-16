@@ -150,7 +150,7 @@
                                                     <!-- Item Image -->
                                                     <div
                                                         class="relative w-24 overflow-hidden rounded-md item-image-wrap h-28 xsm:w-36 xsm:h-40">
-                                                        <a href="{{ route('product.details', $item->product->slug) }}">
+                                                        <a href="{{ route('products.details', $item->product->slug) }}">
                                                             <img src="{{ storage_url($item->product->thumbnail) }}"
                                                                 alt="Product" class="object-cover w-full h-full" />
                                                         </a>
@@ -252,7 +252,7 @@
                                     class="relative text-base xsm:text-sm sm:text-base md:text-sm lg:text-sm xl:text-base rounded-xl hover:shadow-lg eq">
                                     <div
                                         class="relative overflow-hidden rounded-lg h-60 xsm:h-48 sm:h-56 lg:h-56 xl:h-64 2xl:h-60">
-                                        <a href="{{ route('product.details', $product->slug) }}"
+                                        <a href="{{ route('products.details', $product->slug) }}"
                                             class="block w-full h-full">
                                             <img src="{{ storage_url($product->thumbnail) }}"
                                                 alt="ASUS Vivo15 OLED K513 Core-i5 11th Gen 15.6″ FHD Laptop"
@@ -267,7 +267,7 @@
 
                                     <div class="p-4 xsm:p-2 lg:p-5">
                                         <h3 class="font-medium lg:mb-2 xl:mb-0 xsm:h-10 sm:h-12 md:h-10 lg:h-14 xl:h-12">
-                                            <a href="{{ route('product.details', $product->slug) }}"
+                                            <a href="{{ route('products.details', $product->slug) }}"
                                                 class="line-clamp-2 lg:line-clamp-3 xl:line-clamp-2 hover:text-primary eq">{{ $product->name }}</a>
                                         </h3>
                                         <p class="text-leaf-green">Almost sold Out</p>

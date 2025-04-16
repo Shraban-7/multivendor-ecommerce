@@ -49,7 +49,7 @@
                         d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
                 </svg>
             </button>
-            <form method="GET" action="{{ route('category_details', $category->slug) }}" class="space-y-5">
+            <form method="GET" action="{{ route('category.details', $category->slug) }}" class="space-y-5">
                 <!-- Categories -->
                 <div>
                     <h3 class="pb-2 mb-3 text-lg border-b border-dashed border-jet-gray">
@@ -172,7 +172,7 @@
 
                 <!-- Action Buttons -->
                 <div class="flex items-start gap-3">
-                    <a href="{{ route('category_details', $category->slug) }}"
+                    <a href="{{ route('category.details', $category->slug) }}"
                         class="px-5 py-2 text-sm text-gray-600 border-2 rounded-full border-theme-dark hover:bg-persian-red hover:text-theme-light eq">
                         Reset
                     </a>
@@ -197,7 +197,7 @@
                 <div class="flex items-start justify-between flex-nowrap">
                     <div class="flex flex-wrap items-center w-10/12 gap-2 sm:gap-4 xl:w-auto lg:w-9/12 lg:w-auto">
                         <!-- All Categories -->
-                        <form method="GET" action="{{ route('category_details', $category->slug) }}"
+                        <form method="GET" action="{{ route('category.details', $category->slug) }}"
                             class="flex items-center gap-1 rounded-3xl bg-aqua-deep hover:bg-rangoon-green eq sm:text-sm text-xs md:text-base sm:pl-5 pl-3 sm:!pr-2 !pr-1 py-2.5 sm:py-3 inline-flex text-white cursor-pointer">
                             <label for="sort-by" class="block sr-only whitespace-nowrap">All Categories</label>
                             <select name="subcategory" id="sort-by" onchange="this.form.submit()"
@@ -284,7 +284,7 @@
                         <!-- Material -->
 
                         @foreach ($productAttributes as $productAttribute)
-                            <form method="GET" action="{{ route('category_details', $category->slug) }}"
+                            <form method="GET" action="{{ route('category.details', $category->slug) }}"
                                 class="flex items-center gap-1 rounded-3xl bg-theme-light/90 hover:bg-aqua-deep/10 eq sm:text-sm text-xs sm:pl-5 pl-4 sm:!pr-2 pr-1 sm:py-3 py-2.5 inline-flex text-jet-gray">
                                 <label for="attribute-{{ $productAttribute->name }}"
                                     class="block sr-only whitespace-nowrap">{{ $productAttribute->name }}</label>
@@ -362,7 +362,7 @@
             @if ($products->count() >= 8)
                 <!-- Load More Btn -->
                 <div class="mt-10 text-center load-more-btn">
-                    <button data-page="1" data-url="{{ route('category_details', $category->slug) }}" id="loadMoreBtn"
+                    <button data-page="1" data-url="{{ route('category.details', $category->slug) }}" id="loadMoreBtn"
                         class="inline-flex items-center gap-2 px-5 py-2 text-base text-white theme-btn bg-theme-teal hover:bg-aqua-deep xl:text-xl md:text-lg eq"
                         type="button">
                         <span>Load More</span>

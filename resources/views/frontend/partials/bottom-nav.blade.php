@@ -190,7 +190,7 @@
                 </li>
                 @foreach (nav_categories() as $category)
                     <li>
-                        <a href="{{ route('category_details',$category->slug) }}"
+                        <a href="{{ route('category.details',$category->slug) }}"
                             class="block py-2 px-3 text-persian-blue rounded hover:bg-primary md:hover:bg-transparent md:border-0 md:hover:text-primary md:p-0 eq md:text-persian-blue nav-link">{{ $category->name }}</a>
                     </li>
                 @endforeach

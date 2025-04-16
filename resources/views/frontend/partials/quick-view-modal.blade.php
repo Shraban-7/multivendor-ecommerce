@@ -81,7 +81,7 @@
                                 <span class="text-jet-gray font-light">Exclusive offer</span>
                             </div>
                             <h1 class="lg:text-base text-rustic-red text-sm lg:pr-5 xl:pr-16">
-                                <a href="{{ route('product.details', $product->slug) }}" class="hover:text-primary eq">
+                                <a href="{{ route('products.details', $product->slug) }}" class="hover:text-primary eq">
                                     {{ $product->name }}
                                 </a>
                             </h1>

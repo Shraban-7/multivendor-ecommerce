@@ -21,7 +21,7 @@
                                         class="w-full border border-[jet-gray]/30 rounded-md hover:shadow-md eq overflow-hidden">
                                         <div
                                             class="h-32 px-3 pt-5 pb-3 overflow-hidden item-img sm:h-40 md:h-52 md:pt-10 md:px-5 md:pb-5">
-                                            <a href="{{ route('product.details', $product->slug) }}">
+                                            <a href="{{ route('products.details', $product->slug) }}">
                                                 <img class="object-contain w-full h-full"
                                                     src="{{ storage_url($product->thumbnail) }}"
                                                     alt="Xbox Series S 1TB + Controller" />
@@ -40,7 +40,7 @@
                                                     <h2
                                                         class="w-full text-sm capitalize text-theme-dark group-hover/community-pro-card:text-butterfly-blue eq line-clamp-2">
                                                         <a
-                                                            href="{{ route('product.details', $product->slug) }}">{{ $product->name }}</a>
+                                                            href="{{ route('products.details', $product->slug) }}">{{ $product->name }}</a>
                                                     </h2>
                                                     <div class="flex flex-wrap gap-x-2 sm:text-lg">
                                                         @php

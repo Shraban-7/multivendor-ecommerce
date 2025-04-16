@@ -9,15 +9,15 @@ use App\Http\Controllers\Frontend\SellerController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::get('/category/{slug}', [CategoryController::class, 'category_details'])->name('category_details');
+Route::get('{slug}/category', [CategoryController::class, 'details'])->name('category.details');
 
 Route::get('/contact-us', [ContactUsController::class, 'contactUs'])->name('contactUs');
 
-Route::get('/product-details/{slug}', [ProductController::class, 'details'])->name('product.details');
+Route::prefix('products')->as('products.')->group(function(){
+    Route::get('{slug}/details', [ProductController::class, 'details'])->name('details');
+});
 
-Route::get('/shop-review', function () {
-    return view('frontend.shops.review');
-})->name('shop_review');
+
 
 Route::get('/no-order', function () {
     return view('frontend.pages.no-order');
@@ -34,6 +34,7 @@ Route::get('/wishlist', function () {
 Route::prefix('sellers')->as('sellers.')->group(function () {
     Route::get('{seller:username}/shop', [SellerController::class, 'shop'])->name('shop');
     Route::post('{seller:username}/follow', [SellerController::class, 'follow'])->middleware('auth')->name('follow');
+    Route::get('{seller:username}/reviews', [SellerController::class, 'review'])->name('reviews');
 });
 
 Route::middleware('auth')->group(function () {

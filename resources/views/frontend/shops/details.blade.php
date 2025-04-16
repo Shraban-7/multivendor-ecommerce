@@ -65,7 +65,7 @@
                                 <div class="text-xs text-jet-gray">Sold</div>
                             </div>
                             <div class="items">
-                                <div class="font-medium">{{ count($seller->products) }}</div>
+                                <div class="font-medium">{{ $totalItem }}</div>
                                 <div class="text-xs text-jet-gray">Items</div>
                             </div>
                         </div>
@@ -110,7 +110,7 @@
                     <div class="flex items-center gap-4 relative">
                         {{-- Show first two --}}
                         @foreach ($firstTwo as $category)
-                            <a href="#" class="hover:text-black eq">
+                            <a href="{{ route('category.details', $category->slug) }}" class="hover:text-black eq">
                                 {{ $category->name }}
                             </a>
                         @endforeach
@@ -124,7 +124,8 @@
                                 <div
                                     class="dropdown-menu absolute top-full mt-2 left-0 bg-white border rounded shadow-lg z-50 min-w-max px-4 py-2 space-y-2 hidden">
                                     @foreach ($remaining as $category)
-                                        <a href="#" class="block hover:text-primary">
+                                        <a href="{{ route('category.details', $category->slug) }}"
+                                            class="block hover:text-primary">
                                             {{ $category->name }}
                                         </a>
                                     @endforeach
@@ -133,13 +134,13 @@
                         @endif
                     </div>
 
-                    <a href="/shopReviews.html"
-                        class="hover:text-black eq inline-flex items-center gap-1 flex-nowrap">Reviews (5.00<i
-                            class="fa-solid fa-star text-xs"></i>)</a>
+                    <a href="{{ route('sellers.reviews', $seller->username) }}"
+                        class="hover:text-black eq inline-flex items-center gap-1 flex-nowrap">Reviews
+                        ({{ number_format($avgRating, 2) }}<i class="fa-solid fa-star text-xs"></i>)</a>
                     <!-- shop product search -->
                     <div class="xsm:w-6/12 md:w-5/12 lg:w-3/12 w-9/12 mr-auto xsm:ml-auto sm:mr-0 sm:ml-auto">
                         <div class="relative">
-                            <input type="text" placeholder="Search all {{ count($seller->products) }} items"
+                            <input type="text" placeholder="Search all {{ $totalItem }} items"
                                 class="text-sm md:text-xs lg:text-base w-full py-2 pl-4 lg:py-2 lg:pl-4 pr-10 rounded-full border border-gray-300 focus:outline-none focus:border-primary focus:ring-[2px] focus:ring-light-yellow text-jet-gray placeholder:text-jet-gray eq" />
                             <button
                                 class="absolute top-1/2 right-1 transform -translate-y-1/2 bg-theme-light hover:bg-aqua-deep/10 p-2 rounded-full">
@@ -156,17 +157,18 @@
 
             <!-- Sorting -->
             <div class="mt-3 flex items-center justify-between">
-                <h6>{{ count($seller->products) }} Items</h6>
-                <form
+                <h6> {{ $totalItem }} Items</h6>
+                <form method="GET" action="{{ route('sellers.shop', $seller->username) }}"
                     class="flex items-center gap-1 rounded-3xl bg-theme-light/90 hover:bg-aqua-deep/10 eq sm:text-sm text-xs sm:pl-5 pl-4 sm:!pr-2 pr-1 sm:py-3 py-2.5 inline-flex text-jet-gray">
                     <label for="sort-by" class="block whitespace-nowrap">Sort By:</label>
-                    <select id="sort-by"
+                    <select id="sort-by" name="sortBy" onchange="this.form.submit()"
                         class="block w-full bg-transparent appearance-none border-0 focus:outline-none focus:ring-0 focus:border-gray-200 peer cursor-pointer">
                         <option selected="">Relevance</option>
-                        <option value="best-selling">Best Selling</option>
-                        <option value="trending">Trending</option>
-                        <option value="popularity">Popularity</option>
-                        <option value="new-arrivals">New Arrivals</option>
+                        <option value="best-selling" {{ request('sortBy') == 'best-selling' ? 'selected' : '' }}>Best
+                            Selling</option>
+                        <option value="trending" {{ request('sortBy') == 'trending' ? 'selected' : '' }}>Trending</option>
+                        <option value="new-arrivals" {{ request('sortBy') == 'new-arrivals' ? 'selected' : '' }}>New
+                            Arrivals</option>
                     </select>
                 </form>
             </div>
@@ -178,7 +180,7 @@
             </div>
 
             <div class="load-more-btn text-center mt-10">
-                <button id="loadMoreBtn" data-page="1" data-url="{{ route('sellers.shop', $seller->username) }}"
+                <button id="loadMoreBtn" data-page="1" data-url="{{ route('sellers.shop', $seller->username) }}?sortBy={{ request()->sortBy }}"
                     class="theme-btn bg-theme-teal hover:bg-aqua-deep text-white px-5 py-2 xl:text-xl text-base md:text-lg inline-flex gap-2 items-center eq"
                     type="button">
                     <span>Load More</span>

@@ -17,7 +17,7 @@
                         <!-- slide 1 -->
                         @foreach ($categories as $category)
                             <div class="swiper-slide group/categores eq">
-                                <a href="{{ route('category_details', $category->slug) }}" class="flex flex-col items-center block w-full product-card">
+                                <a href="{{ route('category.details', $category->slug) }}" class="flex flex-col items-center block w-full product-card">
                                     <!-- slide image -->
                                     <div class="relative w-16 h-16 card-image lg:h-28 lg:w-28 md:w-24 md:h-24">
                                         <img src="{{ asset('assets/' . $category->image) }}" alt="Grocery"
@@ -44,7 +44,7 @@
                                 <div class="flex flex-col items-center block w-full p-2 product-card">
                                     <div class="w-full overflow-hidden rounded-md bg-theme-light hover:shadow-md eq">
                                         <div class="h-32 px-10 pt-5 overflow-hidden item-img sm:h-40 md:h-52">
-                                            <a href="{{ route('product.details', $product->slug) }}">
+                                            <a href="{{ route('products.details', $product->slug) }}">
                                                 <img class="object-contain w-full h-full"
                                                     src="{{ storage_url($product->thumbnail) }}"
                                                     alt="{{ $product->name }}" />
@@ -54,7 +54,7 @@
                                             <h2
                                                 class="h-16 text-sm font-semibold text-theme-dark group-hover/interest-pro-card:text-persian-blue line-clamp-3 md:line-clamp-2 eq md:text-base md:h-12">
                                                 <a
-                                                    href="{{ route('product.details', $product->slug) }}">{{ $product->name }}</a>
+                                                    href="{{ route('products.details', $product->slug) }}">{{ $product->name }}</a>
                                             </h2>
                                             <div class="text-xs rating-stars text-light-yellow">
                                                 <i class="fa-solid fa-star"></i>

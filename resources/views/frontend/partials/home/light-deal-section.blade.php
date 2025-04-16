@@ -38,8 +38,8 @@
                 <!-- slide 1 -->
                 @foreach ($light_deals as $light_deal)
                     <div class="px-1 py-5 swiper-slide">
-                        <a href="{{ route('product.details', $light_deal->slug) }}" class="block w-full p-3 rounded-lg product-card hover:shadow-lg eq group">
-                            {{-- {{ route('product.details', $light_deal->slug) }} --}}
+                        <a href="{{ route('products.details', $light_deal->slug) }}" class="block w-full p-3 rounded-lg product-card hover:shadow-lg eq group">
+                            {{-- {{ route('products.details', $light_deal->slug) }} --}}
                             <!-- slide image -->
                             <div class="card-image h-[16.5rem] relative rounded-lg overflow-hidden">
                                 <img src="{{ storage_url($light_deal->thumbnail) }}" alt="{{ $light_deal->name }}"

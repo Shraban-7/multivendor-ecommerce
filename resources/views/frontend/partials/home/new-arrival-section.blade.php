@@ -20,7 +20,7 @@
                                     <div
                                         class="w-full border border-[jet-gray]/30 rounded-md hover:shadow-md eq overflow-hidden">
                                         <div class="h-32 pt-5 overflow-hidden item-img sm:h-40 md:h-52">
-                                            <a href="{{ route('product.details', $product->slug) }}">
+                                            <a href="{{ route('products.details', $product->slug) }}">
                                                 <img class="object-contain w-full h-full"
                                                     src="{{ storage_url($product->thumbnail) }}"
                                                     alt="Exclusive Chair with foam seat" />
@@ -39,7 +39,7 @@
                                                     <h2
                                                         class="w-full capitalize text-theme-dark group-hover/new-arriv-pro-card:text-butterfly-blue eq md:text-xl line-clamp-1">
                                                         <a
-                                                            href="{{ route('product.details', $product->slug) }}">{{ $product->name }}</a>
+                                                            href="{{ route('products.details', $product->slug) }}">{{ $product->name }}</a>
                                                     </h2>
                                                     <div class="flex flex-wrap gap-x-2 sm:text-lg">
                                                         @php
@@ -118,7 +118,7 @@
                                         <div
                                             class="flex gap-3 py-2 border-b border-dashed group/trending trending-item-card">
                                             <div class="w-1/4 item-image">
-                                                <a href="{{ route('product.details', $product->slug) }}" target="_blank">
+                                                <a href="{{ route('products.details', $product->slug) }}" target="_blank">
                                                     <img src="{{ storage_url($product->thumbnail) }}"
                                                         alt="Meatigo Premium Goat Curry"
                                                         class="object-contain w-full h-full group-hover/trending:rotate-12 eq" />
@@ -126,7 +126,7 @@
                                             </div>
                                             <div class="flex flex-col w-3/4 gap-2 text-xs item-details">
                                                 <h4>
-                                                    <a href="{{ route('product.details', $product->slug) }}"
+                                                    <a href="{{ route('products.details', $product->slug) }}"
                                                         target="_self"
                                                         class="font-semibold text-theme-dark line-clamp-1 group-hover/trending:text-theme-teal eq">
                                                         {{ $product->name }}

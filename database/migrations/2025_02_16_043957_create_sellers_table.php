@@ -29,9 +29,9 @@ return new class extends Migration
             $table->bigInteger('state_id')->nullable();
             $table->string('zip')->nullable();
 
-            $table->string('total_follower')->nullable();
-            $table->string('total_sold')->nullable();
-            $table->string('total_item')->nullable();
+            $table->bigInteger('total_follower')->nullable();
+            $table->bigInteger('total_sold')->nullable();
+            $table->bigInteger('total_item')->nullable();
 
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();

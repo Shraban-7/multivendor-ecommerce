@@ -9,8 +9,10 @@ use App\Enums\OrderStatus;
 use Illuminate\Http\Request;
 use App\Models\CustomerAddress;
 use App\Http\Controllers\Controller;
+use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\Review;
+use App\Models\Seller;
 use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
@@ -151,6 +153,16 @@ class OrderController extends Controller
 
         $cart->cartItems()->delete();
         $cart->delete();
+
+        $seller = Seller::find($selectedSellerId);
+
+        $sellerOrderIds = Order::where('seller_id', $seller->id)->pluck('id');
+
+        $sellerOrderCount = OrderItem::whereIn('order_id', $sellerOrderIds)->count();
+
+        $seller->update([
+            'total_sold' => $sellerOrderCount
+        ]);
 
         return response()->json([
             'status' => true,

@@ -11,7 +11,7 @@ use App\Models\ProductAttribute;
 
 class CategoryController extends Controller
 {
-    public function category_details($slug, Request $request)
+    public function details($slug, Request $request)
     {
         $limit = 8;
         $page = $request->get('page', 1);
