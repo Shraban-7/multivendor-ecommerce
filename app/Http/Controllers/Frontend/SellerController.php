@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\SellerFollower;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
@@ -97,6 +98,38 @@ class SellerController extends Controller
 
     public function review(Seller $seller)
     {
-        return view('frontend.shops.review', compact('seller'));
+        $userId = Auth::id();
+        $totalItem = Product::where('seller_id', $seller->id)->count();
+        $alreadyFollowed = SellerFollower::where('seller_id', $seller->id)
+            ->where('user_id', $userId)->first();
+        $categoryIds = Product::with('category')
+            ->where('seller_id', $seller->id)->pluck('category_id')->unique()->values()->all();
+
+        $categories = Category::whereIn('id', $categoryIds)->get();
+        $avgRating = Review::whereIn('product_id', function ($query) use ($seller) {
+            $query->select('id')
+                ->from('products')
+                ->where('seller_id', $seller->id);
+        })->avg('rating');
+
+        $ratingsCount = Review::whereIn('product_id', function ($query) use ($seller) {
+            $query->select('id')
+                ->from('products')
+                ->where('seller_id', $seller->id);
+        })->selectRaw('rating, COUNT(*) as total')
+            ->groupBy('rating')
+            ->pluck('total', 'rating');
+
+        $totalReviews = $ratingsCount->sum();
+
+        $ratingDistribution = [];
+
+        for ($i = 5; $i >= 1; $i--) {
+            $ratingDistribution[$i] = isset($ratingsCount[$i])
+                ? round(($ratingsCount[$i] / $totalReviews) * 100)
+                : 0;
+        }
+
+        return view('frontend.shops.review', compact('seller','totalItem', 'alreadyFollowed','categories', 'avgRating','totalReviews', 'ratingDistribution'));
     }
 }
