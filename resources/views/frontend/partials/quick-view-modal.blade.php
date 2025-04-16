@@ -31,7 +31,7 @@
                                         <!-- thumb 1 -->
                                         <div class="swiper-slide">
                                             <div
-                                                class="slide-thumb w-full xl:h-24 sm:h-24 h-16 rounded-xl md:rounded-2xl cursor-pointer border-2 border-transparent hover:border-primary overflow-hidden">
+                                                class="modal-slide-thumb w-full xl:h-24 sm:h-24 h-16 rounded-xl md:rounded-2xl cursor-pointer border-2 border-transparent hover:border-primary overflow-hidden">
                                                 <img src="{{ storage_url($thumb->image) }}" alt=""
                                                     class="w-full h-full object-cover" />
                                             </div>

@@ -320,4 +320,9 @@
         -webkit-text-stroke: 0.5px #e0e0e0;
         -webkit-text-fill-color: transparent;
     }
+
+    /* Active thumbnail style */
+    .modal-product-thumbnails .swiper-slide-thumb-active .modal-slide-thumb {
+        border-color: var(--primary);
+    }
 }

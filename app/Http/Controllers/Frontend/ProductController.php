@@ -22,7 +22,7 @@ class ProductController extends Controller
                 'images',
                 'seller',
                 'productAttributes.options',
-                'reviews', // include reviews
+                'reviews',
             ])
             ->firstOrFail();
 
@@ -45,6 +45,7 @@ class ProductController extends Controller
 
         $totalReviews = array_sum($reviewStats);
         $averageRating = $product->reviews->avg('rating');
+
 
         $ratings = [];
         for ($i = 5; $i >= 1; $i--) {

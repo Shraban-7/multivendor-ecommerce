@@ -116,7 +116,7 @@
                             </div>
 
                             <!-- Location Details -->
-                            <div class="grid grid-cols-1 xsm:grid-cols-2 md:grid-cols-4 gap-4">
+                            {{-- <div class="grid grid-cols-1 xsm:grid-cols-2 md:grid-cols-4 gap-4">
                                 <div class="space-y-2">
                                     <label class="block text-sm" for="country">Country</label>
                                     <select id="country"
@@ -152,7 +152,7 @@
                                     <input type="text" id="zip-code"
                                         class="eq w-full px-4 py-2 border border-gray-300 rounded focus:ring-[1] focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
                                 </div>
-                            </div>
+                            </div> --}}
 
                             <!-- Different Address Checkbox -->
                             <div class="flex items-center">

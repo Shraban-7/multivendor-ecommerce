@@ -27,9 +27,9 @@
     <!-- Header Starts -->
     <header class="header-section bg-persian-red text-white font-primary">
         <!-- top nav -->
-        @include('frontend.partials.top-nav')
+        @include('frontend.layouts.top-nav')
         <!-- bottom nav -->
-        @include('frontend.partials.bottom-nav')
+        @include('frontend.layouts.bottom-nav')
 
     </header>
     <!-- Header Ended -->
@@ -37,7 +37,7 @@
     @yield('content')
 
     <!-- Footer Section Starts -->
-    @include('frontend.partials.footer')
+    @include('frontend.layouts.footer')
     <!-- Footer Section Ended -->
 
     <!-- Font Awesome JS -->

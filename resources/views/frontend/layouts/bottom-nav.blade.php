@@ -40,7 +40,7 @@
                                         <ul
                                             class="py-4 px-3 bg-white border border-[#E4E7E9] rounded ms-3 h-[31.2rem] overflow-y-auto">
                                             <li class="brand-item">
-                                                <a href="#"
+                                                <a href="{{ route('category.details',$category->slug) }}"
                                                     class="block hover:bg-[#F2F4F5] px-4 py-2 hover:text-rangoon-green hover:font-semibold eq rounded-sm">All</a>
                                             </li>
                                             @foreach ($category->subcategories as $subcategory)
@@ -157,7 +157,7 @@
                                 </li>
                             @elseif ($category->subcategories->isEmpty())
                                 <li class="category-item">
-                                    <a href="#"
+                                    <a href="{{ route('category.details',$category->slug) }}"
                                         class="block hover:bg-[#F2F4F5] px-4 py-2 hover:text-rangoon-green hover:font-semibold eq">{{ $category->name }}</a>
                                 </li>
                             @endif

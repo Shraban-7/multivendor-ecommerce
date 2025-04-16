@@ -683,7 +683,7 @@
 
                         <!-- Metrics -->
                         <div class="flex flex-wrap items-center gap-2 md:gap-4">
-                            <span>5.5k+ Followers .</span>
+                            <span>{{ number_shorten_format($product->seller->total_follower) }}+ Followers .</span>
                             <span>{{ number_shorten_format($total_sell) }} Sold .</span>
                             <span class="flex items-center gap-1">
                                 <span>5.00</span>
