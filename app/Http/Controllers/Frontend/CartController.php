@@ -88,7 +88,7 @@ class CartController extends Controller
 
         $products = Product::latest()->limit(6)->get();
 
-        return view('frontend.pages.cart_details', compact('carts', 'grand_total', 'total_products_count', 'sub_total', 'discount', 'products'));
+        return view('frontend.cart.details', compact('carts', 'grand_total', 'total_products_count', 'sub_total', 'discount', 'products'));
     }
 
     public function update(Request $request)

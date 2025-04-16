@@ -20,7 +20,7 @@ Route::get('/shop-review', function () {
 })->name('shop_review');
 
 Route::get('/no-order', function () {
-    return view('frontend.pages.no_order');
+    return view('frontend.pages.no-order');
 })->name('no_order');
 
 Route::get('/tracking', function () {
@@ -53,6 +53,4 @@ Route::middleware('auth')->group(function () {
         Route::get('/tracking/{invoice_id}', [OrderController::class, 'tracking'])->name('tracking');
         Route::match(['get', 'post'], '/review/{order}', [OrderController::class, 'review'])->name('review');
     });
-
-
 });

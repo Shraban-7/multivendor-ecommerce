@@ -27,9 +27,9 @@
     <!-- Header Starts -->
     <header class="header-section bg-persian-red text-white font-primary">
         <!-- top nav -->
-        @include('frontend.partials.top_nav')
+        @include('frontend.partials.top-nav')
         <!-- bottom nav -->
-        @include('frontend.partials.bottom_nav')
+        @include('frontend.partials.bottom-nav')
 
     </header>
     <!-- Header Ended -->
