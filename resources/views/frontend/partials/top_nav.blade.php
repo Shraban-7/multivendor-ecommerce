@@ -136,7 +136,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('shop_details', auth('seller')->user()->username) }}"
+                        <a href="{{ route('sellers.shop', auth('seller')->user()->username) }}"
                             class="block px-4 py-2 hover:bg-gray-100">
                             <i class="fa-solid fa-store mr-2"></i> Your Shop
                         </a>

@@ -118,7 +118,7 @@
                                         sold</span>
                                     <div class="flex items-center gap-2 text-davy-gray">
                                         <span>Provided By</span>
-                                        <a href="{{ route('shop_details', $product->seller->username) }}"
+                                        <a href="{{ route('sellers.shop', $product->seller->username) }}"
                                             class="inline-block w-6 h-6 overflow-hidden rounded-full provider-icon">
                                             <img src="{{ storage_url($product->seller->business_logo) }}"
                                                 alt="{{ $product->seller->business_name }}"
@@ -664,14 +664,14 @@
             <div class="container">
                 <!-- Header -->
                 <div class="flex flex-wrap items-center gap-2 sm:gap-4">
-                    <a href="{{ route('shop_details', $product->seller->username) }}"
+                    <a href="{{ route('sellers.shop', $product->seller->username) }}"
                         class="inline-block w-10 h-10 overflow-hidden rounded-full provider-dp lg:w-14 lg:h-14">
                         <img src="{{ storage_url($product->seller->business_logo) }}" alt="Louis Vuitton Logo"
                             class="object-contain w-full h-full" />
                     </a>
                     <div class="provider-info">
                         <h2 class="flex items-center gap-2 text-lg font-medium md:text-xl lg:text-2xl md:gap-5">
-                            <a href="{{ route('shop_details', $product->seller->username) }}"
+                            <a href="{{ route('sellers.shop', $product->seller->username) }}"
                                 class="hover:text-butterfly-blue eq">{{ $product->seller->business_name }}</a>
                             <p class="flex items-center gap-2 text-sm font-light md:text-base xl:text-lg">
                                 <button class="hover:text-primary eq">
@@ -699,7 +699,7 @@
                         <i class="fa-solid fa-store"></i>
                         Follow
                     </button>
-                    <a href="{{ route('shop_details', $product->seller->username) }}"
+                    <a href="{{ route('sellers.shop', $product->seller->username) }}"
                         class="inline-flex items-center py-1.5 px-5 xsm:px-8 lg:px-10 lg:py-2.5 border border-jet-gray theme-btn gap-2 hover:bg-primary hover:text-white hover:border-transparent eq text-sm md:text-base lg:text-xl font-inherit">
                         <span>Shop All Items</span>
                         ({{ count($products) }})

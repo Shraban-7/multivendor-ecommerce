@@ -40,7 +40,7 @@
                     <!-- Left Side -->
                     <div class="flex items-center gap-2 md:gap-4">
                         <div class="w-14 md:w-20 h-14 md:h-20 rounded-full overflow-hidden">
-                            <img src="{{ asset('assets/' . $seller->business_logo) }}" alt="Louis Vuitton Logo"
+                            <img src="{{ storage_url($seller->business_logo) }}" alt="{{ $seller->business_name }}"
                                 class="w-full h-full object-cover" />
                         </div>
 
@@ -57,11 +57,11 @@
                     <div class="flex flex-col gap-2 text-center">
                         <div class="flex items-center gap-10 text-davy-gray text-sm md:text-base">
                             <div class="followers">
-                                <div class="font-medium">5.5k+</div>
+                                <div class="font-medium">{{ number_shorten_format($seller->total_follower) }}+</div>
                                 <div class="text-xs text-jet-gray">Followers</div>
                             </div>
                             <div class="sold">
-                                <div class="font-medium">200k+</div>
+                                <div class="font-medium">{{ number_shorten_format($seller->total_sold) }}+</div>
                                 <div class="text-xs text-jet-gray">Sold</div>
                             </div>
                             <div class="items">
@@ -69,12 +69,24 @@
                                 <div class="text-xs text-jet-gray">Items</div>
                             </div>
                         </div>
-
-                        <button
-                            class="eq bg-[#08C514] hover:bg-black text-white px-3 py-1 md:px-6 md:py-2 rounded-full text-sm inline-flex items-center justify-center gap-2 text-center">
-                            <i class="fa-solid fa-plus text-xs"></i>
-                            Follow
-                        </button>
+                        @auth
+                            <form method="POST" action="{{ route('sellers.follow', $seller->username) }}">
+                                @CSRF
+                                @if ($alreadyFollowed)
+                                    <button type="submit"
+                                        class="eq bg-[#e7a922] hover:bg-black text-white px-3 py-1 md:px-6 md:py-2 rounded-full text-sm inline-flex items-center justify-center gap-2 text-center">
+                                        <i class="fa-solid fa-minus text-xs"></i>
+                                        Unfollow
+                                    </button>
+                                @else
+                                    <button type="submit"
+                                        class="eq bg-[#08C514] hover:bg-black text-white px-3 py-1 md:px-6 md:py-2 rounded-full text-sm inline-flex items-center justify-center gap-2 text-center">
+                                        <i class="fa-solid fa-plus text-xs"></i>
+                                        Follow
+                                    </button>
+                                @endif
+                            </form>
+                        @endauth
                     </div>
                 </div>
 
@@ -112,8 +124,7 @@
                                 <div
                                     class="dropdown-menu absolute top-full mt-2 left-0 bg-white border rounded shadow-lg z-50 min-w-max px-4 py-2 space-y-2 hidden">
                                     @foreach ($remaining as $category)
-                                        <a href="#"
-                                            class="block hover:text-primary">
+                                        <a href="#" class="block hover:text-primary">
                                             {{ $category->name }}
                                         </a>
                                     @endforeach
@@ -167,7 +178,7 @@
             </div>
 
             <div class="load-more-btn text-center mt-10">
-                <button id="loadMoreBtn" data-page="1" data-url="{{ route('shop_details', $seller->username) }}"
+                <button id="loadMoreBtn" data-page="1" data-url="{{ route('sellers.shop', $seller->username) }}"
                     class="theme-btn bg-theme-teal hover:bg-aqua-deep text-white px-5 py-2 xl:text-xl text-base md:text-lg inline-flex gap-2 items-center eq"
                     type="button">
                     <span>Load More</span>

@@ -194,7 +194,7 @@
                                                         sold</span>
                                                     <div class="flex items-center gap-2 text-davy-gray">
                                                         <span>Provided By</span>
-                                                        <a href="{{ route('shop_details', $product->seller->username) }}"
+                                                        <a href="{{ route('sellers.shop', $product->seller->username) }}"
                                                             class="inline-block w-6 h-6 overflow-hidden rounded-full provider-icon">
                                                             <img src="{{ asset('assets/' . $product->seller->business_logo) }}"
                                                                 alt="Louis Vuitton"

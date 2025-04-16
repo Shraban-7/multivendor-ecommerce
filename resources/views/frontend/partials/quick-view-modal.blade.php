@@ -92,7 +92,7 @@
                                         sold</span>
                                     <div class="flex flex-wrap items-center gap-x-2 text-davy-gray">
                                         <span>Provided By</span>
-                                        <a href="{{ route('shop_details', $product->seller->username) }}"
+                                        <a href="{{ route('sellers.shop', $product->seller->username) }}"
                                             class="inline-block provider-icon w-6 h-6 overflow-hidden rounded-full">
                                             <img src="{{ storage_url($product->seller->business_logo) }}"
                                                 alt="Louis Vuitton" class="h-full w-full object-contain">
@@ -244,14 +244,16 @@
                             </div>
                         </div>
                         <!-- Action Button -->
-                        <div class="flex gap-4 mt-5 w-full xsm:w-4/5 md:w-11/12 lg:w-4/5">
-                            <input type="hidden" name="quantity" class="qtyInputValue" value=""
-                                id="qtyInput{{ $product->id }}">
-                            <button data-id="{{ $product->id }}" type="button"
-                                class="cartBtn text-sm md:text-base font-medium flex-1 px-6 py-2.5 bg-primary text-white rounded-full hover:bg-theme-dark eq">
-                                Add To Cart
-                            </button>
-                        </div>
+                        @auth
+                            <div class="flex gap-4 mt-5 w-full xsm:w-4/5 md:w-11/12 lg:w-4/5">
+                                <input type="hidden" name="quantity" class="qtyInputValue" value=""
+                                    id="qtyInput{{ $product->id }}">
+                                <button data-id="{{ $product->id }}" type="button"
+                                    class="cartBtn text-sm md:text-base font-medium flex-1 px-6 py-2.5 bg-primary text-white rounded-full hover:bg-theme-dark eq">
+                                    Add To Cart
+                                </button>
+                            </div>
+                        @endauth
                     </div>
                 </div>
             </div>

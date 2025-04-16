@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Seller;
 
-use App\Http\Controllers\Controller;
-use App\Models\Category;
-use App\Models\Product;
 use App\Models\Seller;
+use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Http\Request;
+use App\Models\SellerFollower;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class SellerController extends Controller
 {
@@ -62,33 +64,5 @@ class SellerController extends Controller
         return redirect()->back()->with('success', 'Profile Updated Successfully');
     }
 
-    public function shop_details($username, Request $request)
-    {
-        $seller = Seller::where('username', $username)->firstOrFail();
-
-        $limit = 8;
-        $page = $request->get('page', 1);
-        $skip = ($page - 1) * $limit;
-
-        $products = Product::with('category')
-            ->where('seller_id', $seller->id)
-            ->latest()
-            ->skip($skip)
-            ->take($limit)
-            ->get();
-
-        $categoryIds = Product::with('category')
-            ->where('seller_id', $seller->id)->pluck('category_id')->unique()->values()->all();
-
-        $categories = Category::whereIn('id', $categoryIds)->get();
-
-        if ($request->ajax()) {
-            if ($products->isEmpty()) {
-                return '';
-            }
-            return view('frontend.partials.product-card-load', compact('products'))->render();
-        }
-
-        return view('frontend.shops.shop_details', compact('seller', 'products', 'categories'));
-    }
+   
 }

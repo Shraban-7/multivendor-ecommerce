@@ -8,7 +8,6 @@ use App\Http\Controllers\Seller\OrderController;
 use App\Http\Controllers\Seller\ProductController;
 use App\Http\Controllers\Seller\SellerController;
 
-Route::get('/shop-details/{username}', [SellerController::class, 'shop_details'])->name('shop_details');
 Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
