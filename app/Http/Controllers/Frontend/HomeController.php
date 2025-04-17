@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\HeroBanner;
 use App\Models\Product;
 use Illuminate\Http\Request;
 class HomeController extends Controller
@@ -20,7 +21,13 @@ class HomeController extends Controller
         ->skip(6)
         ->take(Product::count() - 12)
         ->get();
-        
+
+        $data['hero_grid_one'] = HeroBanner::where('position',1)->first();
+        $data['hero_grid_two'] = HeroBanner::where('position',2)->first();
+        $data['hero_grid_three'] = HeroBanner::where('position',3)->first();
+        $data['hero_grid_four'] = HeroBanner::where('position',4)->first();
+        $data['hero_grid_five'] = HeroBanner::where('position',5)->first();
+
         return view('frontend.pages.home',$data);
     }
 
