@@ -123,6 +123,8 @@
         $(document).ready(function() {
             $('.cartBtn').click(function() {
                 var product_id = $(this).data('id');
+                var wishlistId = $(this).data('wishlist-id');
+                var $row = $(this).closest('.grid');
                 if (!product_id) {
                     alert("No Product Selected!");
                     return;
@@ -140,7 +142,11 @@
                         if (data.unauthorized) {
                             window.location.href = "{{ route('login') }}";
                         } else if (data.success) {
-                            $('button[data-modal-hide="quick-view-modal-' + product_id + '"]').trigger('click');
+                            $('button[data-modal-hide="quick-view-modal-' + product_id + '"]')
+                                .trigger('click');
+                            $row.fadeOut(300, function() {
+                                $(this).remove();
+                            });
                             toastr.success(data.message);
                             updateCartData();
 

@@ -115,11 +115,12 @@
                             <div class="flex items-center gap-4">
                                 <input type="hidden" name="quantity" class="qtyInputValue" value=""
                                     id="qtyInput{{ $wishlist->product->id }}">
-                                <button data-id="{{ $wishlist->product->id }}" type="button"
+                                <button data-id="{{ $wishlist->product->id }}" data-wishlist-id="{{ $wishlist->id }}" type="button"
                                     class="cartBtn bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600">
                                     ADD TO CARD
                                 </button>
-                                <button class="text-gray-400 hover:text-gray-600">
+                                <button class="wishlistRemoveBtn text-gray-400 hover:text-gray-600"
+                                    data-id="{{ $wishlist->id }}">
                                     <i class="fas fa-x"></i>
                                 </button>
                             </div>
@@ -135,16 +136,17 @@
         <script>
             $(document).ready(function() {
                 $('.wishlistRemoveBtn').on('click', function() {
-                    let wishlistId = $(this).data('id');
-                    let $row = $(this).closest('.grid');
-
+                    var wishlistId = $(this).data('id');
+                    var $row = $(this).closest('.grid');
+                    const wishlistDeleteRoute = "{{ route('wishlist.delete', ['wishlist' => '__id__']) }}";
+                    var url = wishlistDeleteRoute.replace('__id__', wishlistId);
                     if (!wishlistId) return;
 
                     $.ajax({
-                        url: `/wishlist/${wishlistId}`,
+                        url: url,
                         type: 'DELETE',
                         data: {
-                            _token: $('meta[name="csrf-token"]').attr('content')
+                            wishlist: wishlistId
                         },
                         success: function(response) {
                             if (response.success) {
