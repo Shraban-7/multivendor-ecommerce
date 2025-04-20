@@ -40,13 +40,13 @@ class HomeMidController extends Controller
 
         HomeMidBanner::create($data);
 
-        return redirect()->route('admin.settings.banner.index')->with('success', 'Hero Mid banner create successfully');
+        return redirect()->route('admin.settings.banners.index')->with('success', 'Hero Mid banner create successfully');
     }
 
-    public function update(Request $request, HomeMidBanner $heroBanner)
+    public function update(Request $request, HomeMidBanner $banner)
     {
         $data = $request->validate([
-            'position' => 'required|between:1,5|unique:hero_banners,position,' . $heroBanner->id,
+            'position' => 'required|between:1,5|unique:home_mid_banners,position,' . $banner->id,
             'title' => 'nullable|string|max:255',
             'subtitle' => 'nullable|string|max:255',
             'description' => 'nullable|string',
@@ -56,17 +56,17 @@ class HomeMidController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            if (!empty($heroBanner->image)) {
-                delete_file($heroBanner->image);
+            if (!empty($banner->image)) {
+                delete_file($banner->image);
             }
             $filePath = 'images/home_mid_banners';
             $data['image'] = upload_file($request->file('image'), $filePath);
         } else {
-            $data['image'] = $heroBanner->image;
+            $data['image'] = $banner->image;
         }
 
-        $heroBanner->update($data);
+        $banner->update($data);
 
-        return redirect()->route('admin.settings.banner.index')->with('success', 'Home Mid banner updated successfully');
+        return redirect()->route('admin.settings.banners.index')->with('success', 'Home Mid banner updated successfully');
     }
 }

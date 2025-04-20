@@ -144,7 +144,7 @@
                                 <input name="image" type="file" value="" class="form-control">
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-theme">Save Contest</button>
+                        <button type="submit" class="btn btn-theme">Save</button>
                     </div>
                 </form>
             </div>

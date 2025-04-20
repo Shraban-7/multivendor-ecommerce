@@ -39,8 +39,13 @@ $routePath = request()->path();
                         </x-dashboard.nav-item-link>
                     </ul>
                     <ul class="nav flex-column">
-                        <x-dashboard.nav-item-link :route="'admin.settings.banner.index'">
+                        <x-dashboard.nav-item-link :route="'admin.settings.banners.index'">
                            Home Mid Banners
+                        </x-dashboard.nav-item-link>
+                    </ul>
+                    <ul class="nav flex-column">
+                        <x-dashboard.nav-item-link :route="'admin.settings.posters.index'">
+                           Promo Posters
                         </x-dashboard.nav-item-link>
                     </ul>
                 </div>

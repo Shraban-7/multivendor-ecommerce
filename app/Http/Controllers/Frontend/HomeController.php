@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\HeroBanner;
 use App\Models\HomeMidBanner;
 use App\Models\Product;
+use App\Models\PromoPoster;
 use Illuminate\Http\Request;
 class HomeController extends Controller
 {
@@ -34,6 +35,9 @@ class HomeController extends Controller
         $data['gallery_feature_pro_three'] = HomeMidBanner::where('position',3)->first();
         $data['gallery_feature_pro_four'] = HomeMidBanner::where('position',4)->first();
         $data['gallery_feature_pro_five'] = HomeMidBanner::where('position',5)->first();
+
+        $data['promo_poster_one'] = PromoPoster::where('position',1)->first();
+        $data['promo_poster_two'] = PromoPoster::where('position',2)->first();
 
         return view('frontend.pages.home',$data);
     }

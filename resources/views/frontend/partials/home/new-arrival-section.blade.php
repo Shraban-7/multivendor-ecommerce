@@ -97,9 +97,9 @@
                         <!-- seller -->
                         <div class="w-full h-auto seller sm:h-full sm:w-1/2">
                             <div class="w-full h-full item-img">
-                                <a href="#">
-                                    <img src="{{ asset('assets/frontend/images/hero-image-2.png') }}"
-                                        class="object-cover w-full h-full" alt="Become our sellers" />
+                                <a href="{{ $promo_poster_one->link }}">
+                                    <img src="{{ storage_url($promo_poster_one->image) }}"
+                                        class="object-cover w-full h-full" alt="{{ storage_url($promo_poster_one->title) }}" />
                                 </a>
                             </div>
                         </div>
@@ -147,10 +147,10 @@
                     <!-- promotional poster -->
                     <div class="w-full h-auto promotional-poster lg:w-5/12 sm:h-96">
                         <div class="w-full h-full overflow-hidden promo-img rounded-2xl">
-                            <a href="#">
-                                <img src="{{ asset('assets/frontend/images/promo-fifty.png') }}"
+                            <a href="{{ $promo_poster_two->link }}">
+                                <img src="{{ storage_url($promo_poster_two->image) }}"
                                     class="object-cover w-full h-full sm:object-contain"
-                                    alt="50% off pormotional poster" />
+                                    alt="{{ $promo_poster_two->title }}" />
                             </a>
                         </div>
                     </div>
