@@ -143,26 +143,12 @@
                     Tesko © 2020-<span id="current-year"></span>, All Rights Reserved
                 </p>
                 <div class="flex">
-                    <div class="w-[3rem] sm:w-[4rem]">
-                        <img src="{{ asset('assets/frontend/images/payment-getway-1.png') }}" alt="Visa"
-                            class="w-full h-auto object-contain" />
-                    </div>
-                    <div class="w-[3rem] sm:w-[4rem]">
-                        <img src="{{ asset('assets/frontend/images/payment-getway-2.png') }}" alt="Mastercard"
-                            class="w-full h-auto object-contain" />
-                    </div>
-                    <div class="w-[3rem] sm:w-[4rem]">
-                        <img src="{{ asset('assets/frontend/images/payment-getway-3.png') }}" alt="PayPal"
-                            class="w-full h-auto object-contain" />
-                    </div>
-                    <div class="w-[3rem] sm:w-[4rem]">
-                        <img src="{{ asset('assets/frontend/images/payment-getway-4.png') }}" alt="Apple Pay"
-                            class="w-full h-auto object-contain" />
-                    </div>
-                    <div class="w-[3rem] sm:w-[4rem]">
-                        <img src="{{ asset('assets/frontend/images/payment-getway-5.png') }}" alt="Google Pay"
-                            class="w-full h-auto object-contain" />
-                    </div>
+                    @foreach (payment_gateways() as $gateway)
+                        <div class="w-[3rem] sm:w-[4rem]">
+                            <img src="{{ storage_url($gateway->image) }}" alt="{{ $gateway->name }}"
+                                class="w-full h-auto object-contain" />
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>

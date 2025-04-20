@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Category;
+use App\Models\PaymentGateway;
 use App\Models\SocialLink;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -209,5 +210,12 @@ if (!function_exists('social_links')) {
     function social_links()
     {
         return SocialLink::where('status',1)->get();
+    }
+}
+
+if (!function_exists('payment_gateways')) {
+    function payment_gateways()
+    {
+        return PaymentGateway::where('status',1)->get();
     }
 }

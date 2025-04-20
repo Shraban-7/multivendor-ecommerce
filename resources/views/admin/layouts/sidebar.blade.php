@@ -53,6 +53,11 @@ $routePath = request()->path();
                            Social Links
                         </x-dashboard.nav-item-link>
                     </ul>
+                    <ul class="nav flex-column">
+                        <x-dashboard.nav-item-link :route="'admin.settings.paymentGateways.index'">
+                           Payment Gateways
+                        </x-dashboard.nav-item-link>
+                    </ul>
                 </div>
             </li>
         </ul>

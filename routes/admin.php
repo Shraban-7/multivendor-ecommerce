@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\HeroBannerController;
 use App\Http\Controllers\Admin\HomeMidController;
+use App\Http\Controllers\Admin\PaymentGatewayController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\PromoPosterController;
 use App\Http\Controllers\Admin\SellerController;
@@ -53,6 +54,12 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
             Route::get('/',[SocialLinkController::class,'index'])->name('index');
             Route::post('/store',[SocialLinkController::class,'store'])->name('store');
             Route::post('/update/{socialLink}',[SocialLinkController::class,'update'])->name('update');
+        });
+
+        Route::prefix('payment-gateways')->as('paymentGateways.')->group(function(){
+            Route::get('/',[PaymentGatewayController::class,'index'])->name('index');
+            Route::post('/store',[PaymentGatewayController::class,'store'])->name('store');
+            Route::post('/update/{gateway}',[PaymentGatewayController::class,'update'])->name('update');
         });
     });
 });

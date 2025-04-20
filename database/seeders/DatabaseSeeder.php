@@ -35,7 +35,8 @@ class DatabaseSeeder extends Seeder
             FeaturedProductSeeder::class,
             HeroBannerSeeder::class,
             HomeMidBannerSeeder::class,
-            SocialLinkSeeder::class
+            SocialLinkSeeder::class,
+            PaymentGatewaySeeder::class
         ]);
 
     }
