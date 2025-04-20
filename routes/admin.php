@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\PromoPosterController;
 use App\Http\Controllers\Admin\SellerController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\SocialLinkController;
 
 Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -46,6 +47,12 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
             Route::get('/',[PromoPosterController::class,'index'])->name('index');
             Route::post('/store',[PromoPosterController::class,'store'])->name('store');
             Route::post('/update/{poster}',[PromoPosterController::class,'update'])->name('update');
+        });
+
+        Route::prefix('social-links')->as('socialLinks.')->group(function(){
+            Route::get('/',[SocialLinkController::class,'index'])->name('index');
+            Route::post('/store',[SocialLinkController::class,'store'])->name('store');
+            Route::post('/update/{socialLink}',[SocialLinkController::class,'update'])->name('update');
         });
     });
 });

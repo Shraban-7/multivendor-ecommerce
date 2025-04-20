@@ -48,6 +48,11 @@ $routePath = request()->path();
                            Promo Posters
                         </x-dashboard.nav-item-link>
                     </ul>
+                    <ul class="nav flex-column">
+                        <x-dashboard.nav-item-link :route="'admin.settings.socialLinks.index'">
+                           Social Links
+                        </x-dashboard.nav-item-link>
+                    </ul>
                 </div>
             </li>
         </ul>

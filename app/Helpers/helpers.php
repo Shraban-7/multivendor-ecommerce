@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Category;
+use App\Models\SocialLink;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -201,5 +202,12 @@ if (!function_exists('money')) {
     function money($amount)
     {
         return CURRENCY_SYMBOL .' '. number_format($amount, 2);
+    }
+}
+
+if (!function_exists('social_links')) {
+    function social_links()
+    {
+        return SocialLink::where('status',1)->get();
     }
 }

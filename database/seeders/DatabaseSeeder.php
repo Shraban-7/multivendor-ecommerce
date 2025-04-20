@@ -32,6 +32,10 @@ class DatabaseSeeder extends Seeder
             CouponSeeder::class,
             CategoryBannerSeeder::class,
             ProductVariantSeeder::class,
+            FeaturedProductSeeder::class,
+            HeroBannerSeeder::class,
+            HomeMidBannerSeeder::class,
+            SocialLinkSeeder::class
         ]);
 
     }

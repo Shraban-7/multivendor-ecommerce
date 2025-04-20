@@ -34,6 +34,11 @@ class Product extends Model
         return $query->where('is_community', true);
     }
 
+    public function scopeFeatured($query)
+    {
+        return $query->where('is_featured', true);
+    }
+
     public function scopeWhereCategory($query, Category $category)
     {
         return $query->where('category_id', $category->id);

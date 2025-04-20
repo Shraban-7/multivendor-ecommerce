@@ -31,11 +31,10 @@
                 <div class="header">
                     @include('admin.layouts.navbar')
                 </div>
-
                 <div class="container-fluid my-3 px-sm-4">
+                    <x-flash-message />
                     @yield('content')
                 </div>
-
             </div>
         </div>
     </div>

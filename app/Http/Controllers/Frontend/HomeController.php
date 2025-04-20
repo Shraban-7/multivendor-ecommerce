@@ -39,6 +39,8 @@ class HomeController extends Controller
         $data['promo_poster_one'] = PromoPoster::where('position',1)->first();
         $data['promo_poster_two'] = PromoPoster::where('position',2)->first();
 
+        $data['featured_products'] = Product::featured()->take(8)->latest()->get();
+
         return view('frontend.pages.home',$data);
     }
 
