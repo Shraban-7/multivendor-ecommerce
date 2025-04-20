@@ -5,7 +5,7 @@
                     <div class="relative h-full overflow-hidden group rounded-xl">
                         <div class="w-full h-full">
                             <!-- gallery image -->
-                            <img src="{{ asset('assets/frontend/images/gallery-feature-pro-1.png') }}"
+                            <img src="{{ storage_url($gallery_feature_pro_one->image) }}"
                                 alt="Slow cooker with ingredients" class="object-cover w-full h-full" />
                         </div>
                         <!-- overlay -->
@@ -14,15 +14,15 @@
                         <div
                             class="absolute top-0 left-0 flex flex-col items-start justify-center w-full h-full gap-2 p-6 text-white sm:gap-5">
                             <p class="text-sm font-medium md:text-lg lg:text-xl">
-                                It's slow-cook season
+                                {{ $gallery_feature_pro_one->subtitle }}
                             </p>
                             <h2 class="text-2xl md:text-4xl xl:text-5xl font-semibold !leading-[1.2]">
-                                Comfort coming right up now
+                                {{ $gallery_feature_pro_one->title }}
                             </h2>
-                            <button
+                            <a href="{{ $gallery_feature_pro_one->button_link }}"
                                 class="px-6 py-2 text-sm font-medium text-black bg-white rounded-full sm:text-base md:px-8 hover:bg-primary hover:text-white eq">
-                                Shop Now
-                            </button>
+                                {{ $gallery_feature_pro_one->button_text }}
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -33,7 +33,7 @@
                     <div class="relative overflow-hidden group rounded-xl h-1/2">
                         <!-- gallery image -->
                         <div class="w-full h-full">
-                            <img src="{{ asset('assets/frontend/images/gallery-feature-pro-2.png') }}"
+                            <img src="{{ storage_url($gallery_feature_pro_two->image) }}"
                                 alt="Coats and jackets collection" class="object-cover w-full h-full" />
                         </div>
                         <!-- overlay -->
@@ -42,15 +42,15 @@
                         <div
                             class="absolute top-0 left-0 flex flex-col items-start w-full h-full gap-2 p-6 text-white sm:gap-5">
                             <p class="text-sm font-medium md:text-lg lg:text-xl">
-                                Coat, Jackets & More
+                                {{ $gallery_feature_pro_two->subtitle }}
                             </p>
                             <h2 class="text-2xl md:text-3xl xl:text-4xl font-semibold !leading-[1.2]">
-                                Beat The Chill
+                               {{ $gallery_feature_pro_two->title }}
                             </h2>
-                            <button
+                            <a href="{{ $gallery_feature_pro_two->button_link }}"
                                 class="px-6 py-2 text-sm font-medium text-black bg-white rounded-full sm:text-base md:px-8 hover:bg-primary hover:text-white eq">
-                                Shop Now
-                            </button>
+                                {{ $gallery_feature_pro_two->button_text }}
+                            </a>
                         </div>
                     </div>
 
@@ -59,7 +59,7 @@
                         <div class="relative h-full overflow-hidden group rounded-xl">
                             <!-- gallery image -->
                             <div class="w-full h-full">
-                                <img src="{{ asset('assets/frontend/images/gallery-feature-pro-3.png') }}"
+                                <img src="{{ storage_url($gallery_feature_pro_three->image) }}"
                                     alt="Home decor items" class="object-cover w-full h-full" />
                             </div>
                             <!-- overlay -->
@@ -67,17 +67,16 @@
                             <!-- content -->
                             <div class="absolute top-0 left-0 w-full h-full p-6 text-white">
                                 <h2 class="text-xl md:text-lg xl:text-[1.7rem] font-medium mb-2 sm:mb-4 !leading-[1.2]">
-                                    Festive decor in everywhere
+                                    {{ $gallery_feature_pro_three->title }}
                                 </h2>
-                                <a href="#" class="font-medium text-white underline hover:text-primary eq">Shop
-                                    Now</a>
+                                <a href="{{ $gallery_feature_pro_three->button_link }}" class="font-medium text-white underline hover:text-primary eq">{{ $gallery_feature_pro_three->button_text }}</a>
                             </div>
                         </div>
 
                         <div class="relative h-full overflow-hidden group rounded-xl">
                             <!-- gallery image -->
                             <div class="w-full h-full">
-                                <img src="{{ asset('assets/frontend/images/gallery-feature-pro-4.png') }}"
+                                <img src="{{ storage_url($gallery_feature_pro_four->image) }}"
                                     alt="Fresh produce and vegetables" class="object-cover w-full h-full" />
                             </div>
                             <!-- overlay -->
@@ -85,10 +84,9 @@
                             <!-- content -->
                             <div class="absolute top-0 left-0 w-full h-full p-6 text-white">
                                 <h2 class="text-xl md:text-lg xl:text-[1.7rem] font-medium mb-2 sm:mb-4 !leading-[1.2]">
-                                    Holiday Kitchen
+                                    {{ $gallery_feature_pro_four->title }}
                                 </h2>
-                                <a href="#" class="font-medium text-white underline hover:text-primary eq">Shop
-                                    Now</a>
+                                <a href="{{ $gallery_feature_pro_four->button_link }}" class="font-medium text-white underline hover:text-primary eq">{{ $gallery_feature_pro_four->button_text }}</a>
                             </div>
                         </div>
                     </div>
@@ -99,7 +97,7 @@
                     <div class="relative h-full overflow-hidden group rounded-xl">
                         <!-- gallery image -->
                         <div class="w-full lg:h-full">
-                            <img src="{{ asset('assets/frontend/images/gallery-feature-pro-5.png') }}"
+                            <img src="{{ storage_url($gallery_feature_pro_five->image) }}"
                                 alt="Fashion collection" class="object-cover w-full h-full lg:h-full" />
                         </div>
                         <!-- overlay -->
@@ -108,12 +106,12 @@
                         <div
                             class="absolute top-0 left-0 flex flex-col items-start justify-center w-full h-full gap-5 p-6 text-white">
                             <h2 class="text-xl md:text-lg xl:text-2xl font-medium mb-2 sm:mb-4 !leading-[1.2]">
-                                Curted Fits for the season
+                                {{ $gallery_feature_pro_five->title }}
                             </h2>
-                            <button
+                            <a href="{{ $gallery_feature_pro_five->button_link }}"
                                 class="px-6 py-2 text-sm font-medium text-black bg-white rounded-full sm:text-base md:px-8 hover:bg-primary hover:text-white eq">
-                                Shop Now
-                            </button>
+                                {{ $gallery_feature_pro_five->button_text }}
+                            </a>
                         </div>
                     </div>
                 </div>

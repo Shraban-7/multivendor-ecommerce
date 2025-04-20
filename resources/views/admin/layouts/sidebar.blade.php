@@ -38,6 +38,11 @@ $routePath = request()->path();
                            Hero Banners
                         </x-dashboard.nav-item-link>
                     </ul>
+                    <ul class="nav flex-column">
+                        <x-dashboard.nav-item-link :route="'admin.settings.banner.index'">
+                           Home Mid Banners
+                        </x-dashboard.nav-item-link>
+                    </ul>
                 </div>
             </li>
         </ul>

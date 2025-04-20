@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\HeroBannerController;
+use App\Http\Controllers\Admin\HomeMidController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SellerController;
 use App\Http\Controllers\Admin\SettingController;
@@ -32,6 +33,12 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
             Route::get('/',[HeroBannerController::class,'index'])->name('index');
             Route::post('/store',[HeroBannerController::class,'store'])->name('store');
             Route::post('/update/{heroBanner}',[HeroBannerController::class,'update'])->name('update');
+        });
+
+        Route::prefix('banner')->as('banner.')->group(function(){
+            Route::get('/',[HomeMidController::class,'index'])->name('index');
+            Route::post('/store',[HomeMidController::class,'store'])->name('store');
+            Route::post('/update/{heroBanner}',[HomeMidController::class,'update'])->name('update');
         });
     });
 });
