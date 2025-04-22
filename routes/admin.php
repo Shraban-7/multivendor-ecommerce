@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -31,6 +32,13 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
 
     Route::prefix('products')->as('products.')->group(function () {
         Route::get('/', [ProductController::class, 'index'])->name('index');
+    });
+
+    Route::prefix('brands')->as('brands.')->group(function () {
+        Route::get('/', [BrandController::class, 'index'])->name('index');
+        Route::post('/store', [BrandController::class, 'store'])->name('store');
+        Route::post('/update/{brand}', [BrandController::class, 'update'])->name('update');
+        Route::post('/toggle-status/{brand}', [BrandController::class, 'toggleStatus'])->name('toggleStatus');
     });
 
     Route::prefix('categories')->as('categories.')->group(function () {

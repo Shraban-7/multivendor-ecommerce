@@ -14,6 +14,10 @@ $routePath = request()->path();
                 <i data-feather="home" class="nav-icon icon-xs me-2"></i> Dashboard
             </x-dashboard.nav-item-link>
 
+            <x-dashboard.nav-item-link :route="'admin.brands.index'">
+                <i data-feather="layers" class="nav-icon icon-xs me-2"></i> Brands
+            </x-dashboard.nav-item-link>
+
             <x-dashboard.nav-item-link :route="'admin.categories.index'">
                 <i data-feather="layers" class="nav-icon icon-xs me-2"></i> Categories
             </x-dashboard.nav-item-link>
