@@ -5,16 +5,17 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/frontend/images/favicon.ico') }}">
-    <link rel="stylesheet" href="{{asset('assets/dashboard/css/theme.css')}}">
-    <link rel="stylesheet" href="{{asset('assets/dashboard/libs/bootstrap-icons/font/bootstrap-icons.css')}}">
-    <link rel="stylesheet" href="{{asset('assets/dashboard/libs/dropzone/dist/dropzone.css')}}">
-    <link rel="stylesheet" href="{{asset('assets/dashboard/css/custom.css')}}">
+    <link rel="stylesheet" href="{{ asset('assets/dashboard/css/theme.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/dashboard/libs/bootstrap-icons/font/bootstrap-icons.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/dashboard/libs/dropzone/dist/dropzone.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/dashboard/css/custom.css') }}">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 
     <!-- Datatable -->
-    <link rel="stylesheet" href="{{ asset('assets/dashboard/libs/data-table/datatables.min.css') }}" >
+    <link rel="stylesheet" href="{{ asset('assets/dashboard/libs/data-table/datatables.min.css') }}">
 
 
     <!-- <link href="assets/dashboard/libs/@mdi/font/css/materialdesignicons.min.css" rel="stylesheet" />
@@ -60,6 +61,35 @@
     <script src="{{ asset('assets/dashboard/libs/data-table/datatables.min.js') }} "></script>
     @stack('footer')
     @stack('scripts')
+
+    <script>
+        $(document).ready(function() {
+            $(document).on("click", ".image-preview", function() {
+                $(this).closest(".form-group").find(".file-input").click();
+            });
+            $(document).on("change", ".file-input", function(event) {
+                let input = $(this);
+                let file = event.target.files[0];
+                if (file) {
+                    let reader = new FileReader();
+                    reader.onload = function(e) {
+                        let previewDiv = input.closest(".form-group").find(".image-preview");
+                        previewDiv.html(
+                            `<img src="${e.target.result}" class="img-fluid" style="max-width: 100%; max-height: 100%;">`
+                        );
+                        input.closest(".form-group").find(".remove-image").removeClass("d-none");
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            $(document).on("click", ".remove-image", function() {
+                let formGroup = $(this).closest(".form-group");
+                formGroup.find(".image-preview").html(`<span class="text-muted">Click to Upload</span>`);
+                formGroup.find(".file-input").val("");
+                $(this).addClass("d-none");
+            });
+        });
+    </script>
 </body>
 
 </html>

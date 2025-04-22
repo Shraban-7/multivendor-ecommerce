@@ -37,7 +37,6 @@ class PaymentGatewayController extends Controller
 
     public function update(Request $request, PaymentGateway $gateway)
     {
-        // return $gateway;
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'link' => 'required|url|max:255',
@@ -55,10 +54,6 @@ class PaymentGatewayController extends Controller
         }
 
         $data['status'] = $request->status;
-
-
-
-        // return $data;
 
         $gateway->update($data);
 

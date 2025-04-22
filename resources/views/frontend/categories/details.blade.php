@@ -14,7 +14,7 @@
                         {{ $category->cover_title }}
                     </h2>
                     <p class="text-xs text-[{{ $category->cover_text_color }}] md:pr-7 lg:pr-14 2xl:pr-20">
-                        {{ $category->cover_description }}
+                        {!! $category->cover_description !!}
                     </p>
                     <a href="#"
                         class="theme-btn bg-[{{ $category->cover_button_color }}] px-5 py-2 lg:px-7 lg:px-3 rounded-lg text-white hover:bg-theme-light hover:text-theme-dark eq text-xs lg:text-sm">Learn
@@ -24,7 +24,7 @@
                     <div class="w-full img-wrap">
                         <div class="w-full h-40 overflow-hidden rounded-lg lg:h-96 md:h-80 md:rounded-3xl">
                             <a href="#" class="block w-full h-full">
-                                <img src="{{ asset('assets/' . $category->cover_image) }}" alt="{{ $category->name }}"
+                                <img src="{{ storage_url($category->cover_image) }}" alt="{{ $category->name }}"
                                     class="object-cover w-full h-full" />
                             </a>
                         </div>

@@ -26,6 +26,7 @@ return new class extends Migration
             $table->boolean('is_special')->default(0);
             $table->boolean('is_slider')->default(0);
             $table->unsignedBigInteger('category_id')->nullable();
+            $table->boolean('status')->default(1);
             $table->timestamps();
         });
     }

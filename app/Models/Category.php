@@ -13,7 +13,7 @@ class Category extends Model
 
     public function scopeNav($query)
     {
-        return $query->where('is_nav',true);
+        return $query->where('is_nav',true)->where('status', true);
     }
 
     public function scopeCategory($query)
@@ -23,14 +23,14 @@ class Category extends Model
 
     public function scopeAllDepartment($query)
     {
-        return $query->whereNull('category_id')->where('is_nav', false);
+        return $query->whereNull('category_id')->where('is_nav', false)->where('status', true);
     }
 
     public function scopeSlider($query) {
-        return $query->where('is_slider',true);
+        return $query->where('is_slider',true)->where('status', true);
     }
     public function scopeSpecial($query) {
-        return $query->where('is_special',true);
+        return $query->where('is_special',true)->where('status', true);
     }
 
     public function subcategories()

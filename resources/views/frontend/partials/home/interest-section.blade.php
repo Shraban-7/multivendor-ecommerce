@@ -20,7 +20,7 @@
                                 <a href="{{ route('category.details', $category->slug) }}" class="flex flex-col items-center block w-full product-card">
                                     <!-- slide image -->
                                     <div class="relative w-16 h-16 card-image lg:h-28 lg:w-28 md:w-24 md:h-24">
-                                        <img src="{{ asset('assets/' . $category->image) }}" alt="Grocery"
+                                        <img src="{{ storage_url($category->image) }}" alt="Grocery"
                                             class="object-contain w-full h-full" />
                                     </div>
                                     <!-- Slide Content -->
@@ -31,7 +31,6 @@
                                 </a>
                             </div>
                         @endforeach
-
                     </div>
                 </div>
 

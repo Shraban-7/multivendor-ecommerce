@@ -41,8 +41,8 @@ class CategorySeeder extends Seeder
             ],
             [
                 'name' => 'Electronics',
-                'image' => 'frontend/images/category-4.png',
-                'cover_image' => 'frontend/images/electronics-promo.png',
+                'image' => 'images/categories/base/category-4.png',
+                'cover_image' => 'images/categories/cover/electronics-promo.png',
                 'cover_title' => 'Powering Possibilities, Empowering Lives.',
                 'cover_description' => 'Discounts on living room sets, bedroom furniture, outdoor furniture, and home office desks.',
                 'cover_text_color' => '#FFFFFF',
@@ -58,7 +58,7 @@ class CategorySeeder extends Seeder
             ],
             [
                 'name' => 'Fashion',
-                'image' => 'frontend/images/category-3.png',
+                'image' => 'images/categories/base/category-3.png',
                 'is_nav' => 1,
                 'is_slider' => 1,
                 'subcategories' => [
@@ -69,8 +69,8 @@ class CategorySeeder extends Seeder
             ],
             [
                 'name' => 'Grocery & Essentials',
-                'image' => 'frontend/images/category-1.png',
-                'cover_image' => 'frontend/images/grocery-promo.png',
+                'image' => 'images/categories/base/category-1.png',
+                'cover_image' => 'images/categories/cover/grocery-promo.png',
                 'cover_title' => 'Get 50% CASHBACK ON SHOPPING $250',
                 'cover_description' => 'Provides shoppers with an extensive range of groceries, from fresh produce and meats to pantry staples, snacks, and household essentials.',
                 'cover_text_color' => '#FFDB9C',
@@ -95,7 +95,7 @@ class CategorySeeder extends Seeder
             ],
             [
                 'name' => 'Clothing shoes & Accessories',
-                'image' => 'frontend/images/category-3.png',
+                'image' => 'images/categories/base/category-3.png',
                 'is_slider' => 1
             ],
             [
@@ -124,7 +124,7 @@ class CategorySeeder extends Seeder
             ],
             [
                 'name' => 'Personal Care',
-                'image' => 'frontend/images/category-5.png',
+                'image' => 'images/categories/base/category-5.png',
                 'is_slider' => 1
             ],
             [
@@ -132,12 +132,12 @@ class CategorySeeder extends Seeder
             ],
             [
                 'name' => 'Auto & Tires',
-                'image' => 'frontend/images/category-6.png',
+                'image' => 'images/categories/base/category-6.png',
                 'is_slider' => 1
             ],
             [
                 'name' => 'Household Essentials',
-                'image' => 'frontend/images/category-2.png',
+                'image' => 'images/categories/base/category-2.png',
                 'is_slider' => 1
             ],
             [
