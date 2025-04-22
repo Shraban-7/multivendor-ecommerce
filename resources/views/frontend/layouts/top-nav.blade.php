@@ -64,7 +64,6 @@
                 <span><i class="fa-regular fa-user"></i></span>
                 <p class="flex flex-col leading-none text-base lg:text-base">
                     <span class="md:text-xs lg:text-sm font-[arial]">Sign In</span>
-                    <span class="lg:text-base text-sm font-medium">Account</span>
                 </p>
             </a>
         @endif
