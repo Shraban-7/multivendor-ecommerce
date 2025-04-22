@@ -20,6 +20,11 @@ class Category extends Model
     {
         return $query->whereNull('category_id');
     }
+    
+    public function scopeSubcategory($query)
+    {
+        return $query->whereNotNull('category_id');
+    }
 
     public function scopeAllDepartment($query)
     {

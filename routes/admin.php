@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\PromoPosterController;
 use App\Http\Controllers\Admin\SellerController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SocialLinkController;
+use App\Http\Controllers\Admin\SubcategoryController;
 
 Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -39,6 +40,15 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
         Route::get('{category}/edit', [CategoryController::class, 'edit'])->name('edit');
         Route::post('/update/{category}', [CategoryController::class, 'update'])->name('update');
         Route::post('/toggle-status/{category}', [CategoryController::class, 'toggleStatus'])->name('toggleStatus');
+    });
+
+    Route::prefix('subcategories')->as('subcategories.')->group(function () {
+        Route::get('/', [SubcategoryController::class, 'index'])->name('index');
+        Route::get('/create', [SubcategoryController::class, 'create'])->name('create');
+        Route::post('/store', [SubcategoryController::class, 'store'])->name('store');
+        Route::get('{subcategory}/edit', [SubcategoryController::class, 'edit'])->name('edit');
+        Route::post('/update/{subcategory}', [SubcategoryController::class, 'update'])->name('update');
+        Route::post('/toggle-status/{subcategory}', [SubcategoryController::class, 'toggleStatus'])->name('toggleStatus');
     });
 
     Route::prefix('settings')->as('settings.')->group(function(){
