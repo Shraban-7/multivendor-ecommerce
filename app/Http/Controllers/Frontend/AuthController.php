@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Models\User;
+use App\Models\Seller;
 use App\Models\Country;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -29,6 +30,58 @@ class AuthController extends Controller
 
         return redirect()->route('login')->with('success', 'Signup successful! Please log in.');
     }
+
+    public function sellerSignup(Request $request)
+    {
+        if ($request->isMethod('GET')) {
+            return view('frontend.auth.seller-signup');
+        }
+
+        $data = $request->validate([
+            'fullname' => 'required|string|max:255',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
+            'email' => 'required|string|email|max:255|unique:sellers,email',
+            'phone' => 'required|string|max:200',
+            'nid_no' => 'required|string|max:50',
+            'nid_front_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
+            'nid_back_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
+            'password' => 'required|string|min:5|confirmed',
+
+            'business_name' => 'required|string|max:255',
+            'business_logo' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
+            'business_email' => 'required|string|email|max:255|unique:sellers,business_email',
+            'business_address' => 'required|string|max:1000',
+            'trade_license_no' => 'required|string|max:100',
+            'trade_license_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
+            'shop_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
+
+            'country_id' => 'nullable|integer|exists:countries,id',
+            'state_id' => 'nullable|integer',
+            'zip' => 'nullable|string|max:20',
+        ]);
+
+        $data['username'] = str_slug('sellers', 'username', $data['fullname']);
+
+        $imageFields = [
+            'image' => 'images/sellers/avatar',
+            'nid_front_image' => 'images/sellers/nids',
+            'nid_back_image' => 'images/sellers/nids',
+            'business_logo' => 'images/sellers/business',
+            'trade_license_image' => 'images/sellers/licenses',
+            'shop_image' => 'images/sellers/shops',
+        ];
+
+        foreach ($imageFields as $field => $folder) {
+            if ($request->hasFile($field)) {
+                $data[$field] = upload_file($request->file($field), $folder);
+            }
+        }
+
+        Seller::create($data);
+
+        return redirect()->route('login')->with('success', 'Signup successful! Please log in.');
+    }
+
 
     public function logout()
     {

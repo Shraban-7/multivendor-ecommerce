@@ -47,7 +47,4 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
     });
 });
 
-Route::middleware('guest')->prefix('seller')->as('seller.')->group(function () {
-    Route::match(['get', 'post'], '/signup', [AuthController::class, 'signup'])->name('signup');
-    Route::match(['get', 'post'], '/login', [AuthController::class, 'login'])->name('login');
-});
+
