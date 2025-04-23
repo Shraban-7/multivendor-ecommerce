@@ -38,7 +38,8 @@
 
                 <!-- Confirm Password -->
                 <div class="form-ctrl space-y-1">
-                    <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+                    <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Confirm
+                        Password</label>
                     <input type="password" name="password_confirmation" id="password_confirmation" required
                         placeholder="••••••••"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-light-yellow focus:border-light-yellow text-sm" />
@@ -61,6 +62,22 @@
                     Register
                 </button>
             </form>
+
+            <!-- Social Login -->
+            <div class="social-login space-y-3">
+                <div class="devider-sec flex flex-nowrap items-center justify-center text-davy-gray/80">
+                    <span class="h-px bg-davy-gray/80 block flex-1"></span><span class="block px-3">OR</span><span
+                        class="h-px bg-davy-gray/80 block flex-1"></span>
+                </div>
+
+                <div class="login-options flex flex-col lg:flex-row flex-wrap gap-5 text-davy-gray/80">
+                    <button
+                        class="px-1 py-2 flex-1 inline-flex gap-1 items-center justify-center border border-jet-gray/20 rounded hover:bg-jet-gray/10 eq">
+                        <img src="{{ asset('assets/frontend/images/google-icon.png') }}" class="h-8 md:h-10 w-auto" />
+                        <span>Login with Google</span>
+                    </button>
+                </div>
+            </div>
 
             <!-- Footer -->
             <div class="text-center pt-4 border-t text-sm text-gray-600">
