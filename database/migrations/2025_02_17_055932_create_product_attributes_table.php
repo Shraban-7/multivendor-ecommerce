@@ -13,8 +13,7 @@ return new class extends Migration
     {
         Schema::create('product_attributes', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('product_id')->nullable();
-            $table->string('name')->nullable();
+            $table->string('name')->unique();
             $table->timestamps();
         });
     }

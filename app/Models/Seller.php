@@ -50,4 +50,14 @@ class Seller extends Authenticatable
     {
         return is_null($this->attributes['business_logo']) ? asset('assets/frontend/images/provider-logo-2.png') : storage_url($this->attributes['business_logo']);
     }
+
+    public function followers()
+    {
+        return $this->hasMany(SellerFollower::class);
+    }
+
+    public function followerUsers()
+    {
+        return $this->belongsToMany(User::class, 'seller_followers', 'seller_id', 'user_id');
+    }
 }

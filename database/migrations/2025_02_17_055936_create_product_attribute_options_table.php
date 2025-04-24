@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('product_attribute_id')->nullable();
             $table->string('value')->nullable();
-            $table->decimal('additional_price',10,2)->nullable();
             $table->timestamps();
         });
     }

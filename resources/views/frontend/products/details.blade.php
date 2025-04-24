@@ -1,10 +1,7 @@
 @extends('frontend.layouts.app')
-@section('title', $product->name)
+@section('title', $product['name'])
 
 @section('content')
-    @php
-        use App\Enums\DiscountType;
-    @endphp
     <main class="product-details-page">
         <section class="container page-breadcrumb-links">
             <!-- Page Breadcrumb -->
@@ -28,7 +25,7 @@
                                     d="m1 9 4-4-4-4" />
                             </svg>
                             <a href="#"
-                                class="text-sm ms-1 text-davy-gray hover:text-primary eq md:ms-2">{{ $product->category->name }}</a>
+                                class="text-sm ms-1 text-davy-gray hover:text-primary eq md:ms-2">{{ $product['category'] }}</a>
                         </div>
                     </li>
                     <li aria-current="page">
@@ -38,8 +35,7 @@
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="m1 9 4-4-4-4" />
                             </svg>
-                            <span
-                                class="text-sm ms-1 text-davy-gray md:ms-2">{{ optional($product->subcategory)->name }}</span>
+                            <span class="text-sm ms-1 text-davy-gray md:ms-2">{{ $product['subcategory'] }}</span>
                         </div>
                     </li>
                 </ol>
@@ -58,11 +54,11 @@
                             <div class="product-thumbnails overflow-hidden xl:h-[37rem] lg:h-[41rem] h-auto">
                                 <div class="swiper-wrapper">
                                     <!-- thumb 1 -->
-                                    @foreach ($product->images as $thumb)
+                                    @foreach ($product['images'] as $thumb)
                                         <div class="swiper-slide">
                                             <div
                                                 class="w-full h-20 overflow-hidden border-2 border-transparent cursor-pointer slide-thumb xl:h-24 md:h-22 lg:h-28 rounded-2xl hover:border-primary">
-                                                <img src="{{ storage_url($thumb->image) }}"
+                                                <img src="{{ storage_url($thumb) }}"
                                                     alt="Product thumbnail of A Young boy wear a jacket with green T-Shirt & Short Pant"
                                                     class="object-cover w-full h-full" />
                                             </div>
@@ -79,13 +75,12 @@
                                 class="product-swiper overflow-hidden w-full h-96 md:h-[37rem] xl:h-[37rem] lg:h-[41rem] rounded-2xl overflow-hidden relative">
                                 <div class="swiper-wrapper">
                                     <!-- product image 1 -->
-                                    @foreach ($product->images as $slider)
+                                    @foreach ($product['images'] as $slider)
                                         <div class="h-full overflow-hidden swiper-slide rounded-2xl">
-                                            <img src="{{ storage_url($slider->image) }}" alt=""
+                                            <img src="{{ storage_url($slider) }}" alt=""
                                                 class="object-cover w-full h-full" />
                                         </div>
                                     @endforeach
-                                    <!-- Repeat product image for more slides -->
                                 </div>
                                 <!-- Navigation Buttons -->
                                 <div class="swiper-button-prev text-theme-light"></div>
@@ -108,39 +103,30 @@
                             </div>
 
                             <h1 class="text-sm lg:text-base text-rustic-red lg:pr-5 xl:pr-16">
-                                {{ $product->name }}
+                                {{ $product['name'] }}
                             </h1>
 
                             <div class="flex flex-wrap items-center gap-2 text-sm xsm:gap-5 sm:10 md:gap-2 lg:gap-10">
                                 <div class="flex items-center gap-2">
-                                    <span
-                                        class="pr-2 border-r border-gray-400 text-jet-gray">{{ number_shorten_format($product->stock_out) }}
+                                    <span class="pr-2 border-r border-gray-400 text-jet-gray">{{ $product['sold_out'] }}
                                         sold</span>
                                     <div class="flex items-center gap-2 text-davy-gray">
                                         <span>Provided By</span>
-                                        <a href="{{ route('sellers.shop', $product->seller->username) }}"
+                                        <a href="{{ route('sellers.shop', $seller['username']) }}"
                                             class="inline-block w-6 h-6 overflow-hidden rounded-full provider-icon">
-                                            <img src="{{ storage_url($product->seller->business_logo) }}"
-                                                alt="{{ $product->seller->business_name }}"
-                                                class="object-contain w-full h-full" />
+                                            <img src="{{ storage_url($seller['shop_logo']) }}"
+                                                alt="{{ $seller['shop_name'] }}" class="object-contain w-full h-full" />
                                         </a>
-                                        <span>({{ number_shorten_format($product->stock_out) }}+ sold)</span>
+                                        <span>({{ $product['sold_out'] }}+ sold)</span>
                                     </div>
                                 </div>
-
                                 <div class="flex items-center gap-2">
-                                    @php
-                                        $avg = $product->reviews->avg('rating');
-                                        $rounded = floor($avg);
-                                    @endphp
-
-                                    <span class="text-xs">{{ number_format($avg, 1) }} Star</span>
-
+                                    <span class="text-xs">{{ $product['rating'] }} Star</span>
                                     <span class="flex text-yellow-400 text-sm">
                                         @for ($i = 1; $i <= 5; $i++)
-                                            @if ($i <= floor($avg))
+                                            @if ($i <= floor($product['rating']))
                                                 ★
-                                            @elseif ($i - $avg < 1)
+                                            @elseif ($i - $product['rating'] < 1)
                                                 <span class="relative -mx-0.5">★<span
                                                         class="absolute inset-0 overflow-hidden"
                                                         style="width: 50%">★</span></span>
@@ -150,7 +136,6 @@
                                         @endfor
                                     </span>
                                 </div>
-
                             </div>
 
                             <div class="flex items-center gap-2">
@@ -161,27 +146,13 @@
                             <div class="flex flex-wrap items-center gap-2">
                                 <div class="flex flex-no-wrap items-center gap-1 new-price">
                                     <i class="fa-solid fa-bolt text-[#ffa755]"></i>
-                                    {{-- <span class="align-center text-sm text-[#ffa755]">$</span> --}}
-                                    @php
-                                        if ($product->discount_type != null) {
-                                            if ($product->discount_type == DiscountType::FLAT) {
-                                                $price = (float) $product->selling_price - $product->discount_amount;
-                                            } elseif ($product->discount_type == DiscountType::PERCENTAGE) {
-                                                $price =
-                                                    (float) $product->selling_price -
-                                                    ($product->selling_price * $product->discount_amount) / 100;
-                                            }
-                                        } else {
-                                            $price = $product->selling_price;
-                                        }
-                                    @endphp
                                     <h3 id="current-price" class="font-bold current-price text-primary">
-                                        {{ money($price) }}</h3>
+                                        {{ $product['discount_price'] }}</h3>
                                 </div>
-                                <h6 class="line-through old-price text-jet-gray">{{ money($product->selling_price) }}
+                                <h6 class="line-through old-price text-jet-gray">{{ $product['price'] }}
                                 </h6>
                                 <span
-                                    class="text-xs px-2.5 py-0.5 rounded-lg border border-primary">-{{ money($product->discount_amount) }}
+                                    class="text-xs px-2.5 py-0.5 rounded-lg border border-primary">-{{ $product['discount'] }}
                                     last 2
                                     days</span>
                                 <span class="text-xs text-leaf-green">Almost Sold Out</span>
@@ -198,31 +169,48 @@
                             </div>
 
                             <div class="p-4 clr-size-qty">
-                                <!-- Color Selection -->
+                                @foreach ($productAttributes as $attribute)
+                                    <div class="mt-5">
+                                        <h6 class="text-davy-gray sm:text-lg">{{ $attribute['name'] }} :</h6>
+                                        <form class="flex flex-wrap items-center gap-4 sm:gap-5 mt-2">
+                                            @foreach ($attribute['options'] as $option)
+                                                @php
+                                                    $inputId =
+                                                        strtolower($attribute['name']) .
+                                                        '-' .
+                                                        strtolower($option['value']);
+                                                    $inputName = strtolower($attribute['name']);
+                                                @endphp
+                                                <div class="form-ctrl flex flex-col gap-2 items-center">
+                                                    <input id="{{ $inputId }}" type="radio"
+                                                        value="{{ $option['value'] }}" name="{{ $inputName }}"
+                                                        class="hidden peer" />
 
-                                <!-- Size Selection -->
-                                @foreach ($product->productAttributes as $productAttribute)
-                                    <div class="mt-3 size">
-                                        <div class="flex items-center gap-2 text-davy-gray">
-                                            <h6 class="sm:text-lg">{{ $productAttribute->name }} :</h6>
-                                        </div>
-                                        <form class="flex flex-wrap items-center gap-2 mt-2 text-xs">
-                                            @foreach ($productAttribute->options as $option)
-                                                <div class="form-ctrl">
-                                                    <input id="{{ $option->value }}" type="radio"
-                                                        value="{{ $option->value }}"
-                                                        data-additional-price="{{ $option->additional_price }}"
-                                                        name="product_attribute_{{ $productAttribute->id }}"
-                                                        class="hidden peer option-selector" />
-                                                    <label for="{{ $option->value }}"
-                                                        class="px-4 py-1 sm:px-5 sm:py-1.5 block ring-[1px] hover:bg-gray-100 ring-transparent peer-checked:ring-primary rounded border peer-checked:border-primary peer-checked:text-primary cursor-pointer">{{ strtoupper($option->value) }}
-                                                    </label>
+                                                    @if (strtolower($attribute['name']) === 'color')
+                                                        <!-- For Color, show the color swatches -->
+                                                        <label for="{{ $inputId }}"
+                                                            class="w-6 h-6 sm:w-8 sm:h-8 block peer-checked:ring peer-checked:ring-{{ strtolower($option['value']) }}-800 bg-{{ strtolower($option['value']) }}-700 rounded-full peer-checked:border-2 sm:peer-checked:border-4 border border-black peer-checked:border-primary cursor-pointer">
+                                                        </label>
+                                                    @else
+                                                        <!-- For other attributes, show a text label -->
+                                                        <label for="{{ $inputId }}"
+                                                            class="px-4 py-1 sm:px-5 sm:py-1.5 block ring-[1px] hover:bg-gray-100 ring-transparent peer-checked:ring-primary rounded border peer-checked:border-primary peer-checked:text-primary cursor-pointer">
+                                                            {{ $option['value'] }}
+                                                        </label>
+                                                    @endif
+
+                                                    @if (strtolower($attribute['name']) === 'color')
+                                                        <label for="{{ $inputId }}"
+                                                            class="block cursor-pointer text-davy-gray text-sm sm:text-base">
+                                                            {{ $option['value'] }}
+                                                        </label>
+                                                    @endif
                                                 </div>
                                             @endforeach
                                         </form>
-
                                     </div>
                                 @endforeach
+
                                 <!-- Quantity -->
                                 <div class="quantity mt-3">
                                     <div class="text-davy-gray flex items-center gap-2">
@@ -245,21 +233,20 @@
                             </div>
                         </div>
                         <!-- Action Buttons -->
-                        @php
-                            $discount = ($product->discount_amount / $product->selling_price) * 100;
-                        @endphp
+
                         <div class="flex flex-wrap w-full gap-3 mt-5 xsm:w-4/5 md:w-11/12 lg:w-4/5">
                             <input type="hidden" name="quantity" class="qtyInputValue" value=""
-                                id="qtyInput{{ $product->id }}">
+                                id="qtyInput{{ $product['id'] }}">
 
-                            @if ($product->stock_in > 0)
-                                <button data-id="{{ $product->id }}" type="button"
+                            @if ($product['stock_in'] > 0)
+                                <button data-id="{{ $product['id'] }}" type="button"
                                     class="cartBtn text-sm md:text-base font-medium flex-1 px-6 py-2 border border-primary text-primary rounded-full hover:bg-primary hover:text-white transition-all">
                                     Add To Cart
-                                    <span class="block text-xs font-light">{{ number_format($discount) }}% Discount</span>
+                                    <span class="block text-xs font-light">{{ $product['discount_percent'] }}%
+                                        Discount</span>
                                 </button>
                             @else
-                                <button data-id="{{ $product->id }}" type="button"
+                                <button data-id="{{ $product['id'] }}" type="button"
                                     class="wishlistBtn text-sm md:text-base font-medium flex-1 px-6 py-2 border border-primary text-primary rounded-full hover:bg-primary hover:text-white transition-all">
                                     <i class="fa-regular fa-heart"></i>
                                     <span>Wishlist</span>
@@ -284,13 +271,13 @@
                         <div class="flex items-start gap-4">
                             <div class="font-[arial] space-y-1">
                                 <div class="text-4xl md:text-5xl text-persian-blue">
-                                    {{ number_format($product->reviews->avg('rating') * 20, 1) . '%' }}
+                                    {{ $product['rating'] . '%' }}
                                 </div>
 
-                                @if ($product->reviews->count() > 0)
+                                @if ($product['total_reviews'] > 0)
                                     <div class="flex text-3xl text-yellow-400 md:text-4xl">
                                         @php
-                                            $average = round($product->reviews->avg('rating'));
+                                            $average = round($product['rating']);
                                         @endphp
                                         {!! str_repeat('★', $average) . str_repeat('☆', 5 - $average) !!}
                                     </div>
@@ -310,18 +297,11 @@
                             <!-- Rating Bars -->
 
                             @php
-                                $total = $product->reviews_count ?: 1;
-                                $ratings = [
-                                    5 => $product->five_star,
-                                    4 => $product->four_star,
-                                    3 => $product->three_star,
-                                    2 => $product->two_star,
-                                    1 => $product->one_star,
-                                ];
+                                $total = $totalReviews ?: 1;
                             @endphp
 
                             <div class="w-full space-y-1 ratings-wrap sm:w-2/4 md:w-3/4 2xl:w-1/2 lg:w-2/3 md:space-y-2">
-                                @foreach ($ratings as $star => $count)
+                                @foreach ($ratings->sortDesc() as $star => $count)
                                     @php
                                         $percentage = round(($count / $total) * 100);
                                     @endphp
@@ -335,7 +315,6 @@
                                         <span class="text-xs sm:text-sm text-persian-blue">
                                             {{ $count }} ({{ str_pad($star, 2, '0', STR_PAD_LEFT) }} star)
                                         </span>
-
                                     </div>
                                 @endforeach
                             </div>
@@ -363,7 +342,6 @@
                                 </span>
                             @endif
                         </div>
-
 
                         <!-- Review Section -->
                         <div class="text-sm comments-tags lg:text-base text-davy-gray">
@@ -675,15 +653,15 @@
             <div class="container">
                 <!-- Header -->
                 <div class="flex flex-wrap items-center gap-2 sm:gap-4">
-                    <a href="{{ route('sellers.shop', $product->seller->username) }}"
+                    <a href="{{ route('sellers.shop', $seller['username']) }}"
                         class="inline-block w-10 h-10 overflow-hidden rounded-full provider-dp lg:w-14 lg:h-14">
-                        <img src="{{ storage_url($product->seller->business_logo) }}" alt="Louis Vuitton Logo"
+                        <img src="{{ storage_url($seller['shop_logo']) }}" alt="Louis Vuitton Logo"
                             class="object-contain w-full h-full" />
                     </a>
                     <div class="provider-info">
                         <h2 class="flex items-center gap-2 text-lg font-medium md:text-xl lg:text-2xl md:gap-5">
-                            <a href="{{ route('sellers.shop', $product->seller->username) }}"
-                                class="hover:text-butterfly-blue eq">{{ $product->seller->business_name }}</a>
+                            <a href="{{ route('sellers.shop', $seller['username']) }}"
+                                class="hover:text-butterfly-blue eq">{{ $seller['shop_name'] }}</a>
                             <p class="flex items-center gap-2 text-sm font-light md:text-base xl:text-lg">
                                 <button class="hover:text-primary eq">
                                     <i class="fa-regular fa-comment-dots"></i>
@@ -694,10 +672,10 @@
 
                         <!-- Metrics -->
                         <div class="flex flex-wrap items-center gap-2 md:gap-4">
-                            <span>{{ number_shorten_format($product->seller->total_follower) }}+ Followers .</span>
-                            <span>{{ number_shorten_format($total_sell) }} Sold .</span>
+                            <span>{{ $seller['total_followers'] }}+ Followers .</span>
+                            <span>{{ $seller['total_sell'] }} Sold .</span>
                             <span class="flex items-center gap-1">
-                                <span>5.00</span>
+                                <span>{{ $seller['rating'] }}</span>
                                 <i class="fa-solid fa-star text-theme-dark"></i>
                             </span>
                         </div>
@@ -710,7 +688,7 @@
                         <i class="fa-solid fa-store"></i>
                         Follow
                     </button>
-                    <a href="{{ route('sellers.shop', $product->seller->username) }}"
+                    <a href="{{ route('sellers.shop', $seller['username']) }}"
                         class="inline-flex items-center py-1.5 px-5 xsm:px-8 lg:px-10 lg:py-2.5 border border-jet-gray theme-btn gap-2 hover:bg-primary hover:text-white hover:border-transparent eq text-sm md:text-base lg:text-xl font-inherit">
                         <span>Shop All Items</span>
                         ({{ count($products) }})
@@ -722,21 +700,9 @@
                     <div class="mt-5">
                         <h2>Description:</h2>
                         <p class="mt-2">
-                            {{ $product->description }}
+                            {{ $product['description'] }}
                         </p>
                     </div>
-                    <!-- Details -->
-                    {{-- <div class="mt-5">
-                        <h2>Details:</h2>
-                        <div class="mt-2">
-                            <h3 class="font-extrabold">Highlights</h3>
-                            <p>· Cotton linen · Garment dyed · Two-button closure</p>
-                            <h3 class="mt-2 font-extrabold">Shape & Fit</h3>
-                            <p>· Regular fit · Our model is 1.86m and wears size 50</p>
-                            <h3 class="mt-2 font-extrabold">Composition & Care</h3>
-                            <p>· 66% cotton, 34% linen</p>
-                        </div>
-                    </div> --}}
                 </div>
             </div>
         </section>
@@ -758,7 +724,7 @@
                 @if ($products->count() >= 8)
                     <!-- Load More Btn -->
                     <div class="mt-10 text-center load-more-btn">
-                        <button data-page="1" data-url="{{ route('products.details', $product->slug) }}"
+                        <button data-page="1" data-url="{{ route('products.details', $product['slug']) }}"
                             id="loadMoreBtn"
                             class="inline-flex items-center gap-2 px-5 py-2 text-base text-white theme-btn bg-theme-teal hover:bg-aqua-deep xl:text-xl md:text-lg eq"
                             type="button">

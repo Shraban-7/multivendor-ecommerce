@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             CategoryProductSeeder::class,
             ProductImageSeeder::class,
             ProductAttributeSeeder::class,
+            ProductAttributeOptionSeeder::class,
             ProductStockSeeder::class,
             OrderSeeder::class,
             OrderItemSeeder::class,

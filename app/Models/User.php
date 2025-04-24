@@ -35,4 +35,9 @@ class User extends Authenticatable
     {
         return is_null($this->attributes['image']) ? asset('assets/frontend/images/user-avatar-1.png') : storage_url($this->attributes['image']);
     }
+
+    public function followedSellers()
+    {
+        return $this->belongsToMany(Seller::class, 'seller_followers', 'user_id', 'seller_id');
+    }
 }

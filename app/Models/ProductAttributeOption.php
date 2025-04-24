@@ -15,4 +15,14 @@ class ProductAttributeOption extends Model
     {
         return $this->belongsTo(ProductAttribute::class);
     }
+
+    public function productVariants()
+    {
+        return $this->belongsToMany(
+            ProductVariant::class,
+            'product_variant_product_attribute_options',
+            'product_attribute_option_id',
+            'product_variant_id'
+        );
+    }
 }

@@ -187,38 +187,7 @@
                             </div>
                             <div class="clr-size-qty p-4">
                                 <!-- Color Selection -->
-                                @foreach ($product->productAttributes as $productAttribute)
-                                    <div class="mt-3 size">
-                                        <div class="flex items-center gap-2 text-davy-gray">
-                                            <h6 class="sm:text-lg">{{ $productAttribute->name }} :</h6>
-                                            {{-- <a href="#"
-                                                class="inline-flex items-center hover:text-violet-700 hover:underline eq">
-                                                <img src="{{ asset('assets/frontend/images/size-scale.png') }}"
-                                                    alt="Size Chart" class="w-10 h-auto xsm:w-14" />
-                                                <span class="text-xs"> Size Chart</span>
-                                            </a> --}}
-                                            {{-- <a href="#"
-                                                class="ml-2 hover:text-light-yellow hover:underline eq xsm:ml-4">
-                                                <span class="text-xs"> What's My Size?</span>
-                                            </a> --}}
-                                        </div>
-                                        <form class="flex flex-wrap items-center gap-2 mt-2 text-xs">
-                                            @foreach ($productAttribute->options as $option)
-                                                <div class="form-ctrl">
-                                                    <input id="{{ $option->value }}" type="radio"
-                                                        value="{{ $option->value }}"
-                                                        data-additional-price="{{ $option->additional_price }}"
-                                                        name="product_attribute_{{ $productAttribute->id }}"
-                                                        class="hidden peer option-selector" />
-                                                    <label for="{{ $option->value }}"
-                                                        class="px-4 py-1 sm:px-5 sm:py-1.5 block ring-[1px] hover:bg-gray-100 ring-transparent peer-checked:ring-primary rounded border peer-checked:border-primary peer-checked:text-primary cursor-pointer">{{ strtoupper($option->value) }}
-                                                    </label>
-                                                </div>
-                                            @endforeach
-                                        </form>
-
-                                    </div>
-                                @endforeach
+                                
                                 <!-- Quantity -->
                                 <div class="quantity mt-3">
                                     <div class="text-davy-gray flex items-center gap-2">

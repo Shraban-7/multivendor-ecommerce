@@ -11,10 +11,23 @@ class ProductVariant extends Model
 
     protected $guarded = ['id'];
 
-    
-
     public function scopeWhereProduct($query,Product $product)
     {
         return $query->where('product_id',$product->id);
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+
+    public function attributeOptions()
+    {
+        return $this->belongsToMany(
+            ProductAttributeOption::class,
+            'product_variant_product_attribute_options',
+            'product_variant_id',
+            'product_attribute_option_id'
+        );
     }
 }

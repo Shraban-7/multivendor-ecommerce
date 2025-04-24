@@ -67,14 +67,9 @@ class Product extends Model
         return $this->belongsTo(Seller::class);
     }
 
-    public function productAttributes()
-    {
-        return $this->hasMany(ProductAttribute::class);
-    }
-
     public function variants()
     {
-        return $this->hasMany(ProductAttribute::class);
+        return $this->hasMany(ProductVariant::class);
     }
 
     public function unit()
