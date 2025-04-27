@@ -149,12 +149,11 @@
                                     <h3 id="current-price" class="font-bold current-price text-primary">
                                         {{ $product['discount_price'] }}</h3>
                                 </div>
-                                <h6 class="line-through old-price text-jet-gray">{{ $product['price'] }}
+                                <h6 id="old-price" class="line-through text-jet-gray">{{ $product['price'] }}
                                 </h6>
-                                <span
-                                    class="text-xs px-2.5 py-0.5 rounded-lg border border-primary">-{{ $product['discount'] }}
-                                    last 2
-                                    days</span>
+                                <span class="text-xs px-2.5 py-0.5 rounded-lg border border-primary discount-badge">
+                                    -{{ $product['discount'] }} last 2 days
+                                </span>
                                 <span class="text-xs text-leaf-green">Almost Sold Out</span>
                             </div>
                         </div>
@@ -168,48 +167,52 @@
                                 <i class="fa-solid fa-arrow-right"></i>
                             </div>
 
-                            <div class="p-4 clr-size-qty">
-                                @foreach ($productAttributes as $attribute)
-                                    <div class="mt-5">
-                                        <h6 class="text-davy-gray sm:text-lg">{{ $attribute['name'] }} :</h6>
-                                        <form class="flex flex-wrap items-center gap-4 sm:gap-5 mt-2">
-                                            @foreach ($attribute['options'] as $option)
-                                                @php
-                                                    $inputId =
-                                                        strtolower($attribute['name']) .
-                                                        '-' .
-                                                        strtolower($option['value']);
-                                                    $inputName = strtolower($attribute['name']);
-                                                @endphp
-                                                <div class="form-ctrl flex flex-col gap-2 items-center">
-                                                    <input id="{{ $inputId }}" type="radio"
-                                                        value="{{ $option['value'] }}" name="{{ $inputName }}"
-                                                        class="hidden peer" />
+                            <div class="px-4 py-2 clr-size-qty">
+                                <div id="product-attributes">
+                                    <form id="variantForm" data-slug="{{ $product['slug'] }}"
+                                        class="flex flex-wrap flex-col">
+                                        @foreach ($productAttributes as $attribute)
+                                            <div class="mt-0">
+                                                <h6 class="text-davy-gray sm:text-lg">{{ $attribute['name'] }} :</h6>
+                                                <div class="flex flex-wrap items-center gap-4 sm:gap-5">
+                                                    @foreach ($attribute['options'] as $option)
+                                                        @php
+                                                            $inputId =
+                                                                strtolower($attribute['name']) .
+                                                                '-' .
+                                                                strtolower($option['value']);
+                                                            $inputName = 'option_' . $attribute['id']; // VERY important change
+                                                        @endphp
 
-                                                    @if (strtolower($attribute['name']) === 'color')
-                                                        <!-- For Color, show the color swatches -->
-                                                        <label for="{{ $inputId }}"
-                                                            class="w-6 h-6 sm:w-8 sm:h-8 block peer-checked:ring peer-checked:ring-{{ strtolower($option['value']) }}-800 bg-{{ strtolower($option['value']) }}-700 rounded-full peer-checked:border-2 sm:peer-checked:border-4 border border-black peer-checked:border-primary cursor-pointer">
-                                                        </label>
-                                                    @else
-                                                        <!-- For other attributes, show a text label -->
-                                                        <label for="{{ $inputId }}"
-                                                            class="px-4 py-1 sm:px-5 sm:py-1.5 block ring-[1px] hover:bg-gray-100 ring-transparent peer-checked:ring-primary rounded border peer-checked:border-primary peer-checked:text-primary cursor-pointer">
-                                                            {{ $option['value'] }}
-                                                        </label>
-                                                    @endif
+                                                        <div class="form-ctrl flex flex-col gap-2 items-center">
+                                                            <input id="{{ $inputId }}" type="radio"
+                                                                value="{{ $option['id'] }}" name="{{ $inputName }}"
+                                                                class="hidden peer variant-option" />
 
-                                                    @if (strtolower($attribute['name']) === 'color')
-                                                        <label for="{{ $inputId }}"
-                                                            class="block cursor-pointer text-davy-gray text-sm sm:text-base">
-                                                            {{ $option['value'] }}
-                                                        </label>
-                                                    @endif
+                                                            @if (strtolower($attribute['name']) === 'color')
+                                                                <label for="{{ $inputId }}"
+                                                                    class="w-6 h-6 sm:w-8 sm:h-8 block peer-checked:ring peer-checked:ring-{{ strtolower($option['value']) }}-800 bg-{{ strtolower($option['value']) }}-700 rounded-full peer-checked:border-2 sm:peer-checked:border-4 border border-black peer-checked:border-primary cursor-pointer">
+                                                                </label>
+                                                            @else
+                                                                <label for="{{ $inputId }}"
+                                                                    class="px-4 py-1 sm:px-5 sm:py-1.5 block ring-[1px] hover:bg-gray-100 ring-transparent peer-checked:ring-primary rounded border peer-checked:border-primary peer-checked:text-primary cursor-pointer">
+                                                                    {{ $option['value'] }}
+                                                                </label>
+                                                            @endif
+
+                                                            @if (strtolower($attribute['name']) === 'color')
+                                                                <label for="{{ $inputId }}"
+                                                                    class="block cursor-pointer text-davy-gray text-sm sm:text-base">
+                                                                    {{ $option['value'] }}
+                                                                </label>
+                                                            @endif
+                                                        </div>
+                                                    @endforeach
                                                 </div>
-                                            @endforeach
-                                        </form>
-                                    </div>
-                                @endforeach
+                                            </div>
+                                        @endforeach
+                                    </form>
+                                </div>
 
                                 <!-- Quantity -->
                                 <div class="quantity mt-3">
@@ -238,6 +241,8 @@
                             <input type="hidden" name="quantity" class="qtyInputValue" value=""
                                 id="qtyInput{{ $product['id'] }}">
 
+                            <input type="hidden" id="variantSku" value="">
+
                             @if ($product['stock_in'] > 0)
                                 <button data-id="{{ $product['id'] }}" type="button"
                                     class="cartBtn text-sm md:text-base font-medium flex-1 px-6 py-2 border border-primary text-primary rounded-full hover:bg-primary hover:text-white transition-all">
@@ -259,7 +264,6 @@
                                 <span class="block text-xs font-light">Faster Dispatch</span>
                             </button>
                         </div>
-
                     </div>
                 </div>
 
@@ -286,16 +290,13 @@
                                         {!! str_repeat('☆', 5) !!}
                                     </div>
                                 @endif
-
                                 <div class="text-xs text-davy-gray sm:text-sm">
                                     (Positive reviews)
                                     <span class="font-semibold text-primary/80 lg:pl-4">Top</span>
                                 </div>
                             </div>
 
-
                             <!-- Rating Bars -->
-
                             @php
                                 $total = $totalReviews ?: 1;
                             @endphp
@@ -400,13 +401,11 @@
                                         </div>
                                         <span class="text-lg font-medium text-davy-gray sm:text-xl">5.0</span>
                                     </div>
-
                                     <h6 class="product-colour">Purchased : Black</h6>
                                     <p class="w-10/12 product-feedback sm:w-3/5 md:w-4/5 xl:w-3/5">
                                         Absolutely beautiful, good price perfect, perfect
                                         excellent product, very nice quality 😇😇
                                     </p>
-
                                     <div
                                         class="flex items-center justify-center w-10/12 text-xs text-black xsm:text-sm lg:text-base xl:text-lg sm:w-3/5 md:w-4/5 xl:w-3/5">
                                         <div class="flex items-start gap-3 divide-x divide-black">
@@ -776,29 +775,62 @@
         </script>
         <script>
             $(document).ready(function() {
-                let discountedPrice = parseFloat($('#current-price').text().replace(/[^0-9.]/g, ''));
-
-                let withoutDiscountPrice = parseFloat($('.old-price').text().replace(/[^0-9.]/g, ''));
-
-                $('.option-selector').change(function() {
-                    let totalAdditionalPrice = 0;
-
-                    $('.option-selector:checked').each(function() {
-                        totalAdditionalPrice += parseFloat($(this).data('additional-price')) || 0;
+                $('#variantForm').on('change', '.variant-option', function() {
+                    let selectedOptions = [];
+                    $('.variant-option:checked').each(function() {
+                        selectedOptions.push($(this).val());
                     });
 
-                    let newPrice = discountedPrice + totalAdditionalPrice;
-                    let oldPrice = withoutDiscountPrice + totalAdditionalPrice;
+                    let productSlug = $('#variantForm').data('slug');
 
-                    $('#current-price').text(new Intl.NumberFormat('en-US', {
-                        style: 'currency',
-                        currency: 'USD'
-                    }).format(newPrice));
+                    $.ajax({
+                        url: '/products/' + productSlug + '/get-variant',
+                        method: 'POST',
+                        data: {
+                            option_ids: selectedOptions
+                        },
+                        success: function(response) {
+                            if (response.price !== undefined) {
+                                var current_price = parseFloat($('#current-price').text().replace(
+                                    /[^\d.]/g, '')) || 0;
+                                var old_price = parseFloat($('#old-price').text().replace(/[^\d.]/g,
+                                    '')) || 0;
 
-                    $('.old-price').text(new Intl.NumberFormat('en-US', {
-                        style: 'currency',
-                        currency: 'USD'
-                    }).format(oldPrice));
+                                let formattedPrice = new Intl.NumberFormat('en-US', {
+                                    style: 'decimal',
+                                    minimumFractionDigits: 0,
+                                    maximumFractionDigits: 0
+                                }).format(response.price);
+
+                                $('#current-price').text('৳ ' + (parseInt(formattedPrice) +
+                                    current_price));
+                                $('#variantSku').val(response.sku);
+
+                                $('#old-price').text('৳ ' + (parseInt(formattedPrice) + old_price));
+                                $('.discount-badge').hide();
+                            }
+
+                            if (response.stock !== undefined) {
+                                if (response.stock > 0) {
+                                    $('#product-stock').text('In Stock').removeClass('text-red-500')
+                                        .addClass('text-green-600');
+                                    $('#add-to-cart-button').prop('disabled', false);
+                                } else {
+                                    $('#product-stock').text('Out of Stock').removeClass(
+                                        'text-green-600').addClass('text-red-500');
+                                    $('#add-to-cart-button').prop('disabled', true);
+                                }
+                            }
+
+                            if (response.image) {
+                                $('#product-image').attr('src', response.image);
+                            }
+                        },
+                        error: function(xhr) {
+                            console.error('Error fetching variant:', xhr.responseJSON?.message ||
+                                'Something went wrong');
+                        }
+                    });
                 });
             });
         </script>

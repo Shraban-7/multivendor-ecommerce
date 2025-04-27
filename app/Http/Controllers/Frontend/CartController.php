@@ -8,6 +8,7 @@ use App\Models\CartItem;
 use App\Models\Wishlist;
 use App\Enums\DiscountType;
 use Illuminate\Http\Request;
+use App\Models\ProductVariant;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,11 +17,12 @@ class CartController extends Controller
     public function add(Request $request)
     {
         $product = Product::find($request->product_id);
+        $variant = ProductVariant::where('sku',$request->variant_sku)->first();
 
         if (!$product) {
             return response()->json(['success' => false, 'error' => 'Product not found']);
         }
-        
+
         $cart = Cart::where([
             'user_id' => Auth::user()->id,
             'seller_id' => $product->seller_id
@@ -44,6 +46,7 @@ class CartController extends Controller
            $cartItem = CartItem::create([
                 'cart_id' => $cart->id,
                 'product_id' => $product->id,
+                'product_variant_id' => $variant->id ?? null,
                 'quantity' => $request->quantity ?? 1
             ]);
         }
@@ -63,7 +66,7 @@ class CartController extends Controller
     public function details(Request $request)
     {
         $carts = Cart::where('user_id', Auth::user()->id)
-            ->with('cartItems.product')
+            ->with('cartItems.product', 'cartItems.variant')
             ->get()
             ->groupBy(function ($cart) {
                 return $cart->cartItems->first()->product->seller_id ?? null;
@@ -109,21 +112,61 @@ class CartController extends Controller
             $cartItem->update(['quantity' => $request->quantity]);
 
             $subTotal = CartItem::where('cart_id', $request->cart_id)
-                ->with('product')
+                ->with('product', 'variant') 
                 ->get()
-                ->sum(fn($item) => $item->quantity * ($item->product->selling_price - ($item->product->discount_amount ?? 0)));
+                ->sum(function ($item) {
+                    $product = $item->product;
+                    $variant = $item->variant;
+
+                    $unitPrice = $product->selling_price;
+                    if ($variant) {
+                        $unitPrice += $variant->additional_price;
+                    }
+
+                    $discountAmount = $product->discount_amount ?? 0;
+                    $finalPrice = $unitPrice - $discountAmount;
+
+                    return $item->quantity * $finalPrice;
+                });
 
             $grandTotal = CartItem::where('cart_id', $request->cart_id)
-                ->with('product')
+                ->with('product', 'variant')
                 ->get()
-                ->sum(fn($item) => $item->quantity * $item->product->selling_price);
+                ->sum(function ($item) {
+                    $product = $item->product;
+                    $variant = $item->variant;
+                    $unitPrice = $product->selling_price;
+                    if ($variant->price) {
+                        $unitPrice += $variant->price;
+                    }
+
+                    return $item->quantity * $unitPrice;
+                });
 
             $discount = $grandTotal - $subTotal;
             $totalProductsCount = CartItem::where('cart_id', $request->cart_id)->count();
 
+            $product = $cartItem->product;
+            $variant = $cartItem->variant;
+
+            $unitPrice = $product->selling_price;
+
+            if ($variant && $variant->price) {
+                $unitPrice += $variant->price;
+            }
+
+            if ($product->discount_type === DiscountType::PERCENTAGE) {
+                $unitPrice -= ($unitPrice * $product->discount_amount) / 100;
+            } elseif ($product->discount_type === DiscountType::FLAT) {
+                $unitPrice -= $product->discount_amount;
+            }
+
+            $updatedPrice = money($unitPrice * $cartItem->quantity);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Cart updated successfully',
+                'updatedPrice' => $updatedPrice,
                 'order_subtotal' => number_format($subTotal, 2),
                 'order_total' => number_format($grandTotal, 2),
                 'discount' => number_format($discount, 2),
@@ -155,7 +198,7 @@ class CartController extends Controller
     public function getLiveCartData()
     {
         $carts = Cart::where('user_id', Auth::id())
-            ->with('cartItems.product')
+            ->with('cartItems.product', 'cartItems.variant')
             ->get();
 
         $cartCount = $carts->count();
@@ -163,7 +206,12 @@ class CartController extends Controller
 
         foreach ($carts as $cart) {
             foreach ($cart->cartItems as $item) {
-                $grand_total += $item->quantity * $item->product->selling_price;
+                if ($item->variant->price) {
+                    $grand_total += $item->quantity * ($item->product->selling_price+ $item->variant->price);
+                }
+                else{
+                    $grand_total += $item->quantity * $item->product->selling_price;
+                }
             }
         }
 

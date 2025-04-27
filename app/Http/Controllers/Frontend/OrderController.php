@@ -104,10 +104,22 @@ class OrderController extends Controller
 
         foreach ($cart->cartItems as $cartItem) {
             $product = $cartItem->product;
+            $variant = $cartItem->variant;
 
-            $unitPrice = $discountPrice($product);
+            $baseDiscountedPrice = $discountPrice($product);
+
+            if ($variant->price) {
+                $unitPrice = $variant->price+ $baseDiscountedPrice;
+            } else {
+                $unitPrice = $baseDiscountedPrice;
+            }
+
             $itemTotal = $cartItem->quantity * $unitPrice;
-            $itemDiscount = $cartItem->quantity * ($product->selling_price - $unitPrice);
+            if ($variant->price) {
+                $itemDiscount = $cartItem->quantity * ($product->selling_price - ($baseDiscountedPrice + $variant->additional_price));
+            } else {
+                $itemDiscount = $cartItem->quantity * ($product->selling_price - $baseDiscountedPrice);
+            }
 
             $shippingFee += floatval($product->shipping_cost);
             $tax += floatval($product->tax) * $cartItem->quantity;
@@ -117,8 +129,8 @@ class OrderController extends Controller
 
             $orderItems[] = [
                 'product_id' => $product->id,
-                'product_variant' => null,
-                'product_variant_price' => $product->selling_price,
+                'product_variant' => $variant->id ? $variant->id : null,
+                'product_variant_price' => $variant->price ? ($variant->price+ $product->selling_price):null,
                 'buying_price' => $product->buying_price,
                 'unit_price' => $unitPrice,
                 'quantity' => $cartItem->quantity,
@@ -126,9 +138,14 @@ class OrderController extends Controller
                 'sub_total' => $itemTotal
             ];
 
-            $product->decrement('stock_in', $cartItem->quantity);
-            $product->increment('stock_out', $cartItem->quantity);
+            if ($variant) {
+                $variant->decrement('stock', $cartItem->quantity);
+            } else {
+                $product->decrement('stock_in', $cartItem->quantity);
+                $product->increment('stock_out', $cartItem->quantity);
+            }
         }
+
 
         $order = Order::create([
             'user_id' => $user->id,

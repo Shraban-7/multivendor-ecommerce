@@ -124,6 +124,7 @@
             $('.cartBtn').click(function() {
                 var product_id = $(this).data('id');
                 var wishlistId = $(this).data('wishlist-id');
+                var variantSku = $('#variantSku').val();
                 var $row = $(this).closest('.grid');
                 if (!product_id) {
                     alert("No Product Selected!");
@@ -136,6 +137,7 @@
                     type: "POST",
                     data: {
                         product_id: product_id,
+                        variant_sku: variantSku,
                         quantity: qtyInput
                     },
                     success: function(data) {

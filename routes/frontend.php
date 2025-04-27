@@ -16,9 +16,8 @@ Route::get('/contact-us', [ContactUsController::class, 'contactUs'])->name('cont
 
 Route::prefix('products')->as('products.')->group(function(){
     Route::get('{slug}/details', [ProductController::class, 'details'])->name('details');
+    Route::post('{slug}/get-variant', [ProductController::class, 'getVariant']);
 });
-
-
 
 Route::get('/no-order', function () {
     return view('frontend.pages.no-order');
@@ -27,8 +26,6 @@ Route::get('/no-order', function () {
 Route::get('/tracking', function () {
     return view('frontend.pages.tracking');
 })->name('tracking');
-
-
 
 Route::prefix('sellers')->as('sellers.')->group(function () {
     Route::get('{seller:username}/shop', [SellerController::class, 'shop'])->name('shop');

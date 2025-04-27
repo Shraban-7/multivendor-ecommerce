@@ -160,4 +160,32 @@ class ProductController extends Controller
             'productAttributes' => $productAttributes
         ]);
     }
+
+    public function getVariant(Request $request, $slug)
+    {
+        $product = Product::where('slug', $slug)->firstOrFail();
+
+        $selectedOptionIds = $request->input('option_ids', []);
+
+        if (empty($selectedOptionIds)) {
+            return response()->json(['message' => 'No options selected'], 400);
+        }
+
+        $variant = ProductVariant::where('product_id', $product->id) // ✅ check inside this product only
+            ->whereHas('attributeOptions', function ($query) use ($selectedOptionIds) {
+                $query->whereIn('product_attribute_option_id', $selectedOptionIds);
+            }, '=', count($selectedOptionIds))
+            ->first();
+
+        if ($variant) {
+            return response()->json([
+                'price' => $variant->price,
+                'stock' => $variant->stock,
+                'sku' => $variant->sku,
+                'description' => $variant->description,
+            ]);
+        } else {
+            return response()->json(['message' => 'Variant not found'], 404);
+        }
+    }
 }

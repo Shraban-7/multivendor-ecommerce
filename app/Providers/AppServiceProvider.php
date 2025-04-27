@@ -28,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
         View::composer('*', function ($view) {
             if (Auth::check()) {
                 $carts = Cart::where('user_id', Auth::user()->id)
-                    ->with('cartItems.product')
+                    ->with('cartItems.product', 'cartItems.variant')
                     ->get();
                 $cartCount = count($carts);
             } else {
@@ -38,26 +38,41 @@ class AppServiceProvider extends ServiceProvider
 
             $sub_total = 0;
             $grand_total = 0;
+
             foreach ($carts as $cart) {
-                    foreach ($cart->cartItems as $item) {
-                        $item_grand_total = $item->quantity * $item->product->selling_price;
-                        $grand_total += $item_grand_total;
+                foreach ($cart->cartItems as $item) {
+                    $product = $item->product;
+                    $variant = $item->variant;
 
-                        if ($item->product->discount_type != null) {
-                            if ($item->product->discount_type == DiscountType::FLAT) {
-                                $item_sub_total = $item->quantity * ($item->product->selling_price - $item->product->discount_amount);
-                            } elseif ($item->product->discount_type == DiscountType::PERCENTAGE) {
-                                $item_sub_total = $item->quantity * ($item->product->selling_price - ($item->product->selling_price * $item->product->discount_amount) / 100);
-                            }
-                        } else {
-                            $item_sub_total = $item_grand_total;
-                        }
+                    $item_grand_total = $item->quantity * $product->selling_price;
 
-                        $sub_total += $item_sub_total;
+                    if ($variant->price) {
+                        $item_grand_total += $item->quantity * $variant->price;
                     }
+
+                    $grand_total += $item_grand_total;
+
+                    if ($product->discount_type != null) {
+                        if ($product->discount_type == DiscountType::FLAT) {
+                            $item_sub_total = $item->quantity * ($product->selling_price - $product->discount_amount);
+                            if ($variant->price) {
+                                $item_sub_total += $item->quantity * $variant->price;
+                            }
+                        } elseif ($product->discount_type == DiscountType::PERCENTAGE) {
+                            $item_sub_total = $item->quantity * ($product->selling_price - ($product->selling_price * $product->discount_amount) / 100);
+                            if ($variant->price) {
+                                $item_sub_total += $item->quantity * $variant->price;
+                            }
+                        }
+                    } else {
+                        $item_sub_total = $item_grand_total;
+                    }
+
+                    $sub_total += $item_sub_total;
+                }
             }
 
-            $view->with('cartCount', $cartCount)->with('totalPrice', $grand_total);
+            $view->with('cartCount', $cartCount)->with('totalPrice', $grand_total)->with('subTotal', $sub_total);
         });
     }
 }

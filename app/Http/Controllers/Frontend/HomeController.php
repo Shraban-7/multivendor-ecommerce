@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Http\Controllers\Controller;
+use App\Models\Product;
 use App\Models\Category;
 use App\Models\HeroBanner;
-use App\Models\HomeMidBanner;
-use App\Models\Product;
 use App\Models\PromoPoster;
 use Illuminate\Http\Request;
+use App\Models\HomeMidBanner;
+use App\Http\Controllers\Controller;
+
 class HomeController extends Controller
 {
     public function index()

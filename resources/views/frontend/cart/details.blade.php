@@ -89,7 +89,6 @@
                                             (<span class="seller-count"
                                                 data-seller-id="{{ $sellerId }}">0</span>/<span>{{ count($cartGroup->flatMap->cartItems) }}</span>)
                                         </p>
-
                                         <i class="text-sm fa-solid fa-store"></i>
                                     </label>
                                 @endif
@@ -104,25 +103,21 @@
                                                         $item->product->discount_type == \App\Enums\DiscountType::FLAT
                                                     ) {
                                                         $discount_price =
-                                                            $item->product->selling_price -
-                                                            $item->product->discount_amount;
+                                                            $item->price - $item->product->discount_amount;
                                                     } elseif (
                                                         $item->product->discount_type ==
                                                         \App\Enums\DiscountType::PERCENTAGE
                                                     ) {
                                                         $discount_price =
-                                                            $item->product->selling_price -
-                                                            ($item->product->selling_price *
-                                                                $item->product->discount_amount) /
-                                                                100;
+                                                            $item->price -
+                                                            ($item->price * $item->product->discount_amount) / 100;
                                                     }
                                                 } else {
-                                                    $discount_price = $item->product->selling_price;
+                                                    $discount_price = $item->price;
                                                 }
                                             @endphp
                                             <div class="py-3 border-t md:py-5 border-jet-gray/20 cart-item"
-                                                data-price="{{ $item->product->selling_price }}"
-                                                data-seller-id="{{ $sellerId }}"
+                                                data-price="{{ $item->price }}" data-seller-id="{{ $sellerId }}"
                                                 data-discounted-price="{{ $discount_price }}"
                                                 data-id="{{ $item->id }}">
                                                 <div class="flex gap-2 sm:gap-4">
@@ -189,31 +184,51 @@
                                                                     <i
                                                                         class="fa-solid fa-bolt text-[#ffa755] lg:text-lg"></i>
 
-                                                                    <h3
-                                                                        class="text-sm font-bold current-price xsm:text-lg md:text-xl text-primary">
-                                                                        {{ money($discount_price*$item->quantity) }}
-                                                                    </h3>
+                                                                    <div id="cart-item-{{ $item->id }}"
+                                                                        class="cart-item">
+                                                                        <h3
+                                                                            class="text-sm font-bold current-price xsm:text-lg md:text-xl text-primary">
+                                                                            {{ money($item->price * $item->quantity) }}
+                                                                        </h3>
+                                                                    </div>
+
                                                                 </div>
+
                                                                 @php
                                                                     $discount =
-                                                                        (($item->product->selling_price -
-                                                                            $discount_price) /
-                                                                            $item->product->selling_price) *
+                                                                        (($item->price - $discount_price) /
+                                                                            $item->price) *
                                                                         100;
                                                                 @endphp
+
                                                                 <span
-                                                                    class="text-xs xsm:text-sm px-2.5 py-0.5 rounded-lg border border-primary">-
-                                                                    {{ percentage($discount) }} last 2 days</span>
+                                                                    class="text-xs xsm:text-sm px-2.5 py-0.5 rounded-lg border border-primary">
+                                                                    - {{ percentage($discount) }} last 2 days
+                                                                </span>
+
+                                                                @if ($item->variant)
+                                                                    <div
+                                                                        class="w-full text-xs xsm:text-sm text-gray-600 mt-1">
+                                                                        @foreach ($item->variant->attributeOptions as $option)
+                                                                            <span class="mr-2">
+                                                                                {{ $option->productAttribute->name }}:
+                                                                                {{ $option->value }}
+                                                                            </span>
+                                                                        @endforeach
+                                                                    </div>
+                                                                @endif
                                                             </div>
+
                                                             <!-- quantity -->
                                                             <div class="quantity-controls" data-id="{{ $item->id }}">
                                                                 <div
                                                                     class="flex items-center gap-2 text-davy-gray flex-nowrap">
-                                                                    <h6 class="text-sm xsm:text-base sm:text-lg">Quantity :
                                                                     </h6>
                                                                     <div class="flex items-center p-1 border rounded">
                                                                         <input type="hidden" class="product-id"
                                                                             value="{{ $key }}">
+                                                                        <input type="hidden" class="variant-sku"
+                                                                            value="{{ $item->variant->sku }}">
                                                                         <button type="button"
                                                                             class="flex items-center justify-center w-5 h-5 text-sm font-bold rounded decrease-qty text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 active:text-primary">
                                                                             <i class="fa-solid fa-minus"></i>
@@ -327,8 +342,7 @@
                                 </p>
                                 <p class="flex justify-between">
                                     <span class="text-theme-dark">Item Discount:</span>
-                                    <span id="itemDiscount"
-                                        class="font-bold text-primary">-{{ money($discount) }}</span>
+                                    <span id="itemDiscount" class="font-bold text-primary">-{{ money($discount) }}</span>
                                 </p>
                             </div>
                             <!-- estimated total -->
@@ -633,6 +647,11 @@
                                 toastr.success(response.message);
                                 updateCartData();
                                 updateOrderSummary();
+                                var priceElement = $('#cart-item-' + cartItemId +
+                                ' .current-price');
+                                if (priceElement) {
+                                    priceElement.text(response.updatedPrice); 
+                                }
                             } else {
                                 toastr.error(response.message);
                             }
@@ -746,18 +765,18 @@
                 }
 
                 function updateCartData() {
-                $.ajax({
-                    url: "{{ route('cart.data') }}",
-                    type: "GET",
-                    success: function(data) {
-                        $('#cartCount').text(data.cartCount);
-                        $('#totalPrice').text(data.totalPrice);
-                    },
-                    error: function() {
-                        toastr.error('Failed to update cart data.');
-                    }
-                });
-            }
+                    $.ajax({
+                        url: "{{ route('cart.data') }}",
+                        type: "GET",
+                        success: function(data) {
+                            $('#cartCount').text(data.cartCount);
+                            $('#totalPrice').text(data.totalPrice);
+                        },
+                        error: function() {
+                            toastr.error('Failed to update cart data.');
+                        }
+                    });
+                }
 
                 function formatCurrency(amount) {
                     return '৳ ' + amount.toFixed(2);
