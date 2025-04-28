@@ -162,10 +162,10 @@
                                     {{ $order->customer_email }}
                                 </p>
                                 <p class="mb-1"><i data-feather="phone" class="icon-xs me-1"></i>
-                                   {{  $order->customer_phone }}
+                                    {{ $order->customer_phone }}
                                 </p>
                                 <p class="mb-1"><i data-feather="home" class="icon-xs me-1"></i>
-                                   {{  $order->customer_address }}
+                                    {{ $order->customer_address }}
                                 </p>
                             </address>
                         </div>
@@ -195,7 +195,7 @@
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 @if (isset($item->product->thumbnail))
-                                                    <img src="{{ asset('assets/' . $item->product->thumbnail) }}"
+                                                    <img src="{{ storage_url($item->product->thumbnail) }}"
                                                         alt="{{ $item->product->name }}" class="rounded me-3"
                                                         width="50">
                                                 @else
@@ -205,11 +205,23 @@
                                                 <div>
                                                     <h6 class="mb-0">{{ $item->product->name }}</h6>
                                                     @if (isset($item->options) && !empty($item->options))
-                                                        <small class="text-muted">
+                                                        <small class="text-muted d-block">
                                                             @foreach ($item->options as $key => $value)
                                                                 {{ ucfirst($key) }}:
                                                                 {{ $value }}{{ !$loop->last ? ', ' : '' }}
                                                             @endforeach
+                                                        </small>
+                                                    @endif
+
+                                                    @if (isset($item->variant))
+                                                        <small class="text-muted d-block">
+                                                            Variant SKU: {{ $item->variant->sku  }}
+                                                        </small>
+                                                        <small class="text-muted d-block">
+                                                            Stock: {{ $item->variant->stock  }}
+                                                        </small>
+                                                        <small class="text-muted d-block">
+                                                            Price: {{ number_format($item->product_variant_price, 2) }} (Without Discount)
                                                         </small>
                                                     @endif
                                                 </div>
@@ -291,7 +303,7 @@
                     </div>
                 </div>
             @else
-                <p class="text-muted mb-0">No review provided.</p> 
+                <p class="text-muted mb-0">No review provided.</p>
             @endif
         </div>
 

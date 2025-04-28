@@ -24,27 +24,27 @@ class OrderController extends Controller
 
         $orders = $orders->latest('id')->get();
 
-        return view('seller.orders.index', compact('orders','type'));
+        return view('seller.orders.index', compact('orders', 'type'));
     }
 
     public function details(Order $order)
     {
         $seller_id = seller()->id;
         if ($seller_id == $order->seller_id) {
-            $order->load(['review']);
+            $order->load(['review', 'items']);
             return view('seller.orders.details', compact('order'));
         }
         return redirect()->back();
     }
 
 
-    public function updateStatus(Order $order,Request $request)
+    public function updateStatus(Order $order, Request $request)
     {
-       $order->update([
+        $order->update([
             'status' => $request->status,
             'delivery_status' => $request->delivery_status
-       ]);
+        ]);
 
-       return redirect()->back()->with('success','Order update successfully');
+        return redirect()->back()->with('success', 'Order update successfully');
     }
 }

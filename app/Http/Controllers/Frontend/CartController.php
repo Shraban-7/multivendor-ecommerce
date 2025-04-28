@@ -112,7 +112,7 @@ class CartController extends Controller
             $cartItem->update(['quantity' => $request->quantity]);
 
             $subTotal = CartItem::where('cart_id', $request->cart_id)
-                ->with('product', 'variant') 
+                ->with('product', 'variant')
                 ->get()
                 ->sum(function ($item) {
                     $product = $item->product;
@@ -206,7 +206,7 @@ class CartController extends Controller
 
         foreach ($carts as $cart) {
             foreach ($cart->cartItems as $item) {
-                if ($item->variant->price) {
+                if ($item->variant) {
                     $grand_total += $item->quantity * ($item->product->selling_price+ $item->variant->price);
                 }
                 else{

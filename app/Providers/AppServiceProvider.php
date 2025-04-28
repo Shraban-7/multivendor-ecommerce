@@ -46,7 +46,7 @@ class AppServiceProvider extends ServiceProvider
 
                     $item_grand_total = $item->quantity * $product->selling_price;
 
-                    if ($variant->price) {
+                    if ($variant) {
                         $item_grand_total += $item->quantity * $variant->price;
                     }
 
@@ -55,12 +55,12 @@ class AppServiceProvider extends ServiceProvider
                     if ($product->discount_type != null) {
                         if ($product->discount_type == DiscountType::FLAT) {
                             $item_sub_total = $item->quantity * ($product->selling_price - $product->discount_amount);
-                            if ($variant->price) {
+                            if ($variant) {
                                 $item_sub_total += $item->quantity * $variant->price;
                             }
                         } elseif ($product->discount_type == DiscountType::PERCENTAGE) {
                             $item_sub_total = $item->quantity * ($product->selling_price - ($product->selling_price * $product->discount_amount) / 100);
-                            if ($variant->price) {
+                            if ($variant) {
                                 $item_sub_total += $item->quantity * $variant->price;
                             }
                         }

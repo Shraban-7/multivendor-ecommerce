@@ -23,7 +23,7 @@ class CartItem extends Model
 
     public function getPriceAttribute()
     {
-        if ($this->variant->price) {
+        if ($this->variant) {
            return $this->variant->price + $this->product->selling_price;
         }
         return $this->product->selling_price;

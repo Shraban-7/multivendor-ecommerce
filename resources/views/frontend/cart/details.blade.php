@@ -228,7 +228,7 @@
                                                                         <input type="hidden" class="product-id"
                                                                             value="{{ $key }}">
                                                                         <input type="hidden" class="variant-sku"
-                                                                            value="{{ $item->variant->sku }}">
+                                                                            value="{{ $item->variant?->sku }}">
                                                                         <button type="button"
                                                                             class="flex items-center justify-center w-5 h-5 text-sm font-bold rounded decrease-qty text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 active:text-primary">
                                                                             <i class="fa-solid fa-minus"></i>
@@ -650,7 +650,7 @@
                                 var priceElement = $('#cart-item-' + cartItemId +
                                 ' .current-price');
                                 if (priceElement) {
-                                    priceElement.text(response.updatedPrice); 
+                                    priceElement.text(response.updatedPrice);
                                 }
                             } else {
                                 toastr.error(response.message);
