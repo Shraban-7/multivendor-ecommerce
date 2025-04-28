@@ -2,21 +2,22 @@
 
 namespace App\Http\Controllers\Seller;
 
-use App\DataTables\ProductsDataTable;
-use App\Enums\StockType;
-use App\Http\Controllers\Controller;
 use App\Models\Brand;
+use App\Models\Product;
+use App\Enums\StockType;
 use App\Models\Category;
 use App\Models\OrderItem;
-use App\Models\Product;
-use App\Models\ProductAttribute;
-use App\Models\ProductAttributeOption;
-use App\Models\ProductImage;
 use App\Models\ProductUnit;
-use App\Models\ProductVariant;
+use App\Models\ProductImage;
 use App\Models\StockHistory;
 use Illuminate\Http\Request;
+use App\Models\ProductVariant;
+use App\Models\ProductAttribute;
 use Yajra\DataTables\DataTables;
+use App\Http\Controllers\Controller;
+use App\DataTables\ProductsDataTable;
+use App\Models\ProductAttributeOption;
+use App\Models\ProductVariantProductAttributeOption;
 
 class ProductController extends Controller
 {
@@ -97,15 +98,11 @@ class ProductController extends Controller
 
     public function details(Product $product)
     {
-        $product->load('images', 'productAttributes.options');
-        $sold = OrderItem::where('product_id', $product->id)->count();
-        $revenue = $sold * $product->selling_price;
-        $profit = $revenue - ($sold * $product->buying_price);
-        $last_order = OrderItem::where('product_id', $product->id)->latest('created_at')->first();
-        $last_sale = $last_order?->created_at;
-        $stockHistory = StockHistory::where('product_id', $product->id)->latest()->get();
-        $productVariants = ProductVariant::where('product_id', $product->id)->get();
-        return view('seller.products.details', compact('product', 'sold', 'revenue', 'profit', 'last_sale', 'stockHistory', 'productVariants'));
+        $product = $product->toDetailsArray();
+
+        $productAttributes = ProductAttribute::get();
+
+        return view('seller.products.details', compact('product', 'productAttributes'));
     }
 
     public function edit(Product $product)
@@ -214,7 +211,7 @@ class ProductController extends Controller
     {
         $request->validate([
             'stock_quantity' => 'required|numeric',
-            'stock_action' => 'required|numeric',  // Make sure you're checking 'stock_action'
+            'stock_action' => 'required|numeric',
         ]);
 
         if ($request->stock_quantity > $product->stock_in) {
@@ -351,9 +348,18 @@ class ProductController extends Controller
 
         $data['price'] = $product->selling_price + $request->price;
 
-        $data['attributes'] = json_encode($data['attributes']);
+        $variant = ProductVariant::create($data);
 
-        ProductVariant::create($data);
+        foreach ($data['attributes'] as $attributeName => $attributeValue) {
+            $attributeOption = ProductAttributeOption::where('value', $attributeValue)->first();
+
+            if ($attributeOption) {
+                ProductVariantProductAttributeOption::create([
+                    'product_variant_id' => $variant->id,
+                    'product_attribute_option_id' => $attributeOption->id,
+                ]);
+            }
+        }
 
         session()->flash('success', 'Variant Added Successfully!');
 
@@ -370,19 +376,25 @@ class ProductController extends Controller
             'description' => 'nullable|string'
         ]);
 
-        $data['product_id'] = $product->id;
-
         if (!$request->sku) {
             $data['sku'] = strtoupper(uniqid());
         }
 
         $data['price'] = $product->selling_price + $request->price;
 
-        $data['attributes'] = json_encode($data['attributes']);
-
         $variant->update($data);
 
-        return redirect()->route('seller.products.details',$product->id)->with('success', 'Variant Updated Successfully!');
+        $variant->attributeOptions()->detach();
+
+        foreach ($data['attributes'] as $attributeName => $attributeValue) {
+            $attributeOption = ProductAttributeOption::where('value', $attributeValue)->first();
+
+            if ($attributeOption) {
+                $variant->attributeOptions()->attach($attributeOption->id);
+            }
+        }
+
+        return redirect()->route('seller.products.details', $product->id)->with('success', 'Variant Updated Successfully!');
     }
 
     public function deleteVariant(ProductVariant $variant)

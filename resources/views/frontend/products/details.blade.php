@@ -152,7 +152,7 @@
                                 <h6 id="old-price" class="line-through text-jet-gray">{{ $product['price'] }}
                                 </h6>
                                 <span class="text-xs px-2.5 py-0.5 rounded-lg border border-primary discount-badge">
-                                    -{{ $product['discount'] }} last 2 days
+                                    -{{ $product['discount']['amount'] }} last 2 days
                                 </span>
                                 <span class="text-xs text-leaf-green">Almost Sold Out</span>
                             </div>
@@ -172,7 +172,7 @@
                                     <form id="variantForm" data-slug="{{ $product['slug'] }}"
                                         class="flex flex-wrap flex-col">
                                         @foreach ($productAttributes as $attribute)
-                                            <div class="mt-0">
+                                            <div class="mt-2">
                                                 <h6 class="text-davy-gray sm:text-lg">{{ $attribute['name'] }} :</h6>
                                                 <div class="flex flex-wrap items-center gap-4 sm:gap-5">
                                                     @foreach ($attribute['options'] as $option)
@@ -181,7 +181,7 @@
                                                                 strtolower($attribute['name']) .
                                                                 '-' .
                                                                 strtolower($option['value']);
-                                                            $inputName = 'option_' . $attribute['id']; // VERY important change
+                                                            $inputName = 'option_' . $attribute['id']; 
                                                         @endphp
 
                                                         <div class="form-ctrl flex flex-col gap-2 items-center">
@@ -243,11 +243,11 @@
 
                             <input type="hidden" id="variantSku" value="">
 
-                            @if ($product['stock_in'] > 0)
+                            @if ($product['in_stock'] > 0)
                                 <button data-id="{{ $product['id'] }}" type="button"
                                     class="cartBtn text-sm md:text-base font-medium flex-1 px-6 py-2 border border-primary text-primary rounded-full hover:bg-primary hover:text-white transition-all">
                                     Add To Cart
-                                    <span class="block text-xs font-light">{{ $product['discount_percent'] }}%
+                                    <span class="block text-xs font-light">{{ $product['discount']['percent'] }}%
                                         Discount</span>
                                 </button>
                             @else

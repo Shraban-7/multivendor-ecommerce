@@ -9,7 +9,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\ProductAttribute;
+use App\Models\ProductAttributeOption;
 use App\Models\ProductVariant;
+use App\Models\ProductVariantProductAttributeOption;
 use App\Models\Seller;
 
 class ProductController extends Controller
@@ -40,37 +42,7 @@ class ProductController extends Controller
             $discount_price -= ($productModel->selling_price * $productModel->discount_amount) / 100;
         }
 
-        $product = [
-            'id' => $productModel->id,
-            'slug' => $productModel->slug,
-            'name' => $productModel->name,
-            'description' => $productModel->description,
-            'price' => money(number_format($productModel->selling_price, 2)),
-            'discount_price' => money(number_format($discount_price, 2)),
-            'discount' => money(number_format(($productModel->discount_amount), 2)),
-            'discount_percent' => money(number_format((($productModel->discount_amount / $productModel->selling_price) * 100), 2)),
-            'sold_out' => number_shorten_format($productModel->stock_out),
-            'stock_in' => $productModel->stock_in,
-            'rating' => number_format($productModel->reviews->avg('rating'), 1),
-            'total_reviews' => $productModel->reviews->count(),
-            'category' => $productModel->category->name,
-            'subcategory' => $productModel->subcategory?->name,
-            'images' => $productModel->images->pluck('image'),
-            'variants' => $productModel->variants->map(function ($variant) {
-                return [
-                    'sku' => $variant->sku,
-                    'stock' => $variant->stock,
-                    'price' => money(number_format($variant->price, 2)),
-                    'attributes' => $variant->attributeOptions->map(function ($option) {
-                        return [
-                            'id' => $option->id,
-                            'name' => $option->name,
-                            'value' => $option->value ?? null,
-                        ];
-                    }),
-                ];
-            }),
-        ];
+        $product = $productModel->toDetailsArray();
 
         $interest_products = Product::where('category_id', $categoryId)
             ->where('id', '!=', $product['id'])
@@ -92,7 +64,7 @@ class ProductController extends Controller
             return [$star => $reviewStats[$star] ?? 0];
         });
 
-         $sellerModel = Seller::where('id', $sellerId)->with('followers')->first();
+        $sellerModel = Seller::where('id', $sellerId)->with('followers')->first();
 
         $seller = [
             'username' => $sellerModel->username,
@@ -104,25 +76,15 @@ class ProductController extends Controller
             'total_products' => Product::where('seller_id', $sellerId)->count(),
         ];
 
-        $variantModel = ProductVariant::where('product_id', $product['id'])
-            ->with('attributeOptions.productAttribute')
-            ->get();
+        $variantIds = $product['variants']->pluck('id');
 
-        $attributeIds = collect();
+        $variantAttributeOptionIds = ProductVariantProductAttributeOption::whereIn('product_variant_id', $variantIds)->pluck('product_attribute_option_id');
 
-        foreach ($variantModel as $variant) {
-            foreach ($variant->attributeOptions as $option) {
-                if ($option->productAttribute) {
-                    $attributeIds->push($option->productAttribute->id);
-                }
-            }
-        }
+        $productAttributeOptions = ProductAttributeOption::whereIn('id', $variantAttributeOptionIds)->get();
 
-        $uniqueAttributeIds = $attributeIds->unique()->values();
+        $productAttributeOptionIds = array_unique($productAttributeOptions->pluck('product_attribute_id')->toArray());
 
-        $productAttributeModel = ProductAttribute::whereIn('id', $uniqueAttributeIds)
-            ->with('options')
-            ->get();
+        $productAttributeModel = ProductAttribute::whereIn('id', $productAttributeOptionIds)->with('options')->get(); 
 
         $productAttributes = [];
 
@@ -130,12 +92,15 @@ class ProductController extends Controller
             $productAttributes[] = [
                 'id' => $attribute->id,
                 'name' => $attribute->name,
-                'options' => $attribute->options->map(function ($option) {
-                    return [
-                        'id' => $option->id,
-                        'value' => $option->value,
-                    ];
-                }),
+                'options' => $productAttributeOptions
+                    ->where('product_attribute_id', $attribute->id)
+                    ->map(function ($option) {
+                        return [
+                            'id' => $option->id,
+                            'value' => $option->value,
+                        ];
+                    })
+                    ->values(),
             ];
         }
 

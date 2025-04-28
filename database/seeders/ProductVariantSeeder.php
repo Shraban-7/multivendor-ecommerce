@@ -12,11 +12,10 @@ class ProductVariantSeeder extends Seeder
 {
     public function run(): void
     {
-        $productIds = Product::pluck('id')->all(); // Just product IDs
+        $productIds = Product::pluck('id')->all();
 
         if (empty($productIds)) return;
 
-        // Load attribute options in one query
         $attributes = ProductAttribute::with('options')->whereIn('name', ['Color', 'Size', 'Storage', 'Material'])->get()->keyBy('name');
 
         $colors    = $attributes['Color']->options ?? collect();
@@ -24,7 +23,6 @@ class ProductVariantSeeder extends Seeder
         $storages  = $attributes['Storage']->options ?? collect();
         $materials = $attributes['Material']->options ?? collect();
 
-        // Make all combinations in memory (Cartesian Product)
         $combinations = collect($colors)->crossJoin($sizes, $storages, $materials);
 
         $existingSkus = ProductVariant::pluck('sku')->toArray();
@@ -35,7 +33,6 @@ class ProductVariantSeeder extends Seeder
             foreach ($combinations as $combo) {
                 [$color, $size, $storage, $material] = $combo;
 
-                // Unique SKU logic
                 do {
                     $sku = strtoupper(
                         substr($color->value, 0, 1) .
@@ -46,7 +43,6 @@ class ProductVariantSeeder extends Seeder
                 } while (in_array($sku, $existingSkus));
                 $existingSkus[] = $sku;
 
-                // Create variant data row
                 $newVariants[] = [
                     'product_id' => $productId,
                     'sku'        => $sku,
@@ -58,16 +54,13 @@ class ProductVariantSeeder extends Seeder
             }
         }
 
-        // Bulk insert variants
-        $chunks = array_chunk($newVariants, 500); // To avoid memory overload
+        $chunks = array_chunk($newVariants, 500);
         foreach ($chunks as $chunk) {
             ProductVariant::insert($chunk);
         }
 
-        // Fetch just inserted variants
         $variants = ProductVariant::latest()->take(count($newVariants))->get();
 
-        // Map attribute options to those variants
         $index = 0;
         foreach ($productIds as $productId) {
             foreach ($combinations as $combo) {
@@ -87,7 +80,6 @@ class ProductVariantSeeder extends Seeder
             }
         }
 
-        // Bulk insert pivot table
         $optionChunks = array_chunk($variantOptions, 1000);
         foreach ($optionChunks as $chunk) {
             ProductVariantProductAttributeOption::insert($chunk);
