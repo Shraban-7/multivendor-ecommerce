@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('product_variant_id')->nullable();
             $table->unsignedBigInteger('product_attribute_option_id')->nullable();
+            $table->decimal('additional_price',10,2)->nullable();
             $table->timestamps();
         });
     }

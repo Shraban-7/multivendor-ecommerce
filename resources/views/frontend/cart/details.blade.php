@@ -97,33 +97,10 @@
                                 <div class="seller-items seller-{{ $sellerId }}">
                                     @foreach ($cartGroup as $key => $cart)
                                         @foreach ($cart->cartItems as $item)
-                                            @php
-                                            if ($item->variant) {
-                                                dd($item->price);
-                                            }
-
-                                                if ($item->product->discount_type != null) {
-                                                    if (
-                                                        $item->product->discount_type == \App\Enums\DiscountType::FLAT
-                                                    ) {
-                                                        $discount_price =
-                                                            $item->price - $item->product->discount_amount;
-                                                    } elseif (
-                                                        $item->product->discount_type ==
-                                                        \App\Enums\DiscountType::PERCENTAGE
-                                                    ) {
-                                                        $discount_price =
-                                                            $item->price -
-                                                            ($item->price * $item->product->discount_amount) / 100;
-                                                    }
-                                                } else {
-                                                    $discount_price = $item->price;
-                                                }
-                                            @endphp
                                             <div class="py-3 border-t md:py-5 border-jet-gray/20 cart-item"
-                                                data-price="{{ $item->price }}" data-seller-id="{{ $sellerId }}"
-                                                data-discounted-price="{{ $discount_price }}"
-                                                data-id="{{ $item->id }}">
+                                                data-price="{{ $item->product_original_price }}" data-seller-id="{{ $sellerId }}"
+                                                data-discounted-price="{{ $item->price }}"
+                                                data-id="{{ $item->id }}" data-discount="{{ $item->product->discount }}">
                                                 <div class="flex gap-2 sm:gap-4">
                                                     <!-- Item Checkbox -->
                                                     <div class="flex items-start hidden pt-2">
@@ -195,19 +172,10 @@
                                                                             {{ money($item->price * $item->quantity) }}
                                                                         </h3>
                                                                     </div>
-
                                                                 </div>
-
-                                                                @php
-                                                                    $discount =
-                                                                        (($item->price - $discount_price) /
-                                                                            $item->price) *
-                                                                        100;
-                                                                @endphp
-
                                                                 <span
                                                                     class="text-xs xsm:text-sm px-2.5 py-0.5 rounded-lg border border-primary">
-                                                                    - {{ percentage($discount) }} last 2 days
+                                                                    - {{ percentage($item->product->discount) }} last 2 days
                                                                 </span>
 
                                                                 @if ($item->variant)
@@ -743,6 +711,7 @@
                         if (cartItem.length) {
                             const price = parseFloat(cartItem.data('price'));
                             const discountedPrice = parseFloat(cartItem.data('discounted-price'));
+                            const discount = parseFloat(cartItem.data('discount'));
                             const quantity = parseInt(cartItem.find('.quantity-input').val(), 10);
 
                             discountedTotal += discountedPrice * quantity;

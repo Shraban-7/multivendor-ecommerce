@@ -125,7 +125,16 @@
                 var product_id = $(this).data('id');
                 var wishlistId = $(this).data('wishlist-id');
                 var variantSku = $('#variantSku').val();
+                var product_price_text = $('.product-price').text().replace(/[^0-9.]/g, '');
+                var product_price = parseFloat(product_price_text);
                 var $row = $(this).closest('.grid');
+
+                let selectedOptionIds = [];
+
+                $('.variant-option:checked').each(function() {
+                    selectedOptionIds.push($(this).val());
+                });
+
                 if (!product_id) {
                     alert("No Product Selected!");
                     return;
@@ -138,7 +147,9 @@
                     data: {
                         product_id: product_id,
                         variant_sku: variantSku,
-                        quantity: qtyInput
+                        quantity: qtyInput,
+                        price: product_price,
+                        option_ids: selectedOptionIds,
                     },
                     success: function(data) {
                         if (data.unauthorized) {

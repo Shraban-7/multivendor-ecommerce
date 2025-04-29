@@ -108,8 +108,8 @@ class OrderController extends Controller
 
             $baseDiscountedPrice = $discountPrice($product);
 
-            if ($variant->price) {
-                $unitPrice = $variant->price + $baseDiscountedPrice;
+            if ($variant && $cartItem->variant_price) {
+                $unitPrice = $cartItem->variant_price + $baseDiscountedPrice;
             } else {
                 $unitPrice = $baseDiscountedPrice;
             }
@@ -126,8 +126,8 @@ class OrderController extends Controller
 
             $orderItems[] = [
                 'product_id' => $product->id,
-                'product_variant' => $variant->id ? $variant->id : null,
-                'product_variant_price' => $variant->price ? ($variant->price + $product->selling_price) : null,
+                'product_variant' => $variant->id ?? null,
+                'product_variant_price' => $cartItem->price - $product->selling_price,
                 'buying_price' => $product->buying_price,
                 'unit_price' => $unitPrice,
                 'quantity' => $cartItem->quantity,

@@ -87,13 +87,6 @@ class Product extends Model
     {
         $this->load('images', 'category', 'subcategory', 'variants.attributeOptions.productAttribute');
 
-        $discount_price = $this->selling_price;
-        if ($this->discount_type === DiscountType::FLAT) {
-            $discount_price -= $this->discount_amount;
-        } elseif ($this->discount_type === DiscountType::PERCENTAGE) {
-            $discount_price -= ($this->selling_price * $this->discount_amount) / 100;
-        }
-
         $sold = OrderItem::where('product_id', $this->id)->count();
         $revenue = $sold * $this->selling_price;
         $profit = $revenue - ($sold * $this->buying_price);
@@ -117,14 +110,12 @@ class Product extends Model
             'description' => $this->description,
             'price' => $this->selling_price,
             'buying_cost' => $this->buying_price,
-
-            'discount_price' => money(number_format($discount_price, 2)),
+            'discount_price' => money($this->discounted_price),
             'discount' => [
                 'type' => $this->discount_type,
-                'amount' => money(number_format($this->discount_amount, 2)),
-                'percent' => money(number_format(($this->discount_amount / $this->selling_price) * 100, 2)),
+                'amount' => money($this->discounted_amount),
+                'percent' => money($this->discount),
             ],
-
             'stock_status' => $this->stock_status,
             'in_stock' => $this->stock_in,
             'sold_out' => $this->stock_out,
@@ -146,7 +137,6 @@ class Product extends Model
                     }),
                 ];
             }),
-
             'total_sold' => $sold,
             'revenue' => $revenue,
             'profit' => $profit,
@@ -156,10 +146,8 @@ class Product extends Model
                 'margin' => (float) $margin,
                 'percent' => round($marginPercent, 2),
             ],
-
             'rating' => number_format($this->reviews->avg('rating'), 1),
             'total_reviews' => $this->reviews->count(),
-
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
@@ -177,6 +165,7 @@ class Product extends Model
 
         return $basePrice;
     }
+
     public function getDiscountedPriceAttribute()
     {
         return $this->getDiscountedPrice($this->selling_price);
@@ -186,6 +175,36 @@ class Product extends Model
     {
         return $this->variant
             ? $this->getDiscountedPrice($this->variant->price+$this->selling_price)
-            : $this->discounted_price; 
+            : $this->discounted_price;
+    }
+
+    public function getDiscountAttribute()
+    {
+        $basePrice = $this->variant
+            ? $this->variant->price + $this->selling_price
+            : $this->selling_price;
+
+        if ($this->discount_type !== null) {
+            if ($this->discount_type === \App\Enums\DiscountType::FLAT) {
+                return $this->discount_amount;
+            } elseif ($this->discount_type === \App\Enums\DiscountType::PERCENTAGE) {
+                return ($basePrice * $this->discount_amount) / 100;
+            }
+        }
+
+        return 0;
+    }
+
+    public function getDiscountedAmountAttribute()
+    {
+        $basePrice = $this->selling_price;
+
+        if ($this->discount_type === \App\Enums\DiscountType::FLAT) {
+            return $this->discount_amount;
+        } elseif ($this->discount_type === \App\Enums\DiscountType::PERCENTAGE) {
+            return ($basePrice * $this->discount_amount) / 100;
+        }
+
+        return 0;
     }
 }

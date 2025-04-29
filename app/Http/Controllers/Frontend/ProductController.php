@@ -84,7 +84,7 @@ class ProductController extends Controller
 
         $productAttributeOptionIds = array_unique($productAttributeOptions->pluck('product_attribute_id')->toArray());
 
-        $productAttributeModel = ProductAttribute::whereIn('id', $productAttributeOptionIds)->with('options')->get(); 
+        $productAttributeModel = ProductAttribute::whereIn('id', $productAttributeOptionIds)->with('options')->get();
 
         $productAttributes = [];
 
@@ -136,15 +136,21 @@ class ProductController extends Controller
             return response()->json(['message' => 'No options selected'], 400);
         }
 
-        $variant = ProductVariant::where('product_id', $product->id) // ✅ check inside this product only
+        $variant = ProductVariant::where('product_id', $product->id)
             ->whereHas('attributeOptions', function ($query) use ($selectedOptionIds) {
                 $query->whereIn('product_attribute_option_id', $selectedOptionIds);
             }, '=', count($selectedOptionIds))
             ->first();
 
+        $additional_price = ProductVariantProductAttributeOption::whereIn('product_attribute_option_id', $selectedOptionIds)
+            ->where('product_variant_id', $variant->id)
+            ->sum('additional_price');
+
         if ($variant) {
             return response()->json([
-                'price' => $variant->price,
+                'id' => $variant->id,
+                'price' => $additional_price+$product->selling_price,
+                'discounted_price' => $additional_price + $product->discounted_price,
                 'stock' => $variant->stock,
                 'sku' => $variant->sku,
                 'description' => $variant->description,

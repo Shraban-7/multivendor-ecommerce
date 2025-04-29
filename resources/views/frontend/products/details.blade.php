@@ -146,7 +146,7 @@
                             <div class="flex flex-wrap items-center gap-2">
                                 <div class="flex flex-no-wrap items-center gap-1 new-price">
                                     <i class="fa-solid fa-bolt text-[#ffa755]"></i>
-                                    <h3 id="current-price" class="font-bold current-price text-primary">
+                                    <h3 id="current-price" class="font-bold current-price text-primary product-price">
                                         {{ $product['discount_price'] }}</h3>
                                 </div>
                                 <h6 id="old-price" class="line-through text-jet-gray">{{ $product['price'] }}
@@ -181,7 +181,7 @@
                                                                 strtolower($attribute['name']) .
                                                                 '-' .
                                                                 strtolower($option['value']);
-                                                            $inputName = 'option_' . $attribute['id']; 
+                                                            $inputName = 'option_' . $attribute['id'];
                                                         @endphp
 
                                                         <div class="form-ctrl flex flex-col gap-2 items-center">
@@ -790,24 +790,14 @@
                             option_ids: selectedOptions
                         },
                         success: function(response) {
+                            // alert('Variant ID: ' + response.id + ', Variant Price: ' + response.price);
+
                             if (response.price !== undefined) {
-                                var current_price = parseFloat($('#current-price').text().replace(
-                                    /[^\d.]/g, '')) || 0;
-                                var old_price = parseFloat($('#old-price').text().replace(/[^\d.]/g,
-                                    '')) || 0;
-
-                                let formattedPrice = new Intl.NumberFormat('en-US', {
-                                    style: 'decimal',
-                                    minimumFractionDigits: 0,
-                                    maximumFractionDigits: 0
-                                }).format(response.price);
-
-                                $('#current-price').text('৳ ' + (parseInt(formattedPrice) +
-                                    current_price));
+                                $('#current-price').text('৳ ' + (parseInt(response.discounted_price)));
                                 $('#variantSku').val(response.sku);
 
-                                $('#old-price').text('৳ ' + (parseInt(formattedPrice) + old_price));
-                                $('.discount-badge').hide();
+                                $('#old-price').text('৳ ' + (parseInt(response.price)));
+                                // $('.discount-badge').hide();
                             }
 
                             if (response.stock !== undefined) {

@@ -17,7 +17,8 @@ class CartController extends Controller
     public function add(Request $request)
     {
         $product = Product::find($request->product_id);
-        $variant = ProductVariant::where('sku',$request->variant_sku)->first();
+        $variant = ProductVariant::where('sku', $request->variant_sku)->first();
+        $optionIdsJson = json_encode($request->option_ids);
 
         if (!$product) {
             return response()->json(['success' => false, 'error' => 'Product not found']);
@@ -38,16 +39,34 @@ class CartController extends Controller
         }
 
         $cartItem = CartItem::where('cart_id', $cart->id)->where('product_id', $product->id)->first();
-        if ($cartItem) {
+        if ($variant) {
+            $existItem = CartItem::where('cart_id', $cart->id)->where('product_id', $product->id)->where('product_variant_id', $variant->id)->first();
+            if ($existItem) {
+                $existItem->update([
+                    'quantity' => $request->quantity + $existItem->quantity,
+                ]);
+            } else {
+                $cartItem = CartItem::create([
+                    'cart_id' => $cart->id,
+                    'product_id' => $product->id,
+                    'product_variant_id' => $variant->id ?? null,
+                    'quantity' => $request->quantity ?? 1,
+                    'price' => $request->price ?? $product->discounted_price,
+                    'product_attribute_option_ids' => $optionIdsJson,
+                ]);
+            }
+        } else if ($cartItem) {
             $cartItem->update([
-                'quantity' => $request->quantity + $cartItem->quantity
+                'quantity' => $request->quantity + $cartItem->quantity,
             ]);
         } else {
-           $cartItem = CartItem::create([
+            $cartItem = CartItem::create([
                 'cart_id' => $cart->id,
                 'product_id' => $product->id,
                 'product_variant_id' => $variant->id ?? null,
-                'quantity' => $request->quantity ?? 1
+                'quantity' => $request->quantity ?? 1,
+                'price' => $request->price ?? $product->discounted_price,
+                'product_attribute_option_ids' => $optionIdsJson,
             ]);
         }
 
@@ -78,15 +97,11 @@ class CartController extends Controller
         foreach ($carts as $seller_id => $cartGroup) {
             foreach ($cartGroup as $cart) {
                 foreach ($cart->cartItems as $item) {
-                    $item_grand_total = $item->quantity * $item->product->selling_price;
+                    $item_grand_total = $item->quantity * $item->product_original_price;
                     $grand_total += $item_grand_total;
 
                     if ($item->product->discount_type != null) {
-                        if ($item->product->discount_type == DiscountType::FLAT) {
-                            $item_sub_total = $item->quantity * ($item->product->selling_price - $item->product->discount_amount);
-                        } elseif ($item->product->discount_type == DiscountType::PERCENTAGE) {
-                            $item_sub_total = $item->quantity * ($item->product->selling_price - ($item->product->selling_price * $item->product->discount_amount) / 100);
-                        }
+                        $item_sub_total = $item->quantity * $item->discounted_price;
                     } else {
                         $item_sub_total = $item_grand_total;
                     }
@@ -207,10 +222,9 @@ class CartController extends Controller
         foreach ($carts as $cart) {
             foreach ($cart->cartItems as $item) {
                 if ($item->variant) {
-                    $grand_total += $item->quantity * ($item->product->selling_price+ $item->variant->price);
-                }
-                else{
-                    $grand_total += $item->quantity * $item->product->selling_price;
+                    $grand_total += $item->quantity * $item->product->discounted_price_with_variant;
+                } else {
+                    $grand_total += $item->quantity * $item->product->discounted_price;
                 }
             }
         }

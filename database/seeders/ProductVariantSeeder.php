@@ -73,6 +73,7 @@ class ProductVariantSeeder extends Seeder
                     $variantOptions[] = [
                         'product_variant_id' => $variant->id,
                         'product_attribute_option_id' => $option->id,
+                        'additional_price' => rand(10, 50),
                         'created_at' => now(),
                         'updated_at' => now(),
                     ];
