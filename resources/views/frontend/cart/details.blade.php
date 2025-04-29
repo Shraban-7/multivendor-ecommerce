@@ -98,6 +98,10 @@
                                     @foreach ($cartGroup as $key => $cart)
                                         @foreach ($cart->cartItems as $item)
                                             @php
+                                            if ($item->variant) {
+                                                dd($item->price);
+                                            }
+
                                                 if ($item->product->discount_type != null) {
                                                     if (
                                                         $item->product->discount_type == \App\Enums\DiscountType::FLAT

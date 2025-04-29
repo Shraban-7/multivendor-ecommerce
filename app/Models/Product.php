@@ -164,4 +164,28 @@ class Product extends Model
             'updated_at' => $this->updated_at,
         ];
     }
+
+    public function getDiscountedPrice($basePrice)
+    {
+        if ($this->discount_type !== null) {
+            if ($this->discount_type === \App\Enums\DiscountType::FLAT) {
+                return $basePrice - $this->discount_amount;
+            } elseif ($this->discount_type === \App\Enums\DiscountType::PERCENTAGE) {
+                return $basePrice - (($basePrice * $this->discount_amount) / 100);
+            }
+        }
+
+        return $basePrice;
+    }
+    public function getDiscountedPriceAttribute()
+    {
+        return $this->getDiscountedPrice($this->selling_price);
+    }
+
+    public function getDiscountedPriceWithVariantAttribute()
+    {
+        return $this->variant
+            ? $this->getDiscountedPrice($this->variant->price+$this->selling_price)
+            : $this->discounted_price; 
+    }
 }
