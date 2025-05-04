@@ -195,16 +195,16 @@ class Product extends Model
         return 0;
     }
 
-    public function getDiscountedAmountAttribute()
-    {
-        $basePrice = $this->selling_price;
+    // public function getDiscountedAmountAttribute()
+    // {
+    //     $basePrice = $this->selling_price;
 
-        if ($this->discount_type === \App\Enums\DiscountType::FLAT) {
-            return $this->discount_amount;
-        } elseif ($this->discount_type === \App\Enums\DiscountType::PERCENTAGE) {
-            return ($basePrice * $this->discount_amount) / 100;
-        }
+    //     if ($this->discount_type === \App\Enums\DiscountType::FLAT) {
+    //         return $this->discount_amount;
+    //     } elseif ($this->discount_type === \App\Enums\DiscountType::PERCENTAGE) {
+    //         return ($basePrice * $this->discount_amount) / 100;
+    //     }
 
-        return 0;
-    }
+    //     return 0;
+    // }
 }

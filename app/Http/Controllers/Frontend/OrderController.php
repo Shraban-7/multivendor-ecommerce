@@ -70,15 +70,11 @@ class OrderController extends Controller
 
         $selectedSellerId = $request->input('seller_id');
 
+        $seller = Seller::find($selectedSellerId);
         $cart = Cart::where('user_id', $user->id)
             ->where('seller_id', $selectedSellerId)
             ->with('cartItems.product')
             ->first();
-
-        if ($request->isMethod('GET')) {
-            $customer_addresses = CustomerAddress::where('user_id', $user->id)->get();
-            return view('frontend.pages.checkout', compact('user', 'customer_addresses', 'selectedSellerId'));
-        }
 
         if (!$cart) {
             return response()->json([
@@ -87,40 +83,19 @@ class OrderController extends Controller
             ], 404);
         }
 
-        $discountPrice = function ($product) {
-            if ($product->discount_type === DiscountType::PERCENTAGE) {
-                return $product->selling_price - ($product->selling_price * $product->discount_amount / 100);
-            } elseif ($product->discount_type === DiscountType::FLAT) {
-                return $product->selling_price - $product->discount_amount;
-            }
-            return $product->selling_price;
-        };
-
         $total = 0;
         $discount = 0;
-        $shippingFee = 0;
         $tax = 0;
         $orderItems = [];
+        $shipping_fee = $seller->shipping_cost;
 
         foreach ($cart->cartItems as $cartItem) {
             $product = $cartItem->product;
             $variant = $cartItem->variant;
-
-            $baseDiscountedPrice = $discountPrice($product);
-
-            if ($variant && $cartItem->variant_price) {
-                $unitPrice = $cartItem->variant_price + $baseDiscountedPrice;
-            } else {
-                $unitPrice = $baseDiscountedPrice;
-            }
-
+            $unitPrice = $cartItem->price;
             $itemTotal = $cartItem->quantity * $unitPrice;
-
-            $itemDiscount = $cartItem->quantity * ($product->selling_price - $baseDiscountedPrice);
-
-            $shippingFee += floatval($product->shipping_cost);
+            $itemDiscount = $cartItem->quantity * $product->discount;
             $tax += floatval($product->tax) * $cartItem->quantity;
-
             $total += $itemTotal;
             $discount += $itemDiscount;
 
@@ -143,6 +118,10 @@ class OrderController extends Controller
             }
         }
 
+        if ($request->isMethod('GET')) {
+            $customer_addresses = CustomerAddress::where('user_id', $user->id)->get();
+            return view('frontend.pages.checkout', compact('user', 'customer_addresses', 'selectedSellerId', 'total', 'discount', 'tax', 'shipping_fee'));
+        }
 
         $order = Order::create([
             'user_id' => $user->id,
@@ -152,13 +131,13 @@ class OrderController extends Controller
             'customer_phone' => $request->input('customer_phone'),
             'customer_address' => $request->input('address'),
             'invoice_id' => strtoupper(uniqid()),
-            'sub_total' => $total,
-            'total' => $total - $discount,
+            'sub_total' => $total + $discount,
+            'total' => $total + $tax + $shipping_fee,
             'discount' => $discount,
             'tax' => $tax,
-            'shipping_fee' => $shippingFee,
-            'payable' => $total + $shippingFee + $tax - $discount,
-            'due' => $total + $shippingFee + $tax - $discount,
+            'shipping_fee' => $shipping_fee,
+            'payable' => $total + $shipping_fee + $tax,
+            'due' => $total + $shipping_fee + $tax,
             'status' => OrderStatus::PENDING->value,
             'delivery_status' => OrderStatus::ORDER_PLACED->value
         ]);

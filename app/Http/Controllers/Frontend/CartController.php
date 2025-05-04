@@ -99,13 +99,7 @@ class CartController extends Controller
                 foreach ($cart->cartItems as $item) {
                     $item_grand_total = $item->quantity * $item->product_original_price;
                     $grand_total += $item_grand_total;
-
-                    if ($item->product->discount_type != null) {
-                        $item_sub_total = $item->quantity * $item->discounted_price;
-                    } else {
-                        $item_sub_total = $item_grand_total;
-                    }
-
+                    $item_sub_total = $item->quantity * $item->price;
                     $sub_total += $item_sub_total;
                 }
             }
@@ -130,53 +124,21 @@ class CartController extends Controller
                 ->with('product', 'variant')
                 ->get()
                 ->sum(function ($item) {
-                    $product = $item->product;
-                    $variant = $item->variant;
-
-                    $unitPrice = $product->selling_price;
-                    if ($variant) {
-                        $unitPrice += $variant->additional_price;
-                    }
-
-                    $discountAmount = $product->discount_amount ?? 0;
-                    $finalPrice = $unitPrice - $discountAmount;
-
-                    return $item->quantity * $finalPrice;
+                    return $item->quantity * $item->price;
                 });
 
             $grandTotal = CartItem::where('cart_id', $request->cart_id)
                 ->with('product', 'variant')
                 ->get()
                 ->sum(function ($item) {
-                    $product = $item->product;
-                    $variant = $item->variant;
-                    $unitPrice = $product->selling_price;
-                    if ($variant->price) {
-                        $unitPrice += $variant->price;
-                    }
-
-                    return $item->quantity * $unitPrice;
+                    return $item->quantity * $item->product_original_price;
                 });
 
             $discount = $grandTotal - $subTotal;
             $totalProductsCount = CartItem::where('cart_id', $request->cart_id)->count();
 
-            $product = $cartItem->product;
-            $variant = $cartItem->variant;
 
-            $unitPrice = $product->selling_price;
-
-            if ($variant && $variant->price) {
-                $unitPrice += $variant->price;
-            }
-
-            if ($product->discount_type === DiscountType::PERCENTAGE) {
-                $unitPrice -= ($unitPrice * $product->discount_amount) / 100;
-            } elseif ($product->discount_type === DiscountType::FLAT) {
-                $unitPrice -= $product->discount_amount;
-            }
-
-            $updatedPrice = money($unitPrice * $cartItem->quantity);
+            $updatedPrice = money($cartItem->price * $cartItem->quantity);
 
             return response()->json([
                 'success' => true,
@@ -221,11 +183,7 @@ class CartController extends Controller
 
         foreach ($carts as $cart) {
             foreach ($cart->cartItems as $item) {
-                if ($item->variant) {
-                    $grand_total += $item->quantity * $item->product->discounted_price_with_variant;
-                } else {
-                    $grand_total += $item->quantity * $item->product->discounted_price;
-                }
+                $grand_total += $item->quantity * $item->price;
             }
         }
 

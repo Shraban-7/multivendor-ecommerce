@@ -79,7 +79,8 @@
                 <div class="flex flex-wrap items-start gap-5 xsm:gap-10 md:gap-16 mb-2">
                     <div>
                         <p class="font-medium">Order ID : #{{ $order->id }}</p>
-                        <p class="text-xs text-davy-gray">Order Placed on: {{ \Carbon\Carbon::parse($order->created_at)->format('F d Y') }}</p>
+                        <p class="text-xs text-davy-gray">Order Placed on:
+                            {{ \Carbon\Carbon::parse($order->created_at)->format('F d Y') }}</p>
                     </div>
                     <span class="inline-block bg-leaf-green text-white px-3.5 py-1.5 rounded-full text-sm">
                         Delivered
@@ -147,7 +148,7 @@
                                     @foreach ($order->items as $item)
                                         <div class="flex gap-2 md:gap-4 py-3 md:py-5">
                                             <div class="w-16 h-20 md:w-20 md:h-24 flex-shrink-0 rounded-xl overflow-hidden">
-                                                <img src="{{ asset('assets/'.$item->product->thumbnail) }}"
+                                                <img src="{{ asset('assets/' . $item->product->thumbnail) }}"
                                                     alt="YC Washable Wool-Blend Jumper" />
                                             </div>
 
@@ -157,7 +158,10 @@
                                                 </p>
                                                 <p class="text-sm text-jet-gray">Quantity: {{ $item->quantity }}</p>
                                                 <p class="flex items-center gap-1 text-aqua-deep mt-1">
-                                                    <span class="text-lg md:text-2xl font-medium">{{ money($item->unit_price) }}</span>
+                                                    <span
+                                                        class="text-lg md:text-2xl font-medium">{{ money($item->unit_price) }}</span>
+                                                    <span
+                                                        class="text-lg md:text-2xl font-medium line-through">{{ money($item->unit_price + $item->discount) }}</span>
                                                 </p>
                                             </div>
                                         </div>
@@ -173,24 +177,33 @@
                                     </h3>
                                     <span><i class="fa-solid fa-chevron-down text-rangoon-green"></i></span>
                                 </div>
-                                <div class="text-davy-gray md:space-y-3 md:pt-5 space-y-2 pt-3">
-                                    <p class="flex justify-between">
+                                <div class="text-davy-gray space-y-3 pt-5">
+                                    <div class="flex justify-between text-sm md:text-base">
                                         <span>Subtotal</span>
-                                        <span>{{ money($order->sub_total) }}</span>
-                                    </p>
-                                    <p class="flex justify-between">
+                                        <span class="font-medium">{{ money($order->sub_total) }}</span>
+                                    </div>
+
+                                    <div class="flex justify-between text-sm md:text-base">
+                                        <span>Discount</span>
+                                        <span class="text-red-500 font-medium">-{{ money($order->discount) }}</span>
+                                    </div>
+
+                                    <div class="flex justify-between text-sm md:text-base">
                                         <span>Tax</span>
-                                        <span>{{ money($order->tax) }}</span>
-                                    </p>
-                                    <p class="flex justify-between">
-                                        <span class="">Delivery</span>
-                                        <span class="text-leaf-green">Free</span>
-                                    </p>
-                                    <h2
-                                        class="flex md:text-lg justify-between font-medium border-t-2 border-davy-gray/10 pt-2 md:pt-3">
-                                        <span>Total</span>
-                                        <span>{{ money($order->total) }}</span>
-                                    </h2>
+                                        <span class="font-medium text-leaf-green">+{{ money($order->tax) }}</span>
+                                    </div>
+
+                                    <div class="flex justify-between text-sm md:text-base">
+                                        <span>Delivery</span>
+                                        <span class="text-leaf-green font-medium">+{{ money($order->shipping_fee) }}</span>
+                                    </div>
+
+                                    <div class="border-t border-davy-gray/20 pt-4 mt-4">
+                                        <h2 class="flex justify-between text-base md:text-lg font-semibold text-gray-800">
+                                            <span>Total</span>
+                                            <span>{{ money($order->total) }}</span>
+                                        </h2>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -200,7 +213,7 @@
                         <a href="#"
                             class="inline-block capitalize bg-primary text-theme-light md:text-lg lg:text-xl w-full py-2.5 md:py-3 lg:py-4 text-center rounded-full hover:bg-theme-dark eq">Return
                             or refund</a>
-                        <a href="{{ route('orders.review',$order->id) }}"
+                        <a href="{{ route('orders.review', $order->id) }}"
                             class="inline-block capitalize border border-theme-dark text-theme-dark md:text-lg lg:text-xl w-full py-2.5 md:py-3 lg:py-4 text-center rounded-full hover:bg-theme-dark hover:text-theme-light eq">Leave
                             a feedback</a>
                     </div>

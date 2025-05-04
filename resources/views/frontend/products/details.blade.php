@@ -108,7 +108,8 @@
 
                             <div class="flex flex-wrap items-center gap-2 text-sm xsm:gap-5 sm:10 md:gap-2 lg:gap-10">
                                 <div class="flex items-center gap-2">
-                                    <span class="pr-2 border-r border-gray-400 text-jet-gray">{{ $product['sold_out'] }}
+                                    <span
+                                        class="pr-2 border-r border-gray-400 text-jet-gray">{{ number_shorten_format($product['sold_out']) }}
                                         sold</span>
                                     <div class="flex items-center gap-2 text-davy-gray">
                                         <span>Provided By</span>
@@ -117,7 +118,7 @@
                                             <img src="{{ storage_url($seller['shop_logo']) }}"
                                                 alt="{{ $seller['shop_name'] }}" class="object-contain w-full h-full" />
                                         </a>
-                                        <span>({{ $product['sold_out'] }}+ sold)</span>
+                                        <span>({{ number_shorten_format($product['sold_out']) }}+ sold)</span>
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-2">
@@ -186,7 +187,9 @@
 
                                                         <div class="form-ctrl flex flex-col gap-2 items-center">
                                                             <input id="{{ $inputId }}" type="radio"
-                                                                value="{{ $option['id'] }}" name="{{ $inputName }}"
+                                                                value="{{ $option['id'] }}"
+                                                                data-option-id="{{ $option['id'] }}"
+                                                                name="{{ $inputName }}"
                                                                 class="hidden peer variant-option" />
 
                                                             @if (strtolower($attribute['name']) === 'color')
@@ -790,7 +793,6 @@
                             option_ids: selectedOptions
                         },
                         success: function(response) {
-                            // alert('Variant ID: ' + response.id + ', Variant Price: ' + response.price);
 
                             if (response.price !== undefined) {
                                 $('#current-price').text('৳ ' + (parseInt(response.discounted_price)));

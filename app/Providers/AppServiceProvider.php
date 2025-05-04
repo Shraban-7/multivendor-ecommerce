@@ -41,34 +41,9 @@ class AppServiceProvider extends ServiceProvider
 
             foreach ($carts as $cart) {
                 foreach ($cart->cartItems as $item) {
-                    $product = $item->product;
-                    $variant = $item->variant;
-
-                    $item_grand_total = $item->quantity * $product->selling_price;
-
-                    if ($variant) {
-                        $item_grand_total += $item->quantity * $variant->price;
-                    }
-
+                    $item_grand_total = $item->quantity * $item->price;
                     $grand_total += $item_grand_total;
-
-                    if ($product->discount_type != null) {
-                        if ($product->discount_type == DiscountType::FLAT) {
-                            $item_sub_total = $item->quantity * ($product->selling_price - $product->discount_amount);
-                            if ($variant) {
-                                $item_sub_total += $item->quantity * $variant->price;
-                            }
-                        } elseif ($product->discount_type == DiscountType::PERCENTAGE) {
-                            $item_sub_total = $item->quantity * ($product->selling_price - ($product->selling_price * $product->discount_amount) / 100);
-                            if ($variant) {
-                                $item_sub_total += $item->quantity * $variant->price;
-                            }
-                        }
-                    } else {
-                        $item_sub_total = $item_grand_total;
-                    }
-
-                    $sub_total += $item_sub_total;
+                    $sub_total += $item_grand_total;
                 }
             }
 

@@ -255,6 +255,37 @@
                 <div class="lg:col-span-1">
                     <!-- Security Info -->
                     <div class="space-y-2">
+                        <h2 class="mb-4 font-semibold lg:text-xl md:text-lg">
+                            Order Summary
+                        </h2>
+                        <div class="order-summary">
+                            <!-- summary -->
+                            <div class="space-y-2 item-info">
+                                <p class="flex justify-between">
+                                    <span class="text-theme-dark">Item's total:</span>
+                                    <span id="itemsTotal"
+                                        class="text-jet-gray mr-2">{{ money($total + $discount) }}</span>
+                                </p>
+                                <p class="flex justify-between">
+                                    <span class="text-theme-dark">Item Discount:</span>
+                                    <span id="itemDiscount" class="font-bold text-primary">-{{ money($discount) }}</span>
+                                </p>
+                                <p class="flex justify-between">
+                                    <span class="text-theme-dark">TAX:</span>
+                                    <span id="itemDiscount" class="font-bold text-jet-gray">+{{ money($tax) }}</span>
+                                </p>
+                                <p class="flex justify-between">
+                                    <span class="text-theme-dark">Shipping Fee:</span>
+                                    <span id="itemDiscount" class="font-bold text-jet-gray">+{{ money($shipping_fee) }}</span>
+                                </p>
+                            </div>
+                            <!-- estimated total -->
+                            <div
+                                class="flex justify-between pt-3 mt-6 font-medium border-t-2 border-dashed total border-jet-gray/50">
+                                <span>Estimated Total</span>
+                                <span id="estimatedTotal" class="text-xl">{{ money($total + $tax + $shipping_fee) }}</span>
+                            </div>
+                        </div>
                         <!-- checkout btn -->
                         <button id="continue-payment-btn" type="button" data-seller-id="{{ $selectedSellerId }}"
                             class="eq 2xl:text-2xl lg:text-xl text-lg w-full flex flex-col items-center bg-primary hover:bg-theme-dark text-white sm:py-4 py-3 rounded-full font-medium">

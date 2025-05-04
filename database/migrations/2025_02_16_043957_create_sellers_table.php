@@ -38,6 +38,7 @@ return new class extends Migration
             $table->bigInteger('total_follower')->nullable();
             $table->bigInteger('total_sold')->nullable();
             $table->bigInteger('total_item')->nullable();
+            $table->decimal('shipping_cost',10,2)->nullable();
 
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
