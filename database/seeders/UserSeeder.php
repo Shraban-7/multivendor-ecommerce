@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
             [
                 'fullname' => 'Client User',
                 'display_name' => 'Client',
-                'image' => 'frontend/images/user-avatar-1.png',
+                'image' => '/images/user/avatar/user-avatar-1.png',
                 'email' => 'client@example.com',
                 'secondary_email' => 'client_secondary@example.com',
                 'phone' => '12345678',
