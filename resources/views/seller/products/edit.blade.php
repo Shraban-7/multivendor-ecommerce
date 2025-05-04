@@ -123,7 +123,7 @@
                         <div class="mb-3 col-md-3">
                             <label class="form-label">Light Deal Expire Date</label>
                             <input name="lightdeal_expired_at" type="date"
-                                value="{{ old('lightdeal_expired_at', $product->lightdeal_expired_at->format('Y-m-d')) }}"
+                                value="{{ old('lightdeal_expired_at', optional($product->lightdeal_expired_at)->format('Y-m-d')) }}"
                                 class="form-control">
                         </div>
                         <div class="mb-3 col-md-12">
