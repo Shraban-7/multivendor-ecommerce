@@ -162,12 +162,14 @@ class CartController extends Controller
     {
         $cartItem = CartItem::where('id', $request->id)->first();
 
+        $cartId = $cartItem->cart_id;
+
         if ($cartItem) {
             $cartItem->delete();
+            $remainingItems = CartItem::where('cart_id', $cartId)->count();
 
-            $remainingItems = CartItem::where('id', $request->id)->count();
             if ($remainingItems === 0) {
-                Cart::where('id', $request->id)->delete();
+                Cart::where('id', $cartId)->delete();
             }
 
             return response()->json(['success' => true, 'message' => 'Product removed from cart']);
@@ -193,7 +195,7 @@ class CartController extends Controller
 
         return response()->json([
             'cartCount' => $cartCount,
-            'totalPrice' => $grand_total
+            'totalPrice' => number_format($grand_total,2)
         ]);
     }
 }

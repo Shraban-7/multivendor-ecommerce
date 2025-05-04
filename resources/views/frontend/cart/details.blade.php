@@ -175,7 +175,7 @@
                                                                 </div>
                                                                 <span
                                                                     class="text-xs xsm:text-sm px-2.5 py-0.5 rounded-lg border border-primary">
-                                                                    - {{ percentage($item->product->discount) }} last 2 days
+                                                                    - {{ percentage($item->product->discount_percent) }} last 2 days
                                                                 </span>
 
                                                                 @if ($item->variant)
