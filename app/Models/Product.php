@@ -113,8 +113,8 @@ class Product extends Model
             'discount_price' => money($this->discounted_price),
             'discount' => [
                 'type' => $this->discount_type,
-                'amount' => money($this->discounted_amount),
-                'percent' => money($this->discount),
+                'amount' => money($this->discount),
+                'percent' => money($this->discount_percent),
             ],
             'stock_status' => $this->stock_status,
             'in_stock' => $this->stock_in,
@@ -195,16 +195,12 @@ class Product extends Model
         return 0;
     }
 
-    // public function getDiscountedAmountAttribute()
-    // {
-    //     $basePrice = $this->selling_price;
+    public function getDiscountPercentAttribute()
+    {
+        if (!$this->discount_type) {
+            return 0;
+        }
 
-    //     if ($this->discount_type === \App\Enums\DiscountType::FLAT) {
-    //         return $this->discount_amount;
-    //     } elseif ($this->discount_type === \App\Enums\DiscountType::PERCENTAGE) {
-    //         return ($basePrice * $this->discount_amount) / 100;
-    //     }
-
-    //     return 0;
-    // }
+        return round(($this->discount / $this->selling_price) * 100, 2);
+    }
 }
