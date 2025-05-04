@@ -40,7 +40,11 @@
 
     @push('scripts')
         <script>
-            new DataTable('#order-table');
+            new DataTable('#order-table', {
+                order: [
+                    [0, 'desc']
+                ]
+            });
         </script>
     @endpush
 

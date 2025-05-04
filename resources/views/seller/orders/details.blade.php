@@ -185,6 +185,7 @@
                                 <tr>
                                     <th scope="col">Product</th>
                                     <th scope="col" class="text-center">Price</th>
+                                    <th scope="col" class="text-center">Discounted Price</th>
                                     <th scope="col" class="text-center">Quantity</th>
                                     <th scope="col" class="text-end">Total</th>
                                 </tr>
@@ -215,56 +216,60 @@
 
                                                     @if (isset($item->variant))
                                                         <small class="text-muted d-block">
-                                                            Variant SKU: {{ $item->variant->sku  }}
+                                                            Variant SKU: {{ $item->variant->sku }}
                                                         </small>
                                                         <small class="text-muted d-block">
-                                                            Stock: {{ $item->variant->stock  }}
+                                                            Stock: {{ $item->variant->stock }}
                                                         </small>
                                                         <small class="text-muted d-block">
-                                                            Price: {{ number_format($item->product_variant_price, 2) }} (Without Discount)
+                                                            Price: {{ money($item->product_variant_price) }}
+                                                            (Without Discount)
                                                         </small>
                                                     @endif
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="text-center">{{ $item->unit_price }}</td>
+                                        <td class="text-center">{{ money($item->unit_price + $item->product->discount) }}</td>
+                                        <td class="text-center">{{ money($item->unit_price) }}</td>
                                         <td class="text-center">{{ $item->quantity }}</td>
-                                        <td class="text-end">{{ $item->unit_price * $item->quantity }}</td>
+                                        <td class="text-end">
+                                            {{ money(($item->unit_price + $item->product->discount) * $item->quantity) }}
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
                             <tfoot class="table-white">
                                 <tr>
-                                    <th colspan="3" class="text-end">Subtotal:</th>
+                                    <th colspan="4" class="text-end">Subtotal:</th>
                                     <td class="text-end">{{ $order->sub_total }}</td>
                                 </tr>
                                 @if (isset($order->discount) && $order->discount > 0)
                                     <tr>
-                                        <th colspan="3" class="text-end">Discount:</th>
+                                        <th colspan="4" class="text-end">Discount:</th>
                                         <td class="text-end">-{{ $order->discount }}</td>
                                     </tr>
                                 @endif
                                 <tr>
-                                    <th colspan="3" class="text-end">Shipping:</th>
-                                    <td class="text-end">{{ $order->shipping_cost }}</td>
+                                    <th colspan="4" class="text-end">Shipping:</th>
+                                    <td class="text-end">{{ $order->shipping_fee }}</td>
                                 </tr>
                                 @if (isset($order->tax) && $order->tax > 0)
                                     <tr>
-                                        <th colspan="3" class="text-end">Tax:</th>
+                                        <th colspan="4" class="text-end">Tax:</th>
                                         <td class="text-end">{{ $order->tax }}</td>
                                     </tr>
                                 @endif
                                 <tr>
-                                    <th colspan="3" class="text-end">Total:</th>
+                                    <th colspan="4" class="text-end">Total:</th>
                                     <td class="text-end fw-bold">{{ $order->total }}</td>
                                 </tr>
                                 @if ($order->due > 0)
                                     <tr>
-                                        <th colspan="3" class="text-end">Paid:</th>
+                                        <th colspan="4" class="text-end">Paid:</th>
                                         <td class="text-end">{{ $order->payable - $order->due }}</td>
                                     </tr>
                                     <tr>
-                                        <th colspan="3" class="text-end">Due:</th>
+                                        <th colspan="4" class="text-end">Due:</th>
                                         <td class="text-end text-danger fw-bold">{{ $order->due }}</td>
                                     </tr>
                                 @endif
