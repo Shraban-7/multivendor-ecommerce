@@ -51,6 +51,12 @@ class ProductController extends Controller
             ->take($limit)
             ->get();
 
+    //    return $interest_products = Product::where('category_id', $categoryId)
+    //         ->where('id', '!=', $product['id'])
+    //         ->latest()
+
+    //         ->get();
+
         $reviewStats = Review::where('product_id', $product['id'])
             ->select('rating', DB::raw('count(*) as count'))
             ->groupBy('rating')
@@ -105,13 +111,33 @@ class ProductController extends Controller
         }
 
         if ($request->ajax()) {
-            if ($interest_products->isEmpty()) {
-                return '';
+            $type = $request->get('type');
+
+            if ($type === 'products') {
+                if ($interest_products->isEmpty()) {
+                    return '';
+                }
+
+                return view('frontend.partials.product-card-load', [
+                    'products' => $interest_products
+                ])->render();
             }
 
-            return view('frontend.partials.product-card-load', [
-                'products' => $interest_products
-            ])->render();
+            if ($type === 'reviews') {
+                $reviews = Review::where('product_id', $product['id'])
+                    ->latest()
+                    ->skip($skip)
+                    ->take($limit)
+                    ->get();
+
+                if ($reviews->isEmpty()) {
+                    return '';
+                }
+
+                return view('frontend.partials.review-card-load', [
+                    'reviews' => $reviews
+                ])->render();
+            }
         }
 
         return view('frontend.products.details', [
@@ -125,6 +151,31 @@ class ProductController extends Controller
             'productAttributes' => $productAttributes
         ]);
     }
+
+    public function loadReview(Request $request)
+    {
+        if ($request->ajax()) {
+            $productId = $request->product_id;
+            $page = $request->page ?? 1;
+
+            $reviews = Review::where('product_id', $productId)
+                ->latest()
+                ->paginate(5, ['*'], 'page', $page);
+
+            if ($reviews->isEmpty()) {
+                return response()->json(['html' => '']);
+            }
+
+            $view = view('frontend.partials.review-card', compact('reviews'))->render();
+
+            return response()->json([
+                'html' => $view,
+                'next_page' => $reviews->currentPage() + 1,
+                'has_more' => $reviews->hasMorePages()
+            ]);
+        }
+    }
+
 
     public function getVariant(Request $request, $slug)
     {

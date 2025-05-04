@@ -11,8 +11,18 @@ class Review extends Model
 
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d',
+    ];
+
+
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

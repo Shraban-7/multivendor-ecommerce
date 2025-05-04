@@ -144,23 +144,10 @@
                                         </path>
                                     </svg>
 
-                                    @php
-                                        use App\Enums\DiscountType;
-                                        if ($product->discount_type != null) {
-                                            if ($product->discount_type == DiscountType::FLAT) {
-                                                $price = (float) $product->selling_price - $product->discount_amount;
-                                            } elseif ($product->discount_type == DiscountType::PERCENTAGE) {
-                                                $price =
-                                                    (float) $product->selling_price -
-                                                    ($product->selling_price * $product->discount_amount) / 100;
-                                            }
-                                        } else {
-                                            $price = $product->selling_price;
-                                        }
-                                    @endphp
+
                                     <span class="align-center text-sm text-[#ffa755]">{{ currency() }}</span>
                                     <h3 class="current-price font-bold text-primary">
-                                        {{ $price }}
+                                        {{ $product->discounted_price }}
                                     </h3>
                                 </div>
                                 <h6 class="old-price text-jet-gray line-through">
@@ -187,7 +174,7 @@
                             </div>
                             <div class="clr-size-qty p-4">
                                 <!-- Color Selection -->
-                                
+
                                 <!-- Quantity -->
                                 <div class="quantity mt-3">
                                     <div class="text-davy-gray flex items-center gap-2">

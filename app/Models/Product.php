@@ -85,7 +85,7 @@ class Product extends Model
 
     public function toDetailsArray()
     {
-        $this->load('images', 'category', 'subcategory', 'variants.attributeOptions.productAttribute','seller');
+        $this->load('images', 'category', 'subcategory', 'variants.attributeOptions.productAttribute','seller','reviews.user');
 
         $sold = OrderItem::where('product_id', $this->id)->count();
         $revenue = $sold * $this->selling_price;
@@ -151,6 +151,7 @@ class Product extends Model
                 'business_name' => $this->seller->business_name,
                 'business_logo' => $this->seller->business_logo,
             ],
+            'reviews' => $this->reviews,
             'rating' => number_format($this->reviews->avg('rating'), 1),
             'total_reviews' => $this->reviews->count(),
             'created_at' => $this->created_at,

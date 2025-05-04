@@ -50,7 +50,7 @@ class ReviewSeeder extends Seeder
         ];
 
         foreach ($reviews as $review) {
-            Review::insert([
+            Review::create([
                 'product_id' => $review['product_id'],
                 'user_id' => $review['user_id'],
                 'rating' => $review['rating'],
