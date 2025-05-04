@@ -85,7 +85,7 @@ class Product extends Model
 
     public function toDetailsArray()
     {
-        $this->load('images', 'category', 'subcategory', 'variants.attributeOptions.productAttribute');
+        $this->load('images', 'category', 'subcategory', 'variants.attributeOptions.productAttribute','seller');
 
         $sold = OrderItem::where('product_id', $this->id)->count();
         $revenue = $sold * $this->selling_price;
@@ -145,6 +145,11 @@ class Product extends Model
             'profit' => [
                 'margin' => (float) $margin,
                 'percent' => round($marginPercent, 2),
+            ],
+            'seller' => [
+                'id' => $this->seller->id,
+                'business_name' => $this->seller->business_name,
+                'business_logo' => $this->seller->business_logo,
             ],
             'rating' => number_format($this->reviews->avg('rating'), 1),
             'total_reviews' => $this->reviews->count(),

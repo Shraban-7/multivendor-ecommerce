@@ -196,6 +196,82 @@
             }
         });
     </script>
+    <script>
+        $(document).ready(function() {
+            $('.buyNowBtn').click(function() {
+                var product_id = $(this).data('id');
+                var seller_id = $(this).data('seller');
+                var wishlistId = $(this).data('wishlist-id');
+                var variantSku = $('#variantSku').val();
+                var product_price_text = $('.product-price').text().replace(/[^0-9.]/g, '');
+                var product_price = parseFloat(product_price_text);
+                var $row = $(this).closest('.grid');
+
+                let selectedOptionIds = [];
+
+                $('.variant-option:checked').each(function() {
+                    selectedOptionIds.push($(this).val());
+                });
+
+                if (!product_id) {
+                    alert("No Product Selected!");
+                    return;
+                }
+                var qtyInput = $('#qtyInput' + product_id).val();
+
+                $.ajax({
+                    url: "{{ route('cart.add') }}",
+                    type: "POST",
+                    data: {
+                        product_id: product_id,
+                        seller_id : seller_id,
+                        variant_sku: variantSku,
+                        quantity: qtyInput,
+                        price: product_price,
+                        option_ids: selectedOptionIds,
+                    },
+                    success: function(data) {
+                        if (data.unauthorized) {
+                            window.location.href = "{{ route('login') }}";
+                        } else if (data.success) {
+                            $('button[data-modal-hide="quick-view-modal-' + product_id + '"]')
+                                .trigger('click');
+                            $row.fadeOut(300, function() {
+                                $(this).remove();
+                            });
+                            toastr.success(data.message);
+                            updateCartData();
+
+                            window.location.href = "{{ route('orders.checkout') }}" + "?seller_id=" + seller_id;
+                        } else {
+                            toastr.error(data.error);
+                        }
+                    },
+                    error: function(xhr) {
+                        if (xhr.status === 401) {
+                            window.location.href = "{{ route('login') }}";
+                        } else {
+                            toastr.error('Something went wrong!');
+                        }
+                    }
+                });
+            });
+
+            function updateCartData() {
+                $.ajax({
+                    url: "{{ route('cart.data') }}",
+                    type: "GET",
+                    success: function(data) {
+                        $('#cartCount').text(data.cartCount);
+                        $('#totalPrice').text(data.totalPrice);
+                    },
+                    error: function() {
+                        toastr.error('Failed to update cart data.');
+                    }
+                });
+            }
+        });
+    </script>
 
     <script>
         $(document).ready(function() {

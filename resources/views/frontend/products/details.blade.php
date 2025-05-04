@@ -261,8 +261,8 @@
                                 </button>
                             @endif
 
-                            <button
-                                class="text-sm md:text-base font-medium flex-1 px-6 py-2 bg-primary text-white rounded-full hover:bg-theme-dark transition-all">
+                            <button data-id="{{ $product['id'] }}" data-seller="{{ $product['seller']['id'] }}"
+                                class="buyNowBtn text-sm md:text-base font-medium flex-1 px-6 py-2 bg-primary text-white rounded-full hover:bg-theme-dark transition-all">
                                 Buy Now
                                 <span class="block text-xs font-light">Faster Dispatch</span>
                             </button>
