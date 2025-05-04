@@ -38,6 +38,10 @@ class CartController extends Controller
             }
         }
 
+        $price = (float) $request->price;
+
+        $price = ($price <= 0) ? $product->discounted_price : number_format($price, 2, '.', '');
+
         $cartItem = CartItem::where('cart_id', $cart->id)->where('product_id', $product->id)->first();
         if ($variant) {
             $existItem = CartItem::where('cart_id', $cart->id)->where('product_id', $product->id)->where('product_variant_id', $variant->id)->first();
@@ -51,7 +55,7 @@ class CartController extends Controller
                     'product_id' => $product->id,
                     'product_variant_id' => $variant->id ?? null,
                     'quantity' => $request->quantity ?? 1,
-                    'price' => $request->price ?? $product->discounted_price,
+                    'price' => $price,
                     'product_attribute_option_ids' => $optionIdsJson,
                 ]);
             }
@@ -65,7 +69,7 @@ class CartController extends Controller
                 'product_id' => $product->id,
                 'product_variant_id' => $variant->id ?? null,
                 'quantity' => $request->quantity ?? 1,
-                'price' => $request->price ?? $product->discounted_price,
+                'price' => $price,
                 'product_attribute_option_ids' => $optionIdsJson,
             ]);
         }
