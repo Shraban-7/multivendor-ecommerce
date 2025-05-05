@@ -13,9 +13,7 @@ use App\Models\StockHistory;
 use Illuminate\Http\Request;
 use App\Models\ProductVariant;
 use App\Models\ProductAttribute;
-use Yajra\DataTables\DataTables;
 use App\Http\Controllers\Controller;
-use App\DataTables\ProductsDataTable;
 use App\Models\ProductAttributeOption;
 use App\Models\ProductVariantProductAttributeOption;
 
@@ -71,7 +69,7 @@ class ProductController extends Controller
             'files.*' => 'mimes:jpeg,png,jpg,gif,pdf,doc,docx,zip|max:4000',
         ]);
 
-        $validated['thumbnail'] = upload_file($request->file('thumbnail'), 'images/products');
+        $validated['thumbnail'] = upload_file($request->file('thumbnail'), 'images/products/thumb');
         if ($request->hasFile('video')) {
             $validated['video'] = upload_file($request->file('video'), 'videos/products');
         }
@@ -150,7 +148,7 @@ class ProductController extends Controller
                 delete_file($product->thumbnail);
             }
 
-            $validated['thumbnail'] = upload_file($request->file('thumbnail'), 'images/products');
+            $validated['thumbnail'] = upload_file($request->file('thumbnail'), 'images/products/thumb');
         }
 
         if ($request->hasFile('video')) {

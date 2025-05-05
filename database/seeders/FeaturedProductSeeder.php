@@ -37,7 +37,7 @@ class FeaturedProductSeeder extends Seeder
             Product::create([
                 'name' => trim(($subcategory->name ?? $category->name) . ' Product ' . $i),
                 'slug' => Str::slug(($subcategory->name ?? $category->name) . ' Product ' . $i),
-                'thumbnail' => 'images/feature_product/thumb/' . $featuredThumbs[($i - 1) % count($featuredThumbs)],
+                'thumbnail' => 'images/products/thumb/' . $featuredThumbs[($i - 1) % count($featuredThumbs)],
                 'short_description' => 'Short description for ' . ($subcategory->name ?? $category->name) . ' product ' . $i,
                 'description' => 'Detailed description for ' . ($subcategory->name ?? $category->name) . ' product ' . $i,
                 'buying_price' => rand(50, 500),

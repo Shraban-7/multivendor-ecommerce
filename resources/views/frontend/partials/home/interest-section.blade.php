@@ -46,7 +46,7 @@
                                             <a href="{{ route('products.details', $product->slug) }}">
                                                 <img class="object-contain w-full h-full"
                                                     src="{{ storage_url($product->thumbnail) }}"
-                                                    alt="{{ $product->name }}" />
+                                                    alt="{{ $product->slug }}" />
                                             </a>
                                         </div>
                                         <div class="p-2 space-y-1 sm:p-4">

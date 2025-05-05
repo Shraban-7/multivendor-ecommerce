@@ -16,7 +16,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'light deal product 1',
                 'slug' => Str::slug('light deal product 1'),
-                'thumbnail' => 'images/products/light-deal-1.png',
+                'thumbnail' => 'images/products/thumb/light-deal-1.png',
                 'short_description' => 'light deal product-1',
                 'description' => 'light deal product-1',
                 'buying_price' => 700.00,
@@ -45,7 +45,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'light deal product 2',
                 'slug' => Str::slug('light deal product 2'),
-                'thumbnail' => 'images/products/light-deal-2.png',
+                'thumbnail' => 'images/products/thumb/light-deal-2.png',
                 'short_description' => 'light deal product 2',
                 'description' => 'light deal product 2',
                 'buying_price' => 800.00,
@@ -74,7 +74,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'light deal product 3',
                 'slug' => Str::slug('light deal product 3'),
-                'thumbnail' => 'images/products/light-deal-3.png',
+                'thumbnail' => 'images/products/thumb/light-deal-3.png',
                 'short_description' => 'light deal product 3',
                 'description' => 'light deal product 3',
                 'buying_price' => 250.00,
@@ -103,7 +103,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'light deal product 4',
                 'slug' => Str::slug('light deal product 4'),
-                'thumbnail' => 'images/products/light-deal-4.png',
+                'thumbnail' => 'images/products/thumb/light-deal-4.png',
                 'short_description' => 'light deal product 4',
                 'description' => 'light deal product 4',
                 'buying_price' => 90.00,
@@ -132,7 +132,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'light deal product 5',
                 'slug' => Str::slug('light deal product 5'),
-                'thumbnail' => 'images/products/light-deal-5.png',
+                'thumbnail' => 'images/products/thumb/light-deal-5.png',
                 'short_description' => 'light deal product 5',
                 'description' => 'Tlight deal product 5',
                 'buying_price' => 120.00,
@@ -166,7 +166,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Muffets & Tuffets Whole Wheat Bread 400 g',
                 'slug' => Str::slug('Muffets & Tuffets Whole Wheat Bread 400 g'),
-                'thumbnail' => 'images/products/int-pro-1.png',
+                'thumbnail' => 'images/products/thumb/int-pro-1.png',
                 'short_description' => 'light deal product 5',
                 'description' => 'Tlight deal product 5',
                 'buying_price' => 120.00,
@@ -192,7 +192,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Tracker for Android IPhone Devices',
                 'slug' => Str::slug('Tracker for Android IPhone Devices'),
-                'thumbnail' => 'images/products/int-pro-2.png',
+                'thumbnail' => 'images/products/thumb/int-pro-2.png',
                 'short_description' => 'light deal product 5',
                 'description' => 'Tlight deal product 5',
                 'buying_price' => 120.00,
@@ -218,7 +218,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Exclusive T-Shirt, Shirt, & Gavadin Pant Combo',
                 'slug' => Str::slug('Exclusive T-Shirt, Shirt, & Gavadin Pant Combo'),
-                'thumbnail' => 'images/products/int-pro-3.png',
+                'thumbnail' => 'images/products/thumb/int-pro-3.png',
                 'short_description' => 'light deal product 5',
                 'description' => 'Tlight deal product 5',
                 'buying_price' => 120.00,
@@ -244,7 +244,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Imported Sheep\'s wool Shoe for Winter',
                 'slug' => Str::slug('Imported Sheep\'s wool Shoe for Winter'),
-                'thumbnail' => 'images/products/int-pro-4.png',
+                'thumbnail' => 'images/products/thumb/int-pro-4.png',
                 'short_description' => 'light deal product 5',
                 'description' => 'Tlight deal product 5',
                 'buying_price' => 120.00,
@@ -271,7 +271,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Men\'s Solid Slim Width Necktie',
                 'slug' => Str::slug('Men\'s Solid Slim Width Necktie'),
-                'thumbnail' => 'images/products/int-pro-5.png',
+                'thumbnail' => 'images/products/thumb/int-pro-5.png',
                 'short_description' => 'light deal product 5',
                 'description' => 'Tlight deal product 5',
                 'buying_price' => 120.00,
@@ -297,7 +297,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Exclusive T-Shirt & Gavadin Pant Combo',
                 'slug' => Str::slug('Exclusive T-Shirt & Gavadin Pant Combo'),
-                'thumbnail' => 'images/products/int-pro-3.png',
+                'thumbnail' => 'images/products/thumb/int-pro-3.png',
                 'short_description' => 'light deal product 5',
                 'description' => 'Tlight deal product 5',
                 'buying_price' => 120.00,
@@ -325,7 +325,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Meatigo Premium Goat Curry',
                 'slug' => Str::slug('Meatigo Premium Goat Curry'),
-                'thumbnail' => 'images/products/trend-prod-1.png',
+                'thumbnail' => 'images/products/thumb/trend-prod-1.png',
                 'short_description' => 'light deal product 5',
                 'description' => 'Tlight deal product 5',
                 'buying_price' => 120.00,
@@ -351,7 +351,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Coral Bean Bag Chair',
                 'slug' => Str::slug('Coral Bean Bag Chair'),
-                'thumbnail' => 'images/products/trend-prod-2.png',
+                'thumbnail' => 'images/products/thumb/trend-prod-2.png',
                 'short_description' => 'light deal product 5',
                 'description' => 'Tlight deal product 5',
                 'buying_price' => 120.00,
@@ -377,7 +377,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Benefits of using natural ston adash asb',
                 'slug' => Str::slug('Benefits of using natural ston adash asb'),
-                'thumbnail' => 'images/products/trend-prod-3.png',
+                'thumbnail' => 'images/products/thumb/trend-prod-3.png',
                 'short_description' => 'light deal product 5',
                 'description' => 'Tlight deal product 5',
                 'buying_price' => 120.00,
@@ -405,7 +405,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Fresh Organic Potatoes',
                 'slug' => Str::slug('Fresh Organic Potatoes'),
-                'thumbnail' => 'images/products/community-pro-1.png',
+                'thumbnail' => 'images/products/thumb/community-pro-1.png',
                 'short_description' => 'High-quality organic potatoes.',
                 'description' => 'Freshly harvested organic potatoes, perfect for cooking.',
                 'buying_price' => 30.00,
@@ -431,7 +431,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Premium Basmati Rice',
                 'slug' => Str::slug('Premium Basmati Rice'),
-                'thumbnail' => 'images/products/community-pro-2.png',
+                'thumbnail' => 'images/products/thumb/community-pro-2.png',
                 'short_description' => 'Finest quality Basmati rice.',
                 'description' => 'Long-grain aromatic Basmati rice, best for biryani and pulao.',
                 'buying_price' => 80.00,
@@ -457,7 +457,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Farm Fresh Eggs',
                 'slug' => Str::slug('Farm Fresh Eggs'),
-                'thumbnail' => 'images/products/community-pro-3.png',
+                'thumbnail' => 'images/products/thumb/community-pro-3.png',
                 'short_description' => '12 pieces of fresh farm eggs.',
                 'description' => '100% organic and farm-fresh eggs rich in protein.',
                 'buying_price' => 60.00,
@@ -483,7 +483,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Almonds (Premium Quality)',
                 'slug' => Str::slug('Almonds Premium Quality'),
-                'thumbnail' => 'images/products/community-pro-4.png',
+                'thumbnail' => 'images/products/thumb/community-pro-4.png',
                 'short_description' => 'Rich in nutrients and taste.',
                 'description' => 'Handpicked, organic almonds for a healthy lifestyle.',
                 'buying_price' => 250.00,
@@ -509,7 +509,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Pure Cow Ghee',
                 'slug' => Str::slug('Pure Cow Ghee'),
-                'thumbnail' => 'images/products/community-pro-2.png',
+                'thumbnail' => 'images/products/thumb/community-pro-2.png',
                 'short_description' => '100% pure and organic cow ghee.',
                 'description' => 'Traditional desi cow ghee, made from fresh cream.',
                 'buying_price' => 400.00,
@@ -535,7 +535,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Raw Honey',
                 'slug' => Str::slug('Raw Honey'),
-                'thumbnail' => 'images/products/community-pro-2.png',
+                'thumbnail' => 'images/products/thumb/community-pro-2.png',
                 'short_description' => 'Natural and pure honey.',
                 'description' => 'Unprocessed, raw honey collected from organic sources.',
                 'buying_price' => 180.00,
@@ -564,7 +564,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Spooky Pumpkin Stickers',
                 'slug' => Str::slug('Spooky Pumpkin Stickers'),
-                'thumbnail' => 'images/products/halloween-product-3.png',
+                'thumbnail' => 'images/products/thumb/halloween-product-3.png',
                 'short_description' => 'Set of spooky pumpkin stickers for Halloween decoration.',
                 'description' => 'A collection of high-quality, waterproof pumpkin stickers for decorating your home, laptop, or Halloween party.',
                 'buying_price' => 50.00,
@@ -589,7 +589,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Scary Witch Costume',
                 'slug' => Str::slug('Scary Witch Costume'),
-                'thumbnail' => 'images/products/halloween-product-1.png',
+                'thumbnail' => 'images/products/thumb/halloween-product-1.png',
                 'short_description' => 'Classic Halloween witch costume for kids and adults.',
                 'description' => 'A high-quality, comfortable witch costume with a spooky design, perfect for Halloween parties.',
                 'buying_price' => 300.00,
@@ -614,7 +614,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Pumpkin Candy Bucket',
                 'slug' => Str::slug('Pumpkin Candy Bucket'),
-                'thumbnail' => 'images/products/halloween-product-4.png',
+                'thumbnail' => 'images/products/thumb/halloween-product-4.png',
                 'short_description' => 'A Halloween-themed pumpkin bucket filled with assorted candies.',
                 'description' => 'A fun and spooky candy bucket shaped like a pumpkin, packed with a variety of Halloween treats.',
                 'buying_price' => 120.00,
@@ -639,7 +639,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Glow-in-the-Dark Ghost Stickers',
                 'slug' => Str::slug('Glow-in-the-Dark Ghost Stickers'),
-                'thumbnail' => 'images/products/halloween-product-5.png',
+                'thumbnail' => 'images/products/thumb/halloween-product-5.png',
                 'short_description' => 'Halloween ghost stickers that glow in the dark.',
                 'description' => 'A spooky collection of glow-in-the-dark ghost stickers, perfect for Halloween decorations and crafts.',
                 'buying_price' => 60.00,
@@ -664,7 +664,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Vampire Cape Costume',
                 'slug' => Str::slug('Vampire Cape Costume'),
-                'thumbnail' => 'images/products/halloween-product-2.png',
+                'thumbnail' => 'images/products/thumb/halloween-product-2.png',
                 'short_description' => 'A spooky vampire cape for Halloween.',
                 'description' => 'A classic vampire cape made from high-quality fabric, perfect for Halloween parties and trick-or-treating.',
                 'buying_price' => 250.00,
@@ -689,7 +689,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Halloween Spider Cookies',
                 'slug' => Str::slug('Halloween Spider Cookies'),
-                'thumbnail' => 'images/products/halloween-product-4.png',
+                'thumbnail' => 'images/products/thumb/halloween-product-4.png',
                 'short_description' => 'Delicious chocolate cookies decorated like spooky spiders.',
                 'description' => 'A tasty treat for Halloween parties, these chocolate cookies are shaped and decorated like creepy spiders.',
                 'buying_price' => 100.00,

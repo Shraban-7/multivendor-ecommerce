@@ -24,7 +24,7 @@
                                             <a href="{{ route('products.details', $product->slug) }}">
                                                 <img class="object-contain w-full h-full"
                                                     src="{{ storage_url($product->thumbnail) }}"
-                                                    alt="Halloween Black Ladies Dress" />
+                                                    alt="{{ $product->slug }}" />
                                             </a>
                                         </div>
                                         <div class="p-2 space-y-1 item-info sm:p-4">
@@ -43,31 +43,8 @@
                                                             href="{{ route('products.details', $product->slug) }}">{{ $product->name }}</a>
                                                     </h2>
                                                     <div class="flex flex-wrap gap-x-2 sm:text-lg">
-                                                        @php
-                                                            if ($product->discount_type != null) {
-                                                                if (
-                                                                    $product->discount_type ==
-                                                                    \App\Enums\DiscountType::FLAT
-                                                                ) {
-                                                                    $price =
-                                                                        $product->selling_price -
-                                                                        $product->discount_amount;
-                                                                } elseif (
-                                                                    $product->discount_type ==
-                                                                    \App\Enums\DiscountType::PERCENTAGE
-                                                                ) {
-                                                                    $price =
-                                                                        $product->selling_price -
-                                                                        ($product->selling_price *
-                                                                            $product->discount_amount) /
-                                                                            100;
-                                                                }
-                                                            } else {
-                                                                $price = $product->selling_price;
-                                                            }
-                                                        @endphp
                                                         <p class="font-medium new-price text-theme-teal">
-                                                            {{ money($price) }}
+                                                            {{ money($product->discounted_price) }}
                                                         </p>
                                                         <p class="line-through old-price text-jet-gray">
                                                             {{ money($product->selling_price) }}

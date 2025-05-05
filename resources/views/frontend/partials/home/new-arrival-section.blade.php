@@ -99,7 +99,7 @@
                             <div class="w-full h-full item-img">
                                 <a href="{{ $promo_poster_one->link }}">
                                     <img src="{{ storage_url($promo_poster_one->image) }}"
-                                        class="object-cover w-full h-full" alt="{{ storage_url($promo_poster_one->title) }}" />
+                                        class="object-cover w-full h-full" alt="{{ $promo_poster_one->title }}" />
                                 </a>
                             </div>
                         </div>
@@ -120,7 +120,7 @@
                                             <div class="w-1/4 item-image">
                                                 <a href="{{ route('products.details', $product->slug) }}" target="_blank">
                                                     <img src="{{ storage_url($product->thumbnail) }}"
-                                                        alt="Meatigo Premium Goat Curry"
+                                                        alt="{{ $product->slug }}"
                                                         class="object-contain w-full h-full group-hover/trending:rotate-12 eq" />
                                                 </a>
                                             </div>
