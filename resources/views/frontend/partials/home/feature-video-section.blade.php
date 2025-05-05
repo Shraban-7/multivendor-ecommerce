@@ -19,8 +19,8 @@
                          <div
                              class="relative overflow-hidden border rounded-t-lg rounded-b-sm group hover:shadow-lg eq">
                              <div class="relative w-full sm:h-[30rem] h-96 overflow-hidden">
-                                 <video class="object-cover w-full h-full cursor-pointer"
-                                     poster="{{ storage_url($product->thumbnail) }}" muted loop>
+                                 <video controls muted loop class="object-cover w-full h-full cursor-pointer"
+                                     poster="{{ storage_url($product->thumbnail) }}">
                                      <source src="{{ storage_url($product->video) }}" type="video/mp4" />
                                  </video>
                                  <div class="absolute w-1/3 bottom-3 sm:bottom-5 left-3 sm:left-5 md:left-8">

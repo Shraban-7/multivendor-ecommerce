@@ -112,7 +112,9 @@ class CartController extends Controller
         $discount = $grand_total - $sub_total;
         $total_products_count = $carts->flatten()->pluck('cartItems')->flatten()->count();
 
-        $products = Product::latest()->limit(6)->get();
+        $interest_products = Product::latest()->limit(6)->get();
+
+        $products = $interest_products->map(fn($product) => $product->toDetailsArray());
 
         return view('frontend.cart.details', compact('carts', 'grand_total', 'total_products_count', 'sub_total', 'discount', 'products'));
     }

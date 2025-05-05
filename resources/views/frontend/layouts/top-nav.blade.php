@@ -7,7 +7,7 @@
                 alt="Tesko Logo" />
         </a>
 
-        <div class="flex items-center flex-nowrap gap-2 text-base md:text-xs lg:text-base">
+        {{-- <div class="flex items-center flex-nowrap gap-2 text-base md:text-xs lg:text-base">
             <span>
                 <i class="fa-solid fa-location-dot text-theme-light"></i>
             </span>
@@ -28,7 +28,7 @@
                     d="M7.091 0.544732L7.70494 1.1518L4.39956 4.4989C4.34659 4.55285 4.28349 4.59579 4.21386 4.62526C4.14424 4.65473 4.06947 4.67013 3.99387 4.67059C3.91827 4.67106 3.84333 4.65656 3.77335 4.62794C3.70337 4.59933 3.63974 4.55716 3.58613 4.50385L0.238452 1.19732L0.844946 0.583387L3.98701 3.6868L7.091 0.544732Z"
                     fill="white" />
             </svg>
-        </div>
+        </div> --}}
     </div>
 
     <!-- Search Bar -->
@@ -53,8 +53,7 @@
             <a href="{{ route('wishlist.index') }}" class="flex items-center gap-1 hover:text-light-yellow eq">
                 <span><i class="fa-regular fa-heart"></i></span>
                 <p class="flex flex-col leading-none text-sm lg:text-base">
-                    <span class="md:text-xs lg:text-sm font-[arial]">Recorder</span>
-                    <span class="lg:text-base text-sm font-medium">My Items</span>
+                    <span class="md:text-xs lg:text-sm font-[arial]">Wishlist</span>
                 </p>
             </a>
         @endauth
@@ -75,7 +74,7 @@
                     class="flex items-center gap-2 hover:text-light-yellow profile-dropdown">
                     <span><i class="fa-regular fa-user text-lg"></i></span>
                     <p class="flex flex-col leading-none text-base lg:text-base">
-                        <span class="md:text-xs lg:text-sm font-[arial]">Hello,
+                        <span class="md:text-xs lg:text-sm font-[arial]">
                             {{ auth('web')->user()->fullname }}
                         </span>
                     </p>
@@ -112,6 +111,18 @@
                     </ul>
                 </div>
             </div>
+            <!-- Cart -->
+            <a href="{{ route('cart.details') }}"
+                class="flex flex-col items-center leading-none hover:text-light-yellow eq">
+                <span class="block relative">
+                    <i class="fa-solid fa-cart-arrow-down"></i>
+                    <span id="cartCount"
+                        class="hidden absolute flex items-center justify-center w-5 h-5 bg-theme-light text-light-yellow rounded-full -top-3 -end-4 font-[arial] font-bold text-[10px]">
+                        {{ $cartCount }}
+                    </span>
+                </span>
+                <span class="lg:text-base text-sm font-medium" id="totalPrice">{{ money($totalPrice) }}</span>
+            </a>
         @endauth
 
         @auth('seller')
@@ -121,7 +132,7 @@
                     class="flex items-center gap-2 hover:text-light-yellow profile-dropdown">
                     <span><i class="fa-regular fa-user text-lg"></i></span>
                     <p class="flex flex-col leading-none text-base lg:text-base">
-                        <span class="md:text-xs lg:text-sm font-[arial]">Hello,
+                        <span class="md:text-xs lg:text-sm font-[arial]">
                             {{ auth('seller')->user()->fullname }}
                         </span>
                     </p>
@@ -145,18 +156,19 @@
                 </div>
             </div>
         @endauth
-
-        <!-- cart icon -->
-        <a href="{{ route('cart.details') }}"
-            class="flex flex-col items-center leading-none hover:text-light-yellow eq">
-            <span class="block relative">
-                <i class="fa-solid fa-cart-arrow-down"></i>
-                <span id="cartCount"
-                    class="absolute flex items-center justify-center w-5 h-5 bg-theme-light text-light-yellow rounded-full -top-3 -end-4 font-[arial] font-bold text-[10px]">
-                    {{ $cartCount }}
-                </span>
-            </span>
-            <span class="lg:text-base text-sm font-medium" id="totalPrice">{{ money($totalPrice) }}</span>
-        </a>
     </div>
 </div>
+
+<script>
+   $(function() {
+    var $cartCount = $('#cartCount'); 
+    var count = parseInt($cartCount.text());
+
+    if (count > 0) {
+        $cartCount.removeClass('hidden');
+    } else {
+        $cartCount.addClass('hidden');
+    }
+});
+
+</script>
