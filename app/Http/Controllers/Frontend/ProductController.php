@@ -51,11 +51,7 @@ class ProductController extends Controller
             ->take($limit)
             ->get();
 
-    //    return $interest_products = Product::where('category_id', $categoryId)
-    //         ->where('id', '!=', $product['id'])
-    //         ->latest()
-
-    //         ->get();
+        $products = $interest_products->map(fn($product) => $product->toDetailsArray());
 
         $reviewStats = Review::where('product_id', $product['id'])
             ->select('rating', DB::raw('count(*) as count'))
@@ -114,12 +110,12 @@ class ProductController extends Controller
             $type = $request->get('type');
 
             if ($type === 'products') {
-                if ($interest_products->isEmpty()) {
+                if ($products->isEmpty()) {
                     return '';
                 }
 
                 return view('frontend.partials.product-card-load', [
-                    'products' => $interest_products
+                    'products' => $products
                 ])->render();
             }
 
@@ -142,8 +138,7 @@ class ProductController extends Controller
 
         return view('frontend.products.details', [
             'product' => $product,
-            'products' => $interest_products,
-            'interest_products' => $interest_products,
+            'products' => $products,
             'ratings' => $ratings,
             'totalReviews' => $totalReviews,
             'averageRating' => round($averageRating, 1),

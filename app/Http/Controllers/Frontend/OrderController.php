@@ -33,22 +33,17 @@ class OrderController extends Controller
 
         $orders = $query->paginate(10);
 
-        $interest_products = Product::with(['category.subcategories', 'images', 'seller', 'productAttributes.options'])->inRandomOrder()->limit(6)->get();
+        $interest_products = Product::with([
+            'category',
+            'subcategory',
+            'images',
+            'seller',
+            'variants.attributeOptions.productAttribute',
+            'reviews.user'
+        ])->inRandomOrder()->limit(8)->get();
 
-        $products = [];
+        $products = $interest_products->map(fn($product) => $product->toDetailsArray());
 
-        foreach ($interest_products as  $product) {
-            $products[] = [
-                'id' => $product->id,
-                'slug' => $product->slug,
-                'name' => $product->name,
-                'image' => storage_url($product->thumbnail),
-                'sold_out' => number_shorten_format($product->stock_out),
-                'price' => number_format($product->selling_price)
-            ];
-        }
-
-        $products = collect($products);
 
         return view('frontend.orders.index', [
             'orders' => $orders,

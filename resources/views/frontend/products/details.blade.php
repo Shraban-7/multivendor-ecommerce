@@ -565,7 +565,7 @@
 
                 <div id="product-wrapper"
                     class="grid items-start grid-cols-1 gap-5 p-2 xsm:grid-cols-2 md:grid-cols-4 xl:gap-8 lg:p-0">
-                    @include('frontend.partials.product-card-load', ['products' => $interest_products])
+                    @include('frontend.partials.product-card-load', ['products' => $products])
                 </div>
 
                 @if ($products->count() >= 8)

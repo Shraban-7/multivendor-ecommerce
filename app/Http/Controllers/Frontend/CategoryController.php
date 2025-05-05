@@ -59,17 +59,17 @@ class CategoryController extends Controller
         foreach ($request->all() as $key => $value) {
             if (in_array(strtolower($key), $productAttributes->pluck('name')->map('strtolower')->toArray()) && $value != 'all') {
                 $query->whereHas('variants.attributeOptions', function ($q) use ($value) {
-                    // Match by value (e.g., "Red", "Large", etc.)
                     $q->where('value', ucfirst($value));
                 });
             }
         }
 
-
-        $products = $query->with('variants.attributeOptions','unit', 'images')
+        $category_products = $query->with('variants.attributeOptions','unit', 'images')
             ->latest()
             ->skip($skip)
             ->take($limit)->get();
+
+        $products = $category_products->map(fn($product) => $product->toDetailsArray());
 
         if ($request->ajax()) {
             if ($products->isEmpty()) {

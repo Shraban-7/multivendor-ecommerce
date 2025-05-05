@@ -148,7 +148,7 @@
                                     @foreach ($order->items as $item)
                                         <div class="flex gap-2 md:gap-4 py-3 md:py-5">
                                             <div class="w-16 h-20 md:w-20 md:h-24 flex-shrink-0 rounded-xl overflow-hidden">
-                                                <img src="{{ asset('assets/' . $item->product->thumbnail) }}"
+                                                <img src="{{ storage_url($item->product->thumbnail) }}"
                                                     alt="YC Washable Wool-Blend Jumper" />
                                             </div>
 

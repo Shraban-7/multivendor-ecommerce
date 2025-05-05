@@ -148,6 +148,7 @@ class Product extends Model
             ],
             'seller' => [
                 'id' => $this->seller->id,
+                'username' => $this->seller->username,
                 'business_name' => $this->seller->business_name,
                 'business_logo' => $this->seller->business_logo,
             ],
