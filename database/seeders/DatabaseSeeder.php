@@ -32,13 +32,13 @@ class DatabaseSeeder extends Seeder
             ReviewSeeder::class,
             CouponSeeder::class,
             CategoryBannerSeeder::class,
-            ProductVariantSeeder::class,
             FeaturedProductSeeder::class,
             HeroBannerSeeder::class,
             HomeMidBannerSeeder::class,
             SocialLinkSeeder::class,
             PaymentGatewaySeeder::class,
-            PromoPosterSeeder::class
+            PromoPosterSeeder::class,
+            ProductVariantSeeder::class,
         ]);
 
     }

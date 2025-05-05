@@ -16,22 +16,36 @@ class ProductVariantSeeder extends Seeder
 
         if (empty($productIds)) return;
 
-        $attributes = ProductAttribute::with('options')->whereIn('name', ['Color', 'Size', 'Storage', 'Material'])->get()->keyBy('name');
+        $productAttributes = ProductAttribute::with('options')
+            ->whereIn('name', ['Color', 'Size', 'Storage', 'Material'])
+            ->get()
+            ->keyBy('name');
 
-        $colors    = $attributes['Color']->options ?? collect();
-        $sizes     = $attributes['Size']->options ?? collect();
-        $storages  = $attributes['Storage']->options ?? collect();
-        $materials = $attributes['Material']->options ?? collect();
+        $colors    = $productAttributes['Color']->options ?? collect();
+        $sizes     = $productAttributes['Size']->options ?? collect();
+        $storages  = $productAttributes['Storage']->options ?? collect();
+        $materials = $productAttributes['Material']->options ?? collect();
 
-        $combinations = collect($colors)->crossJoin($sizes, $storages, $materials);
+        if ($colors->isEmpty() || $sizes->isEmpty() || $storages->isEmpty() || $materials->isEmpty()) return;
 
         $existingSkus = ProductVariant::pluck('sku')->toArray();
-        $newVariants = [];
         $variantOptions = [];
 
         foreach ($productIds as $productId) {
-            foreach ($combinations as $combo) {
-                [$color, $size, $storage, $material] = $combo;
+            $variantCount = rand(3, 5);
+            $usedCombinations = [];
+
+            for ($i = 0; $i < $variantCount; $i++) {
+                do {
+                    $color    = $colors->random();
+                    $size     = $sizes->random();
+                    $storage  = $storages->random();
+                    $material = $materials->random();
+
+                    $combinationKey = implode('-', [$color->id, $size->id, $storage->id, $material->id]);
+                } while (in_array($combinationKey, $usedCombinations));
+
+                $usedCombinations[] = $combinationKey;
 
                 do {
                     $sku = strtoupper(
@@ -43,31 +57,14 @@ class ProductVariantSeeder extends Seeder
                 } while (in_array($sku, $existingSkus));
                 $existingSkus[] = $sku;
 
-                $newVariants[] = [
+                $variant = ProductVariant::create([
                     'product_id' => $productId,
                     'sku'        => $sku,
                     'price'      => rand(500, 1000),
                     'stock'      => rand(10, 100),
                     'created_at' => now(),
                     'updated_at' => now(),
-                ];
-            }
-        }
-
-        $chunks = array_chunk($newVariants, 500);
-        foreach ($chunks as $chunk) {
-            ProductVariant::insert($chunk);
-        }
-
-        $variants = ProductVariant::latest()->take(count($newVariants))->get();
-
-        $index = 0;
-        foreach ($productIds as $productId) {
-            foreach ($combinations as $combo) {
-                [$color, $size, $storage, $material] = $combo;
-
-                $variant = $variants[$index++] ?? null;
-                if (!$variant) continue;
+                ]);
 
                 foreach ([$color, $size, $storage, $material] as $option) {
                     $variantOptions[] = [
@@ -81,8 +78,8 @@ class ProductVariantSeeder extends Seeder
             }
         }
 
-        $optionChunks = array_chunk($variantOptions, 1000);
-        foreach ($optionChunks as $chunk) {
+        $chunks = array_chunk($variantOptions, 1000);
+        foreach ($chunks as $chunk) {
             ProductVariantProductAttributeOption::insert($chunk);
         }
     }
