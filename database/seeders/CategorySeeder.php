@@ -12,25 +12,52 @@ class CategorySeeder extends Seeder
     {
         $categories = [
             [
-                'name' => 'Tesko+',
+                'name' => 'Skin Care',
+                'image' => 'images/categories/base/category-5.png',
+                'cover_image' => 'images/categories/cover/skin-care-promo.png',
+                'cover_title' => 'Pamper Your Skin, Pamper Yourself',
+                'cover_description' => 'The retailer has worked to improve its fashion offerings in recent years, adding more trendy, sustainable, and inclusive pieces.',
+                'cover_text_color' => '#FFFFFF',
+                'cover_bg_color' => '#D0AB6A',
+                'cover_button_color' => '#FFB321',
                 'is_nav' => 1,
                 'subcategories' => [
-                    'Tesko Fresh',
-                    'Tesko Home',
-                    'Tesko Fashion'
+                    'Cleansers',
+                    'Moisturizers',
+                    'Sunscreens',
+                    'Serums & Treatments',
+                    'Face Masks',
+                    'Eye Creams',
                 ]
             ],
             [
-                'name' => 'Toy Shop',
+                'name' => 'Automotive',
+                'image' => 'images/categories/base/category-6.png',
+                'cover_image' => 'images/categories/cover/automotive-promo.png',
+                'cover_title' => 'You, asked for it. You got it, Toyota',
+                'cover_description' => 'Whether you need replacement parts, performance upgrades, or maintenance essentials, you can often find great offers.',
+                'cover_text_color' => '#FFFFFF',
+                'cover_bg_color' => '#334161',
+                'cover_button_color' => '#10387D',
                 'is_nav' => 1,
                 'subcategories' => [
-                    'Action Figures',
-                    'Board Games',
-                    'Outdoor Toys'
+                    'Car Accessories',
+                    'Motorcycle Parts',
+                    'Engine Oils & Fluids',
+                    'Tires & Wheels',
+                    'Interior Accessories',
+                    'Tools & Equipment',
                 ]
             ],
             [
                 'name' => 'Halloween',
+                'image' => 'images/categories/base/category-4.png',
+                'cover_image' => 'images/categories/cover/halloween-promo.png',
+                'cover_title' => 'Are You Afraid of the Dark?',
+                'cover_description' => 'Discounts on living room sets, bedroom furniture, outdoor furniture, and home office desks.',
+                'cover_text_color' => '#FFFFFF',
+                'cover_bg_color' => '#242426',
+                'cover_button_color' => '#E76927',
                 'is_nav' => 1,
                 'is_special' => 1,
                 'subcategories' => [
@@ -59,6 +86,12 @@ class CategorySeeder extends Seeder
             [
                 'name' => 'Fashion',
                 'image' => 'images/categories/base/category-3.png',
+                'cover_image' => 'images/categories/cover/fashion-promo.png',
+                'cover_title' => 'Get 50% CASHBACK ON SHOPPING $250',
+                'cover_description' => 'The retailer has worked to improve its fashion offerings in recent years, adding more trendy, sustainable, and inclusive pieces.',
+                'cover_text_color' => '#FFDB9C',
+                'cover_bg_color' => '#3A2732',
+                'cover_button_color' => '#0DA487',
                 'is_nav' => 1,
                 'is_slider' => 1,
                 'subcategories' => [
@@ -85,12 +118,22 @@ class CategorySeeder extends Seeder
                 ]
             ],
             [
-                'name' => 'Deals',
+                'name' => 'Home Appliances',
+                'image' => 'images/categories/base/category-5.png',
+                'cover_image' => 'images/categories/cover/home-appliances-promo.png',
+                'cover_title' => 'Revolutionize your home with our modern appliances',
+                'cover_description' => 'The retailer has worked to improve its fashion offerings in recent years, adding more trendy, sustainable, and inclusive pieces.',
+                'cover_text_color' => '#FFFFFF',
+                'cover_bg_color' => '#3F4C50',
+                'cover_button_color' => '#0DA487',
                 'is_nav' => 1,
                 'subcategories' => [
-                    'Daily Deals',
-                    'Seasonal Sales',
-                    'Clearance'
+                    'Refrigerators',
+                    'Washing Machines',
+                    'Microwaves',
+                    'Air Conditioners',
+                    'Vacuum Cleaners',
+                    'Water Purifiers',
                 ]
             ],
             [
