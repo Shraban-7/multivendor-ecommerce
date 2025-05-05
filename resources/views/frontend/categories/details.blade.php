@@ -58,14 +58,12 @@
                     <div class="space-y-2">
                         @foreach ($category->subcategories as $subCategory)
                             <label class="flex items-center">
-                                <input type="radio" {{ request('subcategory') == $subCategory->slug ? 'checked' : '' }}
+                                <input type="checkbox" {{ request('subcategory') == $subCategory->slug ? 'checked' : '' }}
                                     name="subcategory" value="{{ $subCategory->slug }}"
                                     class="w-4 h-4 text-primary focus:ring-primary" />
                                 <span class="ml-2 text-sm">{{ $subCategory->name }}</span>
                             </label>
                         @endforeach
-
-
                     </div>
                 </div>
 
@@ -77,7 +75,7 @@
                     <div class="space-y-2">
                         @foreach ($brands as $brand)
                             <label class="flex items-center">
-                                <input type="radio" {{ request('brand') == $brand->slug ? 'checked' : '' }}
+                                <input type="checkbox" {{ request('brand') == $brand->slug ? 'checked' : '' }}
                                     name="brand" value="{{ $brand->slug }}"
                                     class="w-4 h-4 text-primary focus:ring-primary" />
                                 <span class="ml-2 text-sm">{{ $brand->name }}</span>
@@ -94,7 +92,7 @@
                     <div class="space-y-2">
                         @for ($i = 5; $i >= 1; $i--)
                             <label class="flex items-center">
-                                <input type="radio" name="review" value="{{ $i }}"
+                                <input type="checkbox" name="review" value="{{ $i }}"
                                     {{ request('review') == $i ? 'checked' : '' }}
                                     class="w-4 h-4 text-primary focus:ring-primary" />
                                 <div class="flex items-center ml-2">
@@ -115,21 +113,21 @@
                     </h3>
                     <div class="space-y-2">
                         <label class="flex items-center">
-                            <input type="radio" name="price" value="under"
+                            <input type="checkbox" name="price" value="under"
                                 {{ request('price') == 'under' ? 'checked' : '' }}
                                 class="w-4 h-4 text-primary focus:ring-primary" />
                             <span class="ml-2 text-sm">Under {{ money(500) }}</span>
                         </label>
 
                         <label class="flex items-center">
-                            <input type="radio" name="price" value="range"
+                            <input type="checkbox" name="price" value="range"
                                 {{ request('price') == 'range' ? 'checked' : '' }}
                                 class="w-4 h-4 text-primary focus:ring-primary" />
                             <span class="ml-2 text-sm">{{ money(500) }} - {{ money(5000) }}</span>
                         </label>
 
                         <label class="flex items-center">
-                            <input type="radio" name="price" value="upper"
+                            <input type="checkbox" name="price" value="upper"
                                 {{ request('price') == 'upper' ? 'checked' : '' }}
                                 class="w-4 h-4 text-primary focus:ring-primary" />
                             <span class="ml-2 text-sm">{{ money(5000) }}+</span>
@@ -164,7 +162,7 @@
 
                     <div class="space-y-2">
                         <label class="flex items-center">
-                            <input type="radio" name="shipping" class="w-4 h-4 text-primary focus:ring-primary" />
+                            <input type="checkbox" name="shipping" class="w-4 h-4 text-primary focus:ring-primary" />
                             <span class="ml-2 text-sm text-gray-600">Local Area (2 miles)</span>
                         </label>
                     </div>
