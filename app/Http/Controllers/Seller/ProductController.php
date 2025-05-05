@@ -241,43 +241,30 @@ class ProductController extends Controller
 
     public function addAttributes(Request $request, Product $product)
     {
-        $productAttributes = ProductAttribute::with('options')->where('product_id', $product->id)->get();
-
-        if ($request->isMethod('GET')) {
-            return view('seller.products.attributes.index', compact('product', 'productAttributes'));
-        }
-
         $request->validate([
-            'name' => 'required|string|max:255',
-            'options' => 'required|array',
-            'options.*.value' => 'required|string|max:255',
-            'options.*.additional_price' => 'required|numeric',
+            'product_attribute_id' => 'required|exists:product_attributes,id',
+            'value' => 'required|string',
         ]);
 
-        $existingAttribute = ProductAttribute::where('product_id', $product->id)->where('name', $request->name)->first();
-        if ($existingAttribute) {
-            session()->flash('warning', 'This Attribute Already Exist');
-            return successResponse('This Attribute Already Exist');
+        $attributeId = $request->product_attribute_id;
+        $value = trim($request->value);
+
+        $exists = ProductAttributeOption::where('product_attribute_id', $attributeId)
+            ->whereRaw('LOWER(value) = ?', [strtolower($value)])
+            ->exists();
+
+        if ($exists) {
+            return redirect()->back()->with('error', 'This attribute value already exists.');
         }
 
-        $productAttribute = ProductAttribute::create([
-            'product_id' => $product->id,
-            'name' => $request->name
+        ProductAttributeOption::create([
+            'product_attribute_id' => $attributeId,
+            'value' => $value
         ]);
 
-        foreach ($request->options as $option) {
-            $productAttribute->options()->create([
-                'product_attribute_id' => $productAttribute->id,
-                'name' => $productAttribute->name,
-                'value' => $option['value'],
-                'additional_price' => $option['additional_price'],
-            ]);
-        }
-
-        session()->flash('success', 'Attribute Added Successfully!');
-
-        return successResponse('Attribute Added Successfully!');
+        return redirect()->back()->with('success', 'Attribute Added Successfully!');
     }
+
 
     public function updateAttributes(Request $request, ProductAttribute $productAttribute)
     {

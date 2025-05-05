@@ -35,10 +35,11 @@
                         <div class="bg-white card-header d-flex justify-content-between">
                             <h5 class="mb-0 card-title">Product Overview</h5>
                             <div>
-                                {{-- <a href="{{ route('seller.products.addAttributes', $product['id']) }}"
-                                    class="btn btn-outline-success btn-sm">
+                                <button type="button" class="btn btn-outline-success btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#addAttributeModal">
                                     <i data-feather="plus" class="icon-xs"></i> Add Attribute
-                                </a> --}}
+                                </button>
+
                                 <button class="btn btn-outline-danger btn-sm" title="Delete" data-bs-toggle="modal"
                                     data-bs-target="#deleteModal-{{ $product['id'] }}">
                                     <i data-feather="trash-2" class="icon-xs"></i> Delete
@@ -113,7 +114,7 @@
                                     <div class="row">
                                         <div class="d-flex justify-content-between align-items-center mb-3">
                                             <h5 class="text-muted fw-bold small mb-0">Product Variants</h5>
-                                            <button class="btn btn-outline-success btn-sm" data-bs-toggle="modal"
+                                            <button class="btn btn-success btn-sm" data-bs-toggle="modal"
                                                 data-bs-target="#addVariantModal">
                                                 <i data-feather="plus" class="icon-xs"></i> Add Variant
                                             </button>
@@ -554,7 +555,7 @@
                             <label class="form-label">Attributes</label>
                             <div class="row">
                                 @foreach ($productAttributes as $productAttribute)
-                                    <div class="col-6">
+                                    <div class="col-6 mb-2">
                                         <label class="form-label">{{ $productAttribute->name }}</label>
                                         <select class="form-select" name="attributes[{{ $productAttribute->name }}]">
                                             <option value="" disable>Select Options</option>
@@ -581,6 +582,45 @@
                     </div>
                 </form>
             </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="addAttributeModal" tabindex="-1" aria-labelledby="addAttributeModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <form method="POST" action="{{ route('seller.products.addAttributes') }}">
+                @csrf
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addAttributeModalLabel">Add Attribute</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="attribute_name" class="form-label">Name</label>
+                            <select class="form-select" id="attribute_name" name="product_attribute_id" required>
+                                <option value="" disabled selected>Select an attribute</option>
+                                @foreach ($productAttributes as $productAttribute)
+                                    <option value="{{ $productAttribute->id }}">{{ $productAttribute->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="attribute_value" class="form-label">Value</label>
+                            <input type="text" class="form-control" id="attribute_value" name="value"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 
