@@ -227,62 +227,7 @@
                             </select>
                         </form>
 
-                        <!-- Color -->
-                        {{-- <div class="flex items-center gap-4">
-                            <!-- Dropdown Menu -->
-                            <div class="relative">
-                                <button id="colorSortButton" data-dropdown-toggle="colorSortDropdown"
-                                    class="bg-theme-light/90 hover:bg-aqua-deep/10 eq rounded-3xl text-xs sm:text-sm px-3 sm:px-5 sm:py-3 py-2.5 text-center inline-flex text-jet-gray items-center"
-                                    type="button">
-                                    Color
-                                    <svg class="w-4 h-4 ml-2" aria-hidden="true" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 9l-7 7-7-7"></path>
-                                    </svg>
-                                </button>
-
-                                <!-- Dropdown Content -->
-                                <div id="colorSortDropdown"
-                                    class="z-10 hidden bg-white divide-y divide-gray-100 rounded shadow w-44">
-                                    <ul class="py-1 text-sm text-gray-700" aria-labelledby="colorSortButton">
-                                        <li>
-                                            <button class="flex items-center w-full gap-2 px-4 py-2 hover:bg-gray-100">
-                                                <span class="w-4 h-4 bg-red-500 rounded-full"></span>
-                                                Red
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <button class="flex items-center w-full gap-2 px-4 py-2 hover:bg-gray-100">
-                                                <span class="w-4 h-4 bg-blue-500 rounded-full"></span>
-                                                Blue
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <button class="flex items-center w-full gap-2 px-4 py-2 hover:bg-gray-100">
-                                                <span class="w-4 h-4 bg-green-500 rounded-full"></span>
-                                                Green
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <button class="flex items-center w-full gap-2 px-4 py-2 hover:bg-gray-100">
-                                                <span class="w-4 h-4 bg-yellow-500 rounded-full"></span>
-                                                Yellow
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <button class="flex items-center w-full gap-2 px-4 py-2 hover:bg-gray-100">
-                                                <span class="w-4 h-4 bg-purple-500 rounded-full"></span>
-                                                Purple
-                                            </button>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div> --}}
-
                         <!-- Material -->
-
                         @foreach ($productAttributes as $productAttribute)
                             <form method="GET" action="{{ route('category.details', $category->slug) }}"
                                 class="flex items-center gap-1 rounded-3xl bg-theme-light/90 hover:bg-aqua-deep/10 eq sm:text-sm text-xs sm:pl-5 pl-4 sm:!pr-2 pr-1 sm:py-3 py-2.5 inline-flex text-jet-gray">
