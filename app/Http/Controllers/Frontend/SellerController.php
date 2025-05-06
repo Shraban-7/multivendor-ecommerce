@@ -58,7 +58,9 @@ class SellerController extends Controller
             $productQuery->orderBy('id','asc');
         }
 
-        $products = $productQuery->skip($skip)->take($limit)->get();
+        $shop_products = $productQuery->skip($skip)->take($limit)->get();
+
+        $products = $shop_products->map(fn($product) => $product->toDetailsArray());
 
         $categoryIds = Product::with('category')
             ->where('seller_id', $seller->id)->pluck('category_id')->unique()->values()->all();
