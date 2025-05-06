@@ -18,22 +18,22 @@ class CategoryProductSeeder extends Seeder
         $categories = Category::category()->with('subcategories')->get();
 
         $thumbnails = [
-            "images/products/thumb/grocery-prod-1.png",
-            "images/products/thumb/grocery-prod-2.png",
-            "images/products/thumb/grocery-prod-3.png",
-            "images/products/thumb/grocery-prod-4.png",
-            "images/products/thumb/grocery-prod-5.png",
-            "images/products/thumb/grocery-prod-6.png",
-            "images/products/thumb/grocery-prod-7.png",
-            "images/products/thumb/grocery-prod-8.png",
-            "images/products/thumb/electronic-prod-1.png",
-            "images/products/thumb/electronic-prod-2.png",
-            "images/products/thumb/electronic-prod-3.png",
-            "images/products/thumb/electronic-prod-4.png",
-            "images/products/thumb/electronic-prod-5.png",
-            "images/products/thumb/electronic-prod-6.png",
-            "images/products/thumb/electronic-prod-7.png",
-            "images/products/thumb/electronic-prod-8.png",
+            "images/products/thumb/grocery-prod-1-min.png",
+            "images/products/thumb/grocery-prod-2-min.png",
+            "images/products/thumb/grocery-prod-3-min.png",
+            "images/products/thumb/grocery-prod-4-min.png",
+            "images/products/thumb/grocery-prod-5-min.png",
+            "images/products/thumb/grocery-prod-6-min.png",
+            "images/products/thumb/grocery-prod-7-min.png",
+            "images/products/thumb/grocery-prod-8-min.png",
+            "images/products/thumb/electronic-prod-1-min.png",
+            "images/products/thumb/electronic-prod-2-min.png",
+            "images/products/thumb/electronic-prod-3-min.png",
+            "images/products/thumb/electronic-prod-4-min.png",
+            "images/products/thumb/electronic-prod-5-min.png",
+            "images/products/thumb/electronic-prod-6-min.png",
+            "images/products/thumb/electronic-prod-7-min.png",
+            "images/products/thumb/electronic-prod-8-min.png",
         ];
 
         $units = [

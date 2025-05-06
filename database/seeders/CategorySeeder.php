@@ -13,8 +13,8 @@ class CategorySeeder extends Seeder
         $categories = [
             [
                 'name' => 'Skin Care',
-                'image' => 'images/categories/base/category-5.png',
-                'cover_image' => 'images/categories/cover/skin-care-promo.png',
+                'image' => 'images/categories/base/category-5-min.png',
+                'cover_image' => 'images/categories/cover/skin-care-promo-min.png',
                 'cover_title' => 'Pamper Your Skin, Pamper Yourself',
                 'cover_description' => 'The retailer has worked to improve its fashion offerings in recent years, adding more trendy, sustainable, and inclusive pieces.',
                 'cover_text_color' => '#FFFFFF',
@@ -32,8 +32,8 @@ class CategorySeeder extends Seeder
             ],
             [
                 'name' => 'Automotive',
-                'image' => 'images/categories/base/category-6.png',
-                'cover_image' => 'images/categories/cover/automotive-promo.png',
+                'image' => 'images/categories/base/category-6-min.png',
+                'cover_image' => 'images/categories/cover/automotive-promo-min.png',
                 'cover_title' => 'You, asked for it. You got it, Toyota',
                 'cover_description' => 'Whether you need replacement parts, performance upgrades, or maintenance essentials, you can often find great offers.',
                 'cover_text_color' => '#FFFFFF',
@@ -51,8 +51,8 @@ class CategorySeeder extends Seeder
             ],
             [
                 'name' => 'Halloween',
-                'image' => 'images/categories/base/category-4.png',
-                'cover_image' => 'images/categories/cover/halloween-promo.png',
+                'image' => 'images/categories/base/category-4-min.png',
+                'cover_image' => 'images/categories/cover/halloween-promo-min.png',
                 'cover_title' => 'Are You Afraid of the Dark?',
                 'cover_description' => 'Discounts on living room sets, bedroom furniture, outdoor furniture, and home office desks.',
                 'cover_text_color' => '#FFFFFF',
@@ -68,8 +68,8 @@ class CategorySeeder extends Seeder
             ],
             [
                 'name' => 'Electronics',
-                'image' => 'images/categories/base/category-4.png',
-                'cover_image' => 'images/categories/cover/electronics-promo.png',
+                'image' => 'images/categories/base/category-4-min.png',
+                'cover_image' => 'images/categories/cover/electronics-promo-min.png',
                 'cover_title' => 'Powering Possibilities, Empowering Lives.',
                 'cover_description' => 'Discounts on living room sets, bedroom furniture, outdoor furniture, and home office desks.',
                 'cover_text_color' => '#FFFFFF',
@@ -85,8 +85,8 @@ class CategorySeeder extends Seeder
             ],
             [
                 'name' => 'Fashion',
-                'image' => 'images/categories/base/category-3.png',
-                'cover_image' => 'images/categories/cover/fashion-promo.png',
+                'image' => 'images/categories/base/category-3-min.png',
+                'cover_image' => 'images/categories/cover/fashion-promo-min.png',
                 'cover_title' => 'Get 50% CASHBACK ON SHOPPING $250',
                 'cover_description' => 'The retailer has worked to improve its fashion offerings in recent years, adding more trendy, sustainable, and inclusive pieces.',
                 'cover_text_color' => '#FFDB9C',
@@ -102,8 +102,8 @@ class CategorySeeder extends Seeder
             ],
             [
                 'name' => 'Grocery & Essentials',
-                'image' => 'images/categories/base/category-1.png',
-                'cover_image' => 'images/categories/cover/grocery-promo.png',
+                'image' => 'images/categories/base/category-1-min.png',
+                'cover_image' => 'images/categories/cover/grocery-promo-min.png',
                 'cover_title' => 'Get 50% CASHBACK ON SHOPPING $250',
                 'cover_description' => 'Provides shoppers with an extensive range of groceries, from fresh produce and meats to pantry staples, snacks, and household essentials.',
                 'cover_text_color' => '#FFDB9C',
@@ -119,8 +119,8 @@ class CategorySeeder extends Seeder
             ],
             [
                 'name' => 'Home Appliances',
-                'image' => 'images/categories/base/category-5.png',
-                'cover_image' => 'images/categories/cover/home-appliances-promo.png',
+                'image' => 'images/categories/base/category-5-min.png',
+                'cover_image' => 'images/categories/cover/home-appliances-promo-min.png',
                 'cover_title' => 'Revolutionize your home with our modern appliances',
                 'cover_description' => 'The retailer has worked to improve its fashion offerings in recent years, adding more trendy, sustainable, and inclusive pieces.',
                 'cover_text_color' => '#FFFFFF',
@@ -138,7 +138,7 @@ class CategorySeeder extends Seeder
             ],
             [
                 'name' => 'Clothing shoes & Accessories',
-                'image' => 'images/categories/base/category-3.png',
+                'image' => 'images/categories/base/category-3-min.png',
                 'is_slider' => 1
             ],
             [
@@ -167,7 +167,7 @@ class CategorySeeder extends Seeder
             ],
             [
                 'name' => 'Personal Care',
-                'image' => 'images/categories/base/category-5.png',
+                'image' => 'images/categories/base/category-5-min.png',
                 'is_slider' => 1
             ],
             [
@@ -175,12 +175,12 @@ class CategorySeeder extends Seeder
             ],
             [
                 'name' => 'Auto & Tires',
-                'image' => 'images/categories/base/category-6.png',
+                'image' => 'images/categories/base/category-6-min.png',
                 'is_slider' => 1
             ],
             [
                 'name' => 'Household Essentials',
-                'image' => 'images/categories/base/category-2.png',
+                'image' => 'images/categories/base/category-2-min.png',
                 'is_slider' => 1
             ],
             [

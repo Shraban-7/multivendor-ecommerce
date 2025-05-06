@@ -17,14 +17,14 @@ class PromoPosterSeeder extends Seeder
             [
                 'title' => 'Comfort coming right up now',
                 'link' => '#',
-                'image' => 'images/promo_posters/hero-image-2.png',
+                'image' => 'images/promo_posters/hero-image-2-min.png',
                 'is_active' => true,
                 'position' => 1,
             ],
             [
                 'title' => 'Big Save On Deals',
                 'link' => '#',
-                'image' => 'images/promo_posters/promo-fifty.png',
+                'image' => 'images/promo_posters/promo-fifty-min.png',
                 'is_active' => true,
                 'position' => 2,
             ],

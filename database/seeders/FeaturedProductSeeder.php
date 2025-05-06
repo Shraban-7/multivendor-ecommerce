@@ -17,9 +17,9 @@ class FeaturedProductSeeder extends Seeder
         $categories = Category::with('subcategories')->get();
 
         $featuredThumbs = [
-            'featured-video-thumb-1.png',
-            'featured-video-thumb-2.png',
-            'featured-video-thumb-3.png',
+            'featured-video-thumb-1-min.png',
+            'featured-video-thumb-2-min.png',
+            'featured-video-thumb-3-min.png',
         ];
 
         $featuredVideos = [
