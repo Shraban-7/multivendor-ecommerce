@@ -160,15 +160,14 @@
 </div>
 
 <script>
-   $(function() {
-    var $cartCount = $('#cartCount'); 
-    var count = parseInt($cartCount.text());
+    $(function() {
+        var $cartCount = $('#cartCount');
+        var count = parseInt($cartCount.text());
 
-    if (count > 0) {
-        $cartCount.removeClass('hidden');
-    } else {
-        $cartCount.addClass('hidden');
-    }
-});
-
+        if (count > 0) {
+            $cartCount.removeClass('hidden');
+        } else {
+            $cartCount.addClass('hidden');
+        }
+    });
 </script>

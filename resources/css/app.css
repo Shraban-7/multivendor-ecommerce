@@ -1,0 +1,369 @@
+/* Import Google Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Rubik:wght@300..900&display=swap");
+
+/* Import Tailwind CSS */
+@import "tailwindcss";
+
+/* Import Flowbite's  */
+@import "flowbite/src/themes/default";
+@plugin "flowbite/plugin";
+@source "../../node_modules/flowbite";
+
+
+/* Define theme tokens */
+@theme {
+    --color-primary: #FD740F;
+    --color-rustic-red: #5A0000;
+    --color-light-yellow: #FFB321;
+    --color-persian-blue: #002D58;
+    --color-persian-red: #D73421;
+    --color-jet-gray: #5F6C72;
+    --color-butterfly-blue: #2DA5F3;
+    --color-rangoon-green: #191C1F;
+    --color-slime-green: #BBEA70;
+    --color-aqua-deep: #00573A;
+    --color-leaf-green: #66BC03;
+    --color-sand-brown: #D99F46;
+    --color-theme-teal: #239698;
+    --color-davy-gray: #4A5568;
+    --color-theme-light: #F8F8F8;
+    --color-theme-dark: #232321;
+
+    --breakpoint-2xl: 1400px;
+    --breakpoint-xsm: 460px;
+
+    --font-primary: "Rubik", serif;
+
+    --container-footer: 96rem;
+}
+
+
+@utility container {
+    margin-inline: auto;
+    padding-inline: 0.5rem;
+
+    @variant sm {
+        padding-inline: 0;
+    }
+}
+
+/* Define custom utilities */
+@layer utilities {
+
+    /* Global Styles */
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        font-optical-sizing: auto;
+        -webkit-font-smoothing: antialiased;
+        font-family: var(--font-primary);
+    }
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    li {
+        list-style-type: none;
+    }
+
+    ::selection {
+        background-color: var(--primary);
+        color: var(--theme-light);
+    }
+
+    /* Scrollbar Styles */
+    ::-webkit-scrollbar {
+        width: 0.625rem;
+    }
+
+    #all-filters-drawer::-webkit-scrollbar {
+        width: 0.425rem;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: whitesmoke;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        height: 10%;
+        border-radius: 25px;
+        background-color: rgba(253, 116, 15, 0.4);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: rgba(253, 116, 15, 0.8);
+    }
+
+    ::-webkit-scrollbar-corner {
+        border-radius: 25px;
+    }
+
+    /* Custom Utility Classes */
+    .section-padding {
+        padding: 1.5rem 0;
+    }
+
+    .nav-links a[aria-current="page"] {
+        background-color: var(--primary);
+    }
+
+    .swiper-slide-thumb-active .slide-thumb {
+        border: 2px solid var(--primary) !important;
+    }
+
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .eq {
+        transition: 300ms cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .theme-btn {
+        display: inline-block;
+        padding: 0.3rem 1rem;
+        border-radius: 0.5rem;
+        font-size: 0.8rem;
+        transition: 300ms cubic-bezier(0.25, 1, 0.5, 1);
+        font-weight: 500;
+    }
+
+    .theme-primary-btn {
+        background-color: var(--primary) !important;
+        color: var(--theme-light) !important;
+        border: 1px solid rgba(255, 179, 33, 0.1);
+    }
+
+    .theme-outline-btn {
+        background-color: transparent;
+        color: var(--theme-dark) !important;
+        border: 1px solid rgba(35, 35, 33, 0.1) !important;
+    }
+
+    .theme-outline-btn:hover {
+        background: var(--primary);
+        color: var(--theme-light) !important;
+        border-color: var(--light-yellow) !important;
+    }
+
+    .step-dot {
+        background: var(--theme-light);
+        border: 2px solid var(--primary) !important;
+        margin: -5px auto 15px;
+    }
+
+    .step.completed .step-dot {
+        background: var(--primary);
+        border-color: var(--primary);
+    }
+
+    .step .step-dot span {
+        display: none;
+    }
+
+    .step.completed .step-dot span {
+        display: block;
+    }
+
+    .step.active .step-dot {
+        background: var(--primary);
+        border-color: var(--theme-light) !important;
+    }
+
+    .progress-line {
+        height: 0.3rem;
+        background: #ffe7d6;
+        flex: 1;
+        position: relative;
+    }
+
+    .progress-line.active {
+        background: var(--primary);
+    }
+
+    .step .step-content {
+        opacity: 0.5;
+    }
+
+    .step.active .step-content,
+    .step.completed .step-content {
+        opacity: 1;
+    }
+
+    .order-details-menus li[aria-current="page"] a,
+    .coupon-discount-menus li[aria-current="page"] a {
+        background: var(--leaf-green) !important;
+        color: var(--theme-light) !important;
+    }
+
+    .review-star {
+        color: #d8dbdf;
+        transition: 300ms cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .review-star.active,
+    .review-star.hover {
+        color: var(--light-yellow);
+    }
+
+    .round-shape::after {
+        content: "";
+        display: block;
+        width: 4rem;
+        height: 4rem;
+        border-radius: 50%;
+        background-color: rgba(95, 108, 114, 0.1);
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: -1;
+        transform: translate(-50%, -50%);
+    }
+
+    .feature-shops-section .category-item:hover img {
+        scale: 1.15;
+        transform: rotate(2deg);
+    }
+
+    .promo-categories-menus li[aria-current="page"] a {
+        border-color: var(--light-yellow) !important;
+        color: var(--light-yellow) !important;
+    }
+
+    .cashback-card::after,
+    .cashback-card::before {
+        content: "";
+        display: block;
+        width: 2rem;
+        height: 2rem;
+        background: white;
+        position: absolute;
+        top: 50%;
+        transform: translate(50%, -50%);
+        border-radius: 50%;
+    }
+
+    .cashback-card::before {
+        left: 100%;
+        transform: translate(-50%, -50%);
+    }
+
+    .help-page .page-banner {
+        background: url("../images/help-page-banner.png") no-repeat right bottom / contain, #ff5000;
+    }
+
+    .help-page .accordion-content {
+        max-height: 0 !important;
+    }
+
+    .help-page .accordion-content.active {
+        max-height: 1000px !important;
+    }
+
+    .rotate-chevron {
+        transform: rotate(90deg) !important;
+        color: var(--primary);
+    }
+
+    .outline-text {
+        -webkit-text-stroke: 0.5px #e0e0e0;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .modal-product-thumbnails .swiper-slide-thumb-active .modal-slide-thumb {
+        border-color: var(--primary);
+    }
+}
+
+/* ========================
+    Responsive CSS
+===========================*/
+@media only screen and (min-width: 640px) {
+
+    /* Theme Buttons */
+    .theme-btn {
+        padding: 0.6rem 3rem;
+        border-radius: 2rem;
+        font-size: 1rem;
+    }
+
+    .section-padding {
+        padding: 2rem 0;
+    }
+
+    /* order progress  */
+    .progress-line {
+        height: 0.5rem;
+    }
+
+    .step-dot {
+        margin: -7px auto 15px;
+    }
+}
+
+/* For tablets: */
+@media only screen and (min-width: 768px) {
+
+    /* Navbar Menu Effect */
+    .nav-link {
+        position: relative;
+    }
+
+    .nav-link::before {
+        content: "";
+        position: absolute;
+        background-color: var(--primary);
+        width: 0%;
+        height: 1px;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        transition: 300ms cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .nav-link:hover::before {
+        width: 100%;
+    }
+
+    /* Section Padding */
+    .section-padding {
+        padding: 3rem 0;
+    }
+
+    /* nav active page */
+    .nav-links a[aria-current="page"] {
+        color: var(--primary) !important;
+        background-color: transparent !important;
+    }
+
+    .nav-links a[aria-current="page"]:hover {
+        background-color: transparent !important;
+    }
+}
+
+/* For small screen laptop: */
+@media only screen and (min-width: 1024px) {
+
+    /* Theme Buttons */
+    .theme-btn {
+        padding: 0.8rem 4.5rem;
+    }
+}
+
+button {
+    cursor: pointer;
+}

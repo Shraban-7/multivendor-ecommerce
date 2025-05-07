@@ -4,25 +4,17 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="csrf_token" content="{{ csrf_token() }}" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="shortcut icon" href="{{ asset('assets/frontend/images/favicon.ico') }}" type="image/x-icon" />
-    <!-- Link Tailwind CSS's CDN -->
-    {{-- <script src="https://cdn.tailwindcss.com"></script> --}}
-    <script src="{{ asset('assets/libs/tailwindcss/3.4.16.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- Link jQuery -->
+    <script src="{{ asset('assets/libs/jquery/jquery-3.7.1.min.js') }}"></script>
+
+    @vite('resources/css/app.css')
+
     <!-- Link Font Awesome's CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{{ asset('assets/libs/frontawesome/css/all.min.css') }}" />
     <!-- Link Swiper's CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-    <!-- Link Flowbite CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css" rel="stylesheet" />
-    <!-- Link Custome CSS -->
-    <link rel="stylesheet" href="{{ asset('assets/frontend/styles/style.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/frontend/styles/responsive.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/libs/swiper/css/swiper-bundle.min.css') }}" />
 
     <title>Tesko | @yield('title')</title>
 </head>
@@ -44,61 +36,59 @@
     @include('frontend.layouts.footer')
     <!-- Footer Section Ended -->
 
+    @vite('resources/js/app.js')
     <!-- Font Awesome JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/js/all.min.js"
-        integrity="sha512-b+nQTCdtTBIRIbraqNEwsjB6UvL3UEMkXnhzd8awtCYh0Kcsjl9uEgwVFVbhoj3uu1DO1ZMacNvLoyJJiNfcvg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <!-- Flowbite JS -->
-    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
-    <!-- Swiper JS -->
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="{{ asset('assets/libs/frontawesome/js/all.min.js') }}"></script>
+
     <!-- Swiper JS Custom Cacarousel slider Script's-->
+    <script src="{{ asset('assets/libs/swiper/js/swiper-bundle.min.js') }}"></script>
     <script src="{{ asset('assets/frontend/js/swiperSliders.js') }}"></script>
 
-    <!-- Tailwind Global Config JS -->
-    <script src="{{ asset('assets/frontend/tailwind.config.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@9.0.3"></script>
+    <!-- Data table  -->
 
-    <!-- Toastr CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="{{ asset('assets/libs/datatables/simple-datatables@9.0.3.js') }}"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <!-- Toastr CSS & js -->
+    <link rel="stylesheet" href="{{ asset('assets/libs/toastr/css/toastr.min.css') }}">
+
+    <script src="{{ asset('assets/libs/toastr/js/toastr.min.js') }}"></script>
 
     <!-- custom scripts -->
     <script>
         $.ajaxSetup({
             headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf_token"]').attr('content')
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
-        })
-        document.querySelectorAll("video").forEach((video) => {
-            const playBtn = video.parentElement.querySelector(".play-btn");
-            const muteBtn = video.parentElement.querySelector(".mute-btn");
-
-            playBtn.addEventListener("click", () => {
-                if (video.paused) {
-                    video.play();
-                    playBtn.innerHTML = `<i class="fa-solid fa-pause text-light-yellow"></i>`;
-                } else {
-                    video.pause();
-                    playBtn.innerHTML = `<i class="fa-solid fa-play"></i>`;
-                }
-            });
-
-            video.muted = false;
-
-            function updateMuteButton(muteBtn) {
-                muteBtn.innerHTML = video.muted ?
-                    `<i class="fa-solid fa-volume-xmark text-persian-red"></i>` :
-                    `<i class="fa-solid fa-volume-high"></i>`;
-            }
-
-            muteBtn.addEventListener("click", () => {
-                video.muted = !video.muted;
-                updateMuteButton(muteBtn);
-            });
-            updateMuteButton(muteBtn);
         });
+
+        // document.querySelectorAll("video").forEach((video) => {
+        //     const playBtn = video.parentElement.querySelector(".play-btn");
+        //     const muteBtn = video.parentElement.querySelector(".mute-btn");
+
+        //     playBtn.addEventListener("click", () => {
+        //         if (video.paused) {
+        //             video.play();
+        //             playBtn.innerHTML = `<i class="fa-solid fa-pause text-light-yellow"></i>`;
+        //         } else {
+        //             video.pause();
+        //             playBtn.innerHTML = `<i class="fa-solid fa-play"></i>`;
+        //         }
+        //     });
+
+        //     video.muted = false;
+
+        //     function updateMuteButton(muteBtn) {
+        //         muteBtn.innerHTML = video.muted ?
+        //             `<i class="fa-solid fa-volume-xmark text-persian-red"></i>` :
+        //             `<i class="fa-solid fa-volume-high"></i>`;
+        //     }
+
+        //     muteBtn.addEventListener("click", () => {
+        //         video.muted = !video.muted;
+        //         updateMuteButton(muteBtn);
+        //     });
+        //     updateMuteButton(muteBtn);
+        // });
 
         const currentYear = new Date().getFullYear();
         document.getElementById("current-year").textContent = currentYear;
@@ -227,7 +217,7 @@
                     type: "POST",
                     data: {
                         product_id: product_id,
-                        seller_id : seller_id,
+                        seller_id: seller_id,
                         variant_sku: variantSku,
                         quantity: qtyInput,
                         price: product_price,
@@ -245,7 +235,8 @@
                             toastr.success(data.message);
                             updateCartData();
 
-                            window.location.href = "{{ route('orders.checkout') }}" + "?seller_id=" + seller_id;
+                            window.location.href = "{{ route('orders.checkout') }}" +
+                                "?seller_id=" + seller_id;
                         } else {
                             toastr.error(data.error);
                         }

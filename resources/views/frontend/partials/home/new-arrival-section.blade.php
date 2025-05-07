@@ -18,7 +18,7 @@
                             <div class="swiper-slide group/new-arriv-pro-card eq">
                                 <div class="flex flex-col items-center block w-full p-2 product-card">
                                     <div
-                                        class="w-full border border-[jet-gray]/30 rounded-md hover:shadow-md eq overflow-hidden">
+                                        class="w-full border border-jet-gray/30 rounded-md hover:shadow-md eq overflow-hidden">
                                         <div class="h-32 pt-5 overflow-hidden item-img sm:h-40 md:h-52">
                                             <a href="{{ route('products.details', $product->slug) }}">
                                                 <img class="object-contain w-full h-full"

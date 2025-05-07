@@ -5,19 +5,19 @@
     <main class="grocery-essentials-page">
         <!-- Page Promotion Banner Starts -->
         <section class="container py-5 page-promotion md:w-full">
-            <div
-                class="promo-wrapper md:container bg-[{{ $category->cover_bg_color }}] grid grid-cols-1 md:grid-cols-2 rounded-lg md:rounded-3xl overflow-hidden">
+            <div style="background-color: {{ $category->cover_bg_color }}"
+                class="promo-wrapper md:container  grid grid-cols-1 md:grid-cols-2 rounded-lg md:rounded-3xl overflow-hidden">
                 <div
                     class="flex flex-col items-start justify-center order-2 gap-3 p-5 md:order-1 promo-content sm:gap-5 md:p-10 lg:p-14 2xl:p-20">
-                    <h2
-                        class="lg:text-3xl md:text-2xl text-xl text-[{{ $category->cover_text_color }}] font-bold md:pr-10 lg:pr-14 2xl:pr-20 line-clamp-2">
+                    <h2 style="color: {{ $category->cover_text_color }}"
+                        class="lg:text-3xl md:text-2xl text-xl  font-bold md:pr-10 lg:pr-14 2xl:pr-20 line-clamp-2">
                         {{ $category->cover_title }}
                     </h2>
-                    <p class="text-xs text-[{{ $category->cover_text_color }}] md:pr-7 lg:pr-14 2xl:pr-20">
+                    <p style="color: {{ $category->cover_text_color }}" class="text-xs  md:pr-7 lg:pr-14 2xl:pr-20">
                         {!! $category->cover_description !!}
                     </p>
-                    <a href="#"
-                        class="theme-btn bg-[{{ $category->cover_button_color }}] px-5 py-2 lg:px-7 lg:px-3 rounded-lg text-white hover:bg-theme-light hover:text-theme-dark eq text-xs lg:text-sm">Learn
+                    <a href="#" style="background-color: {{ $category->cover_button_color }}"
+                        class="theme-btn px-5 py-2 lg:px-7 lg:px-3 rounded-lg text-white hover:bg-theme-light hover:text-theme-dark eq text-xs lg:text-sm">Learn
                         More</a>
                 </div>
                 <div class="order-1 promo-image">
