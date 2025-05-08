@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\Review;
+use App\Models\ReviewImage;
 use App\Models\Seller;
 use Illuminate\Support\Facades\Auth;
 
@@ -170,29 +171,47 @@ class OrderController extends Controller
         return view('frontend.orders.tracking', compact('order'));
     }
 
-    public function review(Order $order, Request $request)
+    public function review(Product $product, Request $request)
     {
         $user = Auth::user();
 
+        // return $product;
+
         if ($request->isMethod('GET')) {
-            return view('frontend.orders.review', compact('user', 'order'));
+            return view('frontend.orders.review', compact('user', 'product'));
         }
 
         $request->validate([
             'rating' => 'required|integer|min:1|max:5',
-            'review_text' => 'required|string'
+            'review_text' => 'required|string',
+            'images' => 'nullable|array',
+            'images.*' => 'mimes:jpeg,png,jpg,gif,pdf,doc,docx,zip|max:4000',
         ]);
 
+        $review_exist = Review::where('product_id',$product->id)->where('user_id',$user->id)->first();
 
-        foreach ($order->items as $item) {
-            Review::create([
-                'product_id' => $item->product_id,
-                'user_id' => $order->user_id,
-                'rating' => $request->rating,
-                'review_text' => $request->review_text
-            ]);
+        if($review_exist)
+        {
+            return redirect()->back();
         }
 
-        return response()->json(['success' => true, 'message' => 'Review submitted successfully']);
+
+        $review = Review::create([
+            'product_id' => $product->id,
+            'user_id' => $user->id,
+            'rating' => $request->rating,
+            'review_text' => $request->review_text
+        ]);
+
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $file) {
+                ReviewImage::create([
+                    'review_id' => $review->id,
+                    'image' => upload_file($file, 'images/reviews')
+                ]);
+            }
+        }
+
+        return redirect()->route('orders.index');
     }
 }

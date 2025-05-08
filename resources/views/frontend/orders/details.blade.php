@@ -146,10 +146,10 @@
                                 <div class="text-davy-gray space-y-1.5 divide-y-2 divide-davy-gray/10">
                                     <!-- Item 1 -->
                                     @foreach ($order->items as $item)
-                                        <div class="flex gap-2 md:gap-4 py-3 md:py-5">
+                                        <div class="flex gap-2 md:gap-4 py-3 md:py-5 border-b border-gray-200">
                                             <div class="w-16 h-20 md:w-20 md:h-24 flex-shrink-0 rounded-xl overflow-hidden">
                                                 <img src="{{ storage_url($item->product->thumbnail) }}"
-                                                    alt="YC Washable Wool-Blend Jumper" />
+                                                    alt="{{ $item->product->name }}" class="w-full h-full object-cover" />
                                             </div>
 
                                             <div class="flex-grow space-y-1 md:space-y-2">
@@ -160,12 +160,20 @@
                                                 <p class="flex items-center gap-1 text-aqua-deep mt-1">
                                                     <span
                                                         class="text-lg md:text-2xl font-medium">{{ money($item->unit_price) }}</span>
-                                                    <span
-                                                        class="text-lg md:text-2xl font-medium line-through">{{ money($item->unit_price + $item->discount) }}</span>
+                                                    <span class="text-lg md:text-2xl font-medium line-through">
+                                                        {{ money($item->unit_price + $item->discount) }}
+                                                    </span>
                                                 </p>
+
+                                                <!-- Submit Review Button -->
+                                                <a href="{{ route('orders.review', ['product' => $item->product->id]) }}"
+                                                    class="inline-block mt-2 text-xs md:text-sm text-white  bg-primary hover:bg-theme-dark px-4 py-2 rounded transition-all duration-200">
+                                                   Submit a Review
+                                                </a>
                                             </div>
                                         </div>
                                     @endforeach
+
                                 </div>
                             </div>
 
@@ -195,7 +203,8 @@
 
                                     <div class="flex justify-between text-sm md:text-base">
                                         <span>Delivery</span>
-                                        <span class="text-leaf-green font-medium">+{{ money($order->shipping_fee) }}</span>
+                                        <span
+                                            class="text-leaf-green font-medium">+{{ money($order->shipping_fee) }}</span>
                                     </div>
 
                                     <div class="border-t border-davy-gray/20 pt-4 mt-4">
@@ -213,9 +222,7 @@
                         <a href="#"
                             class="inline-block capitalize bg-primary text-theme-light md:text-lg lg:text-xl w-full py-2.5 md:py-3 lg:py-4 text-center rounded-full hover:bg-theme-dark eq">Return
                             or refund</a>
-                        <a href="{{ route('orders.review', $order->id) }}"
-                            class="inline-block capitalize border border-theme-dark text-theme-dark md:text-lg lg:text-xl w-full py-2.5 md:py-3 lg:py-4 text-center rounded-full hover:bg-theme-dark hover:text-theme-light eq">Leave
-                            a feedback</a>
+
                     </div>
                 </div>
             </div>
