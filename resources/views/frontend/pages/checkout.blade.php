@@ -103,15 +103,16 @@
                                 </div>
 
                                 <div class="w-3/4 space-y-2">
-                                    <label class="block text-sm" for="address">Address</label>
+                                    <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
                                     <input required list="addressList" id="address" name="address"
-                                        class="eq w-full px-4 py-2 border border-gray-300 rounded focus:ring-[1] focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-light-yellow focus:border-light-yellow transition" />
                                     <datalist id="addressList">
                                         @foreach ($customer_addresses as $customer_address)
                                             <option value="{{ $customer_address->address }}">
                                         @endforeach
                                     </datalist>
                                 </div>
+
                                 <input type="hidden" name="seller_id" id="" value="{{ $selectedSellerId }}">
                             </div>
 
@@ -163,10 +164,10 @@
                         </div>
 
                         <!-- Payment Options -->
-                        <div class="flex flex-col gap-y-4 !my-6 md:!my-10 border py-5">
+                        <div class="flex flex-col gap-y-4 !my-6 md:!my-10 border border-jet-gray/30 py-5">
                             <h3 class="sm:text-lg font-medium pl-5">Payment Option</h3>
                             <div
-                                class="grid grid-cols-2 xsm:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 items-center gap-2 md:gap-4 p-3 md:p-5 border-y md:divide-x">
+                                class="grid grid-cols-2 xsm:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 items-center gap-2 md:gap-4 p-3 md:p-5 border-y border-jet-gray/30 md:divide-x md:divide-jet-gray/30">
                                 <label class="relative inline-flex flex-col gap-2 items-center p-2 cursor-pointer group">
                                     <span class="text-2xl sm:text-3xl text-primary"><i
                                             class="fa-solid fa-dollar-sign"></i></span>
@@ -276,14 +277,16 @@
                                 </p>
                                 <p class="flex justify-between">
                                     <span class="text-theme-dark">Shipping Fee:</span>
-                                    <span id="itemDiscount" class="font-bold text-jet-gray">+{{ money($shipping_fee) }}</span>
+                                    <span id="itemDiscount"
+                                        class="font-bold text-jet-gray">+{{ money($shipping_fee) }}</span>
                                 </p>
                             </div>
                             <!-- estimated total -->
                             <div
                                 class="flex justify-between pt-3 mt-6 font-medium border-t-2 border-dashed total border-jet-gray/50">
                                 <span>Estimated Total</span>
-                                <span id="estimatedTotal" class="text-xl">{{ money($total + $tax + $shipping_fee) }}</span>
+                                <span id="estimatedTotal"
+                                    class="text-xl">{{ money($total + $tax + $shipping_fee) }}</span>
                             </div>
                         </div>
                         <!-- checkout btn -->
@@ -324,20 +327,10 @@
                             </ul>
                             <!-- payment options -->
                             <div class="flex flex-wrap gap-x-2 gap-y-1 mt-5">
-                                <img src="{{ asset('assets/frontend/images/cart-payment-method-1.png') }}" alt="Visa card"
-                                    class="w-auto h-8 sm:h-10 border rounded" />
-                                <img src="{{ asset('assets/frontend/images/cart-payment-method-2.png') }}"
-                                    alt="mastercard" class="w-auto h-8 sm:h-10 border rounded" />
-                                <img src="{{ asset('assets/frontend/images/cart-payment-method-3.png') }}"
-                                    alt="American Express" class="w-auto h-8 sm:h-10 border rounded" />
-                                <img src="{{ asset('assets/frontend/images/cart-payment-method-4.png') }}" alt="Discover"
-                                    class="w-auto h-8 sm:h-10 border rounded" />
-                                <img src="{{ asset('assets/frontend/images/cart-payment-method-5.png') }}" alt="Paypal"
-                                    class="w-auto h-8 sm:h-10 border rounded" />
-                                <img src="{{ asset('assets/frontend/images/cart-payment-method-6.png') }}"
-                                    alt="Apple Pay" class="w-auto h-8 sm:h-10 border rounded" />
-                                <img src="{{ asset('assets/frontend/images/cart-payment-method-7.png') }}" alt="G Pay"
-                                    class="w-auto h-8 sm:h-10 border rounded" />
+                                @foreach (payment_gateways() as $gateway)
+                                    <img src="{{ storage_url($gateway->image) }}" alt="{{ $gateway->name }}"
+                                        class="w-auto h-8 sm:h-10" />
+                                @endforeach
                             </div>
                         </div>
                     </div>

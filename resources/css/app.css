@@ -28,7 +28,6 @@
     --color-davy-gray: #4A5568;
     --color-theme-light: #F8F8F8;
     --color-theme-dark: #232321;
-
     --breakpoint-2xl: 1400px;
     --breakpoint-xsm: 460px;
 
@@ -76,8 +75,8 @@
     }
 
     ::selection {
-        background-color: var(--primary);
-        color: var(--theme-light);
+        background-color: var(--color-primary);
+        color: var(--color-theme-light);
     }
 
     /* Scrollbar Styles */
@@ -113,11 +112,11 @@
     }
 
     .nav-links a[aria-current="page"] {
-        background-color: var(--primary);
+        background-color: var(--color-primary);
     }
 
     .swiper-slide-thumb-active .slide-thumb {
-        border: 2px solid var(--primary) !important;
+        border: 2px solid var(--color-primary) !important;
     }
 
     .no-scrollbar {
@@ -143,32 +142,32 @@
     }
 
     .theme-primary-btn {
-        background-color: var(--primary) !important;
-        color: var(--theme-light) !important;
+        background-color: var(--color-primary) !important;
+        color: var(--color-theme-light) !important;
         border: 1px solid rgba(255, 179, 33, 0.1);
     }
 
     .theme-outline-btn {
         background-color: transparent;
-        color: var(--theme-dark) !important;
+        color: var(--color-theme-dark) !important;
         border: 1px solid rgba(35, 35, 33, 0.1) !important;
     }
 
     .theme-outline-btn:hover {
-        background: var(--primary);
-        color: var(--theme-light) !important;
-        border-color: var(--light-yellow) !important;
+        background: var(--color-primary);
+        color: var(--color-theme-light) !important;
+        border-color: var(--color-light-yellow) !important;
     }
 
     .step-dot {
-        background: var(--theme-light);
-        border: 2px solid var(--primary) !important;
+        background: var(--color-theme-light);
+        border: 2px solid var(--color-primary) !important;
         margin: -5px auto 15px;
     }
 
     .step.completed .step-dot {
-        background: var(--primary);
-        border-color: var(--primary);
+        background: var(--color-primary);
+        border-color: var(--color-primary);
     }
 
     .step .step-dot span {
@@ -180,8 +179,8 @@
     }
 
     .step.active .step-dot {
-        background: var(--primary);
-        border-color: var(--theme-light) !important;
+        background: var(--color-primary);
+        border-color: var(--color-theme-light) !important;
     }
 
     .progress-line {
@@ -192,7 +191,7 @@
     }
 
     .progress-line.active {
-        background: var(--primary);
+        background: var(--color-primary);
     }
 
     .step .step-content {
@@ -206,8 +205,8 @@
 
     .order-details-menus li[aria-current="page"] a,
     .coupon-discount-menus li[aria-current="page"] a {
-        background: var(--leaf-green) !important;
-        color: var(--theme-light) !important;
+        background: var(--color-leaf-green) !important;
+        color: var(--color-theme-light) !important;
     }
 
     .review-star {
@@ -217,7 +216,7 @@
 
     .review-star.active,
     .review-star.hover {
-        color: var(--light-yellow);
+        color: var(--color-light-yellow);
     }
 
     .round-shape::after {
@@ -240,8 +239,8 @@
     }
 
     .promo-categories-menus li[aria-current="page"] a {
-        border-color: var(--light-yellow) !important;
-        color: var(--light-yellow) !important;
+        border-color: var(--color-light-yellow) !important;
+        color: var(--color-light-yellow) !important;
     }
 
     .cashback-card::after,
@@ -276,7 +275,7 @@
 
     .rotate-chevron {
         transform: rotate(90deg) !important;
-        color: var(--primary);
+        color: var(--color-primary);
     }
 
     .outline-text {
@@ -285,7 +284,7 @@
     }
 
     .modal-product-thumbnails .swiper-slide-thumb-active .modal-slide-thumb {
-        border-color: var(--primary);
+        border-color: var(--color-primary);
     }
 }
 
@@ -326,7 +325,7 @@
     .nav-link::before {
         content: "";
         position: absolute;
-        background-color: var(--primary);
+        background-color: var(--color-primary);
         width: 0%;
         height: 1px;
         bottom: 0;
@@ -346,7 +345,7 @@
 
     /* nav active page */
     .nav-links a[aria-current="page"] {
-        color: var(--primary) !important;
+        color: var(--color-primary) !important;
         background-color: transparent !important;
     }
 

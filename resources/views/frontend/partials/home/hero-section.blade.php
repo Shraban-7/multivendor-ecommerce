@@ -2,7 +2,7 @@
             <div class="w-full h-full md:w-1/2">
                 <a href="#">
                     <img src="{{ storage_url($hero_grid_one->image) }}" alt="{{ $hero_grid_one->title }}"
-                        class="object-cover w-full h-full" />
+                        class="object-cover w-full h-full" loading="lazy" />
                 </a>
             </div>
 
@@ -11,13 +11,13 @@
                     <div class="w-1/2">
                         <a href="#">
                             <img src="{{ storage_url($hero_grid_two->image) }}" alt="{{ $hero_grid_two->title }}"
-                                class="object-cover w-full h-full" />
+                                class="object-cover w-full h-full" loading="lazy" />
                         </a>
                     </div>
                     <div class="w-1/2">
                         <a href="#">
                             <img src="{{ storage_url($hero_grid_three->image) }}" alt="{{ $hero_grid_three->title }}"
-                                class="object-cover w-full h-full" />
+                                class="object-cover w-full h-full" loading="lazy"/>
                         </a>
                     </div>
                 </div>
@@ -25,13 +25,13 @@
                     <div class="md:w-[45%] w-1/2">
                         <a href="#">
                             <img src="{{ storage_url($hero_grid_four->image) }}" alt="{{ $hero_grid_four->title }}"
-                                class="object-cover w-full h-full" />
+                                class="object-cover w-full h-full" loading="lazy"/>
                         </a>
                     </div>
                     <div class="md:w-[55%] w-1/2">
                         <a href="#">
                             <img src="{{ storage_url($hero_grid_five->image) }}" alt="{{ $hero_grid_five->title }}"
-                                class="object-cover w-full h-full" />
+                                class="object-cover w-full h-full" loading="lazy"/>
                         </a>
                     </div>
                 </div>

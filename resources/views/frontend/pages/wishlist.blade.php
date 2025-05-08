@@ -55,15 +55,15 @@
         </section>
 
         <!-- Track Order Main Section Starts -->
-        <section class="track-order-section container section-padding">
-            <div class="border rounded-lg">
+        <section class="track-order-section container py-8">
+            <div class="border border-jet-gray/30 rounded-lg">
                 <h1 class="text-lg font-medium px-6 py-4 text-theme-dark">
                     Wishlist
                 </h1>
 
                 <!-- Table Header -->
                 <div
-                    class="hidden md:grid md:grid-cols-[2fr,1fr,1fr,1fr] gap-4 bg-jet-gray/10 border px-6 py-3 font-medium text-davy-gray text-sm">
+                    class="hidden md:grid md:grid-cols-[2fr_1fr_1fr_1fr] gap-4 bg-jet-gray/10 border-b border-jet-gray/30 px-6 py-3 text-sm font-medium text-davy-gray">
                     <h4>PRODUCTS</h4>
                     <h4>PRICE</h4>
                     <h4>STOCK STATUS</h4>
@@ -71,55 +71,41 @@
                 </div>
 
                 <!-- Product Items -->
-                <div class="divide-y divide-gray-200 text-sm rounded-b-lg shadow">
-                    <!-- Popsnap Camera -->
+                <div class="divide-y divide-gray-200 text-sm rounded-b-lg shadow-sm">
                     @foreach ($wishlists as $wishlist)
-                        <div class="grid md:grid-cols-[2fr,1fr,1fr,1fr] gap-4 px-6 py-3 items-center">
-                            <div class="flex gap-4 items-center">
-                                <div class="img-wrap w-20 h-20 flex items-center justify-center">
-                                    <img src="{{ storage_url($wishlist->product->thumbnail) }}" alt="Popsnap Camera"
-                                        class="object-contain" />
+                        <div class="grid md:grid-cols-[2fr_1fr_1fr_1fr] gap-4 px-6 py-4 items-center">
+                            <!-- Product Info -->
+                            <div class="flex items-center gap-4">
+                                <div class="w-20 h-20 flex items-center justify-center">
+                                    <img src="{{ storage_url($wishlist->product->thumbnail) }}" alt="Product Image"
+                                        class="object-contain w-full h-full" />
                                 </div>
-                                <p class="flex-1 pr-12">
-                                    {{ $wishlist->product->name }}
-                                </p>
+                                <p class="text-sm text-gray-800 line-clamp-2">{{ $wishlist->product->name }}</p>
                             </div>
+
+                            <!-- Price Info -->
                             <div class="flex items-center gap-2">
-                                @php
-                                    if ($wishlist->product->discount_type != null) {
-                                        if ($wishlist->product->discount_type == \App\Enums\DiscountType::FLAT) {
-                                            $discount_price =
-                                                $wishlist->product->selling_price - $wishlist->product->discount_amount;
-                                        } elseif (
-                                            $wishlist->product->discount_type == \App\Enums\DiscountType::PERCENTAGE
-                                        ) {
-                                            $discount_price =
-                                                $wishlist->product->selling_price -
-                                                ($wishlist->product->selling_price *
-                                                    $wishlist->product->discount_amount) /
-                                                    100;
-                                        }
-                                    } else {
-                                        $discount_price = $wishlist->product->selling_price;
-                                    }
-                                @endphp
                                 <span
                                     class="text-gray-400 line-through">{{ money($wishlist->product->selling_price) }}</span>
-                                <span class="font-semibold">{{ money($discount_price) }}</span>
+                                <span class="font-semibold">{{ money($wishlist->product->discounted_price) }}</span>
                             </div>
-                            @if ($wishlist->product->stock_in > 0)
-                                <div class="text-green-600 font-medium">IN STOCK</div>
-                            @else
-                                <div class="text-orange-600 font-medium">STOCK OUT</div>
-                            @endif
-                            <div class="flex items-center gap-4">
-                                <input type="hidden" name="quantity" class="qtyInputValue" value=""
+
+                            <!-- Stock Info -->
+                            <div
+                                class="{{ $wishlist->product->stock_in > 0 ? 'text-green-600' : 'text-orange-600' }} font-medium">
+                                {{ $wishlist->product->stock_in > 0 ? 'IN STOCK' : 'STOCK OUT' }}
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="flex items-center gap-3">
+                                <input type="hidden" name="quantity" class="qtyInputValue"
                                     id="qtyInput{{ $wishlist->product->id }}">
-                                <button data-id="{{ $wishlist->product->id }}" data-wishlist-id="{{ $wishlist->id }}" type="button"
-                                    class="cartBtn bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600">
-                                    ADD TO CARD
+                                <button type="button"
+                                    class="cartBtn px-3 py-2 text-xs sm:text-sm bg-orange-500 text-white rounded hover:bg-orange-600"
+                                    data-id="{{ $wishlist->product->id }}" data-wishlist-id="{{ $wishlist->id }}">
+                                    ADD TO CART
                                 </button>
-                                <button class="wishlistRemoveBtn text-gray-400 hover:text-gray-600"
+                                <button type="button" class="wishlistRemoveBtn text-gray-400 hover:text-gray-600"
                                     data-id="{{ $wishlist->id }}">
                                     <i class="fas fa-x"></i>
                                 </button>
@@ -129,6 +115,7 @@
                 </div>
             </div>
         </section>
+
         <!-- Track Order Main Section Ended -->
     </main>
 
@@ -152,6 +139,7 @@
                             if (response.success) {
                                 $row.fadeOut(300, function() {
                                     $(this).remove();
+                                    toastr.success(response.message);
                                 });
                             } else {
                                 alert(response.message || 'Failed to remove item');

@@ -286,7 +286,7 @@
                 </div>
             </div>
             <!-- Order Activity -->
-            <div class="lg:max-w-5xl md:w-5/6 sm:w-10/12 xsm:w-11/12 mx-auto border mt-8">
+            <div class="lg:max-w-5xl md:w-5/6 sm:w-10/12 xsm:w-11/12 mx-auto border border-jet-gray/30 mt-8">
                 <div class="p-4 sm:p-6">
                     <h2 class="sm:text-lg font-semibold mb-3 sm:mb-5">
                         Order Activity

@@ -8,11 +8,12 @@
     <link rel="shortcut icon" href="{{ asset('assets/frontend/images/favicon.ico') }}" type="image/x-icon" />
     <!-- Link jQuery -->
     <script src="{{ asset('assets/libs/jquery/jquery-3.7.1.min.js') }}"></script>
-
     @vite('resources/css/app.css')
 
     <!-- Link Font Awesome's CSS -->
-    <link rel="stylesheet" href="{{ asset('assets/libs/frontawesome/css/all.min.css') }}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Link Swiper's CSS -->
     <link rel="stylesheet" href="{{ asset('assets/libs/swiper/css/swiper-bundle.min.css') }}" />
 
@@ -37,8 +38,6 @@
     <!-- Footer Section Ended -->
 
     @vite('resources/js/app.js')
-    <!-- Font Awesome JS -->
-    <script src="{{ asset('assets/libs/frontawesome/js/all.min.js') }}"></script>
 
     <!-- Swiper JS Custom Cacarousel slider Script's-->
     <script src="{{ asset('assets/libs/swiper/js/swiper-bundle.min.js') }}"></script>

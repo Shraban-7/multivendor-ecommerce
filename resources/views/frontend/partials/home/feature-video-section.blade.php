@@ -22,7 +22,7 @@
                 </video> --}}
                 <!-- Overlay Controls -->
 
-                <img src="{{ storage_url($product->thumbnail) }}" alt="{{ $product->slug }}" class="object-cover w-full h-full cursor-pointer">
+                <img src="{{ storage_url($product->thumbnail) }}" alt="{{ $product->slug }}" class="object-cover w-full h-full cursor-pointer" loading="lazy">
                 <div class="absolute bottom-3 sm:bottom-5 left-3 sm:left-5 md:left-8 w-1/3">
                   <a href="#" class="block w-full text-white font-light truncate hover:text-light-yellow eq">
                     @jesikaperker07854

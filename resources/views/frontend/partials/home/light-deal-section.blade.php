@@ -43,7 +43,7 @@
                             <!-- slide image -->
                             <div class="card-image h-[16.5rem] relative rounded-lg overflow-hidden">
                                 <img src="{{ storage_url($light_deal->thumbnail) }}" alt="{{ $light_deal->slug }}"
-                                    class="object-cover w-full h-full group-hover:scale-125 eq" />
+                                    class="object-cover w-full h-full group-hover:scale-125 eq" loading="lazy"/>
                                 <span
                                     class="absolute block w-3/5 px-4 py-3 text-sm text-center -translate-x-1/2 bg-white rounded-full bottom-9 left-1/2">Almost
                                     Sold Out</span>

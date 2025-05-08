@@ -6,7 +6,7 @@
                         <div class="w-full h-full">
                             <!-- gallery image -->
                             <img src="{{ storage_url($gallery_feature_pro_one->image) }}"
-                                alt="Slow cooker with ingredients" class="object-cover w-full h-full" />
+                                alt="Slow cooker with ingredients" class="object-cover w-full h-full" loading="lazy"/>
                         </div>
                         <!-- overlay -->
                         <div class="absolute inset-0 bg-black/30 eq group-hover:bg-black/50"></div>
@@ -34,7 +34,7 @@
                         <!-- gallery image -->
                         <div class="w-full h-full">
                             <img src="{{ storage_url($gallery_feature_pro_two->image) }}"
-                                alt="Coats and jackets collection" class="object-cover w-full h-full" />
+                                alt="Coats and jackets collection" class="object-cover w-full h-full" loading="lazy"/>
                         </div>
                         <!-- overlay -->
                         <div class="absolute inset-0 bg-black/30 eq group-hover:bg-black/50"></div>
@@ -60,7 +60,7 @@
                             <!-- gallery image -->
                             <div class="w-full h-full">
                                 <img src="{{ storage_url($gallery_feature_pro_three->image) }}"
-                                    alt="Home decor items" class="object-cover w-full h-full" />
+                                    alt="Home decor items" class="object-cover w-full h-full" loading="lazy"/>
                             </div>
                             <!-- overlay -->
                             <div class="absolute inset-0 bg-black/30 eq group-hover:bg-black/50"></div>
@@ -77,7 +77,7 @@
                             <!-- gallery image -->
                             <div class="w-full h-full">
                                 <img src="{{ storage_url($gallery_feature_pro_four->image) }}"
-                                    alt="Fresh produce and vegetables" class="object-cover w-full h-full" />
+                                    alt="Fresh produce and vegetables" class="object-cover w-full h-full" loading="lazy"/>
                             </div>
                             <!-- overlay -->
                             <div class="absolute inset-0 bg-black/30 eq group-hover:bg-black/50"></div>
@@ -98,7 +98,7 @@
                         <!-- gallery image -->
                         <div class="w-full lg:h-full">
                             <img src="{{ storage_url($gallery_feature_pro_five->image) }}"
-                                alt="Fashion collection" class="object-cover w-full h-full lg:h-full" />
+                                alt="Fashion collection" class="object-cover w-full h-full lg:h-full" loading="lazy"/>
                         </div>
                         <!-- overlay -->
                         <div class="absolute inset-0 bg-black/30 eq group-hover:bg-black/50"></div>

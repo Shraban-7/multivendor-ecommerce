@@ -94,13 +94,14 @@
                         <div class="w-full space-y-2">
                             <!-- Free Shipping Banner -->
                             <div
-                                class="text-sm justify-center lg:text-base text-rustic-red bg-[#FEEFE1] px-4 py-3 flex flex-wrap flex-col xsm:flex-row justify-between items-center">
+                                class="flex flex-col xsm:flex-row flex-wrap items-center justify-between gap-2 px-4 py-3 text-sm lg:text-base bg-[#FEEFE1] text-rustic-red">
                                 <div class="flex items-center gap-2 text-center">
                                     <i class="fa-solid fa-check text-theme-teal"></i>
                                     <span>Free shipping special for you</span>
                                 </div>
                                 <span class="font-light text-jet-gray">Exclusive offer</span>
                             </div>
+
 
                             <h1 class="text-sm lg:text-base text-rustic-red lg:pr-5 xl:pr-16">
                                 {{ $product['name'] }}
@@ -193,12 +194,14 @@
                                                                 class="hidden peer variant-option" />
 
                                                             @if (strtolower($attribute['name']) === 'color')
-                                                                <label for="{{ $inputId }}"
-                                                                    class="w-6 h-6 sm:w-8 sm:h-8 block peer-checked:ring peer-checked:ring-{{ strtolower($option['value']) }}-800 bg-{{ strtolower($option['value']) }}-700 rounded-full peer-checked:border-2 sm:peer-checked:border-4 border border-black peer-checked:border-primary cursor-pointer">
+                                                                <label
+                                                                    style="background-color: {{ strtolower($option['value']) }}"
+                                                                    for="{{ $inputId }}"
+                                                                    class="w-6 h-6 sm:w-8 sm:h-8 block peer-checked:ring peer-checked:ring-{{ strtolower($option['value']) }}-800  rounded-full peer-checked:border-2 peer-checked:border-jet-gray/30 sm:peer-checked:border-4 border border-jet-gray/30 peer-checked:border-primary cursor-pointer">
                                                                 </label>
                                                             @else
                                                                 <label for="{{ $inputId }}"
-                                                                    class="px-4 py-1 sm:px-5 sm:py-1.5 block ring-[1px] hover:bg-gray-100 ring-transparent peer-checked:ring-primary rounded border peer-checked:border-primary peer-checked:text-primary cursor-pointer">
+                                                                    class="px-4 py-1 sm:px-5 sm:py-1.5 block ring-[1px] hover:bg-gray-100 ring-transparent peer-checked:ring-primary rounded border border-jet-gray/30 peer-checked:border-primary peer-checked:text-primary cursor-pointer">
                                                                     {{ $option['value'] }}
                                                                 </label>
                                                             @endif
@@ -221,13 +224,14 @@
                                 <div class="quantity mt-3">
                                     <div class="text-davy-gray flex items-center gap-2">
                                         <h6 class="sm:text-lg">Quantity :</h6>
-                                        <div class="flex items-center border rounded p-1">
+                                        <div class="flex items-center border border-jet-gray/30 rounded p-1">
                                             <button id="decreaseBtn"
                                                 class="w-5 h-5 flex items-center justify-center text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 eq active:text-primary rounded text-sm font-bold">
                                                 <i class="fa-solid fa-minus"></i>
                                             </button>
                                             <input readonly id="quantity" type="number" min="1"
-                                                class="text-center text-persian-blue w-12 h-5 text-sm font-medium border-0 focus:ring-0" />
+                                                class="text-center text-persian-blue w-16 h-5 text-sm font-medium border-0 focus:ring-0" />
+
                                             <button id="increaseBtn"
                                                 class="w-5 h-5 flex items-center justify-center text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 eq active:text-primary rounded text-sm font-bold">
                                                 <i class="fa-solid fa-plus"></i>
@@ -375,7 +379,9 @@
 
                             <!-- User Reviews -->
                             <div class="pt-5 space-y-5 reviews-wrapper">
-                               @include('frontend.partials.review-card',['reviews' => $product['reviews']])
+                                @include('frontend.partials.review-card', [
+                                    'reviews' => $product['reviews'],
+                                ])
 
                             </div>
                         </div>
@@ -743,6 +749,5 @@
                 });
             });
         </script>
-
     @endpush
 @endsection

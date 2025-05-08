@@ -121,7 +121,7 @@
                                                 <a href="{{ route('products.details', $product->slug) }}" target="_blank">
                                                     <img src="{{ storage_url($product->thumbnail) }}"
                                                         alt="{{ $product->slug }}"
-                                                        class="object-contain w-full h-full group-hover/trending:rotate-12 eq" />
+                                                        class="object-contain w-full h-full group-hover/trending:rotate-12 eq" loading="lazy"/>
                                                 </a>
                                             </div>
                                             <div class="flex flex-col w-3/4 gap-2 text-xs item-details">

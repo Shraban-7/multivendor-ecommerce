@@ -8,13 +8,7 @@
             <button type="button"
                 class="text-white bg-theme-dark hover:bg-theme-dark/80 rounded-full lg:w-10 lg:h-10 w-7 h-7 inline-flex justify-center items-center md:text-2xl text-lg absolute right-4 top-4 z-10"
                 data-modal-hide="quick-view-modal-{{ $product['id'] }}">
-                <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="fas"
-                    data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"
-                    data-fa-i2svg="">
-                    <path fill="currentColor"
-                        d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z">
-                    </path>
-                </svg>
+                <i class="fas fa-x"></i>
                 <!-- <i class="fa-solid fa-xmark"></i> Font Awesome fontawesome.com -->
                 <span class="sr-only">Close modal</span>
             </button>
@@ -66,20 +60,14 @@
                         <div class="w-full space-y-2">
                             <!-- Free Shipping Banner -->
                             <div
-                                class="text-sm justify-center lg:text-base text-rustic-red bg-[#FEEFE1] px-4 py-3 flex flex-wrap flex-col xsm:flex-row md:flex-col lg:flex-row xsm:justify-between items-center">
+                                class="flex flex-col xsm:flex-row flex-wrap items-center justify-between gap-2 px-4 py-3 text-sm lg:text-base bg-[#FEEFE1] text-rustic-red">
                                 <div class="flex items-center gap-2 text-center">
-                                    <svg class="svg-inline--fa fa-check text-theme-teal" aria-hidden="true"
-                                        focusable="false" data-prefix="fas" data-icon="check" role="img"
-                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg="">
-                                        <path fill="currentColor"
-                                            d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z">
-                                        </path>
-                                    </svg>
-                                    <!-- <i class="fa-solid fa-check text-theme-teal"></i> Font Awesome fontawesome.com -->
+                                    <i class="fa-solid fa-check text-theme-teal"></i>
                                     <span>Free shipping special for you</span>
                                 </div>
-                                <span class="text-jet-gray font-light">Exclusive offer</span>
+                                <span class="font-light text-jet-gray">Exclusive offer</span>
                             </div>
+
                             <h1 class="lg:text-base text-rustic-red text-sm lg:pr-5 xl:pr-16">
                                 <a href="{{ route('products.details', $product['slug']) }}"
                                     class="hover:text-primary eq">
@@ -89,7 +77,7 @@
                             <div
                                 class="flex flex-wrap items-center gap-2 xsm:gap-x-5 sm:gap-x-10 md:gap-2 lg:gap-x-10 text-sm">
                                 <div class="flex items-center gap-2">
-                                    <span class="text-jet-gray border-r border-gray-400 pr-2 text-nowrap">486
+                                    <span class="text-jet-gray border-r border-gray-400 pr-2 whitespace-nowrap">486
                                         sold</span>
                                     <div class="flex flex-wrap items-center gap-x-2 text-davy-gray">
                                         <span>Provided By</span>
@@ -126,7 +114,7 @@
                                 </p>
                             </div>
                             <div class="flex flex-wrap items-center gap-2">
-                                <div class="new-price flex items-center gap-1 flex-no-wrap">
+                                <div class="new-price flex items-center gap-1 flex-nowrap">
                                     <svg class="svg-inline--fa fa-bolt text-[#ffa755]" aria-hidden="true"
                                         focusable="false" data-prefix="fas" data-icon="bolt" role="img"
                                         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg="">
@@ -144,7 +132,9 @@
                                 <h6 class="old-price text-jet-gray line-through">
                                     {{ money($product['price']) }}
                                 </h6>
-                                <span class="text-xs px-2.5 py-0.5 rounded-lg border border-primary">-{{ $product['discount']['amount'] }} last 2
+                                <span
+                                    class="text-xs px-2.5 py-0.5 rounded-lg border border-primary">-{{ $product['discount']['amount'] }}
+                                    last 2
                                     days</span>
                                 <span class="text-leaf-green text-xs">Almost Sold Out</span>
                             </div>
@@ -155,13 +145,7 @@
                             <div
                                 class="bg-primary text-sm md:text-base text-white px-4 py-1 flex justify-between items-center">
                                 <span>Special Sale | Two Days Left</span>
-                                <svg class="svg-inline--fa fa-arrow-right" aria-hidden="true" focusable="false"
-                                    data-prefix="fas" data-icon="arrow-right" role="img"
-                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg="">
-                                    <path fill="currentColor"
-                                        d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z">
-                                    </path>
-                                </svg>
+                                <i class="fas fa-arrow-right"></i>
                             </div>
                             <div class="clr-size-qty p-4">
                                 <!-- Color Selection -->
@@ -170,14 +154,14 @@
                                 <div class="quantity mt-3">
                                     <div class="text-davy-gray flex items-center gap-2">
                                         <h6 class="sm:text-lg">Quantity :</h6>
-                                        <div class="flex items-center border rounded p-1">
+                                        <div class="flex items-center border border-jet-gray/30 rounded p-1">
                                             <button id="decreaseBtn-{{ $product['id'] }}"
                                                 class="w-5 h-5 flex items-center justify-center text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 eq active:text-primary rounded text-sm font-bold">
                                                 <i class="fa-solid fa-minus"></i>
                                             </button>
                                             <input readonly id="quantity-{{ $product['id'] }}" type="number"
                                                 min="1"
-                                                class="text-center text-persian-blue w-12 h-5 text-sm font-medium border-0 focus:ring-0" />
+                                                class="text-center text-persian-blue w-16 h-8 text-sm font-medium border-0 focus:ring-0" />
                                             <button id="increaseBtn-{{ $product['id'] }}"
                                                 class="w-5 h-5 flex items-center justify-center text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 eq active:text-primary rounded text-sm font-bold">
                                                 <i class="fa-solid fa-plus"></i>
@@ -193,7 +177,7 @@
                             <div class="flex gap-4 mt-5 w-full xsm:w-4/5 md:w-11/12 lg:w-4/5">
                                 <input type="hidden" name="quantity" class="qtyInputValue" value=""
                                     id="qtyInput{{ $product['id'] }}">
-                                <button data-id="{{ $product['id']}}" type="button"
+                                <button data-id="{{ $product['id'] }}" type="button"
                                     class="cartBtn text-sm md:text-base font-medium flex-1 px-6 py-2.5 bg-primary text-white rounded-full hover:bg-theme-dark eq">
                                     Add To Cart
                                 </button>

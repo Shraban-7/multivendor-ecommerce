@@ -56,7 +56,7 @@
             <div class="order-details-head">
                 <h2 class="sm:text-2xl text-xl">Order Detail</h2>
 
-                <div class="order-details-menus pt-3 md:pt-5 pb-5 md:pb-8 border-b">
+                <div class="order-details-menus pt-3 md:pt-5 pb-5 md:pb-8 border-b border-jet-gray/30">
                     <ul class="flex flex-wrap gap-3">
                         <li>
                             <a href="#"

@@ -206,7 +206,7 @@
                     <!-- Store Creadibility-->
                     <div class="flex items-start gap-4">
                         <div class="space-y-1 w-[50%] sm:w-[22%] xsm:w-[30%] md:w-[35%]">
-                            <h2 class="text-3xl md:text-4xl text-persian-blue">4.8</h2>
+                            <h2 class="text-3xl md:text-4xl text-persian-blue">{{ number_format($avgRating,1) }}</h2>
                             <p class="text-davy-gray text-xs sm:text-sm">Store Ratings</p>
                         </div>
 
@@ -245,7 +245,7 @@
                         <form class="items-center gap-1 xsm:gap-2 md:gap-3 sm:text-sm text-xs flex text-theme-dark">
                             <label for="sort-by" class="block whitespace-nowrap text-jet-gray">Sort By</label>
                             <select id="sort-by"
-                                class="inline-block bg-white hover:bg-aqua-deep/10 eq appearance-none border focus:outline-none focus:ring-0 focus:border-light-yellow cursor-pointer rounded-3xl py-1.5 px-2.5">
+                                class="inline-block bg-white hover:bg-aqua-deep/10 eq appearance-none border border-jet-gray/30  focus:outline-none focus:ring-0 focus:border-light-yellow cursor-pointer rounded-3xl py-1.5 px-2.5">
                                 <option selected="">Relevance</option>
                                 <option value="best-selling">Best Selling</option>
                                 <option value="trending">Trending</option>
@@ -253,7 +253,7 @@
                                 <option value="new-arrivals">New Arrivals</option>
                             </select>
                             <a href="#"
-                                class="inline-block w-full bg-white hover:bg-aqua-deep/10 eq appearance-none border border-gray-500 focus:border-light-yellow rounded-3xl py-1.5 px-2.5">
+                                class="inline-block w-full bg-white hover:bg-aqua-deep/10 eq appearance-none border border-jet-gray/30  focus:border-light-yellow rounded-3xl py-1.5 px-2.5">
                                 Photos / Videos
                             </a>
                         </form>
@@ -283,7 +283,7 @@
                             ({{ number_shorten_format($totalReviews) }}+ Review)
                         </span>
                     </div>
-                    
+
                     <!-- Review Section -->
                     <div class="comments-tags text-xs lg:text-sm text-davy-gray">
                         <h4>Item Reviews</h4>

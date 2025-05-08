@@ -94,12 +94,7 @@
                                 <i class="fa-solid fa-basket-shopping mr-2"></i> My Orders
                             </a>
                         </li>
-                        <li>
-                            <a href="/settings" class="block px-4 py-2 hover:bg-gray-100">
-                                <i class="fa-solid fa-cog mr-2"></i> Settings
-                            </a>
-                        </li>
-                        <li class="border-t">
+                        <li class="border-t border-jet-gray/30">
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit"

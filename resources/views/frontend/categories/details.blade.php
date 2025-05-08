@@ -49,7 +49,7 @@
                         d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
                 </svg>
             </button>
-            <form method="GET" action="{{ route('category.details', $category->slug) }}" class="space-y-5">
+            <form method="GET" action="{{ route('category.details', $category->slug) }}" class="space-y-4">
                 <!-- Categories -->
                 <div>
                     <h3 class="pb-2 mb-3 text-lg border-b border-dashed border-jet-gray">
@@ -171,7 +171,7 @@
                 <!-- Action Buttons -->
                 <div class="flex items-start gap-3">
                     <a href="{{ route('category.details', $category->slug) }}"
-                        class="px-5 py-2 text-sm text-gray-600 border-2 rounded-full border-theme-dark hover:bg-persian-red hover:text-theme-light eq">
+                        class="px-5 py-2 text-sm text-gray-600 border-2 rounded-full border-theme-dark hover:border-persian-red hover:bg-persian-red hover:text-theme-light eq">
                         Reset
                     </a>
                     <button type="submit"
@@ -196,7 +196,7 @@
                     <div class="flex flex-wrap items-center w-10/12 gap-2 sm:gap-4 xl:w-auto lg:w-9/12 lg:w-auto">
                         <!-- All Categories -->
                         <form method="GET" action="{{ route('category.details', $category->slug) }}"
-                            class="flex items-center gap-1 rounded-3xl bg-aqua-deep hover:bg-rangoon-green eq sm:text-sm text-xs md:text-base sm:pl-5 pl-3 sm:!pr-2 !pr-1 py-2.5 sm:py-3 inline-flex text-white cursor-pointer">
+                            class="flex items-center gap-1 rounded-3xl bg-aqua-deep hover:bg-rangoon-green eq sm:text-sm text-xs md:text-base sm:pl-3 pl-3 sm:!pr-3 !pr-2 py-1.2 sm:py-1 inline-flex text-white cursor-pointer">
                             <label for="sort-by" class="block sr-only whitespace-nowrap">All Categories</label>
                             <select name="subcategory" id="sort-by" onchange="this.form.submit()"
                                 class="block w-full border-0 appearance-none cursor-pointer bg-inherit focus:outline-none focus:ring-0 focus:border-gray-200 peer">
@@ -213,7 +213,7 @@
 
                         <!-- Relevance -->
                         <form
-                            class="flex items-center gap-1 rounded-3xl bg-theme-light/90 hover:bg-aqua-deep/10 eq sm:text-sm text-xs sm:pl-5 pl-4 sm:!pr-2 pr-1 sm:py-3 py-2.5 inline-flex text-jet-gray">
+                            class="flex items-center gap-1 rounded-3xl bg-theme-light/90 hover:bg-aqua-deep/10 eq sm:text-sm text-xs sm:pl-3 pl-3 sm:!pr-3 !pr-2 py-1.2 sm:py-1 inline-flex text-jet-gray">
                             <label for="sort-by" class="block whitespace-nowrap">Sort By:</label>
                             <select id="sort-by"
                                 class="block w-full bg-transparent border-0 appearance-none cursor-pointer focus:outline-none focus:ring-0 focus:border-gray-200 peer">
@@ -228,7 +228,7 @@
                         <!-- Material -->
                         @foreach ($productAttributes as $productAttribute)
                             <form method="GET" action="{{ route('category.details', $category->slug) }}"
-                                class="flex items-center gap-1 rounded-3xl bg-theme-light/90 hover:bg-aqua-deep/10 eq sm:text-sm text-xs sm:pl-5 pl-4 sm:!pr-2 pr-1 sm:py-3 py-2.5 inline-flex text-jet-gray">
+                                class="flex items-center gap-1 rounded-3xl bg-theme-light/90 hover:bg-aqua-deep/10 eq sm:text-sm text-xs sm:pl-3 pl-3 sm:!pr-3 !pr-2 py-1.2 sm:py-1 inline-flex text-jet-gray">
                                 <label for="attribute-{{ $productAttribute->name }}"
                                     class="block sr-only whitespace-nowrap">{{ $productAttribute->name }}</label>
                                 <select name="{{ strtolower($productAttribute->name) }}"
@@ -248,7 +248,7 @@
 
                         <!-- Review -->
                         <form
-                            class="flex items-center gap-1 rounded-3xl bg-theme-light/90 hover:bg-aqua-deep/10 eq sm:text-sm text-xs sm:pl-5 pl-4 sm:!pr-2 pr-1 sm:py-3 py-2.5 inline-flex text-jet-gray">
+                            class="flex items-center gap-1 rounded-3xl bg-theme-light/90 hover:bg-aqua-deep/10 eq sm:text-sm text-xs sm:pl-3 pl-3 sm:!pr-3 !pr-2 py-1.2 sm:py-1 inline-flex text-jet-gray">
                             <label for="sort-by" class="block sr-only whitespace-nowrap">Review</label>
                             <select id="sort-by"
                                 class="block w-full bg-transparent border-0 appearance-none cursor-pointer focus:outline-none focus:ring-0 focus:border-gray-200 peer">
@@ -264,7 +264,7 @@
 
                         <!-- Recommended -->
                         <form
-                            class="flex items-center gap-1 rounded-3xl bg-theme-light/90 hover:bg-aqua-deep/10 eq sm:text-sm text-xs sm:pl-5 pl-4 sm:!pr-2 pr-1 sm:py-3 py-2.5 inline-flex text-jet-gray">
+                            class="flex items-center gap-1 rounded-3xl bg-theme-light/90 hover:bg-aqua-deep/10 eq sm:text-sm text-xs sm:pl-3 pl-3 sm:!pr-3 !pr-2 py-1.2 sm:py-1 inline-flex text-jet-gray">
                             <label for="sort-by" class="block sr-only whitespace-nowrap">Recommended</label>
                             <select id="sort-by"
                                 class="block w-full bg-transparent border-0 appearance-none cursor-pointer focus:outline-none focus:ring-0 focus:border-gray-200 peer">
@@ -281,15 +281,9 @@
                     <div class="w-2/12 lg:w-3/12 xl:w-auto">
                         <button data-drawer-target="all-filters-drawer" data-drawer-show="all-filters-drawer"
                             aria-controls="all-filters-drawer"
-                            class="flex items-center justify-center w-10 h-10 gap-1 ml-auto text-sm text-white rounded-full md:w-auto md:rounded-3xl bg-primary hover:bg-theme-dark eq md:px-5 md:py-3">
-                            <span class="hidden md:block">All Filters</span>
-
-                            <svg width="12" height="10" viewBox="0 0 12 10" fill="none" stroke="currentColor"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M10.029 3.98803C10.503 3.7507 10.7405 3.63203 10.87 3.44047C11 3.24936 11 3.01869 11 2.55735V2.25068C11 1.66134 11 1.36623 10.78 1.18311C10.561 1 10.2075 1 9.5 1H2.5C1.793 1 1.4395 1 1.22 1.18311C1.0005 1.36623 1 1.66134 1 2.25112V2.55779C1 3.01869 1 3.24936 1.13 3.44047C1.26 3.63158 1.4965 3.7507 1.971 3.98803L3.4275 4.71693C3.7455 4.87604 3.905 4.9556 4.019 5.0436C4.256 5.22627 4.402 5.44138 4.468 5.70583C4.5 5.83205 4.5 5.9805 4.5 6.27695V7.46363C4.5 7.86763 4.5 8.06985 4.626 8.22719C4.752 8.38497 4.976 8.46275 5.423 8.61831C6.3625 8.94453 6.832 9.10764 7.166 8.92186C7.5 8.73608 7.5 8.31208 7.5 7.46318V6.2765C7.5 5.9805 7.5 5.83205 7.532 5.70538C7.59479 5.44634 7.75297 5.21331 7.9815 5.04316"
-                                    stroke="currentColor" stroke-linecap="round" />
-                            </svg>
+                            class="flex items-center justify-center w-20 h-10 gap-1 ml-auto text-sm text-white rounded-full md:w-auto md:rounded-3xl bg-primary hover:bg-theme-dark eq md:px-5 md:py-3">
+                            <span class="hidden md:inline-block whitespace-nowrap">All Filters</span>
+                            <i class="fa-solid fa-filter text-xs md:text-sm"></i>
                         </button>
                     </div>
                 </div>

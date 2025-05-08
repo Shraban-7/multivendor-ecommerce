@@ -7,7 +7,7 @@
         <section class="w-full bg-black text-white py-2 md:py-4">
             <div class="container mx-auto flex flex-col xsm:flex-row flex-wrap justify-between items-center px-4">
                 <div
-                    class="flex items-center justify-center gap-2 text-[#ADFFA2] border-b xsm:border-r xsm:border-b-0 p-2 md:p-0 md:pr-16 xsm:pr-16 border-white/30">
+                    class="flex items-center justify-center gap-2 text-[#ADFFA2] border-b border-jet-gray/30 xsm:border-r xsm:border-jet-gray/30  xsm:border-b-0 xsm:border-jet-gray/30  p-2 md:p-0 md:pr-16 xsm:pr-16 border-white/30">
                     <i class="fa-solid fa-truck-fast text-2xl"></i>
                     <div>
                         <div class="text-sm">Free Shipping</div>

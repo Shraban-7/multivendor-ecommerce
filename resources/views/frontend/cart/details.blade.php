@@ -98,9 +98,10 @@
                                     @foreach ($cartGroup as $key => $cart)
                                         @foreach ($cart->cartItems as $item)
                                             <div class="py-3 border-t md:py-5 border-jet-gray/20 cart-item"
-                                                data-price="{{ $item->product_original_price }}" data-seller-id="{{ $sellerId }}"
-                                                data-discounted-price="{{ $item->price }}"
-                                                data-id="{{ $item->id }}" data-discount="{{ $item->product->discount }}">
+                                                data-price="{{ $item->product_original_price }}"
+                                                data-seller-id="{{ $sellerId }}"
+                                                data-discounted-price="{{ $item->price }}" data-id="{{ $item->id }}"
+                                                data-discount="{{ $item->product->discount }}">
                                                 <div class="flex gap-2 sm:gap-4">
                                                     <!-- Item Checkbox -->
                                                     <div class="flex items-start hidden pt-2">
@@ -175,7 +176,8 @@
                                                                 </div>
                                                                 <span
                                                                     class="text-xs xsm:text-sm px-2.5 py-0.5 rounded-lg border border-primary">
-                                                                    - {{ percentage($item->product->discount_percent) }} last 2 days
+                                                                    - {{ percentage($item->product->discount_percent) }}
+                                                                    last 2 days
                                                                 </span>
 
                                                                 @if ($item->variant)
@@ -196,7 +198,8 @@
                                                                 <div
                                                                     class="flex items-center gap-2 text-davy-gray flex-nowrap">
                                                                     </h6>
-                                                                    <div class="flex items-center p-1 border rounded">
+                                                                    <div
+                                                                        class="flex items-center p-1 border border-jet-gray/30 rounded">
                                                                         <input type="hidden" class="product-id"
                                                                             value="{{ $key }}">
                                                                         <input type="hidden" class="variant-sku"
@@ -227,7 +230,7 @@
                     </div>
 
                     <!-- Recommendations section -->
-                    <div class="pt-10 border-t">
+                    <div class="pt-10 border-t border-jet-gray/30">
                         <h2 class="mb-4 text-xl font-semibold md:text-2xl">
                             You May Like to ADD
                         </h2>
@@ -267,19 +270,21 @@
                             </div>
                         </div>
 
-                        <div class="mt-4 space-y-2 sm:mt-6 sm:space-y-3">
+                        <div class="mt-4 flex flex-col space-y-2 sm:mt-6 sm:space-y-3">
                             <a href="{{ route('orders.checkout') }}" id="checkoutLink">
-                                <button id="checkoutBtn"
-                                    class="flex flex-col items-center w-full py-2 text-white rounded-full eq bg-primary sm:py-3 hover:bg-theme-dark"
+                                <button id="checkoutBtn" type="button"
+                                    class="flex flex-col items-center w-full py-2 sm:py-3 text-white bg-primary rounded-full transition-colors duration-200 hover:bg-theme-dark"
                                     data-seller-id="">
-                                    Checkout (0) <span class="text-xs">Almost Sold Out</span>
+                                    Checkout (0)
+                                    <span class="text-xs">Almost Sold Out</span>
                                 </button>
                             </a>
-                            <button
-                                class="flex items-center justify-center w-full gap-1 py-2 text-sm font-bold border rounded-full eq border-jet-gray/50 text-theme-dark sm:py-3 xl:gap-2 hover:bg-jet-gray/10 sm:text-base">
+
+                            <button type="button"
+                                class="flex items-center justify-center w-full gap-1 sm:gap-2 py-2 sm:py-3 text-sm sm:text-base font-bold text-theme-dark border border-jet-gray/50 rounded-full transition-colors duration-200 hover:bg-jet-gray/10">
                                 Express checkout with
                                 <img src="{{ asset('assets/frontend/images/cart-paypal.png') }}" alt="PayPal"
-                                    class="w-auto h-6 sm:h-9" />
+                                    class="h-6 sm:h-9 w-auto" />
                             </button>
                         </div>
 
@@ -326,20 +331,10 @@
                                     01. <span class="font-medium">Payment Method</span>
                                 </h4>
                                 <div class="flex flex-wrap mt-2 gap-x-2 gap-y-1">
-                                    <img src="{{ asset('assets/frontend/images/cart-payment-method-1.png') }}"
-                                        alt="Visa card" class="w-auto h-8 border rounded sm:h-10" />
-                                    <img src="{{ asset('assets/frontend/images/cart-payment-method-2.png') }}"
-                                        alt="mastercard" class="w-auto h-8 border rounded sm:h-10" />
-                                    <img src="{{ asset('assets/frontend/images/cart-payment-method-3.png') }}"
-                                        alt="American Express" class="w-auto h-8 border rounded sm:h-10" />
-                                    <img src="{{ asset('assets/frontend/images/cart-payment-method-4.png') }}"
-                                        alt="Discover" class="w-auto h-8 border rounded sm:h-10" />
-                                    <img src="{{ asset('assets/frontend/images/cart-payment-method-5.png') }}"
-                                        alt="Paypal" class="w-auto h-8 border rounded sm:h-10" />
-                                    <img src="{{ asset('assets/frontend/images/cart-payment-method-6.png') }}"
-                                        alt="Apple Pay" class="w-auto h-8 border rounded sm:h-10" />
-                                    <img src="{{ asset('assets/frontend/images/cart-payment-method-7.png') }}"
-                                        alt="G Pay" class="w-auto h-8 border rounded sm:h-10" />
+                                    @foreach (payment_gateways() as $gateway)
+                                        <img src="{{ storage_url($gateway->image) }}" alt="{{ $gateway->name }}"
+                                            class="w-auto h-8 sm:h-10" />
+                                    @endforeach
                                 </div>
                             </div>
                             <!-- security certification -->
@@ -349,13 +344,13 @@
                                 </h4>
                                 <div class="flex flex-wrap mt-2 gap-x-2 gap-y-1">
                                     <img src="{{ asset('assets/frontend/images/security-1.png') }}" alt="PCI DDS"
-                                        class="w-auto border rounded h-7 sm:h-9" />
+                                        class="w-auto border border-jet-gray/30 rounded h-7 sm:h-9" />
                                     <img src="{{ asset('assets/frontend/images/security-2.png') }}" alt="Visa Secure"
-                                        class="w-auto border rounded h-7 sm:h-9" />
+                                        class="w-auto border border-jet-gray/30 rounded h-7 sm:h-9" />
                                     <img src="{{ asset('assets/frontend/images/security-3.png') }}"
-                                        alt="Mastercard ID check" class="w-auto border rounded h-7 sm:h-9" />
+                                        alt="Mastercard ID check" class="w-auto border border-jet-gray/30 rounded h-7 sm:h-9 " />
                                     <img src="{{ asset('assets/frontend/images/security-4.png') }}"
-                                        alt="American Express SafeKey" class="w-auto border rounded h-7 sm:h-9" />
+                                        alt="American Express SafeKey" class="w-auto border border-jet-gray/30 rounded h-7 sm:h-9" />
                                 </div>
                             </div>
                             <!-- secure privacy -->
@@ -561,7 +556,7 @@
                                 updateCartData();
                                 updateOrderSummary();
                                 var priceElement = $('#cart-item-' + cartItemId +
-                                ' .current-price');
+                                    ' .current-price');
                                 if (priceElement) {
                                     priceElement.text(response.updatedPrice);
                                 }

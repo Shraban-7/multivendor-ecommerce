@@ -64,7 +64,7 @@
                                                                 <div class="feature-items-wrapper space-y-4">
                                                                     <!-- item 1 -->
                                                                     <div
-                                                                        class="group/feature feature-item-card flex border rounded p-2 gap-3 hover:shadow eq">
+                                                                        class="group/feature feature-item-card flex border border-jet-gray/30 rounded p-2 gap-3 hover:shadow eq">
                                                                         <div class="item-image w-1/4">
                                                                             <a href="#" target="_blank">
                                                                                 <img src="{{ asset('assets/frontend/images/feature-product-1.png') }}"
@@ -89,7 +89,7 @@
                                                                     </div>
                                                                     <!-- item 2 -->
                                                                     <div
-                                                                        class="group/feature feature-item-card flex border rounded p-2 gap-3 hover:shadow eq">
+                                                                        class="group/feature feature-item-card flex border border-jet-gray/30 rounded p-2 gap-3 hover:shadow eq">
                                                                         <div class="item-image w-1/4">
                                                                             <a href="#" target="_blank">
                                                                                 <img src="{{ asset('assets/frontend/images/feature-product-2.png') }}"
@@ -113,7 +113,7 @@
                                                                     </div>
                                                                     <!-- item 3 -->
                                                                     <div
-                                                                        class="group/feature feature-item-card flex border rounded p-2 gap-3 hover:shadow eq">
+                                                                        class="group/feature feature-item-card flex border border-jet-gray/30 rounded p-2 gap-3 hover:shadow eq">
                                                                         <div class="item-image w-1/4">
                                                                             <a href="#" target="_blank">
                                                                                 <img src="{{ asset('assets/frontend/images/feature-product-3.png') }}"

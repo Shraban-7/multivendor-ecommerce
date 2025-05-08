@@ -62,8 +62,8 @@
                 <div class="lg:col-span-3">
                     <div class="space-y-5 md:space-y-8 text-theme-dark">
                         <!--  Account Settings -->
-                        <div class="space-y-4 border rounded md:pb-4 pb-3">
-                            <h2 class="sm:text-base text-sm font-medium border-b px-3 py-1.5 md:px-5 md:py-3 uppercase">
+                        <div class="space-y-4 border border-jet-gray/30 rounded md:pb-4 pb-3">
+                            <h2 class="sm:text-base text-sm font-medium border-b border-jet-gray/30 px-3 py-1.5 md:px-5 md:py-3 uppercase">
                                 Account Settings
                             </h2>
 
@@ -73,7 +73,7 @@
                                 @csrf
                                 <!-- Display image -->
                                 <div
-                                    class="display-image w-20 h-20 xsm:w-32 xsm:h-32 md:w-36 md:h-36 xl:w-40 xl:h-40 rounded-full overflow-hidden border relative group/avater">
+                                    class="display-image w-20 h-20 xsm:w-32 xsm:h-32 md:w-36 md:h-36 xl:w-40 xl:h-40 rounded-full overflow-hidden border border-jet-gray/30 relative group/avater">
                                     @if ($user->image)
                                         <img id="preview-image" src="{{ asset('storage/' . $user->image) }}"
                                             alt="User Avatar" class="object-cover w-full h-full" />
@@ -196,9 +196,9 @@
                         <!--  Billing Address & Shipping Address -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8">
                             <!-- billing -->
-                            <div class="billing-address space-y-4 border rounded md:pb-4 pb-3">
+                            <div class="billing-address space-y-4 border border-jet-gray/30 rounded md:pb-4 pb-3">
                                 <h2
-                                    class="sm:text-base text-sm font-medium border-b px-3 py-1.5 md:px-5 md:py-3 uppercase">
+                                    class="sm:text-base text-sm font-medium border-b border-jet-gray/30 px-3 py-1.5 md:px-5 md:py-3 uppercase">
                                     Billing Address
                                 </h2>
 
@@ -301,9 +301,9 @@
                             </div>
 
                             <!-- shipping address -->
-                            <div class="shipping-address space-y-4 border rounded md:pb-4 pb-3">
+                            <div class="shipping-address space-y-4 border border-jet-gray/30 rounded md:pb-4 pb-3">
                                 <h2
-                                    class="sm:text-base text-sm font-medium border-b px-3 py-1.5 md:px-5 md:py-3 uppercase">
+                                    class="sm:text-base text-sm font-medium border-b border-jet-gray/30 px-3 py-1.5 md:px-5 md:py-3 uppercase">
                                     Shipping Address
                                 </h2>
 
@@ -407,8 +407,8 @@
                         </div>
 
                         <!-- Change Password -->
-                        <div class="change-password space-y-4 border rounded md:pb-4 pb-3">
-                            <h2 class="sm:text-base text-sm font-medium border-b px-3 py-1.5 md:px-5 md:py-3 uppercase">
+                        <div class="change-password space-y-4 border border-jet-gray/30 rounded md:pb-4 pb-3">
+                            <h2 class="sm:text-base text-sm font-medium border-b border-jet-gray/30 px-3 py-1.5 md:px-5 md:py-3 uppercase">
                                 Change Password
                             </h2>
 

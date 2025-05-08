@@ -61,7 +61,7 @@
             <!-- Orders Main Section Starts -->
             <section class="orders-section container mx-auto py-10">
                 <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
-                    <div class="flex items-center justify-between px-6 py-4 border-b">
+                    <div class="flex items-center justify-between px-6 py-4 border-b border-jet-gray/30">
                         <h1 class="text-xl font-semibold text-gray-800">My Orders</h1>
                     </div>
 
@@ -90,7 +90,7 @@
                                                     class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">{{ OrderStatus::PACKAGING->label() }}</span>
                                             @elseif($order->status->label() == OrderStatus::SHIPPED->label())
                                                 <span
-                                                    class="bg-purple-100 text-purple-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">{{ OrderStatus::SHIPPED->label() }}/span>
+                                                    class="bg-purple-100 text-purple-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">{{ OrderStatus::SHIPPED->label() }}</span>
                                                 @elseif($order->status->label() == OrderStatus::DELIVERED->label())
                                                     <span
                                                         class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">{{ OrderStatus::DELIVERED->label() }}</span>
@@ -110,7 +110,7 @@
                                                     <i class="fa-solid fa-eye mr-1"></i> View
                                                 </a>
                                                 @if (in_array($order->status->label(), [OrderStatus::PACKAGING->label(), OrderStatus::SHIPPED->label()]))
-                                                    <a href="{{ route('account.orders.track', $order->id) }}"
+                                                    <a href="{{ route('orders.tracking', $order->id) }}"
                                                         class="bg-orange-500 text-white px-3 py-2 rounded text-xs hover:opacity-90 transition">
                                                         <i class="fa-solid fa-truck-fast mr-1"></i> Track
                                                     </a>
