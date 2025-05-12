@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\HomeMidController;
 use App\Http\Controllers\Admin\PaymentGatewayController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\PromoPosterController;
+use App\Http\Controllers\Admin\ReviewsController;
 use App\Http\Controllers\Admin\SellerController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SocialLinkController;
@@ -57,6 +58,11 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
         Route::get('{subcategory}/edit', [SubcategoryController::class, 'edit'])->name('edit');
         Route::post('/update/{subcategory}', [SubcategoryController::class, 'update'])->name('update');
         Route::post('/toggle-status/{subcategory}', [SubcategoryController::class, 'toggleStatus'])->name('toggleStatus');
+    });
+
+    Route::prefix('reviews')->as('reviews.')->group(function () {
+        Route::get('/', [ReviewsController::class, 'index'])->name('index');
+        Route::post('/{review}/delete', [ReviewsController::class, 'destroy'])->name('destroy');
     });
 
     Route::prefix('settings')->as('settings.')->group(function(){

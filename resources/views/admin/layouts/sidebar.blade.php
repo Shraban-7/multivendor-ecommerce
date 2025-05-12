@@ -38,6 +38,10 @@ $routePath = request()->path();
                 <i data-feather="users" class="nav-icon icon-xs me-2"></i>Sellers
             </x-dashboard.nav-item-link>
 
+            <x-dashboard.nav-item-link :route="'admin.reviews.index'">
+                <i data-feather="layers" class="nav-icon icon-xs me-2"></i>Reviews
+            </x-dashboard.nav-item-link>
+
             <li class="nav-item">
                 <a class="nav-link has-arrow  collapsed " href="#!" data-bs-toggle="collapse"
                     data-bs-target="#navSettings" aria-expanded="false" aria-controls="navSettings">

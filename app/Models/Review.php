@@ -29,4 +29,9 @@ class Review extends Model
     {
         return $this->hasMany(ReviewImage::class);
     }
+
+    public function reports()
+    {
+        return $this->hasMany(ReportReview::class);
+    }
 }
