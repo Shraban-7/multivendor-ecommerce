@@ -206,7 +206,7 @@
                     <!-- Store Creadibility-->
                     <div class="flex items-start gap-4">
                         <div class="space-y-1 w-[50%] sm:w-[22%] xsm:w-[30%] md:w-[35%]">
-                            <h2 class="text-3xl md:text-4xl text-persian-blue">{{ number_format($avgRating,1) }}</h2>
+                            <h2 class="text-3xl md:text-4xl text-persian-blue">{{ number_format($avgRating, 1) }}</h2>
                             <p class="text-davy-gray text-xs sm:text-sm">Store Ratings</p>
                         </div>
 
@@ -308,215 +308,99 @@
                         </div>
 
                         <!-- User Reviews -->
-                        <div
+                        <div id="reviews-wrapper"
                             class="reviews-wrapper divide-y-2 divide-jet-gray/60 divide-dashed w-10/12 sm:w-3/5 md:w-4/5 xl:w-3/5">
-                            <!-- review 1 -->
-                            <div class="review-item space-y-2 py-6">
-                                <div class="flex items-center gap-3">
-                                    <div class="user-avatar w-12 h-12 rounded-full overflow-hidden">
-                                        <img src="{{ asset('assets/frontend/images/user-avatar-1.png') }}"
-                                            alt="Alan Walker" />
-                                    </div>
-                                    <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
-                                        <h3 class="font-medium">Alan Walker</h3>
-                                        <span class="flex items-center gap-2 text-gray-400">
-                                            In
-                                            <span class="h-4 lg:h-6 w-auto"><img class="w-auto h-full object-contain"
-                                                    src="{{ asset('assets/frontend/images/us-flag.png') }}"
-                                                    alt="Flag of USA" /></span>
-                                            on Jan 20, 2025
-                                        </span>
-                                    </div>
-                                </div>
-                                <!-- Rating -->
-                                <div class="rating flex flex-wrap items-center gap-3">
-                                    <div class="flex flex-nowrap gap-1 text-theme-dark text-xs md:text-sm">
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                    </div>
-                                    <span class="text-davy-gray text-lg sm:text-xl font-medium">5.0</span>
-                                </div>
-                                <!-- colour -->
-                                <h6 class="product-colour">Purchased : Gray</h6>
-                                <!-- product images -->
-                                <div class="flex product-images gap-2 md:gap-3 py-2">
-                                    <div class="img-wrap w-1/3 h-28 sm:h-32 md:h-24 lg:h-36 overflow-hidden rounded-xl">
-                                        <img src="{{ asset('assets/frontend/images/review-prod-1.png') }}" alt=""
-                                            class="w-full h-full object-cover" />
-                                    </div>
-                                    <div class="img-wrap w-1/3 h-28 sm:h-32 md:h-24 lg:h-36 overflow-hidden rounded-xl">
-                                        <img src="{{ asset('assets/frontend/images/review-prod-2.png') }}" alt=""
-                                            class="w-full h-full object-cover" />
-                                    </div>
-                                    <div class="img-wrap w-1/3 h-28 sm:h-32 md:h-24 lg:h-36 overflow-hidden rounded-xl">
-                                        <img src="{{ asset('assets/frontend/images/review-prod-3.png') }}" alt=""
-                                            class="w-full h-full object-cover" />
-                                    </div>
-                                </div>
-                                <!-- comment -->
-                                <p class="product-feedback">
-                                    Absolutely beautiful, good price perfect, perfect excellent
-                                    product, very nice quality 😇😇
-                                </p>
-
-                                <div
-                                    class="flex justify-center items-center text-black text-xs xsm:text-sm lg:text-base xl:text-lg">
-                                    <div class="flex items-start divide-x divide-black gap-3 pt-2">
-                                        <button class="flex items-center gap-2 hover:text-primary eq">
-                                            <svg class="w-5 h-5" width="26" height="32" viewBox="0 0 26 32"
-                                                fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path
-                                                    d="M18.7299 11.2163H21.6028C22.3648 11.2163 23.0955 11.5156 23.6343 12.0485C24.1731 12.5814 24.4758 13.3041 24.4758 14.0577V27.6963C24.4758 28.4499 24.1731 29.1726 23.6343 29.7054C23.0955 30.2383 22.3648 30.5377 21.6028 30.5377H4.36514C3.60318 30.5377 2.87244 30.2383 2.33366 29.7054C1.79487 29.1726 1.49219 28.4499 1.49219 27.6963V14.0577C1.49219 13.3041 1.79487 12.5814 2.33366 12.0485C2.87244 11.5156 3.60318 11.2163 4.36514 11.2163H7.23809M18.7299 6.67006L12.984 0.987305M12.984 0.987305L7.23809 6.67006M12.984 0.987305V20.3797"
-                                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                    stroke-linejoin="round" />
-                                            </svg>
-                                            Share
-                                        </button>
-                                        <button class="pl-2 flex items-center gap-2 hover:text-butterfly-blue eq">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
-                                            </svg>
-                                            Helpful (1)
-                                        </button>
-                                    </div>
-                                    <button class="ml-auto text-xl md:text-2xl lg:text-3xl" id="alan-walker-btn"
-                                        data-dropdown-toggle="alan-walker-comment-dropdown" type="button">
-                                        <i class="fa-solid fa-ellipsis"></i>
-                                    </button>
-
-                                    <!-- Dropdown menu -->
-                                    <div id="alan-walker-comment-dropdown"
-                                        class="z-30 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-lg w-38 md:w-44">
-                                        <div class="py-2 text-sm text-gray-700" aria-labelledby="alan-walker-btn">
-                                            <button class="block w-full text-left px-4 py-2 hover:bg-gray-100">
-                                                Not Helpful
-                                            </button>
-
-                                            <button
-                                                class="block w-full text-left px-4 py-2 hover:bg-gray-100 text-persian-red">
-                                                Report Abuse
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- review 2 -->
-                            <div class="review-item space-y-2 py-6">
-                                <div class="flex items-center gap-3">
-                                    <div class="user-avatar w-12 h-12 rounded-full overflow-hidden">
-                                        <img src="{{ asset('assets/frontend/images/user-avatar-2.png') }}"
-                                            alt="Josesph Man" />
-                                    </div>
-                                    <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
-                                        <h3 class="font-medium">Josesph Man</h3>
-                                        <span class="flex items-center gap-2 text-gray-400">
-                                            In
-                                            <span class="h-4 lg:h-6 w-auto"><img class="w-auto h-full object-contain"
-                                                    src="{{ asset('assets/frontend/images/us-flag.png') }}"
-                                                    alt="Flag of USA" /></span>
-                                            on Jan 22, 2025
-                                        </span>
-                                    </div>
-                                </div>
-                                <!-- Rating -->
-                                <div class="rating flex flex-wrap items-center gap-3">
-                                    <div class="flex flex-nowrap gap-1 text-theme-dark text-xs md:text-sm">
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                    </div>
-                                    <span class="text-davy-gray text-lg sm:text-xl font-medium">4.8</span>
-                                </div>
-                                <!-- colour -->
-                                <h6 class="product-colour">Purchased : Navy Blue</h6>
-                                <!-- product images -->
-                                <div class="flex product-images gap-2 md:gap-3 py-2">
-                                    <div class="img-wrap w-1/3 h-28 sm:h-32 md:h-24 lg:h-36 overflow-hidden rounded-xl">
-                                        <img src="{{ asset('assets/frontend/images/review-prod-4.png') }}" alt=""
-                                            class="w-full h-full object-cover" />
-                                    </div>
-                                    <div class="img-wrap w-1/3 h-28 sm:h-32 md:h-24 lg:h-36 overflow-hidden rounded-xl">
-                                        <img src="{{ asset('assets/frontend/images/review-prod-5.png') }}" alt=""
-                                            class="w-full h-full object-cover" />
-                                    </div>
-                                    <div class="img-wrap w-1/3 h-28 sm:h-32 md:h-24 lg:h-36 overflow-hidden rounded-xl">
-                                        <img src="{{ asset('assets/frontend/images/review-prod-6.png') }}" alt=""
-                                            class="w-full h-full object-cover" />
-                                    </div>
-                                </div>
-                                <!-- comment -->
-                                <p class="product-feedback">
-                                    Fantastic product at a great price. Truly impressed with the
-                                    exceptional quality. Beautifully crafted and exceeds
-                                    expectations 🥰 Highly recommend✅
-                                </p>
-
-                                <div
-                                    class="flex justify-center items-center text-black text-xs xsm:text-sm lg:text-base xl:text-lg">
-                                    <div class="flex items-start divide-x divide-black gap-3 pt-2">
-                                        <button class="flex items-center gap-2 hover:text-primary eq">
-                                            <svg class="w-5 h-5" width="26" height="32" viewBox="0 0 26 32"
-                                                fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path
-                                                    d="M18.7299 11.2163H21.6028C22.3648 11.2163 23.0955 11.5156 23.6343 12.0485C24.1731 12.5814 24.4758 13.3041 24.4758 14.0577V27.6963C24.4758 28.4499 24.1731 29.1726 23.6343 29.7054C23.0955 30.2383 22.3648 30.5377 21.6028 30.5377H4.36514C3.60318 30.5377 2.87244 30.2383 2.33366 29.7054C1.79487 29.1726 1.49219 28.4499 1.49219 27.6963V14.0577C1.49219 13.3041 1.79487 12.5814 2.33366 12.0485C2.87244 11.5156 3.60318 11.2163 4.36514 11.2163H7.23809M18.7299 6.67006L12.984 0.987305M12.984 0.987305L7.23809 6.67006M12.984 0.987305V20.3797"
-                                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                    stroke-linejoin="round" />
-                                            </svg>
-                                            Share
-                                        </button>
-                                        <button class="pl-2 flex items-center gap-2 hover:text-butterfly-blue eq">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
-                                            </svg>
-                                            Helpful (1)
-                                        </button>
-                                    </div>
-                                    <button class="ml-auto text-xl md:text-2xl lg:text-3xl" id="josesph-man-btn"
-                                        data-dropdown-toggle="josesph-man-comment-dropdown" type="button">
-                                        <i class="fa-solid fa-ellipsis"></i>
-                                    </button>
-
-                                    <!-- Dropdown menu -->
-                                    <div id="josesph-man-comment-dropdown"
-                                        class="z-30 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-lg w-38 md:w-44">
-                                        <div class="py-2 text-sm text-gray-700" aria-labelledby="josesph-man-btn">
-                                            <button class="block w-full text-left px-4 py-2 hover:bg-gray-100">
-                                                Not Helpful
-                                            </button>
-
-                                            <button
-                                                class="block w-full text-left px-4 py-2 hover:bg-gray-100 text-persian-red">
-                                                Report Abuse
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            @include('frontend.partials.review-card', ['reviews' => $reviews])
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Load More Btn -->
-            <div class="load-more-btn text-center my-5">
-                <button
-                    class="theme-btn bg-theme-teal hover:bg-aqua-deep text-white px-5 py-2 xl:text-xl text-base md:text-lg inline-flex gap-2 items-center eq"
+            <!-- Load More Comment Button -->
+            <div class="pb-10 text-center border-b-2 border-gray-400 border-dashed load-more-btn">
+                <button id="loadMoreReviews" data-offset="2"  data-url="{{ request()->url() }}"
+                    class="inline-flex items-center gap-2 px-5 py-2 text-base text-white theme-btn bg-theme-teal hover:bg-aqua-deep xl:text-xl md:text-lg eq"
                     type="button">
                     <span>Load More</span>
-                    <i class="fa-solid fa-chevron-down text-sm"></i>
+                    <i class="text-sm fa-solid fa-chevron-down"></i>
                 </button>
             </div>
+
         </section>
         <!-- Page Main Content Ended -->
     </main>
+
+    @push('scripts')
+        <script>
+            $(document).ready(function() {
+                $('.helpful-btn').on('click', function() {
+                    const $btn = $(this);
+                    const requestUrl = $btn.data('url');
+                    const countSpan = $btn.find('.helpful-count');
+
+                    $.ajax({
+                        url: requestUrl,
+                        method: 'POST',
+                        data: {},
+                        success: function(response) {
+                            countSpan.text(response.count);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(error);
+                        }
+                    });
+                });
+
+                $('.report-abuse-btn').on('click', function() {
+                    const $btn = $(this);
+                    const reviewId = $btn.data('review-id');
+                    const url = $btn.data('url');
+
+                    $.ajax({
+                        url: url,
+                        method: 'POST',
+                        data: {
+                            review_id: reviewId
+                        },
+                        success: function(response) {
+                            toastr.success(response.message || 'Reported successfully!');
+                        },
+                        error: function(xhr) {
+                            if (xhr.status === 401) {
+                                toastr.error('You must be logged in to report abuse.');
+                            } else {
+                                toastr.error('Something went wrong. Please try again.');
+                            }
+                        }
+                    });
+                });
+
+                $('#loadMoreReviews').on('click', function() {
+                    var $button = $(this);
+                    var offset = parseInt($button.data('offset'));
+                    var url = $button.data('url');
+
+                    $.ajax({
+                        url: url,
+                        type: 'GET',
+                        data: {
+                            offset: offset,
+                        },
+                        success: function(response) {
+                            if ($.trim(response) === '') {
+
+                                $button.hide();
+                            } else {
+                                $('#reviews-wrapper').append(response);
+                                $button.data('offset', offset + 2);
+                            }
+                        },
+                        error: function() {
+                            console.error('Failed to load more reviews.');
+                        }
+                    });
+                });
+            });
+        </script>
+    @endpush
 @endsection

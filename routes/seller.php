@@ -15,8 +15,6 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
 
     Route::get('/customers', [CustomerController::class, 'index'])->name('customers');
 
-
-
     Route::prefix('products')->as('products.')->group(function () {
         Route::get('/', [ProductController::class, 'index'])->name('index');
         Route::get('/create', [ProductController::class, 'create'])->name('add');

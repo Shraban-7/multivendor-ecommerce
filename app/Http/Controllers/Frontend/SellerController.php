@@ -8,8 +8,9 @@ use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\SellerFollower;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\ReportReview;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class SellerController extends Controller
@@ -98,7 +99,7 @@ class SellerController extends Controller
     }
 
 
-    public function review(Seller $seller)
+    public function review(Seller $seller,Request $request)
     {
         $userId = Auth::id();
         $totalItem = Product::where('seller_id', $seller->id)->count();
@@ -132,6 +133,72 @@ class SellerController extends Controller
                 : 0;
         }
 
-        return view('frontend.shops.review', compact('seller','totalItem', 'alreadyFollowed','categories', 'avgRating','totalReviews', 'ratingDistribution'));
+        $reviews = Review::with('user', 'images')
+            ->whereIn('product_id', function ($query) use ($seller) {
+                $query->select('id')
+                    ->from('products')
+                    ->where('seller_id', $seller->id);
+            })
+            ->latest()
+            ->skip($request->offset ?? 0)
+            ->take(2)
+            ->get();
+
+
+        if ($request->ajax()) {
+            // $reviews = Review::with('user', 'images')
+            //     ->whereIn('product_id', function ($query) use ($seller) {
+            //         $query->select('id')
+            //             ->from('products')
+            //             ->where('seller_id', $seller->id);
+            //     })
+            //     ->latest()
+            //     ->skip($request->offset ?? 0)
+            //     ->take(2)
+            //     ->get();
+
+            if ($reviews->isEmpty()) {
+                    return '';
+                }
+
+                return view('frontend.partials.review-card', [
+                    'reviews' => $reviews
+                ])->render();
+
+        }
+
+        return view('frontend.shops.review', compact('seller','totalItem', 'alreadyFollowed','categories', 'avgRating','totalReviews', 'ratingDistribution','reviews'));
+    }
+
+    public function markHelpful(Request $request, Review $review)
+    {
+        $review->increment('helpful_count');
+
+        return response()->json([
+            'message' => 'Marked as helpful!',
+            'count' => $review->helpful_count,
+        ]);
+    }
+
+    public function reviewReport(Request $request)
+    {
+        $seller = Seller::where('id', auth('seller')->id())->first();
+        $user = User::where('id', auth()->id())->first();
+
+        if ($seller) {
+            ReportReview::create([
+                'seller_id' => $seller->id,
+                'review_id' => $request->review_id
+            ]);
+        } elseif ($user) {
+            ReportReview::create([
+                'user_id' => $user->id,
+                'review_id' => $request->review_id
+            ]);
+        } else {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        return response()->json(['message' => 'Review reported successfully.']);
     }
 }

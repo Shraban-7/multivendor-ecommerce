@@ -489,15 +489,18 @@
                     </div>
                 </div>
 
-                <!-- Load More Comment Button -->
-                <div class="pb-10 text-center border-b-2 border-gray-400 border-dashed load-more-btn">
-                    <button id="loadMoreReviews" data-page="1" data-type="reviews" data-url="{{ request()->url() }}"
-                        class="inline-flex items-center gap-2 px-5 py-2 text-base text-white theme-btn bg-theme-teal hover:bg-aqua-deep xl:text-xl md:text-lg eq"
-                        type="button">
-                        <span>Load More</span>
-                        <i class="text-sm fa-solid fa-chevron-down"></i>
-                    </button>
-                </div>
+                @if ($product['reviews']->count() > 2)
+                    <!-- Load More Comment Button -->
+                    <div class="pb-10 text-center border-b-2 border-gray-400 border-dashed load-more-btn">
+                        <button id="loadMoreReviews" data-offset="2" data-type="reviews"
+                            data-url="{{ request()->url() }}"
+                            class="inline-flex items-center gap-2 px-5 py-2 text-base text-white theme-btn bg-theme-teal hover:bg-aqua-deep xl:text-xl md:text-lg eq"
+                            type="button">
+                            <span>Load More</span>
+                            <i class="text-sm fa-solid fa-chevron-down"></i>
+                        </button>
+                    </div>
+                @endif
             </div>
         </section>
 
@@ -680,38 +683,37 @@
         </script>
 
         <script>
-            $('#loadMoreReviews').on('click', function() {
-                let button = $(this);
-                let page = parseInt(button.data('page')) + 1;
-                let url = button.data('url');
+            $(document).ready(function() {
+                $('#loadMoreReviews').on('click', function() {
+                    var $button = $(this);
+                    var offset = parseInt($button.data('offset'));
+                    var url = $button.data('url');
+                    var type = $button.data('type');
 
-                $.ajax({
-                    url: url,
-                    method: 'GET',
-                    data: {
-                        page: page,
-                        type: 'reviews'
-                    },
-                    beforeSend: function() {
-                        button.prop('disabled', true).html(
-                            '<i class="fa fa-spinner fa-spin"></i> Loading...');
-                    },
-                    success: function(response) {
-                        if (response.trim() !== '') {
-                            $('#reviews-wrapper').append(response);
-                            button.data('page', page);
-                            button.prop('disabled', false).html('Load More Reviews');
-                        } else {
-                            button.hide();
+                    $.ajax({
+                        url: url,
+                        type: 'GET',
+                        data: {
+                            offset: offset,
+                            type: type
+                        },
+                        success: function(response) {
+                            if ($.trim(response) === '') {
+
+                                $button.hide();
+                            } else {
+                                $('#reviews-wrapper').append(response);
+                                $button.data('offset', offset + 2);
+                            }
+                        },
+                        error: function() {
+                            console.error('Failed to load more reviews.');
                         }
-                    },
-                    error: function() {
-                        button.prop('disabled', false).html('Load More Reviews');
-                        alert('Failed to load reviews. Please try again.');
-                    }
+                    });
                 });
             });
         </script>
+
 
 
         <script>

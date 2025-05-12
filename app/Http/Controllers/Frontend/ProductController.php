@@ -120,17 +120,17 @@ class ProductController extends Controller
             }
 
             if ($type === 'reviews') {
-                $reviews = Review::where('product_id', $product['id'])
+                $reviews = Review::with('user', 'images')->where('product_id', $product['id'])
                     ->latest()
-                    ->skip($skip)
-                    ->take($limit)
+                    ->skip($request->offset ?? 0)
+                    ->take(2)
                     ->get();
 
                 if ($reviews->isEmpty()) {
                     return '';
                 }
 
-                return view('frontend.partials.review-card-load', [
+                return view('frontend.partials.review-card', [
                     'reviews' => $reviews
                 ])->render();
             }
@@ -195,7 +195,7 @@ class ProductController extends Controller
         if ($variant) {
             return response()->json([
                 'id' => $variant->id,
-                'price' => $additional_price+$product->selling_price,
+                'price' => $additional_price + $product->selling_price,
                 'discounted_price' => $additional_price + $product->discounted_price,
                 'stock' => $variant->stock,
                 'sku' => $variant->sku,

@@ -31,6 +31,8 @@ Route::prefix('sellers')->as('sellers.')->group(function () {
     Route::get('{seller:username}/shop', [SellerController::class, 'shop'])->name('shop');
     Route::post('{seller:username}/follow', [SellerController::class, 'follow'])->middleware('auth')->name('follow');
     Route::get('{seller:username}/reviews', [SellerController::class, 'review'])->name('reviews');
+    Route::post('/reviews/{review}/helpful', [SellerController::class, 'markHelpful'])->name('reviews.helpful');
+    Route::post('/reviews/report', [SellerController::class, 'reviewReport'])->name('reviews.report');
 });
 
 Route::middleware('auth')->group(function () {

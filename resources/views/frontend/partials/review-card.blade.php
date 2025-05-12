@@ -1,44 +1,67 @@
 @foreach ($reviews as $review)
     <!-- review 1 -->
-    <div class="space-y-2 review-item">
+    <div class="review-item space-y-2 py-6">
         <div class="flex items-center gap-3">
-            <div class="w-12 h-12 overflow-hidden rounded-full user-avatar">
-                <img src="{{ storage_url($review->user->image) }}" alt="Alan Walker" />
+            <div class="user-avatar w-12 h-12 rounded-full overflow-hidden">
+                <img src="{{ storage_url($review->user->image) }}" alt="{{ $review->user->username }}" />
             </div>
-            <div class="flex flex-wrap items-center gap-x-5 gap-y-1">
-                <h3 class="font-medium">{{ $review->user->fullname }}</h3>
-                <span class="flex gap-2 text-gray-400">
+            <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+                <h3 class="font-medium">{{ $review->user->username }}</h3>
+                <span class="flex items-center gap-2 text-gray-400">
                     In
-                    <span class="w-auto h-4 lg:h-6">
-                        <img class="object-contain w-auto h-full" src="{{ asset('assets/frontend/images/us-flag.png') }}"
-                            alt="Flag of USA" />
-                    </span>
-                    on {{ $review->created_at->format('M d, Y') }}
-                </span>
+                    <span class="h-4 lg:h-6 w-auto"><img class="w-auto h-full object-contain"
+                            src="{{ asset('assets/frontend/images/us-flag.png') }}" alt="Flag of USA" /></span>
+                    on {{ optional($review->created_at)->format('M d, Y') ?? '' }}
 
+                </span>
             </div>
         </div>
         <!-- Rating -->
-        <div class="flex flex-wrap items-center gap-3 rating">
-            <div class="flex gap-1 text-xs flex-nowrap text-theme-dark md:text-sm">
-                @for ($i = 1; $i <= 5; $i++)
-                    @if ($i <= $review->rating)
-                        <i class="fa-solid fa-star text-yellow-400"></i>
-                    @else
-                        <i class="fa-regular fa-star text-gray-300"></i>
-                    @endif
+        @php
+            $rating = $review->rating;
+            $fullStars = floor($rating);
+            $halfStar = $rating - $fullStars >= 0.5;
+            $emptyStars = 5 - $fullStars - ($halfStar ? 1 : 0);
+        @endphp
+
+        <div class="rating flex flex-wrap items-center gap-3">
+            <div class="flex flex-nowrap gap-1 text-theme-dark text-xs md:text-sm">
+                @for ($i = 0; $i < $fullStars; $i++)
+                    <i class="fa-solid fa-star"></i>
+                @endfor
+
+                @if ($halfStar)
+                    <i class="fa-solid fa-star-half-stroke"></i>
+                @endif
+
+                @for ($i = 0; $i < $emptyStars; $i++)
+                    <i class="fa-regular fa-star"></i>
                 @endfor
             </div>
-            <span class="text-lg font-medium text-davy-gray sm:text-xl">{{ number_format($review->rating, 1) }}</span>
+            <span class="text-davy-gray text-lg sm:text-xl font-medium">{{ number_format($rating, 1) }}</span>
         </div>
-        {{-- <h6 class="product-colour">Purchased : Black</h6> --}}
-        <p class="w-10/12 product-feedback sm:w-3/5 md:w-4/5 xl:w-3/5">
-            {!! $review->review_text !!}
+
+        <!-- colour -->
+        {{-- <h6 class="product-colour">Purchased : </h6> --}}
+        <!-- product images -->
+        @if ($review->images->isNotEmpty())
+            <div class="flex product-images gap-2 md:gap-3 py-2">
+                @foreach ($review->images as $image)
+                    <div class="img-wrap w-1/3 h-28 sm:h-32 md:h-24 lg:h-36 overflow-hidden rounded-xl">
+                        <img src="{{ storage_url($image->image) }}" alt="" class="w-full h-full object-cover" />
+                    </div>
+                @endforeach
+            </div>
+        @endif
+        <!-- comment -->
+        <p class="product-feedback">
+            {{ $review->review_text }}
         </p>
-        <div
-            class="flex items-center justify-center w-10/12 text-xs text-black xsm:text-sm lg:text-base xl:text-lg sm:w-3/5 md:w-4/5 xl:w-3/5">
-            <div class="flex items-start gap-3 divide-x divide-black">
-                <button class="flex items-center gap-2 hover:text-primary eq">
+
+        <div class="flex justify-center items-center text-black text-xs xsm:text-sm lg:text-base xl:text-lg">
+            <div class="flex flex-row items-start divide-x divide-solid divide-black gap-x-3 pt-2">
+                <!-- Share Button -->
+                <button class="flex items-center gap-2 hover:text-primary pr-3">
                     <svg class="w-5 h-5" width="26" height="32" viewBox="0 0 26 32" fill="none"
                         xmlns="http://www.w3.org/2000/svg">
                         <path
@@ -47,30 +70,55 @@
                     </svg>
                     Share
                 </button>
-                <button class="flex items-center gap-2 pl-2 hover:text-butterfly-blue eq">
+
+                <!-- Helpful Button -->
+                <button class="flex items-center gap-2 hover:text-butterfly-blue pl-0 helpful-btn"
+                    data-review-id="{{ $review->id }}" data-url="{{ route('sellers.reviews.helpful', $review->id) }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
                     </svg>
-                    Helpful (1)
+                    Helpful (<span class="helpful-count">{{ $review->helpful_count }}</span>)
                 </button>
             </div>
-            <button class="ml-auto text-xl md:text-2xl lg:text-3xl" id="alan-walker-btn"
-                data-dropdown-toggle="alan-walker-comment-dropdown" type="button">
+
+            <button class="ml-auto text-xl md:text-2xl lg:text-3xl" id="btn-{{ $review->id }}"
+                data-dropdown-toggle="comment-dropdown-{{ $review->id }}" type="button">
                 <i class="fa-solid fa-ellipsis"></i>
-            </button>
+            </button>  
 
             <!-- Dropdown menu -->
-            <div id="alan-walker-comment-dropdown"
+            <div id="comment-dropdown-{{ $review->id }}"
                 class="z-30 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-lg w-38 md:w-44">
                 <div class="py-2 text-sm text-gray-700" aria-labelledby="alan-walker-btn">
-                    <button class="block w-full px-4 py-2 text-left hover:bg-gray-100">
+                    <button class="block w-full text-left px-4 py-2 hover:bg-gray-100">
                         Not Helpful
                     </button>
 
-                    <button class="block w-full px-4 py-2 text-left hover:bg-gray-100 text-persian-red">
-                        Report Abuse
-                    </button>
+                    @php
+                        $seller = App\Models\Seller::where('id', auth('seller')->id())->first();
+                        $user = App\Models\User::where('id', auth()->id())->first();
+
+                        if ($seller) {
+                            $existReport = App\Models\ReportReview::where('seller_id', $seller->id)
+                                ->where('review_id', $review->id)
+                                ->first();
+                        } elseif ($user) {
+                            $existReport = App\Models\ReportReview::where('user_id', $user->id)
+                                ->where('review_id', $review->id)
+                                ->first();
+                        }
+                    @endphp
+
+                    @if ($existReport)
+                    @else
+                        <button
+                            class="block w-full text-left px-4 py-2 hover:bg-gray-100 text-persian-red report-abuse-btn"
+                            data-review-id="{{ $review->id }}" data-url="{{ route('sellers.reviews.report') }}">
+                            Report Abuse
+                        </button>
+                    @endif
+
                 </div>
             </div>
         </div>

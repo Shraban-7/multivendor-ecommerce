@@ -15,7 +15,6 @@ class Review extends Model
         'created_at' => 'datetime:Y-m-d',
     ];
 
-
     public function product()
     {
         return $this->belongsTo(Product::class);
@@ -24,5 +23,10 @@ class Review extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function images()
+    {
+        return $this->hasMany(ReviewImage::class);
     }
 }
