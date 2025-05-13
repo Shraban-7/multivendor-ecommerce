@@ -3,7 +3,6 @@ $user = auth()->user();
 $seller = seller();
 ?>
 @foreach ($reviews as $review)
-    <!-- review 1 -->
     <div class="review-item space-y-2 py-6">
         <div class="flex items-center gap-3">
             <div class="user-avatar w-12 h-12 rounded-full overflow-hidden">
@@ -20,7 +19,7 @@ $seller = seller();
                 </span>
             </div>
         </div>
-        <!-- Rating -->
+
         @php
             $rating = $review->rating;
             $fullStars = floor($rating);
@@ -45,9 +44,6 @@ $seller = seller();
             <span class="text-davy-gray text-lg sm:text-xl font-medium">{{ number_format($rating, 1) }}</span>
         </div>
 
-        <!-- colour -->
-        {{-- <h6 class="product-colour">Purchased : </h6> --}}
-        <!-- product images -->
         @if ($review->images->isNotEmpty())
             <div class="flex product-images gap-2 md:gap-3 py-2">
                 @foreach ($review->images as $image)
@@ -57,14 +53,12 @@ $seller = seller();
                 @endforeach
             </div>
         @endif
-        <!-- comment -->
+
         <p class="product-feedback">
             {{ $review->review_text }}
         </p>
-
         <div class="flex justify-center items-center text-black text-xs xsm:text-sm lg:text-base xl:text-lg">
             <div class="flex flex-row items-start divide-x divide-solid divide-black gap-x-3 pt-2">
-                <!-- Share Button -->
                 <button class="flex items-center gap-2 hover:text-primary pr-3">
                     <svg class="w-5 h-5" width="26" height="32" viewBox="0 0 26 32" fill="none"
                         xmlns="http://www.w3.org/2000/svg">
@@ -74,8 +68,6 @@ $seller = seller();
                     </svg>
                     Share
                 </button>
-
-                <!-- Helpful Button -->
                 <button class="flex items-center gap-2 hover:text-butterfly-blue pl-0 helpful-btn"
                     data-review-id="{{ $review->id }}" data-url="{{ route('sellers.reviews.helpful', $review->id) }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -90,8 +82,6 @@ $seller = seller();
                 data-dropdown-toggle="comment-dropdown-{{ $review->id }}" type="button">
                 <i class="fa-solid fa-ellipsis"></i>
             </button>
-
-            <!-- Dropdown menu -->
             <div id="comment-dropdown-{{ $review->id }}"
                 class="z-30 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-lg w-38 md:w-44">
                 <div class="py-2 text-sm text-gray-700" aria-labelledby="alan-walker-btn">
