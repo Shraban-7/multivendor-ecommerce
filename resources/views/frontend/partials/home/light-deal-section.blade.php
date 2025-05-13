@@ -43,7 +43,7 @@
                             <!-- slide image -->
                             <div class="card-image h-[16.5rem] relative rounded-lg overflow-hidden">
                                 <img src="{{ storage_url($light_deal->thumbnail) }}" alt="{{ $light_deal->slug }}"
-                                    class="object-cover w-full h-full group-hover:scale-125 eq" loading="lazy"/>
+                                    class="object-cover w-full h-full group-hover:scale-125 eq" loading="lazy" />
                                 <span
                                     class="absolute block w-3/5 px-4 py-3 text-sm text-center -translate-x-1/2 bg-white rounded-full bottom-9 left-1/2">Almost
                                     Sold Out</span>
@@ -61,21 +61,27 @@
                                         Out</p>
                                 </div>
                                 <!-- time -->
-                                @php
-                                    $sold_out_progress =
-                                        ($light_deal->stock_out / ($light_deal->stock_out + $light_deal->stock_in)) *
-                                        100;
-                                @endphp
-                                <div class="flex flex-wrap items-center gap-2 time-progres">
-                                    <div class="w-[60%] bg-gray-200 rounded-full h-2">
-                                        <div class="h-2 rounded-full progress bg-primary"
-                                            style="width: {{ percentage($sold_out_progress) }}"></div>
+                                <?php
+                                $total_stock = $light_deal->stock_in + $light_deal->stock_out;
+                                $sold_out_progress = $total_stock > 0 ? ($light_deal->stock_out / $total_stock) * 100 : 0;
+                                ?>
+
+                                <!-- Progress bar and time (side by side) -->
+                                <div class="flex items-center justify-between gap-3 mt-2">
+                                    <!-- Progress Bar -->
+                                    <div class="flex-1 bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                                        <div class="h-2.5 bg-primary transition-all duration-300 ease-in-out"
+                                            style="width: {{ round($sold_out_progress, 2) }}%"></div>
                                     </div>
-                                    <span
-                                        class="w-[35%] due-time text-sm inline-flex flex-no-wrap gap-1 items-center"><i
-                                            class="fa-regular fa-clock"></i>
-                                        {{ datetime_format($light_deal->lightdeal_expired_at) }}</span>
+
+                                    <!-- Time -->
+                                    <div class="flex items-center text-sm text-gray-700 whitespace-nowrap">
+                                        <i class="fa-regular fa-clock me-1 text-primary"></i>
+                                        {{ $light_deal->lightdeal_expired_at->format('d:h:i:s') }}
+                                    </div>
                                 </div>
+
+
                                 <!-- rating -->
                                 <div class="flex items-center gap-2">
                                     <div class="text-xs rating-stars text-light-yellow">

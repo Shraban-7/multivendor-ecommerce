@@ -1,3 +1,7 @@
+<?php
+$user = auth()->user();
+$seller = seller();
+?>
 @foreach ($reviews as $review)
     <!-- review 1 -->
     <div class="review-item space-y-2 py-6">
@@ -85,7 +89,7 @@
             <button class="ml-auto text-xl md:text-2xl lg:text-3xl" id="btn-{{ $review->id }}"
                 data-dropdown-toggle="comment-dropdown-{{ $review->id }}" type="button">
                 <i class="fa-solid fa-ellipsis"></i>
-            </button>  
+            </button>
 
             <!-- Dropdown menu -->
             <div id="comment-dropdown-{{ $review->id }}"
@@ -95,23 +99,19 @@
                         Not Helpful
                     </button>
 
-                    @php
-                        $seller = App\Models\Seller::where('id', auth('seller')->id())->first();
-                        $user = App\Models\User::where('id', auth()->id())->first();
+                    <?php
+                    $reportExists = null;
+                    if ($seller) {
+                        $reportExists = App\Models\ReportReview::where('seller_id', $seller->id)->where('review_id', $review->id)->first();
 
-                        if ($seller) {
-                            $existReport = App\Models\ReportReview::where('seller_id', $seller->id)
-                                ->where('review_id', $review->id)
-                                ->first();
-                        } elseif ($user) {
-                            $existReport = App\Models\ReportReview::where('user_id', $user->id)
-                                ->where('review_id', $review->id)
-                                ->first();
-                        }
-                    @endphp
+                        dd($reportExists);
+                    } elseif ($user) {
+                        $reportExists = App\Models\ReportReview::where('user_id', $user->id)->where('review_id', $review->id)->first();
+                        dd($reportExists);
+                    }
+                    ?>
 
-                    @if ($existReport)
-                    @else
+                    @if (!$reportExists && ($seller || $user))
                         <button
                             class="block w-full text-left px-4 py-2 hover:bg-gray-100 text-persian-red report-abuse-btn"
                             data-review-id="{{ $review->id }}" data-url="{{ route('sellers.reviews.report') }}">
