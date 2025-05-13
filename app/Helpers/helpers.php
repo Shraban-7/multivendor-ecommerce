@@ -142,7 +142,11 @@ if (!function_exists('datetime_format')) {
 if (!function_exists('percentage')) {
     function percentage($number)
     {
-        return Number::percentage($number);
+        if (!is_numeric($number)) {
+            return '0%';
+        }
+
+        return $number * 100 . '%';
     }
 }
 
