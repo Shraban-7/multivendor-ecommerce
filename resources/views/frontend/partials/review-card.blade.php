@@ -103,11 +103,8 @@ $seller = seller();
                     $reportExists = null;
                     if ($seller) {
                         $reportExists = App\Models\ReportReview::where('seller_id', $seller->id)->where('review_id', $review->id)->first();
-
-                        dd($reportExists);
                     } elseif ($user) {
                         $reportExists = App\Models\ReportReview::where('user_id', $user->id)->where('review_id', $review->id)->first();
-                        dd($reportExists);
                     }
                     ?>
 
@@ -118,7 +115,6 @@ $seller = seller();
                             Report Abuse
                         </button>
                     @endif
-
                 </div>
             </div>
         </div>
