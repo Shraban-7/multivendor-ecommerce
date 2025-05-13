@@ -24,11 +24,13 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
     Route::prefix('customers')->as('customers.')->group(function () {
         Route::get('/', [CustomerController::class, 'index'])->name('index');
         Route::post('/update', [CustomerController::class, 'update'])->name('update');
+        Route::get('{customer:username}/profile', [CustomerController::class, 'profile'])->name('profile');
     });
 
     Route::prefix('sellers')->as('sellers.')->group(function () {
         Route::get('/', [SellerController::class, 'index'])->name('index');
         Route::get('/update', [SellerController::class, 'update'])->name('update');
+        Route::get('{seller:username}/profile', [SellerController::class, 'profile'])->name('profile');
     });
 
     Route::prefix('products')->as('products.')->group(function () {

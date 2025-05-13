@@ -10,4 +10,14 @@ class ReportReview extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function seller()
+    {
+        return $this->belongsTo(Seller::class);
+    }
 }

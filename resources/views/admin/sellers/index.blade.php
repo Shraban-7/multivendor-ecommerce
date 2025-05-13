@@ -25,7 +25,7 @@
             @foreach ($sellers as $seller)
             <tr>
                 <td>
-                    <x-user :user="$seller" />
+                    <x-seller :seller="$seller" />
                 </td>
                 <td> {{ $seller->country->name }} </td>
                 <td> {{ $seller->country->phone_code }} </td>

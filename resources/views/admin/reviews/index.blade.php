@@ -14,7 +14,7 @@
                     <th>Product / Shop</th>
                     <th>Images</th>
                     <th>Description</th>
-                    <th>Likes</th>
+                    <th>Reporter</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -38,8 +38,9 @@
                         <td>
                             <div class="d-flex gap-2 overflow-auto">
                                 @foreach ($review->images as $image)
-                                    <img src="{{ storage_url($image->image) }}" class="img-fluid rounded-lg border shadow-sm"
-                                        alt="Review Image" style="height: 80px; width: 80px; object-fit: cover;">
+                                    <img src="{{ storage_url($image->image) }}"
+                                        class="img-fluid rounded-lg border shadow-sm" alt="Review Image"
+                                        style="height: 80px; width: 80px; object-fit: cover;">
                                 @endforeach
                             </div>
                         </td>
@@ -47,8 +48,22 @@
                             {{ $review->review_text }}
                         </td>
                         <td>
-                            {{ $review->helpful_count }}
+                            @if ($review->reports->isNotEmpty())
+                                <ul class="list-unstyled mb-0">
+                                    @foreach ($review->reports as $report)
+                                        <li>
+                                            @if ($report->user)
+                                                <x-user :user="$report->user" />
+                                            @else
+                                                <x-seller :seller="$report->seller" />
+                                            @endif
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @else
+                            @endif
                         </td>
+
                         <td>
                             <!-- Delete Button -->
                             <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
