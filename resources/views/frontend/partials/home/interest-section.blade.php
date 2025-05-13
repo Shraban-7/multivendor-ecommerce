@@ -55,12 +55,26 @@
                                                 <a
                                                     href="{{ route('products.details', $product->slug) }}">{{ $product->name }}</a>
                                             </h2>
-                                            <div class="text-xs rating-stars text-light-yellow">
-                                                <i class="fa-solid fa-star"></i>
-                                                <i class="fa-solid fa-star"></i>
-                                                <i class="fa-solid fa-star"></i>
-                                                <i class="fa-solid fa-star"></i>
-                                                <i class="fa-solid fa-star"></i>
+                                            <?php
+                                            $avgRating = round($product->reviews_avg_rating, 1);
+                                            $fullStars = floor($avgRating);
+                                            $halfStar = $avgRating - $fullStars >= 0.5;
+                                            $emptyStars = 5 - $fullStars - ($halfStar ? 1 : 0);
+                                            ?>
+
+                                            <div class="text-xs sm:text-sm text-light-yellow rating-stars">
+                                                @for ($i = 0; $i < $fullStars; $i++)
+                                                    <i class="fa-solid fa-star"></i>
+                                                @endfor
+
+                                                @if ($halfStar)
+                                                    <i class="fa-solid fa-star-half-stroke"></i>
+                                                @endif
+
+                                                @for ($i = 0; $i < $emptyStars; $i++)
+                                                    <i class="fa-regular fa-star"></i>
+                                                @endfor
+
                                             </div>
                                             <p class="text-persian-blue">{{ $product->quantity }}
                                                 {{ $product->unit->name }}</p>

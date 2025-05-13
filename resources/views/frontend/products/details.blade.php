@@ -51,7 +51,7 @@
                     <div class="lg:w-[55%] md:w-[50%] w-full flex flex-col lg:flex-row gap-3 lg:gap-5">
                         <!-- Thumbnails -->
                         <div class="order-2 w-full space-y-3 lg:w-1/6 lg:order-1">
-                            <div class="product-thumbnails overflow-hidden xl:h-[37rem] lg:h-[41rem] h-auto">
+                            <div class="single-product-thumbnails overflow-hidden xl:h-[37rem] lg:h-[41rem] h-auto">
                                 <div class="swiper-wrapper">
                                     <!-- thumb 1 -->
                                     @foreach ($product['images'] as $thumb)
@@ -72,7 +72,7 @@
                         <!-- Main Image Slider -->
                         <div class="relative order-1 w-full lg:w-5/6 lg:order-2">
                             <div
-                                class="product-swiper overflow-hidden w-full h-96 md:h-[37rem] xl:h-[37rem] lg:h-[41rem] rounded-2xl overflow-hidden relative">
+                                class="single-product-swiper overflow-hidden w-full h-96 md:h-[37rem] xl:h-[37rem] lg:h-[41rem] rounded-2xl overflow-hidden relative">
                                 <div class="swiper-wrapper">
                                     <!-- product image 1 -->
                                     @foreach ($product['images'] as $slider)
@@ -714,8 +714,6 @@
             });
         </script>
 
-
-
         <script>
             $('#loadMoreProducts').on('click', function() {
                 let button = $(this);
@@ -749,6 +747,42 @@
                         alert('Something went wrong. Please try again.');
                     }
                 });
+            });
+        </script>
+
+        <script>
+            // Single Product Swiper JS Slider Script's
+            // Vertical Product Image Thumbnails
+            const productThumbs = new Swiper(".single-product-thumbnails", {
+                spaceBetween: 10,
+                slidesPerView: 5,
+                watchSlidesProgress: true,
+                direction: "horizontal",
+                spaceBetween: 10,
+                grabCursor: true,
+                breakpoints: {
+                    1024: {
+                        direction: "vertical",
+                        spaceBetween: 5,
+                    },
+                    1280: {
+                        direction: "vertical",
+                        spaceBetween: 10,
+                    },
+                },
+            });
+
+            // Product Images Slider
+            const productSwiper = new Swiper(".single-product-swiper", {
+                spaceBetween: 10,
+                grabCursor: true,
+                navigation: {
+                    nextEl: ".swiper-button-next",
+                    prevEl: ".swiper-button-prev",
+                },
+                thumbs: {
+                    swiper: productThumbs,
+                },
             });
         </script>
     @endpush

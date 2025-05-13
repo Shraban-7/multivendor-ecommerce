@@ -16,16 +16,16 @@
             <div class="p-4 md:p-10">
                 <div class="flex flex-col md:flex-row gap-5">
                     <!-- Product Images Section -->
-                    <div class="lg:w-[55%] md:w-[50%] w-full flex flex-col lg:flex-row gap-3 lg:gap-5">
+                    <div class="product-multi-slider-container lg:w-[55%] md:w-[50%] w-full flex flex-col lg:flex-row gap-3 lg:gap-5">
                         <!-- Thumbnails -->
                         <div class="lg:w-2/12 xl:w-1/6 w-full order-2 lg:order-1">
-                            <div class="modal-product-thumbnails overflow-hidden lg:h-[34rem] xl:h-[32rem] h-auto">
+                            <div class="product-thumbnails overflow-hidden lg:h-[34rem] xl:h-[32rem] h-auto">
                                 <div class="swiper-wrapper">
                                     @foreach ($product['images'] as $thumb)
                                         <!-- thumb 1 -->
                                         <div class="swiper-slide">
                                             <div
-                                                class="modal-slide-thumb w-full xl:h-24 sm:h-24 h-16 rounded-xl md:rounded-2xl cursor-pointer border-2 border-transparent hover:border-primary overflow-hidden">
+                                                class="slide-thumb w-full xl:h-24 sm:h-24 h-16 rounded-xl md:rounded-2xl cursor-pointer border-2 border-transparent hover:border-primary overflow-hidden">
                                                 <img src="{{ storage_url($thumb) }}" alt=""
                                                     class="w-full h-full object-cover" />
                                             </div>
@@ -37,7 +37,7 @@
                         <!-- Main Image Slider -->
                         <div class="lg:w-10/12 xl:w-5/6 w-full relative order-1 lg:order-2">
                             <div
-                                class="modal-product-swiper w-full h-80 sm:h-[28rem] md:h-[37rem] lg:h-[34rem] xl:h-[32rem] rounded-2xl overflow-hidden relative">
+                                class="product-swiper w-full h-80 sm:h-[28rem] md:h-[37rem] lg:h-[34rem] xl:h-[32rem] rounded-2xl overflow-hidden relative">
                                 <div class="swiper-wrapper">
                                     @foreach ($product['images'] as $slider)
                                         <!-- product image 1 -->

@@ -42,6 +42,7 @@
     <!-- Swiper JS Custom Cacarousel slider Script's-->
     <script src="{{ asset('assets/libs/swiper/js/swiper-bundle.min.js') }}"></script>
     <script src="{{ asset('assets/frontend/js/swiperSliders.js') }}"></script>
+    <script src="{{ asset('assets/frontend/js/multipleProductsSwiper.js') }}"></script>
 
     <!-- Data table  -->
 
