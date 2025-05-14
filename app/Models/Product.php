@@ -83,6 +83,12 @@ class Product extends Model
         return $this->hasMany(Review::class);
     }
 
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
+
     public function toDetailsArray()
     {
         $this->load('images', 'category', 'subcategory', 'variants.attributeOptions.productAttribute','seller','reviews.user');

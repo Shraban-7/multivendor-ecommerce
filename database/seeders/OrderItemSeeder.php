@@ -69,7 +69,7 @@ class OrderItemSeeder extends Seeder
         ];
 
         foreach ($orderItems as $item) {
-            OrderItem::insert([
+            OrderItem::create([
                 'order_id' => $item['order_id'],
                 'product_id' => $item['product_id'],
                 'product_variant' => $item['product_variant'],

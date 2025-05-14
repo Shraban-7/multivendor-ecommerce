@@ -9,7 +9,7 @@
     <div class="row">
         <div class="col-8">
             <div class="card card-body">
-                <form id="businessSettingsForm" action="{{ route('seller.settings.index') }}" method="POST"
+                <form id="businessSettingsForm" action="{{ route('seller.settings.update') }}" method="POST"
                     enctype="multipart/form-data">
                     @csrf
                     <div class="row">
@@ -28,73 +28,80 @@
                             <textarea name="business_address" id="business_address" class="form-control" rows="2">{{ old('business_address', $seller->business_address) }}</textarea>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="trade_license_no" class="form-label">Trade License Number</label>
-                            <input type="text" class="form-control" id="trade_license_no"
-                                value="{{ old('trade_license_no', $seller->trade_license_no ?? 'Not provided') }}" readonly>
+                            <label for="nid_no" class="form-label">Nid Number</label>
+                            <input type="text" class="form-control" id="nid_no" name="nid_no"
+                                value="{{ old('nid_no', $seller->nid_no ?? 'Not provided') }}" disabled>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="trade_license_no" class="form-label">Trade License Number</label>
-                            <input type="text" class="form-control" id="shipping_cost" name="shipping_cost"
-                                value="{{ old('shipping_cost', $seller->shipping_cost ?? 'Not provided') }}" readonly>
+                            <input type="text" class="form-control " id="trade_license_no"
+                                value="{{ old('trade_license_no', $seller->trade_license_no ?? 'Not provided') }}" disabled>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="country" class="form-label">Country</label>
-                            <select name="country" id="country" class="form-select" required>
+                        <div class="col-md-3 mb-3">
+                            <label for="trade_license_no" class="form-label">Shipping Cost</label>
+                            <input type="number" class="form-control" id="shipping_cost" name="shipping_cost"
+                                value="{{ old('shipping_cost', $seller->shipping_cost ?? 'Not provided') }}">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="country_id" class="form-label">Country</label>
+                            <select name="country_id" id="country_id" class="form-select" required>
                                 <option value="">Select Country</option>
-                                <option value="Bangladesh"
-                                    {{ old('country', $seller->country) == 'Bangladesh' ? 'selected' : '' }}>Bangladesh
-                                </option>
-                                <option value="India" {{ old('country', $seller->country) == 'India' ? 'selected' : '' }}>
-                                    India</option>
-                                <option value="USA" {{ old('country', $seller->country) == 'USA' ? 'selected' : '' }}>USA
-                                </option>
-                                <!-- Add more countries as needed -->
+                                @foreach ($countries as $country)
+                                    <option value="{{ $country->id }}"
+                                        {{ $seller->country_id == $country->id ? 'selected' : '' }}>
+                                        {{ ucfirst($country->name) }}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
 
-                        <div class="col-md-6 mb-3">
-                            <label for="state" class="form-label">State</label>
-                            <select name="state" id="state" class="form-select" required>
+                        <div class="col-md-3 mb-3">
+                            <label for="state_id" class="form-label">State</label>
+                            <select name="state_id" id="state_id" class="form-select" required>
                                 <option value="">Select State</option>
-                                <option value="Dhaka" {{ old('state', $seller->state) == 'Dhaka' ? 'selected' : '' }}>Dhaka
-                                </option>
-                                <option value="Chattogram"
-                                    {{ old('state', $seller->state) == 'Chattogram' ? 'selected' : '' }}>Chattogram
-                                </option>
-                                <option value="Delhi" {{ old('state', $seller->state) == 'Delhi' ? 'selected' : '' }}>
-                                    Delhi</option>
-                                <option value="California"
-                                    {{ old('state', $seller->state) == 'California' ? 'selected' : '' }}>California
-                                </option>
-                                <!-- Add more states or conditionally show based on country -->
+                                @foreach ($states as $state)
+                                    <option value="{{ $state->id }}"
+                                        {{ $seller->state_id == $state->id ? 'selected' : '' }}>
+                                        {{ ucfirst($state->name) }}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
-                        <div class="col-md-6 mb-3">
+
+                        <div class="col-md-3 mb-3">
+                            <label for="zip" class="form-label">ZIP Code</label>
+                            <input type="text" class="form-control" id="zip" name="zip"
+                                value="{{ old('zip', $seller->zip ?? '') }}" >
+                        </div>
+                    </div>
+                    <div class="d-flex">
+                        <div class="mb-3">
                             <label class="form-label">Business Logo</label>
                             <x-image-input name="business_logo" :image="storage_url($seller->business_logo)" />
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="mb-3">
                             <label class="form-label">Shop Image</label>
                             <x-image-input name="shop_image" :image="storage_url($seller->shop_image)" />
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Trade License Image</label><br>
-                            <img src="{{ storage_url($seller->trade_license_image) }}" alt="Trade License"
-                                class="img-fluid rounded border" style="max-height: 200px;">
-                        </div>
-
-                        <div class="col-md-6 mb-3">
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
                             <label class="form-label">NID Front Image</label><br>
                             <img src="{{ storage_url($seller->nid_front_image) }}" alt="NID Front"
-                                class="img-fluid rounded border" style="max-height: 200px;">
+                                class="img-fluid rounded img-thumbnail w-100" style="max-height: 200px;">
                         </div>
 
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-4 mb-3">
                             <label class="form-label">NID Back Image</label><br>
                             <img src="{{ storage_url($seller->nid_back_image) }}" alt="NID Back"
-                                class="img-fluid rounded border" style="max-height: 200px;">
+                                class="img-fluid rounded img-thumbnail w-100"  style="max-height: 200px;">
                         </div>
-
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Trade License Image</label><br>
+                            <img src="{{ storage_url($seller->trade_license_image) }}" alt="Trade License"
+                                class="img-fluid rounded img-thumbnail" style="max-height: 200px;">
+                        </div>
                     </div>
 
                     <!-- Submit Button -->
@@ -103,4 +110,53 @@
             </div>
         </div>
     </div>
+
+    @push('scripts')
+        <script>
+            const baseGetStatesUrl = "{{ url('states') }}/";
+            const initialCountryId = '{{ old('country_id', $seller->country_id) }}';
+            const initialStateId = '{{ old('state_id', $seller->state_id) }}';
+        </script>
+
+        <script>
+            $(document).ready(function() {
+
+                function loadStates(countryID, selectedStateID = null) {
+                    if (countryID) {
+                        $('#state_id').html('<option value="">Loading...</option>');
+                        $.ajax({
+                            url: baseGetStatesUrl + countryID,
+                            type: "GET",
+                            dataType: "json",
+                            success: function(states) {
+                                $('#state_id').empty().append('<option value="">Select State</option>');
+                                $.each(states, function(key, state) {
+                                    $('#state_id').append(
+                                        `<option value="${state.id}">${state.name}</option>`
+                                    );
+                                });
+
+                                if (selectedStateID) {
+                                    $('#state_id').val(selectedStateID);
+                                }
+                            }
+                        });
+                    } else {
+                        $('#state_id').html('<option value="">Select State</option>');
+                    }
+                }
+
+                // Load corresponding states on page load (edit case)
+                if (initialCountryId) {
+                    loadStates(initialCountryId, initialStateId);
+                }
+
+                // Load states on country change
+                $('#country_id').on('change', function() {
+                    const countryID = $(this).val();
+                    loadStates(countryID);
+                });
+            });
+        </script>
+    @endpush
 @endsection

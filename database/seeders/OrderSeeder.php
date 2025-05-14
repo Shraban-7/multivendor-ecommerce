@@ -69,7 +69,7 @@ class OrderSeeder extends Seeder
         ];
 
         foreach ($orders as $order) {
-            Order::insert([
+            Order::create([
                 'user_id' => $order['user_id'],
                 'seller_id' => $order['seller_id'],
                 'sub_total' => $order['sub_total'],
@@ -78,6 +78,7 @@ class OrderSeeder extends Seeder
                 'shipping_fee' => $order['shipping_fee'],
                 'payable' => $order['payable'],
                 'due' => $order['due'],
+                'total' => $order['shipping_fee'] + $order['tax'] + $order['sub_total'],
                 'status' => $order['status'],
             ]);
         }
