@@ -42,7 +42,7 @@
             <x-dashboard.nav-item-link :route="'seller.customers'">
                 <i data-feather="users" class="nav-icon icon-xs me-2"></i> Manage Customers
             </x-dashboard.nav-item-link>
-            <x-dashboard.nav-item-link :route="'seller.dashboard'">
+            <x-dashboard.nav-item-link :route="'seller.settings.index'">
                 <i data-feather="settings" class="nav-icon icon-xs me-2"></i> Settings
             </x-dashboard.nav-item-link>
         </ul>

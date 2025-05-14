@@ -1,0 +1,114 @@
+{
+    "countries": [
+      {
+        "name": "United States",
+        "country_code": "US",
+        "phone_code": "+1",
+        "currency": "USD",
+        "currency_symbol": "$",
+        "states": [
+          {
+            "name": "California",
+            "zip_codes": ["90001", "90002", "90003"]
+          },
+          {
+            "name": "New York",
+            "zip_codes": ["10001", "10002", "10003"]
+          }
+        ]
+      },
+      {
+        "name": "Canada",
+        "country_code": "CA",
+        "phone_code": "+1",
+        "currency": "CAD",
+        "currency_symbol": "$",
+        "states": [
+          {
+            "name": "Ontario",
+            "zip_codes": ["K1A 0B1", "M5H 2N2"]
+          },
+          {
+            "name": "British Columbia",
+            "zip_codes": ["V5K 0A1", "V6B 3A0"]
+          }
+        ]
+      },
+      {
+        "name": "United Kingdom",
+        "country_code": "GB",
+        "phone_code": "+44",
+        "currency": "GBP",
+        "currency_symbol": "£",
+        "states": [
+          {
+            "name": "England",
+            "zip_codes": ["SW1A 1AA", "M1 1AE"]
+          },
+          {
+            "name": "Scotland",
+            "zip_codes": ["G1 1RD", "KY1 1NY"]
+          }
+        ]
+      },
+      {
+        "name": "Germany",
+        "country_code": "DE",
+        "phone_code": "+49",
+        "currency": "EUR",
+        "currency_symbol": "€",
+        "states": [
+          {
+            "name": "Bavaria",
+            "zip_codes": ["80331", "80538"]
+          },
+          {
+            "name": "Berlin",
+            "zip_codes": ["10115", "10178"]
+          }
+        ]
+      },
+      {
+        "name": "Australia",
+        "country_code": "AU",
+        "phone_code": "+61",
+        "currency": "AUD",
+        "currency_symbol": "$",
+        "states": [
+          {
+            "name": "New South Wales",
+            "zip_codes": ["2000", "2001"]
+          },
+          {
+            "name": "Victoria",
+            "zip_codes": ["3000", "3001"]
+          }
+        ]
+      },
+      {
+        "name": "Bangladesh",
+        "country_code": "BD",
+        "phone_code": "+880",
+        "currency": "BDT",
+        "currency_symbol": "৳",
+        "states": [
+          {
+            "name": "Dhaka",
+            "zip_codes": ["1000", "1206", "1212"]
+          },
+          {
+            "name": "Chittagong",
+            "zip_codes": ["4000", "4100", "4200"]
+          },
+          {
+            "name": "Rajshahi",
+            "zip_codes": ["6000", "6100", "6200"]
+          },
+          {
+            "name": "Khulna",
+            "zip_codes": ["9000", "9100", "9200"]
+          }
+        ]
+      }
+    ]
+  }

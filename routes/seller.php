@@ -7,6 +7,7 @@ use App\Http\Controllers\Seller\DashboardController;
 use App\Http\Controllers\Seller\OrderController;
 use App\Http\Controllers\Seller\ProductController;
 use App\Http\Controllers\Seller\SellerController;
+use App\Http\Controllers\Seller\SettingController;
 
 Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -43,6 +44,11 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::get('/details/{order}', [OrderController::class, 'details'])->name('details');
         Route::Post('/update-status/{order}', [OrderController::class, 'updateStatus'])->name('updateStatus');
     });
+
+    Route::prefix('settings')->as('settings.')->group(function () {
+        Route::get('/', [SettingController::class, 'index'])->name('index');
+    });
+
 });
 
 

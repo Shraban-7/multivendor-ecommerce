@@ -25,7 +25,8 @@ class SellerSeeder extends Seeder
                 'business_email' => 'louis_vuitton@example.com',
                 'business_address' => 'Lorem ipsum dolor sit amet',
                 'country_id' => 2,
-                'zip' => '1400'
+                'zip' => '1400',
+                'shipping_cost' => 20
             ],
             [
                 'fullname' => 'Seller User 2',
@@ -38,7 +39,8 @@ class SellerSeeder extends Seeder
                 'business_email' => 'ranger@example.com',
                 'business_address' => 'Lorem ipsum dolor sit amet',
                 'country_id' => 3,
-                'zip' => '1200'
+                'zip' => '1200',
+                'shipping_cost' => 30
             ],
         ];
 
