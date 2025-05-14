@@ -32,20 +32,35 @@
                                 <!-- Content Section -->
                                 <div class="flex-1 flex flex-col justify-between p-3 space-y-2 sm:p-4">
                                     <!-- Ratings -->
+                                    <?php
+                                    $avgRating = round($product->reviews_avg_rating, 1);
+                                    $fullStars = floor($avgRating);
+                                    $halfStar = $avgRating - $fullStars >= 0.5;
+                                    $emptyStars = 5 - $fullStars - ($halfStar ? 1 : 0);
+                                    ?>
+
                                     <div class="text-xs sm:text-sm text-light-yellow rating-stars">
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-regular fa-star"></i>
+                                        @for ($i = 0; $i < $fullStars; $i++)
+                                            <i class="fa-solid fa-star"></i>
+                                        @endfor
+
+                                        @if ($halfStar)
+                                            <i class="fa-solid fa-star-half-stroke"></i>
+                                        @endif
+
+                                        @for ($i = 0; $i < $emptyStars; $i++)
+                                            <i class="fa-regular fa-star"></i>
+                                        @endfor
                                     </div>
 
                                     <!-- Name & Price -->
                                     <div class="flex items-end justify-between gap-2">
                                         <div class="name-price w-full">
                                             <!-- Product Name (no wrap, ellipsis) -->
-                                            <h2 class="text-sm font-medium text-theme-dark group-hover/community-pro-card:text-butterfly-blue line-clamp-1 leading-snug">
-                                                <a href="{{ route('products.details', $product->slug) }}">{{ $product->name }}</a>
+                                            <h2
+                                                class="text-sm font-medium text-theme-dark group-hover/community-pro-card:text-butterfly-blue line-clamp-1 leading-snug">
+                                                <a
+                                                    href="{{ route('products.details', $product->slug) }}">{{ $product->name }}</a>
                                             </h2>
 
                                             <!-- Prices (no wrap) -->
