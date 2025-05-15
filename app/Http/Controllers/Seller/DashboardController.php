@@ -19,10 +19,11 @@ class DashboardController extends Controller
         $startDate = $request->input('start_date', now()->startOfMonth()->toDateString());
         $endDate = $request->input('end_date', now()->toDateString());
 
-
-        $orders = Order::where('seller_id', $sellerId)
+        $ordersQuery = Order::where('seller_id', $sellerId)
             ->whereDate('created_at', '>=', $startDate)
-            ->whereDate('created_at', '<=', $endDate)
+            ->whereDate('created_at', '<=', $endDate);
+
+        $orders = (clone $ordersQuery)
             ->selectRaw('DATE(created_at) as label, COUNT(*) as order_count, SUM(total) as revenue')
             ->groupBy('label')
             ->orderBy('label')
@@ -49,15 +50,15 @@ class DashboardController extends Controller
 
         return view('seller.dashboard', [
             'total_products' => Product::where('seller_id', $sellerId)->count(),
-            'total_orders' => Order::where('seller_id', $sellerId)->count(),
-            'pending_orders' => Order::pending()->where('seller_id', $sellerId)->count(),
-            'shipped_orders' => Order::shipped()->where('seller_id', $sellerId)->count(),
-            'cancelled_orders' => Order::cancelled()->where('seller_id', $sellerId)->count(),
-            'delivered_orders' => Order::delivered()->where('seller_id', $sellerId)->count(),
-            'total_revenue' => Order::delivered()->where('seller_id', $sellerId)->sum('total'),
-            'total_customers' => Order::where('seller_id', $sellerId)->distinct('user_id')->count('user_id'),
+            'total_orders' => (clone $ordersQuery)->count(),
+            'pending_orders' => (clone $ordersQuery)->pending()->count(),
+            'shipped_orders' => (clone $ordersQuery)->shipped()->count(),
+            'cancelled_orders' => (clone $ordersQuery)->cancelled()->count(),
+            'delivered_orders' => (clone $ordersQuery)->delivered()->count(),
+            'total_revenue' => (clone $ordersQuery)->delivered()->sum('total'),
+            'total_customers' => (clone $ordersQuery)->distinct('user_id')->count('user_id'),
             'top_selling_products' => $top_selling_products,
-            'latest_orders' => Order::where('seller_id', $sellerId)->latest()->limit(20)->get(),
+            'latest_orders' => (clone $ordersQuery)->latest()->limit(20)->get(),
             'chartData' => $chartData,
         ]);
     }

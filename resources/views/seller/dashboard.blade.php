@@ -2,6 +2,21 @@
 @section('title', 'Seller Dashboard')
 @section('content')
     <div class="row">
+        <div class="col-md-6"></div>
+        <div class="col-md-6">
+            <form id="dateRangeForm" method="GET" action="{{ route('seller.dashboard') }}">
+                <div class="d-flex mb-3">
+                    <input type="date" name="start_date" value="{{ request('start_date') }}"
+                        class="form-control me-3">
+                    <input type="date" name="end_date" value="{{ request('end_date') }}"
+                        class="form-control me-3">
+
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-12 mb-5">
             <div class="row row-cols-lg-4 row-cols-2 g-lg-5 g-2">
                 <div class="col">
@@ -126,20 +141,6 @@
             <div class="card flex-fill">
                 <div class="card-body">
                     <h5 class="fw-semi-bold">Sales & Order Analytics</h5>
-
-                    <form id="dateRangeForm" method="GET" action="{{ route('seller.dashboard') }}">
-                        <div class="d-flex mb-3">
-                         
-
-                            <input type="date" name="start_date" value="{{ request('start_date') }}"
-                                class="form-control me-3">
-                            <input type="date" name="end_date" value="{{ request('end_date') }}"
-                                class="form-control me-3">
-
-                            <button type="submit" class="btn btn-primary">Filter</button>
-                        </div>
-                    </form>
-
                     <canvas id="salesOrderChart" height="150"></canvas>
                 </div>
             </div>
