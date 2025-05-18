@@ -109,17 +109,16 @@
 
                             <div class="flex flex-wrap items-center gap-2 text-sm xsm:gap-5 sm:10 md:gap-2 lg:gap-10">
                                 <div class="flex items-center gap-2">
-                                    <span
-                                        class="pr-2 border-r border-gray-400 text-jet-gray">{{ number_shorten_format($product['sold_out']) }}
-                                        sold</span>
                                     <div class="flex items-center gap-2 text-davy-gray">
-                                        <span>Provided By</span>
+                                        <span>Seller: </span>
                                         <a href="{{ route('sellers.shop', $seller['username']) }}"
-                                            class="inline-block w-6 h-6 overflow-hidden rounded-full provider-icon">
-                                            <img src="{{ storage_url($seller['shop_logo']) }}"
-                                                alt="{{ $seller['shop_name'] }}" class="object-contain w-full h-full" />
+                                            class="inline-block">
+                                            <span class="text-blue-500 font-bold">{{ $seller['shop_name'] }}</span>
                                         </a>
-                                        <span>({{ number_shorten_format($product['sold_out']) }}+ sold)</span>
+                                        <span class="border-r border-gray-400 h-4"></span>
+                                        <span class="pl-2 text-jet-gray">
+                                            {{ number_shorten_format($product['sold_out']) }} sold
+                                        </span>
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-2">
