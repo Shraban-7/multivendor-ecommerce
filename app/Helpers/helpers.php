@@ -1,15 +1,17 @@
 <?php
 
-use App\Models\Category;
-use App\Models\PaymentGateway;
-use App\Models\SocialLink;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Category;
+use App\Models\SocialLink;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Models\PaymentGateway;
 use Illuminate\Support\Number;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 define('CURRENCY_SYMBOL', '৳');
 
@@ -36,6 +38,15 @@ if (!function_exists('str_slug')) {
     }
 }
 
+if (!function_exists('sendValidationError')) {
+    function sendValidationError($errors)
+    {
+        return response()->json([
+            'status' => false,
+            'message' => $errors->first()
+        ], 422);
+    }
+}
 
 if (!function_exists('generateFileName')) {
     function generateFileName($file)
@@ -200,6 +211,13 @@ if (!function_exists('apiResourceResponse')) {
         }
 
         return response()->json($collection, $statusCode);
+    }
+}
+
+if (!function_exists('validateRequest')) {
+    function validateRequest(Request $request, array $rules)
+    {
+        return Validator::make($request->all(), $rules);
     }
 }
 
