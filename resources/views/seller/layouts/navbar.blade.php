@@ -73,7 +73,7 @@
             <a class="rounded-circle" href="#" role="button" id="dropdownUser"
                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <div class="avatar avatar-md avatar-indicators avatar-online">
-                    <img alt="avatar" src="{{ asset('assets/frontend/images/hero-image-1.png') }}"
+                    <img alt="avatar" src="{{ storage_url(seller()->image) }}"
                         class="rounded-circle" />
                 </div>
             </a>
@@ -81,7 +81,7 @@
                 aria-labelledby="dropdownUser">
                 <div class="px-4 pb-0 pt-2">
                     <div class="lh-1 ">
-                        <h5 class="mb-1">Name</h5>
+                        <h5 class="mb-1">{{ seller()->fullname }}</h5>
                         <a href="{{ route('seller.profile',seller()->username) }}" class="text-inherit fs-6">Profile</a>
                     </div>
                     <div class=" dropdown-divider mt-3 mb-2"></div>
