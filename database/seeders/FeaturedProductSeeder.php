@@ -34,18 +34,21 @@ class FeaturedProductSeeder extends Seeder
                 ? $category->subcategories->random()
                 : null;
 
+            $name = $subcategory->name ?? $category->name;
+            $slug = Str::slug($name);
+
             Product::create([
-                'name' => trim(($subcategory->name ?? $category->name) . ' Product ' . $i),
-                'slug' => Str::slug(($subcategory->name ?? $category->name) . ' Product ' . $i),
+                'name' => trim($name . ' Product ' . $i),
+                'slug' => Str::slug($name . ' Product ' . $i),
                 'thumbnail' => 'images/products/thumb/' . $featuredThumbs[($i - 1) % count($featuredThumbs)],
-                'short_description' => 'Short description for ' . ($subcategory->name ?? $category->name) . ' product ' . $i,
-                'description' => 'Detailed description for ' . ($subcategory->name ?? $category->name) . ' product ' . $i,
+                'short_description' => 'Short description for ' . $name . ' product ' . $i,
+                'description' => 'Detailed description for ' . $name . ' product ' . $i,
                 'buying_price' => rand(50, 500),
                 'selling_price' => rand(100, 1000),
                 'discount_type' => 'percentage',
                 'discount_amount' => rand(5, 30),
                 'quantity' => rand(10, 100),
-                'unit_id' => rand(1, 10),
+                'unit' => $this->getUnitName($slug),
                 'category_id' => $category->id,
                 'subcategory_id' => $subcategory?->id,
                 'brand_id' => null,
@@ -62,5 +65,16 @@ class FeaturedProductSeeder extends Seeder
                 'video' => 'videos/products/' . $featuredVideos[($i - 1) % count($featuredVideos)],
             ]);
         }
+    }
+
+    private function getUnitName(string $slug): string
+    {
+        return match ($slug) {
+            'grocery-essentials' => ['Kilogram', 'Gram', 'Pack'][array_rand(['Kilogram', 'Gram', 'Pack'])],
+            'electronics', 'automotive', 'home-appliances' => 'Piece',
+            'fashion' => ['Piece', 'Dozen'][array_rand(['Piece', 'Dozen'])],
+            'skin-care' => ['Milliliter', 'Liter', 'Pack'][array_rand(['Milliliter', 'Liter', 'Pack'])],
+            default => 'Piece',
+        };
     }
 }

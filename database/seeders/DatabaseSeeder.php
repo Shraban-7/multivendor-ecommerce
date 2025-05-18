@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
             ProductUnitSeeder::class,
             ProductSeeder::class,
             CategoryProductSeeder::class,
-            ProductImageSeeder::class,
+            // ProductImageSeeder::class,
             ProductAttributeSeeder::class,
             ProductAttributeOptionSeeder::class,
             ProductStockSeeder::class,

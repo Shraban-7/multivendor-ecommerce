@@ -77,7 +77,7 @@
 
                                             </div>
                                             <p class="text-persian-blue">{{ $product->quantity }}
-                                                {{ $product->unit->name }}</p>
+                                                {{ $product?->unit }}</p>
                                             <p class="font-semibold text-sand-brown">
                                                 {{ money($product->selling_price) }}</p>
 

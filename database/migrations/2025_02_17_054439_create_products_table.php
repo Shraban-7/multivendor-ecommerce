@@ -17,7 +17,6 @@ return new class extends Migration
             $table->unsignedBigInteger('subcategory_id')->nullable();
             $table->unsignedBigInteger('brand_id')->nullable();
             $table->unsignedBigInteger('seller_id')->nullable();
-            $table->unsignedBigInteger('unit_id')->nullable();
 
             $table->string('name');
             $table->string('slug');
@@ -30,6 +29,7 @@ return new class extends Migration
             $table->string('discount_type')->nullable();
             $table->double('discount_amount')->nullable();
             $table->integer('quantity')->default(0);
+            $table->string('unit')->nullable();
 
 
             $table->string('sku')->nullable();
