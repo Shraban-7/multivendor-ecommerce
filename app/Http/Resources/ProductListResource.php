@@ -16,8 +16,8 @@ class ProductListResource extends JsonResource
             'selling_price' => $this->selling_price,
             'discount_type' => $this->discount_type,
             'discount_amount' => $this->discount_amount,
-            'stock_in' => $this->stock_in,
-            'stock_out' => $this->stock_out,
+            'stock' => ($this->stock_in - $this->stock_out),
+            'total_sold' => number_shorten_format($this->stock_out),
         ];
     }
 }
