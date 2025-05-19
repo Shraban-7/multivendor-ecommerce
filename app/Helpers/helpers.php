@@ -132,8 +132,7 @@ if (!function_exists('number_shorten_format')) {
                 break;
             }
         }
-        if($number<= 1000)
-        {
+        if ($number <= 1000) {
             $precision = 0;
         }
         return number_format($number / $divisor, $precision) . $shorthand;
@@ -162,7 +161,8 @@ if (!function_exists('percentage')) {
 }
 
 if (!function_exists('seller')) {
-    function seller() {
+    function seller()
+    {
         return Auth::guard('seller')->user();
     }
 }
@@ -224,20 +224,25 @@ if (!function_exists('validateRequest')) {
 if (!function_exists('money')) {
     function money($amount)
     {
-        return CURRENCY_SYMBOL .' '. number_format($amount, 2);
+        $money = number_format($amount, 2);
+        $decimal = explode('.', $money);
+        if ($decimal[1] == '00') {
+            $money = str_replace('.00', '', $money);
+        }
+        return CURRENCY_SYMBOL . ' ' .  $money;
     }
 }
 
 if (!function_exists('social_links')) {
     function social_links()
     {
-        return SocialLink::where('status',1)->get();
+        return SocialLink::where('status', 1)->get();
     }
 }
 
 if (!function_exists('payment_gateways')) {
     function payment_gateways()
     {
-        return PaymentGateway::where('status',1)->get();
+        return PaymentGateway::where('status', 1)->get();
     }
 }
