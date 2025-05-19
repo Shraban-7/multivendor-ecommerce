@@ -40,6 +40,7 @@ class DatabaseSeeder extends Seeder
             PaymentGatewaySeeder::class,
             PromoPosterSeeder::class,
             ProductVariantSeeder::class,
+            SystemSettingSeeder::class,
         ]);
 
     }
