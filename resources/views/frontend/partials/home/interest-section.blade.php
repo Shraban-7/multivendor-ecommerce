@@ -76,7 +76,7 @@
                                                 @endfor
 
                                             </div>
-                                            <p class="text-persian-blue">{{ $product->quantity }}
+                                            <p class="text-persian-blue">
                                                 {{ $product?->unit }}</p>
                                             <p class="font-semibold text-sand-brown">
                                                 {{ money($product->selling_price) }}</p>

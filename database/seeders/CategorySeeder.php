@@ -50,23 +50,6 @@ class CategorySeeder extends Seeder
                 ]
             ],
             [
-                'name' => 'Halloween',
-                'image' => 'images/categories/base/category-4-min.png',
-                'cover_image' => 'images/categories/cover/halloween-promo-min.png',
-                'cover_title' => 'Are You Afraid of the Dark?',
-                'cover_description' => 'Discounts on living room sets, bedroom furniture, outdoor furniture, and home office desks.',
-                'cover_text_color' => '#FFFFFF',
-                'cover_bg_color' => '#242426',
-                'cover_button_color' => '#E76927',
-                'is_nav' => 1,
-                'is_special' => 1,
-                'subcategories' => [
-                    'Costumes',
-                    'Decorations',
-                    'Party Supplies'
-                ]
-            ],
-            [
                 'name' => 'Electronics',
                 'image' => 'images/categories/base/category-4-min.png',
                 'cover_image' => 'images/categories/cover/electronics-promo-min.png',

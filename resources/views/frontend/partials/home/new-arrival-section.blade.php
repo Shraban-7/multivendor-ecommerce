@@ -67,9 +67,9 @@
                                                  <p class="font-semibold text-theme-teal">
                                                      {{ money($product->discounted_price) }}
                                                  </p>
-                                                 <p class="line-through text-jet-gray">
-                                                     {{ money($product->selling_price) }}
-                                                 </p>
+                                                 <small class="line-through text-jet-gray align-items-end">
+                                                    {{ money($product->selling_price) }}
+                                                </small>
                                              </div>
                                          </div>
 
@@ -131,10 +131,11 @@
                                                  {{ $product->name }}
                                              </a>
                                          </h4>
-                                         <p class="text-jet-gray">{{ $product->quantity }}
-                                             {{ $product?->unit}}</p>
-                                         <p class="font-semibold text-theme-teal">
-                                             {{ money($product->selling_price) }}</p>
+                                         <p class="text-jet-gray">
+                                             {{ $product?->unit }}</p>
+                                             <p class="text-jet-gray align-items-end">
+                                                {{ money($product->selling_price) }}
+                                            </p>
                                      </div>
                                  </div>
                              @endforeach
