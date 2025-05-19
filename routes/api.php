@@ -6,8 +6,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\SettingController;
 
- Route::get('settings', [SettingController::class, 'index']);
- Route::get('dashboard', [DashboardController::class, 'index']);
+Route::get('settings', [SettingController::class, 'index']);
 
 Route::middleware('guest')->group(function () {
     Route::post('login', [AuthController::class, 'login']);
@@ -17,6 +16,8 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('logout', [AuthController::class, 'logout']);
+
+    Route::get('dashboard', [DashboardController::class, 'index']);
 
     // Route::get('categories', [ContentCategoryController::class, 'index']);
 
