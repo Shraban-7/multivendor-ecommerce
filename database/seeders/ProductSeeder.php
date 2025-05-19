@@ -6,6 +6,7 @@ use App\Models\Brand;
 use App\Models\Seller;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\ProductUnit;
 use Illuminate\Support\Str;
 use App\Models\ProductImage;
 use Illuminate\Database\Seeder;
@@ -57,8 +58,8 @@ class ProductSeeder extends Seeder
                         'selling_price'    => $sell,
                         'discount_type'    => 'percentage',
                         'discount_amount'  => rand(5, 25),
-                        'quantity'         => rand(20, 150),
-                        'unit'             => rand(1, 5) . ' ' . $this->getUnit($slug),
+                        'unit_value' => rand(1, 5),
+                        'unit_id' => $this->getUnitId($slug),
                         'category_id'      => $category->id,
                         'subcategory_id'   => $sub->id,
                         'brand_id'         => $brandIds ? $brandIds[array_rand($brandIds)] : null,
@@ -72,10 +73,9 @@ class ProductSeeder extends Seeder
                         'lightdeal_expired_at' => now()->addDays(rand(1, 30)),
                         'best_selling'      => rand(0, 1),
                         'is_featured'       => rand(0, 1),
-                        'status'           => 1,
+                        'is_active'           => 1,
                         'stock_in'          =>  rand(10, 100),
                         'stock_out'         => rand(0, 5),
-                        'stock_status'     => 'in_stock',
                         'shipping_cost'    => rand(10, 50),
                         'tax'              => rand(5, 12),
                         'views'            => rand(100, 5000),
@@ -95,15 +95,28 @@ class ProductSeeder extends Seeder
         }
     }
 
-    private function getUnit(string $slug): string
+    private static array $unitMap = [];
+
+    private function loadUnitMap(): void
     {
-        return match ($slug) {
-            'grocery-essentials' => ['KG', 'G', 'Pack'][array_rand(['KG', 'G', 'Pack'])],
-            'electronics', 'automotive', 'home-appliances' => 'Piece',
-            'fashion' => ['Pair', 'Piece'][rand(0, 1)],
-            'skin-care' => ['Tube', 'Bottle', 'Pack'][rand(0, 2)],
-            default => 'Piece',
+        if (empty(self::$unitMap)) {
+            self::$unitMap = ProductUnit::pluck('id', 'short_name')->toArray();
+        }
+    }
+
+    private function getUnitId(string $slug): int
+    {
+        $this->loadUnitMap();
+
+        $unitShort = match ($slug) {
+            'grocery-essentials' => ['kg', 'g', 'pk'][array_rand(['kg', 'g', 'pk'])],
+            'electronics', 'automotive', 'home-appliances' => 'pc',
+            'fashion' => ['pc', 'dz'][array_rand(['pc', 'dz'])],
+            'skin-care' => ['ml', 'L', 'pk'][array_rand(['ml', 'L', 'pk'])],
+            default => 'pc',
         };
+
+        return self::$unitMap[$unitShort] ?? self::$unitMap['pc'];
     }
 
     private function getProduct(string $slug, string $subName): array

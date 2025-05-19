@@ -13,14 +13,12 @@
                     </ol>
                 </div>
                 <div class="col-sm-6 text-end">
-
                     <a href="{{ route('seller.products.edit', $product['id']) }}" class="btn btn-primary">
                         <i class="fas fa-edit me-1"></i> Edit Product
                     </a>
                     <a href="{{ route('seller.products.index') }}" class="btn btn-secondary">
                         <i class="fas fa-list me-1"></i> All Products
                     </a>
-
                 </div>
             </div>
         </div>

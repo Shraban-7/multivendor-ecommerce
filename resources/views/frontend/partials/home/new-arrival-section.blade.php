@@ -132,7 +132,8 @@
                                              </a>
                                          </h4>
                                          <p class="text-jet-gray">
-                                             {{ $product?->unit }}</p>
+                                            {{ $product->unit_value }}
+                                            {{ $product?->unit->name }}</p>
                                              <p class="text-jet-gray align-items-end">
                                                 {{ money($product->selling_price) }}
                                             </p>

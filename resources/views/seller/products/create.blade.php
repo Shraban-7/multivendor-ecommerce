@@ -55,7 +55,7 @@
                         </div>
                         <div class="mb-3 col-md-6">
                             <label class="form-label">Description</label>
-                            <x-textarea-input name="description" value=""/>
+                            <x-textarea-input name="description" value="" />
                         </div>
                         <div class="mb-3 col-md-3">
                             <label class="form-label">SKU</label>
@@ -88,17 +88,19 @@
                             <input name="discount_amount" type="number" value="" class="form-control" required>
                         </div>
                         <div class="mb-3 col-md-3">
-                            <label class="form-label">Current stock</label>
-                            <input name="stock_in" type="number" value="" class="form-control" required>
-                        </div>
-                        <div class="mb-3 col-md-3">
-                            <label class="form-label">Unit</label>
-                            <select name="unit_id" class="form-select w-100" id="" required>
-                                <option value="" selected disabled>--Choose--</option>
-                                @foreach ($units as $unit)
-                                    <option value="{{ $unit->id }}">{{ $unit->name }}</option>
-                                @endforeach
-                            </select>
+                            <label class="form-label">Unit <small class="text-muted">(e.g., 2.5 kg)</small></label>
+                            <div class="d-flex align-items-center gap-2">
+                                <input type="number" step="0.01" name="unit_value" class="form-control form-control"
+                                    placeholder="Value" style="width: 60%;" required>
+                                <select name="unit_id" class="form-select form-select" style="width: 40%;" required>
+                                    <option value="" disabled>--</option>
+                                    @foreach ($units as $unit)
+                                        <option value="{{ $unit->id }}">
+                                            {{ $unit->short_name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
                         <div class="mb-3 col-md-3">
                             <label class="form-label">Light Deal Expire Date</label>
@@ -237,6 +239,8 @@
 
             $("#form").submit(function(e) {
                 e.preventDefault();
+                var submitBtn = $("#submitBtn");
+                submitBtn.prop('disabled', true).text('Saving...');
                 var formData = new FormData(this);
                 $.ajax({
                     type: 'POST',
@@ -246,12 +250,12 @@
                     processData: false,
                     success: function(data) {
                         location.reload();
-                        // if ($.isEmptyObject(data.error)) {
-                        //     alert(data.success);
-                        //     location.reload();
-                        // } else {
-                        //     printErrorMsg(data.error);
-                        // }
+                    },
+                    error: function(xhr) {
+                        alert('Something went wrong!');
+                    },
+                    complete: function() {
+                        submitBtn.prop('disabled', false).text('Save');
                     }
                 });
             });

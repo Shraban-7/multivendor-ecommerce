@@ -28,8 +28,8 @@ return new class extends Migration
             $table->decimal('selling_price', 10, 2);
             $table->string('discount_type')->nullable();
             $table->double('discount_amount')->nullable();
-            $table->integer('quantity')->default(0);
-            $table->string('unit')->nullable();
+            $table->unsignedBigInteger('unit_id')->nullable();
+            $table->integer('unit_value')->nullable();
 
 
             $table->string('sku')->nullable();
@@ -45,14 +45,15 @@ return new class extends Migration
 
             $table->string('video')->nullable();
 
-            $table->boolean('status')->default(1);
-            $table->string('stock_status')->nullable();
+            $table->boolean('is_active')->default(1);
             $table->integer('stock_in')->default(0);
             $table->integer('stock_out')->default(0);
 
             $table->decimal('shipping_cost', 10, 2)->default(0.00);
             $table->decimal('tax', 5, 2)->default(0.00);
             $table->bigInteger('views')->default(0);
+            $table->decimal('avg_rating',3,1)->default(0);
+            $table->integer('rating_count')->default(0);
 
             $table->string('meta_title', 255)->nullable();
             $table->text('meta_keywords')->nullable();
