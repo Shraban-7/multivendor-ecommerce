@@ -11,9 +11,8 @@ class CategoryResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            //'category_id' => $this->category_id,
             'name' => $this->name,
-            'image' => is_null($this->image) ? null : asset($this->image),
+            'image' => is_null($this->image) ? asset('assets/frontend/images/placeholder-img.jpg') : asset($this->image),
             'subcategories' => CategoryResource::collection($this->whenLoaded('subcategories'))
         ];
     }

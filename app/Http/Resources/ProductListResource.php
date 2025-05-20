@@ -13,11 +13,13 @@ class ProductListResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'thumbnail' => storage_url($this->thumbnail),
-            'selling_price' => $this->selling_price,
+            'selling_price' => removeZeroFromDecimal($this->selling_price),
             'discount_type' => $this->discount_type,
             'discount_amount' => $this->discount_amount,
-            'stock_in' => $this->stock_in,
-            'stock_out' => $this->stock_out,
+            'stock' => ($this->stock_in - $this->stock_out),
+            'total_sold' => number_shorten_format($this->stock_out),
+            'category' => CategoryResource::make($this->whenLoaded('category')),
+            'subcategory' => CategoryResource::make($this->whenLoaded('subcategory')),
         ];
     }
 }
