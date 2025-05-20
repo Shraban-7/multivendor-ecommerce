@@ -11,14 +11,14 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $cateory_id = $request->category_id ?? '';
-        $subcateory_id = $request->subcateory_id ?? '';
+        $category_id = $request->category_id ?? '';
+        $subcategory_id = $request->subcategory_id ?? '';
         $name = $request->name ?? '';
 
         $products = Product::query();
 
-        if ($cateory_id != '') $products->where('cateory_id', $cateory_id);
-        if ($subcateory_id != '') $products->where('subcateory_id', $subcateory_id);
+        if ($category_id != '') $products->where('category_id', $category_id);
+        if ($subcategory_id != '') $products->where('subcategory_id', $subcategory_id);
 
         if ($name != '') {
             $products->where(function ($query) use ($name) {
