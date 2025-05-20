@@ -18,7 +18,7 @@ class CategoryController extends Controller
         $skip = ($page - 1) * $limit;
 
         $category = Category::where('slug', $slug)
-            ->with(['products.variants.attributeOptions', 'subcategories'])
+            ->with(['products', 'subcategories',])
             ->first();
 
         $brands = Brand::get();
@@ -54,7 +54,7 @@ class CategoryController extends Controller
                 ->having('avg_review', '=', $request->review);
         }
 
-        $productAttributes = ProductAttribute::with('options')->get()->unique('name');
+        $productAttributes = ProductAttribute::where('category_id', $category->id)->with('options')->get();
 
         foreach ($request->all() as $key => $value) {
             if (in_array(strtolower($key), $productAttributes->pluck('name')->map('strtolower')->toArray()) && $value != 'all') {
@@ -64,7 +64,7 @@ class CategoryController extends Controller
             }
         }
 
-        $category_products = $query->with('variants.attributeOptions','unit', 'images')
+        $category_products = $query->with('variants','unit', 'images')
             ->latest()
             ->skip($skip)
             ->take($limit)->get();

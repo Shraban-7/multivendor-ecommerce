@@ -111,8 +111,7 @@
                                 <div class="flex items-center gap-2">
                                     <div class="flex items-center gap-2 text-davy-gray">
                                         <span>Seller: </span>
-                                        <a href="{{ route('sellers.shop', $seller['username']) }}"
-                                            class="inline-block">
+                                        <a href="{{ route('sellers.shop', $seller['username']) }}" class="inline-block">
                                             <span class="text-blue-500 font-bold">{{ $seller['shop_name'] }}</span>
                                         </a>
                                         <span class="border-r border-gray-400 h-4"></span>
@@ -148,9 +147,9 @@
                                 <div class="flex flex-no-wrap items-center gap-1 new-price">
                                     <i class="fa-solid fa-bolt text-[#ffa755]"></i>
                                     <h3 id="current-price" class="font-bold current-price text-primary product-price">
-                                        {{ $product['discount_price'] }}</h3>
+                                        {{ money($product['discount_price']) }}</h3>
                                 </div>
-                                <h6 id="old-price" class="line-through text-jet-gray">{{ $product['price'] }}
+                                <h6 id="old-price" class="line-through text-jet-gray">{{ money($product['price']) }}
                                 </h6>
                                 <span class="text-xs px-2.5 py-0.5 rounded-lg border border-primary discount-badge">
                                     -{{ $product['discount']['amount'] }} last 2 days
@@ -188,7 +187,14 @@
                                                         <div class="form-ctrl flex flex-col gap-2 items-center">
                                                             <input id="{{ $inputId }}" type="radio"
                                                                 value="{{ $option['id'] }}"
-                                                                data-option-id="{{ $option['id'] }}"
+                                                                data-id="{{ $option['id'] }}"
+                                                                data-attribute="{{ $attribute['id'] }}"
+                                                                data-variant-id="{{ $option['variant_id'] }}"
+                                                                data-sku="{{ $option['sku'] }}"
+                                                                data-price="{{ $option['price'] }}"
+                                                                data-product-price="{{ $product['price'] }}"
+                                                                data-discounted-price="{{ $product['discount_price'] }}"
+                                                                data-options-id='@json($option['option_ids'])'
                                                                 name="{{ $inputName }}"
                                                                 class="hidden peer variant-option" />
 
@@ -629,57 +635,72 @@
                 updateQuantity();
             });
         </script>
+
         <script>
             $(document).ready(function() {
-                $('#variantForm').on('change', '.variant-option', function() {
-                    let selectedOptions = [];
+                function updatePriceAndSku() {
+                    let totalPrice = 0;
+                    let totalDiscountedPrice = 0;
+                    let selectedSku = '';
+
                     $('.variant-option:checked').each(function() {
-                        selectedOptions.push($(this).val());
+                        const selected = $(this);
+                        const basePrice = parseFloat(selected.data('product-price')) || 0;
+                        const baseDiscountedPrice = parseFloat(selected.data('discounted-price')) || 0;
+                        const price = parseFloat(selected.data('price')) || 0;
+                        const sku = selected.data('sku');
+
+                        totalPrice = basePrice + price;
+                        totalDiscountedPrice = baseDiscountedPrice + price;
+                        selectedSku = sku;
                     });
 
-                    let productSlug = $('#variantForm').data('slug');
+                    $('#current-price').text('৳ ' + totalDiscountedPrice.toFixed(2));
+                    $('#old-price').text('৳ ' + totalPrice.toFixed(2));
+                    $('#variantSku').val(selectedSku);
+                }
 
-                    $.ajax({
-                        url: '/products/' + productSlug + '/get-variant',
-                        method: 'POST',
-                        data: {
-                            option_ids: selectedOptions
-                        },
-                        success: function(response) {
+                // STEP 1: Detect the first variant group
+                const firstInput = $('#variantForm .variant-option').first();
+                const selectedOptionIds = firstInput.data('options-id') || [];
 
-                            if (response.price !== undefined) {
-                                $('#current-price').text('৳ ' + (parseInt(response
-                                    .discounted_price)));
-                                $('#variantSku').val(response.sku);
+                console.log(selectedOptionIds);
 
-                                $('#old-price').text('৳ ' + (parseInt(response.price)));
-                                // $('.discount-badge').hide();
-                            }
+                // STEP 2: For each option in the form, check if its ID is in the selected variant option_ids
+                $('#variantForm .variant-option').each(function() {
+                    const input = $(this);
+                    const optionId = parseInt(input.val());
 
-                            if (response.stock !== undefined) {
-                                if (response.stock > 0) {
-                                    $('#product-stock').text('In Stock').removeClass('text-red-500')
-                                        .addClass('text-green-600');
-                                    $('#add-to-cart-button').prop('disabled', false);
-                                } else {
-                                    $('#product-stock').text('Out of Stock').removeClass(
-                                        'text-green-600').addClass('text-red-500');
-                                    $('#add-to-cart-button').prop('disabled', true);
-                                }
-                            }
+                    if (selectedOptionIds.includes(optionId)) {
+                        input.prop('checked', true);
+                    } else {
+                        input.prop('checked', false);
+                    }
+                });
 
-                            if (response.image) {
-                                $('#product-image').attr('src', response.image);
-                            }
-                        },
-                        error: function(xhr) {
-                            console.error('Error fetching variant:', xhr.responseJSON?.message ||
-                                'Something went wrong');
+                // STEP 3: Update UI on page load
+                updatePriceAndSku();
+
+                // STEP 4: On change, recheck variant ID group
+                $('#variantForm').on('change', '.variant-option', function() {
+                    const changedInput = $(this);
+                    const newVariantId = changedInput.data('variant-id');
+
+                    $('#variantForm .variant-option').each(function() {
+                        const input = $(this);
+                        if (input.data('variant-id') === newVariantId) {
+                            input.prop('checked', true);
+                        } else if (input.data('attribute') === changedInput.data('attribute')) {
+                            // Uncheck other options in the same attribute group
+                            input.prop('checked', false);
                         }
                     });
+
+                    updatePriceAndSku();
                 });
             });
         </script>
+
 
         <script>
             $(document).ready(function() {
