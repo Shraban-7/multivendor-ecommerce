@@ -28,7 +28,9 @@ class ProductController extends Controller
             });
         }
 
-        $products = $products->paginate(15)->appends($request->query());
+        $products = $products->with('category', 'subcategory')
+            ->paginate(15)
+            ->appends($request->query());
 
         return apiResourceResponse(ProductListResource::collection($products));
     }
