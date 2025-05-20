@@ -194,7 +194,6 @@
                                                                 data-price="{{ $option['price'] }}"
                                                                 data-product-price="{{ $product['price'] }}"
                                                                 data-discounted-price="{{ $product['discount_price'] }}"
-                                                                data-options-id='@json($option['option_ids'])'
                                                                 name="{{ $inputName }}"
                                                                 class="hidden peer variant-option" />
 
@@ -639,59 +638,60 @@
         <script>
             $(document).ready(function() {
                 function updatePriceAndSku() {
-                    let totalPrice = 0;
-                    let totalDiscountedPrice = 0;
+                    const checkedOptions = $('.variant-option:checked');
+
+                    if (checkedOptions.length === 0) return;
+
+                    let basePrice = parseFloat(checkedOptions.first().data('product-price')) || 0;
+                    let baseDiscountedPrice = parseFloat(checkedOptions.first().data('discounted-price')) || 0;
+
+                    let totalAdditionalPrice = 0;
                     let selectedSku = '';
 
-                    $('.variant-option:checked').each(function() {
+                    checkedOptions.each(function() {
                         const selected = $(this);
-                        const basePrice = parseFloat(selected.data('product-price')) || 0;
-                        const baseDiscountedPrice = parseFloat(selected.data('discounted-price')) || 0;
-                        const price = parseFloat(selected.data('price')) || 0;
-                        const sku = selected.data('sku');
+                        const additionalPrice = parseFloat(selected.data('price')) || 0;
+                        totalAdditionalPrice += additionalPrice;
 
-                        totalPrice = basePrice + price;
-                        totalDiscountedPrice = baseDiscountedPrice + price;
-                        selectedSku = sku;
+                        selectedSku = selected.data('sku');
                     });
 
-                    $('#current-price').text('৳ ' + totalDiscountedPrice.toFixed(2));
-                    $('#old-price').text('৳ ' + totalPrice.toFixed(2));
+                    const finalPrice = basePrice + totalAdditionalPrice;
+                    const finalDiscountedPrice = baseDiscountedPrice + totalAdditionalPrice;
+
+                    $('#current-price').text('৳ ' + finalDiscountedPrice.toFixed(2));
+                    $('#old-price').text('৳ ' + finalPrice.toFixed(2));
                     $('#variantSku').val(selectedSku);
                 }
 
-                // STEP 1: Detect the first variant group
-                const firstInput = $('#variantForm .variant-option').first();
-                const selectedOptionIds = firstInput.data('options-id') || [];
+                // STEP 1: Select the first input of each attribute group
+                const seenAttributes = new Set();
 
-                console.log(selectedOptionIds);
-
-                // STEP 2: For each option in the form, check if its ID is in the selected variant option_ids
                 $('#variantForm .variant-option').each(function() {
-                    const input = $(this);
-                    const optionId = parseInt(input.val());
+                    const attrId = $(this).data('attribute');
 
-                    if (selectedOptionIds.includes(optionId)) {
-                        input.prop('checked', true);
-                    } else {
-                        input.prop('checked', false);
+                    if (!seenAttributes.has(attrId)) {
+                        seenAttributes.add(attrId);
+                        $(this).prop('checked', true);
                     }
                 });
 
-                // STEP 3: Update UI on page load
+                // STEP 2: After setting the default selection, update the price and SKU
                 updatePriceAndSku();
 
-                // STEP 4: On change, recheck variant ID group
+                // STEP 3: Listen for changes on variant options
                 $('#variantForm').on('change', '.variant-option', function() {
                     const changedInput = $(this);
                     const newVariantId = changedInput.data('variant-id');
+                    const attributeId = changedInput.data('attribute');
 
                     $('#variantForm .variant-option').each(function() {
                         const input = $(this);
+                        const inputAttributeId = input.data('attribute');
+
                         if (input.data('variant-id') === newVariantId) {
                             input.prop('checked', true);
-                        } else if (input.data('attribute') === changedInput.data('attribute')) {
-                            // Uncheck other options in the same attribute group
+                        } else if (inputAttributeId === attributeId) {
                             input.prop('checked', false);
                         }
                     });
@@ -700,6 +700,8 @@
                 });
             });
         </script>
+
+
 
 
         <script>
