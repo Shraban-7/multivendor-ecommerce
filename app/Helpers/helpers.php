@@ -221,15 +221,26 @@ if (!function_exists('validateRequest')) {
     }
 }
 
+if (!function_exists('removeZeroFromDecimal')) {
+    function removeZeroFromDecimal($number, $dataType = 'string')
+    {
+        $decimal = explode('.', $number);
+        if (isset($decimal[1]) && $decimal[1] == '00') {
+            $number = str_replace('.00', '', $number);
+        }
+
+        if($dataType == 'string') return (string) $number;
+
+        return (int) $number;
+    }
+}
+
 if (!function_exists('money')) {
     function money($amount)
     {
         $money = number_format($amount, 2);
-        $decimal = explode('.', $money);
-        if ($decimal[1] == '00') {
-            $money = str_replace('.00', '', $money);
-        }
-        return CURRENCY_SYMBOL . ' ' .  $money;
+
+        return CURRENCY_SYMBOL . ' ' .  removeZeroFromDecimal($money);
     }
 }
 
