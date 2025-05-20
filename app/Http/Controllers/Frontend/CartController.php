@@ -6,7 +6,6 @@ use App\Models\Cart;
 use App\Models\Product;
 use App\Models\CartItem;
 use App\Models\Wishlist;
-use App\Enums\DiscountType;
 use Illuminate\Http\Request;
 use App\Models\ProductVariant;
 use App\Http\Controllers\Controller;
