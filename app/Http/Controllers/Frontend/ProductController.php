@@ -1,26 +1,25 @@
 <?php
-
 namespace App\Http\Controllers\Frontend;
 
-use App\Models\Review;
-use App\Models\Product;
 use App\Enums\DiscountType;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use App\Models\ProductAttribute;
 use App\Models\ProductAttributeOption;
 use App\Models\ProductVariant;
 use App\Models\ProductVariantProductAttributeOption;
+use App\Models\Review;
 use App\Models\Seller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
     public function details($slug, Request $request)
     {
         $limit = 8;
-        $page = $request->get('page', 1);
-        $skip = ($page - 1) * $limit;
+        $page  = $request->get('page', 1);
+        $skip  = ($page - 1) * $limit;
 
         $productModel = Product::where('slug', $slug)
             ->with([
@@ -29,11 +28,11 @@ class ProductController extends Controller
                 'images',
                 'seller',
                 'reviews',
-                'variants.attributeOptions',
+                'variants',
             ])->firstOrFail();
 
         $categoryId = $productModel->category->id;
-        $sellerId = $productModel->seller->id;
+        $sellerId   = $productModel->seller->id;
 
         $discount_price = $productModel->selling_price;
         if ($productModel->discount_type === DiscountType::FLAT) {
@@ -59,7 +58,7 @@ class ProductController extends Controller
             ->pluck('count', 'rating')
             ->toArray();
 
-        $totalReviews = array_sum($reviewStats);
+        $totalReviews  = array_sum($reviewStats);
         $averageRating = $product['rating'];
 
         $ratings = collect(range(1, 5))->mapWithKeys(function ($star) use ($reviewStats) {
@@ -69,24 +68,37 @@ class ProductController extends Controller
         $sellerModel = Seller::where('id', $sellerId)->with('followers')->first();
 
         $seller = [
-            'username' => $sellerModel->username,
-            'shop_name' => $sellerModel->business_name,
-            'shop_logo' => $sellerModel->business_logo,
+            'username'        => $sellerModel->username,
+            'shop_name'       => $sellerModel->business_name,
+            'shop_logo'       => $sellerModel->business_logo,
             'total_followers' => number_shorten_format($sellerModel->followers->count()),
-            'total_sell' => number_shorten_format(Product::where('seller_id', $sellerId)->sum('stock_out')),
-            'rating' => round($averageRating),
-            'total_products' => Product::where('seller_id', $sellerId)->count(),
+            'total_sell'      => number_shorten_format(Product::where('seller_id', $sellerId)->sum('stock_out')),
+            'rating'          => round($averageRating),
+            'total_products'  => Product::where('seller_id', $sellerId)->count(),
         ];
 
         $variantIds = $product['variants']->pluck('id');
 
-        $variantAttributeOptionIds = ProductVariantProductAttributeOption::whereIn('product_variant_id', $variantIds)->pluck('product_attribute_option_id');
+        $variants = ProductVariant::whereIn('id', $variantIds)->get();
+        $variantOptionIdArrays = $variants->pluck('option_ids')->toArray();
+        $uniqueOptionIds = array_unique(array_merge(...$variantOptionIdArrays));
 
-        $productAttributeOptions = ProductAttributeOption::whereIn('id', $variantAttributeOptionIds)->get();
+        $productAttributeOptions = ProductAttributeOption::whereIn('id', $uniqueOptionIds)->get();
+        $productAttributeIds = $productAttributeOptions->pluck('product_attribute_id')->unique()->toArray();
 
-        $productAttributeOptionIds = array_unique($productAttributeOptions->pluck('product_attribute_id')->toArray());
+        $productAttributeModel = ProductAttribute::whereIn('id', $productAttributeIds)
+            ->with('options')
+            ->get();
 
-        $productAttributeModel = ProductAttribute::whereIn('id', $productAttributeOptionIds)->with('options')->get();
+        $variantsByOptionId = [];
+
+        foreach ($variants as $variant) {
+            foreach ($variant->option_ids as $optionId) {
+                $variantsByOptionId[$optionId][] = $variant;
+            }
+        }
+
+       return $variantsByOptionId = collect($variantsByOptionId);
 
         $productAttributes = [];
 
@@ -96,15 +108,21 @@ class ProductController extends Controller
                 'name' => $attribute->name,
                 'options' => $productAttributeOptions
                     ->where('product_attribute_id', $attribute->id)
-                    ->map(function ($option) {
+                    ->map(function ($option) use ($variantsByOptionId) {
+                        $variant = collect($variantsByOptionId[$option->id] ?? [])->first();
+
                         return [
                             'id' => $option->id,
                             'value' => $option->value,
+                            'variant_id' => $variant?->id,
+                            'sku' => $variant?->sku,
+                            'price' => $variant?->additional_price,
+                            'option_ids' => $variant?->option_ids
                         ];
-                    })
-                    ->values(),
+                    })->values(),
             ];
         }
+
 
         if ($request->ajax()) {
             $type = $request->get('type');
@@ -115,7 +133,7 @@ class ProductController extends Controller
                 }
 
                 return view('frontend.partials.product-card-load', [
-                    'products' => $products
+                    'products' => $products,
                 ])->render();
             }
 
@@ -131,19 +149,19 @@ class ProductController extends Controller
                 }
 
                 return view('frontend.partials.review-card', [
-                    'reviews' => $reviews
+                    'reviews' => $reviews,
                 ])->render();
             }
         }
 
         return view('frontend.products.details', [
-            'product' => $product,
-            'products' => $products,
-            'ratings' => $ratings,
-            'totalReviews' => $totalReviews,
-            'averageRating' => round($averageRating, 1),
-            'seller' => $seller,
-            'productAttributes' => $productAttributes
+            'product'           => $product,
+            'products'          => $products,
+            'ratings'           => $ratings,
+            'totalReviews'      => $totalReviews,
+            'averageRating'     => round($averageRating, 1),
+            'seller'            => $seller,
+            'productAttributes' => $productAttributes,
         ]);
     }
 
@@ -151,7 +169,7 @@ class ProductController extends Controller
     {
         if ($request->ajax()) {
             $productId = $request->product_id;
-            $page = $request->page ?? 1;
+            $page      = $request->page ?? 1;
 
             $reviews = Review::where('product_id', $productId)
                 ->latest()
@@ -164,13 +182,12 @@ class ProductController extends Controller
             $view = view('frontend.partials.review-card', compact('reviews'))->render();
 
             return response()->json([
-                'html' => $view,
+                'html'      => $view,
                 'next_page' => $reviews->currentPage() + 1,
-                'has_more' => $reviews->hasMorePages()
+                'has_more'  => $reviews->hasMorePages(),
             ]);
         }
     }
-
 
     public function getVariant(Request $request, $slug)
     {
@@ -194,12 +211,12 @@ class ProductController extends Controller
 
         if ($variant) {
             return response()->json([
-                'id' => $variant->id,
-                'price' => $additional_price + $product->selling_price,
+                'id'               => $variant->id,
+                'price'            => $additional_price + $product->selling_price,
                 'discounted_price' => $additional_price + $product->discounted_price,
-                'stock' => $variant->stock,
-                'sku' => $variant->sku,
-                'description' => $variant->description,
+                'stock'            => $variant->stock,
+                'sku'              => $variant->sku,
+                'description'      => $variant->description,
             ]);
         } else {
             return response()->json(['message' => 'Variant not found'], 404);

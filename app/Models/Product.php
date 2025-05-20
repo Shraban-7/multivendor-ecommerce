@@ -91,7 +91,7 @@ class Product extends Model
 
     public function toDetailsArray()
     {
-        $this->load('images', 'category', 'subcategory', 'variants.attributeOptions.productAttribute','seller','reviews.user');
+        $this->load('images', 'category', 'subcategory', 'variants','seller','reviews.user');
 
         $sold = OrderItem::where('product_id', $this->id)->count();
         $revenue = $sold * $this->selling_price;
@@ -116,7 +116,7 @@ class Product extends Model
             'description' => $this->description,
             'price' => $this->selling_price,
             'buying_cost' => $this->buying_price,
-            'discount_price' => money($this->discounted_price),
+            'discount_price' => $this->discounted_price,
             'discount' => [
                 'type' => $this->discount_type,
                 'amount' => money($this->discount),
@@ -130,17 +130,17 @@ class Product extends Model
                     'id' => $variant->id,
                     'sku' => $variant->sku,
                     'stock' => $variant->stock,
-                    'price' => $variant->price,
-                    'attributes' => $variant->attributeOptions->map(function ($option) {
-                        return [
-                            'attribute_id' => $option->productAttribute->id,
-                            'name' => $option->productAttribute->name,
-                            'options' => [
-                                'id' => $option->id,
-                                'value' => $option->value ?? null,
-                            ]
-                        ];
-                    }),
+                    'price' => $variant->additional_price,
+                    // 'attributes' => $variant->attributeOptions->map(function ($option) {
+                    //     return [
+                    //         'attribute_id' => $option->productAttribute->id,
+                    //         'name' => $option->productAttribute->name,
+                    //         'options' => [
+                    //             'id' => $option->id,
+                    //             'value' => $option->value ?? null,
+                    //         ]
+                    //     ];
+                    // }),
                 ];
             }),
             'total_sold' => $sold,

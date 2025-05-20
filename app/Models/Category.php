@@ -20,7 +20,7 @@ class Category extends Model
     {
         return $query->whereNull('category_id');
     }
-    
+
     public function scopeSubcategory($query)
     {
         return $query->whereNotNull('category_id');
@@ -51,5 +51,10 @@ class Category extends Model
     public function products()
     {
         return $this->hasMany(Product::class, 'category_id');
+    }
+
+    public function productAttributes()
+    {
+        return $this->hasMany(ProductAttribute::class);
     }
 }

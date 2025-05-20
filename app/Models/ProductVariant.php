@@ -11,6 +11,11 @@ class ProductVariant extends Model
 
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'option_ids' => 'array',
+    ];
+
+
     public function scopeWhereProduct($query,Product $product)
     {
         return $query->where('product_id',$product->id);
