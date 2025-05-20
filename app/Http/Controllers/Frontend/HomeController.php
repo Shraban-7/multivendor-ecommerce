@@ -44,6 +44,7 @@ class HomeController extends Controller
 
         $data['new_arrival_products'] = Product::with('unit')
             ->withAvg('reviews', 'rating')
+            ->where('is_featured',0)
             ->withCount('reviews')
             ->orderByDesc('id')
             ->skip(6)

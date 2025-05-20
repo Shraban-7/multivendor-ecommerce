@@ -8,6 +8,7 @@ use App\Enums\StockType;
 use App\Models\Category;
 use App\Models\OrderItem;
 use App\Models\ProductUnit;
+use Illuminate\Support\Str;
 use App\Models\ProductImage;
 use App\Models\StockHistory;
 use Illuminate\Http\Request;
@@ -54,8 +55,8 @@ class ProductController extends Controller
             'tax' => 'required|numeric',
             'discount_type' => 'required|string',
             'discount_amount' => 'required|numeric',
-            'stock_in' => 'required|numeric',
             'unit_id' => 'required|numeric',
+            'unit_value' => 'required|string',
             'is_trending' => 'required|boolean',
             'best_selling' => 'required|boolean',
             'is_featured' => 'required|boolean',
@@ -75,7 +76,6 @@ class ProductController extends Controller
         }
         $validated['seller_id'] = seller()->id;
         $validated['slug'] = str_slug('products', 'slug', $validated['name']);
-        $validated['quantity'] = $validated['stock_in'];
         $validated['sku'] = $validated['sku'] ?? strtoupper(uniqid());
 
         $product = Product::create($validated);
@@ -94,8 +94,9 @@ class ProductController extends Controller
         return successResponse("Product added successfully");
     }
 
-    public function details(Product $product)
+    public function details($slug)
     {
+        $product = Product::where('slug',$slug)->first();
         $product = $product->toDetailsArray();
 
         $productAttributes = ProductAttribute::get();
@@ -124,8 +125,8 @@ class ProductController extends Controller
             'sku' => 'nullable|string|max:255',
             'buying_price' => 'required|numeric',
             'selling_price' => 'required|numeric',
-            'stock_in' => 'required|numeric',
             'unit_id' => 'required|numeric',
+            'unit_value' => 'required|string',
             'is_trending' => 'required|boolean',
             'best_selling' => 'required|boolean',
             'is_featured' => 'required|boolean',
@@ -140,7 +141,7 @@ class ProductController extends Controller
         ]);
 
         $validated['slug'] = str_slug('products', 'slug', $validated['name']);
-        $validated['quantity'] = $validated['stock_in'];
+
         $validated['sku'] = $validated['sku'] ?? strtoupper(uniqid());
 
         if ($request->hasFile('thumbnail')) {

@@ -12,7 +12,7 @@
                 <form id="form" enctype="multipart/form-data" method="POST">
                     <div class="row">
                         <div class="mb-3 col-md-3">
-                            <label class="form-label">Name ( {{ $product->id }})</label>
+                            <label class="form-label">Name</label>
                             <input name="name" type="text" value="{{ old('name', $product->name) }}"
                                 class="form-control" required>
                         </div>
@@ -105,20 +105,40 @@
                                 required>
                         </div>
                         <div class="mb-3 col-md-3">
-                            <label class="form-label">Unit</label>
-                            <select name="unit_id" class="form-select w-100" id="" required>
-                                <option value="" selected disabled>--Choose--</option>
-                                @foreach ($units as $unit)
-                                    <option value="{{ $unit->id }}"
-                                        {{ $unit->id == $product->unit_id ? 'selected' : '' }}>{{ $unit->name }}
-                                    </option>
-                                @endforeach
-                            </select>
+                            <label class="form-label">Unit <small class="text-muted">(e.g., 2.5 kg)</small></label>
+                            <div class="d-flex align-items-center gap-2">
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    name="unit_value"
+                                    value="{{ old('unit_value', $product->unit_value ?? '') }}"
+                                    class="form-control form-control"
+                                    placeholder="Value"
+                                    style="width: 60%;"
+                                    required
+                                >
+                                <select
+                                    name="unit_id"
+                                    class="form-select form-select"
+                                    style="width: 40%;"
+                                    required
+                                >
+                                    <option value="" disabled {{ old('unit_id', $product->unit_id ?? '') === null ? 'selected' : '' }}>--</option>
+                                    @foreach ($units as $unit)
+                                        <option value="{{ $unit->id }}"
+                                            {{ (old('unit_id', $product->unit_id ?? '') == $unit->id) ? 'selected' : '' }}>
+                                            {{ $unit->short_name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
+
+
                         <div class="mb-3 col-md-3">
                             <label class="form-label">Current stock</label>
                             <input name="stock_in" type="text" value="{{ old('stock_in', $product->stock_in) }}"
-                                class="form-control" required>
+                                class="form-control" disabled>
                         </div>
                         <div class="mb-3 col-md-3">
                             <label class="form-label">Light Deal Expire Date</label>
@@ -211,7 +231,7 @@
                             </div>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-theme">Update</button>
+                    <button type="submit" id="updateBtn" class="btn btn-theme">Update</button>
                 </form>
             </div>
         </div>
@@ -297,6 +317,8 @@
 
             $("#form").submit(function(e) {
                 e.preventDefault();
+                var submitBtn = $("#updateBtn");
+                submitBtn.prop('disabled', true).text('Saving...');
                 var formData = new FormData(this);
 
                 $.ajax({
@@ -310,10 +332,12 @@
                     processData: false,
                     success: function(response) {
                         location.reload();
+                        submitBtn.prop('disabled', false).text('Update');
                     },
                     error: function(error) {
                         alert('Something went wrong');
-                    }
+                        submitBtn.prop('disabled', false).text('Update');
+                    },
                 });
             });
 

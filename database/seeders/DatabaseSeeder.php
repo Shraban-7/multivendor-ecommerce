@@ -22,8 +22,6 @@ class DatabaseSeeder extends Seeder
             BrandSeeder::class,
             ProductUnitSeeder::class,
             ProductSeeder::class,
-            CategoryProductSeeder::class,
-            // ProductImageSeeder::class,
             ProductAttributeSeeder::class,
             ProductAttributeOptionSeeder::class,
             ProductStockSeeder::class,
@@ -33,13 +31,12 @@ class DatabaseSeeder extends Seeder
             ReviewSeeder::class,
             CouponSeeder::class,
             CategoryBannerSeeder::class,
-            FeaturedProductSeeder::class,
             HeroBannerSeeder::class,
             HomeMidBannerSeeder::class,
             SocialLinkSeeder::class,
             PaymentGatewaySeeder::class,
             PromoPosterSeeder::class,
-            ProductVariantSeeder::class,
+            // ProductVariantSeeder::class,
             SystemSettingSeeder::class,
         ]);
 

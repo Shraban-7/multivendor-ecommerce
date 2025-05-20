@@ -65,12 +65,12 @@
 
                                             <!-- Prices (no wrap) -->
                                             <div class="flex gap-x-2 text-nowrap text-sm sm:text-base">
-                                                <p class="font-semibold text-theme-teal">
+                                                <p class="font-semibold  text-theme-teal">
                                                     {{ money($product->discounted_price) }}
                                                 </p>
-                                                <p class="line-through text-jet-gray">
+                                                <small class="line-through text-jet-gray align-items-end">
                                                     {{ money($product->selling_price) }}
-                                                </p>
+                                                </small>
                                             </div>
                                         </div>
 

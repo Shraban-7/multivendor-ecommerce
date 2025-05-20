@@ -42,7 +42,7 @@
                         </td>
                         <td>
                             <div class="mb-2">
-                                @if ($product->stock_status == 'in_stock')
+                                @if ($product->stock_in > 0)
                                     <span class="text-white badge text-bg-success">In Stock</span>
                                 @else
                                     <span class="text-white badge text-bg-danger">Stock Out</span>
@@ -56,7 +56,7 @@
                         </td>
                         <td>{{ $product->created_at->format('d-m-y h:i A') }} </td>
                         <td class="d-flex">
-                            <a href="{{ route('seller.products.details', $product->id) }}"
+                            <a href="{{ route('seller.products.details', $product->slug) }}"
                                 class="border btn btn-light btn-sm me-1" title="Details">
                                 <i data-feather="eye" class="icon-xs"></i> Details
                             </a>
@@ -138,7 +138,12 @@
     </div>
     @push('scripts')
         <script>
-            new DataTable('#product-table');
+            new DataTable('#product-table', {
+                order: [
+                    [3, 'desc']
+                ]
+            });
         </script>
     @endpush
+
 @endsection

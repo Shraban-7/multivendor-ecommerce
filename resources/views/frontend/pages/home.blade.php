@@ -36,7 +36,7 @@
         <!-- Sessional Promotion Thumbnail Section Ended -->
 
         <!-- Halloween Product Section Starts -->
-            @include('frontend.partials.home.halloween-product-section')
+            {{-- @include('frontend.partials.home.halloween-product-section') --}}
         <!-- Halloween Product Section Ended -->
 
         <!-- Featured Videos Section Starts -->
