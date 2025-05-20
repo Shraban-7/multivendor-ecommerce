@@ -59,7 +59,7 @@ class ProductSeeder extends Seeder
                             'description'          => "Premium and reliable " . strtolower($sub->name),
                             'buying_price'         => $productData['buying_price'],
                             'selling_price'        => $productData['selling_price'],
-                            'discount_type'        => 'fixed',
+                            'discount_type'        => \App\Enums\DiscountType::FLAT,
                             'discount_amount'      => 10,
                             'unit_value'           => rand(1, 5),
                             'unit_id'              => $this->getUnitId($slug),
