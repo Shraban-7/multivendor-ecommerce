@@ -59,8 +59,8 @@ class ProductSeeder extends Seeder
                             'description'          => "Premium and reliable " . strtolower($sub->name),
                             'buying_price'         => $productData['buying_price'],
                             'selling_price'        => $productData['selling_price'],
-                            'discount_type'        => 'percentage',
-                            'discount_amount'      => rand(5, 25),
+                            'discount_type'        => 'fixed',
+                            'discount_amount'      => 10,
                             'unit_value'           => rand(1, 5),
                             'unit_id'              => $this->getUnitId($slug),
                             'category_id'          => $category->id,
@@ -76,11 +76,11 @@ class ProductSeeder extends Seeder
                             'lightdeal_expired_at' => now()->addDays(rand(1, 30)),
                             'best_selling'         => rand(0, 1),
                             'is_featured'          => rand(0, 1),
-                            'stock_in'             => rand(10, 100),
-                            'stock_out'            => rand(0, 5),
-                            'shipping_cost'        => rand(10, 50),
-                            'tax'                  => rand(5, 12),
-                            'views'                => rand(100, 5000),
+                            'stock_in'             =>  100,
+                            'stock_out'            => 0,
+                            'shipping_cost'        => 10,
+                            'tax'                  => 10,
+                            'views'                => 0,
                             'video'                => 'videos/products/' . $featuredVideos[($i - 1) % count($featuredVideos)],
                         ]);
 
@@ -112,9 +112,9 @@ class ProductSeeder extends Seeder
                                             'product_id'       => $product->id,
                                             'option_id'        => $option->id,
                                             'sku'              => $product->sku . '-' . strtoupper(Str::random(4)),
-                                            'additional_price' => round(rand(10, 50)),
-                                            'stock_in'         => rand(20, 30),
-                                            'stock_out'         => rand(10, 15),
+                                            'additional_price' => rand(1, 5) * 10,
+                                            'stock_in'         => 10,
+                                            'stock_out'         => 0,
                                         ]);
                                     }
                                 }
