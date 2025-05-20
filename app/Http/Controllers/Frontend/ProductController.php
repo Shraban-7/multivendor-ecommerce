@@ -7,7 +7,6 @@ use App\Models\Product;
 use App\Models\ProductAttribute;
 use App\Models\ProductAttributeOption;
 use App\Models\ProductVariant;
-use App\Models\ProductVariantProductAttributeOption;
 use App\Models\Review;
 use App\Models\Seller;
 use Illuminate\Http\Request;
@@ -79,50 +78,42 @@ class ProductController extends Controller
 
         $variantIds = $product['variants']->pluck('id');
 
-        $variants = ProductVariant::whereIn('id', $variantIds)->get();
-        $variantOptionIdArrays = $variants->pluck('option_ids')->toArray();
-        $uniqueOptionIds = array_unique(array_merge(...$variantOptionIdArrays));
+       $variants = ProductVariant::whereIn('id', $variantIds)->get();
 
-        $productAttributeOptions = ProductAttributeOption::whereIn('id', $uniqueOptionIds)->get();
-        $productAttributeIds = $productAttributeOptions->pluck('product_attribute_id')->unique()->toArray();
+         $variantsByOption = $variants->groupBy('option_id');
 
-        $productAttributeModel = ProductAttribute::whereIn('id', $productAttributeIds)
-            ->with('options')
-            ->get();
+        $variantAttributeOptionIds = $variants->pluck('option_id');
 
-        $variantsByOptionId = [];
+        $productAttributeOptions = ProductAttributeOption::whereIn('id', $variantAttributeOptionIds)->get();
 
-        foreach ($variants as $variant) {
-            foreach ($variant->option_ids as $optionId) {
-                $variantsByOptionId[$optionId][] = $variant;
-            }
-        }
+        $productAttributeOptionIds = array_unique($productAttributeOptions->pluck('product_attribute_id')->toArray());
 
-       return $variantsByOptionId = collect($variantsByOptionId);
+        $productAttributeModel = ProductAttribute::whereIn('id', $productAttributeOptionIds)->with('options')->get();
 
         $productAttributes = [];
 
         foreach ($productAttributeModel as $attribute) {
             $productAttributes[] = [
-                'id' => $attribute->id,
-                'name' => $attribute->name,
+                'id'      => $attribute->id,
+                'name'    => $attribute->name,
                 'options' => $productAttributeOptions
                     ->where('product_attribute_id', $attribute->id)
-                    ->map(function ($option) use ($variantsByOptionId) {
-                        $variant = collect($variantsByOptionId[$option->id] ?? [])->first();
+                    ->map(function ($option) use ($variantsByOption) {
+                        $variant = $variantsByOption[$option->id]->first(); // get the first variant for this option
 
                         return [
-                            'id' => $option->id,
-                            'value' => $option->value,
+                            'id'         => $option->id,
+                            'value'      => $option->value,
                             'variant_id' => $variant?->id,
-                            'sku' => $variant?->sku,
-                            'price' => $variant?->additional_price,
-                            'option_ids' => $variant?->option_ids
+                            'sku'        => $variant?->sku,
+                            'price'      => $variant?->additional_price,
                         ];
-                    })->values(),
+                    })
+                    ->values(),
             ];
         }
 
+        // return $productAttributes;
 
         if ($request->ajax()) {
             $type = $request->get('type');
@@ -186,40 +177,6 @@ class ProductController extends Controller
                 'next_page' => $reviews->currentPage() + 1,
                 'has_more'  => $reviews->hasMorePages(),
             ]);
-        }
-    }
-
-    public function getVariant(Request $request, $slug)
-    {
-        $product = Product::where('slug', $slug)->firstOrFail();
-
-        $selectedOptionIds = $request->input('option_ids', []);
-
-        if (empty($selectedOptionIds)) {
-            return response()->json(['message' => 'No options selected'], 400);
-        }
-
-        $variant = ProductVariant::where('product_id', $product->id)
-            ->whereHas('attributeOptions', function ($query) use ($selectedOptionIds) {
-                $query->whereIn('product_attribute_option_id', $selectedOptionIds);
-            }, '=', count($selectedOptionIds))
-            ->first();
-
-        $additional_price = ProductVariantProductAttributeOption::whereIn('product_attribute_option_id', $selectedOptionIds)
-            ->where('product_variant_id', $variant->id)
-            ->sum('additional_price');
-
-        if ($variant) {
-            return response()->json([
-                'id'               => $variant->id,
-                'price'            => $additional_price + $product->selling_price,
-                'discounted_price' => $additional_price + $product->discounted_price,
-                'stock'            => $variant->stock,
-                'sku'              => $variant->sku,
-                'description'      => $variant->description,
-            ]);
-        } else {
-            return response()->json(['message' => 'Variant not found'], 404);
         }
     }
 }

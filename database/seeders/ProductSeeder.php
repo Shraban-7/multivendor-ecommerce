@@ -14,7 +14,8 @@ use Illuminate\Support\Str;
 class ProductSeeder extends Seeder
 {
 
-    public function run(): void {
+    public function run(): void
+    {
         $majorCategories = [
             'automotive'         => 5,
             'home-appliances'    => 5,
@@ -37,9 +38,7 @@ class ProductSeeder extends Seeder
         DB::transaction(function () use ($majorCategories, $brandIds, $featuredVideos) {
 
             foreach ($majorCategories as $slug => $seller) {
-                // dd($slug);
                 $category = Category::where('slug', $slug)->with('subcategories')->first();
-                // dd($category);
                 if (! $category) {
                     continue;
                 }
@@ -95,68 +94,37 @@ class ProductSeeder extends Seeder
                         }
 
                         if (! empty($productData['variants'])) {
-                            // 1. Get matching attribute and option IDs
-                            $attributeOptionMap = [];
-
-                            foreach ($productData['variants'] as $attributeName => $optionValues) {
-                                $attribute = ProductAttribute::where('category_id', $product->category_id)
-                                    ->where('name', $attributeName)
+                            foreach ($productData['variants'] as $key => $options) {
+                                $productAttribute = ProductAttribute::where('category_id', $product->category_id)
+                                    ->where('name', $key)
                                     ->with('options')
                                     ->first();
 
-                                if (! $attribute) continue;
+                                if (! $productAttribute) {
+                                    continue;
+                                }
 
-                                foreach ($optionValues as $value) {
-                                    $option = $attribute->options->firstWhere('value', $value);
+                                foreach ($options as $optionValue) {
+                                    $option = $productAttribute->options->firstWhere('value', $optionValue);
+
                                     if ($option) {
-                                        $attributeOptionMap[$attributeName][$value] = $option->id;
+                                        ProductVariant::create([
+                                            'product_id'       => $product->id,
+                                            'option_id'        => $option->id,
+                                            'sku'              => $product->sku . '-' . strtoupper(Str::random(4)),
+                                            'additional_price' => round(rand(10, 50)),
+                                            'stock_in'         => rand(20, 30),
+                                            'stock_out'         => rand(10, 15),
+                                        ]);
                                     }
                                 }
                             }
-
-                            // 2. Generate all combinations
-                            $combinations = $this->generateCombinations($productData['variants']);
-
-                            foreach ($combinations as $combo) {
-                                $optionIds = [];
-
-                                foreach ($combo as $attr => $val) {
-                                    $optionIds[] = $attributeOptionMap[$attr][$val] ?? null;
-                                }
-
-                                if (in_array(null, $optionIds)) continue;
-
-                                ProductVariant::create([
-                                    'product_id'   => $product->id,
-                                    'option_ids'   => json_encode($optionIds),
-                                    'sku'          => $product->sku . '-' . strtoupper(Str::random(4)),
-                                    'additional_price' => rand(10, 50),
-                                    'stock_in'        => rand(20, 30),
-                                    'stock_out'        => rand(5, 10),
-                                ]);
-                            }
                         }
-
                     }
                 }
             }
         });
     }
-
-    private function generateCombinations($arrays) {
-        $result = [[]];
-        foreach ($arrays as $key => $values) {
-            $append = [];
-            foreach ($result as $product) {
-                foreach ($values as $value) {
-                    $append[] = array_merge($product, [$key => $value]);
-                }
-            }
-            $result = $append;
-        }
-        return $result;
-    }
-
 
     private static array $unitMap = [];
 
