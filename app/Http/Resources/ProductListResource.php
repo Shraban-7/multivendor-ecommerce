@@ -11,6 +11,11 @@ class ProductListResource extends JsonResource
     {
         $price = $this->selling_price;
         $discountedPrice = $this->discountedPrice;
+        $discount = null;
+        if($this->discount_amount > 0) {
+            $discount = "-{$this->discount_amount}";
+            $discount .= $this->discount_type == 'percentage' ? '%' : currency();
+        }
         
         return [
             'id' => $this->id,
@@ -18,8 +23,7 @@ class ProductListResource extends JsonResource
             'thumbnail' => storage_url($this->thumbnail),
             'price' => removeZeroFromDecimal($price),
             'discounted_price' => ($price == $discountedPrice) ? null : removeZeroFromDecimal($discountedPrice),
-            'discount_type' => $this->discount_type,
-            'discount_amount' => $this->discount_amount,
+            'discount' => $discount,
             'stock' => ($this->stock_in - $this->stock_out),
             'total_sold' => number_shorten_format($this->stock_out),
             'avg_rating' => $this->avg_rating,
