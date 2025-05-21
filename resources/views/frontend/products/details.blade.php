@@ -166,10 +166,10 @@
                             <div class="flex flex-wrap items-center gap-2">
                                 <div class="flex flex-no-wrap items-center gap-1 new-price">
                                     <i class="fa-solid fa-bolt text-[#ffa755]"></i>
-                                    <h3 id="current-price" class="font-bold current-price text-primary product-price">
+                                    <h3 id="current-price{{ $product['id'] }}" class="font-bold current-price text-primary product-price">
                                         {{ money($product['discount_price']) }}</h3>
                                 </div>
-                                <h6 id="old-price" class="line-through text-jet-gray">{{ money($product['price']) }}
+                                <h6 id="old-price{{ $product['id'] }}" class="line-through text-jet-gray">{{ money($product['price']) }}
                                 </h6>
                                 <span class="text-xs px-2.5 py-0.5 rounded-lg border border-primary discount-badge">
                                     -{{ $product['discount']['amount'] }} last 2 days
@@ -189,8 +189,8 @@
 
                             <div class="px-4 py-2 clr-size-qty">
                                 <div id="product-attributes">
-                                    <input type="hidden" id="productBasePrice" value="{{ $product['price'] }}">
-                                    <input type="hidden" id="productDiscountedPrice"
+                                    <input type="hidden" id="productBasePrice{{ $product['id'] }}" value="{{ $product['price'] }}">
+                                    <input type="hidden" id="productDiscountedPrice{{ $product['id'] }}"
                                         value="{{ $product['discount_price'] }}">
 
                                     <form data-slug="{{ $product['slug'] }}"
@@ -253,14 +253,14 @@
                                     <div class="text-davy-gray flex items-center gap-2">
                                         <h6 class="sm:text-lg">Quantity :</h6>
                                         <div class="flex items-center border border-jet-gray/30 rounded p-1">
-                                            <button id="decreaseBtn"
+                                            <button id="decreaseBtn{{ $product['id'] }}"
                                                 class="w-5 h-5 flex items-center justify-center text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 eq active:text-primary rounded text-sm font-bold">
                                                 <i class="fa-solid fa-minus"></i>
                                             </button>
-                                            <input readonly id="quantity" type="number" min="1"
+                                            <input readonly id="quantity{{ $product['id'] }}" type="number" min="1"
                                                 class="text-center text-persian-blue w-16 h-5 text-sm font-medium border-0 focus:ring-0" />
 
-                                            <button id="increaseBtn"
+                                            <button id="increaseBtn{{ $product['id'] }}"
                                                 class="w-5 h-5 flex items-center justify-center text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 eq active:text-primary rounded text-sm font-bold">
                                                 <i class="fa-solid fa-plus"></i>
                                             </button>
@@ -276,7 +276,7 @@
                             <input type="hidden" name="quantity" class="qtyInputValue" value=""
                                 id="qtyInput{{ $product['id'] }}">
 
-                            <input type="hidden" id="variantSku" value="">
+                            <input type="hidden" id="variantSku{{ $product['id'] }}" value="">
 
                             @if ($product['in_stock'] > 0)
                                 <button data-id="{{ $product['id'] }}" type="button"
@@ -626,11 +626,15 @@
         <script>
             $(document).ready(function() {
                 let quantity = 1;
+                var product_id = $('.variantForm').data('id')
 
-                const quantityElement = $('#quantity');
-                const decreaseBtn = $('#decreaseBtn');
-                const increaseBtn = $('#increaseBtn');
-                const hiddenInput = $('.qtyInputValue');
+                // console.log(product_id);
+
+                const quantityElement = $('#quantity'+product_id);
+                const decreaseBtn = $('#decreaseBtn'+product_id);
+                const increaseBtn = $('#increaseBtn'+product_id);
+                const hiddenInput = $('.qtyInputValue'+product_id);
+
 
                 const updateQuantity = () => {
                     quantityElement.val(quantity.toString().padStart(2, "0"));
@@ -658,7 +662,7 @@
 
                 function updatePriceAndSku() {
                     const checkedOptions = $('.variant-option:checked');
-                    const quantityVal = parseInt($('#quantity').val()) || 1;
+                    const quantityVal = parseInt($('#quantity'+product_id).val()) || 1;
 
                     let basePrice, baseDiscountedPrice, selectedSku = '';
                     let totalAdditionalPrice = 0;
@@ -675,17 +679,16 @@
                             selectedSku = selected.data('sku');
                         });
                     } else {
-                        // 🛠 Fallback: Use base product price (set these in your HTML)
-                        basePrice = parseFloat($('#productBasePrice').val()) || 0;
-                        baseDiscountedPrice = parseFloat($('#productDiscountedPrice').val()) || 0;
+                        basePrice = parseFloat($('#productBasePrice'+product_id).val()) || 0;
+                        baseDiscountedPrice = parseFloat($('#productDiscountedPrice'+product_id).val()) || 0;
                     }
 
                     const finalPrice = basePrice + totalAdditionalPrice;
                     const finalDiscountedPrice = baseDiscountedPrice + totalAdditionalPrice;
 
-                    $('#current-price').text('৳ ' + (finalDiscountedPrice * quantityVal).toFixed(2));
-                    $('#old-price').text('৳ ' + (finalPrice * quantityVal).toFixed(2));
-                    $('#variantSku').val(selectedSku);
+                    $('#current-price'+product_id).text('৳ ' + (finalDiscountedPrice * quantityVal).toFixed(2));
+                    $('#old-price'+product_id).text('৳ ' + (finalPrice * quantityVal).toFixed(2));
+                    $('#variantSku'+product_id).val(selectedSku);
                 }
 
                 const seenAttributes = new Set();
@@ -703,6 +706,9 @@
                     const changedInput = $(this);
                     const newVariantId = changedInput.data('variant-id');
                     const attributeId = changedInput.data('attribute');
+                    const product_id = $(this).closest('.variantForm').data('id');
+
+                    console.log(product_id)
 
                     $('.variantForm .variant-option').each(function() {
                         const input = $(this);
@@ -715,10 +721,10 @@
                         }
                     });
 
-                    updatePriceAndSku();
+                    updatePriceAndSku(product_id);
                 });
 
-                updateQuantity();
+                updateQuantity(product_id);
             });
         </script>
 

@@ -339,12 +339,12 @@ class ProductController extends Controller
         foreach ($data['attributes'] as $attributeName => $attributeValue) {
             $attributeOption = ProductAttributeOption::where('value', $attributeValue)->first();
 
-            if ($attributeOption) {
-                ProductVariantProductAttributeOption::create([
-                    'product_variant_id' => $variant->id,
-                    'product_attribute_option_id' => $attributeOption->id,
-                ]);
-            }
+            // if ($attributeOption) {
+            //     ProductVariantProductAttributeOption::create([
+            //         'product_variant_id' => $variant->id,
+            //         'product_attribute_option_id' => $attributeOption->id,
+            //     ]);
+            // }
         }
 
         session()->flash('success', 'Variant Added Successfully!');
