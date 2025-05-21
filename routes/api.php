@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\ProductController;
@@ -18,11 +19,15 @@ Route::get('categories', [CategoryController::class, 'index']);
 Route::get('dashboard', [DashboardController::class, 'index']);
 
 Route::get('products', [ProductController::class, 'index']);
-Route::get('products/{product}', [ProductController::class, 'show']);   
+Route::get('products/{product}', [ProductController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('logout', [AuthController::class, 'logout']);
+
+    Route::prefix('cart')->group(function () {
+        Route::post('/store', [CartController::class, 'store']);
+    });
 
     // Route::get('categories', [ContentCategoryController::class, 'index']);
 
