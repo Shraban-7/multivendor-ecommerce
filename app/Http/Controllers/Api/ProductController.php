@@ -64,7 +64,7 @@ class ProductController extends Controller
         $grouped = collect($variants)->map(function ($variant) {
             return [
                 'id' => $variant['id'],
-                'sku' => $variant['sku'],
+                //'sku' => $variant['sku'],
                 'value' => $variant['option']['value'] ?? null,
                 'additional_price' => $variant['additional_price'],
                 'available_stock' => $variant['stock_in'] - $variant['stock_out'],
