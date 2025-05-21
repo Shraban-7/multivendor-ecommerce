@@ -20,6 +20,8 @@ class ProductListResource extends JsonResource
             'total_sold' => number_shorten_format($this->stock_out),
             'avg_rating' => $this->avg_rating,
             'rating_count' => number_shorten_format($this->rating_count),
+            'short_description' => $this->short_description,
+            'description' => $this->description,
             'category' => CategoryResource::make($this->whenLoaded('category')),
             'subcategory' => CategoryResource::make($this->whenLoaded('subcategory')),
             'images' => $this->whenLoaded('images', function () {
