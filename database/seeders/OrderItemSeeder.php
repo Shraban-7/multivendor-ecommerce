@@ -72,7 +72,7 @@ class OrderItemSeeder extends Seeder
             OrderItem::create([
                 'order_id' => $item['order_id'],
                 'product_id' => $item['product_id'],
-                'product_variant' => $item['product_variant'],
+                // 'product_variant' => $item['product_variant'],
                 'product_variant_price' => $item['product_variant_price'],
                 'buying_price' => $item['buying_price'],
                 'unit_price' => $item['unit_price'],

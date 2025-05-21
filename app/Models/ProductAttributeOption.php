@@ -11,18 +11,19 @@ class ProductAttributeOption extends Model
 
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'product_variant_ids' => 'array',
+    ];
+
     public function product_attribute()
     {
         return $this->belongsTo(ProductAttribute::class);
     }
 
-    public function product_variants()
-    {
-        return $this->belongsToMany(
-            ProductVariant::class,
-            'product_variant_product_attribute_options',
-            'product_attribute_option_id',
-            'product_variant_id'
-        );
-    }
+    // public function product_variants()
+    // {
+    //     return $this->belongsToMany(
+    //         ProductVariant::class,
+    //     );
+    // }
 }
