@@ -36,7 +36,7 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        $product->load('images', 'category', 'subcategory');
+        $product->load('images', 'category', 'subcategory', 'variants.option.product_attribute');
 
         $data['product'] = ProductListResource::make($product);
         $data['seller'] = SellerResource::make($product->seller);
@@ -48,6 +48,8 @@ class ProductController extends Controller
             ->get();
 
         $data['related_products'] = ProductListResource::collection($relatedProducts);
+
+        return $product->variants;
 
         return apiResponse($data);
     }
