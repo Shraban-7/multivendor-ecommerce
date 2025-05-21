@@ -2,7 +2,7 @@
 @section('title', 'Order Details')
 
 @section('content')
-    <main class="order-details-page pb-5 sm:pb-10">
+    <main class="order-details-page p-5 sm:pb-10">
         <!-- Page Breadcrumb -->
         <section class="page-breadcrumb-links bg-jet-gray/10 py-4 md:py-6">
             <nav class="flex container" aria-label="Breadcrumb">
@@ -161,7 +161,7 @@
                                                     <span
                                                         class="text-lg md:text-2xl font-medium">{{ money($item->unit_price) }}</span>
                                                     <span class="text-lg md:text-2xl font-medium line-through">
-                                                        {{ money($item->unit_price + $item->discount) }}
+                                                        {{ money($item->unit_price + $item->product->discount) }}
                                                     </span>
                                                 </p>
 

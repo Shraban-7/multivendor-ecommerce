@@ -171,6 +171,11 @@
                                 <div id="product-attributes">
                                     <form id="variantForm" data-slug="{{ $product['slug'] }}"
                                         class="flex flex-wrap flex-col">
+                                        <input type="hidden" id="productBasePrice"
+                                            value="{{ $product['price']  }}">
+                                        <input type="hidden" id="productDiscountedPrice"
+                                            value="{{ $product['discount_price']  }}">
+
                                         @foreach ($productAttributes as $attribute)
                                             <div class="mt-2">
                                                 <h6 class="text-davy-gray sm:text-lg">{{ $attribute['name'] }} :</h6>
@@ -186,7 +191,7 @@
 
                                                         <div class="form-ctrl flex flex-col gap-2 items-center">
                                                             <input id="{{ $inputId }}" type="radio"
-                                                                value="{{ $option['id'] }}"
+                                                                value="{{ $option['variant_id'] }}"
                                                                 data-id="{{ $option['id'] }}"
                                                                 data-attribute="{{ $attribute['id'] }}"
                                                                 data-variant-id="{{ $option['variant_id'] }}"
@@ -599,108 +604,104 @@
     </main>
 
     @push('scripts')
-        <script>
-            $(document).ready(function() {
-                var quantity = 1;
+    <script>
+        $(document).ready(function () {
+            let quantity = 1;
 
-                const quantityElement = $('#quantity');
-                const decreaseBtn = $('#decreaseBtn');
-                const increaseBtn = $('#increaseBtn');
-                const hiddenInput = $('.qtyInputValue');
+            const quantityElement = $('#quantity');
+            const decreaseBtn = $('#decreaseBtn');
+            const increaseBtn = $('#increaseBtn');
+            const hiddenInput = $('.qtyInputValue');
 
-                const updateQuantity = () => {
-                    quantityElement.val(quantity.toString().padStart(2, "0"));
-                    hiddenInput.val(quantity);
-                };
+            const updateQuantity = () => {
+                quantityElement.val(quantity.toString().padStart(2, "0"));
+                hiddenInput.val(quantity);
+                updatePriceAndSku();
+            };
 
-                increaseBtn.on('click', function() {
-                    quantity++;
-                    updateQuantity();
-                });
-
-                decreaseBtn.on('click', function() {
-                    if (quantity > 1) {
-                        quantity--;
-                        updateQuantity();
-                    }
-                });
-
-                quantityElement.on('input', function() {
-                    var newQuantity = $(this).val();
-                    quantity = parseInt(newQuantity) || 1;
-                    updateQuantity();
-                });
-
+            increaseBtn.on('click', function () {
+                quantity++;
                 updateQuantity();
             });
-        </script>
 
-        <script>
-            $(document).ready(function() {
-                function updatePriceAndSku() {
-                    const checkedOptions = $('.variant-option:checked');
+            decreaseBtn.on('click', function () {
+                if (quantity > 1) {
+                    quantity--;
+                    updateQuantity();
+                }
+            });
 
-                    if (checkedOptions.length === 0) return;
+            quantityElement.on('input', function () {
+                const newQuantity = parseInt($(this).val()) || 1;
+                quantity = newQuantity < 1 ? 1 : newQuantity;
+                updateQuantity();
+            });
 
-                    let basePrice = parseFloat(checkedOptions.first().data('product-price')) || 0;
-                    let baseDiscountedPrice = parseFloat(checkedOptions.first().data('discounted-price')) || 0;
+            function updatePriceAndSku() {
+                const checkedOptions = $('.variant-option:checked');
+                const quantityVal = parseInt($('#quantity').val()) || 1;
 
-                    let totalAdditionalPrice = 0;
-                    let selectedSku = '';
+                let basePrice, baseDiscountedPrice, selectedSku = '';
+                let totalAdditionalPrice = 0;
 
-                    checkedOptions.each(function() {
+                if (checkedOptions.length > 0) {
+                    basePrice = parseFloat(checkedOptions.first().data('product-price')) || 0;
+                    baseDiscountedPrice = parseFloat(checkedOptions.first().data('discounted-price')) || 0;
+
+                    checkedOptions.each(function () {
                         const selected = $(this);
                         const additionalPrice = parseFloat(selected.data('price')) || 0;
                         totalAdditionalPrice += additionalPrice;
 
                         selectedSku = selected.data('sku');
                     });
-
-                    const finalPrice = basePrice + totalAdditionalPrice;
-                    const finalDiscountedPrice = baseDiscountedPrice + totalAdditionalPrice;
-
-                    $('#current-price').text('৳ ' + finalDiscountedPrice.toFixed(2));
-                    $('#old-price').text('৳ ' + finalPrice.toFixed(2));
-                    $('#variantSku').val(selectedSku);
+                } else {
+                    // 🛠 Fallback: Use base product price (set these in your HTML)
+                    basePrice = parseFloat($('#productBasePrice').val()) || 0;
+                    baseDiscountedPrice = parseFloat($('#productDiscountedPrice').val()) || 0;
                 }
 
-                // STEP 1: Select the first input of each attribute group
-                const seenAttributes = new Set();
+                const finalPrice = basePrice + totalAdditionalPrice;
+                const finalDiscountedPrice = baseDiscountedPrice + totalAdditionalPrice;
 
-                $('#variantForm .variant-option').each(function() {
-                    const attrId = $(this).data('attribute');
+                $('#current-price').text('৳ ' + (finalDiscountedPrice * quantityVal).toFixed(2));
+                $('#old-price').text('৳ ' + (finalPrice * quantityVal).toFixed(2));
+                $('#variantSku').val(selectedSku);
+            }
 
-                    if (!seenAttributes.has(attrId)) {
-                        seenAttributes.add(attrId);
-                        $(this).prop('checked', true);
+            const seenAttributes = new Set();
+
+            $('#variantForm .variant-option').each(function () {
+                const attrId = $(this).data('attribute');
+
+                if (!seenAttributes.has(attrId)) {
+                    seenAttributes.add(attrId);
+                    $(this).prop('checked', true);
+                }
+            });
+
+            $('#variantForm').on('change', '.variant-option', function () {
+                const changedInput = $(this);
+                const newVariantId = changedInput.data('variant-id');
+                const attributeId = changedInput.data('attribute');
+
+                $('#variantForm .variant-option').each(function () {
+                    const input = $(this);
+                    const inputAttributeId = input.data('attribute');
+
+                    if (input.data('variant-id') === newVariantId) {
+                        input.prop('checked', true);
+                    } else if (inputAttributeId === attributeId) {
+                        input.prop('checked', false);
                     }
                 });
 
-                // STEP 2: After setting the default selection, update the price and SKU
                 updatePriceAndSku();
-
-                // STEP 3: Listen for changes on variant options
-                $('#variantForm').on('change', '.variant-option', function() {
-                    const changedInput = $(this);
-                    const newVariantId = changedInput.data('variant-id');
-                    const attributeId = changedInput.data('attribute');
-
-                    $('#variantForm .variant-option').each(function() {
-                        const input = $(this);
-                        const inputAttributeId = input.data('attribute');
-
-                        if (input.data('variant-id') === newVariantId) {
-                            input.prop('checked', true);
-                        } else if (inputAttributeId === attributeId) {
-                            input.prop('checked', false);
-                        }
-                    });
-
-                    updatePriceAndSku();
-                });
             });
-        </script>
 
+            updateQuantity();
+        });
+    </script>
 
 
 
@@ -711,6 +712,7 @@
                     var offset = parseInt($button.data('offset'));
                     var url = $button.data('url');
                     var type = $button.data('type');
+
 
                     $.ajax({
                         url: url,
