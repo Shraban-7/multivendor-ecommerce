@@ -58,7 +58,7 @@
                     <div class="flex flex-col gap-2 text-center">
                         <div class="flex items-center gap-10 text-davy-gray text-sm md:text-base">
                             <div class="followers">
-                                <div class="font-medium">{{ number_shorten_format($seller->total_follower) }}+</div>
+                                <div class="font-medium">{{ number_shorten_format($seller->total_followers) }}+</div>
                                 <div class="text-xs text-jet-gray">Followers</div>
                             </div>
                             <div class="sold">

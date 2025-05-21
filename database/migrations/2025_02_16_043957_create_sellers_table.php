@@ -35,10 +35,10 @@ return new class extends Migration
             $table->bigInteger('state_id')->nullable();
             $table->string('zip')->nullable();
 
-            $table->bigInteger('total_follower')->nullable();
-            $table->bigInteger('total_sold')->nullable();
-            $table->bigInteger('total_item')->nullable();
-            $table->decimal('shipping_cost',10,2)->nullable();
+            $table->bigInteger('total_followers')->default(0);
+            $table->bigInteger('total_sold')->default(0);
+            $table->bigInteger('total_items')->default(0);
+            $table->decimal('shipping_cost', 10, 2)->nullable();
 
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
