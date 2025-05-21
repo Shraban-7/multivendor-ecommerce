@@ -22,7 +22,7 @@ class ProductListResource extends JsonResource
             'name' => $this->name,
             'thumbnail' => storage_url($this->thumbnail),
             'price' => removeZeroFromDecimal($price),
-            'discounted_price' => ($price == $discountedPrice) ? null : removeZeroFromDecimal($discountedPrice),
+            'discounted_price' => removeZeroFromDecimal($discountedPrice),
             'discount' => $discount,
             'stock' => ($this->stock_in - $this->stock_out),
             'total_sold' => number_shorten_format($this->stock_out),
