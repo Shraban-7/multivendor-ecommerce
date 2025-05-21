@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Models\Cart;
 use App\Models\Order;
-use App\Enums\DiscountType;
 use App\Enums\OrderStatus;
 use Illuminate\Http\Request;
 use App\Models\CustomerAddress;

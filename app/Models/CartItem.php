@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,6 +10,10 @@ class CartItem extends Model
 
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'product_variant_ids' => 'array',
+    ];
+
     public function product()
     {
         return $this->belongsTo(Product::class);
@@ -18,24 +21,25 @@ class CartItem extends Model
 
     public function variant()
     {
-        return $this->belongsTo(ProductVariant::class, 'product_variant_id');
+        return $this->belongsTo(ProductVariant::class);
+    }
+
+    public function variants()
+    {
+        return $this->belongsToMany(ProductVariant::class, 'variants', 'id', 'id')
+            ->whereIn('id', $this->product_variant_ids ?? []);
     }
 
     public function getProductOriginalPriceAttribute()
     {
-        $optionIds = json_decode($this->product_attribute_option_ids, true);
+        $variantIds = $this->product_variant_ids;
 
-        $optionIds = is_null($optionIds) ? [] : $optionIds;
-
-        $variant_price = ProductVariantProductAttributeOption::whereIn('product_attribute_option_id', $optionIds)
-        ->where('product_variant_id', $this->product_variant_id)
-            ->sum('additional_price');
-
-        if ($this->variant) {
-            return $this->product->selling_price+ $variant_price;
+        if (! is_array($variantIds)) {
+            $variantIds = is_null($variantIds) ? [] : json_decode($variantIds, true);
         }
+        $variantPrice = ProductVariant::whereIn('id', $variantIds)->sum('additional_price');
 
-        return $this->product->selling_price;
+        return $this->product->selling_price + $variantPrice;
     }
 
     public function getDiscountedPriceAttribute()
@@ -45,4 +49,26 @@ class CartItem extends Model
         }
         return $this->product_original_price;
     }
+
+    public function getVariantOptionAttribute()
+    {
+        if (! $this->product_variant_ids) {
+            return collect();
+        }
+
+        $variantIds = is_array($this->product_variant_ids)
+        ? $this->product_variant_ids
+        : json_decode($this->product_variant_ids, true);
+
+        return ProductVariant::with('option.productAttribute')
+            ->whereIn('id', $variantIds)
+            ->get()
+            ->map(function ($variant) {
+                return [
+                    'productAttribute' => $variant->option->productAttribute->name ?? null,
+                    'option'           => $variant->option->value ?? null,
+                ];
+            });
+    }
+
 }

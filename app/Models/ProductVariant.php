@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,10 +14,9 @@ class ProductVariant extends Model
         'option_ids' => 'array',
     ];
 
-
-    public function scopeWhereProduct($query,Product $product)
+    public function scopeWhereProduct($query, Product $product)
     {
-        return $query->where('product_id',$product->id);
+        return $query->where('product_id', $product->id);
     }
 
     public function product()
@@ -26,13 +24,9 @@ class ProductVariant extends Model
         return $this->belongsTo(Product::class);
     }
 
-    public function attributeOptions()
+    public function option()
     {
-        return $this->belongsToMany(
-            ProductAttributeOption::class,
-            'product_variant_product_attribute_options',
-            'product_variant_id',
-            'product_attribute_option_id'
-        );
+        return $this->belongsTo(ProductAttributeOption::class, 'option_id');
     }
+
 }

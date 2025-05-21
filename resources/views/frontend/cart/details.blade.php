@@ -176,17 +176,17 @@
                                                                 </div>
                                                                 <span
                                                                     class="text-xs xsm:text-sm px-2.5 py-0.5 rounded-lg border border-primary">
-                                                                    - {{ percentage($item->product->discount_percent) }}
+                                                                    - {{ $item->product->discount }}
                                                                     last 2 days
                                                                 </span>
 
-                                                                @if ($item->variant)
+                                                                @if ($item->variantOption)
                                                                     <div
                                                                         class="w-full text-xs xsm:text-sm text-gray-600 mt-1">
-                                                                        @foreach ($item->variant->attributeOptions as $option)
+                                                                        @foreach ($item->variantOption as $variant)
                                                                             <span class="mr-2">
-                                                                                {{ $option->productAttribute->name }}:
-                                                                                {{ $option->value }}
+                                                                                {{ $variant['productAttribute'] }}:
+                                                                                {{ $variant['option'] }}
                                                                             </span>
                                                                         @endforeach
                                                                     </div>
