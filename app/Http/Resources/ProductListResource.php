@@ -18,6 +18,8 @@ class ProductListResource extends JsonResource
             'discount_amount' => $this->discount_amount,
             'stock' => ($this->stock_in - $this->stock_out),
             'total_sold' => number_shorten_format($this->stock_out),
+            'avg_rating' => $this->avg_rating,
+            'rating_count' => number_shorten_format($this->rating_count),
             'category' => CategoryResource::make($this->whenLoaded('category')),
             'subcategory' => CategoryResource::make($this->whenLoaded('subcategory')),
         ];
