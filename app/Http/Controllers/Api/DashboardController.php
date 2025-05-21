@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\ProductListResource;
+use App\Http\Resources\SellerResource;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Seller;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -22,6 +24,8 @@ class DashboardController extends Controller
             'trending' => ProductListResource::collection($trendingProducts),
             'new' => ProductListResource::collection($newProducts),
         );
+
+        $data['sellers'] = SellerResource::collection(Seller::limit(10)->get());
 
         return apiResponse($data);
     }
