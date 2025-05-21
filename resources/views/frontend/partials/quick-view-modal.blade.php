@@ -14,6 +14,7 @@
             </button>
             <!-- Modal body -->
             <div class="p-4 md:p-10">
+                {{ $product['id'] }}
                 <div class="flex flex-col md:flex-row gap-5">
                     <!-- Product Images Section -->
                     <div
@@ -143,7 +144,7 @@
                                             d="M349.4 44.6c5.9-13.7 1.5-29.7-10.6-38.5s-28.6-8-39.9 1.8l-256 224c-10 8.8-13.6 22.9-8.9 35.3S50.7 288 64 288l111.5 0L98.6 467.4c-5.9 13.7-1.5 29.7 10.6 38.5s28.6 8 39.9-1.8l256-224c10-8.8 13.6-22.9 8.9-35.3s-16.6-20.7-30-20.7l-111.5 0L349.4 44.6z">
                                         </path>
                                     </svg>
-                                    <h3 class="current-price font-bold text-primary text-nowrap">
+                                    <h3 id="current-price{{ $product['id'] }}" class="current-price font-bold text-primary text-nowrap">
                                         {{ $product['discount_price'] }}
                                     </h3>
                                 </div>
@@ -168,12 +169,12 @@
                             <div class="clr-size-qty p-4">
                                 <!-- Color Selection -->
                                 <div id="product-attributes">
-                                    <input type="hidden" id="productBasePrice" value="{{ $product['price'] }}">
-                                    <input type="hidden" id="productDiscountedPrice"
+                                    <input type="hidden" id="productBasePrice{{ $product['id'] }}" value="{{ $product['price'] }}">
+                                    <input type="hidden" id="productDiscountedPrice{{ $product['id'] }}"
                                         value="{{ $product['discount_price'] }}">
 
                                     <form data-slug="{{ $product['slug'] }}"
-                                        class="flex flex-wrap flex-col variantForm">
+                                        class="flex flex-wrap flex-col variantForm" data-id="{{ $product['id'] }}">
                                         @foreach ($productAttributes as $attribute)
                                             <div class="mt-2">
                                                 <h6 class="text-davy-gray sm:text-lg">{{ $attribute['name'] }} :</h6>
@@ -231,14 +232,14 @@
                                     <div class="text-davy-gray flex items-center gap-2">
                                         <h6 class="sm:text-lg">Quantity :</h6>
                                         <div class="flex items-center border border-jet-gray/30 rounded p-1">
-                                            <button id="decreaseBtn-{{ $product['id'] }}"
+                                            <button id="decreaseBtn{{ $product['id'] }}"
                                                 class="w-5 h-5 flex items-center justify-center text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 eq active:text-primary rounded text-sm font-bold">
                                                 <i class="fa-solid fa-minus"></i>
                                             </button>
-                                            <input readonly id="quantity-{{ $product['id'] }}" type="number"
+                                            <input readonly id="quantity{{ $product['id'] }}" type="number"
                                                 min="1"
                                                 class="text-center text-persian-blue w-16 h-8 text-sm font-medium border-0 focus:ring-0" />
-                                            <button id="increaseBtn-{{ $product['id'] }}"
+                                            <button id="increaseBtn{{ $product['id'] }}"
                                                 class="w-5 h-5 flex items-center justify-center text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 eq active:text-primary rounded text-sm font-bold">
                                                 <i class="fa-solid fa-plus"></i>
                                             </button>
@@ -268,7 +269,7 @@
 
 
 @push('scripts')
-    <script>
+    {{-- <script>
         $(document).ready(function() {
             $('.quantity').each(function() {
                 const $container = $(this);
@@ -303,5 +304,5 @@
                 updateQuantity();
             });
         });
-    </script>
+    </script> --}}
 @endpush
