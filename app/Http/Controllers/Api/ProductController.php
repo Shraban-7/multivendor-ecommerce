@@ -65,13 +65,19 @@ class ProductController extends Controller
             return [
                 'id' => $variant['id'],
                 'sku' => $variant['sku'],
-                'option_value' => $variant['option']['value'] ?? null,
+                'value' => $variant['option']['value'] ?? null,
                 'additional_price' => $variant['additional_price'],
                 'available_stock' => $variant['stock_in'] - $variant['stock_out'],
                 'attribute_name' => $variant['option']['product_attribute']['name'] ?? 'Unknown',
             ];
-        })->groupBy('attribute_name');
+        })->groupBy('attribute_name')
+            ->map(function ($items) {
+                return $items->map(function ($item) {
+                    unset($item['attribute_name']);
+                    return $item;
+                });
+            });
 
-        return $grouped->toArray();
+            return $grouped->toArray();
     }
 }
