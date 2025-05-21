@@ -53,18 +53,27 @@
                         <div class="order-2 w-full space-y-3 lg:w-1/6 lg:order-1">
                             <div class="single-product-thumbnails overflow-hidden xl:h-[37rem] lg:h-[41rem] h-auto">
                                 <div class="swiper-wrapper">
-                                    <!-- thumb 1 -->
-                                    @foreach ($product['images'] as $thumb)
+                                    @php
+                                        $thumbnail = $product['thumbnail'] ?? null;
+                                        $images = $product['images'] ?? [];
+
+                                        $allImages = collect([$thumbnail])
+                                            ->filter()
+                                            ->concat($images)
+                                            ->values();
+                                    @endphp
+
+                                    @foreach ($allImages as $img)
                                         <div class="swiper-slide">
                                             <div
-                                                class="w-full h-20 overflow-hidden border-2 border-transparent cursor-pointer slide-thumb xl:h-24 md:h-22 lg:h-28 rounded-2xl hover:border-primary">
-                                                <img src="{{ storage_url($thumb) }}"
-                                                    alt="Product thumbnail of A Young boy wear a jacket with green T-Shirt & Short Pant"
-                                                    class="object-cover w-full h-full" />
+                                                class="slide-thumb w-full xl:h-24 md:h-22 lg:h-28 h-20 rounded-2xl cursor-pointer border-2 border-transparent hover:border-primary-500 overflow-hidden">
+                                                <img src="{{ storage_url($img) }}"
+                                                    alt="{{ $product->name ?? 'Product Image' }}"
+                                                    class="w-full h-full object-cover" />
                                             </div>
                                         </div>
                                     @endforeach
-                                    <!-- Repeat thumb for more thumbnails -->
+
                                 </div>
                             </div>
                         </div>
@@ -74,13 +83,24 @@
                             <div
                                 class="single-product-swiper overflow-hidden w-full h-96 md:h-[37rem] xl:h-[37rem] lg:h-[41rem] rounded-2xl overflow-hidden relative">
                                 <div class="swiper-wrapper">
-                                    <!-- product image 1 -->
-                                    @foreach ($product['images'] as $slider)
-                                        <div class="h-full overflow-hidden swiper-slide rounded-2xl">
-                                            <img src="{{ storage_url($slider) }}" alt=""
-                                                class="object-cover w-full h-full" />
+                                    @php
+                                        $thumbnail = $product['thumbnail'] ?? null;
+                                        $images = $product['images'] ?? [];
+
+                                        $allImages = collect([$thumbnail])
+                                            ->filter()
+                                            ->concat($images)
+                                            ->values();
+                                    @endphp
+
+                                    @foreach ($allImages as $img)
+                                        <div class="swiper-slide h-full aspect-[4/3] rounded-2xl overflow-hidden">
+                                            <img src="{{ storage_url($img) }}"
+                                                alt="{{ $product['name'] ?? 'Product Image' }}"
+                                                class="w-full h-full object-cover" />
                                         </div>
                                     @endforeach
+
                                 </div>
                                 <!-- Navigation Buttons -->
                                 <div class="swiper-button-prev text-theme-light"></div>
@@ -171,10 +191,10 @@
                                 <div id="product-attributes">
                                     <input type="hidden" id="productBasePrice" value="{{ $product['price'] }}">
                                     <input type="hidden" id="productDiscountedPrice"
-                                        value="{{ $product['discount_price']  }}">
+                                        value="{{ $product['discount_price'] }}">
 
-                                    <form id="variantForm" data-slug="{{ $product['slug'] }}"
-                                        class="flex flex-wrap flex-col">
+                                    <form data-slug="{{ $product['slug'] }}"
+                                        class="flex flex-wrap flex-col variantForm">
                                         @foreach ($productAttributes as $attribute)
                                             <div class="mt-2">
                                                 <h6 class="text-davy-gray sm:text-lg">{{ $attribute['name'] }} :</h6>
@@ -670,7 +690,7 @@
 
                 const seenAttributes = new Set();
 
-                $('#variantForm .variant-option').each(function() {
+                $('.variantForm .variant-option').each(function() {
                     const attrId = $(this).data('attribute');
 
                     if (!seenAttributes.has(attrId)) {
@@ -679,12 +699,12 @@
                     }
                 });
 
-                $('#variantForm').on('change', '.variant-option', function() {
+                $('.variantForm').on('change', '.variant-option', function() {
                     const changedInput = $(this);
                     const newVariantId = changedInput.data('variant-id');
                     const attributeId = changedInput.data('attribute');
 
-                    $('#variantForm .variant-option').each(function() {
+                    $('.variantForm .variant-option').each(function() {
                         const input = $(this);
                         const inputAttributeId = input.data('attribute');
 
