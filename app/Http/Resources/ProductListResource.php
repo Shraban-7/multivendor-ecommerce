@@ -9,11 +9,15 @@ class ProductListResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        $price = $this->selling_price;
+        $discountedPrice = $this->discountedPrice;
+        
         return [
             'id' => $this->id,
             'name' => $this->name,
             'thumbnail' => storage_url($this->thumbnail),
-            'selling_price' => removeZeroFromDecimal($this->selling_price),
+            'price' => removeZeroFromDecimal($price),
+            'discounted_price' => ($price == $discountedPrice) ? null : removeZeroFromDecimal($discountedPrice),
             'discount_type' => $this->discount_type,
             'discount_amount' => $this->discount_amount,
             'stock' => ($this->stock_in - $this->stock_out),
