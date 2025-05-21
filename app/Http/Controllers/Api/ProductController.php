@@ -78,6 +78,18 @@ class ProductController extends Controller
                 });
             });
 
-            return $grouped->toArray();
+        $groupedArray =  $grouped->toArray();
+
+        $data = [];
+
+        foreach ($groupedArray as $key => $arr) {
+
+            $data[] = [
+                'name' => $key,
+                'options' => $arr,
+            ];
+        }
+
+        return $data;
     }
 }
