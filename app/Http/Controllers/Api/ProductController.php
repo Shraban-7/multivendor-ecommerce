@@ -70,13 +70,13 @@ class ProductController extends Controller
                 'available_stock' => $variant['stock_in'] - $variant['stock_out'],
                 'attribute_name' => $variant['option']['product_attribute']['name'] ?? 'Unknown',
             ];
-        })->groupBy('attribute_name')
-            ->map(function ($items) {
-                return $items->map(function ($item) {
-                    unset($item['attribute_name']);
-                    return $item;
-                });
-            });
+        })->groupBy('attribute_name');
+            // ->map(function ($items) {
+            //     return $items->map(function ($item) {
+            //         unset($item['attribute_name']);
+            //         return $item;
+            //     });
+            // });
 
         $groupedArray =  $grouped->toArray();
 
