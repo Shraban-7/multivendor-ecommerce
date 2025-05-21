@@ -32,4 +32,13 @@ class ProductController extends Controller
 
         return apiResourceResponse(ProductListResource::collection($products));
     }
+
+    public function show(Product $product)
+    {
+        $product->load('images', 'category', 'subcategory');
+
+        $data['product'] = ProductListResource::make($product);
+
+        return apiResponse($data);
+    }
 }

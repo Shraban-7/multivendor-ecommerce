@@ -22,6 +22,19 @@ class ProductListResource extends JsonResource
             'rating_count' => number_shorten_format($this->rating_count),
             'category' => CategoryResource::make($this->whenLoaded('category')),
             'subcategory' => CategoryResource::make($this->whenLoaded('subcategory')),
+            'images' => $this->whenLoaded('images', function () {
+                return $this->imageToArray($this->images);
+            })
         ];
+    }
+
+    private function imageToArray($images): array
+    {
+        $imgArray = [];
+        foreach ($images as $img) {
+            $imgArray[] = storage_url($img->image);
+        }
+
+        return $imgArray;
     }
 }
