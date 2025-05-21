@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductListResource;
+use App\Http\Resources\SellerResource;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -28,10 +29,18 @@ class ProductController extends Controller
             });
         }
 
-        $products = $products->with('category', 'subcategory')
-            ->paginate(15)
-            ->appends($request->query());
+        $products = $products->paginate(15)->appends($request->query());
 
         return apiResourceResponse(ProductListResource::collection($products));
+    }
+
+    public function show(Product $product)
+    {
+        $product->load('images', 'category', 'subcategory');
+
+        $data['product'] = ProductListResource::make($product);
+        $data['seller'] = SellerResource::make($product->seller);
+
+        return apiResponse($data);
     }
 }

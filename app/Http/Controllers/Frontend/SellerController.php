@@ -22,7 +22,7 @@ class SellerController extends Controller
 
         if ($alreadyFollowed) {
             $alreadyFollowed->delete();
-            $seller->decrement('total_follower');
+            $seller->decrement('total_followers');
             return redirect()->back()->with('success', "Unfollowed Successfully");
         }
 
@@ -32,7 +32,7 @@ class SellerController extends Controller
         ]);
 
         $seller->update([
-            'total_follower' => $seller->total_follower + 1
+            'total_followers' => $seller->total_followers + 1
         ]);
 
         return redirect()->back()->with('success', "Followed Successfully");

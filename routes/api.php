@@ -16,7 +16,9 @@ Route::middleware('guest')->group(function () {
 Route::get('settings', [SettingController::class, 'index']);
 Route::get('categories', [CategoryController::class, 'index']);
 Route::get('dashboard', [DashboardController::class, 'index']);
+
 Route::get('products', [ProductController::class, 'index']);
+Route::get('products/{product}', [ProductController::class, 'show']);   
 
 Route::middleware('auth:sanctum')->group(function () {
 
