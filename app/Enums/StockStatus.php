@@ -1,17 +1,26 @@
-<?php declare(strict_types=1);
-
+<?php
 namespace App\Enums;
 
-use BenSampo\Enum\Enum;
+enum StockStatus: string {
+    case IN_STOCK     = 'in_stock';
+    case OUT_OF_STOCK = 'out_of_stock';
+    case PRE_ORDER    = 'pre_order';
 
-/**
- * @method static static OptionOne()
- * @method static static OptionTwo()
- * @method static static OptionThree()
- */
-final class StockStatus extends Enum
-{
-    const IN_STOCK = "in_stock";
-    const OUT_OF_STOCK = "out_of_stock";
-    const PRE_ORDER = "pre_order";
+    public function label(): string
+    {
+        return match ($this) {
+            self::IN_STOCK => 'In Stock',
+            self::OUT_OF_STOCK => 'Out of Stock',
+            self::PRE_ORDER => 'Pre Order',
+        };
+    }
+
+    public static function labels(): array
+    {
+        return [
+            self::IN_STOCK->label(),
+            self::OUT_OF_STOCK->label(),
+            self::PRE_ORDER->label(),
+        ];
+    }
 }

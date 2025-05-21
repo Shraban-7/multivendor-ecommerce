@@ -35,8 +35,13 @@ class CartController extends Controller
                 ]);
             }
         }
-
         $price = (float) $request->price;
+        if ($request->quantity > 1) {
+            $price = $price / $request->quantity;
+        } else if ($request->quantity == 1) {
+            $price = $price;
+        }
+
         $price = ($price <= 0) ? $product->discounted_price : number_format($price, 2, '.', '');
 
         $cartItem = null;
@@ -97,18 +102,14 @@ class CartController extends Controller
         foreach ($carts as $seller_id => $cartGroup) {
             foreach ($cartGroup as $cart) {
                 foreach ($cart->cartItems as $item) {
-                    // dd($item->product_original_price);
-                    // dd($item->price);
                     $item_grand_total = $item->quantity * $item->product_original_price;
-
                     $grand_total += $item_grand_total;
-                    $item_sub_total = $item->price;
+                    $itemPrice = $item->quantity * $item->price;
+                    $item_sub_total = $itemPrice;
                     $sub_total += $item_sub_total;
                 }
             }
         }
-
-        // dd($grand_total);
 
         $discount             = $grand_total - $sub_total;
         $total_products_count = $carts->flatten()->pluck('cartItems')->flatten()->count();

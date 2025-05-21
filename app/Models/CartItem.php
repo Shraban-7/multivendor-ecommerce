@@ -60,7 +60,9 @@ class CartItem extends Model
         ? $this->product_variant_ids
         : json_decode($this->product_variant_ids, true);
 
-        return ProductVariant::with('option.productAttribute')
+        $variantIds = array_map('intval', array_filter($variantIds));
+
+        return ProductVariant::with(['option.product_attribute'])
             ->whereIn('id', $variantIds)
             ->get()
             ->map(function ($variant) {

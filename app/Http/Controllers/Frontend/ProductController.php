@@ -34,9 +34,9 @@ class ProductController extends Controller
         $sellerId   = $productModel->seller->id;
 
         $discount_price = $productModel->selling_price;
-        if ($productModel->discount_type === DiscountType::FLAT) {
+        if ($productModel->discount_type === DiscountType::FLAT->value) {
             $discount_price -= $productModel->discount_amount;
-        } elseif ($productModel->discount_type === DiscountType::PERCENTAGE) {
+        } elseif ($productModel->discount_type === DiscountType::PERCENTAGE->value) {
             $discount_price -= ($productModel->selling_price * $productModel->discount_amount) / 100;
         }
 

@@ -34,7 +34,7 @@ class ProductSeeder extends Seeder
             'video-product-3.mp4',
         ];
 
-        $discountTypes = [DiscountType::FLAT, DiscountType::PERCENTAGE];
+        $discountTypes = [DiscountType::FLAT->value, DiscountType::PERCENTAGE->value];
 
         $productAttributes = ProductAttribute::with('options')->get()->keyBy('name');
 

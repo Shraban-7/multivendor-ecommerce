@@ -16,17 +16,28 @@
             <div class="p-4 md:p-10">
                 <div class="flex flex-col md:flex-row gap-5">
                     <!-- Product Images Section -->
-                    <div class="product-multi-slider-container lg:w-[55%] md:w-[50%] w-full flex flex-col lg:flex-row gap-3 lg:gap-5">
+                    <div
+                        class="product-multi-slider-container lg:w-[55%] md:w-[50%] w-full flex flex-col lg:flex-row gap-3 lg:gap-5">
                         <!-- Thumbnails -->
                         <div class="lg:w-2/12 xl:w-1/6 w-full order-2 lg:order-1">
                             <div class="product-thumbnails overflow-hidden lg:h-[34rem] xl:h-[32rem] h-auto">
                                 <div class="swiper-wrapper">
-                                    @foreach ($product['images'] as $thumb)
-                                        <!-- thumb 1 -->
+                                    @php
+                                        $thumbnail = $product['thumbnail'] ?? null;
+                                        $images = $product['images'] ?? [];
+
+                                        $allImages = collect([$thumbnail])
+                                            ->filter()
+                                            ->concat($images)
+                                            ->values();
+                                    @endphp
+
+                                    @foreach ($allImages as $img)
                                         <div class="swiper-slide">
                                             <div
-                                                class="slide-thumb w-full xl:h-24 sm:h-24 h-16 rounded-xl md:rounded-2xl cursor-pointer border-2 border-transparent hover:border-primary overflow-hidden">
-                                                <img src="{{ storage_url($thumb) }}" alt=""
+                                                class="slide-thumb w-full xl:h-24 md:h-22 lg:h-28 h-20 rounded-2xl cursor-pointer border-2 border-transparent hover:border-primary-500 overflow-hidden">
+                                                <img src="{{ storage_url($img) }}"
+                                                    alt="{{ $product->name ?? 'Product Image' }}"
                                                     class="w-full h-full object-cover" />
                                             </div>
                                         </div>
@@ -39,10 +50,20 @@
                             <div
                                 class="product-swiper w-full h-80 sm:h-[28rem] md:h-[37rem] lg:h-[34rem] xl:h-[32rem] rounded-2xl overflow-hidden relative">
                                 <div class="swiper-wrapper">
-                                    @foreach ($product['images'] as $slider)
-                                        <!-- product image 1 -->
-                                        <div class="swiper-slide h-full rounded-2xl overflow-hidden">
-                                            <img src="{{ storage_url($slider) }}" alt=""
+                                    @php
+                                        $thumbnail = $product['thumbnail'] ?? null;
+                                        $images = $product['images'] ?? [];
+
+                                        $allImages = collect([$thumbnail])
+                                            ->filter()
+                                            ->concat($images)
+                                            ->values();
+                                    @endphp
+
+                                    @foreach ($allImages as $img)
+                                        <div class="swiper-slide h-full aspect-[4/3] rounded-2xl overflow-hidden">
+                                            <img src="{{ storage_url($img) }}"
+                                                alt="{{ $product['name'] ?? 'Product Image' }}"
                                                 class="w-full h-full object-cover" />
                                         </div>
                                     @endforeach
@@ -146,7 +167,65 @@
                             </div>
                             <div class="clr-size-qty p-4">
                                 <!-- Color Selection -->
+                                <div id="product-attributes">
+                                    <input type="hidden" id="productBasePrice" value="{{ $product['price'] }}">
+                                    <input type="hidden" id="productDiscountedPrice"
+                                        value="{{ $product['discount_price'] }}">
 
+                                    <form data-slug="{{ $product['slug'] }}"
+                                        class="flex flex-wrap flex-col variantForm">
+                                        @foreach ($productAttributes as $attribute)
+                                            <div class="mt-2">
+                                                <h6 class="text-davy-gray sm:text-lg">{{ $attribute['name'] }} :</h6>
+                                                <div class="flex flex-wrap items-center gap-4 sm:gap-5">
+                                                    @foreach ($attribute['options'] as $option)
+                                                        @php
+                                                            $inputId =
+                                                                strtolower($attribute['name']) .
+                                                                '-' .
+                                                                strtolower($option['value']);
+                                                            $inputName = 'option_' . $attribute['id'];
+                                                        @endphp
+
+                                                        <div class="form-ctrl flex flex-col gap-2 items-center">
+                                                            <input id="{{ $inputId }}" type="radio"
+                                                                value="{{ $option['variant_id'] }}"
+                                                                data-id="{{ $option['id'] }}"
+                                                                data-attribute="{{ $attribute['id'] }}"
+                                                                data-variant-id="{{ $option['variant_id'] }}"
+                                                                data-sku="{{ $option['sku'] }}"
+                                                                data-price="{{ $option['price'] }}"
+                                                                data-product-price="{{ $product['price'] }}"
+                                                                data-discounted-price="{{ $product['discount_price'] }}"
+                                                                name="{{ $inputName }}"
+                                                                class="hidden peer variant-option" />
+
+                                                            @if (strtolower($attribute['name']) === 'color')
+                                                                <label
+                                                                    style="background-color: {{ strtolower($option['value']) }}"
+                                                                    for="{{ $inputId }}"
+                                                                    class="w-6 h-6 sm:w-8 sm:h-8 block peer-checked:ring peer-checked:ring-{{ strtolower($option['value']) }}-800  rounded-full peer-checked:border-2 peer-checked:border-jet-gray/30 sm:peer-checked:border-4 border border-jet-gray/30 peer-checked:border-primary cursor-pointer">
+                                                                </label>
+                                                            @else
+                                                                <label for="{{ $inputId }}"
+                                                                    class="px-4 py-1 sm:px-5 sm:py-1.5 block ring-[1px] hover:bg-gray-100 ring-transparent peer-checked:ring-primary rounded border border-jet-gray/30 peer-checked:border-primary peer-checked:text-primary cursor-pointer">
+                                                                    {{ $option['value'] }}
+                                                                </label>
+                                                            @endif
+
+                                                            @if (strtolower($attribute['name']) === 'color')
+                                                                <label for="{{ $inputId }}"
+                                                                    class="block cursor-pointer text-davy-gray text-sm sm:text-base">
+                                                                    {{ $option['value'] }}
+                                                                </label>
+                                                            @endif
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </form>
+                                </div>
                                 <!-- Quantity -->
                                 <div class="quantity mt-3">
                                     <div class="text-davy-gray flex items-center gap-2">

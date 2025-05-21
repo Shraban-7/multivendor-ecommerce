@@ -53,18 +53,27 @@
                         <div class="order-2 w-full space-y-3 lg:w-1/6 lg:order-1">
                             <div class="single-product-thumbnails overflow-hidden xl:h-[37rem] lg:h-[41rem] h-auto">
                                 <div class="swiper-wrapper">
-                                    <!-- thumb 1 -->
-                                    @foreach ($product['images'] as $thumb)
+                                    @php
+                                        $thumbnail = $product['thumbnail'] ?? null;
+                                        $images = $product['images'] ?? [];
+
+                                        $allImages = collect([$thumbnail])
+                                            ->filter()
+                                            ->concat($images)
+                                            ->values();
+                                    @endphp
+
+                                    @foreach ($allImages as $img)
                                         <div class="swiper-slide">
                                             <div
-                                                class="w-full h-20 overflow-hidden border-2 border-transparent cursor-pointer slide-thumb xl:h-24 md:h-22 lg:h-28 rounded-2xl hover:border-primary">
-                                                <img src="{{ storage_url($thumb) }}"
-                                                    alt="Product thumbnail of A Young boy wear a jacket with green T-Shirt & Short Pant"
-                                                    class="object-cover w-full h-full" />
+                                                class="slide-thumb w-full xl:h-24 md:h-22 lg:h-28 h-20 rounded-2xl cursor-pointer border-2 border-transparent hover:border-primary-500 overflow-hidden">
+                                                <img src="{{ storage_url($img) }}"
+                                                    alt="{{ $product->name ?? 'Product Image' }}"
+                                                    class="w-full h-full object-cover" />
                                             </div>
                                         </div>
                                     @endforeach
-                                    <!-- Repeat thumb for more thumbnails -->
+
                                 </div>
                             </div>
                         </div>
@@ -74,13 +83,24 @@
                             <div
                                 class="single-product-swiper overflow-hidden w-full h-96 md:h-[37rem] xl:h-[37rem] lg:h-[41rem] rounded-2xl overflow-hidden relative">
                                 <div class="swiper-wrapper">
-                                    <!-- product image 1 -->
-                                    @foreach ($product['images'] as $slider)
-                                        <div class="h-full overflow-hidden swiper-slide rounded-2xl">
-                                            <img src="{{ storage_url($slider) }}" alt=""
-                                                class="object-cover w-full h-full" />
+                                    @php
+                                        $thumbnail = $product['thumbnail'] ?? null;
+                                        $images = $product['images'] ?? [];
+
+                                        $allImages = collect([$thumbnail])
+                                            ->filter()
+                                            ->concat($images)
+                                            ->values();
+                                    @endphp
+
+                                    @foreach ($allImages as $img)
+                                        <div class="swiper-slide h-full aspect-[4/3] rounded-2xl overflow-hidden">
+                                            <img src="{{ storage_url($img) }}"
+                                                alt="{{ $product['name'] ?? 'Product Image' }}"
+                                                class="w-full h-full object-cover" />
                                         </div>
                                     @endforeach
+
                                 </div>
                                 <!-- Navigation Buttons -->
                                 <div class="swiper-button-prev text-theme-light"></div>
@@ -169,13 +189,12 @@
 
                             <div class="px-4 py-2 clr-size-qty">
                                 <div id="product-attributes">
-                                    <form id="variantForm" data-slug="{{ $product['slug'] }}"
-                                        class="flex flex-wrap flex-col">
-                                        <input type="hidden" id="productBasePrice"
-                                            value="{{ $product['price']  }}">
-                                        <input type="hidden" id="productDiscountedPrice"
-                                            value="{{ $product['discount_price']  }}">
+                                    <input type="hidden" id="productBasePrice" value="{{ $product['price'] }}">
+                                    <input type="hidden" id="productDiscountedPrice"
+                                        value="{{ $product['discount_price'] }}">
 
+                                    <form data-slug="{{ $product['slug'] }}"
+                                        class="flex flex-wrap flex-col variantForm">
                                         @foreach ($productAttributes as $attribute)
                                             <div class="mt-2">
                                                 <h6 class="text-davy-gray sm:text-lg">{{ $attribute['name'] }} :</h6>
@@ -604,104 +623,104 @@
     </main>
 
     @push('scripts')
-    <script>
-        $(document).ready(function () {
-            let quantity = 1;
+        <script>
+            $(document).ready(function() {
+                let quantity = 1;
 
-            const quantityElement = $('#quantity');
-            const decreaseBtn = $('#decreaseBtn');
-            const increaseBtn = $('#increaseBtn');
-            const hiddenInput = $('.qtyInputValue');
+                const quantityElement = $('#quantity');
+                const decreaseBtn = $('#decreaseBtn');
+                const increaseBtn = $('#increaseBtn');
+                const hiddenInput = $('.qtyInputValue');
 
-            const updateQuantity = () => {
-                quantityElement.val(quantity.toString().padStart(2, "0"));
-                hiddenInput.val(quantity);
-                updatePriceAndSku();
-            };
+                const updateQuantity = () => {
+                    quantityElement.val(quantity.toString().padStart(2, "0"));
+                    hiddenInput.val(quantity);
+                    updatePriceAndSku();
+                };
 
-            increaseBtn.on('click', function () {
-                quantity++;
-                updateQuantity();
-            });
-
-            decreaseBtn.on('click', function () {
-                if (quantity > 1) {
-                    quantity--;
+                increaseBtn.on('click', function() {
+                    quantity++;
                     updateQuantity();
-                }
-            });
+                });
 
-            quantityElement.on('input', function () {
-                const newQuantity = parseInt($(this).val()) || 1;
-                quantity = newQuantity < 1 ? 1 : newQuantity;
-                updateQuantity();
-            });
-
-            function updatePriceAndSku() {
-                const checkedOptions = $('.variant-option:checked');
-                const quantityVal = parseInt($('#quantity').val()) || 1;
-
-                let basePrice, baseDiscountedPrice, selectedSku = '';
-                let totalAdditionalPrice = 0;
-
-                if (checkedOptions.length > 0) {
-                    basePrice = parseFloat(checkedOptions.first().data('product-price')) || 0;
-                    baseDiscountedPrice = parseFloat(checkedOptions.first().data('discounted-price')) || 0;
-
-                    checkedOptions.each(function () {
-                        const selected = $(this);
-                        const additionalPrice = parseFloat(selected.data('price')) || 0;
-                        totalAdditionalPrice += additionalPrice;
-
-                        selectedSku = selected.data('sku');
-                    });
-                } else {
-                    // 🛠 Fallback: Use base product price (set these in your HTML)
-                    basePrice = parseFloat($('#productBasePrice').val()) || 0;
-                    baseDiscountedPrice = parseFloat($('#productDiscountedPrice').val()) || 0;
-                }
-
-                const finalPrice = basePrice + totalAdditionalPrice;
-                const finalDiscountedPrice = baseDiscountedPrice + totalAdditionalPrice;
-
-                $('#current-price').text('৳ ' + (finalDiscountedPrice * quantityVal).toFixed(2));
-                $('#old-price').text('৳ ' + (finalPrice * quantityVal).toFixed(2));
-                $('#variantSku').val(selectedSku);
-            }
-
-            const seenAttributes = new Set();
-
-            $('#variantForm .variant-option').each(function () {
-                const attrId = $(this).data('attribute');
-
-                if (!seenAttributes.has(attrId)) {
-                    seenAttributes.add(attrId);
-                    $(this).prop('checked', true);
-                }
-            });
-
-            $('#variantForm').on('change', '.variant-option', function () {
-                const changedInput = $(this);
-                const newVariantId = changedInput.data('variant-id');
-                const attributeId = changedInput.data('attribute');
-
-                $('#variantForm .variant-option').each(function () {
-                    const input = $(this);
-                    const inputAttributeId = input.data('attribute');
-
-                    if (input.data('variant-id') === newVariantId) {
-                        input.prop('checked', true);
-                    } else if (inputAttributeId === attributeId) {
-                        input.prop('checked', false);
+                decreaseBtn.on('click', function() {
+                    if (quantity > 1) {
+                        quantity--;
+                        updateQuantity();
                     }
                 });
 
-                updatePriceAndSku();
-            });
+                quantityElement.on('input', function() {
+                    const newQuantity = parseInt($(this).val()) || 1;
+                    quantity = newQuantity < 1 ? 1 : newQuantity;
+                    updateQuantity();
+                });
 
-            updateQuantity();
-        });
-    </script>
+                function updatePriceAndSku() {
+                    const checkedOptions = $('.variant-option:checked');
+                    const quantityVal = parseInt($('#quantity').val()) || 1;
+
+                    let basePrice, baseDiscountedPrice, selectedSku = '';
+                    let totalAdditionalPrice = 0;
+
+                    if (checkedOptions.length > 0) {
+                        basePrice = parseFloat(checkedOptions.first().data('product-price')) || 0;
+                        baseDiscountedPrice = parseFloat(checkedOptions.first().data('discounted-price')) || 0;
+
+                        checkedOptions.each(function() {
+                            const selected = $(this);
+                            const additionalPrice = parseFloat(selected.data('price')) || 0;
+                            totalAdditionalPrice += additionalPrice;
+
+                            selectedSku = selected.data('sku');
+                        });
+                    } else {
+                        // 🛠 Fallback: Use base product price (set these in your HTML)
+                        basePrice = parseFloat($('#productBasePrice').val()) || 0;
+                        baseDiscountedPrice = parseFloat($('#productDiscountedPrice').val()) || 0;
+                    }
+
+                    const finalPrice = basePrice + totalAdditionalPrice;
+                    const finalDiscountedPrice = baseDiscountedPrice + totalAdditionalPrice;
+
+                    $('#current-price').text('৳ ' + (finalDiscountedPrice * quantityVal).toFixed(2));
+                    $('#old-price').text('৳ ' + (finalPrice * quantityVal).toFixed(2));
+                    $('#variantSku').val(selectedSku);
+                }
+
+                const seenAttributes = new Set();
+
+                $('.variantForm .variant-option').each(function() {
+                    const attrId = $(this).data('attribute');
+
+                    if (!seenAttributes.has(attrId)) {
+                        seenAttributes.add(attrId);
+                        $(this).prop('checked', true);
+                    }
+                });
+
+                $('.variantForm').on('change', '.variant-option', function() {
+                    const changedInput = $(this);
+                    const newVariantId = changedInput.data('variant-id');
+                    const attributeId = changedInput.data('attribute');
+
+                    $('.variantForm .variant-option').each(function() {
+                        const input = $(this);
+                        const inputAttributeId = input.data('attribute');
+
+                        if (input.data('variant-id') === newVariantId) {
+                            input.prop('checked', true);
+                        } else if (inputAttributeId === attributeId) {
+                            input.prop('checked', false);
+                        }
+                    });
+
+                    updatePriceAndSku();
+                });
+
+                updateQuantity();
+            });
+        </script>
 
 
 

@@ -160,15 +160,25 @@
                                                 <p class="flex items-center gap-1 text-aqua-deep mt-1">
                                                     <span
                                                         class="text-lg md:text-2xl font-medium">{{ money($item->unit_price) }}</span>
-                                                    <span class="text-lg md:text-2xl font-medium line-through">
+                                                    <span class="text-lg md:text-xl text-jet-gray font-medium line-through">
                                                         {{ money($item->unit_price + $item->product->discount) }}
                                                     </span>
                                                 </p>
 
+                                                @if ($item->variantOption)
+                                                    <div class="w-full text-xs xsm:text-sm text-gray-600 mt-1">
+                                                        @foreach ($item->variantOption as $variant)
+                                                            <span class="mr-2">
+                                                                {{ $variant['productAttribute'] }}:
+                                                                {{ $variant['option'] }}
+                                                            </span>
+                                                        @endforeach
+                                                    </div>
+                                                @endif
                                                 <!-- Submit Review Button -->
                                                 <a href="{{ route('orders.review', ['product' => $item->product->id]) }}"
                                                     class="inline-block mt-2 text-xs md:text-sm text-white  bg-primary hover:bg-theme-dark px-4 py-2 rounded transition-all duration-200">
-                                                   Submit a Review
+                                                    Submit a Review
                                                 </a>
                                             </div>
                                         </div>
@@ -198,13 +208,13 @@
 
                                     <div class="flex justify-between text-sm md:text-base">
                                         <span>Tax</span>
-                                        <span class="font-medium text-leaf-green">+{{ money($order->tax) }}</span>
+                                        <span class="font-medium text-jet-gray">+{{ money($order->tax) }}</span>
                                     </div>
 
                                     <div class="flex justify-between text-sm md:text-base">
                                         <span>Delivery</span>
                                         <span
-                                            class="text-leaf-green font-medium">+{{ money($order->shipping_fee) }}</span>
+                                            class="text-jet-gray font-medium">+{{ money($order->shipping_fee) }}</span>
                                     </div>
 
                                     <div class="border-t border-davy-gray/20 pt-4 mt-4">

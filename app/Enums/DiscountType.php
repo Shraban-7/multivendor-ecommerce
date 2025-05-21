@@ -1,16 +1,23 @@
-<?php declare(strict_types=1);
-
+<?php
 namespace App\Enums;
 
-use BenSampo\Enum\Enum;
+enum DiscountType: string {
+    case FLAT       = 'flat';
+    case PERCENTAGE = 'percentage';
 
-/**
- * @method static static OptionOne()
- * @method static static OptionTwo()
- * @method static static OptionThree()
- */
-final class DiscountType extends Enum
-{
-    const FLAT = "flat";
-    const PERCENTAGE = "percentage";
+    public function label(): string
+    {
+        return match ($this) {
+            self::FLAT => 'Flat',
+            self::PERCENTAGE => 'Percentage',
+        };
+    }
+
+    public static function labels(): array
+    {
+        return [
+            self::FLAT->label(),
+            self::PERCENTAGE->label(),
+        ];
+    }
 }

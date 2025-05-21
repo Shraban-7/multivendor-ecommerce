@@ -20,4 +20,27 @@ class OrderItem extends Model
     {
         return $this->belongsTo(ProductVariant::class, 'product_variant');
     }
+
+    public function getVariantOptionAttribute()
+    {
+        if (! $this->product_variant_ids) {
+            return collect();
+        }
+
+        $variantIds = is_array($this->product_variant_ids)
+        ? $this->product_variant_ids
+        : json_decode($this->product_variant_ids, true);
+
+        $variantIds = array_map('intval', array_filter($variantIds));
+
+        return ProductVariant::with(['option.product_attribute'])
+            ->whereIn('id', $variantIds)
+            ->get()
+            ->map(function ($variant) {
+                return [
+                    'productAttribute' => $variant->option->product_attribute->name ?? null,
+                    'option'           => $variant->option->value ?? null,
+                ];
+            });
+    }
 }
