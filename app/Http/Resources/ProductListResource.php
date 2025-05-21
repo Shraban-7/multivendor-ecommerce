@@ -10,7 +10,7 @@ class ProductListResource extends JsonResource
     public function toArray(Request $request): array
     {
         $price = $this->selling_price;
-        $discountedPrice = $this->discountedPrice;
+        $discountedPrice = $this->discounted_price;
         $discount = null;
         if($this->discount_amount > 0) {
             $discount = "-{$this->discount_amount}";
