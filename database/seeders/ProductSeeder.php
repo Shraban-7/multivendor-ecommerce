@@ -1,6 +1,7 @@
 <?php
 namespace Database\Seeders;
 
+use App\Enums\DiscountType;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductAttribute;
@@ -33,9 +34,11 @@ class ProductSeeder extends Seeder
             'video-product-3.mp4',
         ];
 
+        $discountTypes = [DiscountType::FLAT, DiscountType::PERCENTAGE];
+
         $productAttributes = ProductAttribute::with('options')->get()->keyBy('name');
 
-        DB::transaction(function () use ($majorCategories, $brandIds, $featuredVideos) {
+        DB::transaction(function () use ($majorCategories, $brandIds, $featuredVideos, $discountTypes) {
 
             foreach ($majorCategories as $slug => $seller) {
                 $category = Category::where('slug', $slug)->with('subcategories')->first();
@@ -59,7 +62,7 @@ class ProductSeeder extends Seeder
                             'description'          => "Premium and reliable " . strtolower($sub->name),
                             'buying_price'         => $productData['buying_price'],
                             'selling_price'        => $productData['selling_price'],
-                            'discount_type'        => 'fixed',
+                            'discount_type'        => $discountTypes[array_rand($discountTypes)],
                             'discount_amount'      => 10,
                             'unit_value'           => rand(1, 5),
                             'unit_id'              => $this->getUnitId($slug),
