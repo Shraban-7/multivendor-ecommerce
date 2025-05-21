@@ -34,7 +34,8 @@ class ProductListResource extends JsonResource
             'subcategory' => CategoryResource::make($this->whenLoaded('subcategory')),
             'images' => $this->whenLoaded('images', function () {
                 return $this->imageToArray($this->images);
-            })
+            }),
+            'variants' => $this->formatted_variants ?? [],
         ];
     }
 

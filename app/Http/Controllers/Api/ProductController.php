@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductListResource;
 use App\Http\Resources\SellerResource;
 use App\Models\Product;
+use App\Models\ProductVariant;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -36,7 +37,13 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        $product->load('images', 'category', 'subcategory', 'variants.option.product_attribute');
+        $variants = ProductVariant::with('option.product_attribute')
+            ->where('product_id', $product->id)
+            ->get();
+
+        $product->formatted_variants = $this->formatVariants($variants);
+
+        $product->load('images', 'category', 'subcategory');
 
         $data['product'] = ProductListResource::make($product);
         $data['seller'] = SellerResource::make($product->seller);
@@ -49,8 +56,22 @@ class ProductController extends Controller
 
         $data['related_products'] = ProductListResource::collection($relatedProducts);
 
-        return $product->variants;
-
         return apiResponse($data);
+    }
+
+    private function formatVariants($variants)
+    {
+        $grouped = collect($variants)->map(function ($variant) {
+            return [
+                'id' => $variant['id'],
+                'sku' => $variant['sku'],
+                'option_value' => $variant['option']['value'] ?? null,
+                'additional_price' => $variant['additional_price'],
+                'available_stock' => $variant['stock_in'] - $variant['stock_out'],
+                'attribute_name' => $variant['option']['product_attribute']['name'] ?? 'Unknown',
+            ];
+        })->groupBy('attribute_name');
+
+        return $grouped->toArray();
     }
 }
