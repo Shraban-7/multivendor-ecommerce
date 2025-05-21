@@ -194,7 +194,7 @@
                                         value="{{ $product['discount_price'] }}">
 
                                     <form data-slug="{{ $product['slug'] }}"
-                                        class="flex flex-wrap flex-col variantForm">
+                                        class="flex flex-wrap flex-col variantForm" data-id="{{ $product['id'] }}">
                                         @foreach ($productAttributes as $attribute)
                                             <div class="mt-2">
                                                 <h6 class="text-davy-gray sm:text-lg">{{ $attribute['name'] }} :</h6>
