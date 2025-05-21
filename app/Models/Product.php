@@ -169,9 +169,9 @@ class Product extends Model
     public function getDiscountedPrice($basePrice)
     {
         if ($this->discount_type !== null) {
-            if ($this->discount_type === \App\Enums\DiscountType::FLAT) {
+            if ($this->discount_type === \App\Enums\DiscountType::FLAT->value) {
                 return $basePrice - $this->discount_amount;
-            } elseif ($this->discount_type === \App\Enums\DiscountType::PERCENTAGE) {
+            } elseif ($this->discount_type === \App\Enums\DiscountType::PERCENTAGE->value) {
                 return $basePrice - (($basePrice * $this->discount_amount) / 100);
             }
         }
@@ -198,9 +198,9 @@ class Product extends Model
             : $this->selling_price;
 
         if ($this->discount_type !== null) {
-            if ($this->discount_type === \App\Enums\DiscountType::FLAT) {
+            if ($this->discount_type === \App\Enums\DiscountType::FLAT->value) {
                 return $this->discount_amount;
-            } elseif ($this->discount_type === \App\Enums\DiscountType::PERCENTAGE) {
+            } elseif ($this->discount_type === \App\Enums\DiscountType::PERCENTAGE->value) {
                 return ($basePrice * $this->discount_amount) / 100;
             }
         }

@@ -90,12 +90,12 @@
                             <label class="form-label">Discount Type</label>
                             <select name="discount_type" class="form-select w-100" id="" required>
                                 <option value="" selected disabled>--Choose--</option>
-                                <option value="{{ \App\Enums\DiscountType::FLAT }}"
-                                    {{ \App\Enums\DiscountType::FLAT == $product->discount_type ? 'selected' : '' }}>
-                                    {{ ucfirst(\App\Enums\DiscountType::FLAT) }}</option>
-                                <option value="{{ \App\Enums\DiscountType::PERCENTAGE }}"
-                                    {{ \App\Enums\DiscountType::PERCENTAGE == $product->discount_type ? 'selected' : '' }}>
-                                    {{ ucfirst(\App\Enums\DiscountType::PERCENTAGE) }}</option>
+                                <option value="{{ \App\Enums\DiscountType::FLAT->value }}"
+                                    {{ \App\Enums\DiscountType::FLAT->value == $product->discount_type ? 'selected' : '' }}>
+                                    {{ ucfirst(\App\Enums\DiscountType::FLAT->label()) }}</option>
+                                <option value="{{ \App\Enums\DiscountType::PERCENTAGE->value }}"
+                                    {{ \App\Enums\DiscountType::PERCENTAGE->value == $product->discount_type ? 'selected' : '' }}>
+                                    {{ ucfirst(\App\Enums\DiscountType::PERCENTAGE->label()) }}</option>
                             </select>
                         </div>
                         <div class="mb-3 col-md-3">
