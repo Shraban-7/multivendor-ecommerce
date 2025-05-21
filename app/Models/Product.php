@@ -133,8 +133,8 @@ class Product extends Model
                     'price' => $variant->additional_price,
                     // 'attributes' => $variant->attributeOptions->map(function ($option) {
                     //     return [
-                    //         'attribute_id' => $option->productAttribute->id,
-                    //         'name' => $option->productAttribute->name,
+                    //         'attribute_id' => $option->product_attribute->id,
+                    //         'name' => $option->product_attribute->name,
                     //         'options' => [
                     //             'id' => $option->id,
                     //             'value' => $option->value ?? null,

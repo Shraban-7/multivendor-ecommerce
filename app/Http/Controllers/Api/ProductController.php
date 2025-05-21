@@ -36,10 +36,20 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        $product->load('images', 'category', 'subcategory');
+        $product->load('images', 'category', 'subcategory', 'variants.option.product_attribute');
 
         $data['product'] = ProductListResource::make($product);
         $data['seller'] = SellerResource::make($product->seller);
+
+        $relatedProducts = Product::query()
+            ->where('id', '!=', $product->id)
+            ->where('category_id', $product->category_id)
+            ->limit(6)
+            ->get();
+
+        $data['related_products'] = ProductListResource::collection($relatedProducts);
+
+        return $product->variants;
 
         return apiResponse($data);
     }

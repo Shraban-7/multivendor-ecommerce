@@ -65,7 +65,7 @@ class CartItem extends Model
             ->get()
             ->map(function ($variant) {
                 return [
-                    'productAttribute' => $variant->option->productAttribute->name ?? null,
+                    'productAttribute' => $variant->option->product_attribute->name ?? null,
                     'option'           => $variant->option->value ?? null,
                 ];
             });

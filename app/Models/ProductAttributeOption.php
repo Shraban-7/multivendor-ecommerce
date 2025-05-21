@@ -11,12 +11,12 @@ class ProductAttributeOption extends Model
 
     protected $guarded = ['id'];
 
-    public function productAttribute()
+    public function product_attribute()
     {
         return $this->belongsTo(ProductAttribute::class);
     }
 
-    public function productVariants()
+    public function product_variants()
     {
         return $this->belongsToMany(
             ProductVariant::class,

@@ -15,9 +15,9 @@ class SellerResource extends JsonResource
             'email' => $this->business_email,
             'address' => $this->business_address,
             'image' => storage_url($this->business_logo),
-            'products_count' => $this->total_items,
-            'sales_count' => $this->total_items,
-            'followers_count' => $this->total_items,
+            'products_count' => (string) $this->total_items,
+            'sales_count' => (string) $this->total_items,
+            'followers_count' => (string) $this->total_followers,
         ];
     }
 }
