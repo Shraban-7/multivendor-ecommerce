@@ -1,4 +1,4 @@
-@extends('seller.layouts.app')
+@extends('admin.layouts.app')
 @section('title', 'Product Attributes')
 
 @section('content')
@@ -7,7 +7,7 @@
     </div>
 
     <div class="table-responsive">
-        <table class="table mb-3 bg-white table-bordered">
+        <table id="product-attribute-table" class="table mb-3 bg-white table-bordered">
             <thead>
                 <tr>
                     <th scope="col">Name</th>
@@ -55,7 +55,7 @@
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary"
                                                         data-bs-dismiss="modal">Cancel</button>
-                                                <form action="{{ route('seller.productAttributes.option_delete', $option->id) }}" method="POST">
+                                                <form action="{{ route('admin.productAttributes.option_delete', $option->id) }}" method="POST">
                                                     @csrf
                                                     <button type="submit" class="btn btn-danger">Delete</button>
                                                 </form>
@@ -99,7 +99,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                    <form action="{{ route('seller.productAttributes.delete', $productAttribute->id) }}"
+                                    <form action="{{ route('admin.productAttributes.delete', $productAttribute->id) }}"
                                         method="POST">
                                         @csrf
                                         <button type="submit" class="btn btn-danger">Delete</button>
@@ -112,29 +112,9 @@
             </tbody>
         </table>
     </div>
-
     @push('scripts')
-        <script>
-            $(document).ready(function() {
-                $('.remove-option-btn').on('click', function() {
-                    const row = $(this).closest('.option-row');
-                    const optionId = row.data('option-id');
-                    const deletedContainer = row.closest('.modal-body').find(
-                        '[id^="deleted-options-container"]');
-
-                    if (optionId) {
-                        // Append hidden input for deleted option
-                        deletedContainer.append(
-                            `<input type="hidden" name="deleted_option_ids[]" value="${optionId}">`
-                        );
-                    }
-
-                    // Remove the row from the DOM
-                    row.remove();
-                });
-            });
-        </script>
-    @endpush
-
-
+    <script>
+        new DataTable('#product-attribute-table');
+    </script>
+@endpush
 @endsection
