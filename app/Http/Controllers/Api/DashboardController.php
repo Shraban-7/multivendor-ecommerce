@@ -17,8 +17,8 @@ class DashboardController extends Controller
     {
         $data['categories'] = CategoryResource::collection(Category::category()->get());
 
-        $newProducts = Product::latest('id')->take(8)->get();
-        $trendingProducts = Product::trending()->whereHas('variants')->take(8)->get();
+        $newProducts = Product::latest('id')->take(16)->get();
+        $trendingProducts = Product::trending()->whereHas('variants')->take(24)->get();
 
         $data['products'] = array(
             'trending' => ProductListResource::collection($trendingProducts),
