@@ -19,12 +19,12 @@ class AuthController extends Controller
         }
 
         $data = $request->validate([
-            'fullname' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:5|confirmed',
         ]);
 
-        $data['username'] = str_slug('users', 'username', $data['fullname']);
+        $data['username'] = str_slug('users', 'username', $data['name']);
 
         User::create($data);
 
@@ -38,7 +38,7 @@ class AuthController extends Controller
         }
 
         $data = $request->validate([
-            'fullname' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
             'email' => 'required|string|email|max:255|unique:sellers,email',
             'phone' => 'required|string|max:200',
@@ -60,7 +60,7 @@ class AuthController extends Controller
             'zip' => 'nullable|string|max:20',
         ]);
 
-        $data['username'] = str_slug('sellers', 'username', $data['fullname']);
+        $data['username'] = str_slug('sellers', 'username', $data['name']);
 
         $imageFields = [
             'image' => 'images/sellers/avatar',
@@ -101,20 +101,19 @@ class AuthController extends Controller
         $user = User::find(Auth::id());
 
         $data = $request->validate([
-            'fullname' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'image' => 'nullable|image|mimes:jpg,jpeg,png,svg|max:2048',
         ]);
 
-        if ($user->fullname !== $request->fullname) {
-            $data['username'] = str_slug('users', 'username', $request->fullname);
+        if ($user->name !== $request->name) {
+            $data['username'] = str_slug('users', 'username', $request->name);
         } else {
             $data['username'] = $user->username;
         }
 
 
         $data['phone'] = $request->phone;
-        $data['display_name'] = $request->display_name;
         $data['secondary_email'] = $request->secondary_email;
         $data['country_id'] = $request->country_id;
 

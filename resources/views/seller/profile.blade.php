@@ -14,9 +14,9 @@
                     @csrf
                     <div class="row">
                         <div class="col-md-4 mb-3">
-                            <label for="fullname" class="form-label">Full Name</label>
-                            <input type="text" class="form-control" id="fullname" name="fullname"
-                                value="{{ old('fullname', $seller->fullname) }}" required>
+                            <label for="name" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="name" name="name"
+                                value="{{ old('name', $seller->name) }}" required>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="email" class="form-label">Email</label>

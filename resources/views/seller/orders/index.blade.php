@@ -23,7 +23,7 @@
                     <tr>
                         <td> {{ $order->id }}</td>
                         <td>{{ \Carbon\Carbon::parse($order->created_at)->format('d-m-Y h:i A') }}</td>
-                        <td> {{ $order->user->fullname }} </td>
+                        <td> {{ $order->user->name }} </td>
                         <td> <span class="text-dark">{{ $order->payable }}</span> </td>
                         <td> <span class="text-danger"> {{ $order->due }}</span> </td>
                         <td>

@@ -18,12 +18,12 @@ class AuthController extends Controller
         }
 
         $data = $request->validate([
-            'fullname' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:sellers',
             'password' => 'required|string|min:5|confirmed',
         ]);
 
-        $data['username'] = str_slug('sellers', 'username', $data['fullname']);
+        $data['username'] = str_slug('sellers', 'username', $data['name']);
 
         Seller::create($data);
 
@@ -48,20 +48,19 @@ class AuthController extends Controller
         $seller = Seller::find(Auth::id());
 
         $data = $request->validate([
-            'fullname' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:sellers,email,' . $seller->id,
             'image' => 'nullable|image|mimes:jpg,jpeg,png,svg|max:2048',
         ]);
 
-        if ($seller->fullname !== $request->fullname) {
-            $data['username'] = str_slug('sellers', 'username', $request->fullname);
+        if ($seller->name !== $request->name) {
+            $data['username'] = str_slug('sellers', 'username', $request->name);
         } else {
             $data['username'] = $seller->username;
         }
 
 
         $data['phone'] = $request->phone;
-        $data['display_name'] = $request->display_name;
         $data['secondary_email'] = $request->secondary_email;
         $data['country_id'] = $request->country_id;
 

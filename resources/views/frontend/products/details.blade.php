@@ -53,17 +53,7 @@
                         <div class="order-2 w-full space-y-3 lg:w-1/6 lg:order-1">
                             <div class="single-product-thumbnails overflow-hidden xl:h-[37rem] lg:h-[41rem] h-auto">
                                 <div class="swiper-wrapper">
-                                    @php
-                                        $thumbnail = $product['thumbnail'] ?? null;
-                                        $images = $product['images'] ?? [];
-
-                                        $allImages = collect([$thumbnail])
-                                            ->filter()
-                                            ->concat($images)
-                                            ->values();
-                                    @endphp
-
-                                    @foreach ($allImages as $img)
+                                    @foreach ($product['slider'] as $img)
                                         <div class="swiper-slide">
                                             <div
                                                 class="slide-thumb w-full xl:h-24 md:h-22 lg:h-28 h-20 rounded-2xl cursor-pointer border-2 border-transparent hover:border-primary-500 overflow-hidden">
@@ -73,7 +63,6 @@
                                             </div>
                                         </div>
                                     @endforeach
-
                                 </div>
                             </div>
                         </div>
@@ -83,18 +72,8 @@
                             <div
                                 class="single-product-swiper overflow-hidden w-full h-96 md:h-[37rem] xl:h-[37rem] lg:h-[41rem] rounded-2xl overflow-hidden relative">
                                 <div class="swiper-wrapper">
-                                    @php
-                                        $thumbnail = $product['thumbnail'] ?? null;
-                                        $images = $product['images'] ?? [];
-
-                                        $allImages = collect([$thumbnail])
-                                            ->filter()
-                                            ->concat($images)
-                                            ->values();
-                                    @endphp
-
-                                    @foreach ($allImages as $img)
-                                        <div class="swiper-slide h-full aspect-[4/3] rounded-2xl overflow-hidden">
+                                    @foreach ($product['slider'] as $img)
+                                        <div class="swiper-slide main h-full aspect-[4/3] rounded-2xl overflow-hidden">
                                             <img src="{{ storage_url($img) }}"
                                                 alt="{{ $product['name'] ?? 'Product Image' }}"
                                                 class="w-full h-full object-cover" />
@@ -121,12 +100,9 @@
                                 </div>
                                 <span class="font-light text-jet-gray">Exclusive offer</span>
                             </div>
-
-
                             <h1 class="text-sm lg:text-base text-rustic-red lg:pr-5 xl:pr-16">
                                 {{ $product['name'] }}
                             </h1>
-
                             <div class="flex flex-wrap items-center gap-2 text-sm xsm:gap-5 sm:10 md:gap-2 lg:gap-10">
                                 <div class="flex items-center gap-2">
                                     <div class="flex items-center gap-2 text-davy-gray">
@@ -166,10 +142,12 @@
                             <div class="flex flex-wrap items-center gap-2">
                                 <div class="flex flex-no-wrap items-center gap-1 new-price">
                                     <i class="fa-solid fa-bolt text-[#ffa755]"></i>
-                                    <h3 id="current-price{{ $product['id'] }}" class="font-bold current-price text-primary product-price">
+                                    <h3 id="current-price{{ $product['id'] }}"
+                                        class="font-bold current-price text-primary product-price">
                                         {{ money($product['discount_price']) }}</h3>
                                 </div>
-                                <h6 id="old-price{{ $product['id'] }}" class="line-through text-jet-gray">{{ money($product['price']) }}
+                                <h6 id="old-price{{ $product['id'] }}" class="line-through text-jet-gray">
+                                    {{ money($product['price']) }}
                                 </h6>
                                 <span class="text-xs px-2.5 py-0.5 rounded-lg border border-primary discount-badge">
                                     -{{ $product['discount']['amount'] }} last 2 days
@@ -189,12 +167,13 @@
 
                             <div class="px-4 py-2 clr-size-qty">
                                 <div id="product-attributes">
-                                    <input type="hidden" id="productBasePrice{{ $product['id'] }}" value="{{ $product['price'] }}">
+                                    <input type="hidden" id="productBasePrice{{ $product['id'] }}"
+                                        value="{{ $product['price'] }}">
                                     <input type="hidden" id="productDiscountedPrice{{ $product['id'] }}"
                                         value="{{ $product['discount_price'] }}">
 
-                                    <form data-slug="{{ $product['slug'] }}"
-                                        class="flex flex-wrap flex-col variantForm" data-id="{{ $product['id'] }}">
+                                    <form data-slug="{{ $product['slug'] }}" class="flex flex-wrap flex-col variantForm"
+                                        data-id="{{ $product['id'] }}">
                                         @foreach ($productAttributes as $attribute)
                                             <div class="mt-2">
                                                 <h6 class="text-davy-gray sm:text-lg">{{ $attribute['name'] }} :</h6>
@@ -218,6 +197,7 @@
                                                                 data-price="{{ $option['price'] }}"
                                                                 data-product-price="{{ $product['price'] }}"
                                                                 data-discounted-price="{{ $product['discount_price'] }}"
+                                                                data-image="{{ storage_url($option['image']) }}"
                                                                 name="{{ $inputName }}"
                                                                 class="hidden peer variant-option" />
 
@@ -257,7 +237,8 @@
                                                 class="w-5 h-5 flex items-center justify-center text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 eq active:text-primary rounded text-sm font-bold">
                                                 <i class="fa-solid fa-minus"></i>
                                             </button>
-                                            <input readonly id="quantity{{ $product['id'] }}" type="number" min="1"
+                                            <input readonly id="quantity{{ $product['id'] }}" type="number"
+                                                min="1"
                                                 class="text-center text-persian-blue w-16 h-5 text-sm font-medium border-0 focus:ring-0" />
 
                                             <button id="increaseBtn{{ $product['id'] }}"
@@ -628,12 +609,10 @@
                 let quantity = 1;
                 var product_id = $('.variantForm').data('id')
 
-                // console.log(product_id);
-
-                const quantityElement = $('#quantity'+product_id);
-                const decreaseBtn = $('#decreaseBtn'+product_id);
-                const increaseBtn = $('#increaseBtn'+product_id);
-                const hiddenInput = $('.qtyInputValue'+product_id);
+                const quantityElement = $('#quantity' + product_id);
+                const decreaseBtn = $('#decreaseBtn' + product_id);
+                const increaseBtn = $('#increaseBtn' + product_id);
+                const hiddenInput = $('.qtyInputValue' + product_id);
 
 
                 const updateQuantity = () => {
@@ -662,7 +641,7 @@
 
                 function updatePriceAndSku() {
                     const checkedOptions = $('.variant-option:checked');
-                    const quantityVal = parseInt($('#quantity'+product_id).val()) || 1;
+                    const quantityVal = parseInt($('#quantity' + product_id).val()) || 1;
 
                     let basePrice, baseDiscountedPrice, selectedSku = '';
                     let totalAdditionalPrice = 0;
@@ -679,16 +658,45 @@
                             selectedSku = selected.data('sku');
                         });
                     } else {
-                        basePrice = parseFloat($('#productBasePrice'+product_id).val()) || 0;
-                        baseDiscountedPrice = parseFloat($('#productDiscountedPrice'+product_id).val()) || 0;
+                        basePrice = parseFloat($('#productBasePrice' + product_id).val()) || 0;
+                        baseDiscountedPrice = parseFloat($('#productDiscountedPrice' + product_id).val()) || 0;
                     }
 
                     const finalPrice = basePrice + totalAdditionalPrice;
                     const finalDiscountedPrice = baseDiscountedPrice + totalAdditionalPrice;
 
-                    $('#current-price'+product_id).text('৳ ' + (finalDiscountedPrice * quantityVal).toFixed(2));
-                    $('#old-price'+product_id).text('৳ ' + (finalPrice * quantityVal).toFixed(2));
-                    $('#variantSku'+product_id).val(selectedSku);
+                    $('#current-price' + product_id).text('৳ ' + (finalDiscountedPrice * quantityVal).toFixed(2));
+                    $('#old-price' + product_id).text('৳ ' + (finalPrice * quantityVal).toFixed(2));
+                    $('#variantSku' + product_id).val(selectedSku);
+                }
+
+                function updateSliderThumbnailActive(selectedImageUrl) {
+                    const normalizedUrl = selectedImageUrl.trim().toLowerCase();
+                    $('.swiper-slide').removeClass('swiper-slide-active swiper-slide-thumb-active');
+
+                    $('.swiper-slide').each(function() {
+                        const slide = $(this);
+                        const img = $(this).find('img').attr('src')?.trim().toLowerCase();
+
+                        if (img === selectedImageUrl) {
+                            console.log("variant image match");
+                            slide.addClass('swiper-slide-active swiper-slide-thumb-active');
+                            return false;
+                        }
+                    });
+
+                    console.log($('.swiper-slide-active'))
+
+                    $('.main').removeClass('swiper-slide-active');
+
+                    $('.main').each(function(index) {
+                        const mainSlide = $(this)
+                        const imgSrc = $(this).find('img').attr('src')?.trim().toLowerCase();
+                        if (imgSrc === normalizedUrl) {
+                            mainSlide .addClass('swiper-slide-active');
+                            return false;
+                        }
+                    });
                 }
 
                 const seenAttributes = new Set();
@@ -707,8 +715,8 @@
                     const newVariantId = changedInput.data('variant-id');
                     const attributeId = changedInput.data('attribute');
                     const product_id = $(this).closest('.variantForm').data('id');
-
-                    console.log(product_id)
+                    const imageUrl = $(this).data('image');
+                    // console.log(imageUrl);
 
                     $('.variantForm .variant-option').each(function() {
                         const input = $(this);
@@ -721,14 +729,16 @@
                         }
                     });
 
+                    if (imageUrl) {
+                        updateSliderThumbnailActive(imageUrl);
+                    }
+
                     updatePriceAndSku(product_id);
                 });
 
                 updateQuantity(product_id);
             });
         </script>
-
-
 
         <script>
             $(document).ready(function() {

@@ -22,7 +22,7 @@ class SellerController extends Controller
         }
 
         $data = $request->validate([
-            'fullname' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:sellers,email,' . $seller->id,
             'phone' => 'required|string',
             'business_name' => 'required|string|max:255',
@@ -32,8 +32,8 @@ class SellerController extends Controller
             'business_logo' => 'nullable|image|mimes:jpg,jpeg,png,svg|max:2048',
         ]);
 
-        if ($seller->fullname !== $request->fullname) {
-            $data['username'] = str_slug('sellers', 'username', $request->fullname);
+        if ($seller->name !== $request->name) {
+            $data['username'] = str_slug('sellers', 'username', $request->name);
         } else {
             $data['username'] = $seller->username;
         }
@@ -64,5 +64,5 @@ class SellerController extends Controller
         return redirect()->back()->with('success', 'Profile Updated Successfully');
     }
 
-   
+
 }

@@ -99,7 +99,7 @@ class ProductController extends Controller
                 'options' => $productAttributeOptions
                     ->where('product_attribute_id', $attribute->id)
                     ->map(function ($option) use ($variantsByOption) {
-                        $variant = $variantsByOption[$option->id]->first(); // get the first variant for this option
+                        $variant = $variantsByOption[$option->id]->first();
 
                         return [
                             'id'         => $option->id,
@@ -107,13 +107,12 @@ class ProductController extends Controller
                             'variant_id' => $variant?->id,
                             'sku'        => $variant?->sku,
                             'price'      => $variant?->additional_price,
+                            'image'      => $variant?->image
                         ];
                     })
                     ->values(),
             ];
         }
-
-        // return $productAttributes;
 
         if ($request->ajax()) {
             $type = $request->get('type');

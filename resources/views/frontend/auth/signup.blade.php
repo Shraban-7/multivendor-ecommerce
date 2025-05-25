@@ -18,7 +18,7 @@
                 <!-- Full Name -->
                 <div class="form-ctrl space-y-1">
                     <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
-                    <input type="text" name="fullname" id="name" required placeholder="John Doe"
+                    <input type="text" name="name" id="name" required placeholder="John Doe"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-light-yellow focus:border-light-yellow text-sm" />
                 </div>
 
