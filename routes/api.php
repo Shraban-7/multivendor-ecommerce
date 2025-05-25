@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\SellerController;
 use App\Http\Controllers\Api\SettingController;
 
 Route::middleware('guest')->group(function () {
@@ -20,6 +21,9 @@ Route::get('dashboard', [DashboardController::class, 'index']);
 
 Route::get('products', [ProductController::class, 'index']);
 Route::get('products/{product}', [ProductController::class, 'show']);
+
+Route::get('sellers', [SellerController::class, 'index']);
+Route::get('sellers/{seller}', [SellerController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
