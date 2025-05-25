@@ -88,17 +88,9 @@ class CartController extends Controller
         return successResponse("Added to cart successfully");
     }
 
-    public function removeItem(Request $request)
+    public function delete(CartItem $item)
     {
-        $validator = validateRequest($request, [
-            'product_id' => 'required|exists:products,id',
-        ]);
-
-        if ($validator->fails()) {
-            return sendValidationError($validator->errors());
-        }
-
-        CartItem::where('product_id', $request->product_id)->delete();
+        $item->delete();
 
         return successResponse("Item removed successfully");
     }
