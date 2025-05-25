@@ -27,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
         View::composer('*', function ($view) {
             if (Auth::check()) {
                 $carts = Cart::where('user_id', Auth::user()->id)
-                    ->with('cartItems.product')
+                    ->with('cart_items.product')
                     ->get();
                 $cartCount = count($carts);
             } else {
@@ -39,7 +39,7 @@ class AppServiceProvider extends ServiceProvider
             $grand_total = 0;
 
             foreach ($carts as $cart) {
-                foreach ($cart->cartItems as $item) {
+                foreach ($cart->cart_items as $item) {
                     $item_grand_total = $item->quantity * $item->price;
                     $grand_total += $item_grand_total;
                     $sub_total += $item_grand_total;

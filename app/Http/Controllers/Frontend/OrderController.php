@@ -68,7 +68,7 @@ class OrderController extends Controller
         $seller = Seller::find($selectedSellerId);
         $cart = Cart::where('user_id', $user->id)
             ->where('seller_id', $selectedSellerId)
-            ->with('cartItems.product')
+            ->with('cart_items.product')
             ->first();
 
         if (!$cart) {
@@ -84,7 +84,7 @@ class OrderController extends Controller
         $orderItems = [];
         $shipping_fee = $seller->shipping_cost;
 
-        foreach ($cart->cartItems as $cartItem) {
+        foreach ($cart->cart_items as $cartItem) {
             $product = $cartItem->product;
             $variant = $cartItem->variant;
             $unitPrice = $cartItem->price;
@@ -139,7 +139,7 @@ class OrderController extends Controller
 
         $order->items()->createMany($orderItems);
 
-        $cart->cartItems()->delete();
+        $cart->cart_items()->delete();
         $cart->delete();
 
         $seller = Seller::find($selectedSellerId);
@@ -187,10 +187,9 @@ class OrderController extends Controller
             'images.*' => 'mimes:jpeg,png,jpg,gif,pdf,doc,docx,zip|max:4000',
         ]);
 
-        $review_exist = Review::where('product_id',$product->id)->where('user_id',$user->id)->first();
+        $review_exist = Review::where('product_id', $product->id)->where('user_id', $user->id)->first();
 
-        if($review_exist)
-        {
+        if ($review_exist) {
             return redirect()->back();
         }
 

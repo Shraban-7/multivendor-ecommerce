@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
@@ -90,10 +91,10 @@ class CartController extends Controller
     public function details(Request $request)
     {
         $carts = Cart::where('user_id', Auth::user()->id)
-            ->with('cartItems.product')
+            ->with('cart_items.product')
             ->get()
             ->groupBy(function ($cart) {
-                return $cart->cartItems->first()->product->seller_id ?? null;
+                return $cart->cart_items->first()->product->seller_id ?? null;
             });
 
         $grand_total = 0;
@@ -101,7 +102,7 @@ class CartController extends Controller
 
         foreach ($carts as $seller_id => $cartGroup) {
             foreach ($cartGroup as $cart) {
-                foreach ($cart->cartItems as $item) {
+                foreach ($cart->cart_items as $item) {
                     $item_grand_total = $item->quantity * $item->product_original_price;
                     $grand_total += $item_grand_total;
                     $itemPrice = $item->quantity * $item->price;
@@ -112,7 +113,7 @@ class CartController extends Controller
         }
 
         $discount             = $grand_total - $sub_total;
-        $total_products_count = $carts->flatten()->pluck('cartItems')->flatten()->count();
+        $total_products_count = $carts->flatten()->pluck('cart_items')->flatten()->count();
 
         $interest_products = Product::latest()->limit(6)->get();
 
@@ -184,14 +185,14 @@ class CartController extends Controller
     public function getLiveCartData()
     {
         $carts = Cart::where('user_id', Auth::id())
-            ->with('cartItems.product', 'cartItems.variant')
+            ->with('cart_items.product', 'cart_items.variant')
             ->get();
 
         $cartCount   = $carts->count();
         $grand_total = 0;
 
         foreach ($carts as $cart) {
-            foreach ($cart->cartItems as $item) {
+            foreach ($cart->cart_items as $item) {
                 $grand_total += $item->quantity * $item->price;
             }
         }
