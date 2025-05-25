@@ -106,6 +106,7 @@ class Product extends Model
             'id' => $this->id,
             'slug' => $this->slug,
             'sku' => $this->sku,
+            'category_id' => $this->category?->id,
             'category' => $this->category?->name,
             'subcategory' => $this->subcategory?->name,
             'brand' => $this->brand?->name,

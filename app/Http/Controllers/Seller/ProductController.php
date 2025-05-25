@@ -1,22 +1,18 @@
 <?php
-
 namespace App\Http\Controllers\Seller;
 
-use App\Models\Brand;
-use App\Models\Product;
 use App\Enums\StockType;
+use App\Http\Controllers\Controller;
+use App\Models\Brand;
 use App\Models\Category;
-use App\Models\OrderItem;
-use App\Models\ProductUnit;
-use Illuminate\Support\Str;
+use App\Models\Product;
+use App\Models\ProductAttribute;
+use App\Models\ProductAttributeOption;
 use App\Models\ProductImage;
+use App\Models\ProductUnit;
+use App\Models\ProductVariant;
 use App\Models\StockHistory;
 use Illuminate\Http\Request;
-use App\Models\ProductVariant;
-use App\Models\ProductAttribute;
-use App\Http\Controllers\Controller;
-use App\Models\ProductAttributeOption;
-use App\Models\ProductVariantProductAttributeOption;
 
 class ProductController extends Controller
 {
@@ -24,9 +20,9 @@ class ProductController extends Controller
     {
         $seller_id = seller()->id;
 
-        $products = Product::where('seller_id', $seller_id)->latest('id')->get();
+        $products   = Product::where('seller_id', $seller_id)->latest('id')->get();
         $categories = Category::category()->with('subcategories')->get();
-        $brands = Brand::all();
+        $brands     = Brand::all();
 
         return view('seller.products.index', compact('products', 'categories', 'brands'));
     }
@@ -34,8 +30,8 @@ class ProductController extends Controller
     public function create()
     {
         $categories = Category::category()->with('subcategories')->get();
-        $brands = Brand::all();
-        $units = ProductUnit::all();
+        $brands     = Brand::all();
+        $units      = ProductUnit::all();
 
         return view('seller.products.create', compact('categories', 'brands', 'units'));
     }
@@ -43,31 +39,31 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'category_id' => 'required|integer|exists:categories,id',
-            'subcategory_id' => 'nullable',
-            'brand_id' => 'nullable',
-            'name' => 'required|string|max:255',
-            'short_description' => 'nullable|string',
-            'description' => 'nullable|string',
-            'sku' => 'nullable|string|max:255',
-            'buying_price' => 'required|numeric',
-            'selling_price' => 'required|numeric',
-            'tax' => 'required|numeric',
-            'discount_type' => 'required|string',
-            'discount_amount' => 'required|numeric',
-            'unit_id' => 'required|numeric',
-            'unit_value' => 'required|string',
-            'is_trending' => 'required|boolean',
-            'best_selling' => 'required|boolean',
-            'is_featured' => 'required|boolean',
-            'is_interest' => 'required|boolean',
-            'is_community' => 'required|boolean',
-            'is_lightdeal' => 'required|boolean',
+            'category_id'          => 'required|integer|exists:categories,id',
+            'subcategory_id'       => 'nullable',
+            'brand_id'             => 'nullable',
+            'name'                 => 'required|string|max:255',
+            'short_description'    => 'nullable|string',
+            'description'          => 'nullable|string',
+            'sku'                  => 'nullable|string|max:255',
+            'buying_price'         => 'required|numeric',
+            'selling_price'        => 'required|numeric',
+            'tax'                  => 'required|numeric',
+            'discount_type'        => 'required|string',
+            'discount_amount'      => 'required|numeric',
+            'unit_id'              => 'required|numeric',
+            'unit_value'           => 'required|string',
+            'is_trending'          => 'required|boolean',
+            'best_selling'         => 'required|boolean',
+            'is_featured'          => 'required|boolean',
+            'is_interest'          => 'required|boolean',
+            'is_community'         => 'required|boolean',
+            'is_lightdeal'         => 'required|boolean',
             'lightdeal_expired_at' => 'nullable|date|date_format:Y-m-d',
-            'thumbnail' => 'required|image|mimes:jpeg,png,jpg,gif|max:4000',
-            'video' => 'nullable|file',
-            'files' => 'nullable|array',
-            'files.*' => 'mimes:jpeg,png,jpg,gif,pdf,doc,docx,zip|max:4000',
+            'thumbnail'            => 'required|image|mimes:jpeg,png,jpg,gif|max:4000',
+            'video'                => 'nullable|file',
+            'files'                => 'nullable|array',
+            'files.*'              => 'mimes:jpeg,png,jpg,gif,pdf,doc,docx,zip|max:4000',
         ]);
 
         $validated['thumbnail'] = upload_file($request->file('thumbnail'), 'images/products/thumb');
@@ -75,8 +71,8 @@ class ProductController extends Controller
             $validated['video'] = upload_file($request->file('video'), 'videos/products');
         }
         $validated['seller_id'] = seller()->id;
-        $validated['slug'] = str_slug('products', 'slug', $validated['name']);
-        $validated['sku'] = $validated['sku'] ?? strtoupper(uniqid());
+        $validated['slug']      = str_slug('products', 'slug', $validated['name']);
+        $validated['sku']       = $validated['sku'] ?? strtoupper(uniqid());
 
         $product = Product::create($validated);
 
@@ -84,7 +80,7 @@ class ProductController extends Controller
             foreach ($request->file('files') as $file) {
                 ProductImage::create([
                     'product_id' => $product->id,
-                    'image' => upload_file($file, 'images/products')
+                    'image'      => upload_file($file, 'images/products'),
                 ]);
             }
         }
@@ -96,10 +92,10 @@ class ProductController extends Controller
 
     public function details($slug)
     {
-        $product = Product::where('slug',$slug)->first();
+        $product = Product::where('slug', $slug)->first();
         $product = $product->toDetailsArray();
 
-        $productAttributes = ProductAttribute::get();
+        $productAttributes = ProductAttribute::where('category_id', $product['category_id'])->get();
 
         return view('seller.products.details', compact('product', 'productAttributes'));
     }
@@ -107,8 +103,8 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         $categories = Category::category()->with('subcategories')->get();
-        $brands = Brand::all();
-        $units = ProductUnit::all();
+        $brands     = Brand::all();
+        $units      = ProductUnit::all();
 
         return view('seller.products.edit', compact('product', 'categories', 'brands', 'units'));
     }
@@ -116,28 +112,28 @@ class ProductController extends Controller
     public function update(Product $product, Request $request)
     {
         $validated = $request->validate([
-            'category_id' => 'required|integer|exists:categories,id',
-            'subcategory_id' => 'nullable',
-            'brand_id' => 'nullable',
-            'name' => 'required|string|max:255',
-            'short_description' => 'nullable|string',
-            'description' => 'nullable|string',
-            'sku' => 'nullable|string|max:255',
-            'buying_price' => 'required|numeric',
-            'selling_price' => 'required|numeric',
-            'unit_id' => 'required|numeric',
-            'unit_value' => 'required|string',
-            'is_trending' => 'required|boolean',
-            'best_selling' => 'required|boolean',
-            'is_featured' => 'required|boolean',
-            'is_interest' => 'required|boolean',
-            'is_community' => 'required|boolean',
-            'is_lightdeal' => 'required|boolean',
+            'category_id'          => 'required|integer|exists:categories,id',
+            'subcategory_id'       => 'nullable',
+            'brand_id'             => 'nullable',
+            'name'                 => 'required|string|max:255',
+            'short_description'    => 'nullable|string',
+            'description'          => 'nullable|string',
+            'sku'                  => 'nullable|string|max:255',
+            'buying_price'         => 'required|numeric',
+            'selling_price'        => 'required|numeric',
+            'unit_id'              => 'required|numeric',
+            'unit_value'           => 'required|string',
+            'is_trending'          => 'required|boolean',
+            'best_selling'         => 'required|boolean',
+            'is_featured'          => 'required|boolean',
+            'is_interest'          => 'required|boolean',
+            'is_community'         => 'required|boolean',
+            'is_lightdeal'         => 'required|boolean',
             'lightdeal_expired_at' => 'nullable|date|date_format:Y-m-d',
-            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:4000',
-            'video' => 'nullable|file',
-            'files' => 'nullable|array',
-            'files.*' => 'mimes:jpeg,png,jpg,gif,pdf,doc,docx,zip|max:4000',
+            'thumbnail'            => 'nullable|image|mimes:jpeg,png,jpg,gif|max:4000',
+            'video'                => 'nullable|file',
+            'files'                => 'nullable|array',
+            'files.*'              => 'mimes:jpeg,png,jpg,gif,pdf,doc,docx,zip|max:4000',
         ]);
 
         $validated['slug'] = str_slug('products', 'slug', $validated['name']);
@@ -170,7 +166,7 @@ class ProductController extends Controller
             foreach ($request->file('files') as $file) {
                 ProductImage::create([
                     'product_id' => $product->id,
-                    'image' => upload_file($file, 'images/products')
+                    'image'      => upload_file($file, 'images/products'),
                 ]);
             }
         }
@@ -210,7 +206,7 @@ class ProductController extends Controller
     {
         $request->validate([
             'stock_quantity' => 'required|numeric',
-            'stock_action' => 'required|numeric',
+            'stock_action'   => 'required|numeric',
         ]);
 
         if ($request->stock_quantity > $product->stock_in) {
@@ -219,9 +215,9 @@ class ProductController extends Controller
         }
         $log = StockHistory::create([
             'product_id' => $product->id,
-            'quantity' => $request->stock_quantity,
-            'type' => $request->stock_action,
-            'note' => $request->stock_note,
+            'quantity'   => $request->stock_quantity,
+            'type'       => $request->stock_action,
+            'note'       => $request->stock_note,
         ]);
         $new_stock = 0;
         if ($log->type == StockType::SET_EXACT_STOCK) {
@@ -232,40 +228,12 @@ class ProductController extends Controller
             $new_stock = $product->stock_in - $request->stock_quantity;
         }
 
-
         $product->update(['stock_in' => $new_stock]);
 
         session()->flash('success', 'Quantity Updated successfully!');
 
         return successResponse("Quantity Update successfully!");
     }
-
-    public function addAttributes(Request $request, Product $product)
-    {
-        $request->validate([
-            'product_attribute_id' => 'required|exists:product_attributes,id',
-            'value' => 'required|string',
-        ]);
-
-        $attributeId = $request->product_attribute_id;
-        $value = trim($request->value);
-
-        $exists = ProductAttributeOption::where('product_attribute_id', $attributeId)
-            ->whereRaw('LOWER(value) = ?', [strtolower($value)])
-            ->exists();
-
-        if ($exists) {
-            return redirect()->back()->with('error', 'This attribute value already exists.');
-        }
-
-        ProductAttributeOption::create([
-            'product_attribute_id' => $attributeId,
-            'value' => $value
-        ]);
-
-        return redirect()->back()->with('success', 'Attribute Added Successfully!');
-    }
-
 
     public function updateAttributes(Request $request, ProductAttribute $productAttribute)
     {
@@ -274,16 +242,16 @@ class ProductController extends Controller
         }
 
         $request->validate([
-            'name' => 'required|string|max:255',
-            'options' => 'required|array',
-            'options.*.value' => 'required|string|max:255',
+            'name'                       => 'required|string|max:255',
+            'options'                    => 'required|array',
+            'options.*.value'            => 'required|string|max:255',
             'options.*.additional_price' => 'required|numeric',
         ]);
 
         $productAttribute->update(['name' => $request->name]);
 
         $existingOptionIds = $productAttribute->options->pluck('id')->toArray();
-        $newOptionIds = [];
+        $newOptionIds      = [];
 
         foreach ($request->options as $option) {
             if (isset($option['id'])) {
@@ -291,7 +259,7 @@ class ProductController extends Controller
                 $productAttributeOption->update($option);
                 $newOptionIds[] = $option['id'];
             } else {
-                $newOption = $productAttribute->options()->create($option);
+                $newOption      = $productAttribute->options()->create($option);
                 $newOptionIds[] = $newOption->id;
             }
         }
@@ -319,16 +287,16 @@ class ProductController extends Controller
     public function addVariant(Request $request, Product $product)
     {
         $data = $request->validate([
-            'sku' => 'nullable|string',
-            'stock' => 'required|numeric',
-            'price' => 'required|numeric',
-            'attributes' => 'required|array',
-            'description' => 'nullable|string'
+            'sku'         => 'nullable|string',
+            'stock'       => 'required|numeric',
+            'price'       => 'required|numeric',
+            'attributes'  => 'required|array',
+            'description' => 'nullable|string',
         ]);
 
         $data['product_id'] = $product->id;
 
-        if (!$request->sku) {
+        if (! $request->sku) {
             $data['sku'] = strtoupper(uniqid());
         }
 
@@ -355,14 +323,14 @@ class ProductController extends Controller
     public function updateVariant(Request $request, Product $product, ProductVariant $variant)
     {
         $data = $request->validate([
-            'sku' => 'nullable|string',
-            'stock' => 'required|numeric',
-            'price' => 'required|numeric',
-            'attributes' => 'required|array',
-            'description' => 'nullable|string'
+            'sku'         => 'nullable|string',
+            'stock'       => 'required|numeric',
+            'price'       => 'required|numeric',
+            'attributes'  => 'required|array',
+            'description' => 'nullable|string',
         ]);
 
-        if (!$request->sku) {
+        if (! $request->sku) {
             $data['sku'] = strtoupper(uniqid());
         }
 

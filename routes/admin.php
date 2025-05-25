@@ -3,19 +3,20 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\BrandController;
+use App\Http\Controllers\Admin\SellerController;
+use App\Http\Controllers\Admin\HomeMidController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ReviewsController;
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\HeroBannerController;
-use App\Http\Controllers\Admin\HomeMidController;
-use App\Http\Controllers\Admin\PaymentGatewayController;
-use App\Http\Controllers\Admin\ProductController;
-use App\Http\Controllers\Admin\PromoPosterController;
-use App\Http\Controllers\Admin\ReviewsController;
-use App\Http\Controllers\Admin\SellerController;
-use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SocialLinkController;
+use App\Http\Controllers\Admin\PromoPosterController;
 use App\Http\Controllers\Admin\SubcategoryController;
+use App\Http\Controllers\Admin\PaymentGatewayController;
+use App\Http\Controllers\Admin\ProductAttributeController;
 
 Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -36,6 +37,14 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
     Route::prefix('products')->as('products.')->group(function () {
         Route::get('/', [ProductController::class, 'index'])->name('index');
     });
+
+    Route::prefix('product-attributes')->as('productAttributes.')->group(function () {
+    Route::get('/', [ProductAttributeController::class, 'index'])->name('index');
+    Route::post('{option}/option-delete', [ProductAttributeController::class, 'optionDelete'])->name('option_delete');
+    Route::post('{product_attribute}/delete', [ProductAttributeController::class, 'destroy'])->name('delete');
+
+});
+
 
     Route::prefix('brands')->as('brands.')->group(function () {
         Route::get('/', [BrandController::class, 'index'])->name('index');

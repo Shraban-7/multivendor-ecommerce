@@ -13,6 +13,7 @@
             <x-dashboard.nav-item-link :route="'seller.products.index'">
                 <i data-feather="package" class="nav-icon icon-xs me-2"></i> Manage Product
             </x-dashboard.nav-item-link>
+            
 
             <li class="nav-item">
                 <a class="nav-link has-arrow  collapsed " href="#!" data-bs-toggle="collapse"

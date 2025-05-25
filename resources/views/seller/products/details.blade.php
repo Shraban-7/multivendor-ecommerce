@@ -40,7 +40,7 @@
 
                                 <button class="btn btn-outline-danger btn-sm" title="Delete" data-bs-toggle="modal"
                                     data-bs-target="#deleteModal-{{ $product['id'] }}">
-                                    <i data-feather="trash-2" class="icon-xs"></i> Delete
+                                    <i data-feather="trash-2" class="icon-xs"></i> Delete Product
                                 </button>
                             </div>
                         </div>
@@ -140,9 +140,9 @@
                                                     <hr class="my-2">
 
                                                     <p class="mb-1">
-                                                        <small>
+                                                        {{-- <small>
                                                             {{ collect($variant['attributes'])->pluck('options.value')->implode(', ') }}
-                                                        </small>
+                                                        </small> --}}
                                                     </p>
                                                     <small class="text-muted">
                                                         Stock: {{ $variant['stock'] }},
@@ -196,7 +196,7 @@
                                                                         placeholder="Enter Stock Quantity" required>
                                                                 </div>
 
-                                                                <div class="mb-3">
+                                                                {{-- <div class="mb-3">
                                                                     <label class="form-label">Attributes</label>
                                                                     <div class="row">
                                                                         @foreach ($productAttributes as $productAttribute)
@@ -225,11 +225,12 @@
                                                                         @endforeach
 
                                                                     </div>
-                                                                </div>
+                                                                </div> --}}
 
                                                                 <div class="mb-3">
                                                                     <label class="form-label">Description
-                                                                        (Optional)</label>
+                                                                        (Optional)
+                                                                    </label>
                                                                     <textarea class="form-control" name="description" id="editDescription{{ $loop->iteration }}" rows="2"
                                                                         placeholder="Additional details"></textarea>
                                                                 </div>
@@ -395,43 +396,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Sales & Performance Card -->
-                    {{-- <div class="mb-4 shadow-sm card">
-                        <div class="bg-white card-header">
-                            <h5 class="mb-0 card-title">Sales Performance</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="row g-3">
-                                <div class="col-6">
-                                    <div class="p-3 text-center border rounded">
-                                        <div class="text-muted small">Units Sold</div>
-                                        <div class="fs-4 fw-bold">{{ $sold }}</div>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="p-3 text-center border rounded">
-                                        <div class="text-muted small">Revenue</div>
-                                        <div class="fs-4 fw-bold">{{ money($revenue) }}</div>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="p-3 text-center border rounded">
-                                        <div class="text-muted small">Profit</div>
-                                        <div class="fs-4 fw-bold">{{ money($profit) }}</div>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="p-3 text-center border rounded">
-                                        <div class="text-muted small">Last Sale</div>
-                                        <div class="fs-6 fw-bold">
-                                            {{ $last_sale ? $last_sale->format('d-m-y h:i:A') : 'No sales yet' }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> --}}
                 </div>
             </div>
         </div>
@@ -519,7 +483,7 @@
 
     <!-- variant add modal -->
     <div class="modal fade" id="addVariantModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Add Variant</h5>
@@ -530,30 +494,33 @@
 
                         @csrf
                         <input type="hidden" name="product_id" value="{{ $product['id'] }}">
+                        <div class="row mb-3">
+                            <div class="col-4">
+                                <label class="form-label">SKU</label>
+                                <input type="text" class="form-control" name="sku" id="skuInput"
+                                    placeholder="Enter SKU (Optional)" value="{{ strtoupper(uniqid()) }}">
+                            </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">SKU</label>
-                            <input type="text" class="form-control" name="sku"
-                                placeholder="Enter SKU (Optional)">
-                        </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">Price</label>
-                            <input type="number" class="form-control" name="price" step="0.01"
-                                placeholder="Enter Price" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Stock</label>
-                            <input type="number" class="form-control" name="stock" min="1"
-                                placeholder="Enter Stock Quantity" required>
+                            <div class="col-4">
+                                <label class="form-label">Price</label>
+                                <div class="input-group">
+                                    <span class="input-group-text" id="basic-addon1">{{ currency() }}</span>
+                                    <input type="number" class="form-control" name="price" step="0.01"
+                                        placeholder="Enter Price" required>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label">Available Stock</label>
+                                <input type="number" class="form-control" name="stock_in" step="0.01" required>
+                            </div>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Attributes</label>
                             <div class="row">
                                 @foreach ($productAttributes as $productAttribute)
-                                    <div class="col-6 mb-2">
+                                    <div class="col-4 mb-2">
                                         <label class="form-label">{{ $productAttribute->name }}</label>
                                         <select class="form-select" name="attributes[{{ $productAttribute->name }}]">
                                             <option value="" disable>Select Options</option>
@@ -566,6 +533,7 @@
                                 @endforeach
                             </div>
                         </div>
+
 
                         <div class="mb-3">
                             <label class="form-label">Description (Optional)</label>
@@ -583,22 +551,23 @@
         </div>
     </div>
 
-
-    <div class="modal fade" id="addAttributeModal" tabindex="-1" aria-labelledby="addAttributeModalLabel"
+    <div class="modal fade" id="addAttributeModal" tabindex="-1" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <form method="POST" action="{{ route('seller.products.addAttributes') }}">
-                @csrf
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addAttributeModalLabel">Add Attribute</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-content">
+                <form method="POST" action="{{ route('seller.productAttributes.store', $product['id']) }}">
+                    @csrf
+                    <div class="modal-header bg-white text-dark">
+                        <h5 class="modal-title" id="addAttributeModalLabel">Add Product Attribute</h5>
+                        <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
                     </div>
 
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="attribute_name" class="form-label">Name</label>
-                            <select class="form-select" id="attribute_name" name="product_attribute_id" required>
+                        <!-- Existing Attribute -->
+                        <div class="mb-4">
+                            <label for="attribute_name" class="form-label fw-bold">Select Existing Attribute</label>
+                            <select class="form-select" id="attribute_name" name="product_attribute_id">
                                 <option value="" disabled selected>Select an attribute</option>
                                 @foreach ($productAttributes as $productAttribute)
                                     <option value="{{ $productAttribute->id }}">{{ $productAttribute->name }}</option>
@@ -606,24 +575,62 @@
                             </select>
                         </div>
 
+                        <div class="text-center mb-3 fw-semibold text-muted">— or create new —</div>
+
+                        <!-- New Attribute Name -->
                         <div class="mb-3">
-                            <label for="attribute_value" class="form-label">Value</label>
+                            <label for="new_attribute_name" class="form-label fw-bold">New Attribute Name</label>
+                            <input type="text" class="form-control" id="new_attribute_name" name="name"
+                                placeholder="Enter new attribute name">
+                        </div>
+
+                        <!-- Attribute Value -->
+                        <div class="mb-3">
+                            <label for="attribute_value" class="form-label fw-bold">Attribute Value <span
+                                    class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="attribute_value" name="value"
-                                required>
+                                placeholder="e.g., Red, XL" required>
                         </div>
                     </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save</button>
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Attribute</button>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 
+
     @push('scripts')
         <script>
+            $('#generateSkuBtn').on('click', function() {
+                let skuParts = [];
+
+                let productId = $('input[name="product_id"]').val();
+                if (productId) {
+                    skuParts.push('PID' + productId);
+                }
+
+                $('select[name^="attributes"]').each(function() {
+                    let name = $(this).attr('name').match(/\[(.*?)\]/)[1];
+                    let value = $(this).val();
+                    if (value) {
+                        let formatted = name.toUpperCase().replace(/\s+/g, '') + '-' + value.toUpperCase()
+                            .replace(/\s+/g, '');
+                        skuParts.push(formatted);
+                    }
+                });
+
+                let timestamp = Date.now();
+                skuParts.push('TS' + timestamp);
+
+                let generatedSku = skuParts.join('_');
+
+                $('#skuInput').val(generatedSku);
+            });
+
             $('#saveStockUpdate').click(function(e) {
                 e.preventDefault();
 

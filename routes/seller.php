@@ -5,6 +5,7 @@ use App\Http\Controllers\Seller\AuthController;
 use App\Http\Controllers\Seller\CustomerController;
 use App\Http\Controllers\Seller\DashboardController;
 use App\Http\Controllers\Seller\OrderController;
+use App\Http\Controllers\Seller\ProductAttributeController;
 use App\Http\Controllers\Seller\ProductController;
 use App\Http\Controllers\Seller\SellerController;
 use App\Http\Controllers\Seller\SettingController;
@@ -27,7 +28,6 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::post('/{product}/add-variant', [ProductController::class, 'addVariant'])->name('addVariant');
         Route::post('/{product}/update-variant/{variant}', [ProductController::class, 'updateVariant'])->name('updateVariant');
         Route::delete('/delete-variant/{variant}', [ProductController::class, 'deleteVariant'])->name('deleteVariant');
-        Route::match(['get','post'],'/add-attributes', [ProductController::class, 'addAttributes'])->name('addAttributes');
         Route::match(['get','post'],'/{productAttribute}/update-attributes', [ProductController::class, 'updateAttributes'])->name('updateAttributes');
         Route::delete('/{productAttribute}/delete-attributes', [ProductController::class, 'deleteAttributes'])->name('deleteAttributes');
 
@@ -43,6 +43,10 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::get('/cancelled', [OrderController::class, 'index'])->name('cancelled');
         Route::get('/details/{order}', [OrderController::class, 'details'])->name('details');
         Route::Post('/update-status/{order}', [OrderController::class, 'updateStatus'])->name('updateStatus');
+    });
+
+    Route::prefix('product-attributes')->as('productAttributes.')->group(function () {
+        Route::post('{product}/store', [ProductAttributeController::class, 'store'])->name('store');
     });
 
     Route::prefix('settings')->as('settings.')->group(function () {

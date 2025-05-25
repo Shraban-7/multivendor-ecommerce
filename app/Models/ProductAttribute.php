@@ -24,4 +24,9 @@ class ProductAttribute extends Model
     {
         return $this->hasMany(ProductAttributeOption::class);
     }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }
