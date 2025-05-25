@@ -17,7 +17,7 @@ class CartController extends Controller
     {
         $carts = Cart::query()
             ->where('user_id', Auth::id())
-            ->with('cart_items.product', 'seller')
+            ->with('cart_items.product.category', 'cart_items.product.subcategory', 'seller')
             ->get();
 
         return apiResourceResponse(CartResource::collection($carts));
@@ -86,5 +86,20 @@ class CartController extends Controller
         ])->delete();
 
         return successResponse("Added to cart successfully");
+    }
+
+    public function removeItem(Request $request)
+    {
+        $validator = validateRequest($request, [
+            'product_id' => 'required|exists:products,id',
+        ]);
+
+        if ($validator->fails()) {
+            return sendValidationError($validator->errors());
+        }
+
+        CartItem::where('product_id', $request->product_id)->delete();
+
+        return successResponse("Item removed successfully");
     }
 }

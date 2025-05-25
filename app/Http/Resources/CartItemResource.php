@@ -28,6 +28,8 @@ class CartItemResource extends JsonResource
             'price' => removeZeroFromDecimal($price),
             'discounted_price' => removeZeroFromDecimal($discountedPrice),
             'discount' => $discount,
+            'category' => CategoryResource::make($product->category),
+            'subcategory' => CategoryResource::make($product->subcategory),
         ];
     }
 }
