@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CartResource;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Product;
@@ -12,6 +13,16 @@ use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
+    public function index()
+    {
+        $carts = Cart::query()
+            ->where('user_id', Auth::id())
+            ->with('cart_items.product', 'seller')
+            ->get();
+
+        return apiResourceResponse(CartResource::collection($carts));
+    }
+
     public function store(Request $request)
     {
         $validator = validateRequest($request, [
