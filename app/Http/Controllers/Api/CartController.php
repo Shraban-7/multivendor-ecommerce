@@ -35,7 +35,7 @@ class CartController extends Controller
             return sendValidationError($validator->errors());
         }
 
-        $product = Product::find($request->id);
+        $product = Product::find($request->product_id);
 
         //TODO: check product stock
 
@@ -43,7 +43,7 @@ class CartController extends Controller
 
         $cart = Cart::query()->firstOrCreate([
             'user_id' => Auth::id(),
-            'seller_id' => $product->id,
+            'seller_id' => $product->seller_id,
         ]);
 
         $price = (float) $request->price;

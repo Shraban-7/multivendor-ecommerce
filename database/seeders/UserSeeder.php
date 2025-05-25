@@ -9,12 +9,20 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         $users = [
+            [
+                'fullname' => 'Test User',
+                'display_name' => 'Test',
+                'image' => '/images/user/avatar/user-avatar-1.png',
+                'email' => 'user@gmail.com',
+                'secondary_email' => 'user@gmail.com',
+                'phone' => '01111111111',
+                'password' => Hash::make('password'),
+                'country_id' => 1,
+                'zip' => '1205',
+            ],
             [
                 'fullname'        => 'Alice Rahman',
                 'display_name'    => 'Alice',
