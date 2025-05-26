@@ -109,6 +109,6 @@ class CartController extends Controller
             'quantity' => $request->quantity
         ]);
 
-        return successResponse("Item removed successfully");
+        return successResponse("Cart updated successfully");
     }
 }
