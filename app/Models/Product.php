@@ -144,6 +144,7 @@ class Product extends Model
                     'image'          => $variant->image,
                 ];
             }),
+            'product_attributes'  => $this->getAttributeGroups(),
             'total_sold'        => $sold,
             'revenue'           => $revenue,
             'profit'            => $profit,
@@ -216,5 +217,52 @@ class Product extends Model
         }
 
         return round(($this->discount / $this->selling_price) * 100, 2);
+    }
+
+    public function getAttributeGroups(): array
+    {
+        $variantIds = $this->variants->pluck('id');
+
+        $variants = ProductVariant::whereIn('id', $variantIds)->get();
+
+        $variantsByOption = $variants->groupBy('option_id');
+
+        $variantAttributeOptionIds = $variants->pluck('option_id');
+
+        $productAttributeOptions = ProductAttributeOption::whereIn('id', $variantAttributeOptionIds)->get();
+
+        $productAttributeIds = array_unique(
+            $productAttributeOptions->pluck('product_attribute_id')->toArray()
+        );
+
+        $productAttributeModels = ProductAttribute::whereIn('id', $productAttributeIds)
+            ->with('options')
+            ->get();
+
+        $productAttributes = [];
+
+        foreach ($productAttributeModels as $attribute) {
+            $productAttributes[] = [
+                'id'      => $attribute->id,
+                'name'    => $attribute->name,
+                'options' => $productAttributeOptions
+                    ->where('product_attribute_id', $attribute->id)
+                    ->map(function ($option) use ($variantsByOption) {
+                        $variant = $variantsByOption[$option->id]->first();
+
+                        return [
+                            'id'         => $option->id,
+                            'value'      => $option->value,
+                            'variant_id' => $variant?->id,
+                            'sku'        => $variant?->sku,
+                            'price'      => $variant?->additional_price,
+                            'image'      => $variant?->image,
+                        ];
+                    })
+                    ->values(),
+            ];
+        }
+
+        return $productAttributes;
     }
 }

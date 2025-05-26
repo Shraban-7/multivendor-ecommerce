@@ -17,7 +17,7 @@ class AdminSeeder extends Seeder
             [
                 'name' => 'Admin',
                 'username' => 'admin',
-                'email' => 'admin@example.com',
+                'email' => 'admin@gmail.com',
                 'password' => 'password',
             ]
         );

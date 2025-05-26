@@ -175,7 +175,7 @@
 
                                     <form data-slug="{{ $product['slug'] }}"
                                         class="flex flex-wrap flex-col variantForm" data-id="{{ $product['id'] }}">
-                                        @foreach ($productAttributes as $attribute)
+                                        @foreach ($product['product_attributes'] as $attribute)
                                             <div class="mt-2">
                                                 <h6 class="text-davy-gray sm:text-lg">{{ $attribute['name'] }} :</h6>
                                                 <div class="flex flex-wrap items-center gap-4 sm:gap-5">
