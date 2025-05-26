@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
-    public function checkout(Request $request)
+    public function store(Request $request)
     {
         $user = Auth::user();
 
@@ -121,14 +121,7 @@ class OrderController extends Controller
             'total_sold' => $totalSoldCount,
         ]);
 
-        return response()->json([
-            'status'     => true,
-            'message'    => 'Order placed successfully.',
-            'order_id'   => $order->id,
-            'invoice_id' => $order->invoice_id,
-            'payable'    => $order->payable,
-            'items'      => $orderItems,
-        ], 201);
+        return successResponse('Order Placed Successfully');
     }
 
     public function index(Request $request)
@@ -149,15 +142,10 @@ class OrderController extends Controller
         return apiResourceResponse(OrderResource::collection($orders));
     }
 
-    public function details(Order $order)
+    public function show(Order $order)
     {
         $order->load('items.product');
 
-        return apiResponse(OrderResource::make($order));
-    }
-
-    public function success(Order $order)
-    {
         return apiResponse(OrderResource::make($order));
     }
 
@@ -175,11 +163,12 @@ class OrderController extends Controller
         return apiResponse(OrderResource::make($order));
     }
 
-    public function review(Product $product, Request $request)
+    public function submitReview(Request $request)
     {
         $user = Auth::user();
 
         $validator = validateRequest($request, [
+            'product_id' => 'required',
             'rating'      => 'required|integer|min:1|max:5',
             'review_text' => 'required|string',
             'images'      => 'nullable|array',
@@ -193,6 +182,8 @@ class OrderController extends Controller
                 'errors'  => $validator->errors(),
             ], 422);
         }
+
+        $product = Product::find($request->product_id);
 
         $review_exist = Review::where('product_id', $product->id)
             ->where('user_id', $user->id)

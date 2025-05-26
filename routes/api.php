@@ -37,14 +37,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/items/{item}/update-quantity', [CartController::class, 'updateQuantity']);
     });
 
-    Route::post('/checkout',[OrderController::class,'checkout']);
-
     Route::prefix('orders')->group(function(){
-        Route::get('/',[OrderController::class,'index']);
-        Route::get('{order}/details',[OrderController::class,'details']);
-        Route::get('{order}/success',[OrderController::class,'success']);
-        Route::get('{invoice_id}/tracking',[OrderController::class,'tracking']);
-        Route::get('/review/{product}',[OrderController::class,'review']);
+        Route::get('/',[OrderController::class, 'index']);
+        Route::get('{order}',[OrderController::class, 'show']);
+        Route::post('/store', [OrderController::class, 'store']);
+        // Route::get('{invoice_id}/tracking',[OrderController::class,'tracking']);
+    });
+
+    Route::prefix('reviews')->group(function(){
+        Route::post('store', [OrderController::class, 'submitReview']);
     });
 
     // Route::get('categories', [ContentCategoryController::class, 'index']);
