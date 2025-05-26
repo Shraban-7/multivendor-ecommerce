@@ -7,6 +7,7 @@ use App\Http\Controllers\Seller\DashboardController;
 use App\Http\Controllers\Seller\OrderController;
 use App\Http\Controllers\Seller\ProductAttributeController;
 use App\Http\Controllers\Seller\ProductController;
+use App\Http\Controllers\Seller\ProductVariantController;
 use App\Http\Controllers\Seller\SellerController;
 use App\Http\Controllers\Seller\SettingController;
 
@@ -28,12 +29,10 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::post('/{product}/add-variant', [ProductController::class, 'addVariant'])->name('addVariant');
         Route::post('/{product}/update-variant/{variant}', [ProductController::class, 'updateVariant'])->name('updateVariant');
         Route::delete('/delete-variant/{variant}', [ProductController::class, 'deleteVariant'])->name('deleteVariant');
-        Route::match(['get','post'],'/{productAttribute}/update-attributes', [ProductController::class, 'updateAttributes'])->name('updateAttributes');
-        Route::delete('/{productAttribute}/delete-attributes', [ProductController::class, 'deleteAttributes'])->name('deleteAttributes');
-
         Route::delete('images/{image}/delete', [ProductController::class, 'deleteImage'])->name('image.delete');
 
         Route::delete('/{product}/delete', [ProductController::class, 'delete'])->name('delete');
+        Route::get('/get-options/{attributeId}', [ProductController::class, 'getOptions']);
     });
 
     Route::prefix('orders')->as('orders.')->group(function () {
@@ -47,6 +46,11 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
 
     Route::prefix('product-attributes')->as('productAttributes.')->group(function () {
         Route::post('{product}/store', [ProductAttributeController::class, 'store'])->name('store');
+    });
+
+    Route::prefix('product-variants')->as('productVariants.')->group(function () {
+        Route::post('{product}/store', [ProductVariantController::class, 'store'])->name('store');
+        Route::post('{variant}/delete', [ProductVariantController::class, 'destroy'])->name('delete');
     });
 
     Route::prefix('settings')->as('settings.')->group(function () {

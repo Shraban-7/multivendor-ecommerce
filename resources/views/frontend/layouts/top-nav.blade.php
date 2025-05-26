@@ -75,7 +75,7 @@
                     <span><i class="fa-regular fa-user text-lg"></i></span>
                     <p class="flex flex-col leading-none text-base lg:text-base">
                         <span class="md:text-xs lg:text-sm font-[arial]">
-                            {{ auth('web')->user()->fullname }}
+                            {{ auth('web')->user()->name }}
                         </span>
                     </p>
                 </button>
@@ -128,7 +128,7 @@
                     <span><i class="fa-regular fa-user text-lg"></i></span>
                     <p class="flex flex-col leading-none text-base lg:text-base">
                         <span class="md:text-xs lg:text-sm font-[arial]">
-                            {{ auth('seller')->user()->fullname }}
+                            {{ auth('seller')->user()->name }}
                         </span>
                     </p>
                 </button>

@@ -95,9 +95,12 @@ class ProductController extends Controller
         $product = Product::where('slug', $slug)->first();
         $product = $product->toDetailsArray();
 
-        $productAttributes = ProductAttribute::where('category_id', $product['category_id'])->get();
+        $productAttributes   = ProductAttribute::where('category_id', $product['category_id'])->get();
+        $productAttributeIds = $productAttributes->pluck('id');
 
-        return view('seller.products.details', compact('product', 'productAttributes'));
+        $productAttributeOptions = ProductAttributeOption::whereIn('product_attribute_id', $productAttributeIds)->get();
+
+        return view('seller.products.details', compact('product', 'productAttributes', 'productAttributeOptions'));
     }
 
     public function edit(Product $product)
@@ -220,11 +223,11 @@ class ProductController extends Controller
             'note'       => $request->stock_note,
         ]);
         $new_stock = 0;
-        if ($log->type == StockType::SET_EXACT_STOCK) {
+        if ($log->type == StockType::SET_EXACT_STOCK->value) {
             $new_stock = $request->stock_quantity;
-        } elseif ($log->type == StockType::ADD_STOCK) {
+        } elseif ($log->type == StockType::ADD_STOCK->value) {
             $new_stock = $product->stock_in + $request->stock_quantity;
-        } elseif ($log->type == StockType::REMOVE_STOCK) {
+        } elseif ($log->type == StockType::REMOVE_STOCK->value) {
             $new_stock = $product->stock_in - $request->stock_quantity;
         }
 
@@ -235,125 +238,11 @@ class ProductController extends Controller
         return successResponse("Quantity Update successfully!");
     }
 
-    public function updateAttributes(Request $request, ProductAttribute $productAttribute)
+    public function getOptions($attributeId)
     {
-        if ($request->isMethod('GET')) {
-            return view('seller.products.attributes.edit', compact('productAttribute'));
-        }
+        $options = ProductAttributeOption::where('product_attribute_id', $attributeId)->get();
 
-        $request->validate([
-            'name'                       => 'required|string|max:255',
-            'options'                    => 'required|array',
-            'options.*.value'            => 'required|string|max:255',
-            'options.*.additional_price' => 'required|numeric',
-        ]);
-
-        $productAttribute->update(['name' => $request->name]);
-
-        $existingOptionIds = $productAttribute->options->pluck('id')->toArray();
-        $newOptionIds      = [];
-
-        foreach ($request->options as $option) {
-            if (isset($option['id'])) {
-                $productAttributeOption = ProductAttributeOption::find($option['id']);
-                $productAttributeOption->update($option);
-                $newOptionIds[] = $option['id'];
-            } else {
-                $newOption      = $productAttribute->options()->create($option);
-                $newOptionIds[] = $newOption->id;
-            }
-        }
-
-        $optionsToDelete = array_diff($existingOptionIds, $newOptionIds);
-        ProductAttributeOption::destroy($optionsToDelete);
-
-        session()->flash('success', 'Attribute Updated Successfully!');
-
-        return successResponse('Attribute Updated Successfully!');
+        return response()->json($options);
     }
 
-    public function deleteAttributes(Request $request, ProductAttribute $productAttribute)
-    {
-        $product_id = $productAttribute->product_id;
-        foreach ($productAttribute->options as $option) {
-            $option->delete();
-        }
-
-        $productAttribute->delete();
-
-        return redirect()->route('seller.products.addAttributes', $product_id)->with('success', 'Product Removed Successfully');
-    }
-
-    public function addVariant(Request $request, Product $product)
-    {
-        $data = $request->validate([
-            'sku'         => 'nullable|string',
-            'stock'       => 'required|numeric',
-            'price'       => 'required|numeric',
-            'attributes'  => 'required|array',
-            'description' => 'nullable|string',
-        ]);
-
-        $data['product_id'] = $product->id;
-
-        if (! $request->sku) {
-            $data['sku'] = strtoupper(uniqid());
-        }
-
-        $data['price'] = $product->selling_price + $request->price;
-
-        $variant = ProductVariant::create($data);
-
-        foreach ($data['attributes'] as $attributeName => $attributeValue) {
-            $attributeOption = ProductAttributeOption::where('value', $attributeValue)->first();
-
-            // if ($attributeOption) {
-            //     ProductVariantProductAttributeOption::create([
-            //         'product_variant_id' => $variant->id,
-            //         'product_attribute_option_id' => $attributeOption->id,
-            //     ]);
-            // }
-        }
-
-        session()->flash('success', 'Variant Added Successfully!');
-
-        return successResponse('Variant Added Successfully!');
-    }
-
-    public function updateVariant(Request $request, Product $product, ProductVariant $variant)
-    {
-        $data = $request->validate([
-            'sku'         => 'nullable|string',
-            'stock'       => 'required|numeric',
-            'price'       => 'required|numeric',
-            'attributes'  => 'required|array',
-            'description' => 'nullable|string',
-        ]);
-
-        if (! $request->sku) {
-            $data['sku'] = strtoupper(uniqid());
-        }
-
-        $data['price'] = $product->selling_price + $request->price;
-
-        $variant->update($data);
-
-        $variant->attributeOptions()->detach();
-
-        foreach ($data['attributes'] as $attributeName => $attributeValue) {
-            $attributeOption = ProductAttributeOption::where('value', $attributeValue)->first();
-
-            if ($attributeOption) {
-                $variant->attributeOptions()->attach($attributeOption->id);
-            }
-        }
-
-        return redirect()->route('seller.products.details', $product->id)->with('success', 'Variant Updated Successfully!');
-    }
-
-    public function deleteVariant(ProductVariant $variant)
-    {
-        $variant->delete();
-        return redirect()->back()->with('success', 'Variant Deleted Successfully!');
-    }
 }

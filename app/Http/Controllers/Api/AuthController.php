@@ -13,7 +13,7 @@ class AuthController extends Controller
     public function signup(Request $request)
     {
         $validator = validateRequest($request, [
-            'fullname' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:5|confirmed',
         ]);
@@ -22,9 +22,9 @@ class AuthController extends Controller
             return sendValidationError($validator->errors());
         }
 
-        $data = $request->only(['fullname', 'email', 'password']);
+        $data = $request->only(['name', 'email', 'password']);
         $data['password'] = Hash::make($data['password']);
-        $data['username'] = str_slug('users', 'username', $data['fullname']);
+        $data['username'] = str_slug('users', 'username', $data['name']);
         $user = User::create($data);
 
         return apiResponse([

@@ -60,9 +60,9 @@
                                 <div class="flex flex-col gap-4 sm:gap-5">
                                     <div class="grid grid-cols-1 gap-4">
                                         <div class="form-ctrl space-y-2">
-                                            <label class="block text-sm font-medium text-davy-gray" for="fullname">Full Name
+                                            <label class="block text-sm font-medium text-davy-gray" for="name">Full Name
                                                 <span class="text-persian-red">*</span></label>
-                                            <input required id="fullname" type="text" name="fullname"
+                                            <input required id="name" type="text" name="name"
                                                 placeholder="John Doe"
                                                 class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base bg-white" />
                                         </div>

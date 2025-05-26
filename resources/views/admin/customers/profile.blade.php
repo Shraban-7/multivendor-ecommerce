@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title', $customer->fullname .' | Client Profile')
+@section('title', $customer->name .' | Client Profile')
 
 @section('content')
 
@@ -19,7 +19,7 @@
                         <img src="{{ storage_url($customer->image) }}" alt="{{ $customer->username }}"
                              class="img-thumbnail"
                              style="width: 120px; height: 120px; object-fit: cover; border-radius: .5rem;">
-                        <p class="mt-2 fw-medium mb-0">{{ $customer->fullname }}</p>
+                        <p class="mt-2 fw-medium mb-0">{{ $customer->name }}</p>
                     </div>
 
                     <!-- Profile Info -->

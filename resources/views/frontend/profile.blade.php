@@ -105,12 +105,6 @@
                                     <!-- display name & username -->
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-4">
                                         <div class="from-ctrl space-y-1 sm:space-y-2">
-                                            <label for="display-name" class="block text-sm">Display Name</label>
-                                            <input type="text" id="display-name" name="display_name"
-                                                value="{{ old('display_name', $user->display_name) }}"
-                                                class="eq w-full px-3 py-2 border border-gray-300 rounded focus:ring-[1] focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
-                                        </div>
-                                        <div class="from-ctrl space-y-1 sm:space-y-2">
                                             <label for="username" class="block text-sm">Username</label>
                                             <input required type="text" id="username" name="username"
                                                 value="{{ old('username', $user->username) }}"
@@ -122,8 +116,8 @@
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-4">
                                         <div class="from-ctrl space-y-1 sm:space-y-2">
                                             <label for="full-name" class="block text-sm">Full Name</label>
-                                            <input required type="text" id="full-name" name="fullname"
-                                                value="{{ old('fullname', $user->fullname) }}"
+                                            <input required type="text" id="full-name" name="name"
+                                                value="{{ old('name', $user->name) }}"
                                                 class="eq w-full px-3 py-2 border border-gray-300 rounded focus:ring-[1] focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
                                         </div>
                                         <div class="from-ctrl space-y-1 sm:space-y-2">

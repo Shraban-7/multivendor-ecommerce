@@ -16,7 +16,7 @@ class SellerSeeder extends Seeder
     {
         $sellers = [
             [
-                'fullname'             => 'Unilever Seller',
+                'name'             => 'Unilever Seller',
                 'image'                => '/images/sellers/avatar/provider-logo-1.png',
                 'email'                => 'unilever.seller@gmail.com',
                 'phone'                => '01720000001',
@@ -36,7 +36,7 @@ class SellerSeeder extends Seeder
                 'nid_back_image'       => '/images/sellers/nids/unilever-nid-back.jpg',
             ],
             [
-                'fullname'             => 'Nestlé Partner',
+                'name'             => 'Nestlé Partner',
                 'image'                => '/images/sellers/avatar/provider-logo-2.png',
                 'email'                => 'nestle.seller@gmail.com',
                 'phone'                => '01720000002',
@@ -56,7 +56,7 @@ class SellerSeeder extends Seeder
                 'nid_back_image'       => '/images/sellers/nids/nestle-nid-back.jpg',
             ],
             [
-                'fullname'             => 'Marico Agent',
+                'name'             => 'Marico Agent',
                 'image'                => '/images/sellers/avatar/provider-logo-3.png',
                 'email'                => 'marico.seller@gmail.com',
                 'phone'                => '01720000003',
@@ -76,7 +76,7 @@ class SellerSeeder extends Seeder
                 'nid_back_image'       => '/images/sellers/nids/marico-nid-back.jpg',
             ],
             [
-                'fullname'             => 'Aarong Vendor',
+                'name'             => 'Aarong Vendor',
                 'image'                => '/images/sellers/avatar/provider-logo-4.png',
                 'email'                => 'aarong.seller@gmail.com',
                 'phone'                => '01720000004',
@@ -96,7 +96,7 @@ class SellerSeeder extends Seeder
                 'nid_back_image'       => '/images/sellers/nids/aarong-nid-back.jpg',
             ],
             [
-                'fullname'             => 'Walton Distributor',
+                'name'             => 'Walton Distributor',
                 'image'                => '/images/sellers/avatar/provider-logo-5.png',
                 'email'                => 'walton.seller@gmail.com',
                 'phone'                => '01720000005',
@@ -118,7 +118,7 @@ class SellerSeeder extends Seeder
         ];
 
         foreach ($sellers as $seller) {
-            $seller['username'] = str_slug('sellers', 'username', $seller['fullname']);
+            $seller['username'] = str_slug('sellers', 'username', $seller['name']);
             Seller::create($seller);
         }
     }

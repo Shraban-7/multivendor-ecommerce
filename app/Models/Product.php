@@ -1,10 +1,8 @@
 <?php
-
 namespace App\Models;
 
-use App\Enums\DiscountType;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
@@ -88,82 +86,84 @@ class Product extends Model
         return $this->hasMany(OrderItem::class);
     }
 
-
     public function toDetailsArray()
     {
-        $this->load('images', 'category', 'subcategory', 'variants','seller','reviews.user');
+        $this->load('images', 'category', 'subcategory', 'variants', 'seller', 'reviews.user');
 
-        $sold = OrderItem::where('product_id', $this->id)->count();
-        $revenue = $sold * $this->selling_price;
-        $profit = $revenue - ($sold * $this->buying_price);
-        $lastOrder = OrderItem::where('product_id', $this->id)->latest('created_at')->first();
-        $lastSale = $lastOrder?->created_at;
-        $stockHistory = StockHistory::where('product_id', $this->id)->latest()->get();
-        $margin = $this->selling_price - $this->buying_price;
+        $sold          = OrderItem::where('product_id', $this->id)->count();
+        $revenue       = $sold * $this->selling_price;
+        $profit        = $revenue - ($sold * $this->buying_price);
+        $lastOrder     = OrderItem::where('product_id', $this->id)->latest('created_at')->first();
+        $lastSale      = $lastOrder?->created_at;
+        $stockHistory  = StockHistory::where('product_id', $this->id)->latest()->get();
+        $margin        = $this->selling_price - $this->buying_price;
         $marginPercent = $this->buying_price > 0 ? ($margin / $this->buying_price) * 100 : 0;
 
         return [
-            'id' => $this->id,
-            'slug' => $this->slug,
-            'sku' => $this->sku,
-            'category_id' => $this->category?->id,
-            'category' => $this->category?->name,
-            'subcategory' => $this->subcategory?->name,
-            'brand' => $this->brand?->name,
-            'name' => $this->name,
-            'thumbnail' => $this->thumbnail,
-            'images' => $this->images->pluck('image'),
+            'id'                => $this->id,
+            'slug'              => $this->slug,
+            'sku'               => $this->sku,
+            'category_id'       => $this->category?->id,
+            'category'          => $this->category?->name,
+            'subcategory'       => $this->subcategory?->name,
+            'brand'             => $this->brand?->name,
+            'name'              => $this->name,
+            'thumbnail'         => $this->thumbnail,
+            'images'            => $this->images->pluck('image'),
+            'slider'            => collect([
+                $this->thumbnail,
+            ])
+                ->filter()
+                ->concat($this->images->pluck('image'))
+                ->concat(
+                    $this->variants->pluck('image')->filter()
+                )
+                ->unique()
+                ->values(),
             'short_description' => $this->short_description,
-            'description' => $this->description,
-            'price' => $this->selling_price,
-            'buying_cost' => $this->buying_price,
-            'discount_price' => $this->discounted_price,
-            'discount' => [
-                'type' => $this->discount_type,
-                'amount' => money($this->discount),
+            'description'       => $this->description,
+            'price'             => $this->selling_price,
+            'buying_cost'       => $this->buying_price,
+            'discount_price'    => $this->discounted_price,
+            'discount'          => [
+                'type'    => $this->discount_type,
+                'amount'  => money($this->discount),
                 'percent' => money($this->discount_percent),
             ],
-            'stock_status' => $this->stock_status,
-            'in_stock' => $this->stock_in,
-            'sold_out' => $this->stock_out,
-            'variants' => $this->variants->map(function ($variant) {
+            'stock_status'      => $this->stock_status,
+            'in_stock'          => $this->stock_in,
+            'sold_out'          => $this->stock_out,
+            'variants'          => $this->variants->map(function ($variant) {
                 return [
-                    'id' => $variant->id,
-                    'sku' => $variant->sku,
-                    'stock' => $variant->stock,
-                    'price' => $variant->additional_price,
-                    // 'attributes' => $variant->attributeOptions->map(function ($option) {
-                    //     return [
-                    //         'attribute_id' => $option->product_attribute->id,
-                    //         'name' => $option->product_attribute->name,
-                    //         'options' => [
-                    //             'id' => $option->id,
-                    //             'value' => $option->value ?? null,
-                    //         ]
-                    //     ];
-                    // }),
+                    'id'             => $variant->id,
+                    'sku'            => $variant->sku,
+                    'stock'          => $variant->stock_in,
+                    'price'          => $variant->additional_price,
+                    'attributeName'  => $variant->option->product_attribute->name,
+                    'attributeValue' => $variant->option->value,
+                    'image'          => $variant->image,
                 ];
             }),
-            'total_sold' => $sold,
-            'revenue' => $revenue,
-            'profit' => $profit,
-            'last_sale' => $lastSale,
-            'stock_history' => $stockHistory,
-            'profit' => [
-                'margin' => (float) $margin,
+            'total_sold'        => $sold,
+            'revenue'           => $revenue,
+            'profit'            => $profit,
+            'last_sale'         => $lastSale,
+            'stock_history'     => $stockHistory,
+            'profit'            => [
+                'margin'  => (float) $margin,
                 'percent' => round($marginPercent, 2),
             ],
-            'seller' => [
-                'id' => $this->seller->id,
-                'username' => $this->seller->username,
+            'seller'            => [
+                'id'            => $this->seller->id,
+                'username'      => $this->seller->username,
                 'business_name' => $this->seller->business_name,
                 'business_logo' => $this->seller->business_logo,
             ],
-            'reviews' => $this->reviews,
-            'rating' => number_format($this->reviews->avg('rating'), 1),
-            'total_reviews' => $this->reviews->count(),
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'reviews'           => $this->reviews,
+            'rating'            => number_format($this->reviews->avg('rating'), 1),
+            'total_reviews'     => $this->reviews->count(),
+            'created_at'        => $this->created_at,
+            'updated_at'        => $this->updated_at,
         ];
     }
 
@@ -188,15 +188,15 @@ class Product extends Model
     public function getDiscountedPriceWithVariantAttribute()
     {
         return $this->variant
-            ? $this->getDiscountedPrice($this->variant->price+$this->selling_price)
-            : $this->discounted_price;
+        ? $this->getDiscountedPrice($this->variant->price + $this->selling_price)
+        : $this->discounted_price;
     }
 
     public function getDiscountAttribute()
     {
         $basePrice = $this->variant
-            ? $this->variant->price + $this->selling_price
-            : $this->selling_price;
+        ? $this->variant->price + $this->selling_price
+        : $this->selling_price;
 
         if ($this->discount_type !== null) {
             if ($this->discount_type === \App\Enums\DiscountType::FLAT->value) {
@@ -211,7 +211,7 @@ class Product extends Model
 
     public function getDiscountPercentAttribute()
     {
-        if (!$this->discount_type) {
+        if (! $this->discount_type) {
             return 0;
         }
 

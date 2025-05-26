@@ -138,7 +138,7 @@
                             <h5 class="mb-0">Customer Information</h5>
                         </div>
                         <div class="card-body">
-                            <h6 class="fw-bold">{{ $order->user->fullname }}</h6>
+                            <h6 class="fw-bold">{{ $order->user->name }}</h6>
                             <p class="mb-1"><i data-feather="mail" class="icon-xs me-1"></i> {{ $order->user->email }}
                             </p>
                             <p class="mb-1"><i data-feather="phone" class="icon-xs me-1"></i> {{ $order->user->phone }}

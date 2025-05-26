@@ -24,11 +24,11 @@
 
                     <!-- Seller Info -->
                     <div class="d-flex align-items-start mb-3">
-                        <img src="{{ storage_url($seller->image) }}" alt="{{ $seller->fullname }}"
+                        <img src="{{ storage_url($seller->image) }}" alt="{{ $seller->name }}"
                             class="img-thumbnail me-3"
                             style="width: 100px; height: 100px; object-fit: cover; border-radius: .5rem;">
                         <div>
-                            <h5 class="fw-bold mb-1">{{ $seller->fullname }}</h5>
+                            <h5 class="fw-bold mb-1">{{ $seller->name }}</h5>
                             <p class="text-muted small mb-1">
                                 <i data-feather="mail" class="icon-xs me-1"></i>{{ $seller->email }}
                             </p>
