@@ -38,7 +38,7 @@ class OrderController extends Controller
             'subcategory',
             'images',
             'seller',
-            'variants.attributeOptions.productAttribute',
+            'variants.option.product_attribute',
             'reviews.user'
         ])->inRandomOrder()->limit(8)->get();
 
