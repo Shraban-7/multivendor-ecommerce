@@ -37,14 +37,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/items/{item}/update-quantity', [CartController::class, 'updateQuantity']);
     });
 
-    Route::prefix('orders')->group(function(){
-        Route::get('/',[OrderController::class, 'index']);
-        Route::get('{order}',[OrderController::class, 'show']);
+    Route::prefix('orders')->group(function () {
+        Route::get('/', [OrderController::class, 'index']);
         Route::post('/store', [OrderController::class, 'store']);
+        Route::get('{order}', [OrderController::class, 'show']);
         // Route::get('{invoice_id}/tracking',[OrderController::class,'tracking']);
     });
 
-    Route::prefix('reviews')->group(function(){
+    Route::prefix('reviews')->group(function () {
         Route::post('store', [OrderController::class, 'submitReview']);
     });
 
