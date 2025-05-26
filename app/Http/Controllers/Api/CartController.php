@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
@@ -28,7 +27,7 @@ class CartController extends Controller
         $validator = validateRequest($request, [
             'product_id' => 'required|exists:products,id',
             'option_ids' => 'nullable|array',
-            'quantity' => 'required|numeric|min:1',
+            'quantity'   => 'required|numeric|min:1',
         ]);
 
         if ($validator->fails()) {
@@ -42,7 +41,7 @@ class CartController extends Controller
         $option_ids = collect($request->option_ids)->sort()->values()->toArray();
 
         $cart = Cart::query()->firstOrCreate([
-            'user_id' => Auth::id(),
+            'user_id'   => Auth::id(),
             'seller_id' => $product->seller_id,
         ]);
 
@@ -62,7 +61,7 @@ class CartController extends Controller
         } else {
             $cartItem = CartItem::where('cart_id', $cart->id)
                 ->where('product_id', $product->id)
-                ->whereNull('product_variant_ids')
+                ->whereJsonLength('product_variant_ids', 0)
                 ->first();
         }
 
@@ -72,16 +71,16 @@ class CartController extends Controller
             ]);
         } else {
             $cartItem = CartItem::create([
-                'cart_id' => $cart->id,
-                'product_id' => $product->id,
-                'quantity' => $request->quantity ?? 1,
-                'price' => $price,
+                'cart_id'             => $cart->id,
+                'product_id'          => $product->id,
+                'quantity'            => $request->quantity ?? 1,
+                'price'               => $price,
                 'product_variant_ids' => $option_ids,
             ]);
         }
 
         Wishlist::where([
-            'user_id' => Auth::id(),
+            'user_id'    => Auth::id(),
             'product_id' => $product->id,
         ])->delete();
 

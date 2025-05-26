@@ -3,3 +3,7 @@ frontend product details page problem
 ->product modal variant does not working
 
 ->product variant image image slider not working
+
+
+product id =362,
+qty =1

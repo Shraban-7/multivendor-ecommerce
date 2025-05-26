@@ -58,7 +58,7 @@ class CartController extends Controller
         } else {
             $cartItem = CartItem::where('cart_id', $cart->id)
                 ->where('product_id', $product->id)
-                ->whereNull('product_variant_ids')
+                ->whereJsonLength('product_variant_ids', 0)
                 ->first();
         }
 
