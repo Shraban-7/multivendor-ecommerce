@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\SellerController;
 use App\Http\Controllers\Api\SettingController;
@@ -34,6 +35,16 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/store', [CartController::class, 'store']);
         Route::post('/items/{item}/delete', [CartController::class, 'deleteItem']);
         Route::post('/items/{item}/update-quantity', [CartController::class, 'updateQuantity']);
+    });
+
+    Route::post('/checkout',[OrderController::class,'checkout']);
+
+    Route::prefix('orders')->group(function(){
+        Route::get('/',[OrderController::class,'index']);
+        Route::get('{order}/details',[OrderController::class,'details']);
+        Route::get('{order}/success',[OrderController::class,'success']);
+        Route::get('{invoice_id}/tracking',[OrderController::class,'tracking']);
+        Route::get('/review/{product}',[OrderController::class,'review']);
     });
 
     // Route::get('categories', [ContentCategoryController::class, 'index']);
