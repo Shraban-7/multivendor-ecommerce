@@ -94,4 +94,21 @@ class CartController extends Controller
 
         return successResponse("Item removed successfully");
     }
+
+    public function updateQuantity(CartItem $item, Request $request)
+    {
+        $validator = validateRequest($request, [
+            'quantity' => 'required|numeric|min:1',
+        ]);
+
+        if ($validator->fails()) {
+            return sendValidationError($validator->errors());
+        }
+
+        $item->update([
+            'quantity' => $request->quantity
+        ]);
+
+        return successResponse("Item removed successfully");
+    }
 }
