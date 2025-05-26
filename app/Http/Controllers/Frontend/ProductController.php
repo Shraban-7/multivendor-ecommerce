@@ -76,43 +76,6 @@ class ProductController extends Controller
             'total_products'  => Product::where('seller_id', $sellerId)->count(),
         ];
 
-        $variantIds = $product['variants']->pluck('id');
-
-       $variants = ProductVariant::whereIn('id', $variantIds)->get();
-
-         $variantsByOption = $variants->groupBy('option_id');
-
-        $variantAttributeOptionIds = $variants->pluck('option_id');
-
-        $productAttributeOptions = ProductAttributeOption::whereIn('id', $variantAttributeOptionIds)->get();
-
-        $productAttributeOptionIds = array_unique($productAttributeOptions->pluck('product_attribute_id')->toArray());
-
-        $productAttributeModel = ProductAttribute::whereIn('id', $productAttributeOptionIds)->with('options')->get();
-
-        $productAttributes = [];
-
-        foreach ($productAttributeModel as $attribute) {
-            $productAttributes[] = [
-                'id'      => $attribute->id,
-                'name'    => $attribute->name,
-                'options' => $productAttributeOptions
-                    ->where('product_attribute_id', $attribute->id)
-                    ->map(function ($option) use ($variantsByOption) {
-                        $variant = $variantsByOption[$option->id]->first();
-
-                        return [
-                            'id'         => $option->id,
-                            'value'      => $option->value,
-                            'variant_id' => $variant?->id,
-                            'sku'        => $variant?->sku,
-                            'price'      => $variant?->additional_price,
-                            'image'      => $variant?->image
-                        ];
-                    })
-                    ->values(),
-            ];
-        }
 
         if ($request->ajax()) {
             $type = $request->get('type');
@@ -151,7 +114,6 @@ class ProductController extends Controller
             'totalReviews'      => $totalReviews,
             'averageRating'     => round($averageRating, 1),
             'seller'            => $seller,
-            'productAttributes' => $productAttributes,
         ]);
     }
 
