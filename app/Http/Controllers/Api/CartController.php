@@ -88,7 +88,7 @@ class CartController extends Controller
         return successResponse("Added to cart successfully");
     }
 
-    public function delete(CartItem $item)
+    public function deleteItem(CartItem $item)
     {
         $item->delete();
 
