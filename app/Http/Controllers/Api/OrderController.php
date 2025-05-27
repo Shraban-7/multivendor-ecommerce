@@ -30,11 +30,11 @@ class OrderController extends Controller
             $query->where('status', $statusValue);
         }
 
-        $orders = $query->get();
+        $orders = $query->with('seller', 'items')->latest('id')->paginate(15);
 
         return apiResourceResponse(OrderResource::collection($orders));
     }
-    
+
     public function store(Request $request)
     {
         $user = Auth::user();
