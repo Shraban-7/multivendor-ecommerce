@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
@@ -34,6 +35,8 @@ class CartController extends Controller
             return sendValidationError($validator->errors());
         }
 
+        $user_id = Auth::id();
+
         $product = Product::find($request->product_id);
 
         //TODO: check product stock
@@ -41,7 +44,7 @@ class CartController extends Controller
         $option_ids = collect($request->option_ids)->sort()->values()->toArray();
 
         $cart = Cart::query()->firstOrCreate([
-            'user_id'   => Auth::id(),
+            'user_id'   => $user_id,
             'seller_id' => $product->seller_id,
         ]);
 
@@ -80,18 +83,22 @@ class CartController extends Controller
         }
 
         Wishlist::where([
-            'user_id'    => Auth::id(),
+            'user_id'    => $user_id,
             'product_id' => $product->id,
         ])->delete();
 
-        return successResponse("Added to cart successfully");
+        return apiResponse([
+            'cart_count' => Cart::getCount($user_id)
+        ], "Added to cart successfully");
     }
 
     public function deleteItem(CartItem $item)
     {
         $item->delete();
 
-        return successResponse("Item removed successfully");
+        return apiResponse([
+            'cart_count' => Cart::getCount()
+        ], "Item removed successfully");
     }
 
     public function updateQuantity(CartItem $item, Request $request)
@@ -108,6 +115,8 @@ class CartController extends Controller
             'quantity' => $request->quantity
         ]);
 
-        return successResponse("Cart updated successfully");
+        return apiResponse([
+            'cart_count' => Cart::getCount()
+        ], "Cart updated successfully");
     }
 }

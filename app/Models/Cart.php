@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Cart extends Model
 {
@@ -19,5 +20,18 @@ class Cart extends Model
     public function seller()
     {
         return $this->belongsTo(Seller::class);
+    }
+
+    public static function getCount($user_id = null): int
+    {
+        if(is_null($user_id)) {
+            $user_id = Auth::id();
+        }
+
+        $cartIds = Cart::where('user_id', $user_id)->pluck('id');
+        
+        $totalCartCount = CartItem::whereIn('cart_id', $cartIds)->count();
+
+        return (int) $totalCartCount;
     }
 }

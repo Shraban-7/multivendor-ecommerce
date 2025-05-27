@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Api;
 
 use App\Enums\OrderStatus;
@@ -16,6 +17,24 @@ use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
+    public function index(Request $request)
+    {
+        $statusLabel = (string) $request->input('status', 'all');
+        $statusValue = OrderStatus::valueFromLabel($statusLabel);
+
+        $query = Order::with('seller')->withCount('items')
+            ->where('user_id', Auth::id())
+            ->whereNotNull('invoice_id');
+
+        if ($statusLabel !== 'all') {
+            $query->where('status', $statusValue);
+        }
+
+        $orders = $query->get();
+
+        return apiResourceResponse(OrderResource::collection($orders));
+    }
+    
     public function store(Request $request)
     {
         $user = Auth::user();
@@ -124,24 +143,6 @@ class OrderController extends Controller
         return successResponse('Order Placed Successfully');
     }
 
-    public function index(Request $request)
-    {
-        $statusLabel = (string) $request->input('status', 'all');
-        $statusValue = OrderStatus::valueFromLabel($statusLabel);
-
-        $query = Order::with('seller')->withCount('items')
-            ->where('user_id', Auth::id())
-            ->whereNotNull('invoice_id');
-
-        if ($statusLabel !== 'all') {
-            $query->where('status', $statusValue);
-        }
-
-        $orders = $query->get();
-
-        return apiResourceResponse(OrderResource::collection($orders));
-    }
-
     public function show(Order $order)
     {
         $order->load('items.product');
@@ -214,5 +215,4 @@ class OrderController extends Controller
 
         return apiResponse($review);
     }
-
 }

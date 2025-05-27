@@ -8,6 +8,7 @@ use App\Http\Resources\CategoryResource;
 use App\Http\Resources\ProductListResource;
 use App\Http\Resources\SellerResource;
 use App\Models\Brand;
+use App\Models\Cart;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Seller;
@@ -29,6 +30,8 @@ class DashboardController extends Controller
         );
 
         $data['sellers'] = SellerResource::collection(Seller::limit(10)->get());
+
+        $data['cart_count'] = Cart::getCount();
 
         return apiResponse($data);
     }
