@@ -9,13 +9,19 @@ class OrderItemResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        $product = $this->product;
+
         return [
             'id' => $this->id,
-            'name' => $this->product->name,
-            'thumbnail' => storage_url($this->product->thumbnail),
-            'unit_price' => money($this->unit_price),
+            'product_id' => $product->id,
+            'name' => $product->name,
+            'thumbnail' => storage_url($product->thumbnail),
             'quantity' => $this->quantity,
-            'subtotal' => money($this->sub_total),
+            'price' => money(removeZeroFromDecimal($this->unit_price)),
+            'discount' => money(removeZeroFromDecimal($this->discount)),
+            'discounted_price' => money(removeZeroFromDecimal($this->unit_price - $this->discount)),
+            'category' => CategoryResource::make($product->category),
+            'subcategory' => CategoryResource::make($product->subcategory),
         ];
     }
 }
