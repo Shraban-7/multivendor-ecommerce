@@ -31,8 +31,6 @@ class DashboardController extends Controller
 
         $data['sellers'] = SellerResource::collection(Seller::limit(10)->get());
 
-        $data['cart_count'] = Cart::getCount();
-
         return apiResponse($data);
     }
 }
