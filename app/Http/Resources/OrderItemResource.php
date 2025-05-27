@@ -17,9 +17,9 @@ class OrderItemResource extends JsonResource
             'name' => $product->name,
             'thumbnail' => storage_url($product->thumbnail),
             'quantity' => $this->quantity,
-            'price' => money(removeZeroFromDecimal($this->unit_price)),
-            'discount' => money(removeZeroFromDecimal($this->discount)),
-            'discounted_price' => money(removeZeroFromDecimal($this->unit_price - $this->discount)),
+            'price' => money($this->unit_price),
+            'discount' => money($this->discount),
+            'discounted_price' => money($this->unit_price - $this->discount),
             'category' => CategoryResource::make($product->category),
             'subcategory' => CategoryResource::make($product->subcategory),
         ];
