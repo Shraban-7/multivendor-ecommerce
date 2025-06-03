@@ -344,12 +344,13 @@
     <div class="modal fade" id="stockUpdateModal" tabindex="-1" aria-hidden="true" data-id="{{ $product['id'] }}">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Update Inventory</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="stockUpdateForm">
+                <form action="{{ route('seller.products.stockUpdate', $product['id']) }}" method="POST">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Update Inventory</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        @csrf
                         <div class="mb-3">
                             <label class="form-label">Current Stock</label>
                             <input type="text" class="form-control-plaintext" readonly
@@ -379,13 +380,13 @@
                             <textarea class="form-control" id="stockNote" name="stock_note" rows="2"
                                 placeholder="Reason for this inventory change"></textarea>
                         </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="saveStockUpdate">Save
-                        Changes</button>
-                </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save
+                            Changes</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -535,50 +536,6 @@
                 let generatedSku = skuParts.join('_');
 
                 $('#skuInput').val(generatedSku);
-            });
-
-            $('#saveStockUpdate').click(function(e) {
-                e.preventDefault();
-
-                var productId = $('#stockUpdateModal').data('id');
-                var stockAction = $('#stockAction').val();
-                var stockQuantity = $('#stockQuantity').val();
-                var stockNote = $('#stockNote').val();
-
-                if (stockQuantity <= 0) {
-                    alert("Please enter a valid quantity.");
-                    return;
-                }
-
-                var data = {
-                    product_id: productId,
-                    stock_action: stockAction,
-                    stock_quantity: stockQuantity,
-                    stock_note: stockNote,
-                };
-
-                $.ajax({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    url: '{{ route('seller.products.stockUpdate', $product['id']) }}',
-                    method: 'POST',
-                    data: data,
-                    success: function(response) {
-                        if (response.status) {
-                            $('#stockUpdateModal').modal('hide');
-                            location.reload();
-                        } else {
-                            $('#stockUpdateModal').modal('hide');
-                            location.reload();
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        $('#stockUpdateModal').modal('hide');
-                        location.reload();
-                        console.error("Error: " + error);
-                    }
-                });
             });
         </script>
         <script>

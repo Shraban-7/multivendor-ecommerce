@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Api;
 
 use App\Enums\OrderStatus;
@@ -169,7 +168,7 @@ class OrderController extends Controller
         $user = Auth::user();
 
         $validator = validateRequest($request, [
-            'product_id' => 'required',
+            'product_id'  => 'required',
             'rating'      => 'required|integer|min:1|max:5',
             'review_text' => 'required|string',
             'images'      => 'nullable|array',
@@ -177,11 +176,7 @@ class OrderController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'status'  => false,
-                'message' => 'Validation failed.',
-                'errors'  => $validator->errors(),
-            ], 422);
+            return errorResponse('Validation failed.');
         }
 
         $product = Product::find($request->product_id);
@@ -191,10 +186,7 @@ class OrderController extends Controller
             ->first();
 
         if ($review_exist) {
-            return response()->json([
-                'status'  => false,
-                'message' => 'You have already reviewed this product.',
-            ], 409);
+            return errorResponse('You have already reviewed this product.');
         }
 
         $review = Review::create([
@@ -213,6 +205,7 @@ class OrderController extends Controller
             }
         }
 
-        return apiResponse($review);
+        return successResponse('Review Submit Successfully');
     }
+
 }

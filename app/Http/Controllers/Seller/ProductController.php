@@ -10,7 +10,6 @@ use App\Models\ProductAttribute;
 use App\Models\ProductAttributeOption;
 use App\Models\ProductImage;
 use App\Models\ProductUnit;
-use App\Models\ProductVariant;
 use App\Models\StockHistory;
 use Illuminate\Http\Request;
 
@@ -212,30 +211,40 @@ class ProductController extends Controller
             'stock_action'   => 'required|numeric',
         ]);
 
-        if ($request->stock_quantity > $product->stock_in) {
-            session()->flash('error', 'Not enough stock to remove.');
-            return errorResponse('Not enough stock to remove.');
+        // dd($request->all());
+
+        if ($product->stock_in > 0 && $request->stock_quantity > $product->stock_in) {
+            return redirect()->back()->with('error', 'Not enough stock to remove.');
         }
+
+        $new_stock = $product->stock_in;
+
+
+        // dd($new_stock);
         $log = StockHistory::create([
             'product_id' => $product->id,
             'quantity'   => $request->stock_quantity,
             'type'       => $request->stock_action,
             'note'       => $request->stock_note,
         ]);
-        $new_stock = 0;
+
         if ($log->type == StockType::SET_EXACT_STOCK->value) {
-            $new_stock = $request->stock_quantity;
+            dd('exact');
+          return  $new_stock = $request->stock_quantity;
         } elseif ($log->type == StockType::ADD_STOCK->value) {
-            $new_stock = $product->stock_in + $request->stock_quantity;
+            dd('add');
+
+          return  $new_stock = $product->stock_in + $request->stock_quantity;
         } elseif ($log->type == StockType::REMOVE_STOCK->value) {
-            $new_stock = $product->stock_in - $request->stock_quantity;
+            dd('remove');
+          return  $new_stock = $product->stock_in - $request->stock_quantity;
         }
+
+        dd($new_stock);
 
         $product->update(['stock_in' => $new_stock]);
 
-        session()->flash('success', 'Quantity Updated successfully!');
-
-        return successResponse("Quantity Update successfully!");
+        return redirect()->back()->with('success',"Quantity Update successfully!");
     }
 
     public function getOptions($attributeId)
