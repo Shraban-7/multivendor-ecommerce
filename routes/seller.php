@@ -22,7 +22,7 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::get('/', [ProductController::class, 'index'])->name('index');
         Route::get('/create', [ProductController::class, 'create'])->name('add');
         Route::post('/store', [ProductController::class, 'store'])->name('store');
-        Route::get('/{product}/details', [ProductController::class, 'details'])->name('details');
+        Route::get('/{product}/show', [ProductController::class, 'show'])->name('show');
         Route::get('/{product}/edit', [ProductController::class, 'edit'])->name('edit');
         Route::post('/{product}/update', [ProductController::class, 'update'])->name('update');
         Route::post('/{product}/stock-update', [ProductController::class, 'stockUpdate'])->name('stockUpdate');

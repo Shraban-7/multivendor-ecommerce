@@ -4,12 +4,18 @@
 
     <div class="mb-3 d-flex justify-content-between align-items-end">
         <h4 class="mb-0">Edit Product</h4>
+        <a href="{{ route('seller.products.show', $product->slug) }}" class="btn btn-secondary btn-sm border ">
+            ← Back to Details
+        </a>
     </div>
+
 
     <div class="row">
         <div class="col-12">
             <div class="card card-body">
-                <form id="form" enctype="multipart/form-data" method="POST">
+                <form id="form" action="{{ route('seller.products.update', $product->id) }}" enctype="multipart/form-data"
+                    method="POST">
+                    @csrf
                     <div class="row">
                         <div class="mb-3 col-md-3">
                             <label class="form-label">Name</label>
@@ -107,26 +113,16 @@
                         <div class="mb-3 col-md-3">
                             <label class="form-label">Unit <small class="text-muted">(e.g., 2.5 kg)</small></label>
                             <div class="d-flex align-items-center gap-2">
-                                <input
-                                    type="number"
-                                    step="0.01"
-                                    name="unit_value"
+                                <input type="number" step="0.01" name="unit_value"
                                     value="{{ old('unit_value', $product->unit_value ?? '') }}"
-                                    class="form-control form-control"
-                                    placeholder="Value"
-                                    style="width: 60%;"
-                                    required
-                                >
-                                <select
-                                    name="unit_id"
-                                    class="form-select form-select"
-                                    style="width: 40%;"
-                                    required
-                                >
-                                    <option value="" disabled {{ old('unit_id', $product->unit_id ?? '') === null ? 'selected' : '' }}>--</option>
+                                    class="form-control form-control" placeholder="Value" style="width: 60%;" required>
+                                <select name="unit_id" class="form-select form-select" style="width: 40%;" required>
+                                    <option value="" disabled
+                                        {{ old('unit_id', $product->unit_id ?? '') === null ? 'selected' : '' }}>--
+                                    </option>
                                     @foreach ($units as $unit)
                                         <option value="{{ $unit->id }}"
-                                            {{ (old('unit_id', $product->unit_id ?? '') == $unit->id) ? 'selected' : '' }}>
+                                            {{ old('unit_id', $product->unit_id ?? '') == $unit->id ? 'selected' : '' }}>
                                             {{ $unit->short_name }}
                                         </option>
                                     @endforeach
@@ -315,31 +311,7 @@
                 }
             });
 
-            $("#form").submit(function(e) {
-                e.preventDefault();
-                var submitBtn = $("#updateBtn");
-                submitBtn.prop('disabled', true).text('Saving...');
-                var formData = new FormData(this);
 
-                $.ajax({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    type: 'POST',
-                    url: "{{ route('seller.products.update', $product->id) }}",
-                    data: formData,
-                    contentType: false,
-                    processData: false,
-                    success: function(response) {
-                        location.reload();
-                        submitBtn.prop('disabled', false).text('Update');
-                    },
-                    error: function(error) {
-                        alert('Something went wrong');
-                        submitBtn.prop('disabled', false).text('Update');
-                    },
-                });
-            });
 
             function deleteImage(imageId) {
                 var url = "{{ route('seller.products.image.delete', ':id') }}".replace(':id', imageId);

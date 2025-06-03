@@ -89,7 +89,7 @@ class ProductController extends Controller
         return successResponse("Product added successfully");
     }
 
-    public function details($slug)
+    public function show($slug)
     {
         $product = Product::where('slug', $slug)->first();
         $product = $product->toDetailsArray();
@@ -173,9 +173,8 @@ class ProductController extends Controller
             }
         }
 
-        session()->flash('success', 'Product Updated successfully!');
 
-        return successResponse("Product Updated successfully!");
+        return redirect()->back()->with('success',"Product Updated successfully!");
     }
 
     public function delete(Product $product)

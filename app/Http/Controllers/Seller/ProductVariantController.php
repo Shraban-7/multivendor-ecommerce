@@ -14,7 +14,7 @@ class ProductVariantController extends Controller
         $data = $request->validate([
             'sku'                  => 'nullable|string',
             'stock_in'             => 'required|numeric',
-            'additional_price'       => 'required|numeric',
+            'additional_price'       => 'required|string',
             'product_attribute_id' => 'required|numeric',
             'option_id'            => 'required|numeric',
             'image'                => 'required|mimes:jpeg,png,jpg,gif|max:4000',

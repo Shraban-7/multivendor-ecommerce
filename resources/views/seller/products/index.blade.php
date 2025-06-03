@@ -56,7 +56,7 @@
                         </td>
                         <td>{{ $product->created_at->format('d-m-y h:i A') }} </td>
                         <td class="d-flex">
-                            <a href="{{ route('seller.products.details', $product->slug) }}"
+                            <a href="{{ route('seller.products.show', $product->slug) }}"
                                 class="border btn btn-light btn-sm me-1" title="Details">
                                 <i data-feather="eye" class="icon-xs"></i> Details
                             </a>

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('option_id')->nullable();
             $table->string('sku')->unique();
             $table->string('image')->nullable();
-            $table->decimal('additional_price', 5, 2);
+            $table->decimal('additional_price', 10, 2);
             $table->integer('stock_in')->nullable();
             $table->integer('stock_out')->nullable();
             $table->text('description')->nullable();
