@@ -211,16 +211,12 @@ class ProductController extends Controller
             'stock_action'   => 'required|numeric',
         ]);
 
-        // dd($request->all());
-
-        if ($product->stock_in > 0 && $request->stock_quantity > $product->stock_in) {
+        if (($product->stock_in > 0) && ($request->stock_quantity > $product->stock_in) && ($request->stock_action==StockType::REMOVE_STOCK->value)) {
             return redirect()->back()->with('error', 'Not enough stock to remove.');
         }
 
         $new_stock = $product->stock_in;
 
-
-        // dd($new_stock);
         $log = StockHistory::create([
             'product_id' => $product->id,
             'quantity'   => $request->stock_quantity,
@@ -228,23 +224,17 @@ class ProductController extends Controller
             'note'       => $request->stock_note,
         ]);
 
-        if ($log->type == StockType::SET_EXACT_STOCK->value) {
-            dd('exact');
-          return  $new_stock = $request->stock_quantity;
-        } elseif ($log->type == StockType::ADD_STOCK->value) {
-            dd('add');
-
-          return  $new_stock = $product->stock_in + $request->stock_quantity;
-        } elseif ($log->type == StockType::REMOVE_STOCK->value) {
-            dd('remove');
-          return  $new_stock = $product->stock_in - $request->stock_quantity;
+        if ($log->type->value == StockType::SET_EXACT_STOCK->value) {
+            $new_stock = $request->stock_quantity;
+        } elseif ($log->type->value == StockType::ADD_STOCK->value) {
+            $new_stock = $product->stock_in + $request->stock_quantity;
+        } elseif ($log->type->value == StockType::REMOVE_STOCK->value) {
+            $new_stock = $product->stock_in - $request->stock_quantity;
         }
-
-        dd($new_stock);
 
         $product->update(['stock_in' => $new_stock]);
 
-        return redirect()->back()->with('success',"Quantity Update successfully!");
+        return redirect()->back()->with('success', "Quantity Update successfully!");
     }
 
     public function getOptions($attributeId)
