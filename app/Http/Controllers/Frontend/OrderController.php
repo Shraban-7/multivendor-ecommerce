@@ -182,7 +182,7 @@ class OrderController extends Controller
 
         $request->validate([
             'rating' => 'required|integer|min:1|max:5',
-            'review_text' => 'required|string',
+            'description' => 'required|string',
             'images' => 'nullable|array',
             'images.*' => 'mimes:jpeg,png,jpg,gif,pdf,doc,docx,zip|max:4000',
         ]);
@@ -198,7 +198,7 @@ class OrderController extends Controller
             'product_id' => $product->id,
             'user_id' => $user->id,
             'rating' => $request->rating,
-            'review_text' => $request->review_text
+            'description' => $request->description
         ]);
 
         if ($request->hasFile('images')) {

@@ -15,37 +15,37 @@ class ReviewSeeder extends Seeder
                 'product_id' => 1,
                 'user_id' => 1,
                 'rating' => 5,
-                'review_text' => 'Great product! Highly recommend it. The quality is amazing and works as expected.',
+                'description' => 'Great product! Highly recommend it. The quality is amazing and works as expected.',
             ],
             [
                 'product_id' => 1,
                 'user_id' => 1,
                 'rating' => 4,
-                'review_text' => 'Good quality but a bit expensive. Overall, a solid purchase.',
+                'description' => 'Good quality but a bit expensive. Overall, a solid purchase.',
             ],
             [
                 'product_id' => 2,
                 'user_id' => 1,
                 'rating' => 3,
-                'review_text' => 'Average product. It works fine but there are better options in the market.',
+                'description' => 'Average product. It works fine but there are better options in the market.',
             ],
             [
                 'product_id' => 3,
                 'user_id' => 1,
                 'rating' => 4,
-                'review_text' => 'Great camera lens, but the price is on the higher side. Still, a good investment for professionals.',
+                'description' => 'Great camera lens, but the price is on the higher side. Still, a good investment for professionals.',
             ],
             [
                 'product_id' => 4,
                 'user_id' => 1,
                 'rating' => 2,
-                'review_text' => 'Not as expected. The quality could be much better, especially for the price.',
+                'description' => 'Not as expected. The quality could be much better, especially for the price.',
             ],
             [
                 'product_id' => 5,
                 'user_id' => 1,
                 'rating' => 5,
-                'review_text' => 'Excellent product! Very durable and the design is top-notch.',
+                'description' => 'Excellent product! Very durable and the design is top-notch.',
             ],
         ];
 
@@ -54,7 +54,7 @@ class ReviewSeeder extends Seeder
                 'product_id' => $review['product_id'],
                 'user_id' => $review['user_id'],
                 'rating' => $review['rating'],
-                'review_text' => $review['review_text'],
+                'description' => $review['description'],
             ]);
         }
     }
