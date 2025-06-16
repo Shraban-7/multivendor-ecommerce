@@ -39,8 +39,6 @@ class CartController extends Controller
 
         $product = Product::find($request->product_id);
 
-        //TODO: check product stock
-
         $option_ids = collect($request->option_ids)->sort()->values()->toArray();
 
         $cart = Cart::query()->firstOrCreate([
