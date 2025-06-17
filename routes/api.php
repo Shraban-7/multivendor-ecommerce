@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\SellerController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\ShopController;
@@ -52,11 +53,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Route::get('categories', [ContentCategoryController::class, 'index']);
 
-    // Route::prefix('profile')->group(function () {
-    //     Route::get('/', [UserController::class, 'profile']);
-    //     Route::post('/', [UserController::class, 'update']);
-    //     Route::post('/password', [UserController::class, 'updatePassword']);
-    //     Route::post('/image', [UserController::class, 'updateImage']);
-    // });
+    Route::prefix('profile')->group(function () {
+        Route::get('/', [ProfileController::class, 'profile']);
+        Route::post('/', [ProfileController::class, 'update']);
+    });
 
 });
