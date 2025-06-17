@@ -6,6 +6,7 @@ use App\Models\SocialLink;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\PaymentGateway;
+use App\Models\SystemSetting;
 use Illuminate\Support\Number;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -255,5 +256,12 @@ if (!function_exists('payment_gateways')) {
     function payment_gateways()
     {
         return PaymentGateway::where('status', 1)->get();
+    }
+}
+
+if (!function_exists('settings')) {
+    function settings()
+    {
+        return SystemSetting::first();
     }
 }

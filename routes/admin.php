@@ -106,6 +106,9 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
             Route::post('/store',[PaymentGatewayController::class,'store'])->name('store');
             Route::post('/update/{gateway}',[PaymentGatewayController::class,'update'])->name('update');
         });
+
+        Route::get('/',[SettingController::class,'index'])->name('index');
+        Route::post('/update',[SettingController::class,'update'])->name('update');
     });
 });
 

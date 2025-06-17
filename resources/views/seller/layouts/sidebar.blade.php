@@ -1,8 +1,8 @@
 <nav class="navbar-vertical navbar">
     <div class="nav-scroller">
         <a class="navbar-brand d-flex" href="/">
-            <img src="{{ asset('assets/frontend/images/tesko-icon.png') }}" alt="logo" />
-            <h5 class="text-white ms-5 ">Ecommerce</h5>
+            <img src="{{ storage_url(settings()->logo) }}" alt="logo" />
+            {{-- <h5 class="text-white ms-5 ">Ecommerce</h5> --}}
         </a>
         <ul class="navbar-nav flex-column" id="sideNavbar">
 
@@ -13,7 +13,7 @@
             <x-dashboard.nav-item-link :route="'seller.products.index'">
                 <i data-feather="package" class="nav-icon icon-xs me-2"></i> Manage Product
             </x-dashboard.nav-item-link>
-            
+
 
             <li class="nav-item">
                 <a class="nav-link has-arrow  collapsed " href="#!" data-bs-toggle="collapse"

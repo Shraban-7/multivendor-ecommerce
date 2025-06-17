@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="shortcut icon" href="{{ asset('assets/frontend/images/favicon.ico') }}" type="image/x-icon" />
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset(settings()->favicon) }}">
     <!-- Link jQuery -->
     <script src="{{ asset('assets/libs/jquery/jquery-3.7.1.min.js') }}"></script>
     @vite('resources/css/app.css')

@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/frontend/images/favicon.ico') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset(settings()->favicon) }}">
     <link rel="stylesheet" href="{{ asset('assets/dashboard/css/theme.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/dashboard/libs/bootstrap-icons/font/bootstrap-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/dashboard/libs/dropzone/dist/dropzone.css') }}">
@@ -62,7 +62,7 @@
 
     <!-- chart js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
+
     @stack('scripts')
     <script>
         $(document).ready(function() {

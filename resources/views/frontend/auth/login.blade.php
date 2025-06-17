@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" href="{{ asset('assets/frontend/images/favicon.ico') }}" type="image/x-icon" />
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset(settings()->favicon) }}">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Flowbite CSS -->
@@ -44,7 +44,7 @@
                 <div class="welcome-text space-y-2">
                     <div class="w-24 h-10 sm:w-32 sm:h-12">
                         <a href="{{ route('home') }}">
-                            <img src="{{ asset('assets/frontend/images/tesko-login-logo.png') }}" alt="Tesko Logo"
+                            <img src="{{ storage_url(settings()->logo_white) }}" alt="Tesko Logo"
                                 class="object-contain w-full h-full" />
                         </a>
                     </div>

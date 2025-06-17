@@ -3,8 +3,8 @@
     <!-- Logo and Location -->
     <div class="flex items-center justify-between md:justify-start gap-2 lg:gap-5 rtl:space-x-reverse">
         <a href="/">
-            <img src="{{ asset('assets/frontend/images/tesko-logo.png') }}" class="lg:h-8 md:h-6 h-8 self-center"
-                alt="Tesko Logo" />
+            <img src="{{ storage_url(settings()->logo) }}" class="lg:h-8 md:h-6 h-8 self-center"
+                alt="Logo" />
         </a>
 
         {{-- <div class="flex items-center flex-nowrap gap-2 text-base md:text-xs lg:text-base">

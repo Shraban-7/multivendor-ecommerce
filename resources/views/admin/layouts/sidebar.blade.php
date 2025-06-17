@@ -5,8 +5,8 @@ $routePath = request()->path();
 <nav class="navbar-vertical navbar">
     <div class="nav-scroller">
         <a class="navbar-brand d-flex" href="">
-            <img src="{{ asset('assets/frontend/images/tesko-icon.png') }}" alt="logo" />
-            <h5 class="text-white ms-5 ">Ecommerce</h5>
+            <img src="{{ storage_url(settings()->logo) }}" alt="logo" />
+            {{-- <h5 class="text-white ms-5 ">Ecommerce</h5> --}}
         </a>
         <ul class="navbar-nav flex-column" id="sideNavbar">
 
@@ -76,6 +76,11 @@ $routePath = request()->path();
                     <ul class="nav flex-column">
                         <x-dashboard.nav-item-link :route="'admin.settings.paymentGateways.index'">
                            Payment Gateways
+                        </x-dashboard.nav-item-link>
+                    </ul>
+                    <ul class="nav flex-column">
+                        <x-dashboard.nav-item-link :route="'admin.settings.index'">
+                           General
                         </x-dashboard.nav-item-link>
                     </ul>
                 </div>
