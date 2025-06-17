@@ -17,10 +17,11 @@ class SettingController extends Controller
         if($validator->fails()) {
             return sendValidationError($validator->errors());
         }
-        
+
         $settings = SystemSetting::first();
 
         $data['logo'] = asset($settings->logo);
+        $data['logo_white'] = asset($settings->logo_white);
         $data['apk_version'] = $settings->apk_version;
         $data['apk_link'] = $settings->apk_link;
         $data['currency'] = array(
