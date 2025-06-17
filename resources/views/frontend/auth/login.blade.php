@@ -5,11 +5,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" href="{{ asset('assets/frontend/images/favicon.ico') }}" type="image/x-icon" />
-    <!-- Link Tailwind CSS's CDN -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Link Flowbite CSS -->
+    <!-- Flowbite CSS -->
     <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css" rel="stylesheet" />
-    <!-- Link Custome CSS -->
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('assets/frontend/styles/style.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/frontend/styles/responsive.css') }}" />
 
@@ -17,10 +17,30 @@
 </head>
 
 <body>
-    <!-- Login Details Page -->
+    <!-- Login Page -->
     <main class="login-page">
+        @if (session('error') || session('success'))
+            <div id="alert-border"
+                class="fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 text-sm flex items-center gap-2
+            {{ session('error') ? 'text-red-700 bg-red-100 border-red-500' : 'text-green-700 bg-green-100 border-green-500' }}
+            border-l-4 rounded-md max-w-md w-[95%] sm:w-auto"
+                role="alert">
+                <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                </svg>
+                <span class="flex-1">{{ session('error') ?? session('success') }}</span>
+                <button type="button" class="text-current hover:text-black" data-dismiss-target="#alert-border">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 14 14">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M1 1l6 6m0 0l6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                </button>
+            </div>
+        @endif
+
         <div class="grid grid-cols-1 md:grid-cols-2">
             <div class="login-form-sec section-padding px-5 md:px-10 2xl:px-20">
+
                 <div class="welcome-text space-y-2">
                     <div class="w-24 h-10 sm:w-32 sm:h-12">
                         <a href="{{ route('home') }}">
@@ -38,11 +58,9 @@
                 </div>
 
                 <div class="login-form mt-3 sm:mt-5 lg:w-9/w-12 2xl:w-4/5">
-                    <!-- Login Form -->
                     <form action="{{ route('login') }}" method="POST"
                         class="w-full flex flex-col gap-4 sm:gap-5 mb-3 md:mb-4">
                         @csrf
-                        <!-- Input fields -->
                         <div class="form-ctrl space-y-1 sm:space-y-2">
                             <label class="block text-sm" for="email">Email</label>
                             <input required id="email" type="email" name="email" value="{{ old('email') }}"
@@ -54,26 +72,22 @@
                             <input required type="password" id="password" name="password" placeholder="•••••••••••••"
                                 class="eq w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[1] focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
                         </div>
-                        <!-- Agree to Terms & Privacy policy Address Checkbox -->
+
                         <div class="flex items-start text-davy-gray/80">
                             <input required id="terms" type="checkbox"
                                 class="h-4 w-4 text-light-yellow focus:ring-light-yellow border-gray-300 rounded" />
-                            <label for="terms" class="ml-2 text-sm">By signing up, you are creating a tesko account,
-                                and you
-                                agree to tesko's
-                                <a href="#" class="text-butterfly-blue hover:underline eq">Term of Use</a>
+                            <label for="terms" class="ml-2 text-sm">By signing up, you agree to
+                                <a href="#" class="text-butterfly-blue hover:underline eq">Terms</a>
                                 and
                                 <a href="#" class="text-butterfly-blue hover:underline eq">Privacy
                                     Policy</a>.</label>
                         </div>
-                        <!-- Remember me Checkbox -->
+
                         <div class="flex items-start text-davy-gray/80">
                             <input id="remember" type="checkbox"
                                 class="h-4 w-4 text-light-yellow focus:ring-light-yellow border-gray-300 rounded" />
-                            <label for="remember" class="ml-2 text-sm">Remember Me as
-                                <a href="#" class="text-butterfly-blue hover:underline eq">Member</a>
-                                of
-                                <a href="#" class="text-butterfly-blue hover:underline eq">Tesko Community</a>.
+                            <label for="remember" class="ml-2 text-sm">Remember Me as a
+                                <a href="#" class="text-butterfly-blue hover:underline eq">Tesko Member</a>.
                             </label>
                         </div>
 
@@ -83,9 +97,8 @@
                         </button>
                     </form>
 
-                    <!-- Social Login -->
                     <div class="social-login space-y-3">
-                        <div class="devider-sec flex flex-nowrap items-center justify-center text-davy-gray/80">
+                        <div class="devider-sec flex items-center justify-center text-davy-gray/80">
                             <span class="h-px bg-davy-gray/80 block flex-1"></span><span
                                 class="block px-3">OR</span><span class="h-px bg-davy-gray/80 block flex-1"></span>
                         </div>
@@ -106,7 +119,6 @@
                         </div>
                     </div>
 
-                    <!-- create new acc -->
                     <div class="text-center mt-6 space-y-2">
                         <p class="text-jet-gray/80">
                             New to our marketplace?
@@ -121,28 +133,25 @@
                             </a>
                         </p>
                     </div>
-
                 </div>
             </div>
 
-            <!-- Login Page Image -->
             <div class="login-banner hidden md:block">
                 <div class="h-full lg:h-[48.5rem] xl:h-[50.5rem] relative bg-red-300">
                     <div class="image-wrap h-full overflow-hidden">
                         <img src="{{ asset('assets/frontend/images/login-banner.png') }}" alt="Login Banner"
                             class="w-full h-full object-cover" />
                     </div>
-                    <!-- gradient overlay -->
-                    <div class="w-2/6 h-full bg-gradient-to-r from-white from-15% to-transparent absolute top-0 left-0">
+                    <div
+                        class="w-2/6 h-full bg-gradient-to-r from-white from-15% to-transparent absolute top-0 left-0">
                     </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Flowbite JS -->
+    <!-- JS -->
     <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
-    <!-- Tailwind Global Config JS -->
     <script src="{{ asset('assets/frontend/tailwind.config.js') }}"></script>
 </body>
 

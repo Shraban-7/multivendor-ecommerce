@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductListResource;
+use App\Http\Resources\ReviewResource;
 use App\Http\Resources\SellerResource;
 use App\Models\Product;
 use App\Models\ProductVariant;
+use App\Models\Review;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -55,6 +57,8 @@ class ProductController extends Controller
             ->get();
 
         $data['related_products'] = ProductListResource::collection($relatedProducts);
+
+        $data['reviews'] = ReviewResource::collection(Review::with(['user','product','images'])->where('product_id',$product->id)->get());
 
         return apiResponse($data);
     }

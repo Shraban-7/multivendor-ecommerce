@@ -177,7 +177,7 @@ class OrderController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return errorResponse('Validation failed.');
+            return sendValidationError($validator->errors());
         }
 
         $product = Product::find($request->product_id);

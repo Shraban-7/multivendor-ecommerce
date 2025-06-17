@@ -94,7 +94,7 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="fw-semi-bold">Total Sales</span>
-                            <i data-feather="dollar-sign" class="text-success"></i>
+                            <span class="text-success text-xxl font-semibold">৳</span>
                         </div>
                         <div class="mt-2 mb-2">
                             <h3 class="fw-bold mb-0">{{ money($total_sales) }}</h3>
@@ -108,7 +108,7 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="fw-semi-bold">Total Sellers</span>
-                            <i data-feather="dollar-sign" class="text-success"></i>
+                            <i data-feather="users" class="text-primary"></i>
                         </div>
                         <div class="mt-2 mb-2">
                             <h3 class="fw-bold mb-0">{{ $total_sellers }}</h3>

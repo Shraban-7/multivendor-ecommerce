@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\CategoryController;
@@ -10,6 +8,8 @@ use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\SellerController;
 use App\Http\Controllers\Api\SettingController;
+use App\Http\Controllers\Api\ShopController;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
     Route::post('login', [AuthController::class, 'login']);
@@ -25,6 +25,8 @@ Route::get('products/{product}', [ProductController::class, 'show']);
 
 Route::get('sellers', [SellerController::class, 'index']);
 Route::get('sellers/{seller}', [SellerController::class, 'show']);
+
+Route::get('shops', [ShopController::class, 'index']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
@@ -56,4 +58,5 @@ Route::middleware('auth:sanctum')->group(function () {
     //     Route::post('/password', [UserController::class, 'updatePassword']);
     //     Route::post('/image', [UserController::class, 'updateImage']);
     // });
+
 });
