@@ -6,10 +6,8 @@
         <div class="col-md-6">
             <form id="dateRangeForm" method="GET" action="{{ route('seller.dashboard') }}">
                 <div class="d-flex mb-3">
-                    <input type="date" name="start_date" value="{{ request('start_date') }}"
-                        class="form-control me-3">
-                    <input type="date" name="end_date" value="{{ request('end_date') }}"
-                        class="form-control me-3">
+                    <input type="date" name="start_date" value="{{ request('start_date') }}" class="form-control me-3">
+                    <input type="date" name="end_date" value="{{ request('end_date') }}" class="form-control me-3">
 
                     <button type="submit" class="btn btn-primary">Filter</button>
                 </div>
@@ -107,30 +105,32 @@
                     <div class="card h-100 card-lift">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="fw-semi-bold">Total Revenue</span>
-                                <i data-feather="dollar-sign" class="text-success"></i>
+                                <span class="fw-semi-bold">Total Sales</span>
+                                <span class="text-success text-xxl font-semibold">৳</span>
                             </div>
                             <div class="mt-2 mb-2">
-                                <h3 class="fw-bold mb-0">{{ money($total_revenue) }}</h3>
+                                <h3 class="fw-bold mb-0">{{ money($total_sales) }}</h3>
                             </div>
                             <small>Total earnings from sales</small>
                         </div>
                     </div>
                 </div>
+
                 <div class="col">
                     <div class="card h-100 card-lift">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="fw-semi-bold">Total Customers</span>
-                                <i data-feather="users" class="text-primary"></i>
+                                <span class="fw-semi-bold">Total Sales</span>
+                                <span class="text-success text-xxl font-semibold">৳</span>
                             </div>
                             <div class="mt-2 mb-2">
-                                <h3 class="fw-bold mb-0">{{ $total_customers }}</h3>
+                                <h3 class="fw-bold mb-0">{{ money($profit) }}</h3>
                             </div>
-                            <small>Registered customers</small>
+                            <small>Total profit from sales</small>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -219,7 +219,7 @@
 
     @push('scripts')
         <script>
-            const chartData = <?php echo json_encode($chartData); ?>
+            const chartData = <?php echo json_encode($chartData); ?>;
 
             const ctx = document.getElementById('salesOrderChart').getContext('2d');
             const salesOrderChart = new Chart(ctx, {
@@ -229,20 +229,29 @@
                     datasets: [{
                             label: 'Orders',
                             data: chartData.orders,
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderColor: 'rgba(0, 0, 0, 1)',
+                            backgroundColor: 'rgba(0, 0, 0, 0.1)',
                             tension: 0.4,
                             fill: true
                         },
                         {
-                            label: 'Revenue',
+                            label: 'Sales',
                             data: chartData.sales,
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(0, 123, 255, 1)',
+                            backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: 'Profit',
+                            data: chartData.profits,
+                            borderColor: 'rgba(40, 167, 69, 1)',
+                            backgroundColor: 'rgba(40, 167, 69, 0.2)', 
                             tension: 0.4,
                             fill: true
                         }
                     ]
+
                 },
                 options: {
                     responsive: true,
