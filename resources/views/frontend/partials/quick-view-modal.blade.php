@@ -98,9 +98,11 @@
                             <div
                                 class="flex flex-wrap items-center gap-2 xsm:gap-x-5 sm:gap-x-10 md:gap-2 lg:gap-x-10 text-sm">
                                 <div class="flex items-center gap-2">
+                                    @if ($product['sold_out'] > 0)
                                     <span
                                         class="text-jet-gray border-r border-gray-400 pr-2 whitespace-nowrap">{{ number_format($product['sold_out']) }}
                                         sold</span>
+                                    @endif
                                     <div class="flex flex-wrap items-center gap-x-2 text-davy-gray">
                                         <span>Provided By</span>
                                         <a href="{{ route('sellers.shop', $product['seller']['username']) }}"
@@ -111,22 +113,24 @@
                                         <span>({{ number_shorten_format($product['sold_out']) }}+ sold)</span>
                                     </div>
                                 </div>
-                                <div class="flex items-center gap-2">
-                                    <span class="text-xs">{{ $product['rating'] }} Star</span>
-                                    <span class="flex text-yellow-400 text-sm">
-                                        @for ($i = 1; $i <= 5; $i++)
-                                            @if ($i <= floor($product['rating']))
-                                                ★
-                                            @elseif ($i - $product['rating'] < 1)
-                                                <span class="relative -mx-0.5">★<span
-                                                        class="absolute inset-0 overflow-hidden"
-                                                        style="width: 50%">★</span></span>
-                                            @else
-                                                <span class="text-gray-300">★</span>
-                                            @endif
-                                        @endfor
-                                    </span>
-                                </div>
+                                @if ($product['rating'] > 0)
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs">{{ $product['rating'] }} Star</span>
+                                        <span class="flex text-yellow-400 text-sm">
+                                            @for ($i = 1; $i <= 5; $i++)
+                                                @if ($i <= floor($product['rating']))
+                                                    ★
+                                                @elseif ($i - $product['rating'] < 1)
+                                                    <span class="relative -mx-0.5">★<span
+                                                            class="absolute inset-0 overflow-hidden"
+                                                            style="width: 50%">★</span></span>
+                                                @else
+                                                    <span class="text-gray-300">★</span>
+                                                @endif
+                                            @endfor
+                                        </span>
+                                    </div>
+                                @endif
                             </div>
                             <div class="flex items-center gap-2">
                                 <span class="bg-leaf-green text-white text-xs px-2.5 py-1 rounded-full">Best
@@ -156,7 +160,9 @@
                                     class="text-xs px-2.5 py-0.5 rounded-lg border border-primary">-{{ $product['discount']['amount'] }}
                                     last 2
                                     days</span>
-                                <span class="text-leaf-green text-xs">Almost Sold Out</span>
+                                @if ($product['almost_sold_out'])
+                                    <span class="text-xs text-leaf-green">Almost Sold Out</span>
+                                @endif
                             </div>
                         </div>
                         <div

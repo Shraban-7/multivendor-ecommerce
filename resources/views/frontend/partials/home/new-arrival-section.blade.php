@@ -39,19 +39,21 @@
                                      $emptyStars = 5 - $fullStars - ($halfStar ? 1 : 0);
                                      ?>
 
-                                     <div class="text-xs sm:text-sm text-light-yellow rating-stars">
-                                         @for ($i = 0; $i < $fullStars; $i++)
-                                             <i class="fa-solid fa-star"></i>
-                                         @endfor
+                                     @if ($avgRating > 0)
+                                         <div class="text-xs sm:text-sm text-light-yellow rating-stars">
+                                             @for ($i = 0; $i < $fullStars; $i++)
+                                                 <i class="fa-solid fa-star"></i>
+                                             @endfor
 
-                                         @if ($halfStar)
-                                             <i class="fa-solid fa-star-half-stroke"></i>
-                                         @endif
+                                             @if ($halfStar)
+                                                 <i class="fa-solid fa-star-half-stroke"></i>
+                                             @endif
 
-                                         @for ($i = 0; $i < $emptyStars; $i++)
-                                             <i class="fa-regular fa-star"></i>
-                                         @endfor
-                                     </div>
+                                             @for ($i = 0; $i < $emptyStars; $i++)
+                                                 <i class="fa-regular fa-star"></i>
+                                             @endfor
+                                         </div>
+                                     @endif
                                      <!-- Name & Price -->
                                      <div class="flex items-end justify-between gap-2">
                                          <div class="name-price w-full">
@@ -68,8 +70,8 @@
                                                      {{ money($product->discounted_price) }}
                                                  </p>
                                                  <small class="line-through text-jet-gray align-items-end">
-                                                    {{ money($product->selling_price) }}
-                                                </small>
+                                                     {{ money($product->selling_price) }}
+                                                 </small>
                                              </div>
                                          </div>
 
@@ -132,11 +134,11 @@
                                              </a>
                                          </h4>
                                          <p class="text-jet-gray">
-                                            {{ $product->unit_value }}
-                                            {{ $product?->unit->name }}</p>
-                                             <p class="text-jet-gray align-items-end">
-                                                {{ money($product->selling_price) }}
-                                            </p>
+                                             {{ $product->unit_value }}
+                                             {{ $product?->unit->name }}</p>
+                                         <p class="text-jet-gray align-items-end">
+                                             {{ money($product->selling_price) }}
+                                         </p>
                                      </div>
                                  </div>
                              @endforeach

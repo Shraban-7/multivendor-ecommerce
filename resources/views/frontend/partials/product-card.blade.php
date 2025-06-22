@@ -20,24 +20,29 @@
             <a href="{{ route('products.details', $product['slug']) }}"
                 class="hover:text-primary eq">{{ $product['name'] }}</a>
         </h3>
-        <p class="text-leaf-green">Almost sold Out</p>
+        @if ($product['almost_sold_out'])
+            <span class="text-xs text-leaf-green">Almost Sold Out</span>
+        @endif
 
         <div class="flex flex-wrap items-center gap-x-1">
-            <div class="flex items-center flex-no-wrap gap-x-1 text-light-yellow">
-                @for ($i = 1; $i <= 5; $i++)
-                    @if ($i <= floor($product['rating']))
-                        ★
-                    @elseif ($i - $product['rating'] < 1)
-                        <span class="relative -mx-0.5">★<span class="absolute inset-0 overflow-hidden"
-                                style="width: 50%">★</span></span>
-                    @else
-                        <span class="text-gray-300">★</span>
-                    @endif
-                @endfor
-                <img src="{{ asset('assets/frontend/images/fire-icon.png') }}" class="w-8 h-auto" alt="Fire Icon" />
-            </div>
-
-            <span class="text-jet-gray">{{ number_shorten_format($product['sold_out']) }}+ Sold</span>
+            @if ($product['rating'] > 0)
+                <div class="flex items-center flex-no-wrap gap-x-1 text-light-yellow">
+                    @for ($i = 1; $i <= 5; $i++)
+                        @if ($i <= floor($product['rating']))
+                            ★
+                        @elseif ($i - $product['rating'] < 1)
+                            <span class="relative -mx-0.5">★<span class="absolute inset-0 overflow-hidden"
+                                    style="width: 50%">★</span></span>
+                        @else
+                            <span class="text-gray-300">★</span>
+                        @endif
+                    @endfor
+                    <img src="{{ asset('assets/frontend/images/fire-icon.png') }}" class="w-8 h-auto" alt="Fire Icon" />
+                </div>
+            @endif
+            @if ($product['sold_out'] > 0)
+                <span class="text-jet-gray">{{ number_shorten_format($product['sold_out']) }}+ Sold</span>
+            @endif
         </div>
 
         <div class="flex flex-wrap items-center gap-x-5 xsm:gap-x-1 sm:gap-x-2 xl:mt-2">

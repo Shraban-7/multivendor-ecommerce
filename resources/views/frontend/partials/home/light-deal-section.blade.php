@@ -44,9 +44,11 @@
                             <div class="card-image h-[16.5rem] relative rounded-lg overflow-hidden">
                                 <img src="{{ storage_url($light_deal->thumbnail) }}" alt="{{ $light_deal->slug }}"
                                     class="object-cover w-full h-full group-hover:scale-125 eq" loading="lazy" />
-                                <span
-                                    class="absolute block w-3/5 px-4 py-3 text-sm text-center -translate-x-1/2 bg-white rounded-full bottom-9 left-1/2">Almost
-                                    Sold Out</span>
+                                @if ($light_deal->stock_in - $light_deal->stock_out <= $light_deal->low_stock_quantity)
+                                    <span
+                                        class="absolute block w-3/5 px-4 py-3 text-sm text-center -translate-x-1/2 bg-white rounded-full bottom-9 left-1/2">Almost
+                                        Sold Out</span>
+                                @endif
                             </div>
                             <!-- Slide Content -->
                             <div class="mt-2 space-y-1 card-content">
@@ -57,8 +59,10 @@
                                         <span class="align-middle text-xs text-[#ffa755]">{{ CURRENCY_SYMBOL }}</span>
                                         {{ number_format($light_deal->selling_price, 2) }}
                                     </h2>
-                                    <p class="text-base">{{ number_shorten_format($light_deal->stock_out) }}+ Sold
-                                        Out</p>
+                                    @if ($light_deal->stock_out > 0)
+                                        <p class="text-base">{{ number_shorten_format($light_deal->stock_out) }}+ Sold
+                                            Out</p>
+                                    @endif
                                 </div>
                                 <!-- time -->
                                 <?php
@@ -90,21 +94,22 @@
                                     $emptyStars = 5 - $fullStars - ($halfStar ? 1 : 0);
                                     ?>
 
-                                    <div class="text-xs sm:text-sm text-light-yellow rating-stars">
-                                        @for ($i = 0; $i < $fullStars; $i++)
-                                            <i class="fa-solid fa-star"></i>
-                                        @endfor
+                                    @if ($avgRating > 0)
+                                        <div class="text-xs sm:text-sm text-light-yellow rating-stars">
+                                            @for ($i = 0; $i < $fullStars; $i++)
+                                                <i class="fa-solid fa-star"></i>
+                                            @endfor
 
-                                        @if ($halfStar)
-                                            <i class="fa-solid fa-star-half-stroke"></i>
-                                        @endif
+                                            @if ($halfStar)
+                                                <i class="fa-solid fa-star-half-stroke"></i>
+                                            @endif
 
-                                        @for ($i = 0; $i < $emptyStars; $i++)
-                                            <i class="fa-regular fa-star"></i>
-                                        @endfor
+                                            @for ($i = 0; $i < $emptyStars; $i++)
+                                                <i class="fa-regular fa-star"></i>
+                                            @endfor
 
-                                    </div>
-
+                                        </div>
+                                    @endif
                                     <span class="text-sm text-primary">Final Hours</span>
                                 </div>
                             </div>
