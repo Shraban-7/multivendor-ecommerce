@@ -136,6 +136,10 @@
                                 class="form-control" disabled>
                         </div>
                         <div class="mb-3 col-md-3">
+                            <label class="form-label">Low Stock Quantity</label>
+                            <input name="low_stock_quantity" type="number" value="{{ old('low_stock_quantity',$product->low_stock_quantity) }}" class="form-control">
+                        </div>
+                        <div class="mb-3 col-md-3">
                             <label class="form-label">Light Deal Expire Date</label>
                             <input name="lightdeal_expired_at" type="date"
                                 value="{{ old('lightdeal_expired_at', optional($product->lightdeal_expired_at)->format('Y-m-d')) }}"

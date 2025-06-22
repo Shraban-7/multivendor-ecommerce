@@ -48,6 +48,7 @@ return new class extends Migration
             $table->boolean('is_active')->default(1);
             $table->integer('stock_in')->default(0);
             $table->integer('stock_out')->default(0);
+            $table->integer('low_stock_quantity')->default(0);
 
             $table->decimal('shipping_cost', 10, 2)->default(0.00);
             $table->decimal('tax', 5, 2)->default(0.00);

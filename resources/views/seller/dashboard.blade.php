@@ -130,7 +130,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -246,7 +245,7 @@
                             label: 'Profit',
                             data: chartData.profits,
                             borderColor: 'rgba(40, 167, 69, 1)',
-                            backgroundColor: 'rgba(40, 167, 69, 0.2)', 
+                            backgroundColor: 'rgba(40, 167, 69, 0.2)',
                             tension: 0.4,
                             fill: true
                         }

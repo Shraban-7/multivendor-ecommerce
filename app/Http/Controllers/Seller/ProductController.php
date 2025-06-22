@@ -58,11 +58,12 @@ class ProductController extends Controller
             'is_interest'          => 'required|boolean',
             'is_community'         => 'required|boolean',
             'is_lightdeal'         => 'required|boolean',
+            'low_stock_quantity'   => 'required|numeric',
             'lightdeal_expired_at' => 'nullable|date|date_format:Y-m-d',
             'thumbnail'            => 'required|image|mimes:jpeg,png,jpg,gif|max:4000',
             'video'                => 'nullable|file',
             'files'                => 'nullable|array',
-            'files.*'              => 'mimes:jpeg,png,jpg,gif,pdf,doc,docx,zip|max:4000',
+            'files.*' => 'file|max:4096|mimetypes:image/*',
         ]);
 
         $validated['thumbnail'] = upload_file($request->file('thumbnail'), 'images/products/thumb');
@@ -84,9 +85,7 @@ class ProductController extends Controller
             }
         }
 
-        session()->flash('success', 'Product added successfully');
-
-        return successResponse("Product added successfully");
+        return redirect()->route('seller.products.index')->with('success','Product Added Successfully');
     }
 
     public function show($slug)
@@ -131,6 +130,7 @@ class ProductController extends Controller
             'is_interest'          => 'required|boolean',
             'is_community'         => 'required|boolean',
             'is_lightdeal'         => 'required|boolean',
+            'low_stock_quantity'   => 'required|numeric',
             'lightdeal_expired_at' => 'nullable|date|date_format:Y-m-d',
             'thumbnail'            => 'nullable|image|mimes:jpeg,png,jpg,gif|max:4000',
             'video'                => 'nullable|file',
@@ -173,8 +173,7 @@ class ProductController extends Controller
             }
         }
 
-
-        return redirect()->back()->with('success',"Product Updated successfully!");
+        return redirect()->back()->with('success', "Product Updated successfully!");
     }
 
     public function delete(Product $product)
@@ -210,7 +209,7 @@ class ProductController extends Controller
             'stock_action'   => 'required|numeric',
         ]);
 
-        if (($product->stock_in > 0) && ($request->stock_quantity > $product->stock_in) && ($request->stock_action==StockType::REMOVE_STOCK->value)) {
+        if (($product->stock_in > 0) && ($request->stock_quantity > $product->stock_in) && ($request->stock_action == StockType::REMOVE_STOCK->value)) {
             return redirect()->back()->with('error', 'Not enough stock to remove.');
         }
 

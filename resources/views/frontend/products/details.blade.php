@@ -152,7 +152,9 @@
                                 <span class="text-xs px-2.5 py-0.5 rounded-lg border border-primary discount-badge">
                                     -{{ $product['discount']['amount'] }} last 2 days
                                 </span>
-                                <span class="text-xs text-leaf-green">Almost Sold Out</span>
+                                @if ($product['almost_sold_out'])
+                                    <span class="text-xs text-leaf-green">Almost Sold Out</span>
+                                @endif
                             </div>
                         </div>
 
@@ -693,7 +695,7 @@
                         const mainSlide = $(this)
                         const imgSrc = $(this).find('img').attr('src')?.trim().toLowerCase();
                         if (imgSrc === normalizedUrl) {
-                            mainSlide .addClass('swiper-slide-active');
+                            mainSlide.addClass('swiper-slide-active');
                             return false;
                         }
                     });

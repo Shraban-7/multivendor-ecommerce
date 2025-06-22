@@ -10,7 +10,7 @@
     <div class="row">
         <div class="col-12">
             <div class="card card-body">
-                <form id="form" enctype="multipart/form-data">
+                <form id="form" method="POST" action="{{ route('seller.products.store') }}" enctype="multipart/form-data">
                     @CSRF
                     <div class="row">
                         <div class="mb-3 col-md-3">
@@ -105,6 +105,10 @@
                         <div class="mb-3 col-md-3">
                             <label class="form-label">Light Deal Expire Date</label>
                             <input name="lightdeal_expired_at" type="date" value="" class="form-control">
+                        </div>
+                        <div class="mb-3 col-md-3">
+                            <label class="form-label">Low Stock Quantity</label>
+                            <input name="low_stock_quantity" type="number" value="" class="form-control">
                         </div>
                         <div class="mb-3 col-md-12">
                             <div class="gap-3 d-flex align-items-center">
@@ -237,28 +241,7 @@
                 }
             });
 
-            $("#form").submit(function(e) {
-                e.preventDefault();
-                var submitBtn = $("#submitBtn");
-                submitBtn.prop('disabled', true).text('Saving...');
-                var formData = new FormData(this);
-                $.ajax({
-                    type: 'POST',
-                    url: "{{ route('seller.products.store') }}",
-                    data: formData,
-                    contentType: false,
-                    processData: false,
-                    success: function(data) {
-                        location.reload();
-                    },
-                    error: function(xhr) {
-                        alert('Something went wrong!');
-                    },
-                    complete: function() {
-                        submitBtn.prop('disabled', false).text('Save');
-                    }
-                });
-            });
+
         </script>
     @endpush
 

@@ -133,6 +133,7 @@ class Product extends Model
             'stock_status'      => $this->stock_status,
             'in_stock'          => $this->stock_in,
             'sold_out'          => $this->stock_out,
+            'almost_sold_out'   => ($this->stock_in - $this->stock_out ) <= $this->low_stock_quantity ? true : false,
             'variants'          => $this->variants->map(function ($variant) {
                 return [
                     'id'             => $variant->id,

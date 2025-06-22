@@ -42,16 +42,31 @@
                         </td>
                         <td>
                             <div class="mb-2">
-                                @if ($product->stock_in > 0)
-                                    <span class="text-white badge text-bg-success">In Stock</span>
+                                @php
+                                    $current_stock = $product->stock_in - $product->stock_out;
+                                @endphp
+                                @if ($current_stock > 0)
+                                    @if ($current_stock <= $product->low_stock_quantity)
+                                        <span class="text-white badge text-bg-warning">Low Stock
+                                            ({{ $current_stock }})</span>
+                                    @else
+                                        <span class="text-white badge text-bg-success">In Stock
+                                            ({{ $current_stock }})</span>
+                                    @endif
                                 @else
                                     <span class="text-white badge text-bg-danger">Stock Out</span>
                                 @endif
                             </div>
-                            Qty: <strong> {{ $product->quantity }}</strong> <br>
 
-                            <span> In: {{ $product->stock_in }} | Out: <span
-                                    class="text-danger">{{ $product->stock_out }}</span></span>
+                            <span>
+                                @if ($product->stock_in > 0)
+                                    In: {{ $product->stock_in }}
+                                @endif
+                                @if ($product->stock_out)
+                                    | Out:
+                                    <span class="text-danger">{{ $product->stock_out }}</span>
+                                @endif
+                            </span>
 
                         </td>
                         <td>{{ $product->created_at->format('d-m-y h:i A') }} </td>
@@ -140,7 +155,7 @@
         <script>
             new DataTable('#product-table', {
                 order: [
-                    [3, 'desc']
+                    [3, 'asc']
                 ]
             });
         </script>
