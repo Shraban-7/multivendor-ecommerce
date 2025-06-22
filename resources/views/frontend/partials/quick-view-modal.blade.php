@@ -99,18 +99,24 @@
                                 class="flex flex-wrap items-center gap-2 xsm:gap-x-5 sm:gap-x-10 md:gap-2 lg:gap-x-10 text-sm">
                                 <div class="flex items-center gap-2">
                                     @if ($product['sold_out'] > 0)
-                                    <span
-                                        class="text-jet-gray border-r border-gray-400 pr-2 whitespace-nowrap">{{ number_format($product['sold_out']) }}
-                                        sold</span>
+                                        <span
+                                            class="text-jet-gray border-r border-gray-400 pr-2 whitespace-nowrap">{{ number_format($product['sold_out']) }}
+                                            sold</span>
                                     @endif
                                     <div class="flex flex-wrap items-center gap-x-2 text-davy-gray">
-                                        <span>Provided By</span>
                                         <a href="{{ route('sellers.shop', $product['seller']['username']) }}"
                                             class="inline-block provider-icon w-6 h-6 overflow-hidden rounded-full">
                                             <img src="{{ storage_url($product['seller']['business_logo']) }}"
                                                 alt="Louis Vuitton" class="h-full w-full object-contain">
                                         </a>
-                                        <span>({{ number_shorten_format($product['sold_out']) }}+ sold)</span>
+                                        <a href="{{ route('sellers.shop', $product['seller']['username']) }}"
+                                            class="inline-block ">
+                                            <span>{{ $product['seller']['business_name'] }}</span>
+                                        </a>
+
+                                        @if ($product['sold_out'] > 0)
+                                            <span>({{ number_shorten_format($product['sold_out']) }}+ sold)</span>
+                                        @endif
                                     </div>
                                 </div>
                                 @if ($product['rating'] > 0)

@@ -111,9 +111,12 @@
                                             <span class="text-blue-500 font-bold">{{ $seller['shop_name'] }}</span>
                                         </a>
                                         <span class="border-r border-gray-400 h-4"></span>
-                                        <span class="pl-2 text-jet-gray">
-                                            {{ number_shorten_format($product['sold_out']) }} sold
-                                        </span>
+
+                                        @if ($product['sold_out'] > 0)
+                                            <span class="pl-2 text-jet-gray">
+                                                {{ number_shorten_format($product['sold_out']) }} sold
+                                            </span>
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-2">

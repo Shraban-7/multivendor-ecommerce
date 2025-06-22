@@ -46,7 +46,6 @@
         </div>
 
         <div class="flex flex-wrap items-center gap-x-5 xsm:gap-x-1 sm:gap-x-2 xl:mt-2">
-            <span class="text-primary/80">Final Hours</span>
             <div class="flex items-center gap-x-5 xsm:gap-x-2 sm:gap-x-5 xl:gap-x-8">
                 <div class="price flex items-center gap-1 flex-no-wrap">
                     <i class="fa-solid fa-bolt text-[#ffa755]"></i>
