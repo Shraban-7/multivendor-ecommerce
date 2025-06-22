@@ -160,6 +160,7 @@ class Product extends Model
                 'username'      => $this->seller->username,
                 'business_name' => $this->seller->business_name,
                 'business_logo' => $this->seller->business_logo,
+                'best_seller'   => $this->seller->is_best_seller
             ],
             'reviews'           => $this->reviews,
             'rating'            => number_format($this->reviews->avg('rating'), 1),

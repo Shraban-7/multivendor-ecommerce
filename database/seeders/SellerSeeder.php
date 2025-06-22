@@ -25,7 +25,7 @@ class SellerSeeder extends Seeder
                 'business_logo'        => '/images/sellers/business/unilever-logo.png',
                 'business_email'       => 'business.unilever@gmail.com',
                 'business_address'     => 'Tejgaon I/A, Dhaka',
-                'country_id'           => 1,
+                'country_id'           => 6, //Bangladesh
                 'zip'                  => '1215',
                 'shipping_cost'        => 25,
                 'trade_license_no'     => 'UL-TL-2023001',
@@ -45,7 +45,7 @@ class SellerSeeder extends Seeder
                 'business_logo'        => '/images/sellers/business/nestle-logo.png',
                 'business_email'       => 'business.nestle@gmail.com',
                 'business_address'     => 'Kawran Bazar, Dhaka',
-                'country_id'           => 1,
+                'country_id'           => 6, //Bangladesh
                 'zip'                  => '1207',
                 'shipping_cost'        => 20,
                 'trade_license_no'     => 'NE-TL-2023002',
@@ -65,7 +65,7 @@ class SellerSeeder extends Seeder
                 'business_logo'        => '/images/sellers/business/marico-logo.png',
                 'business_email'       => 'business.marico@gmail.com',
                 'business_address'     => 'Gulshan, Dhaka',
-                'country_id'           => 1,
+                'country_id'           => 6, //Bangladesh
                 'zip'                  => '1212',
                 'shipping_cost'        => 15,
                 'trade_license_no'     => 'MA-TL-2023003',
@@ -85,7 +85,7 @@ class SellerSeeder extends Seeder
                 'business_logo'        => '/images/sellers/business/aarong-logo.png',
                 'business_email'       => 'business.aarong@gmail.com',
                 'business_address'     => 'Uttara, Dhaka',
-                'country_id'           => 1,
+                'country_id'           => 6, //Bangladesh
                 'zip'                  => '1230',
                 'shipping_cost'        => 35,
                 'trade_license_no'     => 'AR-TL-2023004',
@@ -105,7 +105,7 @@ class SellerSeeder extends Seeder
                 'business_logo'        => '/images/sellers/business/walton-logo.png',
                 'business_email'       => 'business.walton@gmail.com',
                 'business_address'     => 'Bashundhara R/A, Dhaka',
-                'country_id'           => 1,
+                'country_id'           => 6, //Bangladesh
                 'zip'                  => '1229',
                 'shipping_cost'        => 40,
                 'trade_license_no'     => 'WA-TL-2023005',

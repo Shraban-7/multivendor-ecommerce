@@ -138,8 +138,11 @@
                             </div>
 
                             <div class="flex items-center gap-2">
-                                <span class="bg-leaf-green text-white text-xs px-2.5 py-1 rounded-full">Best Seller</span>
-                                <p class="text-sm text-davy-gray">From this provider</p>
+                                @if ($product['seller']['best_seller'])
+                                    <span class="bg-leaf-green text-white text-xs px-2.5 py-1 rounded-full">Best
+                                        Seller</span>
+                                @endif
+
                             </div>
 
                             <div class="flex flex-wrap items-center gap-2">

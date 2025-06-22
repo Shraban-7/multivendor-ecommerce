@@ -6,9 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset(settings()->favicon) }}">
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    {{-- <script src="https://cdn.tailwindcss.com"></script> --}}
+    @vite('resources/css/app.css')
     <!-- Flowbite CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css" rel="stylesheet" />
+    {{-- <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css" rel="stylesheet" /> --}}
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('assets/frontend/styles/style.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/frontend/styles/responsive.css') }}" />
@@ -57,7 +58,7 @@
                     </p>
                 </div>
 
-                <div class="login-form mt-3 sm:mt-5 lg:w-9/w-12 2xl:w-4/5">
+                <div class="login-form mt-3 sm:mt-5 lg:w-9/w-12 2xl:w-4/5 mx-auto">
                     <form action="{{ route('login') }}" method="POST"
                         class="w-full flex flex-col gap-4 sm:gap-5 mb-3 md:mb-4">
                         @csrf
@@ -151,8 +152,9 @@
     </main>
 
     <!-- JS -->
-    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
-    <script src="{{ asset('assets/frontend/tailwind.config.js') }}"></script>
+    @vite('resources/js/app.js')
+    {{-- <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+    <script src="{{ asset('assets/frontend/tailwind.config.js') }}"></script> --}}
 </body>
 
 </html>

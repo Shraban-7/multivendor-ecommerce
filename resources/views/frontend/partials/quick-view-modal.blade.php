@@ -105,13 +105,13 @@
                                     @endif
                                     <div class="flex flex-wrap items-center gap-x-2 text-davy-gray">
                                         <a href="{{ route('sellers.shop', $product['seller']['username']) }}"
-                                            class="inline-block provider-icon w-6 h-6 overflow-hidden rounded-full">
+                                            class="inline-block provider-icon w-10 h-10 overflow-hidden rounded-full">
                                             <img src="{{ storage_url($product['seller']['business_logo']) }}"
                                                 alt="Louis Vuitton" class="h-full w-full object-contain">
                                         </a>
                                         <a href="{{ route('sellers.shop', $product['seller']['username']) }}"
                                             class="inline-block ">
-                                            <span>{{ $product['seller']['business_name'] }}</span>
+                                            <span class="font-bold">{{ $product['seller']['business_name'] }}</span>
                                         </a>
 
                                         @if ($product['sold_out'] > 0)
@@ -119,31 +119,34 @@
                                         @endif
                                     </div>
                                 </div>
-                                @if ($product['rating'] > 0)
-                                    <div class="flex items-center gap-2">
-                                        <span class="text-xs">{{ $product['rating'] }} Star</span>
+                                <div class="flex items-center gap-2">
+                                    @if ($product['rating'] > 0)
                                         <span class="flex text-yellow-400 text-sm">
                                             @for ($i = 1; $i <= 5; $i++)
                                                 @if ($i <= floor($product['rating']))
-                                                    ★
+                                                    <span class="mx-0.5">★</span>
                                                 @elseif ($i - $product['rating'] < 1)
-                                                    <span class="relative -mx-0.5">★<span
-                                                            class="absolute inset-0 overflow-hidden"
-                                                            style="width: 50%">★</span></span>
+                                                    <span class="mx-0.5 relative text-gray-300">
+                                                        ★
+                                                        <span class="absolute inset-0 overflow-hidden text-yellow-400"
+                                                            style="width: 50%">★</span>
+                                                    </span>
                                                 @else
-                                                    <span class="text-gray-300">★</span>
+                                                    <span class="mx-0.5 text-gray-300">★</span>
                                                 @endif
                                             @endfor
                                         </span>
-                                    </div>
-                                @endif
+                                        <span class="text-muted text-sm">({{ $product['total_reviews'] }})</span>
+                                    @endif
+
+
+                                </div>
                             </div>
                             <div class="flex items-center gap-2">
-                                <span class="bg-leaf-green text-white text-xs px-2.5 py-1 rounded-full">Best
-                                    Seller</span>
-                                <p class="text-davy-gray text-sm">
-                                    From this provider
-                                </p>
+                                @if ($product['seller']['best_seller'])
+                                    <span class="bg-leaf-green text-white text-xs px-2.5 py-1 rounded-full">Best
+                                        Seller</span>
+                                @endif
                             </div>
                             <div class="flex flex-wrap items-center gap-2">
                                 <div class="new-price flex items-center gap-1 flex-nowrap">
@@ -162,10 +165,6 @@
                                 <h6 id="old-price{{ $product['id'] }}" class=" text-jet-gray line-through">
                                     {{ money($product['price']) }}
                                 </h6>
-                                <span
-                                    class="text-xs px-2.5 py-0.5 rounded-lg border border-primary">-{{ $product['discount']['amount'] }}
-                                    last 2
-                                    days</span>
                                 @if ($product['almost_sold_out'])
                                     <span class="text-xs text-leaf-green">Almost Sold Out</span>
                                 @endif

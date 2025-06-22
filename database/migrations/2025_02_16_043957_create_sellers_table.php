@@ -30,6 +30,7 @@ return new class extends Migration
             $table->string('trade_license_no')->nullable();
             $table->string('trade_license_image')->nullable();
             $table->string('shop_image')->nullable();
+            $table->boolean('is_best_seller')->default(0);
 
             $table->bigInteger('country_id')->nullable();
             $table->bigInteger('state_id')->nullable();

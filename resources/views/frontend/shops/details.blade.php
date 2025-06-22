@@ -47,8 +47,10 @@
                         <div class="flex flex-col md:gap-2">
                             <h1 class="text-xl md:text-2xl font-light">{{ $seller->business_name }}</h1>
                             <div class="flex items-center gap-1 flex-nowrap text-sm">
-                                <i class="fa-solid fa-circle-check text-butterfly-blue md:text-xl"></i>
-                                <span>Authorized By Tesco</span>
+                                @if ($seller->is_best_seller)
+                                <span class="bg-leaf-green text-white text-xs px-2.5 py-1 rounded-full">Best
+                                    Seller</span>
+                                @endif
                             </div>
                         </div>
                     </div>

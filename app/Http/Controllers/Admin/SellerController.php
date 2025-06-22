@@ -32,4 +32,12 @@ class SellerController extends Controller
         $data['seller'] = $seller;
         return view('admin.sellers.profile',$data);
     }
+
+    public function best_seller(Seller $seller, Request $request)
+    {
+        $seller->is_best_seller = $request->is_best_seller;
+        $seller->save();
+
+        return redirect()->back()->with('success','Best seller updated successfully');
+    }
 }
