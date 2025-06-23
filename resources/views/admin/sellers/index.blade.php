@@ -43,11 +43,13 @@
 
                         <td>
                             <div>
-                                <button type="button"
-                                    class="btn btn-light border  btn-sm mb-1 text-{{ $seller->is_best_seller ? 'danger' : 'success' }}"
-                                    data-bs-toggle="modal" data-bs-target="#bestSellerModal{{ $seller->id }}">
-                                    {{ $seller->is_best_seller ? 'Remove Best Seller' : 'Set Best Seller' }}
-                                </button>
+                                @if (hasPermission('admin.sellers.best_seller'))
+                                    <button type="button"
+                                        class="btn btn-light border  btn-sm mb-1 text-{{ $seller->is_best_seller ? 'danger' : 'success' }}"
+                                        data-bs-toggle="modal" data-bs-target="#bestSellerModal{{ $seller->id }}">
+                                        {{ $seller->is_best_seller ? 'Remove Best Seller' : 'Set Best Seller' }}
+                                    </button>
+                                @endif
                                 <button class="btn btn-light border  btn-sm mb-1" data-bs-toggle="modal"
                                     data-bs-target=""><i data-feather="edit" class="icon-xs"></i> Edit
                                 </button>

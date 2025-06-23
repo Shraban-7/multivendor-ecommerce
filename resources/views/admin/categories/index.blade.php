@@ -70,10 +70,13 @@
                             </ul>
                         </td>
                         <td class="d-flex align-items-center gap-2">
-                            <button type="button" class="btn btn-sm {{ $category->status ? 'btn-danger' : 'btn-success' }}"
-                                data-bs-toggle="modal" data-bs-target="#toggleStatusModal{{ $category->id }}">
-                                {{ $category->status ? 'Inactive' : 'Active' }}
-                            </button>
+                            @if (hasPermission('admin.categories.toggleStatus'))
+                                <button type="button"
+                                    class="btn btn-sm {{ $category->status ? 'btn-danger' : 'btn-success' }}"
+                                    data-bs-toggle="modal" data-bs-target="#toggleStatusModal{{ $category->id }}">
+                                    {{ $category->status ? 'Inactive' : 'Active' }}
+                                </button>
+                            @endif
 
                             <!-- Confirmation Modal -->
                             <div class="modal fade" id="toggleStatusModal{{ $category->id }}" tabindex="-1"
@@ -103,10 +106,12 @@
                                 </div>
                             </div>
 
-                            <a href="{{ route('admin.categories.edit', $category->id) }}"
-                                class="btn btn-light border btn-sm">
-                                <i data-feather="edit" class="icon-xs"></i> Edit
-                            </a>
+                            @if (hasPermission('admin.categories.edit'))
+                                <a href="{{ route('admin.categories.edit', $category->id) }}"
+                                    class="btn btn-light border btn-sm">
+                                    <i data-feather="edit" class="icon-xs"></i> Edit
+                                </a>
+                            @endif
                         </td>
 
                     </tr>

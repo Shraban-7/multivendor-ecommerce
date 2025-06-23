@@ -3,10 +3,12 @@
 @section('content')
     <div class="mb-3 d-flex justify-content-between align-items-end">
         <h4 class="mb-0">Home Promo Poster</h4>
-        @if (count($posters) < 4)
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
-                <i data-feather="plus" class="icon-xs"></i> Add Promo Poster
-            </button>
+        @if (hasPermission('admin.settings.posters.store'))
+            @if (count($posters) < 4)
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+                    <i data-feather="plus" class="icon-xs"></i> Add Promo Poster
+                </button>
+            @endif
         @endif
     </div>
     <div class="row">
@@ -21,10 +23,13 @@
                         <p class="mb-1"><strong>Link:</strong> <a href="{{ $poster->button_link }}"
                                 target="_blank">{{ $poster->button_link }}</a></p>
                         <p class="mb-2"><strong>Position:</strong> {{ $poster->position }}</p>
-                        <button class="btn btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#editModal-{{ $poster->id }}">
-                            <i data-feather="edit" class="icon-xs"></i> Edit
-                        </button>
+
+                        @if (hasPermission('admin.settings.posters.update'))
+                            <button class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#editModal-{{ $poster->id }}">
+                                <i data-feather="edit" class="icon-xs"></i> Edit
+                            </button>
+                        @endif
                     </div>
                 </div>
             </div>

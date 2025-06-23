@@ -3,10 +3,13 @@
 @section('content')
     <div class="mb-3 d-flex justify-content-between align-items-end">
         <h4 class="mb-0">Hero Banners</h4>
-        @if (count($hero_banners) < 5)
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
-                <i data-feather="plus" class="icon-xs"></i> Add Hero Banner
-            </button>
+
+        @if (hasPermission('admin.settings.hero.store'))
+            @if (count($hero_banners) < 5)
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+                    <i data-feather="plus" class="icon-xs"></i> Add Hero Banner
+                </button>
+            @endif
         @endif
     </div>
     <div class="row">
@@ -21,10 +24,12 @@
                         <p class="mb-1"><strong>Link:</strong> <a href="{{ $banner->button_link }}"
                                 target="_blank">{{ $banner->button_link }}</a></p>
                         <p class="mb-2"><strong>Position:</strong> {{ $banner->position }}</p>
-                        <button class="btn btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#editModal-{{ $banner->id }}">
-                            <i data-feather="edit" class="icon-xs"></i> Edit
-                        </button>
+                        @if (hasPermission('admin.settings.hero.update'))
+                            <button class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#editModal-{{ $banner->id }}">
+                                <i data-feather="edit" class="icon-xs"></i> Edit
+                            </button>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -107,7 +112,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="{{ route('admin.settings.hero.store') }}" method="post" enctype="multipart/form-data">
-                    @CSRF
+                    @csrf
                     <div class="modal-body">
                         <div class="row">
                             <div class="mb-3 col-md-12">

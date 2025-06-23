@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -11,12 +12,15 @@ class Admin extends Authenticatable
 
     protected $guarded = ['id'];
 
-    protected $fillable = ['name', 'email', 'password'];
-
-    protected $hidden = ['password', 'remember_token'];
+    protected $hidden = ['password'];
 
     protected $casts = [
         'password' => 'hashed',
     ];
+
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
 }
 

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\SellerController;
 use App\Http\Controllers\Admin\HomeMidController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\HeroBannerController;
+use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\SocialLinkController;
 use App\Http\Controllers\Admin\PromoPosterController;
 use App\Http\Controllers\Admin\SubcategoryController;
@@ -76,6 +78,23 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
         Route::get('/', [ReviewsController::class, 'index'])->name('index');
         Route::post('/{review}/delete', [ReviewsController::class, 'destroy'])->name('destroy');
     });
+
+    Route::prefix('roles')->as('roles.')->group(function () {
+        Route::get('/', [PermissionController::class, 'index'])->name('index');
+        Route::post('/store', [PermissionController::class, 'store'])->name('store');
+        Route::get('{role}/edit', [PermissionController::class, 'edit'])->name('edit');
+        Route::post('{role}/update', [PermissionController::class, 'update'])->name('update');
+    });
+
+    Route::prefix('admins')->as('admins.')->group(function () {
+    Route::get('/', [AdminController::class, 'index'])->name('index');
+    Route::get('/add', [AdminController::class, 'add'])->name('create');
+    Route::post('/store', [AdminController::class, 'store'])->name('store');
+    Route::get('/{admin}/edit', [AdminController::class, 'edit'])->name('edit');
+    Route::post('/{admin}/update', [AdminController::class, 'update'])->name('update');
+    Route::post('/{admin}/delete', [AdminController::class, 'delete'])->name('delete');
+});
+
 
     Route::prefix('settings')->as('settings.')->group(function(){
         Route::prefix('hero')->as('hero.')->group(function(){

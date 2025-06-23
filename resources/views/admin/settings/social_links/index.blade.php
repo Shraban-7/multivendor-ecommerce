@@ -4,9 +4,12 @@
 @section('content')
     <div class="mb-3 d-flex justify-content-between align-items-center">
         <h4 class="mb-0">Social Links</h4>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
-            <i data-feather="plus" class="icon-xs"></i> Add Social Link
-        </button>
+
+        @if (hasPermission('admin.settings.socialLinks.store'))
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+                <i data-feather="plus" class="icon-xs"></i> Add Social Link
+            </button>
+        @endif
     </div>
 
     <div class="table-responsive ">
@@ -36,10 +39,12 @@
                             @endif
                         </td>
                         <td>
-                            <button class="btn btn-light border btn-sm" data-bs-toggle="modal"
-                                data-bs-target="#editModal-{{ $socialLink->id }}">
-                                <i data-feather="edit" class="icon-xs"></i> Edit
-                            </button>
+                            @if (hasPermission('admin.settings.socialLinks.update'))
+                                <button class="btn btn-light border btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#editModal-{{ $socialLink->id }}">
+                                    <i data-feather="edit" class="icon-xs"></i> Edit
+                                </button>
+                            @endif
                         </td>
                     </tr>
 
@@ -62,8 +67,9 @@
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Icon Name (FontAwesome)</label>
-                                            <input name="icon_name" type="text" class="form-control" value="{{ $socialLink->icon_name }}"
-                                                placeholder="e.g. fa-facebook-f" required>
+                                            <input name="icon_name" type="text" class="form-control"
+                                                value="{{ $socialLink->icon_name }}" placeholder="e.g. fa-facebook-f"
+                                                required>
                                             <small class="text-muted">
                                                 Browse icons at
                                                 <a href="https://fontawesome.com/search" target="_blank"

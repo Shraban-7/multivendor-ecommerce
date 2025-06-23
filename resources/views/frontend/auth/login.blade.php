@@ -42,7 +42,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2">
             <div class="login-form-sec section-padding px-5 md:px-10 2xl:px-20">
 
-                <div class="welcome-text space-y-2">
+                <div class="welcome-text space-y-2 mt-3 sm:mt-5 lg:w-9/w-12 2xl:w-4/5 mx-auto">
                     <div class="w-24 h-10 sm:w-32 sm:h-12">
                         <a href="{{ route('home') }}">
                             <img src="{{ storage_url(settings()->logo_white) }}" alt="Tesko Logo"

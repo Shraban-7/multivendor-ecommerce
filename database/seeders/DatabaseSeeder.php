@@ -38,6 +38,7 @@ class DatabaseSeeder extends Seeder
             PromoPosterSeeder::class,
             // ProductVariantSeeder::class,
             SystemSettingSeeder::class,
+            PermissionSeeder::class
         ]);
 
     }

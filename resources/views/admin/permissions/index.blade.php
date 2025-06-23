@@ -1,0 +1,81 @@
+@extends('admin.layouts.app')
+@section('title', 'Permissions')
+@section('content')
+    <?php
+    $isSuperAdmin = admin()->role->name == 'super_admin';
+    ?>
+    <div class="d-flex justify-content-between align-items-end mb-2">
+        <h4 class="mb-0">Permissions</h4>
+        @if ($isSuperAdmin)
+            <button class="btn btn-theme btn-sm" data-bs-toggle="modal" data-bs-target="#addModal">
+                <i data-feather="plus" class="icon-xs"></i> Add Role
+            </button>
+        @endif
+    </div>
+
+    <div class="table-responsive text-nowrap">
+        <table class="table table-bordered bg-white">
+            <thead>
+                <tr>
+                    <th>Role Name</th>
+                    <th>Permissions</th>
+                    <th>Created At</th>
+                    @if ($isSuperAdmin)
+                        <th>Action</th>
+                    @endif
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($roles as $role)
+                    <tr>
+                        <td>{{ $role->title }}</td>
+                        <td class="d-flex flex-wrap gap-1">
+                            @foreach ($role->permissions as $permission)
+                                <span class="badge bg-primary me-1">{{ $permission->title }}</span>
+                            @endforeach
+                        </td>
+
+                        <td>{{ $role->created_at->format('d/m/Y') }}</td>
+                        @if ($isSuperAdmin)
+                            <td>
+                                <div class="d-flex gap-2">
+                                    @if ($role->title != 'Super Admin')
+                                        <a href="{{ route('admin.roles.edit', $role->id) }}"
+                                            class="btn btn-light btn-sm border edit-btn">
+                                            <i class="bx bx-edit"></i> Edit
+                                        </a>
+                                    @endif
+                                </div>
+                            </td>
+                        @endif
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal fade" id="addModal" tabindex="-1">
+        <div class="modal-dialog modal-sm mx-auto modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create New Role</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="createRoleForm" action="{{ route('admin.roles.store') }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Role Name</label>
+                            <input type="text" class="form-control" name="title" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Create Role</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+@endsection

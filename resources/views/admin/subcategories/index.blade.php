@@ -25,8 +25,8 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>
                             <div class="d-flex align-items-center">
-                                <img src="{{ storage_url($subcategory->image) }}" class="border rounded-circle" alt="Image"
-                                    style="height:80px; width:80px">
+                                <img src="{{ storage_url($subcategory->image) }}" class="border rounded-circle"
+                                    alt="Image" style="height:80px; width:80px">
                                 <div class="mt-2 ms-3">
                                     <div>{{ $subcategory->name }}</div>
                                 </div>
@@ -48,10 +48,14 @@
                             </div>
                         </td>
                         <td class="d-flex align-items-center gap-2">
-                            <button type="button" class="btn btn-sm {{ $subcategory->status ? 'btn-danger' : 'btn-success' }}"
-                                data-bs-toggle="modal" data-bs-target="#toggleStatusModal{{ $subcategory->id }}">
-                                {{ $subcategory->status ? 'Inactive' : 'Active' }}
-                            </button>
+
+                            @if (hasPermission('admin.subcategories.toggleStatus'))
+                                <button type="button"
+                                    class="btn btn-sm {{ $subcategory->status ? 'btn-danger' : 'btn-success' }}"
+                                    data-bs-toggle="modal" data-bs-target="#toggleStatusModal{{ $subcategory->id }}">
+                                    {{ $subcategory->status ? 'Inactive' : 'Active' }}
+                                </button>
+                            @endif
 
                             <!-- Confirmation Modal -->
                             <div class="modal fade" id="toggleStatusModal{{ $subcategory->id }}" tabindex="-1"
@@ -59,7 +63,8 @@
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="toggleStatusModalLabel{{ $subcategory->id }}">Confirm
+                                            <h5 class="modal-title" id="toggleStatusModalLabel{{ $subcategory->id }}">
+                                                Confirm
                                                 Action</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
@@ -69,7 +74,8 @@
                                             this category?
                                         </div>
                                         <div class="modal-footer">
-                                            <form action="{{ route('admin.subcategories.toggleStatus', $subcategory->id) }}"
+                                            <form
+                                                action="{{ route('admin.subcategories.toggleStatus', $subcategory->id) }}"
                                                 method="POST">
                                                 @csrf
                                                 <button type="submit" class="btn btn-primary">Yes, Confirm</button>
@@ -81,10 +87,12 @@
                                 </div>
                             </div>
 
-                            <a href="{{ route('admin.subcategories.edit', $subcategory->id) }}"
-                                class="btn btn-light border btn-sm">
-                                <i data-feather="edit" class="icon-xs"></i> Edit
-                            </a>
+                            @if (hasPermission('admin.subcategories.edit'))
+                                <a href="{{ route('admin.subcategories.edit', $subcategory->id) }}"
+                                    class="btn btn-light border btn-sm">
+                                    <i data-feather="edit" class="icon-xs"></i> Edit
+                                </a>
+                            @endif
                         </td>
 
                     </tr>

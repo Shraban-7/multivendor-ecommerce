@@ -3,10 +3,12 @@
 @section('content')
     <div class="mb-3 d-flex justify-content-between align-items-end">
         <h4 class="mb-0">Home Mid Banners</h4>
-        @if (count($banners) < 10)
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
-                <i data-feather="plus" class="icon-xs"></i> Add Home Mid Banner
-            </button>
+        @if (hasPermission('admin.settings.banners.store'))
+            @if (count($banners) < 10)
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+                    <i data-feather="plus" class="icon-xs"></i> Add Home Mid Banner
+                </button>
+            @endif
         @endif
     </div>
     <div class="row">
@@ -21,10 +23,13 @@
                         <p class="mb-1"><strong>Link:</strong> <a href="{{ $banner->button_link }}"
                                 target="_blank">{{ $banner->button_link }}</a></p>
                         <p class="mb-2"><strong>Position:</strong> {{ $banner->position }}</p>
-                        <button class="btn btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#editModal-{{ $banner->id }}">
-                            <i data-feather="edit" class="icon-xs"></i> Edit
-                        </button>
+
+                        @if (hasPermission('admin.settings.banners.update'))
+                            <button class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#editModal-{{ $banner->id }}">
+                                <i data-feather="edit" class="icon-xs"></i> Edit
+                            </button>
+                        @endif
                     </div>
                 </div>
             </div>

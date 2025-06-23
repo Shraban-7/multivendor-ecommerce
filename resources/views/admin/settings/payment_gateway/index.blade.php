@@ -4,9 +4,12 @@
 @section('content')
     <div class="mb-3 d-flex justify-content-between align-items-center">
         <h4 class="mb-0">Payment Gateways</h4>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
-            <i data-feather="plus" class="icon-xs"></i> Add Gateway
-        </button>
+
+        @if (hasPermission('admin.settings.paymentGateways.store'))
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+                <i data-feather="plus" class="icon-xs"></i> Add Gateway
+            </button>
+        @endif
     </div>
 
     <div class="table-responsive">
@@ -48,10 +51,12 @@
                             @endif
                         </td>
                         <td>
-                            <button class="btn btn-light border btn-sm" data-bs-toggle="modal"
-                                data-bs-target="#editModal-{{ $gateway->id }}">
-                                <i data-feather="edit" class="icon-xs"></i> Edit
-                            </button>
+                            @if (hasPermission('admin.settings.paymentGateways.update'))
+                                <button class="btn btn-light border btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#editModal-{{ $gateway->id }}">
+                                    <i data-feather="edit" class="icon-xs"></i> Edit
+                                </button>
+                            @endif
                         </td>
                     </tr>
                 @endforeach

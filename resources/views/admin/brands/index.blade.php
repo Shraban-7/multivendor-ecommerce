@@ -29,10 +29,12 @@
                         <td>{{ $brand->name }}</td>
 
                         <td class="d-flex align-items-center gap-2">
+                            @if (hasPermission('admin.brands.toggleStatus'))
                             <button type="button" class="btn btn-sm {{ $brand->status ? 'btn-danger' : 'btn-success' }}"
                                 data-bs-toggle="modal" data-bs-target="#toggleStatusModal{{ $brand->id }}">
                                 {{ $brand->status ? 'Inactive' : 'Active' }}
                             </button>
+                            @endif
 
                             <!-- Confirmation Modal -->
                             <div class="modal fade" id="toggleStatusModal{{ $brand->id }}" tabindex="-1"
@@ -61,10 +63,13 @@
                                     </div>
                                 </div>
                             </div>
-                            <button class="btn btn-light border btn-sm" data-bs-toggle="modal"
-                                data-bs-target="#editModal-{{ $brand->id }}">
-                                <i data-feather="edit" class="icon-xs"></i> Edit
-                            </button>
+
+                            @if (hasPermission('admin.brands.update'))
+                                <button class="btn btn-light border btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#editModal-{{ $brand->id }}">
+                                    <i data-feather="edit" class="icon-xs"></i> Edit
+                                </button>
+                            @endif
                         </td>
                     </tr>
 
