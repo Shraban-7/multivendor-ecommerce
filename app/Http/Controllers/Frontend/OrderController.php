@@ -174,8 +174,6 @@ class OrderController extends Controller
     {
         $user = Auth::user();
 
-        // return $product;
-
         if ($request->isMethod('GET')) {
             return view('frontend.orders.review', compact('user', 'product'));
         }

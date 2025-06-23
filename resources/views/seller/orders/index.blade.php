@@ -31,6 +31,10 @@
                                 class="btn btn-light border btn-sm me-1">
                                 <i data-feather="clipboard" class="icon-xs"></i> Details
                             </a>
+                            <a href="{{ route('invoice', $order->id) }}" title="Details"
+                                class="btn btn-light border btn-sm me-1">
+                                <i data-feather="download" class="icon-xs"></i> Invoice
+                            </a>
                         </td>
                     </tr>
                 @endforeach

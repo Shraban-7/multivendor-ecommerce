@@ -68,7 +68,7 @@
                                 <!-- Customer Name -->
                                 <div class="space-y-2">
                                     <label for="customer-name" class="block text-sm">Customer Name</label>
-                                    <input type="text" id="customer-name" name="customer_name"
+                                    <input type="text" id="customer-name" value="{{ auth()->user()->name }}" name="customer_name"
                                         placeholder="Enter customer name"
                                         class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
                                 </div>
@@ -76,7 +76,7 @@
                                 <!-- Customer Email -->
                                 <div class="space-y-2">
                                     <label for="customer-email" class="block text-sm">Customer Email</label>
-                                    <input type="email" id="customer-email" name="customer_email"
+                                    <input type="email" id="customer-email" value="{{ auth()->user()->email }}"  name="customer_email"
                                         placeholder="customer@example.com"
                                         class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
                                 </div>
@@ -84,7 +84,7 @@
                                 <!-- Customer Phone -->
                                 <div class="space-y-2">
                                     <label for="customer-phone" class="block text-sm">Customer Phone</label>
-                                    <input type="text" id="customer-phone" name="customer_phone"
+                                    <input type="text" id="customer-phone" value="{{ auth()->user()->phone }}"  name="customer_phone"
                                         placeholder="+88012364899"
                                         class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
                                 </div>

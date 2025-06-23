@@ -109,6 +109,10 @@
                                                     class="bg-primary text-white px-3 py-2 rounded text-xs hover:opacity-90 transition">
                                                     <i class="fa-solid fa-eye mr-1"></i> View
                                                 </a>
+                                                <a href="{{ route('invoice', $order->id) }}"
+                                                    class="bg-theme-light text-black px-3 py-2 rounded text-xs hover:opacity-90 transition">
+                                                    <i class="fa-solid fa-download mr-1"></i> Invoice
+                                                </a>
                                                 @if (in_array($order->status->label(), [OrderStatus::PACKAGING->label(), OrderStatus::SHIPPED->label()]))
                                                     <a href="{{ route('orders.tracking', $order->id) }}"
                                                         class="bg-orange-500 text-white px-3 py-2 rounded text-xs hover:opacity-90 transition">

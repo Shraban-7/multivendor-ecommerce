@@ -47,4 +47,11 @@ class OrderController extends Controller
 
         return redirect()->back()->with('success', 'Order update successfully');
     }
+
+    public function invoice(Order $order)
+    {
+        $order->load('items.product','seller','user.country');
+
+        return view('seller.orders.invoice',compact('order'));
+    }
 }

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\Seller\OrderController;
 use App\Http\Controllers\Frontend\HomeController;
 
 Route::get('/', [HomeController::class,'index'])->name('home');
@@ -11,7 +12,7 @@ Route::get('/test',function(){
 
 Route::get('/states/{country_id}', [LocationController::class, 'getStatesByCountry'])->name('getStatesByCountry');
 
-
+Route::get('/invoice/{order}', [OrderController::class, 'invoice'])->name('invoice');
 
 
 

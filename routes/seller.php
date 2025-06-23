@@ -41,6 +41,7 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::get('/delivered', [OrderController::class, 'index'])->name('delivered');
         Route::get('/cancelled', [OrderController::class, 'index'])->name('cancelled');
         Route::get('/details/{order}', [OrderController::class, 'details'])->name('details');
+        Route::get('/invoice/{order}', [OrderController::class, 'invoice'])->name('invoice');
         Route::Post('/update-status/{order}', [OrderController::class, 'updateStatus'])->name('updateStatus');
     });
 
