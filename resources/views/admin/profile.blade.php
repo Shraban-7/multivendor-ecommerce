@@ -8,7 +8,7 @@
             <div class="card-body">
                 <h4>Edit Profile</h4>
                 <hr>
-                <form action="{{ route('admin.accounts.update') }}" method="POST">
+                <form action="{{ route('admin.profile') }}" method="POST">
                     @csrf
                     <div class="mb-3">
                         <label>Name</label>

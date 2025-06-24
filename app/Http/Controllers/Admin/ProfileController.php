@@ -9,15 +9,15 @@ use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
 {
-    public function profile()
+ 
+    public function profile(Request $request)
     {
         $admin = Auth::guard('admin')->user();
-        return view('admin.profile', compact('admin'));
-    }
 
-    public function update(Request $request)
-    {
-        $admin = Auth::guard('admin')->user();
+        if ($request->isMethod('GET')) {
+            return view('admin.profile', compact('admin'));
+
+        }
 
         $request->validate([
             'name'     => 'required|string',

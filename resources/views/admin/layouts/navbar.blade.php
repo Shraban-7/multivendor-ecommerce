@@ -88,7 +88,7 @@
                 </div>
                 <ul class="list-unstyled">
                     <li>
-                        <a class="dropdown-item" href="{{ route('admin.accounts.profile') }}">
+                        <a class="dropdown-item" href="{{ route('admin.profile') }}">
                             <i class="me-2 icon-xxs dropdown-item-icon"
                                 data-feather="settings"></i>Account Settings
                         </a>

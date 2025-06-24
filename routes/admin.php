@@ -87,10 +87,9 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
         Route::post('{role}/update', [PermissionController::class, 'update'])->name('update');
     });
 
-    Route::prefix('accounts')->as('accounts.')->group(function(){
-        Route::get('/',[ProfileController::class,'profile'])->name('profile');
-        Route::post('/',[ProfileController::class,'update'])->name('update');
-    });
+
+        Route::match(['get','post'],'/profile',[ProfileController::class,'profile'])->name('profile');
+
 
     Route::prefix('admins')->as('admins.')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('index');
