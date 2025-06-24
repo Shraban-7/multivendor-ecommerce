@@ -10,6 +10,7 @@ class SettingController extends Controller
     public function index()
     {
         $setting = SystemSetting::first();
+        
         return view('admin.settings.setting', compact('setting'));
     }
 
@@ -19,6 +20,7 @@ class SettingController extends Controller
             'app_name'   => 'required|string',
             'logo'       => 'nullable|image|mimes:png,jpg,jpeg,svg|max:2048',
             'logo_white' => 'nullable|image|mimes:png,jpg,jpeg,svg|max:2048',
+            'favicon' => 'nullable|image|mimes:png,ico|max:512',
         ]);
 
         $setting = SystemSetting::first();

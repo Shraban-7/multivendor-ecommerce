@@ -2,9 +2,7 @@
 @section('title', 'Edit Settings')
 @section('content')
 
-    <div class="mb-3 d-flex justify-content-between align-items-end">
-        <h4 class="mb-0">Edit Settings</h4>
-    </div>
+<h4 class="mb-3">Edit Settings</h4>
 
     <div class="row">
         <div class="col-6">
