@@ -36,8 +36,12 @@
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 mb-8">
         <!-- Company Info -->
         <div class="lg:col-span-1">
+            <?php
+                $settings = settings();
+
+            ?>
           <a href="/" class="block w-24 mb-4">
-            <img src="{{ asset('assets/frontend/images/footer-logo.png') }}" alt="Tesko Logo" class="w-full h-auto object-contain" />
+            <img src="{{ storage_url($settings->logo_white) }}" alt="Tesko Logo" class="w-full h-auto object-contain" />
           </a>
           <p class="text-black/60 mb-4">
             We have clothes that suit your style and which you're proud to wear. From women to men.

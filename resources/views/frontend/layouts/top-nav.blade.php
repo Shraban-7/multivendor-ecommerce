@@ -1,9 +1,12 @@
 <div
     class="container h-auto md:h-20 py-3 flex flex-wrap md:flex-nowrap flex-col md:flex-row md:items-center justify-between gap-2 md:gap-0">
+    <?php
+    $settings = settings();
+    ?>
     <!-- Logo and Location -->
     <div class="flex items-center justify-between md:justify-start gap-2 lg:gap-5 rtl:space-x-reverse">
         <a href="/">
-            <img src="{{ storage_url(settings()->logo) }}" class="lg:h-8 md:h-6 h-8 self-center"
+            <img src="{{ storage_url($settings->logo) }}" class="lg:h-8 md:h-6 h-8 self-center"
                 alt="Logo" />
         </a>
 
@@ -34,7 +37,7 @@
     <!-- Search Bar -->
     <div class="flex-grow md:mx-2 lg:mx-5 order-3 md:order-2">
         <div class="relative">
-            <input type="text" placeholder="Search Everything at tesko online in store"
+            <input type="text" placeholder="Search Everything at {{ $settings->app_name }} online in store"
                 class="text-sm md:text-xs lg:text-base w-full py-3 pl-4 lg:py-2 lg:pl-4 pr-10 rounded-full border border-gray-300 focus:outline-none focus:border-primary focus:ring-light-yellow font-[arial] text-theme-dark placeholder:text-theme-dark eq" />
             <button class="absolute top-1/2 right-1 transform -translate-y-1/2 bg-light-yellow p-2 rounded-full">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"

@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<?php
+$settings = settings();
+?>
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset(settings()->favicon) }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset($settings->favicon) }}">
     <!-- Tailwind CSS -->
     {{-- <script src="https://cdn.tailwindcss.com"></script> --}}
     @vite('resources/css/app.css')
@@ -14,7 +18,7 @@
     <link rel="stylesheet" href="{{ asset('assets/frontend/styles/style.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/frontend/styles/responsive.css') }}" />
 
-    <title>Login | Tesko</title>
+    <title>Login | {{ $settings->app_name }}</title>
 </head>
 
 <body>
@@ -40,56 +44,41 @@
         @endif
 
         <div class="grid grid-cols-1 md:grid-cols-2">
-            <div class="login-form-sec section-padding px-5 md:px-10 2xl:px-20">
-
-                <div class="welcome-text space-y-2 mt-3 sm:mt-5 lg:w-9/w-12 2xl:w-4/5 mx-auto">
+            <div class="login-form-sec section-padding px-5 md:px-10 2xl:px-20 flex flex-col sm:mx-15 mx-10">
+                <div class="welcome-text space-y-2 mt-3 sm:mt-5 lg:w-9/w-12 2xl:w-4/5">
                     <div class="w-24 h-10 sm:w-32 sm:h-12">
                         <a href="{{ route('home') }}">
-                            <img src="{{ storage_url(settings()->logo_white) }}" alt="Tesko Logo"
+                            <img src="{{ storage_url($settings->logo_white) }}" alt="Logo"
                                 class="object-contain w-full h-full" />
                         </a>
                     </div>
                     <h1
                         class="text-2xl xsm:text-3xl sm:text-4xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-black !leading-tight">
-                        Hay, <br />Welcome Back!
+                        Welcome Back!
                     </h1>
                     <p class="font-medium text-davy-gray/60">
                         We are very happy to see you back!
                     </p>
                 </div>
 
-                <div class="login-form mt-3 sm:mt-5 lg:w-9/w-12 2xl:w-4/5 mx-auto">
+                <div class="login-form mt-3 sm:mt-5 lg:w-9/w-12 2xl:w-4/5">
                     <form action="{{ route('login') }}" method="POST"
                         class="w-full flex flex-col gap-4 sm:gap-5 mb-3 md:mb-4">
                         @csrf
                         <div class="form-ctrl space-y-1 sm:space-y-2">
                             <label class="block text-sm" for="email">Email</label>
                             <input required id="email" type="email" name="email" value="{{ old('email') }}"
-                                placeholder="tescocommunity@gmail.com"
                                 class="eq w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[1] focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
                         </div>
                         <div class="form-ctrl space-y-1 sm:space-y-2">
                             <label class="block text-sm" for="password">Password</label>
-                            <input required type="password" id="password" name="password" placeholder="•••••••••••••"
+                            <input required type="password" id="password" name="password"
                                 class="eq w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[1] focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
                         </div>
-
-                        <div class="flex items-start text-davy-gray/80">
-                            <input required id="terms" type="checkbox"
-                                class="h-4 w-4 text-light-yellow focus:ring-light-yellow border-gray-300 rounded" />
-                            <label for="terms" class="ml-2 text-sm">By signing up, you agree to
-                                <a href="#" class="text-butterfly-blue hover:underline eq">Terms</a>
-                                and
-                                <a href="#" class="text-butterfly-blue hover:underline eq">Privacy
-                                    Policy</a>.</label>
-                        </div>
-
                         <div class="flex items-start text-davy-gray/80">
                             <input id="remember" type="checkbox"
                                 class="h-4 w-4 text-light-yellow focus:ring-light-yellow border-gray-300 rounded" />
-                            <label for="remember" class="ml-2 text-sm">Remember Me as a
-                                <a href="#" class="text-butterfly-blue hover:underline eq">Tesko Member</a>.
-                            </label>
+                            <label for="remember" class="ml-2 text-sm">Remember Me</label>
                         </div>
 
                         <button type="submit"
@@ -124,13 +113,13 @@
                         <p class="text-jet-gray/80">
                             New to our marketplace?
                             <a href="{{ route('signup') }}" class="text-primary hover:underline">
-                                Sign up as a User!
+                                Sign Up Here
                             </a>
                         </p>
                         <p class="text-jet-gray/80">
                             Own a store or want to sell products?
                             <a href="{{ route('seller.signup') }}" class="text-primary hover:underline">
-                                Become a Seller!
+                                Become a Seller
                             </a>
                         </p>
                     </div>

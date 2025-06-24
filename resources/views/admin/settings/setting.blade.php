@@ -12,6 +12,10 @@
                 <form id="form" action="{{ route('admin.settings.update') }}" enctype="multipart/form-data" method="POST">
                     @csrf
                     <div class="row">
+                        <div class="col-12 mb-3">
+                            <label class="form-label">App Name</label>
+                            <input type="text" name="app_name" class="form-control mt-2" value="{{ old('app_name',$setting->app_name) }}">
+                        </div>
                         <div class="mb-3 col-12">
                             @if (!empty($setting->favicon))
                                 <div class="mb-2">

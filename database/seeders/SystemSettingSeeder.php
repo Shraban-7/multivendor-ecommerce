@@ -11,8 +11,10 @@ class SystemSettingSeeder extends Seeder
     public function run(): void
     {
         SystemSetting::create([
-            'logo' => 'assets/frontend/images/tesko-logo.png',
-            'favicon' => 'assets/frontend/images/favicon.ico',
+            'app_name'=> 'Slash Mart',
+            'logo' => '/logo/tesko-logo.png',
+            'logo_white' => '/logo/tesko-login-logo.png',
+            'favicon' => 'favicon/favicon.ico',
             'apk_version' => '1.0.0',
         ]);
     }

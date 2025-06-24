@@ -1,7 +1,10 @@
 <nav class="navbar-vertical navbar">
+    <?php
+    $settings = settings();
+    ?>
     <div class="nav-scroller">
         <a class="navbar-brand d-flex" href="/">
-            <img src="{{ storage_url(settings()->logo) }}" alt="logo" />
+            <img src="{{ storage_url($settings->logo) }}" alt="logo" />
             {{-- <h5 class="text-white ms-5 ">Ecommerce</h5> --}}
         </a>
         <ul class="navbar-nav flex-column" id="sideNavbar">

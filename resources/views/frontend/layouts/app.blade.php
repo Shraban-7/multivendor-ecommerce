@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<?php
+$settings = settings();
+?>
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset(settings()->favicon) }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset($settings->favicon) }}">
     <!-- Link jQuery -->
     <script src="{{ asset('assets/libs/jquery/jquery-3.7.1.min.js') }}"></script>
     @vite('resources/css/app.css')
@@ -17,7 +21,7 @@
     <!-- Link Swiper's CSS -->
     <link rel="stylesheet" href="{{ asset('assets/libs/swiper/css/swiper-bundle.min.css') }}" />
 
-    <title>Tesko | @yield('title')</title>
+    <title>@yield('title') | {{ $settings->app_name }}</title>
 </head>
 
 <body>

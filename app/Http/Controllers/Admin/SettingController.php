@@ -16,7 +16,9 @@ class SettingController extends Controller
     public function update(Request $request)
     {
         $data = $request->validate([
-            'logo'    => 'nullable|image|mimes:png,jpg,jpeg,svg|max:2048',
+            'app_name'   => 'required|string',
+            'logo'       => 'nullable|image|mimes:png,jpg,jpeg,svg|max:2048',
+            'logo_white' => 'nullable|image|mimes:png,jpg,jpeg,svg|max:2048',
         ]);
 
         $setting = SystemSetting::first();
@@ -44,15 +46,14 @@ class SettingController extends Controller
                 delete_file(public_path($setting->favicon));
             }
 
-            $favicon = $request->file('favicon');
+            $favicon  = $request->file('favicon');
             $filename = uniqid() . '.' . $favicon->getClientOriginalExtension();
-            $path = 'favicon';
+            $path     = 'favicon';
 
             $favicon->move(public_path($path), $filename);
 
             $data['favicon'] = $path . '/' . $filename;
         }
-
 
         $setting->fill($data);
         $setting->save();

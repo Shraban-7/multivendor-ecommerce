@@ -8,7 +8,7 @@
             <!-- Header -->
             <div class="text-center space-y-2">
                 <h1 class="text-3xl font-bold text-gray-900">Create Your Account</h1>
-                <p class="text-gray-600 text-sm">Join the Tesko Community and unlock exclusive features.</p>
+                <p class="text-gray-600 text-sm">Join Our Community and unlock exclusive features.</p>
             </div>
 
             <!-- Form -->
@@ -49,7 +49,7 @@
                 <div class="flex items-start text-sm text-gray-700">
                     <input type="checkbox" id="terms" required
                         class="h-4 w-4 text-light-yellow focus:ring-light-yellow border-gray-300 rounded" />
-                    <label for="terms" class="ml-2">I agree to Tesko's
+                    <label for="terms" class="ml-2">I agree to the
                         <a href="#" class="text-butterfly-blue hover:underline">Terms</a>
                         and
                         <a href="#" class="text-butterfly-blue hover:underline">Privacy Policy</a>.
@@ -58,7 +58,7 @@
 
                 <!-- Submit Button -->
                 <button type="submit"
-                    class="w-full py-2 text-white bg-light-yellow rounded-lg hover:bg-yellow-400 transition-all text-sm font-medium shadow-sm">
+                    class="text-white bg-butterfly-blue py-2 md:py-3 w-full rounded-lg hover:bg-light-yellow eq">
                     Register
                 </button>
             </form>
