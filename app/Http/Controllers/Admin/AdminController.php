@@ -60,7 +60,7 @@ class AdminController extends Controller
             'name' => 'nullable|string',
             'role_id' => 'required|numeric|exists:roles,id',
             'email' => 'required|email|unique:admins,email,' . $admin->id,
-            'password' => 'required|confirmed|string|min:6',
+            'password' => 'nullable|confirmed|string|min:6',
         ]);
 
         $password = $request->password != '' ? Hash::make($request->password) : $admin->password;

@@ -1,29 +1,19 @@
 @extends('admin.layouts.app')
-@section('title', 'Add Admin')
+@section('title', 'Edit Profile')
 @section('content')
 
 <div class="row">
     <div class="col-md-6">
         <div class="card">
             <div class="card-body">
-                <h4>Edit Admin</h4>
+                <h4>Edit Profile</h4>
                 <hr>
-                <form action="{{ route('admin.admins.update', $admin->id) }}" method="POST">
+                <form action="{{ route('admin.accounts.update') }}" method="POST">
                     @csrf
                     <div class="mb-3">
                         <label>Name</label>
                         <input type="text" name="name" class="form-control" value="{{ $admin->name }}" required>
                     </div>
-                    @if($admin->name != 'Super Admin')
-                    <div class="mb-3">
-                        <label>Role</label>
-                        <select name="role_id" class="form-select" required>
-                            @foreach ($roles as $role)
-                            <option value="{{ $role->id }}" @selected($admin->role_id == $role->id)>{{ $role->title }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    @endif
                     <div class="mb-3">
                         <label>Email</label>
                         <input type="email" name="email" class="form-control" value="{{ $admin->email }}" required>

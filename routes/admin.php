@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\PromoPosterController;
 use App\Http\Controllers\Admin\SubcategoryController;
 use App\Http\Controllers\Admin\PaymentGatewayController;
 use App\Http\Controllers\Admin\ProductAttributeController;
+use App\Http\Controllers\Admin\ProfileController;
 
 Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -84,6 +85,11 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
         Route::post('/store', [PermissionController::class, 'store'])->name('store');
         Route::get('{role}/edit', [PermissionController::class, 'edit'])->name('edit');
         Route::post('{role}/update', [PermissionController::class, 'update'])->name('update');
+    });
+
+    Route::prefix('accounts')->as('accounts.')->group(function(){
+        Route::get('/',[ProfileController::class,'profile'])->name('profile');
+        Route::post('/',[ProfileController::class,'update'])->name('update');
     });
 
     Route::prefix('admins')->as('admins.')->group(function () {
