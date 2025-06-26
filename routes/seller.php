@@ -8,6 +8,7 @@ use App\Http\Controllers\Seller\OrderController;
 use App\Http\Controllers\Seller\ProductAttributeController;
 use App\Http\Controllers\Seller\ProductController;
 use App\Http\Controllers\Seller\ProductVariantController;
+use App\Http\Controllers\Seller\SellerCampaignController;
 use App\Http\Controllers\Seller\SellerController;
 use App\Http\Controllers\Seller\SettingController;
 
@@ -52,6 +53,16 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
     Route::prefix('product-variants')->as('productVariants.')->group(function () {
         Route::post('{product}/store', [ProductVariantController::class, 'store'])->name('store');
         Route::post('{variant}/delete', [ProductVariantController::class, 'destroy'])->name('delete');
+    });
+
+    Route::prefix('campaigns')->as('campaigns.')->group(function () {
+        Route::get('/', [SellerCampaignController::class, 'index'])->name('index');
+        Route::get('/create', [SellerCampaignController::class, 'create'])->name('create');
+        Route::post('/store', [SellerCampaignController::class, 'store'])->name('store');
+        Route::get('{campaign}/edit', [SellerCampaignController::class, 'edit'])->name('edit');
+        Route::get('{campaign}/show', [SellerCampaignController::class, 'show'])->name('show');
+        Route::post('{campaign}/update', [SellerCampaignController::class, 'update'])->name('update');
+        Route::post('{campaign}/delete', [SellerCampaignController::class, 'delete'])->name('delete');
     });
 
     Route::prefix('settings')->as('settings.')->group(function () {
