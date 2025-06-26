@@ -57,6 +57,13 @@ $settings = settings();
                 </x-dashboard.nav-item-link>
             @endif
 
+            {{-- @if (hasPermission('admin.orders.index')) --}}
+            <x-dashboard.nav-item-link :route="'admin.orders.index'">
+                <i data-feather="shopping-cart" class="nav-icon icon-xs me-2"></i> Orders
+            </x-dashboard.nav-item-link>
+
+            {{-- @endif --}}
+
             @if (hasPermission('admin.reviews.index'))
                 <x-dashboard.nav-item-link :route="'admin.reviews.index'">
                     <i data-feather="layers" class="nav-icon icon-xs me-2"></i>Reviews

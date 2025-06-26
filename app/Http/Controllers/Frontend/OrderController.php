@@ -1,18 +1,18 @@
 <?php
-
 namespace App\Http\Controllers\Frontend;
 
-use App\Models\Cart;
-use App\Models\Order;
+use App\Enums\CommissionType;
 use App\Enums\OrderStatus;
-use Illuminate\Http\Request;
-use App\Models\CustomerAddress;
 use App\Http\Controllers\Controller;
+use App\Models\Cart;
+use App\Models\CustomerAddress;
+use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\Review;
 use App\Models\ReviewImage;
 use App\Models\Seller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
@@ -39,16 +39,15 @@ class OrderController extends Controller
             'images',
             'seller',
             'variants.option.product_attribute',
-            'reviews.user'
+            'reviews.user',
         ])->inRandomOrder()->limit(8)->get();
 
         $products = $interest_products->map(fn($product) => $product->toDetailsArray());
 
-
         return view('frontend.orders.index', [
-            'orders' => $orders,
-            'status' => $statusLabel,
-            'products' => $products
+            'orders'   => $orders,
+            'status'   => $statusLabel,
+            'products' => $products,
         ]);
     }
 
@@ -66,43 +65,43 @@ class OrderController extends Controller
         $selectedSellerId = $request->input('seller_id');
 
         $seller = Seller::find($selectedSellerId);
-        $cart = Cart::where('user_id', $user->id)
+        $cart   = Cart::where('user_id', $user->id)
             ->where('seller_id', $selectedSellerId)
             ->with('cart_items.product')
             ->first();
 
-        if (!$cart) {
+        if (! $cart) {
             return response()->json([
-                'status' => false,
+                'status'  => false,
                 'message' => 'No cart found for the selected seller.',
             ], 404);
         }
 
-        $total = 0;
-        $discount = 0;
-        $tax = 0;
-        $orderItems = [];
+        $total        = 0;
+        $discount     = 0;
+        $tax          = 0;
+        $orderItems   = [];
         $shipping_fee = $seller->shipping_cost;
 
         foreach ($cart->cart_items as $cartItem) {
-            $product = $cartItem->product;
-            $variant = $cartItem->variant;
-            $unitPrice = $cartItem->price;
-            $itemTotal = $cartItem->quantity * $unitPrice;
+            $product      = $cartItem->product;
+            $variant      = $cartItem->variant;
+            $unitPrice    = $cartItem->price;
+            $itemTotal    = $cartItem->quantity * $unitPrice;
             $itemDiscount = $cartItem->quantity * $product->discount;
             $tax += floatval($product->tax) * $cartItem->quantity;
             $total += $itemTotal;
             $discount += $itemDiscount;
 
             $orderItems[] = [
-                'product_id' => $product->id,
-                'product_variant_ids' => json_encode($cartItem->product_variant_ids ?? []),
+                'product_id'            => $product->id,
+                'product_variant_ids'   => json_encode($cartItem->product_variant_ids ?? []),
                 'product_variant_price' => $cartItem->price,
-                'buying_price' => $product->buying_price,
-                'unit_price' => $unitPrice,
-                'quantity' => $cartItem->quantity,
-                'discount' => $itemDiscount,
-                'sub_total' => $itemTotal
+                'buying_price'          => $product->buying_price,
+                'unit_price'            => $unitPrice,
+                'quantity'              => $cartItem->quantity,
+                'discount'              => $itemDiscount,
+                'sub_total'             => $itemTotal
             ];
 
             if ($variant) {
@@ -118,23 +117,39 @@ class OrderController extends Controller
             return view('frontend.pages.checkout', compact('user', 'customer_addresses', 'selectedSellerId', 'total', 'discount', 'tax', 'shipping_fee'));
         }
 
+        $seller = Seller::where('id', $selectedSellerId)->first();
+
+        $total_commission = 0;
+
+
+        if ($seller->commission_amount != null && $seller->commission_type != null) {
+            if ($seller->commission_type === CommissionType::PERCENTAGE->value) {
+                $total_commission = ($total + $tax + $shipping_fee) * ($seller->commission_amount / 100);
+            } else if($seller->commission_type === CommissionType::FLAT->value) {
+                $total_commission = $seller->commission_amount;
+            }
+        }
+
         $order = Order::create([
-            'user_id' => $user->id,
-            'seller_id' => $selectedSellerId,
-            'customer_name' => $request->input('customer_name', $user->name),
-            'customer_email' => $request->input('customer_email', $user->email),
-            'customer_phone' => $request->input('customer_phone'),
-            'customer_address' => $request->input('address'),
-            'invoice_id' => strtoupper(uniqid()),
-            'sub_total' => $total + $discount,
-            'total' => $total + $tax + $shipping_fee,
-            'discount' => $discount,
-            'tax' => $tax,
-            'shipping_fee' => $shipping_fee,
-            'payable' => $total + $shipping_fee + $tax,
-            'due' => $total + $shipping_fee + $tax,
-            'status' => OrderStatus::PENDING->value,
-            'delivery_status' => OrderStatus::ORDER_PLACED->value
+            'user_id'           => $user->id,
+            'seller_id'         => $selectedSellerId,
+            'customer_name'     => $request->input('customer_name', $user->name),
+            'customer_email'    => $request->input('customer_email', $user->email),
+            'customer_phone'    => $request->input('customer_phone'),
+            'customer_address'  => $request->input('address'),
+            'invoice_id'        => strtoupper(uniqid()),
+            'sub_total'         => $total + $discount,
+            'total'             => $total + $tax + $shipping_fee,
+            'discount'          => $discount,
+            'tax'               => $tax,
+            'shipping_fee'      => $shipping_fee,
+            'payable'           => $total + $shipping_fee + $tax,
+            'due'               => $total + $shipping_fee + $tax,
+            'commission_type'   => $seller->commission_type,
+            'commission_amount' => $seller->commission_amount,
+            'total_commission'  => $total_commission,
+            'status'            => OrderStatus::PENDING->value,
+            'delivery_status'   => OrderStatus::ORDER_PLACED->value,
         ]);
 
         $order->items()->createMany($orderItems);
@@ -149,13 +164,13 @@ class OrderController extends Controller
         $sellerOrderCount = OrderItem::whereIn('order_id', $sellerOrderIds)->count();
 
         $seller->update([
-            'total_sold' => $sellerOrderCount
+            'total_sold' => $sellerOrderCount,
         ]);
 
         return response()->json([
-            'status' => true,
+            'status'  => true,
             'message' => 'Order placed successfully!',
-            'order' => $order,
+            'order'   => $order,
         ]);
     }
 
@@ -179,10 +194,10 @@ class OrderController extends Controller
         }
 
         $request->validate([
-            'rating' => 'required|integer|min:1|max:5',
+            'rating'      => 'required|integer|min:1|max:5',
             'description' => 'required|string',
-            'images' => 'nullable|array',
-            'images.*' => 'mimes:jpeg,png,jpg,gif,pdf,doc,docx,zip|max:4000',
+            'images'      => 'nullable|array',
+            'images.*'    => 'mimes:jpeg,png,jpg,gif,pdf,doc,docx,zip|max:4000',
         ]);
 
         $review_exist = Review::where('product_id', $product->id)->where('user_id', $user->id)->first();
@@ -191,19 +206,18 @@ class OrderController extends Controller
             return redirect()->back();
         }
 
-
         $review = Review::create([
-            'product_id' => $product->id,
-            'user_id' => $user->id,
-            'rating' => $request->rating,
-            'description' => $request->description
+            'product_id'  => $product->id,
+            'user_id'     => $user->id,
+            'rating'      => $request->rating,
+            'description' => $request->description,
         ]);
 
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $file) {
                 ReviewImage::create([
                     'review_id' => $review->id,
-                    'image' => upload_file($file, 'images/reviews')
+                    'image'     => upload_file($file, 'images/reviews'),
                 ]);
             }
         }

@@ -28,6 +28,7 @@ class SellerController extends Controller
         $data['delivered_orders'] = Order::delivered()->where('seller_id', $seller->id)->count();
         $data['total_revenue'] = Order::delivered()->where('seller_id', $seller->id)->sum('total');
         $data['total_customers'] = Order::where('seller_id', $seller->id)->distinct('user_id')->count('user_id');
+        $data['total_commission'] = Order::where('seller_id', $seller->id)->sum('total_commission');
         $data['products'] = Product::where('seller_id',$seller->id)->paginate(102);
         $data['seller'] = $seller;
         return view('admin.sellers.profile',$data);
@@ -39,5 +40,18 @@ class SellerController extends Controller
         $seller->save();
 
         return redirect()->back()->with('success','Best seller updated successfully');
+    }
+
+    public function update(Seller $seller, Request $request)
+    {
+        $data = $request->validate([
+            'commission_type' => 'required|string|in:flat,percentage',
+            'commission_amount' => 'required|numeric',
+            'is_active'=>'required'
+        ]);
+
+        $seller->update($data);
+
+        return redirect()->back()->with('success','Seller update successfully');
     }
 }

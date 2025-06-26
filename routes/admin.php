@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\HeroBannerController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\SocialLinkController;
 use App\Http\Controllers\Admin\PromoPosterController;
@@ -33,13 +34,17 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
 
     Route::prefix('sellers')->as('sellers.')->group(function () {
         Route::get('/', [SellerController::class, 'index'])->name('index');
-        Route::get('/update', [SellerController::class, 'update'])->name('update');
+        Route::post('{seller}/update', [SellerController::class, 'update'])->name('update');
         Route::post('{seller}/best-seller', [SellerController::class, 'best_seller'])->name('best_seller');
         Route::get('{seller:username}/profile', [SellerController::class, 'profile'])->name('profile');
     });
 
     Route::prefix('products')->as('products.')->group(function () {
         Route::get('/', [ProductController::class, 'index'])->name('index');
+    });
+
+    Route::prefix('orders')->as('orders.')->group(function () {
+        Route::get('/', [OrderController::class, 'index'])->name('index');
     });
 
     Route::prefix('product-attributes')->as('productAttributes.')->group(function () {

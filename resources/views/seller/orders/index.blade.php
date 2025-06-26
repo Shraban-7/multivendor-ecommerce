@@ -15,17 +15,26 @@
                     <th scope="col">Customer</th>
                     <th scope="col">Subtotal</th>
                     <th scope="col">Due</th>
+                    <th scope="col">Commission</th>
                     <th scope="col">Action</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($orders as $order)
                     <tr>
-                        <td> {{ $order->id }}</td>
+                        <td> {{ $order->invoice_id }}</td>
                         <td>{{ \Carbon\Carbon::parse($order->created_at)->format('d-m-Y h:i A') }}</td>
                         <td> {{ $order->user->name }} </td>
-                        <td> <span class="text-dark">{{ $order->payable }}</span> </td>
-                        <td> <span class="text-danger"> {{ $order->due }}</span> </td>
+                        <td> <span class="text-dark">{{ money($order->payable) }}</span> </td>
+                        <td> <span class="text-danger"> {{ money($order->due) }}</span> </td>
+                        <td>
+                            @if ($order->total_commission != null)
+                                {{  money( $order->total_commission ) }}
+                                @if($order->commission_type == \App\Enums\CommissionType::PERCENTAGE->value)
+                                    ({{ $order->commission_amount }} %)
+                                @endif
+                            @endif
+                        </td>
                         <td>
                             <a href="{{ route('seller.orders.details', $order->id) }}" title="Details"
                                 class="btn btn-light border btn-sm me-1">

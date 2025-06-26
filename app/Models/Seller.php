@@ -26,6 +26,11 @@ class Seller extends Authenticatable
         'password' => 'hashed',
     ];
 
+    public function scopeActive($query)
+    {
+        return $query->where('is_active',1);
+    }
+
     public function orders()
     {
         return $this->hasMany(Order::class, 'seller_id');

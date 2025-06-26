@@ -39,7 +39,12 @@ return new class extends Migration
             $table->bigInteger('total_followers')->default(0);
             $table->bigInteger('total_sold')->default(0);
             $table->bigInteger('total_items')->default(0);
-            $table->decimal('shipping_cost', 10, 2)->nullable();
+            $table->decimal('shipping_cost', 6, 2)->nullable();
+
+            $table->string('commission_type')->nullable();
+            $table->decimal('commission_amount', 6, 1)->nullable();
+
+            $table->boolean('is_active')->default(0);
 
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();

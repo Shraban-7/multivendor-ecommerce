@@ -15,6 +15,7 @@
                     <th scope="col">Country</th>
                     <th scope="col">Phone</th>
                     <th scope="col">Email</th>
+                    <th scope="col">Status</th>
                     <th scope="col">Action</th>
                 </tr>
             </thead>
@@ -40,6 +41,9 @@
                         <td> {{ $seller->country->name }} </td>
                         <td>{{ $seller->country->phone_code }} {{ $seller->phone }} </td>
                         <td> {{ $seller->email }} </td>
+                        <td> <span
+                                class="badge text-bg-{{ $seller->is_active == 1 ? 'success' : 'warning' }}">{{ $seller->is_active == 1 ? 'Active' : 'In Active' }}</span>
+                        </td>
 
                         <td>
                             <div>
@@ -51,7 +55,8 @@
                                     </button>
                                 @endif
                                 <button class="btn btn-light border  btn-sm mb-1" data-bs-toggle="modal"
-                                    data-bs-target=""><i data-feather="edit" class="icon-xs"></i> Edit
+                                    data-bs-target="#editModal-{{ $seller->id }}"><i data-feather="edit"
+                                        class="icon-xs"></i> Edit
                                 </button>
                                 <button class="btn btn-danger border btn-sm me-1 mb-1" data-bs-toggle="modal"
                                     data-bs-target="">
@@ -89,6 +94,70 @@
                                             class="btn {{ $seller->is_best_seller ? 'btn-danger' : 'btn-success' }}">
                                             Yes, {{ $seller->is_best_seller ? 'Remove' : 'Set' }}
                                         </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Edit Modal -->
+                    <div class="modal fade" id="editModal-{{ $seller->id }}" tabindex="-1"
+                        aria-labelledby="editModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content rounded-3">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editModalLabel">Edit Information</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+
+                                <form action="{{ route('admin.sellers.update', $seller->id) }}" method="POST">
+                                    @csrf
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label for="commission" class="form-label">Commission</label>
+                                            <div class="input-group">
+                                                <!-- Commission Type Select -->
+                                                <select name="commission_type" id="commission_type" class="form-select"
+                                                    style="max-width: 140px;">
+                                                    <option value="" disabled
+                                                        {{ $seller->commission_type === null ? 'selected' : '' }}>Type
+                                                    </option>
+                                                    <option value="{{ \App\Enums\CommissionType::FLAT->value }}"
+                                                        {{ \App\Enums\CommissionType::FLAT->value == $seller->commission_type ? 'selected' : '' }}>
+                                                        {{ ucfirst(\App\Enums\CommissionType::FLAT->label()) }}
+                                                    </option>
+                                                    <option value="{{ \App\Enums\CommissionType::PERCENTAGE->value }}"
+                                                        {{ \App\Enums\CommissionType::PERCENTAGE->value == $seller->commission_type ? 'selected' : '' }}>
+                                                        {{ ucfirst(\App\Enums\CommissionType::PERCENTAGE->label()) }}
+                                                    </option>
+                                                </select>
+
+                                                <!-- Commission Amount Input -->
+                                                <input type="number" name="commission_amount" id="commission_amount"
+                                                    class="form-control" placeholder="Amount"
+                                                    value="{{ $seller->commission_amount }}">
+                                            </div>
+                                        </div>
+
+
+                                        <div class="mb-3">
+                                            <label for="edit-name" class="form-label">Status</label>
+                                            <select name="is_active" id="is_active" class="form-select">
+                                                <option value="0" {{ $seller->is_active == 0 ? 'selected' : '' }}>In
+                                                    Active</option>
+                                                <option value="1" {{ $seller->is_active == 1 ? 'selected' : '' }}>
+                                                    Active
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Cancel</button>
+                                        <button type="submit" class="btn btn-primary">Update</button>
                                     </div>
                                 </form>
                             </div>

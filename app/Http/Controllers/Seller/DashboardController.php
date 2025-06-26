@@ -1,12 +1,12 @@
 <?php
 namespace App\Http\Controllers\Seller;
 
-use App\Models\Order;
-use App\Models\Product;
-use App\Models\OrderItem;
 use App\Enums\OrderStatus;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\Product;
+use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
@@ -27,17 +27,21 @@ class DashboardController extends Controller
         $orders = Order::selectRaw('DATE(orders.created_at) as label, COUNT(orders.id) as order_count, SUM(orders.payable) as sale, SUM(order_items.buying_price) as buying_price')
             ->join('order_items', 'orders.id', '=', 'order_items.order_id')
             ->where('orders.seller_id', $sellerId)
-            ->where('orders.status',OrderStatus::DELIVERED->value)
+            ->where('orders.status', OrderStatus::DELIVERED->value)
             ->whereDate('orders.created_at', '>=', $startDate)
             ->whereDate('orders.created_at', '<=', $endDate)
             ->groupBy('label')
             ->orderBy('label')
             ->get();
 
-        $orderIds = Order::where('seller_id', $sellerId)->delivered()->pluck('id');
+        $orderIds = Order::where('seller_id', $sellerId)
+            ->whereDate('created_at', '>=', $startDate)
+            ->whereDate('created_at', '<=', $endDate)
+            ->delivered()
+            ->pluck('id');
 
         $orderItemProductIds = OrderItem::whereIn('order_id', $orderIds)->pluck('product_id');
-        $TotalBuyingPrice    = OrderItem::whereIn('order_id', $orderIds)->sum('buying_price');
+        $TotalBuyingPrice = OrderItem::whereIn('order_id', $orderIds)->sum('buying_price');
 
         $profit = (clone $ordersQuery)->delivered()->sum('payable') - $TotalBuyingPrice;
 
@@ -57,6 +61,11 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
+        $total_commission = Order::where('seller_id', $sellerId)
+            ->whereDate('created_at', '>=', $startDate)
+            ->whereDate('created_at', '<=', $endDate)
+            ->sum('total_commission');
+
         return view('seller.dashboard', [
             'total_products'       => Product::where('seller_id', $sellerId)->count(),
             'total_orders'         => (clone $ordersQuery)->count(),
@@ -70,6 +79,7 @@ class DashboardController extends Controller
             'top_selling_products' => $top_selling_products,
             'latest_orders'        => (clone $ordersQuery)->latest()->limit(20)->get(),
             'chartData'            => $chartData,
+            'total_commission'     => $total_commission,
         ]);
     }
 }

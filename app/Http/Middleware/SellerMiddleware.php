@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Middleware;
 
 use Closure;
@@ -16,7 +15,9 @@ class SellerMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::guard('seller')->check()) {
+        $user = Auth::guard('seller')->user();
+
+        if (! $user || $user->is_active != 1) {
             return redirect('/login');
         }
 

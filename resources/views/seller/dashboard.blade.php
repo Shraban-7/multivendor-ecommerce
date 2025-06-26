@@ -21,6 +21,20 @@
                     <div class="card h-100 card-lift">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-semi-bold">Total Orders</span>
+                                <i data-feather="shopping-cart" class="text-success"></i>
+                            </div>
+                            <div class="mt-2 mb-2">
+                                <h3 class="fw-bold mb-0">{{ $total_orders }}</h3>
+                            </div>
+                            <small>Orders received</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 card-lift">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
                                 <span class="fw-semi-bold">Pending Orders</span>
                                 <i data-feather="clock" class="text-warning"></i>
                             </div>
@@ -45,20 +59,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col">
-                    <div class="card h-100 card-lift">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="fw-semi-bold">Shipped Orders</span>
-                                <i data-feather="truck" class="text-primary"></i>
-                            </div>
-                            <div class="mt-2 mb-2">
-                                <h3 class="fw-bold mb-0">{{ $shipped_orders }}</h3>
-                            </div>
-                            <a href="{{ route('seller.orders.shipped') }}"><small>View Orders</small> </a>
-                        </div>
-                    </div>
-                </div>
+
                 <div class="col">
                     <div class="card h-100 card-lift">
                         <div class="card-body">
@@ -91,22 +92,8 @@
                     <div class="card h-100 card-lift">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="fw-semi-bold">Total Orders</span>
-                                <i data-feather="shopping-cart" class="text-success"></i>
-                            </div>
-                            <div class="mt-2 mb-2">
-                                <h3 class="fw-bold mb-0">{{ $total_orders }}</h3>
-                            </div>
-                            <small>Orders received</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card h-100 card-lift">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="fw-semi-bold">Total Sales</span>
-                                <span class="text-success text-xxl font-semibold">৳</span>
+                                <span class="fw-semi-bold">Total Earning</span>
+                                <span class="text-success text-xxl font-semibold">{{ currency() }}</span>
                             </div>
                             <div class="mt-2 mb-2">
                                 <h3 class="fw-bold mb-0">{{ money($total_sales) }}</h3>
@@ -120,13 +107,27 @@
                     <div class="card h-100 card-lift">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="fw-semi-bold">Total Sales</span>
-                                <span class="text-success text-xxl font-semibold">৳</span>
+                                <span class="fw-semi-bold">Total Profit</span>
+                                <span class="text-success text-xxl font-semibold">{{ currency() }}</span>
                             </div>
                             <div class="mt-2 mb-2">
                                 <h3 class="fw-bold mb-0">{{ money($profit) }}</h3>
                             </div>
                             <small>Total profit from sales</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 card-lift">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-semi-bold">Total Commission</span>
+                                <span class="text-success text-xxl font-semibold">{{ currency() }}</span>
+                            </div>
+                            <div class="mt-2 mb-2">
+                                <h3 class="fw-bold mb-0">{{ money($total_commission) }}</h3>
+                            </div>
+                            <small>Total commission from sales</small>
                         </div>
                     </div>
                 </div>

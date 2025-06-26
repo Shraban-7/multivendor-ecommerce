@@ -1,12 +1,11 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Models\Seller;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
+use App\Models\Seller;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
@@ -17,17 +16,17 @@ class LoginController extends Controller
             return view('frontend.auth.login');
         }
 
-        $user = User::where('email', $request->email)->first();
+        $user   = User::where('email', $request->email)->first();
         $seller = Seller::where('email', $request->email)->first();
-        $admin = Admin::where('email', $request->email)->first();
+        $admin  = Admin::where('email', $request->email)->first();
 
-        if (!$user && !$seller && !$admin) {
+        if (! $user && ! $seller && ! $admin) {
             return redirect()->back()->with('error', 'Incorrect email!');
         }
 
         if ($user) {
             session(['url.intended' => url()->previous()]);
-            if (!Auth::attempt($request->only('email', 'password'))) {
+            if (! Auth::attempt($request->only('email', 'password'))) {
                 return redirect()->back()->with('error', 'Incorrect password!');
             }
 
@@ -37,18 +36,22 @@ class LoginController extends Controller
         }
 
         if ($seller) {
-            if (!Auth::guard('seller')->attempt($request->only('email', 'password'))) {
+            if ($seller->is_active != 1) {
+                return redirect()->back()->with('warning', 'Wait for admin approval');
+            }
+
+            if (! Auth::guard('seller')->attempt($request->only('email', 'password'))) {
                 return redirect()->back()->with('error', 'Incorrect password!');
             }
 
             $request->session()->regenerate();
             session()->flash('success', 'Login successful');
 
-            return redirect()->route('seller.dashboard')->with('success','You successfully login');
+            return redirect()->route('seller.dashboard')->with('success', 'You successfully login');
         }
 
         if ($admin) {
-            if (!Auth::guard('admin')->attempt($request->only('email', 'password'))) {
+            if (! Auth::guard('admin')->attempt($request->only('email', 'password'))) {
                 return redirect()->back()->with('error', 'Incorrect password!');
             }
 

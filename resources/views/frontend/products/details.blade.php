@@ -155,9 +155,6 @@
                                 <h6 id="old-price{{ $product['id'] }}" class="line-through text-jet-gray">
                                     {{ money($product['price']) }}
                                 </h6>
-                                <span class="text-xs px-2.5 py-0.5 rounded-lg border border-primary discount-badge">
-                                    -{{ $product['discount']['amount'] }} last 2 days
-                                </span>
                                 @if ($product['almost_sold_out'])
                                     <span class="text-xs text-leaf-green">Almost Sold Out</span>
                                 @endif

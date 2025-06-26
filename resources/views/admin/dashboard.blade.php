@@ -37,20 +37,6 @@
                 <div class="card h-100 card-lift">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
-                            <span class="fw-semi-bold">Shipped Orders</span>
-                            <i data-feather="truck" class="text-primary"></i>
-                        </div>
-                        <div class="mt-2 mb-2">
-                            <h3 class="fw-bold mb-0">{{ $shipped_orders }}</h3>
-                        </div>
-                        <a href="#"><small>View Orders</small> </a>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card h-100 card-lift">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
                             <span class="fw-semi-bold">Cancelled Orders</span>
                             <i data-feather="x-circle" class="text-danger"></i>
                         </div>
@@ -93,8 +79,22 @@
                 <div class="card h-100 card-lift">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-semi-bold">Total Sellers</span>
+                            <i data-feather="users" class="text-primary"></i>
+                        </div>
+                        <div class="mt-2 mb-2">
+                            <h3 class="fw-bold mb-0">{{ $total_sellers }}</h3>
+                        </div>
+                        <small>Total earnings from sales</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 card-lift">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
                             <span class="fw-semi-bold">Total Sales</span>
-                            <span class="text-success text-xxl font-semibold">৳</span>
+                            <span class="text-success text-xxl font-semibold">{{ currency() }}</span>
                         </div>
                         <div class="mt-2 mb-2">
                             <h3 class="fw-bold mb-0">{{ money($total_sales) }}</h3>
@@ -107,16 +107,17 @@
                 <div class="card h-100 card-lift">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
-                            <span class="fw-semi-bold">Total Sellers</span>
-                            <i data-feather="users" class="text-primary"></i>
+                            <span class="fw-semi-bold">Total Commission</span>
+                            <span class="text-success text-xxl font-semibold">{{ currency() }}</span>
                         </div>
                         <div class="mt-2 mb-2">
-                            <h3 class="fw-bold mb-0">{{ $total_sellers }}</h3>
+                            <h3 class="fw-bold mb-0">{{ money($total_commission) }}</h3>
                         </div>
-                        <small>Total earnings from sales</small>
+                        <small>Total commission from sales</small>
                     </div>
                 </div>
             </div>
+
             <div class="col">
                 <div class="card h-100 card-lift">
                     <div class="card-body">

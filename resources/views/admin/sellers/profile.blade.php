@@ -94,18 +94,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col">
-                        <div class="card card-lift h-100">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between">
-                                    <span class="fw-semi-bold">Shipped</span>
-                                    <i data-feather="truck" class="text-primary"></i>
-                                </div>
-                                <h4 class="fw-bold my-2">{{ $shipped_orders }}</h4>
-                                <small>Shipped Orders</small>
-                            </div>
-                        </div>
-                    </div>
+
                     <div class="col">
                         <div class="card card-lift h-100">
                             <div class="card-body">
@@ -147,10 +136,22 @@
                             <div class="card-body">
                                 <div class="d-flex justify-content-between">
                                     <span class="fw-semi-bold">Revenue</span>
-                                    <i data-feather="dollar-sign" class="text-success"></i>
+                                    <span class="text-success text-xxl font-semibold">{{ currency() }}</span>
                                 </div>
                                 <h4 class="fw-bold my-2">{{ money($total_revenue) }}</h4>
                                 <small>Total Revenue</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card card-lift h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <span class="fw-semi-bold">Commission</span>
+                                    <span class="text-success text-xxl font-semibold">{{ currency() }}</span>
+                                </div>
+                                <h4 class="fw-bold my-2">{{ money($total_commission) }}</h4>
+                                <small>Total Commission</small>
                             </div>
                         </div>
                     </div>

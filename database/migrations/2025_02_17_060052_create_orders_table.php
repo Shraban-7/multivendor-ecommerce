@@ -21,12 +21,17 @@ return new class extends Migration
             $table->string('customer_phone')->nullable();
             $table->text('customer_address')->nullable();
             $table->decimal('sub_total', 10, 2);
-            $table->decimal('discount', 10, 2)->nullable();
-            $table->decimal('tax', 10, 2)->nullable();
+            $table->decimal('discount', 6, 2)->nullable();
+            $table->decimal('tax', 6, 2)->nullable();
             $table->decimal('shipping_fee', 10, 2)->nullable();
             $table->decimal('total', 10, 2)->nullable();
             $table->decimal('payable', 10, 2)->nullable();
             $table->decimal('due', 10, 2)->nullable();
+
+            $table->string('commission_type')->nullable();
+            $table->decimal('commission_amount', 6, 1)->nullable();
+            $table->decimal('total_commission', 8, 2)->nullable();
+
             $table->tinyInteger('status')->default(1);
             $table->tinyInteger('delivery_status')->default(1);
             $table->timestamps();

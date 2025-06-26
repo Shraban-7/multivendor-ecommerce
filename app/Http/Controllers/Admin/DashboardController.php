@@ -22,6 +22,7 @@ class DashboardController extends Controller
         $data['total_sales'] = Order::delivered()->sum('payable');
         $data['total_sellers'] = Seller::count();
         $data['total_customers'] = Order::distinct('user_id')->count('user_id');
+        $data['total_commission'] = Order::sum('total_commission');
 
         return view('admin.dashboard', $data);
     }
