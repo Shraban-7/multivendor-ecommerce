@@ -1,9 +1,9 @@
 <?php
-
 namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
 use App\Models\Country;
+use App\Models\SellerBannerImage;
 use App\Models\State;
 use Illuminate\Http\Request;
 
@@ -11,25 +11,27 @@ class SettingController extends Controller
 {
     public function index()
     {
-        $seller = seller();
+        $seller    = seller();
         $countries = Country::orderBy('name', 'ASC')->get();
-        $states = State::orderBy('name', 'ASC')->get();
+        $states    = State::orderBy('name', 'ASC')->get();
         return view('seller.settings.index', compact('seller', 'countries', 'states'));
     }
 
     public function update(Request $request)
     {
         $seller = seller();
-        $data =  $request->validate([
-            'business_name' => 'required|string|max:255',
-            'business_logo' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
-            'business_email' => 'required|string|email|max:255|unique:sellers,business_email,' . $seller->id,
+        $data   = $request->validate([
+            'business_name'    => 'required|string|max:255',
+            'business_logo'    => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
+            'business_email'   => 'required|string|email|max:255|unique:sellers,business_email,' . $seller->id,
             'business_address' => 'required|string|max:1000',
-            'shop_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
-            'country_id' => 'nullable|integer|exists:countries,id',
-            'state_id' => 'nullable|integer',
-            'zip' => 'nullable|string|max:20',
-            'shipping_cost' => 'nullable|numeric'
+            'shop_image'       => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
+            'country_id'       => 'nullable|integer|exists:countries,id',
+            'state_id'         => 'nullable|integer',
+            'zip'              => 'nullable|string|max:20',
+            'shipping_cost'    => 'nullable|numeric',
+            'files'            => 'nullable|array',
+            'files.*'          => 'file|max:9096|mimetypes:image/*',
         ]);
 
         if ($request->hasFile('business_logo')) {
@@ -50,6 +52,29 @@ class SettingController extends Controller
 
         $seller->update($data);
 
-        return redirect()->route('seller.settings.index')->with('success','Setting update successfully');
+        if ($request->hasFile('files')) {
+            $seller->banner_images->each(function ($image) {
+                delete_file($image->image);
+                $image->delete();
+            });
+
+            foreach ($request->file('files') as $file) {
+                SellerBannerImage::create([
+                    'seller_id' => $seller->id,
+                    'image'     => upload_file($file, 'images/seller/banners'),
+                ]);
+            }
+        }
+
+        return redirect()->route('seller.settings.index')->with('success', 'Setting update successfully');
+    }
+
+    public function deleteImage(SellerBannerImage $image)
+    {
+        delete_file($image->image);
+
+        $image->delete();
+
+        return redirect()->back()->with('success',"Seller banner deleted successfully!");
     }
 }

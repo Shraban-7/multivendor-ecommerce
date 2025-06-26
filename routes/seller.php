@@ -59,6 +59,7 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::post('/update', [SettingController::class, 'update'])->name('update');
     });
 
+    Route::post('banner-image/{image}/delete', [SettingController::class, 'deleteImage'])->name('bannerImages.delete');
 });
 
 

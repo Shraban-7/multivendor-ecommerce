@@ -71,7 +71,7 @@
                         <div class="col-md-3 mb-3">
                             <label for="zip" class="form-label">ZIP Code</label>
                             <input type="text" class="form-control" id="zip" name="zip"
-                                value="{{ old('zip', $seller->zip ?? '') }}" >
+                                value="{{ old('zip', $seller->zip ?? '') }}">
                         </div>
                     </div>
                     <div class="d-flex">
@@ -95,12 +95,29 @@
                         <div class="col-md-4 mb-3">
                             <label class="form-label">NID Back Image</label><br>
                             <img src="{{ storage_url($seller->nid_back_image) }}" alt="NID Back"
-                                class="img-fluid rounded img-thumbnail w-100"  style="max-height: 200px;">
+                                class="img-fluid rounded img-thumbnail w-100" style="max-height: 200px;">
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Trade License Image</label><br>
                             <img src="{{ storage_url($seller->trade_license_image) }}" alt="Trade License"
                                 class="img-fluid rounded img-thumbnail" style="max-height: 200px;">
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Banner</label>
+                            <input type="file" id="files" class="mb-2 form-control" name="files[]" multiple accept="image">
+                            <div id="selectedImages" class="mb-2 row">
+                                @foreach ($seller->banner_images as $image)
+                                    <div class="mb-2 col-2">
+                                        <img src="{{ storage_url($image->image) }}" alt="image" class="col-2"
+                                            style="width: 100%; height: 150px;">
+                                            <form action="{{ route('seller.bannerImages.delete',$image->id) }}" method="POST">
+                                                @csrf
+                                                <button type="submit" class="mt-2 btn btn-danger btn-sm" style="width: 50%" onclick="return confirm('Are you sure?')">Delete</button>
+                                            </form>
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
 
@@ -146,15 +163,51 @@
                     }
                 }
 
-                // Load corresponding states on page load (edit case)
                 if (initialCountryId) {
                     loadStates(initialCountryId, initialStateId);
                 }
 
-                // Load states on country change
                 $('#country_id').on('change', function() {
                     const countryID = $(this).val();
                     loadStates(countryID);
+                });
+
+                document.getElementById("files").addEventListener("change", function(event) {
+                    var selectedFiles = event.target.files;
+                    var imageContainer = document.getElementById("selectedImages");
+
+                    imageContainer.innerHTML = "";
+
+                    for (var i = 0; i < selectedFiles.length; i++) {
+                        var file = selectedFiles[i];
+                        var reader = new FileReader();
+
+                        reader.onload = function(e) {
+                            var imgElement = document.createElement("img");
+                            imgElement.src = e.target.result;
+                            imgElement.classList.add("col-2");
+                            imgElement.style.width = "100%";
+                            imgElement.style.height = "150px";
+
+                            var deleteButton = document.createElement("button");
+                            deleteButton.innerHTML = "Delete";
+                            deleteButton.classList.add("btn", "btn-danger", "btn-sm", "mt-2");
+                            deleteButton.style.width = "50%";
+
+                            var imageWrapper = document.createElement("div");
+                            imageWrapper.classList.add("col-2", "mb-2");
+                            imageWrapper.appendChild(imgElement);
+                            imageWrapper.appendChild(deleteButton);
+
+                            imageContainer.appendChild(imageWrapper);
+
+                            deleteButton.addEventListener("click", function() {
+                                imageContainer.removeChild(imageWrapper);
+                            });
+                        };
+
+                        reader.readAsDataURL(file);
+                    }
                 });
             });
         </script>

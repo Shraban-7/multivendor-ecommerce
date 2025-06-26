@@ -41,6 +41,11 @@ class Seller extends Authenticatable
         return $this->hasMany(Product::class, 'category_id');
     }
 
+    public function banner_images()
+    {
+        return $this->hasMany(SellerBannerImage::class);
+    }
+
     public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);

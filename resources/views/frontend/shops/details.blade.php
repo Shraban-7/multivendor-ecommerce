@@ -36,7 +36,9 @@
         <section class="products-section py-8 container">
             <!-- shop header -->
             <div class="shop-header">
-                <div class="flex flex-wrap gap-y-2 justify-between items-center">
+
+
+                <div class="flex flex-wrap gap-y-2 justify-between items-center mb-3">
                     <!-- Left Side -->
                     <div class="flex items-center gap-2 md:gap-4">
                         <div class="w-14 md:w-20 h-14 md:h-20 rounded-full overflow-hidden">
@@ -48,8 +50,8 @@
                             <h1 class="text-xl md:text-2xl font-light">{{ $seller->business_name }}</h1>
                             <div class="flex items-center gap-1 flex-nowrap text-sm">
                                 @if ($seller->is_best_seller)
-                                <span class="bg-leaf-green text-white text-xs px-2.5 py-1 rounded-full">Best
-                                    Seller</span>
+                                    <span class="bg-leaf-green text-white text-xs px-2.5 py-1 rounded-full">Best
+                                        Seller</span>
                                 @endif
                             </div>
                         </div>
@@ -92,10 +94,50 @@
                     </div>
                 </div>
 
-                <div class="text-sm md:text-base my-3">
-                    <span class="text-theme-teal">(#10 top ranked provider)</span>
-                    <span class="text-davy-gray">in sports supplies</span>
-                </div>
+                @if ($seller->banner_images->isNotEmpty())
+                    <div id="controls-carousel" class="relative w-full mb-3" data-carousel="slide">
+                        <!-- Carousel wrapper -->
+                        <div class="relative h-56 overflow-hidden rounded-lg md:h-96">
+                            <!-- Item 1 -->
+                            @foreach ($seller->banner_images as $banner_image)
+                                <div class="hidden duration-700 ease-in-out" data-carousel-item>
+                                    <img src="{{ storage_url($banner_image->image) }}"
+                                        class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+                                        alt="...">
+                                </div>
+                            @endforeach
+
+                        </div>
+
+                        <!-- Slider controls -->
+                        <button type="button"
+                            class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+                            data-carousel-prev>
+                            <span
+                                class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50 group-focus:ring-4 group-focus:ring-white group-focus:outline-none">
+                                <svg class="w-4 h-4 text-white rtl:rotate-180" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" d="M5 1 1 5l4 4" />
+                                </svg>
+                                <span class="sr-only">Previous</span>
+                            </span>
+                        </button>
+                        <button type="button"
+                            class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+                            data-carousel-next>
+                            <span
+                                class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50 group-focus:ring-4 group-focus:ring-white group-focus:outline-none">
+                                <svg class="w-4 h-4 text-white rtl:rotate-180" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" d="m1 9 4-4-4-4" />
+                                </svg>
+                                <span class="sr-only">Next</span>
+                            </span>
+                        </button>
+                    </div>
+                @endif
             </div>
 
             <!-- Shop Links -->
@@ -146,8 +188,8 @@
                                 class="text-sm md:text-xs lg:text-base w-full py-2 pl-4 lg:py-2 lg:pl-4 pr-10 rounded-full border border-gray-300 focus:outline-none focus:border-primary focus:ring-[2px] focus:ring-light-yellow text-jet-gray placeholder:text-jet-gray eq" />
                             <button
                                 class="absolute top-1/2 right-1 transform -translate-y-1/2 bg-theme-light hover:bg-aqua-deep/10 p-2 rounded-full">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor" stroke-width="2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
@@ -182,7 +224,8 @@
             </div>
 
             <div class="load-more-btn text-center mt-10">
-                <button id="loadMoreBtn" data-page="1" data-url="{{ route('sellers.shop', $seller->username) }}?sortBy={{ request()->sortBy }}"
+                <button id="loadMoreBtn" data-page="1"
+                    data-url="{{ route('sellers.shop', $seller->username) }}?sortBy={{ request()->sortBy }}"
                     class="theme-btn bg-theme-teal hover:bg-aqua-deep text-white px-5 py-2 xl:text-xl text-base md:text-lg inline-flex gap-2 items-center eq"
                     type="button">
                     <span>Load More</span>
