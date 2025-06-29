@@ -66,7 +66,7 @@
 
                                              <!-- Prices (no wrap) -->
                                              <div class="flex gap-x-2 text-nowrap text-sm sm:text-base">
-                                                 <p class="font-semibold text-theme-teal">
+                                                 <p class="font-semibold text-primary">
                                                      {{ money($product->discounted_price) }}
                                                  </p>
                                                  <small class="line-through text-jet-gray align-items-end">

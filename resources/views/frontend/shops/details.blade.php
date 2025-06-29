@@ -1,5 +1,5 @@
 @extends('frontend.layouts.app')
-@section('title', 'Shop Detail ' . $seller->business_name)
+@section('title',$seller->business_name)
 
 @section('content')
     <main class="shop-details-page">

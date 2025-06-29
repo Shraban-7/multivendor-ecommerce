@@ -175,7 +175,7 @@ $settings = settings();
                         } else if (data.success) {
                             $('button[data-modal-hide="quick-view-modal-' + product_id + '"]')
                                 .trigger('click');
-                            $row.fadeOut(300, function() {
+                            $row.fadeOut(200, function() {
                                 $(this).remove();
                             });
                             toastr.success(data.message);

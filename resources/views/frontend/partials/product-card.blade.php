@@ -45,23 +45,26 @@
             @endif
         </div>
 
-        <div class="flex flex-wrap items-center gap-x-5 xsm:gap-x-1 sm:gap-x-2 xl:mt-2">
+        <div class="flex flex-wrap items-center justify-between gap-y-2">
             <div class="flex items-center gap-x-5 xsm:gap-x-2 sm:gap-x-5 xl:gap-x-8">
                 <div class="price flex items-center gap-1 flex-no-wrap">
-                    <i class="fa-solid fa-bolt text-[#ffa755]"></i>
-                    <h3 class="font-bold text-primary">{{ money($product['price']) }}</h3>
+                    <h3 class="font-bold text-primary">{{ money($product['discount_price']) }}</h3>
+                    <small class="line-through text-jet-gray align-items-end">
+                        {{ money($product['price']) }}
+                    </small>
                 </div>
-                @auth
-                    <div>
-                        <input type="hidden" name="quantity" class="qtyInputValue" value=""
-                            id="qtyInput{{ $product['id'] }}">
-                        <button data-id="{{ $product['id'] }}" type="button"
-                            class="cartBtn text-xs xsm:text-[10px] sm:text-base md:text-xs xl:text-base w-7 h-7 xsm:w-6 xsm:h-6 md:w-8 md:h-8 sm:w-10 sm:h-10 xl:w-10 xl:h-10 flex items-center justify-center bg-primary rounded-full text-white hover:bg-theme-dark eq">
-                            <i class="fa-solid fa-cart-plus"></i>
-                        </button>
-                    </div>
-                @endauth
             </div>
+            @auth
+                <div class="ms-auto">
+                    <input type="hidden" name="quantity" class="qtyInputValue" value=""
+                        id="qtyInput{{ $product['id'] }}">
+                    <button data-id="{{ $product['id'] }}" type="button"
+                        class="cartBtn text-xs xsm:text-[10px] sm:text-base md:text-xs xl:text-base w-7 h-7 xsm:w-6 xsm:h-6 md:w-8 md:h-8 sm:w-10 sm:h-10 xl:w-10 xl:h-10 flex items-center justify-center bg-primary rounded-full text-white hover:bg-theme-dark eq">
+                        <i class="fa-solid fa-cart-plus"></i>
+                    </button>
+                </div>
+            @endauth
         </div>
+
     </div>
 </div>
