@@ -30,15 +30,25 @@
                         <x-dashboard.nav-item-link :route="'seller.orders.pending'">
                             Pending
                         </x-dashboard.nav-item-link>
+
                         <x-dashboard.nav-item-link :route="'seller.orders.shipped'">
                             Shipped
                         </x-dashboard.nav-item-link>
+
                         <x-dashboard.nav-item-link :route="'seller.orders.delivered'">
                             Delivered
+                        </x-dashboard.nav-item-link>
+                        <x-dashboard.nav-item-link :route="'seller.orders.returned'">
+                            Returned
+                        </x-dashboard.nav-item-link>
+
+                        <x-dashboard.nav-item-link :route="'seller.orders.refunded'">
+                            Refunded
                         </x-dashboard.nav-item-link>
                         <x-dashboard.nav-item-link :route="'seller.orders.cancelled'">
                             Cancelled
                         </x-dashboard.nav-item-link>
+
                     </ul>
                 </div>
             </li>

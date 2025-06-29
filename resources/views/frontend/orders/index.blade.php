@@ -84,22 +84,39 @@
                                         <td class="px-6 py-4">
                                             @if ($order->status->label() == OrderStatus::PENDING->label())
                                                 <span
-                                                    class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">{{ OrderStatus::PENDING->label() }}</span>
-                                            @elseif($order->status->label() == OrderStatus::PACKAGING->label())
+                                                    class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                                                    {{ OrderStatus::PENDING->label() }}
+                                                </span>
+                                            @elseif ($order->status->label() == OrderStatus::PACKAGING->label())
                                                 <span
-                                                    class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">{{ OrderStatus::PACKAGING->label() }}</span>
-                                            @elseif($order->status->label() == OrderStatus::SHIPPED->label())
+                                                    class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                                                    {{ OrderStatus::PACKAGING->label() }}
+                                                </span>
+                                            @elseif ($order->status->label() == OrderStatus::SHIPPED->label())
                                                 <span
-                                                    class="bg-purple-100 text-purple-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">{{ OrderStatus::SHIPPED->label() }}</span>
-                                                @elseif($order->status->label() == OrderStatus::DELIVERED->label())
-                                                    <span
-                                                        class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">{{ OrderStatus::DELIVERED->label() }}</span>
-                                                @elseif($order->status->label() == OrderStatus::CANCELLED->label())
-                                                    <span
-                                                        class="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">{{ OrderStatus::CANCELLED->label() }}</span>
-                                                @else
-                                                    <span
-                                                        class="bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">{{ ucfirst($order->status) }}</span>
+                                                    class="bg-purple-100 text-purple-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                                                    {{ OrderStatus::SHIPPED->label() }}
+                                                </span>
+                                            @elseif ($order->status->label() == OrderStatus::DELIVERED->label())
+                                                <span
+                                                    class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                                                    {{ OrderStatus::DELIVERED->label() }}
+                                                </span>
+                                            @elseif ($order->status->label() == OrderStatus::CANCELLED->label())
+                                                <span
+                                                    class="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                                                    {{ OrderStatus::CANCELLED->label() }}
+                                                </span>
+                                            @elseif ($order->status->label() == OrderStatus::RETURNED->label())
+                                                <span
+                                                    class="bg-gray-200 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                                                    {{ OrderStatus::RETURNED->label() }}
+                                                </span>
+                                            @elseif ($order->status->label() == OrderStatus::REFUNDED->label())
+                                                <span
+                                                    class="bg-cyan-100 text-cyan-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                                                    {{ OrderStatus::REFUNDED->label() }}
+                                                </span>
                                             @endif
                                         </td>
                                         <td class="px-6 py-4 font-semibold">{{ money($order->total) }}</td>

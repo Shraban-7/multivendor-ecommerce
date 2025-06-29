@@ -15,6 +15,7 @@ class Order extends Model
 
     protected $casts = [
         'status' => OrderStatus::class,
+        'created_at' => 'datetime',
     ];
 
     public function scopePending($query)

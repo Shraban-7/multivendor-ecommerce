@@ -1,28 +1,28 @@
 <?php
-
 namespace App\Http\Controllers\Seller;
 
-use App\Models\Order;
 use App\Enums\OrderStatus;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Order;
+use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
     public function index(Request $request)
     {
         $seller_id = seller()->id;
-        $orders = Order::where('seller_id', $seller_id);
+        $type      = $request->segment(3);
 
-        $type = $request->segment(3) ??  null;
+        $statusValue = OrderStatus::valueFromLabel($type);
 
-        if ($type == null || !in_array($type, OrderStatus::labels())) {
+        if ($statusValue === null) {
             return redirect()->route('seller.dashboard');
         }
 
-        $orders->$type();
-
-        $orders = $orders->latest('id')->get();
+        $orders = Order::where('seller_id', $seller_id)
+            ->where('status', $statusValue)
+            ->latest('id')
+            ->get();
 
         return view('seller.orders.index', compact('orders', 'type'));
     }
@@ -37,12 +37,11 @@ class OrderController extends Controller
         return redirect()->back();
     }
 
-
     public function updateStatus(Order $order, Request $request)
     {
         $order->update([
-            'status' => $request->status,
-            'delivery_status' => $request->delivery_status
+            'status'          => $request->status,
+            'delivery_status' => $request->delivery_status,
         ]);
 
         return redirect()->back()->with('success', 'Order update successfully');
@@ -50,8 +49,8 @@ class OrderController extends Controller
 
     public function invoice(Order $order)
     {
-        $order->load('items.product','seller','user.country');
+        $order->load('items.product', 'seller', 'user.country');
 
-        return view('seller.orders.invoice',compact('order'));
+        return view('seller.orders.invoice', compact('order'));
     }
 }

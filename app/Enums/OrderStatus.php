@@ -8,9 +8,11 @@ enum OrderStatus : int
     case SHIPPED = 1;
     case DELIVERED = 2;
     case CANCELLED = 3;
-    case ORDER_PLACED = 5;
-    case PACKAGING = 6;
-    case ON_THE_ROAD = 7;
+    case ORDER_PLACED = 4;
+    case PACKAGING = 5;
+    case ON_THE_ROAD = 6;
+    case RETURNED = 7;
+    case REFUNDED = 8;
 
     public function label(): string {
         return match($this) {
@@ -21,6 +23,8 @@ enum OrderStatus : int
             $this::ORDER_PLACED => 'order_placed',
             $this::PACKAGING => 'packaging',
             $this::ON_THE_ROAD => 'on_the_road',
+            $this::RETURNED => 'returned',
+            $this::REFUNDED => 'refunded',
         };
     }
 
@@ -34,6 +38,8 @@ enum OrderStatus : int
             static::ORDER_PLACED->label(),
             static::PACKAGING->label(),
             static::ON_THE_ROAD->label(),
+            static::RETURNED->label(),
+            static::REFUNDED->label(),
         ];
     }
 
