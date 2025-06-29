@@ -18,9 +18,9 @@ class InvoiceResource extends JsonResource
             'invoice_id'       => $this->invoice_id,
             'date' => $this->created_at->format('Y-m-d'),
             'logo'             => storage_url($this->seller->business_logo),
-            'customer_name'    => $this->customer_name ?? $this->user->name,
-            'customer_address' => $this->customer_address ?? $this->user->country->name,
-            'customer_phone'   => $this->customer_phone ?? $this->user->phone,
+            'customer_name'    => $this->customer_name ?? null,
+            'customer_address' => $this->customer_address ?? null,
+            'customer_phone'   => $this->customer_phone ?? null,
             'items'            => $this->items->map(function ($item) {
                 return [
                     'product_name' => $item->product->name,

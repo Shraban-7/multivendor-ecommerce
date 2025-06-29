@@ -81,9 +81,9 @@
                 </div>
                 <div class="col-sm-6 order-sm-0"> <strong>Invoiced To:</strong>
                     <address>
-                        {{ $order->customer_name ?? $order->user->name }} <br>
-                        {{ $order->customer_address ?? $order->user->country->name }} <br>
-                        {{ $order->customer_phone ?? $order->user->phone }}
+                        {{ $order->customer_name ?? '' }} <br>
+                        {{ $order->customer_address ?? '' }} <br>
+                        {{ $order->customer_phone ?? '' }}
                     </address>
                 </div>
             </div>
