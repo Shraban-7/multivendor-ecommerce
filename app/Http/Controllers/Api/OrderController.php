@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\InvoiceResource;
 use App\Http\Resources\OrderResource;
 use App\Models\Cart;
 use App\Models\Order;
@@ -207,5 +208,12 @@ class OrderController extends Controller
         }
 
         return successResponse('Review Submit Successfully');
+    }
+
+    public function invoice(Order $order)
+    {
+        $order->load('items.product', 'seller', 'user.country');
+
+        return apiResourceResponse(InvoiceResource::make($order));
     }
 }
