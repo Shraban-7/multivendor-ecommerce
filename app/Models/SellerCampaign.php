@@ -15,4 +15,11 @@ class SellerCampaign extends Model
         'start_date' => 'datetime',
         'end_date' => 'datetime',
     ];
+
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'seller_campaign_product')
+                    ->using(SellerCampaignProduct::class)
+                    ->withTimestamps();
+    }
 }

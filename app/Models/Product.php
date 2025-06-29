@@ -86,6 +86,13 @@ class Product extends Model
         return $this->hasMany(OrderItem::class);
     }
 
+    public function sellerCampaigns()
+    {
+        return $this->belongsToMany(SellerCampaign::class, 'seller_campaign_product')
+            ->using(SellerCampaignProduct::class)
+            ->withTimestamps();
+    }
+
     public function toDetailsArray()
     {
         $this->load('images', 'category', 'subcategory', 'variants', 'seller', 'reviews.user');
@@ -100,17 +107,17 @@ class Product extends Model
         $marginPercent = $this->buying_price > 0 ? ($margin / $this->buying_price) * 100 : 0;
 
         return [
-            'id'                => $this->id,
-            'slug'              => $this->slug,
-            'sku'               => $this->sku,
-            'category_id'       => $this->category?->id,
-            'category'          => $this->category?->name,
-            'subcategory'       => $this->subcategory?->name,
-            'brand'             => $this->brand?->name,
-            'name'              => $this->name,
-            'thumbnail'         => $this->thumbnail,
-            'images'            => $this->images->pluck('image'),
-            'slider'            => collect([
+            'id'                 => $this->id,
+            'slug'               => $this->slug,
+            'sku'                => $this->sku,
+            'category_id'        => $this->category?->id,
+            'category'           => $this->category?->name,
+            'subcategory'        => $this->subcategory?->name,
+            'brand'              => $this->brand?->name,
+            'name'               => $this->name,
+            'thumbnail'          => $this->thumbnail,
+            'images'             => $this->images->pluck('image'),
+            'slider'             => collect([
                 $this->thumbnail,
             ])
                 ->filter()
@@ -120,21 +127,21 @@ class Product extends Model
                 )
                 ->unique()
                 ->values(),
-            'short_description' => $this->short_description,
-            'description'       => $this->description,
-            'price'             => $this->selling_price,
-            'buying_cost'       => $this->buying_price,
-            'discount_price'    => $this->discounted_price,
-            'discount'          => [
+            'short_description'  => $this->short_description,
+            'description'        => $this->description,
+            'price'              => $this->selling_price,
+            'buying_cost'        => $this->buying_price,
+            'discount_price'     => $this->discounted_price,
+            'discount'           => [
                 'type'    => $this->discount_type,
                 'amount'  => money($this->discount),
                 'percent' => money($this->discount_percent),
             ],
-            'stock_status'      => $this->stock_status,
-            'in_stock'          => $this->stock_in,
-            'sold_out'          => $this->stock_out,
-            'almost_sold_out'   => ($this->stock_in - $this->stock_out ) <= $this->low_stock_quantity ? true : false,
-            'variants'          => $this->variants->map(function ($variant) {
+            'stock_status'       => $this->stock_status,
+            'in_stock'           => $this->stock_in,
+            'sold_out'           => $this->stock_out,
+            'almost_sold_out'    => ($this->stock_in - $this->stock_out) <= $this->low_stock_quantity ? true : false,
+            'variants'           => $this->variants->map(function ($variant) {
                 return [
                     'id'             => $variant->id,
                     'sku'            => $variant->sku,
@@ -145,28 +152,28 @@ class Product extends Model
                     'image'          => $variant->image,
                 ];
             }),
-            'product_attributes'  => $this->getAttributeGroups(),
-            'total_sold'        => $sold,
-            'revenue'           => $revenue,
-            'profit'            => $profit,
-            'last_sale'         => $lastSale,
-            'stock_history'     => $stockHistory,
-            'profit'            => [
+            'product_attributes' => $this->getAttributeGroups(),
+            'total_sold'         => $sold,
+            'revenue'            => $revenue,
+            'profit'             => $profit,
+            'last_sale'          => $lastSale,
+            'stock_history'      => $stockHistory,
+            'profit'             => [
                 'margin'  => (float) $margin,
                 'percent' => round($marginPercent, 2),
             ],
-            'seller'            => [
+            'seller'             => [
                 'id'            => $this->seller->id,
                 'username'      => $this->seller->username,
                 'business_name' => $this->seller->business_name,
                 'business_logo' => $this->seller->business_logo,
-                'best_seller'   => $this->seller->is_best_seller
+                'best_seller'   => $this->seller->is_best_seller,
             ],
-            'reviews'           => $this->reviews,
-            'rating'            => number_format($this->reviews->avg('rating'), 1),
-            'total_reviews'     => $this->reviews->count(),
-            'created_at'        => $this->created_at,
-            'updated_at'        => $this->updated_at,
+            'reviews'            => $this->reviews,
+            'rating'             => number_format($this->reviews->avg('rating'), 1),
+            'total_reviews'      => $this->reviews->count(),
+            'created_at'         => $this->created_at,
+            'updated_at'         => $this->updated_at,
         ];
     }
 

@@ -2,7 +2,9 @@
 namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use App\Models\SellerCampaign;
+use App\Models\SellerCampaignProduct;
 use Illuminate\Http\Request;
 
 class SellerCampaignController extends Controller
@@ -41,11 +43,33 @@ class SellerCampaignController extends Controller
 
         SellerCampaign::create($data);
 
-        return redirect()->route('seller.campaigns.index')->with('success','Campaign create successfully');
+        return redirect()->route('seller.campaigns.index')->with('success', 'Campaign create successfully');
     }
 
     public function show(SellerCampaign $campaign)
     {
-        return view('seller.campaigns.show',compact('campaign'));
+        $seller = seller();
+
+        $campaign_product_ids = SellerCampaignProduct::where('seller_campaign_id', $campaign->id)->pluck('id');
+
+        $campaign_products = Product::whereIn('id', $campaign_product_ids)->get();
+
+        $products = Product::where('seller_id', $seller->id)->get();
+
+        return view('seller.campaigns.show', compact('campaign', 'products', 'campaign_products'));
+    }
+
+    public function add_products(SellerCampaign $campaign, Request $request)
+    {
+        $request->validate([
+            'product_ids'   => 'nullable|array',
+            'product_ids.*' => 'exists:products,id',
+        ]);
+
+        if ($request->filled('product_ids')) {
+            $campaign->products()->sync($request->product_ids);
+        }
+
+        return redirect()->back()->with('success','Products added this campaign successfully');
     }
 }

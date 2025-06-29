@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('seller_campaign_id')->nullable();
             $table->unsignedBigInteger('product_id')->nullable();
+            $table->timestamps();
         });
     }
 

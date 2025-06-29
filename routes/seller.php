@@ -63,6 +63,7 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::post('/store', [SellerCampaignController::class, 'store'])->name('store');
         Route::get('{campaign}/edit', [SellerCampaignController::class, 'edit'])->name('edit');
         Route::get('{campaign}/show', [SellerCampaignController::class, 'show'])->name('show');
+        Route::post('{campaign}/add-products', [SellerCampaignController::class, 'add_products'])->name('add_products');
         Route::post('{campaign}/update', [SellerCampaignController::class, 'update'])->name('update');
         Route::post('{campaign}/delete', [SellerCampaignController::class, 'delete'])->name('delete');
     });
