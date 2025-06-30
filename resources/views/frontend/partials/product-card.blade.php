@@ -58,7 +58,7 @@
                 <div class="ms-auto">
                     <input type="hidden" name="quantity" class="qtyInputValue" value=""
                         id="qtyInput{{ $product['id'] }}">
-                    <button data-id="{{ $product['id'] }}" type="button"
+                    <button data-id="{{ $product['id'] }}"  type="button"
                         class="cartBtn text-xs xsm:text-[10px] sm:text-base md:text-xs xl:text-base w-7 h-7 xsm:w-6 xsm:h-6 md:w-8 md:h-8 sm:w-10 sm:h-10 xl:w-10 xl:h-10 flex items-center justify-center bg-primary rounded-full text-white hover:bg-theme-dark eq">
                         <i class="fa-solid fa-cart-plus"></i>
                     </button>

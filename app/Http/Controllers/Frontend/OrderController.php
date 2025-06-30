@@ -77,7 +77,7 @@ class OrderController extends Controller
             ], 404);
         }
 
-        $total        = 0;
+        $sub_total        = 0;
         $discount     = 0;
         $tax          = 0;
         $orderItems   = [];
@@ -90,7 +90,7 @@ class OrderController extends Controller
             $itemTotal    = $cartItem->quantity * $unitPrice;
             $itemDiscount = $cartItem->quantity * $product->discount;
             $tax += floatval($product->tax) * $cartItem->quantity;
-            $total += $itemTotal;
+            $sub_total += $itemTotal;
             $discount += $itemDiscount;
 
             $orderItems[] = [
@@ -114,7 +114,7 @@ class OrderController extends Controller
 
         if ($request->isMethod('GET')) {
             $customer_addresses = CustomerAddress::where('user_id', $user->id)->get();
-            return view('frontend.pages.checkout', compact('user', 'customer_addresses', 'selectedSellerId', 'total', 'discount', 'tax', 'shipping_fee'));
+            return view('frontend.pages.checkout', compact('user', 'customer_addresses', 'selectedSellerId', 'sub_total', 'discount', 'tax', 'shipping_fee'));
         }
 
         $seller = Seller::where('id', $selectedSellerId)->first();
@@ -124,7 +124,7 @@ class OrderController extends Controller
 
         if ($seller->commission_amount != null && $seller->commission_type != null) {
             if ($seller->commission_type === CommissionType::PERCENTAGE->value) {
-                $total_commission = ($total + $tax + $shipping_fee) * ($seller->commission_amount / 100);
+                $total_commission = ($sub_total + $tax + $shipping_fee) * ($seller->commission_amount / 100);
             } else if($seller->commission_type === CommissionType::FLAT->value) {
                 $total_commission = $seller->commission_amount;
             }
@@ -138,13 +138,13 @@ class OrderController extends Controller
             'customer_phone'    => $request->input('customer_phone'),
             'customer_address'  => $request->input('address'),
             'invoice_id'        => strtoupper(uniqid()),
-            'sub_total'         => $total + $discount,
-            'total'             => $total + $tax + $shipping_fee,
+            'sub_total'         => $sub_total,
+            'total'             => $sub_total + $tax + $shipping_fee,
             'discount'          => $discount,
             'tax'               => $tax,
             'shipping_fee'      => $shipping_fee,
-            'payable'           => $total + $shipping_fee + $tax,
-            'due'               => $total + $shipping_fee + $tax,
+            'payable'           => $sub_total + $shipping_fee + $tax,
+            'due'               => $sub_total + $shipping_fee + $tax,
             'commission_type'   => $seller->commission_type,
             'commission_amount' => $seller->commission_amount,
             'total_commission'  => $total_commission,

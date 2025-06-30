@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
@@ -15,70 +14,65 @@ class CartController extends Controller
 {
     public function add(Request $request)
     {
-        $product            = Product::find($request->product_id);
-        $variant            = ProductVariant::where('sku', $request->variant_sku)->first();
-        $requestedOptionIds = collect($request->option_ids)->sort()->values()->toArray();
+        $userId     = Auth::id();
+        $productId  = $request->product_id;
+        $variantSku = $request->variant_sku;
+        $quantity   = (int) ($request->quantity ?? 1);
+        $optionIds  = collect($request->option_ids)->sort()->values()->toArray();
+
+        $product = Product::find($productId);
 
         if (! $product) {
             return response()->json(['success' => false, 'error' => 'Product not found']);
         }
 
-        $cart = Cart::where([
-            'user_id'   => Auth::user()->id,
-            'seller_id' => $product->seller_id,
-        ])->first();
-
-        if (! $cart) {
-            if ($product->stock_in > 0) {
-                $cart = Cart::create([
-                    'user_id'   => Auth::user()->id,
-                    'seller_id' => $product->seller_id,
-                ]);
+        if ($variantSku) {
+            $variant = ProductVariant::where('sku', $variantSku)->first();
+            if (! $variant) {
+                return response()->json(['success' => false, 'error' => 'Variant not found']);
             }
         }
-        $price = (float) $request->price;
-        if ($request->quantity > 1) {
-            $price = $price / $request->quantity;
-        } else if ($request->quantity == 1) {
-            $price = $price;
+
+        $cart = Cart::firstOrCreate(
+            ['user_id' => $userId, 'seller_id' => $product->seller_id],
+            ['user_id' => $userId, 'seller_id' => $product->seller_id]
+        );
+
+        $price = floatval($request->price);
+        if ($quantity > 1) {
+            $price = $price / $quantity;
         }
+        if ($price <= 0) {
+            $price = $product->discounted_price;
+        }
+        $price = number_format($price, 2, '.', '');
 
-        $price = ($price <= 0) ? $product->discounted_price : number_format($price, 2, '.', '');
+        $cartItemQuery = CartItem::where('cart_id', $cart->id)->where('product_id', $productId);
 
-        $cartItem = null;
-
-        if (! empty($requestedOptionIds)) {
-            $cartItem = CartItem::where('cart_id', $cart->id)
-                ->where('product_id', $product->id)
-                ->get()
-                ->first(function ($item) use ($requestedOptionIds) {
-                    $dbOptionIds = collect($item->product_variant_ids)->sort()->values()->toArray();
-                    return $dbOptionIds === $requestedOptionIds;
-                });
+        if (! empty($optionIds)) {
+            $cartItems = $cartItemQuery->get();
+            $cartItem  = $cartItems->first(function ($item) use ($optionIds) {
+                return collect($item->product_variant_ids)->sort()->values()->toArray() === $optionIds;
+            });
         } else {
-            $cartItem = CartItem::where('cart_id', $cart->id)
-                ->where('product_id', $product->id)
-                ->whereJsonLength('product_variant_ids', 0)
-                ->first();
+            $cartItem = $cartItemQuery->whereJsonLength('product_variant_ids', 0)->first();
         }
 
         if ($cartItem) {
-            $cartItem->update([
-                'quantity' => $request->quantity + $cartItem->quantity,
-            ]);
+            $cartItem->increment('quantity', $quantity);
         } else {
-            $cartItem = CartItem::create([
+            CartItem::create([
                 'cart_id'             => $cart->id,
-                'product_id'          => $product->id,
-                'quantity'            => $request->quantity ?? 1,
+                'product_id'          => $productId,
+                'quantity'            => $quantity,
                 'price'               => $price,
-                'product_variant_ids' => $requestedOptionIds,
+                'product_variant_ids' => $optionIds,
             ]);
         }
 
         Wishlist::where([
-            'user_id'    => Auth::id(),
-            'product_id' => $product->id,
+            'user_id'    => $userId,
+            'product_id' => $productId,
         ])->delete();
 
         return response()->json([
@@ -105,7 +99,7 @@ class CartController extends Controller
                 foreach ($cart->cart_items as $item) {
                     $item_grand_total = $item->quantity * $item->product_original_price;
                     $grand_total += $item_grand_total;
-                    $itemPrice = $item->quantity * $item->price;
+                    $itemPrice      = $item->quantity * $item->price;
                     $item_sub_total = $itemPrice;
                     $sub_total += $item_sub_total;
                 }
@@ -184,22 +178,30 @@ class CartController extends Controller
 
     public function getLiveCartData()
     {
-        $carts = Cart::where('user_id', Auth::id())
-            ->with('cart_items.product', 'cart_items.variant')
-            ->get();
-
-        $cartCount   = $carts->count();
+        $cartCount   = 0;
+        $sub_total   = 0;
         $grand_total = 0;
 
-        foreach ($carts as $cart) {
-            foreach ($cart->cart_items as $item) {
-                $grand_total += $item->quantity * $item->price;
+        if (Auth::check()) {
+            $carts = Cart::where('user_id', Auth::id())
+                ->with('cart_items.product')
+                ->get();
+
+            foreach ($carts as $cart) {
+                foreach ($cart->cart_items as $item) {
+                    $item_total = $item->quantity * $item->price;
+                    $sub_total += $item_total;
+                    $grand_total += $item_total;
+                    $cartCount++;
+                }
             }
+        } else {
+            $carts = collect();
         }
 
         return response()->json([
             'cartCount'  => $cartCount,
-            'totalPrice' => number_format($grand_total, 2),
+            'totalPrice' => money($grand_total),
         ]);
     }
 }

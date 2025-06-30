@@ -274,7 +274,7 @@
                                 <input type="hidden" id="variantSku{{ $product['id'] }}" value="">
 
                                 @if ($product['in_stock'] > 0)
-                                    <button data-id="{{ $product['id'] }}" type="button"
+                                    <button data-id="{{ $product['id'] }}" data-modal="{{ true }}" type="button"
                                         class="cartBtn text-sm md:text-base font-medium flex-1 px-6 py-2 border border-primary text-primary rounded-full hover:bg-primary hover:text-white transition-all">
                                         Add To Cart
                                         <span class="block text-xs font-light">{{ $product['discount']['percent'] }}%

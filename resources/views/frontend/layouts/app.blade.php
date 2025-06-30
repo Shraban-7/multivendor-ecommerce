@@ -139,6 +139,7 @@ $settings = settings();
         $(document).ready(function() {
             $('.cartBtn').click(function() {
                 var product_id = $(this).data('id');
+                var modal = $(this).data('modal');
                 var wishlistId = $(this).data('wishlist-id');
                 var variantSku = $('#variantSku').val();
                 var product_price_text = $('.product-price').text().replace(/[^0-9.]/g, '');
@@ -173,11 +174,19 @@ $settings = settings();
                         if (data.unauthorized) {
                             window.location.href = "{{ route('login') }}";
                         } else if (data.success) {
-                            $('button[data-modal-hide="quick-view-modal-' + product_id + '"]')
-                                .trigger('click');
-                            $row.fadeOut(200, function() {
-                                $(this).remove();
-                            });
+
+                            console.log("ok");
+
+                            // console.log(modal);
+
+                            // if(modal == true) {
+
+                            //     $('button[data-modal-hide="quick-view-modal-' + product_id + '"]')
+                            //     .trigger('click');
+                            //     // $row.fadeOut(200, function() {
+                            //     //     $(this).remove();
+                            //     // });
+                            // }
                             toastr.success(data.message);
                             updateCartData();
 

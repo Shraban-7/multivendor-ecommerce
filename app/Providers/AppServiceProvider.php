@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Cart;
+use App\Models\CartItem;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
@@ -25,26 +26,27 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useBootstrap();
         View::composer('*', function ($view) {
-            if (Auth::check()) {
-                $carts = Cart::where('user_id', Auth::user()->id)
-                    ->with('cart_items.product')
-                    ->get();
-                $cartCount = count($carts);
-            } else {
-                $carts = [];
-                $cartCount = 0;
-            }
-
+            $cartCount = 0;
             $sub_total = 0;
             $grand_total = 0;
 
-            foreach ($carts as $cart) {
-                foreach ($cart->cart_items as $item) {
-                    $item_grand_total = $item->quantity * $item->price;
-                    $grand_total += $item_grand_total;
-                    $sub_total += $item_grand_total;
+            if (Auth::check()) {
+                $carts = Cart::where('user_id', Auth::id())
+                    ->with('cart_items.product')
+                    ->get();
+
+                foreach ($carts as $cart) {
+                    foreach ($cart->cart_items as $item) {
+                        $item_total = $item->quantity * $item->price;
+                        $sub_total += $item_total;
+                        $grand_total += $item_total;
+                        $cartCount++;
+                    }
                 }
+            } else {
+                $carts = collect();
             }
+
 
             $view->with('cartCount', $cartCount)->with('totalPrice', $grand_total)->with('subTotal', $sub_total);
         });
