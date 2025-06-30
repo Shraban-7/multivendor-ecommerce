@@ -70,7 +70,7 @@ class OrderController extends Controller
             ], 404);
         }
 
-        $total        = 0;
+        $sub_total        = 0;
         $discount     = 0;
         $tax          = 0;
         $shipping_fee = $seller->shipping_cost ?? 0;
@@ -86,7 +86,7 @@ class OrderController extends Controller
             $itemDiscount = $product->discount * $cartItem->quantity;
             $itemTax      = floatval($product->tax) * $cartItem->quantity;
 
-            $total += $itemTotal;
+            $sub_total += $itemTotal;
             $discount += $itemDiscount;
             $tax += $itemTax;
 
@@ -117,13 +117,13 @@ class OrderController extends Controller
             'customer_phone'   => $data['customer_phone'],
             'customer_address' => $data['address'],
             'invoice_id'       => strtoupper(uniqid('INV-')),
-            'sub_total'        => $total + $discount,
-            'total'            => $total + $tax + $shipping_fee,
+            'sub_total'        => $sub_total,
+            'total'            => $sub_total + $tax + $shipping_fee,
             'discount'         => $discount,
             'tax'              => $tax,
             'shipping_fee'     => $shipping_fee,
-            'payable'          => $total + $shipping_fee + $tax,
-            'due'              => $total + $shipping_fee + $tax,
+            'payable'          => $sub_total + $shipping_fee + $tax,
+            'due'              => $sub_total + $shipping_fee + $tax,
             'status'           => OrderStatus::PENDING->value,
             'delivery_status'  => OrderStatus::ORDER_PLACED->value,
         ]);

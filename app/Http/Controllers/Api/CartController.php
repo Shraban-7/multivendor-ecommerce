@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
@@ -7,6 +6,7 @@ use App\Http\Resources\CartResource;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Product;
+use App\Models\ProductVariant;
 use App\Models\Wishlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,68 +25,69 @@ class CartController extends Controller
 
     public function store(Request $request)
     {
-        $validator = validateRequest($request, [
-            'product_id' => 'required|exists:products,id',
-            'option_ids' => 'nullable|array',
-            'quantity'   => 'required|numeric|min:1',
-        ]);
+        $userId     = Auth::id();
+        $productId  = $request->product_id;
+        $variantSku = $request->variant_sku;
+        $quantity   = (int) ($request->quantity ?? 1);
+        $optionIds  = collect($request->option_ids)->sort()->values()->toArray();
 
-        if ($validator->fails()) {
-            return sendValidationError($validator->errors());
+        $product = Product::find($productId);
+
+        if (! $product) {
+            return response()->json(['success' => false, 'error' => 'Product not found']);
         }
 
-        $user_id = Auth::id();
+        if ($variantSku) {
+            $variant = ProductVariant::where('sku', $variantSku)->first();
+            if (! $variant) {
+                return response()->json(['success' => false, 'error' => 'Variant not found']);
+            }
+        }
 
-        $product = Product::find($request->product_id);
+        $cart = Cart::firstOrCreate(
+            ['user_id' => $userId, 'seller_id' => $product->seller_id],
+            ['user_id' => $userId, 'seller_id' => $product->seller_id]
+        );
 
-        $option_ids = collect($request->option_ids)->sort()->values()->toArray();
+        $price = floatval($request->price);
+        if ($quantity > 1) {
+            $price = $price / $quantity;
+        }
+        if ($price <= 0) {
+            $price = $product->discounted_price;
+        }
+        $price = number_format($price, 2, '.', '');
 
-        $cart = Cart::query()->firstOrCreate([
-            'user_id'   => $user_id,
-            'seller_id' => $product->seller_id,
-        ]);
+        $cartItemQuery = CartItem::where('cart_id', $cart->id)->where('product_id', $productId);
 
-        $price = (float) $request->price;
-        $price = ($price <= 0) ? $product->discounted_price : number_format($price, 2, '.', '');
-
-        $cartItem = null;
-
-        if (! empty($option_ids)) {
-            $cartItem = CartItem::where('cart_id', $cart->id)
-                ->where('product_id', $product->id)
-                ->get()
-                ->first(function ($item) use ($option_ids) {
-                    $dbOptionIds = collect($item->product_variant_ids)->sort()->values()->toArray();
-                    return $dbOptionIds === $option_ids;
-                });
+        if (! empty($optionIds)) {
+            $cartItems = $cartItemQuery->get();
+            $cartItem  = $cartItems->first(function ($item) use ($optionIds) {
+                return collect($item->product_variant_ids)->sort()->values()->toArray() === $optionIds;
+            });
         } else {
-            $cartItem = CartItem::where('cart_id', $cart->id)
-                ->where('product_id', $product->id)
-                ->whereJsonLength('product_variant_ids', 0)
-                ->first();
+            $cartItem = $cartItemQuery->whereJsonLength('product_variant_ids', 0)->first();
         }
 
         if ($cartItem) {
-            $cartItem->update([
-                'quantity' => $request->quantity + $cartItem->quantity,
-            ]);
+            $cartItem->increment('quantity', $quantity);
         } else {
-            $cartItem = CartItem::create([
+            CartItem::create([
                 'cart_id'             => $cart->id,
-                'product_id'          => $product->id,
-                'quantity'            => $request->quantity ?? 1,
+                'product_id'          => $productId,
+                'quantity'            => $quantity,
                 'price'               => $price,
-                'product_variant_ids' => $option_ids,
+                'product_variant_ids' => $optionIds,
             ]);
         }
 
         Wishlist::where([
-            'user_id'    => $user_id,
-            'product_id' => $product->id,
+            'user_id'    => $userId,
+            'product_id' => $productId,
         ])->delete();
 
         return apiResponse([
-            'cart_count' => Cart::getCount($user_id)
+            'cart_count' => Cart::getCount($userId),
         ], "Added to cart successfully");
     }
 
@@ -95,7 +96,7 @@ class CartController extends Controller
         $item->delete();
 
         return apiResponse([
-            'cart_count' => Cart::getCount()
+            'cart_count' => Cart::getCount(),
         ], "Item removed successfully");
     }
 
@@ -110,11 +111,11 @@ class CartController extends Controller
         }
 
         $item->update([
-            'quantity' => $request->quantity
+            'quantity' => $request->quantity,
         ]);
 
         return apiResponse([
-            'cart_count' => Cart::getCount()
+            'cart_count' => Cart::getCount(),
         ], "Cart updated successfully");
     }
 }
