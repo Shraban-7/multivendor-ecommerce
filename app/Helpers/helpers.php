@@ -240,6 +240,8 @@ if (! function_exists('validateRequest')) {
 if (! function_exists('removeZeroFromDecimal')) {
     function removeZeroFromDecimal($number, $dataType = 'string')
     {
+        if(is_null($number)) return null;
+        
         $decimal = explode('.', $number);
         if (isset($decimal[1]) && $decimal[1] == '00') {
             $number = str_replace('.00', '', $number);
