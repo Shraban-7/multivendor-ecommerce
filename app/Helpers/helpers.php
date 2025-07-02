@@ -1,19 +1,20 @@
 <?php
 
+use Carbon\Carbon;
 use App\Enums\AdminRole;
 use App\Models\Category;
-use App\Models\PaymentGateway;
 use App\Models\SocialLink;
-use App\Models\SystemSetting;
-use Carbon\Carbon;
+use App\Enums\DiscountType;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
+use App\Models\SystemSetting;
+use App\Models\PaymentGateway;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 
 define('CURRENCY_SYMBOL', '৳');
 
@@ -39,7 +40,6 @@ if (! function_exists('str_slug')) {
         return $slug;
     }
 }
-
 
 if (! function_exists('sendValidationError')) {
     function sendValidationError($errors)
@@ -307,5 +307,21 @@ if (! function_exists('settings')) {
     function settings()
     {
         return SystemSetting::first();
+    }
+}
+
+if (! function_exists('calculate_discount_price')) {
+    function calculate_discount_price(float $price, ?string $type, ?float $value)
+    {
+        if (! $type || ! $value) {
+            return $price;
+        }
+
+        return match ($type) {
+            DiscountType::PERCENTAGE => round($price - (($price * $value) / 100), 2),
+            DiscountType::FLAT => max(round($price - $value, 2), 0),
+            default => $price,
+        };
+
     }
 }

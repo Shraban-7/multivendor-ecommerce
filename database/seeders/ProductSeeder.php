@@ -4,10 +4,8 @@ namespace Database\Seeders;
 use App\Enums\DiscountType;
 use App\Models\Category;
 use App\Models\Product;
-use App\Models\ProductAttribute;
 use App\Models\ProductImage;
 use App\Models\ProductUnit;
-use App\Models\ProductVariant;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -34,11 +32,7 @@ class ProductSeeder extends Seeder
             'video-product-3.mp4',
         ];
 
-        $discountTypes = [DiscountType::FLAT->value, DiscountType::PERCENTAGE->value];
-
-        $productAttributes = ProductAttribute::with('options')->get()->keyBy('name');
-
-        DB::transaction(function () use ($majorCategories, $brandIds, $featuredVideos, $discountTypes) {
+        DB::transaction(function () use ($majorCategories, $brandIds, $featuredVideos) {
 
             foreach ($majorCategories as $slug => $seller) {
                 $category = Category::where('slug', $slug)->with('subcategories')->first();
@@ -54,16 +48,33 @@ class ProductSeeder extends Seeder
                     for ($i = 1; $i <= 15; $i++) {
                         $productData = $this->getProduct($slug, $sub->name);
 
+                        $discountType   = fake()->randomElement([null, DiscountType::FLAT->value, DiscountType::PERCENTAGE->value]);
+                        $discountValue  = null;
+                        $discountAmount = null;
+                        $sellingPrice   = $productData['selling_price'];
+
+                        if ($discountType === DiscountType::PERCENTAGE->value) {
+                            $discountValue  = rand(5, 30);
+                            $discountAmount = ($sellingPrice * $discountValue) / 100;
+                        } elseif ($discountType === DiscountType::FLAT->value) {
+                            $discountValue  = rand(10, 50);
+                            $discountAmount = $discountValue;
+                        }
+
+                        // $discountedPrice = $this->applyDiscount($sellingPrice, $discountType, $discountValue);
+
                         $product = Product::create([
                             'name'                 => $productData['name'],
                             'slug'                 => Str::slug($productData['name']) . '-' . uniqid(),
                             'thumbnail'            => $productData['thumbnail'],
                             'short_description'    => "High-quality " . strtolower($sub->name),
                             'description'          => "Premium and reliable " . strtolower($sub->name),
-                            'buying_price'         => $productData['buying_price'],
-                            'selling_price'        => $productData['selling_price'],
-                            'discount_type'        => $discountTypes[array_rand($discountTypes)],
-                            'discount_amount'      => 10,
+                            'cost_price'           => $productData['cost_price'],
+                            'selling_price'        => $sellingPrice,
+                            'discount_type'        => $discountType,
+                            'discount_value'       => $discountValue,
+                            'discount_amount'      => $discountAmount,
+                            'discounted_price'     => $discountType !== null && $discountAmount !== null ? max(round($sellingPrice - $discountAmount, 2), 0) : null,
                             'unit_value'           => rand(1, 5),
                             'unit_id'              => $this->getUnitId($slug),
                             'category_id'          => $category->id,
@@ -71,7 +82,9 @@ class ProductSeeder extends Seeder
                             'brand_id'             => $brandIds ? $brandIds[array_rand($brandIds)] : null,
                             'seller_id'            => is_array($seller) ? $seller[array_rand($seller)] : $seller,
                             'sku'                  => strtoupper(substr($category->name, 0, 2)) . '-' . strtoupper(Str::random(6)),
-                            'barcode'              => 'BAR-' . strtoupper(Str::random(10)),
+                            'stock_in'             => rand(10, 100),
+                            'stock_out'            => rand(0, 10),
+                            'low_stock_quantity'   => 5,
                             'is_trending'          => rand(0, 1),
                             'is_community'         => rand(0, 1),
                             'is_interest'          => rand(0, 1),
@@ -79,15 +92,11 @@ class ProductSeeder extends Seeder
                             'lightdeal_expired_at' => now()->addDays(rand(1, 30)),
                             'best_selling'         => rand(0, 1),
                             'is_featured'          => rand(0, 1),
-                            'stock_in'             =>  100,
-                            'stock_out'            => 0,
-                            'shipping_cost'        => 10,
                             'tax'                  => 10,
                             'views'                => 0,
                             'video'                => 'videos/products/' . $featuredVideos[($i - 1) % count($featuredVideos)],
                         ]);
 
-                        // Insert product images
                         if (! empty($productData['images'])) {
                             $imagesToInsert = array_map(fn($image) => [
                                 'product_id' => $product->id,
@@ -95,38 +104,23 @@ class ProductSeeder extends Seeder
                             ], $productData['images']);
                             ProductImage::insert($imagesToInsert);
                         }
-
-                        if (! empty($productData['variants'])) {
-                            foreach ($productData['variants'] as $key => $options) {
-                                $productAttribute = ProductAttribute::where('category_id', $product->category_id)
-                                    ->where('name', $key)
-                                    ->with('options')
-                                    ->first();
-
-                                if (! $productAttribute) {
-                                    continue;
-                                }
-
-                                foreach ($options as $optionValue) {
-                                    $option = $productAttribute->options->firstWhere('value', $optionValue);
-
-                                    if ($option) {
-                                        ProductVariant::create([
-                                            'product_id'       => $product->id,
-                                            'option_id'        => $option->id,
-                                            'sku'              => $product->sku . '-' . strtoupper(Str::random(4)),
-                                            'additional_price' => rand(1, 5) * 10,
-                                            'stock_in'         => 10,
-                                            'stock_out'         => 0,
-                                        ]);
-                                    }
-                                }
-                            }
-                        }
                     }
                 }
             }
         });
+    }
+
+    private function applyDiscount(float $price, ?string $type, ?float $value): float
+    {
+        if (! $type || ! $value) {
+            return $price;
+        }
+
+        return match ($type) {
+            DiscountType::PERCENTAGE => round($price - (($price * $value) / 100), 2),
+            DiscountType::FLAT => max(round($price - $value, 2), 0),
+            default => $price,
+        };
     }
 
     private static array $unitMap = [];
@@ -161,84 +155,57 @@ class ProductSeeder extends Seeder
                     'name'          => 'All-Terrain Car Tire',
                     'thumbnail'     => 'images/products/thumb/automotive-thumb-1.jpg',
                     'images'        => ['images/products/automotive1.jpg', 'images/products/automotive2.jpg', 'images/products/automotive3.jpg'],
-                    'buying_price'  => 8500,
+                    'cost_price'    => 8500,
                     'selling_price' => 10500,
-                    'variants'      => [
-                        'Size' => ['15 Inch', '16 Inch', '17 Inch'],
-                    ],
                 ],
                 [
                     'name'          => 'Synthetic Engine Oil – 5L',
                     'thumbnail'     => 'images/products/thumb/automotive-thumb-2.jpg',
                     'images'        => ['images/products/automotive4.jpg', 'images/products/automotive5.jpg', 'images/products/automotive6.jpg'],
-                    'buying_price'  => 3000,
+                    'cost_price'    => 3000,
                     'selling_price' => 3500,
-                    'variants'      => [
-                        'Viscosity' => ['5W-30', '10W-40', '15W-40'],
-                    ],
                 ],
                 [
                     'name'          => 'LED Headlight Pair – 6000K',
                     'thumbnail'     => 'images/products/thumb/automotive-thumb-3.jpg',
                     'images'        => ['images/products/automotive7.jpg', 'images/products/automotive8.jpg', 'images/products/automotive9.jpg'],
-                    'buying_price'  => 1500,
+                    'cost_price'    => 1500,
                     'selling_price' => 2500,
-                    'variants'      => [
-                        'Color' => ['White', 'Blue'],
-                    ],
                 ],
                 [
                     'name'          => 'Brake Pad Set – Ceramic',
                     'thumbnail'     => 'images/products/thumb/automotive-thumb-4.jpg',
                     'images'        => ['images/products/automotive10.jpg', 'images/products/automotive11.jpg', 'images/products/automotive12.jpg'],
-                    'buying_price'  => 2000,
+                    'cost_price'    => 2000,
                     'selling_price' => 3000,
-                    'variants'      => [
-                        'Material' => ['Ceramic', 'Semi-metallic'],
-                    ],
                 ],
                 [
                     'name'          => 'Motorcycle Helmet – Matte Black',
                     'thumbnail'     => 'images/products/thumb/automotive-thumb-5.jpg',
                     'images'        => ['images/products/automotive13.jpg', 'images/products/automotive14.jpg', 'images/products/automotive15.jpg'],
-                    'buying_price'  => 1000,
+                    'cost_price'    => 1000,
                     'selling_price' => 2000,
-                    'variants'      => [
-                        'Size'  => ['M', 'L', 'XL'],
-                        'Color' => ['Black', 'Red'],
-                    ],
                 ],
                 [
                     'name'          => 'Windshield Wiper Blades – 24in',
                     'thumbnail'     => 'images/products/thumb/automotive-thumb-6.jpg',
                     'images'        => ['images/products/automotive16.jpg', 'images/products/automotive17.jpg', 'images/products/automotive18.jpg'],
-                    'buying_price'  => 500,
+                    'cost_price'    => 500,
                     'selling_price' => 1000,
-                    'variants'      => [
-                        'Size' => ['24 Inch', '27 Inch'],
-                    ],
                 ],
                 [
                     'name'          => 'Car Air Freshener – Lemon',
                     'thumbnail'     => 'images/products/thumb/automotive-thumb-7.jpg',
                     'images'        => ['images/products/automotive19.jpg', 'images/products/automotive20.jpg', 'images/products/automotive21.jpg'],
-                    'buying_price'  => 100,
+                    'cost_price'    => 100,
                     'selling_price' => 200,
-                    'variants'      => [
-                        'Fragrance' => ['Lemon', 'Lavender', 'Ocean Breeze'],
-                        'Type'      => ['Gel', 'Spray', 'Card'],
-                    ],
                 ],
                 [
                     'name'          => 'Car Battery – 12V 70Ah',
                     'thumbnail'     => 'images/products/thumb/automotive-thumb-8.jpg',
                     'images'        => ['images/products/automotive22.jpg', 'images/products/automotive23.jpg', 'images/products/automotive24.jpg'],
-                    'buying_price'  => 10000,
+                    'cost_price'    => 10000,
                     'selling_price' => 15000,
-                    'variants'      => [
-                        'Capacity' => ['12V 60Ah', '12V 70Ah', '12V 80Ah'],
-                        'Type'     => ['Lead-Acid', 'AGM', 'Gel'],
-                    ],
                 ],
             ],
 
@@ -247,56 +214,56 @@ class ProductSeeder extends Seeder
                     'name'          => 'Smart Air Conditioner – 1.5 Ton',
                     'thumbnail'     => 'images/products/thumb/appliance-thumb-1.jpg',
                     'images'        => ['images/products/appliance1.jpg', 'images/products/appliance2.jpg', 'images/products/appliance3.jpg'],
-                    'buying_price'  => 45000,
+                    'cost_price'    => 45000,
                     'selling_price' => 50000,
                 ],
                 [
                     'name'          => 'Microwave Oven – 20L Digital',
                     'thumbnail'     => 'images/products/thumb/appliance-thumb-2.jpg',
                     'images'        => ['images/products/appliance4.jpg', 'images/products/appliance5.jpg', 'images/products/appliance6.jpg'],
-                    'buying_price'  => 8000,
+                    'cost_price'    => 8000,
                     'selling_price' => 10000,
                 ],
                 [
                     'name'          => 'Water Purifier – RO+UV+UF',
                     'thumbnail'     => 'images/products/thumb/appliance-thumb-3.jpg',
                     'images'        => ['images/products/appliance7.jpg', 'images/products/appliance8.jpg', 'images/products/appliance9.jpg'],
-                    'buying_price'  => 15000,
+                    'cost_price'    => 15000,
                     'selling_price' => 20000,
                 ],
                 [
                     'name'          => 'Double Door Refrigerator – 600L',
                     'thumbnail'     => 'images/products/thumb/appliance-thumb-4.jpg',
                     'images'        => ['images/products/appliance10.jpg', 'images/products/appliance11.jpg', 'images/products/appliance12.jpg'],
-                    'buying_price'  => 60000,
+                    'cost_price'    => 60000,
                     'selling_price' => 70000,
                 ],
                 [
                     'name'          => 'Automatic Washing Machine – 7kg',
                     'thumbnail'     => 'images/products/thumb/appliance-thumb-5.jpg',
                     'images'        => ['images/products/appliance13.jpg', 'images/products/appliance14.jpg', 'images/products/appliance15.jpg'],
-                    'buying_price'  => 25000,
+                    'cost_price'    => 25000,
                     'selling_price' => 30000,
                 ],
                 [
                     'name'          => 'Electric Kettle – 1.5L',
                     'thumbnail'     => 'images/products/thumb/appliance-thumb-6.jpg',
                     'images'        => ['images/products/appliance16.jpg', 'images/products/appliance17.jpg', 'images/products/appliance18.jpg'],
-                    'buying_price'  => 1000,
+                    'cost_price'    => 1000,
                     'selling_price' => 2000,
                 ],
                 [
                     'name'          => 'Induction Cooktop – 2000W',
                     'thumbnail'     => 'images/products/thumb/appliance-thumb-7.jpg',
                     'images'        => ['images/products/appliance19.jpg', 'images/products/appliance20.jpg', 'images/products/appliance21.jpg'],
-                    'buying_price'  => 3000,
+                    'cost_price'    => 3000,
                     'selling_price' => 4000,
                 ],
                 [
                     'name'          => 'Room Heater – Quartz Element',
                     'thumbnail'     => 'images/products/thumb/appliance-thumb-8.jpg',
                     'images'        => ['images/products/appliance22.jpg', 'images/products/appliance23.jpg', 'images/products/appliance24.jpg'],
-                    'buying_price'  => 2500,
+                    'cost_price'    => 2500,
                     'selling_price' => 3500,
                 ],
             ],
@@ -310,13 +277,8 @@ class ProductSeeder extends Seeder
                         'images/products/fashion-2.jpg',
                         'images/products/fashion-3.jpg',
                     ],
-                    'buying_price'  => 2000,
+                    'cost_price'    => 2000,
                     'selling_price' => 2500,
-                    'variants'      => [
-                        'Color'    => ['Black', 'Gray'],
-                        'Size'     => ['M', 'L', 'XL'],
-                        'Material' => ['Wool', 'Polyester'],
-                    ],
                 ],
                 [
                     'name'          => 'Clark Navy Dial Watch',
@@ -326,12 +288,8 @@ class ProductSeeder extends Seeder
                         'images/products/fashion-5.jpg',
                         'images/products/fashion-6.jpg',
                     ],
-                    'buying_price'  => 1000,
+                    'cost_price'    => 1000,
                     'selling_price' => 1500,
-                    'variants'      => [
-                        'Color'    => ['Blue', 'Black'],
-                        'Material' => ['Leather'],
-                    ],
                 ],
                 [
                     'name'          => 'Sports Sneakers White/Black',
@@ -341,13 +299,8 @@ class ProductSeeder extends Seeder
                         'images/products/fashion-8.jpg',
                         'images/products/fashion-9.jpg',
                     ],
-                    'buying_price'  => 1000,
+                    'cost_price'    => 1000,
                     'selling_price' => 1500,
-                    'variants'      => [
-                        'Color'    => ['White', 'Black'],
-                        'Size'     => ['M', 'L', 'XL'],
-                        'Material' => ['Leather'],
-                    ],
                 ],
                 [
                     'name'          => 'Traditional Red Silk Saree',
@@ -357,11 +310,8 @@ class ProductSeeder extends Seeder
                         'images/products/fashion-11.jpg',
                         'images/products/fashion-12.jpg',
                     ],
-                    'buying_price'  => 2000,
+                    'cost_price'    => 2000,
                     'selling_price' => 3000,
-                    'variants'      => [
-                        'Color' => ['Red', 'Maroon'],
-                    ],
                 ],
                 [
                     'name'          => 'Leather Handbag Camel Brown',
@@ -371,12 +321,8 @@ class ProductSeeder extends Seeder
                         'images/products/fashion-14.jpg',
                         'images/products/fashion-15.jpg',
                     ],
-                    'buying_price'  => 1500,
+                    'cost_price'    => 1500,
                     'selling_price' => 2000,
-                    'variants'      => [
-                        'Color'    => ['Camel Brown', 'Black'],
-                        'Material' => ['Leather'],
-                    ],
                 ],
                 [
                     'name'          => 'Reebok Classic Leather Sneakers',
@@ -386,13 +332,8 @@ class ProductSeeder extends Seeder
                         'images/products/fashion-17.jpg',
                         'images/products/fashion-18.jpg',
                     ],
-                    'buying_price'  => 2000,
+                    'cost_price'    => 2000,
                     'selling_price' => 3000,
-                    'variants'      => [
-                        'Color'    => ['White', 'Black'],
-                        'Size'     => ['M', 'L'],
-                        'Material' => ['Leather'],
-                    ],
                 ],
                 [
                     'name'          => 'Classic Men Fleece Shorts',
@@ -402,13 +343,8 @@ class ProductSeeder extends Seeder
                         'images/products/fashion-20.jpg',
                         'images/products/fashion-21.jpg',
                     ],
-                    'buying_price'  => 500,
+                    'cost_price'    => 500,
                     'selling_price' => 1000,
-                    'variants'      => [
-                        'Color'    => ['Gray', 'Black'],
-                        'Size'     => ['M', 'L', 'XL'],
-                        'Material' => ['Cotton'],
-                    ],
                 ],
                 [
                     'name'          => 'Tommy Hilfiger Polo T-Shirt',
@@ -418,13 +354,8 @@ class ProductSeeder extends Seeder
                         'images/products/fashion-23.jpg',
                         'images/products/fashion-24.jpg',
                     ],
-                    'buying_price'  => 1000,
+                    'cost_price'    => 1000,
                     'selling_price' => 15000,
-                    'variants'      => [
-                        'Color'    => ['Blue', 'White'],
-                        'Size'     => ['M', 'L', 'XL'],
-                        'Material' => ['Cotton'],
-                    ],
                 ],
             ],
 
@@ -437,11 +368,8 @@ class ProductSeeder extends Seeder
                         'images/products/electronics-2.jpg',
                         'images/products/electronics-3.jpg',
                     ],
-                    'buying_price'  => 7000,
+                    'cost_price'    => 7000,
                     'selling_price' => 9000,
-                    'variants'      => [
-                        'Size' => ['22 Inch', '27 Inch'],
-                    ],
                 ],
                 [
                     'name'          => 'Bluetooth Portable Speaker',
@@ -451,11 +379,8 @@ class ProductSeeder extends Seeder
                         'images/products/electronics-5.jpg',
                         'images/products/electronics-6.jpg',
                     ],
-                    'buying_price'  => 1500,
+                    'cost_price'    => 1500,
                     'selling_price' => 2500,
-                    'variants'      => [
-                        'Color' => ['Black', 'Blue', 'Red'],
-                    ],
                 ],
                 [
                     'name'          => 'Wireless Noise Cancelling Headphones',
@@ -465,11 +390,8 @@ class ProductSeeder extends Seeder
                         'images/products/electronics-8.jpg',
                         'images/products/electronics-9.jpg',
                     ],
-                    'buying_price'  => 3000,
+                    'cost_price'    => 3000,
                     'selling_price' => 4000,
-                    'variants'      => [
-                        'Color' => ['Black', 'White'],
-                    ],
                 ],
                 [
                     'name'          => 'RGB Mechanical Gaming Keyboard',
@@ -479,11 +401,8 @@ class ProductSeeder extends Seeder
                         'images/products/electronics-11.jpg',
                         'images/products/electronics-12.jpg',
                     ],
-                    'buying_price'  => 2000,
+                    'cost_price'    => 2000,
                     'selling_price' => 3000,
-                    'variants'      => [
-                        'Color' => ['Black', 'White'],
-                    ],
                 ],
                 [
                     'name'          => '4K Ultra HD Smart TV',
@@ -493,11 +412,8 @@ class ProductSeeder extends Seeder
                         'images/products/electronics-14.jpg',
                         'images/products/electronics-15.jpg',
                     ],
-                    'buying_price'  => 20000,
+                    'cost_price'    => 20000,
                     'selling_price' => 25000,
-                    'variants'      => [
-                        'Size' => ['22 Inch', '27 Inch'],
-                    ],
                 ],
                 [
                     'name'          => 'Smartwatch with Heart Rate Monitor',
@@ -507,11 +423,8 @@ class ProductSeeder extends Seeder
                         'images/products/electronics-17.jpg',
                         'images/products/electronics-18.jpg',
                     ],
-                    'buying_price'  => 3000,
+                    'cost_price'    => 3000,
                     'selling_price' => 4000,
-                    'variants'      => [
-                        'Color' => ['Black', 'Silver'],
-                    ],
                 ],
                 [
                     'name'          => 'WiFi Wireless Router 1200Mbps',
@@ -521,7 +434,7 @@ class ProductSeeder extends Seeder
                         'images/products/electronics-20.jpg',
                         'images/products/electronics-21.jpg',
                     ],
-                    'buying_price'  => 1500,
+                    'cost_price'    => 1500,
                     'selling_price' => 2500,
                 ],
                 [
@@ -532,11 +445,8 @@ class ProductSeeder extends Seeder
                         'images/products/electronics-23.jpg',
                         'images/products/electronics-24.jpg',
                     ],
-                    'buying_price'  => 1500,
+                    'cost_price'    => 1500,
                     'selling_price' => 2500,
-                    'variants'      => [
-                        'Color' => ['Black', 'White'],
-                    ],
                 ],
             ],
 
@@ -549,13 +459,8 @@ class ProductSeeder extends Seeder
                         'images/products/skincare-2.jpg',
                         'images/products/skincare-3.jpg',
                     ],
-                    'buying_price'  => 150,
+                    'cost_price'    => 150,
                     'selling_price' => 250,
-                    'variants'      => [
-                        'Size'        => ['50ml', '100ml'],
-                        'Skin Type'   => ['All', 'Dry'],
-                        'Formulation' => ['Gel'],
-                    ],
                 ],
                 [
                     'name'          => 'Vitamin C Brightening Serum',
@@ -565,13 +470,8 @@ class ProductSeeder extends Seeder
                         'images/products/skincare-5.jpg',
                         'images/products/skincare-6.jpg',
                     ],
-                    'buying_price'  => 300,
+                    'cost_price'    => 300,
                     'selling_price' => 400,
-                    'variants'      => [
-                        'Size'        => ['30ml', '50ml'],
-                        'Skin Type'   => ['All', 'Oily'],
-                        'Formulation' => ['Serum'],
-                    ],
                 ],
                 [
                     'name'          => 'SPF 50+ Sunscreen Lotion',
@@ -581,7 +481,7 @@ class ProductSeeder extends Seeder
                         'images/products/skincare-8.jpg',
                         'images/products/skincare-9.jpg',
                     ],
-                    'buying_price'  => 200,
+                    'cost_price'    => 200,
                     'selling_price' => 300,
                 ],
                 [
@@ -592,7 +492,7 @@ class ProductSeeder extends Seeder
                         'images/products/skincare-11.jpg',
                         'images/products/skincare-12.jpg',
                     ],
-                    'buying_price'  => 150,
+                    'cost_price'    => 150,
                     'selling_price' => 200,
                 ],
                 [
@@ -603,7 +503,7 @@ class ProductSeeder extends Seeder
                         'images/products/skincare-14.jpg',
                         'images/products/skincare-15.jpg',
                     ],
-                    'buying_price'  => 150,
+                    'cost_price'    => 150,
                     'selling_price' => 200,
                 ],
                 [
@@ -614,7 +514,7 @@ class ProductSeeder extends Seeder
                         'images/products/skincare-17.jpg',
                         'images/products/skincare-18.jpg',
                     ],
-                    'buying_price'  => 100,
+                    'cost_price'    => 100,
                     'selling_price' => 250,
                 ],
                 [
@@ -625,7 +525,7 @@ class ProductSeeder extends Seeder
                         'images/products/skincare-20.jpg',
                         'images/products/skincare-21.jpg',
                     ],
-                    'buying_price'  => 300,
+                    'cost_price'    => 300,
                     'selling_price' => 400,
                 ],
                 [
@@ -636,7 +536,7 @@ class ProductSeeder extends Seeder
                         'images/products/skincare-23.jpg',
                         'images/products/skincare-24.jpg',
                     ],
-                    'buying_price'  => 300,
+                    'cost_price'    => 300,
                     'selling_price' => 350,
                 ],
             ],
@@ -650,7 +550,7 @@ class ProductSeeder extends Seeder
                         'images/products/grocery-2.jpg',
                         'images/products/grocery-3.jpg',
                     ],
-                    'buying_price'  => 250,
+                    'cost_price'    => 250,
                     'selling_price' => 350,
                 ],
                 [
@@ -661,7 +561,7 @@ class ProductSeeder extends Seeder
                         'images/products/grocery-5.jpg',
                         'images/products/grocery-6.jpg',
                     ],
-                    'buying_price'  => 500,
+                    'cost_price'    => 500,
                     'selling_price' => 1000,
                 ],
                 [
@@ -672,7 +572,7 @@ class ProductSeeder extends Seeder
                         'images/products/grocery-8.jpg',
                         'images/products/grocery-9.jpg',
                     ],
-                    'buying_price'  => 150,
+                    'cost_price'    => 150,
                     'selling_price' => 250,
                 ],
                 [
@@ -683,7 +583,7 @@ class ProductSeeder extends Seeder
                         'images/products/grocery-11.jpg',
                         'images/products/grocery-12.jpg',
                     ],
-                    'buying_price'  => 150,
+                    'cost_price'    => 150,
                     'selling_price' => 200,
                 ],
                 [
@@ -694,7 +594,7 @@ class ProductSeeder extends Seeder
                         'images/products/grocery-14.jpg',
                         'images/products/grocery-15.jpg',
                     ],
-                    'buying_price'  => 50,
+                    'cost_price'    => 50,
                     'selling_price' => 100,
                 ],
                 [
@@ -705,7 +605,7 @@ class ProductSeeder extends Seeder
                         'images/products/grocery-17.jpg',
                         'images/products/grocery-18.jpg',
                     ],
-                    'buying_price'  => 100,
+                    'cost_price'    => 100,
                     'selling_price' => 150,
                 ],
                 [
@@ -716,7 +616,7 @@ class ProductSeeder extends Seeder
                         'images/products/grocery-20.jpg',
                         'images/products/grocery-21.jpg',
                     ],
-                    'buying_price'  => 50,
+                    'cost_price'    => 50,
                     'selling_price' => 100,
                 ],
                 [
@@ -727,7 +627,7 @@ class ProductSeeder extends Seeder
                         'images/products/grocery-23.jpg',
                         'images/products/grocery-24.jpg',
                     ],
-                    'buying_price'  => 300,
+                    'cost_price'    => 300,
                     'selling_price' => 500,
                 ],
             ],

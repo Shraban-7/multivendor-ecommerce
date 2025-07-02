@@ -15,8 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('order_id')->nullable();
             $table->unsignedBigInteger('product_id')->nullable();
-            $table->json('product_variant_ids')->nullable();
-            $table->decimal('product_variant_price', 10, 2);
+            $table->unsignedBigInteger('product_variant_id')->nullable();
             $table->decimal('buying_price', 10, 2);
             $table->decimal('unit_price', 10, 2);
             $table->integer('quantity');

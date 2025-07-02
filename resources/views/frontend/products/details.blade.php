@@ -146,15 +146,51 @@
                             </div>
 
                             <div class="flex flex-wrap items-center gap-2">
-                                <div class="flex flex-no-wrap items-center gap-1 new-price">
-                                    <i class="fa-solid fa-bolt text-[#ffa755]"></i>
-                                    <h3 id="current-price{{ $product['id'] }}"
-                                        class="font-bold current-price text-primary product-price">
-                                        {{ money($product['discount_price']) }}</h3>
-                                </div>
-                                <h6 id="old-price{{ $product['id'] }}" class="line-through text-jet-gray">
-                                    {{ money($product['price']) }}
-                                </h6>
+                                @php
+                                    $hasVariants =
+                                        isset($product['variants']) &&
+                                        is_array($product['variants']) &&
+                                        count($product['variants']) > 0;
+                                    $firstVariant = $hasVariants ? $product['variants'][0] : null;
+
+                                    $variantDiscountedPrice = $firstVariant['discounted_price'] ?? null;
+                                    $variantPrice = $firstVariant['price'] ?? null;
+
+                                    $showVariantDiscount =
+                                        $variantDiscountedPrice !== null && $variantDiscountedPrice < $variantPrice;
+                                    $showProductDiscount =
+                                        $product['discounted_price'] !== null &&
+                                        $product['discounted_price'] < $product['price'];
+                                @endphp
+
+                                @if ($showVariantDiscount)
+                                    <div class="flex flex-no-wrap items-center gap-1 new-price">
+                                        <h3 id="discounted_price"
+                                            class="font-bold current-price text-primary product-price">
+                                            {{ money($variantDiscountedPrice) }}
+                                        </h3>
+                                    </div>
+                                    <h6 id="price" class="line-through text-jet-gray">
+                                        {{ money($variantPrice) }}
+                                    </h6>
+                                @elseif ($showProductDiscount)
+                                    <div class="flex flex-no-wrap items-center gap-1 new-price">
+                                        <h3 id="discounted_price"
+                                            class="font-bold current-price text-primary product-price">
+                                            {{ money($product['discounted_price']) }}
+                                        </h3>
+                                    </div>
+                                    <h6 id="price" class="line-through text-jet-gray">
+                                        {{ money($product['price']) }}
+                                    </h6>
+                                @else
+                                    <div class="flex flex-no-wrap items-center gap-1 new-price">
+                                        <h3 id="price" class="font-bold current-price text-primary product-price">
+                                            {{ money($product['price']) }}
+                                        </h3>
+                                    </div>
+                                @endif
+
                                 @if ($product['almost_sold_out'])
                                     <span class="text-xs text-leaf-green">Almost Sold Out</span>
                                 @endif
@@ -175,62 +211,56 @@
                                     <input type="hidden" id="productBasePrice{{ $product['id'] }}"
                                         value="{{ $product['price'] }}">
                                     <input type="hidden" id="productDiscountedPrice{{ $product['id'] }}"
-                                        value="{{ $product['discount_price'] }}">
+                                        value="{{ $product['discounted_price'] }}">
 
-                                    <form data-slug="{{ $product['slug'] }}" class="flex flex-wrap flex-col variantForm"
-                                        data-id="{{ $product['id'] }}">
-                                        @foreach ($product['product_attributes'] as $attribute)
-                                            <div class="mt-2">
-                                                <h6 class="text-davy-gray sm:text-lg">{{ $attribute['name'] }} :</h6>
-                                                <div class="flex flex-wrap items-center gap-4 sm:gap-5">
-                                                    @foreach ($attribute['options'] as $option)
+                                    <form id="variantForm" data-slug="{{ $product['slug'] ?? '' }}"
+                                        class="flex flex-wrap flex-col" data-id="{{ $product['id'] ?? '' }}">
+
+                                        @php
+                                            $defaultVariant = collect($product['variants'])->firstWhere(
+                                                'stock',
+                                                '>',
+                                                0,
+                                            );
+                                            $defaultValueIds = $defaultVariant['value_ids'] ?? [];
+                                        @endphp
+
+                                        @foreach ($product['options'] as $option)
+                                            <div class="mb-6" data-option-id="{{ $option['id'] }}">
+                                                <h6 class="text-davy-gray text-base sm:text-lg font-medium mb-2">
+                                                    {{ $option['name'] }}:</h6>
+
+                                                <div class="flex flex-wrap gap-3">
+                                                    @foreach ($option['values'] as $value)
                                                         @php
-                                                            $inputId =
-                                                                strtolower($attribute['name']) .
-                                                                '-' .
-                                                                strtolower($option['value']);
-                                                            $inputName = 'option_' . $attribute['id'];
+                                                            $isActive = in_array($value['id'], $defaultValueIds);
                                                         @endphp
 
-                                                        <div class="form-ctrl flex flex-col gap-2 items-center">
-                                                            <input id="{{ $inputId }}" type="radio"
-                                                                value="{{ $option['variant_id'] }}"
-                                                                data-id="{{ $option['id'] }}"
-                                                                data-attribute="{{ $attribute['id'] }}"
-                                                                data-variant-id="{{ $option['variant_id'] }}"
-                                                                data-sku="{{ $option['sku'] }}"
-                                                                data-price="{{ $option['price'] }}"
-                                                                data-product-price="{{ $product['price'] }}"
-                                                                data-discounted-price="{{ $product['discount_price'] }}"
-                                                                data-image="{{ storage_url($option['image']) }}"
-                                                                name="{{ $inputName }}"
-                                                                class="hidden peer variant-option" />
-
-                                                            @if (strtolower($attribute['name']) === 'color')
-                                                                <label
-                                                                    style="background-color: {{ strtolower($option['value']) }}"
-                                                                    for="{{ $inputId }}"
-                                                                    class="w-6 h-6 sm:w-8 sm:h-8 block peer-checked:ring peer-checked:ring-{{ strtolower($option['value']) }}-800  rounded-full peer-checked:border-2 peer-checked:border-jet-gray/30 sm:peer-checked:border-4 border border-jet-gray/30 peer-checked:border-primary cursor-pointer">
-                                                                </label>
-                                                            @else
-                                                                <label for="{{ $inputId }}"
-                                                                    class="px-4 py-1 sm:px-5 sm:py-1.5 block ring-[1px] hover:bg-gray-100 ring-transparent peer-checked:ring-primary rounded border border-jet-gray/30 peer-checked:border-primary peer-checked:text-primary cursor-pointer">
-                                                                    {{ $option['value'] }}
-                                                                </label>
-                                                            @endif
-
-                                                            @if (strtolower($attribute['name']) === 'color')
-                                                                <label for="{{ $inputId }}"
-                                                                    class="block cursor-pointer text-davy-gray text-sm sm:text-base">
-                                                                    {{ $option['value'] }}
-                                                                </label>
-                                                            @endif
-                                                        </div>
+                                                        <button type="button"
+                                                            class="option-value-btn px-4 py-2 text-sm border rounded-md transition-all duration-200
+        {{ $isActive ? 'bg-primary text-white border-primary' : 'bg-white text-gray-800 border-gray-300 hover:bg-primary/90' }}"
+                                                            data-option-id="{{ $option['id'] }}"
+                                                            data-value-id="{{ $value['id'] }}">
+                                                            {{ $value['value'] }}
+                                                        </button>
                                                     @endforeach
                                                 </div>
                                             </div>
                                         @endforeach
+
+
+                                        <div class="alert alert-info d-none mt-4" id="variantInfo">
+                                            <p><strong>SKU:</strong> <span id="sku"></span></p>
+                                            {{-- <p><strong>Price:</strong> $<span id="price"></span></p> --}}
+                                            <p><strong>Stock:</strong> <span id="stock"></span></p>
+                                        </div>
+
+                                        <div class="alert alert-danger d-none mt-4" id="variantNotFound">
+                                            Variant not found for selected options.
+                                        </div>
+
                                     </form>
+
                                 </div>
 
                                 <!-- Quantity -->
@@ -238,15 +268,14 @@
                                     <div class="text-davy-gray flex items-center gap-2">
                                         <h6 class="sm:text-lg">Quantity :</h6>
                                         <div class="flex items-center border border-jet-gray/30 rounded p-1">
-                                            <button id="decreaseBtn{{ $product['id'] }}"
+                                            <button id="decreaseBtn"
                                                 class="w-5 h-5 flex items-center justify-center text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 eq active:text-primary rounded text-sm font-bold">
                                                 <i class="fa-solid fa-minus"></i>
                                             </button>
-                                            <input readonly id="quantity{{ $product['id'] }}" type="number"
-                                                min="1"
+                                            <input readonly id="quantity" type="number" min="1"
                                                 class="text-center text-persian-blue w-16 h-5 text-sm font-medium border-0 focus:ring-0" />
 
-                                            <button id="increaseBtn{{ $product['id'] }}"
+                                            <button id="increaseBtn"
                                                 class="w-5 h-5 flex items-center justify-center text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 eq active:text-primary rounded text-sm font-bold">
                                                 <i class="fa-solid fa-plus"></i>
                                             </button>
@@ -262,14 +291,12 @@
                             <input type="hidden" name="quantity" class="qtyInputValue" value=""
                                 id="qtyInput{{ $product['id'] }}">
 
-                            <input type="hidden" id="variantSku{{ $product['id'] }}" value="">
+                            <input type="hidden" id="variantId" name="variant_id" value="">
 
                             @if ($product['in_stock'] > 0)
                                 <button data-id="{{ $product['id'] }}" type="button"
                                     class="cartBtn text-sm md:text-base font-medium flex-1 px-6 py-2 border border-primary text-primary rounded-full hover:bg-primary hover:text-white transition-all">
                                     Add To Cart
-                                    <span class="block text-xs font-light">{{ $product['discount']['percent'] }}%
-                                        Discount</span>
                                 </button>
                             @else
                                 <button data-id="{{ $product['id'] }}" type="button"
@@ -543,7 +570,7 @@
                         <!-- Metrics -->
                         <div class="flex flex-wrap items-center gap-2 md:gap-4">
                             <span>{{ $seller['total_followers'] }}+ Followers .</span>
-                            <span>{{ $seller['total_sell'] }} Sold .</span>
+                            {{-- <span>{{ $seller['total_sell'] }} Sold .</span> --}}
                             <span class="flex items-center gap-1">
                                 <span>{{ $seller['rating'] }}</span>
                                 <i class="fa-solid fa-star text-theme-dark"></i>
@@ -610,70 +637,134 @@
 
     @push('scripts')
         <script>
-            $(document).ready(function() {
-                let quantity = 1;
-                var product_id = $('.variantForm').data('id')
+            const product = @json($product);
+            const variants = product.variants;
+            const defaultVariant = @json($defaultVariant);
+            const selectedOptions = {};
+            const valueToOptionMap = {};
 
-                const quantityElement = $('#quantity' + product_id);
-                const decreaseBtn = $('#decreaseBtn' + product_id);
-                const increaseBtn = $('#increaseBtn' + product_id);
-                const hiddenInput = $('.qtyInputValue' + product_id);
+            let quantity = 1;
+            let currentVariant = defaultVariant;
 
+            const quantityElement = $('#quantity');
+            const decreaseBtn = $('#decreaseBtn');
+            const increaseBtn = $('#increaseBtn');
+            const hiddenInput = $('.qtyInputValue');
 
-                const updateQuantity = () => {
-                    quantityElement.val(quantity.toString().padStart(2, "0"));
-                    hiddenInput.val(quantity);
-                    updatePriceAndSku();
-                };
+            const updateQuantity = () => {
+                quantityElement.val(quantity.toString().padStart(2, "0"));
+                hiddenInput.val(quantity);
 
-                increaseBtn.on('click', function() {
-                    quantity++;
-                    updateQuantity();
-                });
+                if (currentVariant) {
+                    $('#variantId').val(currentVariant.id);
+                    const basePrice = parseFloat(currentVariant.price) || 0;
+                    const baseDiscountedPrice = parseFloat(currentVariant.discounted_price) || 0;
+                    const totalPrice = (basePrice * quantity).toFixed(2);
+                    const totalDiscountedPrice = (baseDiscountedPrice * quantity).toFixed(2);
 
-                decreaseBtn.on('click', function() {
-                    if (quantity > 1) {
-                        quantity--;
-                        updateQuantity();
-                    }
-                });
-
-                quantityElement.on('input', function() {
-                    const newQuantity = parseInt($(this).val()) || 1;
-                    quantity = newQuantity < 1 ? 1 : newQuantity;
-                    updateQuantity();
-                });
-
-                function updatePriceAndSku() {
-                    const checkedOptions = $('.variant-option:checked');
-                    const quantityVal = parseInt($('#quantity' + product_id).val()) || 1;
-
-                    let basePrice, baseDiscountedPrice, selectedSku = '';
-                    let totalAdditionalPrice = 0;
-
-                    if (checkedOptions.length > 0) {
-                        basePrice = parseFloat(checkedOptions.first().data('product-price')) || 0;
-                        baseDiscountedPrice = parseFloat(checkedOptions.first().data('discounted-price')) || 0;
-
-                        checkedOptions.each(function() {
-                            const selected = $(this);
-                            const additionalPrice = parseFloat(selected.data('price')) || 0;
-                            totalAdditionalPrice += additionalPrice;
-
-                            selectedSku = selected.data('sku');
-                        });
-                    } else {
-                        basePrice = parseFloat($('#productBasePrice' + product_id).val()) || 0;
-                        baseDiscountedPrice = parseFloat($('#productDiscountedPrice' + product_id).val()) || 0;
-                    }
-
-                    const finalPrice = basePrice + totalAdditionalPrice;
-                    const finalDiscountedPrice = baseDiscountedPrice + totalAdditionalPrice;
-
-                    $('#current-price' + product_id).text('৳ ' + (finalDiscountedPrice * quantityVal).toFixed(2));
-                    $('#old-price' + product_id).text('৳ ' + (finalPrice * quantityVal).toFixed(2));
-                    $('#variantSku' + product_id).val(selectedSku);
+                    $('#sku').text(currentVariant.sku);
+                    $('#price').text(`৳ ${totalPrice}`);
+                    $('#discounted_price').text(`৳ ${totalDiscountedPrice}`);
+                    $('#availability').text(currentVariant.stock > 0 ? 'In Stock' : 'Out of Stock');
                 }
+            };
+
+            increaseBtn.on('click', function() {
+                quantity++;
+                updateQuantity();
+            });
+
+            decreaseBtn.on('click', function() {
+                if (quantity > 1) {
+                    quantity--;
+                    updateQuantity();
+                }
+            });
+
+            quantityElement.on('input', function() {
+                const newQuantity = parseInt($(this).val()) || 1;
+                quantity = newQuantity < 1 ? 1 : newQuantity;
+                updateQuantity();
+            });
+
+            product.options.forEach(option => {
+                option.values.forEach(value => {
+                    valueToOptionMap[value.id] = option.id;
+                });
+            });
+
+            if (defaultVariant && defaultVariant.value_ids) {
+                defaultVariant.value_ids.forEach(valueId => {
+                    const optionId = valueToOptionMap[valueId];
+                    if (optionId) {
+                        selectedOptions[optionId] = valueId;
+                        $(`.option-value-btn[data-option-id="${optionId}"]`).removeClass(
+                                'bg-primary text-white border-primary')
+                            .addClass('bg-white text-gray-800 border-gray-300');
+
+                        $(`.option-value-btn[data-option-id="${optionId}"][data-value-id="${valueId}"]`)
+                            .removeClass('bg-white text-gray-800 border-gray-300')
+                            .addClass('bg-primary text-white border-primary');
+                    }
+                });
+            }
+
+            updateQuantity();
+
+            $(document).ready(function() {
+                $('.option-value-btn').on('click', function() {
+                    const optionId = $(this).data('option-id');
+                    const valueId = $(this).data('value-id');
+
+                    selectedOptions[optionId] = valueId;
+
+                    $(`.option-value-btn[data-option-id="${optionId}"]`)
+                        .removeClass('bg-primary text-white border-primary')
+                        .addClass('bg-white text-gray-800 border-gray-300');
+
+                    $(this)
+                        .removeClass('bg-white text-gray-800 border-gray-300')
+                        .addClass('bg-primary text-white border-primary');
+
+                    const totalOptions = product.options.length;
+                    if (Object.keys(selectedOptions).length === totalOptions) {
+                        const selectedIds = Object.values(selectedOptions).map(Number).sort();
+
+                        const matchingVariant = variants.find(variant => {
+                            const sorted = variant.value_ids.slice().sort();
+                            return JSON.stringify(sorted) === JSON.stringify(selectedIds);
+                        });
+
+                        if (matchingVariant) {
+                            currentVariant = matchingVariant;
+                            $('#variantId').val(currentVariant.id);
+
+                            const basePrice = parseFloat(currentVariant.price) || 0;
+                            const baseDiscountedPrice = parseFloat(currentVariant.discounted_price) || 0;
+                            const totalPrice = (basePrice * quantity).toFixed(2);
+                            const totalDiscountedPrice = (baseDiscountedPrice * quantity).toFixed(2);
+
+                            $('#sku').text(currentVariant.sku);
+                            $('#price').text(`৳ ${totalPrice}`);
+                            $('#discounted_price').text(`৳ ${totalDiscountedPrice}`);
+                            $('#availability').text(currentVariant.stock > 0 ? 'In Stock' : 'Out of Stock');
+                        } else {
+                            currentVariant = null;
+                            $('#variantId').val('');
+                            $('#sku').text('N/A');
+                            $('#price').text('0.00');
+                            $('#availability').text('Not Available');
+                        }
+                    }
+                });
+            });
+        </script>
+
+
+
+        <script>
+            $(document).ready(function() {
+
 
                 function updateSliderThumbnailActive(selectedImageUrl) {
                     const normalizedUrl = selectedImageUrl.trim().toLowerCase();
@@ -715,33 +806,7 @@
                     }
                 });
 
-                $('.variantForm').on('change', '.variant-option', function() {
-                    const changedInput = $(this);
-                    const newVariantId = changedInput.data('variant-id');
-                    const attributeId = changedInput.data('attribute');
-                    const product_id = $(this).closest('.variantForm').data('id');
-                    const imageUrl = $(this).data('image');
-                    // console.log(imageUrl);
-
-                    $('.variantForm .variant-option').each(function() {
-                        const input = $(this);
-                        const inputAttributeId = input.data('attribute');
-
-                        if (input.data('variant-id') === newVariantId) {
-                            input.prop('checked', true);
-                        } else if (inputAttributeId === attributeId) {
-                            input.prop('checked', false);
-                        }
-                    });
-
-                    if (imageUrl) {
-                        updateSliderThumbnailActive(imageUrl);
-                    }
-
-                    updatePriceAndSku(product_id);
-                });
-
-                updateQuantity(product_id);
+                updateQuantity();
             });
         </script>
 

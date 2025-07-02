@@ -10,10 +10,6 @@ class CartItem extends Model
 
     protected $guarded = ['id'];
 
-    protected $casts = [
-        'product_variant_ids' => 'array',
-    ];
-
     public function product()
     {
         return $this->belongsTo(Product::class);

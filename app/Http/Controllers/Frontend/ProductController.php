@@ -1,12 +1,8 @@
 <?php
 namespace App\Http\Controllers\Frontend;
 
-use App\Enums\DiscountType;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
-use App\Models\ProductAttribute;
-use App\Models\ProductAttributeOption;
-use App\Models\ProductVariant;
 use App\Models\Review;
 use App\Models\Seller;
 use Illuminate\Http\Request;
@@ -27,20 +23,15 @@ class ProductController extends Controller
                 'images',
                 'seller',
                 'reviews',
-                'variants',
+                'variants.optionValues.option',
             ])->firstOrFail();
 
         $categoryId = $productModel->category->id;
         $sellerId   = $productModel->seller->id;
 
-        $discount_price = $productModel->selling_price;
-        if ($productModel->discount_type === DiscountType::FLAT->value) {
-            $discount_price -= $productModel->discount_amount;
-        } elseif ($productModel->discount_type === DiscountType::PERCENTAGE->value) {
-            $discount_price -= ($productModel->selling_price * $productModel->discount_amount) / 100;
-        }
-
         $product = $productModel->toDetailsArray();
+
+        // return $product['variants'];
 
         $interest_products = Product::where('category_id', $categoryId)
             ->where('id', '!=', $product['id'])
@@ -71,11 +62,10 @@ class ProductController extends Controller
             'shop_name'       => $sellerModel->business_name,
             'shop_logo'       => $sellerModel->business_logo,
             'total_followers' => number_shorten_format($sellerModel->followers->count()),
-            'total_sell'      => number_shorten_format(Product::where('seller_id', $sellerId)->sum('stock_out')),
+            // 'total_sell'      => number_shorten_format(Product::where('seller_id', $sellerId)->sum('stock_out')),
             'rating'          => round($averageRating),
             'total_products'  => Product::where('seller_id', $sellerId)->count(),
         ];
-
 
         if ($request->ajax()) {
             $type = $request->get('type');
@@ -108,14 +98,62 @@ class ProductController extends Controller
         }
 
         return view('frontend.products.details', [
-            'product'           => $product,
-            'products'          => $products,
-            'ratings'           => $ratings,
-            'totalReviews'      => $totalReviews,
-            'averageRating'     => round($averageRating, 1),
-            'seller'            => $seller,
+            'product'       => $product,
+            'products'      => $products,
+            'ratings'       => $ratings,
+            'totalReviews'  => $totalReviews,
+            'averageRating' => round($averageRating, 1),
+            'seller'        => $seller
         ]);
     }
+
+    // public function details($slug, Request $request)
+    // {
+    //     $product = Product::with([
+    //         'variants.optionValues.option',
+    //     ])->where('slug', $slug)->firstOrFail();
+
+    //     $options = $product->variants
+    //         ->flatMap(fn($variant) => $variant->optionValues)
+    //         ->groupBy(fn($val) => $val->option->id)
+    //         ->map(function ($group) {
+    //             $option = $group->first()->option;
+    //             return [
+    //                 'id' => $option->id,
+    //                 'name' => $option->name,
+    //                 'values' => $group->unique('id')->map(fn($v) => [
+    //                     'id' => $v->id,
+    //                     'value' => $v->value,
+    //                 ])->values()->toArray(),
+    //             ];
+    //         })
+    //         ->values()
+    //         ->toArray();
+
+    //     $variants = $product->variants->map(fn($variant) => [
+    //         'id' => $variant->id,
+    //         'sku' => $variant->sku,
+    //         'price' => $variant->selling_price,
+    //         'stock' => max(0, $variant->stock_in - $variant->stock_out),
+    //         'value_ids' => $variant->optionValues->pluck('id')->sort()->values()->toArray(),
+    //     ])->toArray();
+
+    //     $productArray = [
+    //         'name' => $product->name,
+    //         'options' => $options,
+    //         'variants' => $variants,
+    //     ];
+
+    //     // return $productArray;
+
+    //     $defaultVariant = collect($productArray['variants'])->firstWhere('stock', '>', 0);
+
+    //     return view('product-variant',[
+    //         'product'=> $productArray,
+    //         'defaultVariant' => $defaultVariant
+    //     ]);
+
+    // }
 
     public function loadReview(Request $request)
     {

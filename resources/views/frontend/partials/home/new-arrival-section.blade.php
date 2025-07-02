@@ -65,14 +65,22 @@
                                              </h2>
 
                                              <!-- Prices (no wrap) -->
+                                             @if ($product->discounted_price !== null)
                                              <div class="flex gap-x-2 text-nowrap text-sm sm:text-base">
-                                                 <p class="font-semibold text-primary">
+                                                 <p class="font-semibold  text-primary">
                                                      {{ money($product->discounted_price) }}
                                                  </p>
                                                  <small class="line-through text-jet-gray align-items-end">
                                                      {{ money($product->selling_price) }}
                                                  </small>
                                              </div>
+                                         @else
+                                             <div class="flex gap-x-2 text-nowrap text-sm sm:text-base">
+                                                 <p class="font-semibold  text-primary">
+                                                     {{ money($product->selling_price) }}
+                                                 </p>
+                                             </div>
+                                         @endif
                                          </div>
 
                                          <!-- Add to Cart -->

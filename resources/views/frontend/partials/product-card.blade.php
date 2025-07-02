@@ -48,7 +48,7 @@
         <div class="flex flex-wrap items-center justify-between gap-y-2">
             <div class="flex items-center gap-x-5 xsm:gap-x-2 sm:gap-x-5 xl:gap-x-8">
                 <div class="price flex items-center gap-1 flex-no-wrap">
-                    <h3 class="font-bold text-primary">{{ money($product['discount_price']) }}</h3>
+                    <h3 class="font-bold text-primary">{{ money($product['discount']['price']) }}</h3>
                     <small class="line-through text-jet-gray align-items-end">
                         {{ money($product['price']) }}
                     </small>

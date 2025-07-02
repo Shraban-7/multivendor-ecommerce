@@ -141,7 +141,7 @@ $settings = settings();
                 var product_id = $(this).data('id');
                 var modal = $(this).data('modal');
                 var wishlistId = $(this).data('wishlist-id');
-                var variantSku = $('#variantSku').val();
+                var variantId = $('#variantId').val();
                 var product_price_text = $('.product-price').text().replace(/[^0-9.]/g, '');
                 var product_price = parseFloat(product_price_text);
                 var $row = $(this).closest('.grid');
@@ -165,7 +165,7 @@ $settings = settings();
                     type: "POST",
                     data: {
                         product_id: product_id,
-                        variant_sku: variantSku,
+                        variant_id: variantId,
                         quantity: qtyInput,
                         price: product_price,
                         option_ids: selectedOptionIds,
@@ -174,19 +174,6 @@ $settings = settings();
                         if (data.unauthorized) {
                             window.location.href = "{{ route('login') }}";
                         } else if (data.success) {
-
-                            console.log("ok");
-
-                            // console.log(modal);
-
-                            // if(modal == true) {
-
-                            //     $('button[data-modal-hide="quick-view-modal-' + product_id + '"]')
-                            //     .trigger('click');
-                            //     // $row.fadeOut(200, function() {
-                            //     //     $(this).remove();
-                            //     // });
-                            // }
                             toastr.success(data.message);
                             updateCartData();
 

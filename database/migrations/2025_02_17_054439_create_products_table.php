@@ -19,21 +19,27 @@ return new class extends Migration
             $table->unsignedBigInteger('seller_id')->nullable();
 
             $table->string('name');
-            $table->string('slug');
-            $table->string('thumbnail')->nullable();
+            $table->string('slug')->unique();
+            $table->string('sku')->unique()->nullable();
             $table->text('short_description')->nullable();
             $table->longText('description')->nullable();
+            $table->string('thumbnail')->nullable();
+            $table->string('video')->nullable();
 
-            $table->decimal('buying_price', 10, 2);
+            $table->decimal('cost_price', 10, 2);
             $table->decimal('selling_price', 10, 2);
+
             $table->string('discount_type')->nullable();
+            $table->string('discount_value')->nullable();
             $table->double('discount_amount')->nullable();
+            $table->double('discounted_price')->nullable();
+
             $table->unsignedBigInteger('unit_id')->nullable();
             $table->integer('unit_value')->nullable();
 
-
-            $table->string('sku')->nullable();
-            $table->string('barcode')->nullable();
+            $table->integer('stock_in')->default(0);
+            $table->integer('stock_out')->default(0);
+            $table->integer('low_stock_quantity')->default(0);
 
             $table->tinyInteger('is_trending')->default(0);
             $table->tinyInteger('best_selling')->default(0);
@@ -43,22 +49,17 @@ return new class extends Migration
             $table->tinyInteger('is_lightdeal')->default(0);
             $table->dateTime('lightdeal_expired_at')->nullable();
 
-            $table->string('video')->nullable();
-
-            $table->boolean('is_active')->default(1);
-            $table->integer('stock_in')->default(0);
-            $table->integer('stock_out')->default(0);
-            $table->integer('low_stock_quantity')->default(0);
-
-            $table->decimal('shipping_cost', 10, 2)->default(0.00);
             $table->decimal('tax', 5, 2)->default(0.00);
+
+            $table->boolean('is_active')->default(true);
             $table->bigInteger('views')->default(0);
-            $table->decimal('avg_rating',3,1)->default(0);
+            $table->decimal('avg_rating', 3, 1)->default(0.0);
             $table->integer('rating_count')->default(0);
 
-            $table->string('meta_title', 255)->nullable();
+            $table->string('meta_title')->nullable();
             $table->text('meta_keywords')->nullable();
             $table->text('meta_desc')->nullable();
+
             $table->timestamps();
         });
     }

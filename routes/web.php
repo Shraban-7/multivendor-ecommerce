@@ -15,5 +15,8 @@ Route::get('/states/{country_id}', [LocationController::class, 'getStatesByCount
 Route::get('/invoice/{order}', [OrderController::class, 'invoice'])->name('invoice');
 
 
+Route::get('/product', function () {
+    return view('product-variant');
+});
 
 

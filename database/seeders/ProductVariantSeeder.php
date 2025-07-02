@@ -3,84 +3,54 @@
 namespace Database\Seeders;
 
 use App\Models\Product;
-use App\Models\ProductAttribute;
+use App\Enums\DiscountType;
+use Illuminate\Support\Str;
 use App\Models\ProductVariant;
-use App\Models\ProductVariantProductAttributeOption;
 use Illuminate\Database\Seeder;
+use App\Models\ProductAttribute;
+use App\Models\ProductVariantProductAttributeOption;
 
 class ProductVariantSeeder extends Seeder
 {
     public function run(): void
     {
-        $productIds = Product::pluck('id')->all();
+        $products = Product::where('seller_id',5)->get();
 
-        if (empty($productIds)) return;
+        foreach ($products as $product) {
+            $variantCount = rand(1, 3);
 
-        $productAttributes = ProductAttribute::with('options')
-            ->whereIn('name', ['Color', 'Size', 'Storage', 'Material'])
-            ->get()
-            ->keyBy('name');
+            for ($i = 1; $i <= $variantCount; $i++) {
+                $costPrice    = rand(100, 500);
+                $markup       = rand(20, 100);
+                $sellingPrice = $costPrice + $markup;
 
-        $colors    = $productAttributes['Color']->options ?? collect();
-        $sizes     = $productAttributes['Size']->options ?? collect();
-        $storages  = $productAttributes['Storage']->options ?? collect();
-        $materials = $productAttributes['Material']->options ?? collect();
+                $discountType = fake()->randomElement([null, DiscountType::FLAT, DiscountType::PERCENTAGE]);
+                $discountValue = null;
+                $discountAmount = null;
 
-        if ($colors->isEmpty() || $sizes->isEmpty() || $storages->isEmpty() || $materials->isEmpty()) return;
-
-        $existingSkus = ProductVariant::pluck('sku')->toArray();
-        $variantOptions = [];
-
-        foreach ($productIds as $productId) {
-            $variantCount = rand(3, 5);
-            $usedCombinations = [];
-
-            for ($i = 0; $i < $variantCount; $i++) {
-                do {
-                    $color    = $colors->random();
-                    $size     = $sizes->random();
-                    $storage  = $storages->random();
-                    $material = $materials->random();
-
-                    $combinationKey = implode('-', [$color->id, $size->id, $storage->id, $material->id]);
-                } while (in_array($combinationKey, $usedCombinations));
-
-                $usedCombinations[] = $combinationKey;
-
-                do {
-                    $sku = strtoupper(
-                        substr($color->value, 0, 1) .
-                            substr($size->value, 0, 1) .
-                            substr($storage->value, 0, 1) .
-                            substr($material->value, 0, 1)
-                    ) . rand(1000, 9999);
-                } while (in_array($sku, $existingSkus));
-                $existingSkus[] = $sku;
-
-                $variant = ProductVariant::create([
-                    'product_id' => $productId,
-                    'sku'        => $sku,
-                    'price'      => rand(500, 1000),
-                    'stock'      => rand(10, 100),
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-
-                foreach ([$color, $size, $storage, $material] as $option) {
-                    $variantOptions[] = [
-                        'product_variant_id' => $variant->id,
-                        'product_attribute_option_id' => $option->id,
-                        'additional_price' => rand(10, 50),
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ];
+                if ($discountType === DiscountType::PERCENTAGE) {
+                    $discountValue  = rand(5, 30);
+                    $discountAmount = ($sellingPrice * $discountValue) / 100;
+                } elseif ($discountType === DiscountType::FLAT) {
+                    $discountValue  = rand(10, 50);
+                    $discountAmount = $discountValue;
                 }
-            }
-        }
 
-        $chunks = array_chunk($variantOptions, 1000);
-        foreach ($chunks as $chunk) {
-            ProductVariantProductAttributeOption::insert($chunk);
+                ProductVariant::create([
+                    'product_id'          => $product->id,
+                    'sku'                 => strtoupper(Str::random(8)),
+                    'image'               => null,
+                    'cost_price'          => $costPrice,
+                    'selling_price'       => $sellingPrice,
+                    'discount_type'       => $discountType?->value,
+                    'discount_value'      => $discountValue,
+                    'discount_amount'     => $discountAmount,
+                    'discounted_price'     => $discountType !== null && $discountAmount !== null ? max(round($sellingPrice - $discountAmount, 2), 0) : null,
+                    'stock_in'            => rand(10, 100),
+                    'stock_out'           => rand(0, 10),
+                    'low_stock_quantity'  => 5,
+                ]);
+            }
         }
     }
 }

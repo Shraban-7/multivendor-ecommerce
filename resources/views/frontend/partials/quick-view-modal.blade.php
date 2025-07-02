@@ -159,7 +159,7 @@
                                     </svg>
                                     <h3 id="current-price{{ $product['id'] }}"
                                         class="font-bold text-primary text-nowrap">
-                                        {{ $product['discount_price'] }}
+                                        {{ $product['discount']['price'] }}
                                     </h3>
                                 </div>
                                 <h6 id="old-price{{ $product['id'] }}" class=" text-jet-gray line-through">
@@ -183,12 +183,12 @@
                                     <input type="hidden" id="productBasePrice{{ $product['id'] }}"
                                         value="{{ $product['price'] }}">
                                     <input type="hidden" id="productDiscountedPrice{{ $product['id'] }}"
-                                        value="{{ $product['discount_price'] }}">
+                                        value="{{ $product['discount']['price'] }}">
 
                                     <form data-slug="{{ $product['slug'] }}"
                                         class="flex flex-wrap flex-col variantForm{{ $product['id'] }}"
                                         data-id="{{ $product['id'] }}">
-                                        @foreach ($product['product_attributes'] as $attribute)
+                                        {{-- @foreach ($product['product_attributes'] as $attribute)
                                             <div class="mt-2">
                                                 <h6 class="text-davy-gray sm:text-lg">{{ $attribute['name'] }} :</h6>
                                                 <div class="flex flex-wrap items-center gap-4 sm:gap-5">
@@ -238,7 +238,7 @@
                                                     @endforeach
                                                 </div>
                                             </div>
-                                        @endforeach
+                                        @endforeach --}}
                                     </form>
                                 </div>
 
@@ -277,8 +277,6 @@
                                     <button data-id="{{ $product['id'] }}" data-modal="{{ true }}" type="button"
                                         class="cartBtn text-sm md:text-base font-medium flex-1 px-6 py-2 border border-primary text-primary rounded-full hover:bg-primary hover:text-white transition-all">
                                         Add To Cart
-                                        <span class="block text-xs font-light">{{ $product['discount']['percent'] }}%
-                                            Discount</span>
                                     </button>
                                 @else
                                     <button data-id="{{ $product['id'] }}" type="button"

@@ -82,8 +82,14 @@
 
                                     <p class="text-persian-blue">{{ $product->unit_value }}
                                         {{ $product?->unit->name }}</p>
-                                    <p class="font-semibold text-sand-brown">
-                                        {{ money($product->selling_price) }}</p>
+
+                                    @if ($product->discounted_price)
+                                        <p class="font-semibold text-sand-brown">
+                                            {{ money($product->discounted_price) }}</p>
+                                    @else
+                                        <p class="font-semibold text-sand-brown">
+                                            {{ money($product->selling_price) }}</p>
+                                    @endif
 
                                     <div class="add-cart">
                                         <input type="hidden" name="quantity" value="1"

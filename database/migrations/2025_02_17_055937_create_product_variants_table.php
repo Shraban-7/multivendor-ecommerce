@@ -14,13 +14,17 @@ return new class extends Migration
         Schema::create('product_variants', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('product_id')->nullable();
-            $table->unsignedBigInteger('option_id')->nullable();
             $table->string('sku')->unique();
             $table->string('image')->nullable();
-            $table->decimal('additional_price', 10, 2);
-            $table->integer('stock_in')->nullable();
-            $table->integer('stock_out')->nullable();
-            $table->text('description')->nullable();
+            $table->decimal('cost_price', 10, 2);
+            $table->decimal('selling_price', 10, 2);
+            $table->string('discount_type')->nullable();
+            $table->string('discount_value')->nullable();
+            $table->double('discount_amount')->nullable();
+            $table->double('discounted_price')->nullable();
+            $table->integer('stock_in')->default(0);
+            $table->integer('stock_out')->default(0);
+            $table->integer('low_stock_quantity')->default(0);
             $table->timestamps();
         });
     }
