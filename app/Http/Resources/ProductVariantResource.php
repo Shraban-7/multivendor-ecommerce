@@ -18,7 +18,7 @@ class ProductVariantResource extends JsonResource
             'image' => $this->image,
             'value_ids' => $this->optionValues->pluck('id')->sort()->values()->toArray(),
             'default' => $this->is_default,
-            'selected_options' => ProductVariantOptionResource::collection($this->options)
+            'variant_options' => ProductVariantOptionResource::collection($this->options)
         ];
     }
 }
