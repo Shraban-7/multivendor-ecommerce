@@ -7,15 +7,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProductVariantResource extends JsonResource
 {
-    protected $defaultVariantId;
-
-    public function __construct($resource, $defaultVariantId = null)
-    {
-        parent::__construct($resource);
-        
-        $this->defaultVariantId = $defaultVariantId;
-    }
-
     public function toArray(Request $request): array
     {
         return [
@@ -26,7 +17,7 @@ class ProductVariantResource extends JsonResource
             'discounted_price' => removeZeroFromDecimal($this->discounted_price),
             'image' => $this->image,
             'value_ids' => $this->optionValues->pluck('id')->sort()->values()->toArray(),
-            'default' => $this->id === $this->defaultVariantId,
+            'default' => $this->is_default,
         ];
     }
 }

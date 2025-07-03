@@ -38,12 +38,13 @@ class CartController extends Controller
         $userId = Auth::id();
         $data = $validator->validated();
         $product = Product::find($data['product_id']);
+        $isDefault = $request->is_default ?? false;
 
         if (! $product) {
             return errorResponse('Product not found!');
         }
 
-        if ($data['is_default'] == true) {
+        if ($isDefault) {
             $variant = ProductVariant::where('product_id', $product->id)->where('is_default', 1)->first();
         }
 
