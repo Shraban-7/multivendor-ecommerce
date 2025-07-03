@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
@@ -27,7 +28,7 @@ class CartController extends Controller
         $validator = validateRequest($request, [
             'product_id' => 'required',
             'variant_id' => 'nullable',
-            'quantity'   => 'required|integer|min:1',
+            'quantity' => 'required|integer|min:1',
             'is_default' => 'nullable|boolean',
         ]);
 
@@ -35,6 +36,7 @@ class CartController extends Controller
             return sendValidationError($validator->errors());
         }
 
+        $variant = $variantId = null;
         $userId = Auth::id();
         $data = $validator->validated();
         $product = Product::find($data['product_id']);
@@ -45,7 +47,9 @@ class CartController extends Controller
         }
 
         if ($isDefault) {
-            $variant = ProductVariant::where('product_id', $product->id)->where('is_default', 1)->first();
+            $variant = ProductVariant::where('product_id', $product->id)
+                ->where('is_default', 1)
+                ->first();
         }
 
         if ($data['variant_id'] != null) {
@@ -59,24 +63,26 @@ class CartController extends Controller
             ['user_id' => $userId, 'seller_id' => $product->seller_id],
         );
 
-        if ($variant) {
+        if (!is_null($variant)) {
             $price = $variant->discounted_price ?? $variant->selling_price;
+            $variantId = $variant->id;
         } else {
             $price = $product->discounted_price ?? $product->selling_price;
         }
 
-        $variantId = $variant->id ?? null;
-
-        $cartItem = CartItem::where('cart_id', $cart->id)->where('product_variant_id',$variantId)->where('product_id', $product->id)->first();
+        $cartItem = CartItem::where('cart_id', $cart->id)
+            ->where('product_variant_id', $variantId)
+            ->where('product_id', $product->id)
+            ->first();
 
         if ($cartItem) {
             $cartItem->increment('quantity', $data['quantity']);
         } else {
             CartItem::create([
-                'cart_id'            => $cart->id,
-                'product_id'         => $product->id,
-                'quantity'           => $data['quantity'],
-                'price'              => $price,
+                'cart_id' => $cart->id,
+                'product_id' => $product->id,
+                'quantity' => $data['quantity'],
+                'price' => $price,
                 'product_variant_id' => $variantId,
             ]);
         }
