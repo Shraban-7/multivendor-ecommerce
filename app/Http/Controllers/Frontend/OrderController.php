@@ -95,7 +95,7 @@ class OrderController extends Controller
 
             $orderItems[] = [
                 'product_id'            => $product->id,
-                'product_variant_id'   => $cartItem->variant_id,
+                'product_variant_id'   => $cartItem->product_variant_id,
                 'buying_price'          => $variant? $variant->cost_price :$product->cost_price,
                 'unit_price'            => $cartItem->price,
                 'quantity'              => $cartItem->quantity,
