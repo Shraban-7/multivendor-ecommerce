@@ -38,23 +38,7 @@ class ProductListResource extends JsonResource
                 return $this->imageToArray($this->images);
             }),
 
-            'options' => $this->variants
-                ->flatMap(fn($variant) => $variant->optionValues)
-                ->groupBy(fn($val) => $val->option->id)
-                ->map(function ($group) {
-                    $option = $group->first()->option;
-                    return [
-                        'id' => $option->id,
-                        'name' => $option->name,
-                        'values' => $group->unique('id')->map(fn($v) => [
-                            'id' => $v->id,
-                            'value' => $v->value,
-                        ])->values()->toArray(),
-                    ];
-                })
-                ->values()
-                ->toArray(),
-
+            'options' => $this->grouped_options,
             'variants' => ProductVariantResource::collection($this->variants),
         ];
     }
