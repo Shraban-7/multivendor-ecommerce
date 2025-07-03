@@ -1,7 +1,7 @@
 <?php
-
 namespace App\Http\Controllers\Api;
 
+use App\Enums\CommissionType;
 use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\InvoiceResource;
@@ -64,68 +64,77 @@ class OrderController extends Controller
             ->first();
 
         if (! $cart || $cart->cart_items->isEmpty()) {
-            return response()->json([
-                'status'  => false,
-                'message' => 'Cart is empty or not found for the selected seller.',
-            ], 404);
+            return errorResponse('Cart is empty or not found for the selected seller.');
         }
 
-        $sub_total        = 0;
+        $sub_total    = 0;
         $discount     = 0;
         $tax          = 0;
         $shipping_fee = $seller->shipping_cost ?? 0;
-
-        $orderItems = [];
+        $orderItems   = [];
 
         foreach ($cart->cart_items as $cartItem) {
-            $product = $cartItem->product;
-            $variant = $cartItem->variant;
-
+            $product      = $cartItem->product;
+            $variant      = $cartItem->variant;
             $unitPrice    = $cartItem->price;
-            $itemTotal    = $unitPrice * $cartItem->quantity;
-            $itemDiscount = $product->discount * $cartItem->quantity;
-            $itemTax      = floatval($product->tax) * $cartItem->quantity;
-
+            $itemTotal    = $cartItem->quantity * $unitPrice;
+            $itemDiscount = $cartItem->quantity * ($cartItem->original_price - $cartItem->discounted_price);
+            $tax += floatval($product->tax) * $cartItem->quantity;
             $sub_total += $itemTotal;
             $discount += $itemDiscount;
-            $tax += $itemTax;
 
             $orderItems[] = [
-                'product_id'            => $product->id,
-                'product_variant_ids'   => json_encode($cartItem->product_variant_ids ?? []),
-                'product_variant_price' => $unitPrice,
-                'buying_price'          => $product->buying_price,
-                'unit_price'            => $unitPrice,
-                'quantity'              => $cartItem->quantity,
-                'discount'              => $itemDiscount,
-                'sub_total'             => $itemTotal,
+                'product_id'         => $product->id,
+                'product_variant_id' => $cartItem->product_variant_id ?? null,
+                'buying_price'       => $variant ? $variant->cost_price : $product->cost_price,
+                'unit_price'         => $cartItem->price,
+                'quantity'           => $cartItem->quantity,
+                'discount'           => $itemDiscount,
+                'sub_total'          => $itemTotal,
             ];
 
             if ($variant) {
-                $variant->decrement('stock', $cartItem->quantity);
+                $variant->decrement('stock_in', $cartItem->quantity);
+                $variant->increment('stock_out', $cartItem->quantity);
             } else {
                 $product->decrement('stock_in', $cartItem->quantity);
                 $product->increment('stock_out', $cartItem->quantity);
             }
+
+        }
+
+        $seller = Seller::where('id', $selectedSellerId)->first();
+
+        $total_commission = 0;
+
+        if ($seller->commission_amount != null && $seller->commission_type != null) {
+            if ($seller->commission_type === CommissionType::PERCENTAGE->value) {
+                $total_commission = ($sub_total + $tax + $shipping_fee) * ($seller->commission_amount / 100);
+            } else if ($seller->commission_type === CommissionType::FLAT->value) {
+                $total_commission = $seller->commission_amount;
+            }
         }
 
         $order = Order::create([
-            'user_id'          => $user->id,
-            'seller_id'        => $seller->id,
-            'customer_name'    => $data['customer_name'],
-            'customer_email'   => $data['customer_email'] ?? $user->email,
-            'customer_phone'   => $data['customer_phone'],
-            'customer_address' => $data['address'],
-            'invoice_id'       => strtoupper(uniqid('INV-')),
-            'sub_total'        => $sub_total,
-            'total'            => $sub_total + $tax + $shipping_fee,
-            'discount'         => $discount,
-            'tax'              => $tax,
-            'shipping_fee'     => $shipping_fee,
-            'payable'          => $sub_total + $shipping_fee + $tax,
-            'due'              => $sub_total + $shipping_fee + $tax,
-            'status'           => OrderStatus::PENDING->value,
-            'delivery_status'  => OrderStatus::ORDER_PLACED->value,
+            'user_id'           => $user->id,
+            'seller_id'         => $selectedSellerId,
+            'customer_name'     => $request->input('customer_name', $user->name),
+            'customer_email'    => $request->input('customer_email', $user->email),
+            'customer_phone'    => $request->input('customer_phone'),
+            'customer_address'  => $request->input('address'),
+            'invoice_id'        => strtoupper(uniqid()),
+            'sub_total'         => $sub_total,
+            'total'             => $sub_total + $tax + $shipping_fee,
+            'discount'          => $discount,
+            'tax'               => $tax,
+            'shipping_fee'      => $shipping_fee,
+            'payable'           => $sub_total + $shipping_fee + $tax,
+            'due'               => $sub_total + $shipping_fee + $tax,
+            'commission_type'   => $seller->commission_type,
+            'commission_amount' => $seller->commission_amount,
+            'total_commission'  => $total_commission,
+            'status'            => OrderStatus::PENDING->value,
+            'delivery_status'   => OrderStatus::ORDER_PLACED->value,
         ]);
 
         $order->items()->createMany($orderItems);
@@ -133,12 +142,14 @@ class OrderController extends Controller
         $cart->cart_items()->delete();
         $cart->delete();
 
-        $totalSoldCount = OrderItem::whereHas('order', function ($q) use ($seller) {
-            $q->where('seller_id', $seller->id);
-        })->count();
+        $seller = Seller::find($selectedSellerId);
+
+        $sellerOrderIds = Order::where('seller_id', $seller->id)->pluck('id');
+
+        $sellerOrderCount = OrderItem::whereIn('order_id', $sellerOrderIds)->count();
 
         $seller->update([
-            'total_sold' => $totalSoldCount,
+            'total_sold' => $sellerOrderCount,
         ]);
 
         return successResponse('Order Placed Successfully');

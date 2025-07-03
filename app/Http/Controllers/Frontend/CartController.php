@@ -18,7 +18,6 @@ class CartController extends Controller
         $productId = $request->product_id;
         $variantId = $request->variant_id;
         $quantity  = (int) ($request->quantity ?? 1);
-        $optionIds = collect($request->option_ids)->sort()->values()->toArray();
 
         $product = Product::find($productId);
 

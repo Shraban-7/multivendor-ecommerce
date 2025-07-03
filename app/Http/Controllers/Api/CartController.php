@@ -25,22 +25,21 @@ class CartController extends Controller
 
     public function store(Request $request)
     {
-        $userId     = Auth::id();
-        $productId  = $request->product_id;
-        $variantSku = $request->variant_sku;
-        $quantity   = (int) ($request->quantity ?? 1);
-        $optionIds  = collect($request->option_ids)->sort()->values()->toArray();
+        $userId    = Auth::id();
+        $productId = $request->product_id;
+        $variantId = $request->variant_id;
+        $quantity  = (int) ($request->quantity ?? 1);
 
         $product = Product::find($productId);
 
         if (! $product) {
-            return response()->json(['success' => false, 'error' => 'Product not found']);
+            return errorResponse('product not found');
         }
 
-        if ($variantSku) {
-            $variant = ProductVariant::where('sku', $variantSku)->first();
+        if ($variantId) {
+            $variant = ProductVariant::find($variantId);
             if (! $variant) {
-                return response()->json(['success' => false, 'error' => 'Variant not found']);
+                return errorResponse('variant not found');
             }
         }
 
@@ -50,34 +49,20 @@ class CartController extends Controller
         );
 
         $price = floatval($request->price);
-        if ($quantity > 1) {
-            $price = $price / $quantity;
-        }
-        if ($price <= 0) {
-            $price = $product->discounted_price;
-        }
+
         $price = number_format($price, 2, '.', '');
 
-        $cartItemQuery = CartItem::where('cart_id', $cart->id)->where('product_id', $productId);
-
-        if (! empty($optionIds)) {
-            $cartItems = $cartItemQuery->get();
-            $cartItem  = $cartItems->first(function ($item) use ($optionIds) {
-                return collect($item->product_variant_ids)->sort()->values()->toArray() === $optionIds;
-            });
-        } else {
-            $cartItem = $cartItemQuery->whereJsonLength('product_variant_ids', 0)->first();
-        }
+        $cartItem = CartItem::where('cart_id', $cart->id)->where('product_id', $productId)->first();
 
         if ($cartItem) {
             $cartItem->increment('quantity', $quantity);
         } else {
             CartItem::create([
-                'cart_id'             => $cart->id,
-                'product_id'          => $productId,
-                'quantity'            => $quantity,
-                'price'               => $price,
-                'product_variant_ids' => $optionIds,
+                'cart_id'            => $cart->id,
+                'product_id'         => $productId,
+                'quantity'           => $quantity,
+                'price'              => $price,
+                'product_variant_id' => $variant->id ?? null,
             ]);
         }
 
