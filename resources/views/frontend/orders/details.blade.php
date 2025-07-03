@@ -78,9 +78,9 @@
                 <!-- Order ID and Status -->
                 <div class="flex flex-wrap items-start gap-5 xsm:gap-10 md:gap-16 mb-2">
                     <div>
-                        <p class="font-medium">Order ID : #{{ $order->id }}</p>
+                        <p class="font-medium">Order ID : #{{ $order->invoice_id }}</p>
                         <p class="text-xs text-davy-gray">Order Placed on:
-                            {{ \Carbon\Carbon::parse($order->created_at)->format('F d Y') }}</p>
+                            {{ $order->created_at->format('F d Y') }}</p>
                     </div>
                     <span class="inline-block bg-leaf-green text-white px-3.5 py-1.5 rounded-full text-sm">
                         Delivered
@@ -160,21 +160,26 @@
                                                 <p class="flex items-center gap-1 text-aqua-deep mt-1">
                                                     <span
                                                         class="text-lg md:text-2xl font-medium">{{ money($item->unit_price) }}</span>
-                                                    <span class="text-lg md:text-xl text-jet-gray font-medium line-through">
-                                                        {{ money($item->unit_price + $item->product->discount) }}
-                                                    </span>
+                                                    @if ($item->discount != null)
+                                                        <span
+                                                            class="text-lg md:text-xl text-jet-gray font-medium line-through">
+                                                            {{ money($item->unit_price + $item->discount) }}
+                                                        </span>
+                                                    @endif
                                                 </p>
 
-                                                @if ($item->variantOption)
+                                                @if ($item->variant && $item->variant->optionValues->count())
                                                     <div class="w-full text-xs xsm:text-sm text-gray-600 mt-1">
-                                                        @foreach ($item->variantOption as $variant)
+                                                        @foreach ($item->variant->optionValues as $optionValue)
                                                             <span class="mr-2">
-                                                                {{ $variant['productAttribute'] }}:
-                                                                {{ $variant['option'] }}
+                                                                {{ $optionValue->option->name ?? '' }}:
+                                                                {{ $optionValue->value ?? '' }}
                                                             </span>
                                                         @endforeach
                                                     </div>
                                                 @endif
+
+
                                                 <!-- Submit Review Button -->
                                                 <a href="{{ route('orders.review', ['product' => $item->product->id]) }}"
                                                     class="inline-block mt-2 text-xs md:text-sm text-white  bg-primary hover:bg-theme-dark px-4 py-2 rounded transition-all duration-200">
@@ -213,8 +218,7 @@
 
                                     <div class="flex justify-between text-sm md:text-base">
                                         <span>Delivery</span>
-                                        <span
-                                            class="text-jet-gray font-medium">+{{ money($order->shipping_fee) }}</span>
+                                        <span class="text-jet-gray font-medium">+{{ money($order->shipping_fee) }}</span>
                                     </div>
 
                                     <div class="border-t border-davy-gray/20 pt-4 mt-4">
