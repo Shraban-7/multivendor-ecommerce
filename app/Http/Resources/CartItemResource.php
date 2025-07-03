@@ -30,7 +30,7 @@ class CartItemResource extends JsonResource
             'discount' => $discount,
             'category' => CategoryResource::make($product->category),
             'subcategory' => CategoryResource::make($product->subcategory),
-            'variants'  => ProductVariantResource::make($this->variant)
+            'variant'  => ProductVariantResource::make($this->variant)
         ];
     }
 }
