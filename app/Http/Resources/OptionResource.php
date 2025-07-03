@@ -21,6 +21,5 @@ class OptionResource extends JsonResource
                 'value' => $v->value,
             ])->values()->toArray(),
         ];
-
     }
 }

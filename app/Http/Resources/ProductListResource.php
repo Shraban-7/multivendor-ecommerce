@@ -55,18 +55,7 @@ class ProductListResource extends JsonResource
                 ->values()
                 ->toArray(),
 
-            'variants' => $this->variants->map(function ($variant) {
-                return [
-                    'id' => $variant->id,
-                    'sku' => $variant->sku,
-                    'stock' => $variant->stock_in - $variant->stock_out,
-                    'price' => removeZeroFromDecimal($variant->selling_price),
-                    'discounted_price' => removeZeroFromDecimal($variant->discounted_price),
-                    'image' => $variant->image,
-                    'value_ids' => $variant->optionValues->pluck('id')->sort()->values()->toArray(),
-                    'default' => $variant->is_default,
-                ];
-            }),
+            'variants' => ProductVariantResource::collection($this->variants),
         ];
     }
 
