@@ -167,8 +167,7 @@ $settings = settings();
                         product_id: product_id,
                         variant_id: variantId,
                         quantity: qtyInput,
-                        price: product_price,
-                        option_ids: selectedOptionIds,
+                        price: product_price,  
                     },
                     success: function(data) {
                         if (data.unauthorized) {
