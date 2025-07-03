@@ -17,56 +17,22 @@ class CartItem extends Model
 
     public function variant()
     {
-        return $this->belongsTo(ProductVariant::class);
+        return $this->belongsTo(ProductVariant::class, 'product_variant_id');
     }
 
-    public function variants()
+    public function getOriginalPriceAttribute()
     {
-        return $this->belongsToMany(ProductVariant::class, 'variants', 'id', 'id')
-            ->whereIn('id', $this->product_variant_ids ?? []);
-    }
-
-    public function getProductOriginalPriceAttribute()
-    {
-        $variantIds = $this->product_variant_ids;
-
-        if (! is_array($variantIds)) {
-            $variantIds = is_null($variantIds) ? [] : json_decode($variantIds, true);
-        }
-        $variantPrice = ProductVariant::whereIn('id', $variantIds)->sum('additional_price');
-
-        return $this->product->selling_price + $variantPrice;
+        return $this->variant?->selling_price ?? $this->product->selling_price;
     }
 
     public function getDiscountedPriceAttribute()
     {
-        if ($this->product) {
-            return $this->product->getDiscountedPrice($this->product_original_price);
-        }
-        return $this->product_original_price;
-    }
-
-    public function getVariantOptionAttribute()
-    {
-        if (! $this->product_variant_ids) {
-            return collect();
+        // return $this->variant;
+        if ($this->variant && $this->variant->discounted_price !== null) {
+            return $this->variant->discounted_price;
         }
 
-        $variantIds = is_array($this->product_variant_ids)
-        ? $this->product_variant_ids
-        : json_decode($this->product_variant_ids, true);
-
-        $variantIds = array_map('intval', array_filter($variantIds));
-
-        return ProductVariant::with(['option.product_attribute'])
-            ->whereIn('id', $variantIds)
-            ->get()
-            ->map(function ($variant) {
-                return [
-                    'productAttribute' => $variant->option->product_attribute->name ?? null,
-                    'option'           => $variant->option->value ?? null,
-                ];
-            });
+        return $this->product->discounted_price ?? $this->price;
     }
 
 }

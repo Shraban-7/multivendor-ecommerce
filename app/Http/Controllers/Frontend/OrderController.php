@@ -88,24 +88,24 @@ class OrderController extends Controller
             $variant      = $cartItem->variant;
             $unitPrice    = $cartItem->price;
             $itemTotal    = $cartItem->quantity * $unitPrice;
-            $itemDiscount = $cartItem->quantity * $product->discount;
+            $itemDiscount = $cartItem->quantity * ($cartItem->original_price - $cartItem->discounted_price);
             $tax += floatval($product->tax) * $cartItem->quantity;
             $sub_total += $itemTotal;
             $discount += $itemDiscount;
 
             $orderItems[] = [
                 'product_id'            => $product->id,
-                'product_variant_ids'   => json_encode($cartItem->product_variant_ids ?? []),
-                'product_variant_price' => $cartItem->price,
-                'buying_price'          => $product->buying_price,
-                'unit_price'            => $unitPrice,
+                'product_variant_id'   => $cartItem->variant_id,
+                'buying_price'          => $variant? $variant->cost_price :$product->cost_price,
+                'unit_price'            => $cartItem->price,
                 'quantity'              => $cartItem->quantity,
                 'discount'              => $itemDiscount,
                 'sub_total'             => $itemTotal
             ];
 
             if ($variant) {
-                $variant->decrement('stock', $cartItem->quantity);
+                $variant->decrement('stock_in', $cartItem->quantity);
+                $variant->increment('stock_out', $cartItem->quantity);
             } else {
                 $product->decrement('stock_in', $cartItem->quantity);
                 $product->increment('stock_out', $cartItem->quantity);

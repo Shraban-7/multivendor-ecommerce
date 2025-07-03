@@ -14,11 +14,11 @@ class CartController extends Controller
 {
     public function add(Request $request)
     {
-        $userId     = Auth::id();
-        $productId  = $request->product_id;
+        $userId    = Auth::id();
+        $productId = $request->product_id;
         $variantId = $request->variant_id;
-        $quantity   = (int) ($request->quantity ?? 1);
-        $optionIds  = collect($request->option_ids)->sort()->values()->toArray();
+        $quantity  = (int) ($request->quantity ?? 1);
+        $optionIds = collect($request->option_ids)->sort()->values()->toArray();
 
         $product = Product::find($productId);
 
@@ -48,10 +48,10 @@ class CartController extends Controller
             $cartItem->increment('quantity', $quantity);
         } else {
             CartItem::create([
-                'cart_id'             => $cart->id,
-                'product_id'          => $productId,
-                'quantity'            => $quantity,
-                'price'               => $price,
+                'cart_id'            => $cart->id,
+                'product_id'         => $productId,
+                'quantity'           => $quantity,
+                'price'              => $price,
                 'product_variant_id' => $variant->id ?? null,
             ]);
         }
@@ -83,16 +83,17 @@ class CartController extends Controller
         foreach ($carts as $seller_id => $cartGroup) {
             foreach ($cartGroup as $cart) {
                 foreach ($cart->cart_items as $item) {
-                    $item_grand_total = $item->quantity * $item->product_original_price;
-                    $grand_total += $item_grand_total;
-                    $itemPrice      = $item->quantity * $item->price;
-                    $item_sub_total = $itemPrice;
-                    $sub_total += $item_sub_total;
+                    $quantity = $item->quantity;
+                    $base_price = $item->original_price;
+                    $discounted_price = $item->discounted_price;
+                    $sub_total += $base_price * $quantity;
+                    $grand_total += $discounted_price * $quantity;
                 }
             }
         }
 
-        $discount             = $grand_total - $sub_total;
+        $discount = $sub_total - $grand_total;
+
         $total_products_count = $carts->flatten()->pluck('cart_items')->flatten()->count();
 
         $interest_products = Product::latest()->limit(6)->get();

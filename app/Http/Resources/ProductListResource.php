@@ -36,42 +36,24 @@ class ProductListResource extends JsonResource
             'category'          => CategoryResource::make($this->whenLoaded('category')),
             'subcategory'       => CategoryResource::make($this->whenLoaded('subcategory')),
 
-            'images' => $this->whenLoaded('images', function () {
+            'images'            => $this->whenLoaded('images', function () {
                 return $this->imageToArray($this->images);
             }),
 
-            'options' => $this->variants
+            'options'           => collect($this->variants)
                 ->flatMap(fn($variant) => $variant->optionValues)
                 ->groupBy(fn($val) => $val->option->id)
-                ->map(function ($group) {
-                    $option = $group->first()->option;
-                    return [
-                        'id'     => $option->id,
-                        'name'   => $option->name,
-                        'values' => $group->unique('id')->map(fn($v) => [
-                            'id'    => $v->id,
-                            'value' => $v->value,
-                        ])->values()->toArray(),
-                    ];
-                })
+                ->map(fn($group) => OptionResource::make($group))
                 ->values()
                 ->toArray(),
 
-            'variants' => $this->variants->map(function ($variant) use ($defaultVariantId) {
-                return [
-                    'id'               => $variant->id,
-                    'sku'              => $variant->sku,
-                    'stock'            => $variant->stock_in - $variant->stock_out,
-                    'price'            => $variant->selling_price,
-                    'discounted_price' => $variant->discounted_price,
-                    'image'            => $variant->image,
-                    'value_ids'        => $variant->optionValues->pluck('id')->sort()->values()->toArray(),
-                    'default'          => $variant->id === $defaultVariantId,
-                ];
-            }),
+            'variants'          => ProductVariantResource::collection(
+                $this->variants->map(function ($variant) use ($defaultVariantId) {
+                    return tap($variant, fn($v) => $v->default_variant_id = $defaultVariantId);
+                })
+            ),
         ];
     }
-
 
     private function imageToArray($images): array
     {

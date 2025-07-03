@@ -98,7 +98,7 @@
                                     @foreach ($cartGroup as $key => $cart)
                                         @foreach ($cart->cart_items as $item)
                                             <div class="py-3 border-t md:py-5 border-jet-gray/20 cart-item"
-                                                data-price="{{ $item->product_original_price }}"
+                                                data-price="{{ $item->original_price }}"
                                                 data-seller-id="{{ $sellerId }}"
                                                 data-discounted-price="{{ $item->price }}" data-id="{{ $item->id }}"
                                                 data-discount="{{ $item->product->discount }}">
@@ -148,10 +148,6 @@
                                                                     </button>
                                                                 </div>
                                                             </div>
-                                                            <!-- limited time -->
-                                                            <p class="text-xs xsm:text-sm text-persian-red">
-                                                                Big Sale / Limited Time
-                                                            </p>
                                                         </div>
 
                                                         <!-- Prices & Quantity Controls -->
@@ -199,7 +195,7 @@
                                                                             class="flex items-center justify-center w-5 h-5 text-sm font-bold rounded decrease-qty text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 active:text-primary">
                                                                             <i class="fa-solid fa-minus"></i>
                                                                         </button>
-                                                                        <input readonly type="number"
+                                                                        <input readonly type="text"
                                                                             value="{{ $item->quantity }}" min="1"
                                                                             class="w-12 h-5 text-sm font-medium text-center border-0 quantity-input text-persian-blue focus:ring-0" />
                                                                         <button type="button"
@@ -486,7 +482,9 @@
                     var cartItemId = cartItem.data('id');
 
                     let quantityInput = cartItem.find('.quantity-input');
-                    let currentQuantity = parseInt(quantityInput.val());
+                    let currentQuantity = parseInt(quantityInput.val()) || 1;
+                    let formattedQuantity = currentQuantity.toString().padStart(2, "0");
+
 
                     if ($(this).hasClass('increase-qty')) {
                         currentQuantity++;
@@ -646,6 +644,8 @@
                             discountedTotal += discountedPrice * quantity;
                             originalTotal += price * quantity;
                             selectedCount += quantity;
+
+                            console.log(price);
                         }
                     });
 
