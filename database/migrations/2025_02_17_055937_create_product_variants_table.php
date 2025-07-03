@@ -25,6 +25,7 @@ return new class extends Migration
             $table->integer('stock_in')->default(0);
             $table->integer('stock_out')->default(0);
             $table->integer('low_stock_quantity')->default(0);
+            $table->boolean('is_default')->default(0);
             $table->timestamps();
         });
     }

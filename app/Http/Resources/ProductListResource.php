@@ -17,9 +17,6 @@ class ProductListResource extends JsonResource
             $discount .= $this->discount_type === 'percentage' ? '%' : currency();
         }
 
-        $defaultVariantId = $this->variants
-            ->first(fn($v) => ($v->stock_in - $v->stock_out) > 0)?->id;
-
         return [
             'id'                => $this->id,
             'name'              => $this->name,
@@ -40,18 +37,36 @@ class ProductListResource extends JsonResource
                 return $this->imageToArray($this->images);
             }),
 
-            'options'           => collect($this->variants)
+            'options'           => $this->variants
                 ->flatMap(fn($variant) => $variant->optionValues)
                 ->groupBy(fn($val) => $val->option->id)
-                ->map(fn($group) => OptionResource::make($group))
+                ->map(function ($group) {
+                    $option = $group->first()->option;
+                    return [
+                        'id'     => $option->id,
+                        'name'   => $option->name,
+                        'values' => $group->unique('id')->map(fn($v) => [
+                            'id'    => $v->id,
+                            'value' => $v->value,
+                        ])->values()->toArray(),
+                    ];
+                })
                 ->values()
                 ->toArray(),
 
-            'variants'          => ProductVariantResource::collection(
-                $this->variants->map(function ($variant) use ($defaultVariantId) {
-                    return tap($variant, fn($v) => $v->default_variant_id = $defaultVariantId);
-                })
-            ),
+            'variants'          => $this->variants->map(function ($variant){
+                return [
+                    'id'               => $variant->id,
+                    'sku'              => $variant->sku,
+                    'stock'            => $variant->stock_in - $variant->stock_out,
+                    'price'            => (string) $variant->selling_price,
+                    'discounted_price' => (string) $variant->discounted_price,
+
+                    'image'            => $variant->image,
+                    'value_ids'        => $variant->optionValues->pluck('id')->sort()->values()->toArray(),
+                    'default'          => $variant->is_default,
+                ];
+            }),
         ];
     }
 
