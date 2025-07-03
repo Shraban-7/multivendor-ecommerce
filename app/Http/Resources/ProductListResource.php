@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -8,9 +9,9 @@ class ProductListResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
-        $price           = $this->selling_price;
+        $price = $this->selling_price;
         $discountedPrice = $this->discounted_price;
-        $discount        = null;
+        $discount = null;
 
         if ($this->discount_amount > 0) {
             $discount = "-{$this->discount_amount}";
@@ -18,35 +19,35 @@ class ProductListResource extends JsonResource
         }
 
         return [
-            'id'                => $this->id,
-            'name'              => $this->name,
-            'thumbnail'         => storage_url($this->thumbnail),
-            'price'             => removeZeroFromDecimal($price),
-            'discounted_price'  => removeZeroFromDecimal($discountedPrice),
-            'discount'          => $discount,
-            'stock'             => ($this->stock_in - $this->stock_out),
-            'total_sold'        => number_shorten_format($this->stock_out),
-            'avg_rating'        => $this->avg_rating,
-            'rating_count'      => number_shorten_format($this->rating_count),
+            'id' => $this->id,
+            'name' => $this->name,
+            'thumbnail' => storage_url($this->thumbnail),
+            'price' => removeZeroFromDecimal($price),
+            'discounted_price' => removeZeroFromDecimal($discountedPrice),
+            'discount' => $discount,
+            'stock' => ($this->stock_in - $this->stock_out),
+            'total_sold' => number_shorten_format($this->stock_out),
+            'avg_rating' => $this->avg_rating,
+            'rating_count' => number_shorten_format($this->rating_count),
             'short_description' => $this->short_description,
-            'description'       => $this->description,
-            'category'          => CategoryResource::make($this->whenLoaded('category')),
-            'subcategory'       => CategoryResource::make($this->whenLoaded('subcategory')),
+            'description' => $this->description,
+            'category' => CategoryResource::make($this->whenLoaded('category')),
+            'subcategory' => CategoryResource::make($this->whenLoaded('subcategory')),
 
-            'images'            => $this->whenLoaded('images', function () {
+            'images' => $this->whenLoaded('images', function () {
                 return $this->imageToArray($this->images);
             }),
 
-            'options'           => $this->variants
+            'options' => $this->variants
                 ->flatMap(fn($variant) => $variant->optionValues)
                 ->groupBy(fn($val) => $val->option->id)
                 ->map(function ($group) {
                     $option = $group->first()->option;
                     return [
-                        'id'     => $option->id,
-                        'name'   => $option->name,
+                        'id' => $option->id,
+                        'name' => $option->name,
                         'values' => $group->unique('id')->map(fn($v) => [
-                            'id'    => $v->id,
+                            'id' => $v->id,
                             'value' => $v->value,
                         ])->values()->toArray(),
                     ];
@@ -54,17 +55,16 @@ class ProductListResource extends JsonResource
                 ->values()
                 ->toArray(),
 
-            'variants'          => $this->variants->map(function ($variant){
+            'variants' => $this->variants->map(function ($variant) {
                 return [
-                    'id'               => $variant->id,
-                    'sku'              => $variant->sku,
-                    'stock'            => $variant->stock_in - $variant->stock_out,
-                    'price'            => (string) $variant->selling_price,
-                    'discounted_price' => (string) $variant->discounted_price,
-
-                    'image'            => $variant->image,
-                    'value_ids'        => $variant->optionValues->pluck('id')->sort()->values()->toArray(),
-                    'default'          => $variant->is_default,
+                    'id' => $variant->id,
+                    'sku' => $variant->sku,
+                    'stock' => $variant->stock_in - $variant->stock_out,
+                    'price' => removeZeroFromDecimal($variant->selling_price),
+                    'discounted_price' => removeZeroFromDecimal($variant->discounted_price),
+                    'image' => $variant->image,
+                    'value_ids' => $variant->optionValues->pluck('id')->sort()->values()->toArray(),
+                    'default' => $variant->is_default,
                 ];
             }),
         ];
