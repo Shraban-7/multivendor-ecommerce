@@ -38,7 +38,7 @@ class ProductListResource extends JsonResource
                 return $this->imageToArray($this->images);
             }),
 
-            'options' => $this->grouped_options,
+            'available_options' => $this->grouped_options,
             'variants' => ProductVariantResource::collection($this->variants),
         ];
     }
