@@ -26,8 +26,9 @@ class CartController extends Controller
     {
         $validator = validateRequest($request, [
             'product_id' => 'required',
-            'variant_id' => 'required',
+            'variant_id' => 'nullable',
             'quantity'   => 'required|integer|min:1',
+            'is_default' => 'nullable|boolean',
         ]);
 
         if ($validator->fails()) {
@@ -35,19 +36,22 @@ class CartController extends Controller
         }
 
         $userId = Auth::id();
-
-
         $data = $validator->validated();
-
         $product = Product::find($data['product_id']);
-        $variant = ProductVariant::find($data['variant_id']);
 
         if (! $product) {
-            return errorResponse('product not found');
+            return errorResponse('Product not found!');
         }
 
-        if (! $variant) {
-            return errorResponse('variant not found');
+        if ($data['is_default'] == true) {
+            $variant = ProductVariant::where('product_id', $product->id)->where('is_default', 1)->first();
+        }
+
+        if ($data['variant_id'] != null) {
+            $variant = ProductVariant::find($data['variant_id']);
+            if (! $variant) {
+                return errorResponse('Variant not found!');
+            }
         }
 
         $cart = Cart::firstOrCreate(
@@ -60,7 +64,9 @@ class CartController extends Controller
             $price = $product->discounted_price ?? $product->selling_price;
         }
 
-        $cartItem = CartItem::where('cart_id', $cart->id)->where('product_id', $product->id)->first();
+        $variantId = $variant->id ?? null;
+
+        $cartItem = CartItem::where('cart_id', $cart->id)->where('product_variant_id',$variantId)->where('product_id', $product->id)->first();
 
         if ($cartItem) {
             $cartItem->increment('quantity', $data['quantity']);
@@ -70,7 +76,7 @@ class CartController extends Controller
                 'product_id'         => $product->id,
                 'quantity'           => $data['quantity'],
                 'price'              => $price,
-                'product_variant_id' => $variant->id ?? null,
+                'product_variant_id' => $variantId,
             ]);
         }
 
