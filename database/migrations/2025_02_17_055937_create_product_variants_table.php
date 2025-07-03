@@ -19,9 +19,9 @@ return new class extends Migration
             $table->decimal('cost_price', 10, 2);
             $table->decimal('selling_price', 10, 2);
             $table->string('discount_type')->nullable();
-            $table->string('discount_value')->nullable();
-            $table->double('discount_amount')->nullable();
-            $table->double('discounted_price')->nullable();
+            $table->decimal('discount_value', 6, 1)->nullable();
+            $table->decimal('discount_amount', 8, 2)->nullable();
+            $table->decimal('discounted_price', 10, 2)->nullable();
             $table->integer('stock_in')->default(0);
             $table->integer('stock_out')->default(0);
             $table->integer('low_stock_quantity')->default(0);

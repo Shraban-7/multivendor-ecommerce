@@ -22,16 +22,19 @@ class ProductVariantSeeder extends Seeder
                 $markup       = rand(20, 100);
                 $sellingPrice = $costPrice + $markup;
 
-                $discountType   = fake()->randomElement([null, DiscountType::FLAT, DiscountType::PERCENTAGE]);
-                $discountValue  = null;
-                $discountAmount = null;
+                $discountType    = fake()->randomElement([null, DiscountType::FLAT->value, DiscountType::PERCENTAGE->value]);
+                $discountValue   = null;
+                $discountAmount  = null;
+                $discountedPrice = null;
 
-                if ($discountType === DiscountType::PERCENTAGE) {
-                    $discountValue  = rand(5, 30);
-                    $discountAmount = ($sellingPrice * $discountValue) / 100;
-                } elseif ($discountType === DiscountType::FLAT) {
-                    $discountValue  = rand(10, 50);
-                    $discountAmount = $discountValue;
+                if ($discountType === DiscountType::PERCENTAGE->value) {
+                    $discountValue   = rand(5, 30);
+                    $discountAmount  = ($sellingPrice * $discountValue) / 100;
+                    $discountedPrice = max(round($sellingPrice - $discountAmount, 2), 0);
+                } elseif ($discountType === DiscountType::FLAT->value) {
+                    $discountValue   = rand(10, 50);
+                    $discountAmount  = $discountValue;
+                    $discountedPrice = max(round($sellingPrice - $discountAmount, 2), 0);
                 }
 
                 $variant = ProductVariant::create([
@@ -40,10 +43,10 @@ class ProductVariantSeeder extends Seeder
                     'image'              => null,
                     'cost_price'         => $costPrice,
                     'selling_price'      => $sellingPrice,
-                    'discount_type'      => $discountType?->value,
+                    'discount_type'      => $discountType,
                     'discount_value'     => $discountValue,
                     'discount_amount'    => $discountAmount,
-                    'discounted_price'   => $discountType !== null && $discountAmount !== null ? max(round($sellingPrice - $discountAmount, 2), 0) : null,
+                    'discounted_price'   => $discountedPrice,
                     'stock_in'           => rand(10, 100),
                     'stock_out'          => rand(0, 10),
                     'low_stock_quantity' => 5,

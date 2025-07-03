@@ -38,8 +38,6 @@ class OrderController extends Controller
 
     public function store(Request $request)
     {
-        $user = Auth::user();
-
         $validator = validateRequest($request, [
             'seller_id'      => 'required|exists:sellers,id',
             'customer_name'  => 'required|string|max:255',
@@ -51,6 +49,8 @@ class OrderController extends Controller
         if ($validator->fails()) {
             return sendValidationError($validator->errors());
         }
+
+        $user = Auth::user();
 
         $data = $validator->validated();
 

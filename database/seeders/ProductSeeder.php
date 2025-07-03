@@ -48,17 +48,20 @@ class ProductSeeder extends Seeder
                     for ($i = 1; $i <= 15; $i++) {
                         $productData = $this->getProduct($slug, $sub->name);
 
-                        $discountType   = fake()->randomElement([null, DiscountType::FLAT->value, DiscountType::PERCENTAGE->value]);
-                        $discountValue  = null;
-                        $discountAmount = null;
-                        $sellingPrice   = $productData['selling_price'];
+                        $discountType    = fake()->randomElement([null, DiscountType::FLAT->value, DiscountType::PERCENTAGE->value]);
+                        $discountValue   = null;
+                        $discountAmount  = null;
+                        $sellingPrice    = $productData['selling_price'];
+                        $discountedPrice = null;
 
                         if ($discountType === DiscountType::PERCENTAGE->value) {
-                            $discountValue  = rand(5, 30);
-                            $discountAmount = ($sellingPrice * $discountValue) / 100;
+                            $discountValue   = rand(5, 30);
+                            $discountAmount  = ($sellingPrice * $discountValue) / 100;
+                            $discountedPrice = max(round($sellingPrice - $discountAmount, 2), 0);
                         } elseif ($discountType === DiscountType::FLAT->value) {
-                            $discountValue  = rand(10, 50);
-                            $discountAmount = $discountValue;
+                            $discountValue   = rand(10, 50);
+                            $discountAmount  = $discountValue;
+                            $discountedPrice = max(round($sellingPrice - $discountAmount, 2), 0);
                         }
 
                         // $discountedPrice = $this->applyDiscount($sellingPrice, $discountType, $discountValue);
@@ -74,7 +77,7 @@ class ProductSeeder extends Seeder
                             'discount_type'        => $discountType,
                             'discount_value'       => $discountValue,
                             'discount_amount'      => $discountAmount,
-                            'discounted_price'     => $discountType !== null && $discountAmount !== null ? max(round($sellingPrice - $discountAmount, 2), 0) : null,
+                            'discounted_price'     => $discountedPrice,
                             'unit_value'           => rand(1, 5),
                             'unit_id'              => $this->getUnitId($slug),
                             'category_id'          => $category->id,

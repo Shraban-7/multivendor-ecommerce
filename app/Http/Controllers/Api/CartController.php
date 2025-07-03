@@ -7,7 +7,6 @@ use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Product;
 use App\Models\ProductVariant;
-use App\Models\Wishlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -25,51 +24,55 @@ class CartController extends Controller
 
     public function store(Request $request)
     {
-        $userId    = Auth::id();
-        $productId = $request->product_id;
-        $variantId = $request->variant_id;
-        $quantity  = (int) ($request->quantity ?? 1);
+        $validator = validateRequest($request, [
+            'product_id' => 'required',
+            'variant_id' => 'required',
+            'quantity'   => 'required|integer|min:1',
+        ]);
 
-        $product = Product::find($productId);
+        if ($validator->fails()) {
+            return sendValidationError($validator->errors());
+        }
+
+        $userId = Auth::id();
+
+
+        $data = $validator->validated();
+
+        $product = Product::find($data['product_id']);
+        $variant = ProductVariant::find($data['variant_id']);
 
         if (! $product) {
             return errorResponse('product not found');
         }
 
-        if ($variantId) {
-            $variant = ProductVariant::find($variantId);
-            if (! $variant) {
-                return errorResponse('variant not found');
-            }
+        if (! $variant) {
+            return errorResponse('variant not found');
         }
 
         $cart = Cart::firstOrCreate(
             ['user_id' => $userId, 'seller_id' => $product->seller_id],
-            ['user_id' => $userId, 'seller_id' => $product->seller_id]
         );
 
-        $price = floatval($request->price);
+        if ($variant) {
+            $price = $variant->discounted_price ?? $variant->selling_price;
+        } else {
+            $price = $product->discounted_price ?? $product->selling_price;
+        }
 
-        $price = number_format($price, 2, '.', '');
-
-        $cartItem = CartItem::where('cart_id', $cart->id)->where('product_id', $productId)->first();
+        $cartItem = CartItem::where('cart_id', $cart->id)->where('product_id', $product->id)->first();
 
         if ($cartItem) {
-            $cartItem->increment('quantity', $quantity);
+            $cartItem->increment('quantity', $data['quantity']);
         } else {
             CartItem::create([
                 'cart_id'            => $cart->id,
-                'product_id'         => $productId,
-                'quantity'           => $quantity,
+                'product_id'         => $product->id,
+                'quantity'           => $data['quantity'],
                 'price'              => $price,
                 'product_variant_id' => $variant->id ?? null,
             ]);
         }
-
-        Wishlist::where([
-            'user_id'    => $userId,
-            'product_id' => $productId,
-        ])->delete();
 
         return apiResponse([
             'cart_count' => Cart::getCount($userId),

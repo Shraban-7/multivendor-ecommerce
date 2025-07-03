@@ -62,7 +62,11 @@ class OrderController extends Controller
     {
         $user = Auth::user();
 
-        $selectedSellerId = $request->input('seller_id');
+        $validated = $request->validate([
+            'seller_id' => 'required|exists:sellers,id',
+        ]);
+
+        $selectedSellerId = $validated['seller_id'];
 
         $seller = Seller::find($selectedSellerId);
         $cart   = Cart::where('user_id', $user->id)
