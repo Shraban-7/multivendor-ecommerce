@@ -153,22 +153,7 @@ class Product extends Model
                     'value_ids'        => $variant->optionValues->pluck('id')->sort()->values()->toArray(),
                 ];
             }),
-            'options'           => $this->variants
-                ->flatMap(fn($variant) => $variant->optionValues)
-                ->groupBy(fn($val) => $val->option->id)
-                ->map(function ($group) {
-                    $option = $group->first()->option;
-                    return [
-                        'id'     => $option->id,
-                        'name'   => $option->name,
-                        'values' => $group->unique('id')->map(fn($v) => [
-                            'id'    => $v->id,
-                            'value' => $v->value,
-                        ])->values()->toArray(),
-                    ];
-                })
-                ->values()
-                ->toArray(),
+            'options'           => $this->grouped_options,
             'defaultVariant'    => collect($this['variants'])->firstWhere('stock', '>', 0),
 
             'total_sold'        => $sold,
