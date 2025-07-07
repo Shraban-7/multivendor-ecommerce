@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,6 +10,10 @@ class CartItem extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
+
+    protected $casts = [
+        'quantity' => 'integer'
+    ];
 
     public function product()
     {
@@ -34,5 +39,4 @@ class CartItem extends Model
 
         return $this->product->discounted_price ?? $this->price;
     }
-
 }
