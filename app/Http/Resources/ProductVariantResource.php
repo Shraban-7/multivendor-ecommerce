@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -9,16 +8,26 @@ class ProductVariantResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        $price           = $this->selling_price;
+        $discountedPrice = $this->discounted_price;
+        $discount        = null;
+
+        if ($this->discount_amount > 0) {
+            $discount = "-{$this->discount_amount}";
+            $discount .= $this->discount_type === 'percentage' ? '%' : currency();
+        }
+
         return [
-            'id' => $this->id,
-            'sku' => $this->sku,
-            'stock' => $this->stock_in - $this->stock_out,
-            'price' => removeZeroFromDecimal($this->selling_price),
-            'discounted_price' => removeZeroFromDecimal($this->discounted_price),
-            'image' => $this->image,
-            'value_ids' => $this->optionValues->pluck('id')->sort()->values()->toArray(),
-            'default' => $this->is_default,
-            'variant_options' => ProductVariantOptionResource::collection($this->options)
+            'id'               => $this->id,
+            'sku'              => $this->sku,
+            'stock'            => $this->stock_in - $this->stock_out,
+            'price'            => removeZeroFromDecimal($price),
+            'discounted_price' => removeZeroFromDecimal($discountedPrice),
+            'discount' => $discount,
+            'image'            => $this->image,
+            'value_ids'        => $this->optionValues->pluck('id')->sort()->values()->toArray(),
+            'default'          => $this->is_default,
+            'variant_options'  => ProductVariantOptionResource::collection($this->options),
         ];
     }
 }

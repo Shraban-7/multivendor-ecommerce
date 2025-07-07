@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -11,8 +10,11 @@ class CartItemResource extends JsonResource
     {
         $product = $this->product;
 
-        $price = $product->selling_price;
-        $discountedPrice = $product->discounted_price;
+        $variant = $this->variant;
+
+        $price           = $variant ? $variant->selling_price : $product->selling_price;
+        $discountedPrice = $variant ? $variant->discounted_price : $product->discounted_price;
+
         $discount = null;
         if ($product->discount_amount > 0) {
             $discount = "-{$product->discount_amount}";
@@ -20,17 +22,17 @@ class CartItemResource extends JsonResource
         }
 
         return [
-            'id' => $this->id,
-            'product_id' => $product->id,
-            'name' => $product->name,
-            'thumbnail' => storage_url($product->thumbnail),
-            'quantity' => $this->quantity,
-            'price' => removeZeroFromDecimal($price),
+            'id'               => $this->id,
+            'product_id'       => $product->id,
+            'name'             => $product->name,
+            'thumbnail'        => storage_url($product->thumbnail),
+            'quantity'         => $this->quantity,
+            'price'            => removeZeroFromDecimal($price),
             'discounted_price' => removeZeroFromDecimal($discountedPrice),
-            'discount' => $discount,
-            'category' => CategoryResource::make($product->category),
-            'subcategory' => CategoryResource::make($product->subcategory),
-            'variant'  => ProductVariantResource::make($this->variant)
+            'discount'         => $discount,
+            'category'         => CategoryResource::make($product->category),
+            'subcategory'      => CategoryResource::make($product->subcategory),
+            'variant'          => ProductVariantResource::make($this->variant),
         ];
     }
 }

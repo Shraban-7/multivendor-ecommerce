@@ -20,16 +20,18 @@ class CartController extends Controller
             'is_default' => 'nullable|boolean',
         ]);
 
-        $userId  = Auth::id();
-        $product = Product::find($data['product_id']);
-        $variant = ProductVariant::find($data['variant_id']);
+        $variant   = $variantId   = null;
+        $userId    = Auth::id();
+        $product   = Product::find($data['product_id']);
+
+        $defaultVariant = $product->variants->firstWhere('is_default',1);
 
         if (! $product) {
             return response()->json(['success' => false, 'error' => 'Product not found']);
         }
 
-        if ($data['is_default'] == true) {
-            $variant = ProductVariant::where('product_id', $product->id)->where('is_default', 1)->first();
+        if ($defaultVariant) {
+            $variant = $defaultVariant;
         }
 
         if ($data['variant_id'] != null) {

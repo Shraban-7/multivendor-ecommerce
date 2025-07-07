@@ -141,7 +141,7 @@ $settings = settings();
                 var product_id = $(this).data('id');
                 var modal = $(this).data('modal');
                 var wishlistId = $(this).data('wishlist-id');
-                var variantId = $('#variantId').val();
+                var variantId = $('#variantId').val() || null;
                 var product_price_text = $('.product-price').text().replace(/[^0-9.]/g, '');
                 var product_price = parseFloat(product_price_text);
                 var $row = $(this).closest('.grid');
@@ -167,7 +167,7 @@ $settings = settings();
                         product_id: product_id,
                         variant_id: variantId,
                         quantity: qtyInput,
-                        price: product_price,  
+                        price: product_price,
                     },
                     success: function(data) {
                         if (data.unauthorized) {

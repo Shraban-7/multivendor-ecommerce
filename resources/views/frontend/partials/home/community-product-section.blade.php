@@ -88,6 +88,7 @@
                                         <div class="shrink-0">
                                             <input type="hidden" name="quantity" value="1"
                                                 id="qtyInput{{ $product->id }}">
+                                                {{-- <input type="hidden" id="variantId" name="variant_id" value=""> --}}
                                             <button data-id="{{ $product->id }}" type="button"
                                                 class="flex items-center justify-center text-sm rounded cartBtn w-8 h-8 sm:w-10 sm:h-10 bg-primary text-theme-light hover:bg-light-yellow eq">
                                                 <i class="fa-solid fa-plus"></i>

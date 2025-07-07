@@ -45,11 +45,11 @@ class ProductController extends Controller
             'short_description'    => 'nullable|string',
             'description'          => 'nullable|string',
             'sku'                  => 'nullable|string|max:255',
-            'buying_price'         => 'required|numeric',
+            'cost_price'         => 'required|numeric',
             'selling_price'        => 'required|numeric',
             'tax'                  => 'required|numeric',
             'discount_type'        => 'required|string',
-            'discount_amount'      => 'required|numeric',
+            'discount_value'      => 'required|numeric',
             'unit_id'              => 'required|numeric',
             'unit_value'           => 'required|string',
             'is_trending'          => 'required|boolean',
@@ -64,6 +64,7 @@ class ProductController extends Controller
             'video'                => 'nullable|file',
             'files'                => 'nullable|array',
             'files.*' => 'file|max:4096|mimetypes:image/*',
+            'meta_title' => 'nullable|string',
         ]);
 
         $validated['thumbnail'] = upload_file($request->file('thumbnail'), 'images/products/thumb');
@@ -73,6 +74,7 @@ class ProductController extends Controller
         $validated['seller_id'] = seller()->id;
         $validated['slug']      = str_slug('products', 'slug', $validated['name']);
         $validated['sku']       = $validated['sku'] ?? strtoupper(uniqid());
+        $validated['discount_amount'] 
 
         $product = Product::create($validated);
 
@@ -93,10 +95,12 @@ class ProductController extends Controller
         $product = Product::where('slug', $slug)->first();
         $product = $product->toDetailsArray();
 
-        $productAttributes   = ProductAttribute::where('category_id', $product['category_id'])->get();
-        $productAttributeIds = $productAttributes->pluck('id');
+        return $product;
 
-        $productAttributeOptions = ProductAttributeOption::whereIn('product_attribute_id', $productAttributeIds)->get();
+        // $productAttributes   = ProductAttribute::where('category_id', $product['category_id'])->get();
+        // $productAttributeIds = $productAttributes->pluck('id');
+
+        // $productAttributeOptions = ProductAttributeOption::whereIn('product_attribute_id', $productAttributeIds)->get();
 
         return view('seller.products.details', compact('product', 'productAttributes', 'productAttributeOptions'));
     }

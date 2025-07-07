@@ -63,7 +63,7 @@
                         </div>
                         <div class="mb-3 col-md-3">
                             <label class="form-label">Buying Price</label>
-                            <input name="buying_price" type="number" value="" class="form-control" required>
+                            <input name="cost_price" type="number" value="" class="form-control" required>
                         </div>
                         <div class="mb-3 col-md-3">
                             <label class="form-label">Selling Price</label>
@@ -166,6 +166,7 @@
                             <div id="selectedImages" class="mb-2 row">
                             </div>
                         </div>
+
                     </div>
                     <button type="submit" id="submitBtn" class="btn btn-theme">Save</button>
                 </form>

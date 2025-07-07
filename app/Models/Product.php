@@ -160,7 +160,7 @@ class Product extends Model
             'revenue'           => $revenue,
             'profit'            => $profit,
             'last_sale'         => $lastSale,
-            'stock_history'     => $stockHistory,
+            'stock_history'     => $stockHistory,    
             'profit'            => [
                 'margin'  => (float) $margin,
                 'percent' => round($marginPercent, 2),
