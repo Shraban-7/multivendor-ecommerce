@@ -539,10 +539,10 @@
                         </div>
 
                         <div class="mb-3 col-12">
-                            <div class="form-check form-switch">
+                            <div class="form-check">
                                 <input type="hidden" name="is_default" value="0">
                                 <input class="form-check-input" type="checkbox" id="is_default" name="is_default" value="1">
-                                <label class="form-check-label" for="is_default">Default Variant</label>
+                                <label class="form-check-label" for="is_default">Mark as default</label>
                             </div>
                         </div>
 
