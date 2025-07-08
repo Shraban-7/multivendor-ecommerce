@@ -44,11 +44,10 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-
         $product->load('images', 'category', 'subcategory');
 
         $data['product'] = ProductResource::make($product);
-        $data['seller']  = SellerResource::make($product->seller);
+        $data['seller'] = SellerResource::make($product->seller);
 
         $relatedProducts = Product::query()
             ->where('id', '!=', $product->id)
