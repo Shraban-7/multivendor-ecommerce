@@ -1,8 +1,10 @@
 <?php
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductListResource;
+use App\Http\Resources\ProductResource;
 use App\Http\Resources\ReviewResource;
 use App\Http\Resources\SellerResource;
 use App\Models\Product;
@@ -45,7 +47,7 @@ class ProductController extends Controller
 
         $product->load('images', 'category', 'subcategory');
 
-        $data['product'] = ProductListResource::make($product);
+        $data['product'] = ProductResource::make($product);
         $data['seller']  = SellerResource::make($product->seller);
 
         $relatedProducts = Product::query()
