@@ -1,17 +1,17 @@
 <?php
 namespace App\Http\Controllers\Seller;
 
+use App\Enums\StockType;
+use App\Http\Controllers\Controller;
 use App\Models\Brand;
+use App\Models\Category;
 use App\Models\Option;
 use App\Models\Product;
-use App\Enums\StockType;
-use App\Models\Category;
-use App\Models\ProductUnit;
 use App\Models\ProductImage;
+use App\Models\ProductUnit;
+use App\Models\ProductVariant;
 use App\Models\StockHistory;
 use Illuminate\Http\Request;
-use App\Models\ProductVariant;
-use App\Http\Controllers\Controller;
 
 class ProductController extends Controller
 {
@@ -88,14 +88,14 @@ class ProductController extends Controller
             }
         }
 
-        return redirect()->route('seller.products.index')->with('success', 'Product Added Successfully');
+        return response()->json(['success' => true, 'message' => 'Product Added Successfully']);
     }
 
     public function show($slug)
     {
         $product = Product::where('slug', $slug)->first();
 
-        $product->load('variants.option_values','stock_history');
+        $product->load('variants.option_values', 'stock_history');
 
         $costPrice    = $product->cost_price ?? 0;
         $sellingPrice = $product->selling_price ?? 0;
@@ -270,8 +270,7 @@ class ProductController extends Controller
 
             $variant->save();
 
-        }
-        else {
+        } else {
             $currentStock = ($product->stock_in ?? 0) - ($product->stock_out ?? 0);
 
             if ($stockAction == StockType::REMOVE_STOCK->value && $stockQuantity > $currentStock) {

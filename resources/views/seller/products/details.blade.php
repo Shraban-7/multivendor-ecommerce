@@ -271,17 +271,23 @@
                                                         @php
                                                             $variantOptions = [];
                                                             foreach ($variant->option_values as $optionValue) {
-                                                                $variantOptions[] = $optionValue->option->name . ': ' . $optionValue->value;
+                                                                $variantOptions[] =
+                                                                    $optionValue->option->name .
+                                                                    ': ' .
+                                                                    $optionValue->value;
                                                             }
-                                                            $variantStock = ($variant->stock_in ?? 0) - ($variant->stock_out ?? 0);
+                                                            $variantStock =
+                                                                ($variant->stock_in ?? 0) - ($variant->stock_out ?? 0);
                                                         @endphp
                                                         <div>
-                                                            <strong>{{ implode(', ', $variantOptions) }}:</strong> In Stock ({{ $variantStock }})
+                                                            <strong>{{ implode(', ', $variantOptions) }}:</strong> In Stock
+                                                            ({{ $variantStock }})
                                                         </div>
                                                     @endforeach
                                                 @else
                                                     <div>
-                                                        In Stock ({{ ($product->stock_in ?? 0) - ($product->stock_out ?? 0) }})
+                                                        In Stock
+                                                        ({{ ($product->stock_in ?? 0) - ($product->stock_out ?? 0) }})
                                                     </div>
                                                 @endif
                                             </div>
@@ -303,13 +309,20 @@
                                                 @if (!empty($product->stock_history) && $product->stock_history->count() > 0)
                                                     @foreach ($product->stock_history as $history)
                                                         <tr>
-                                                            <td>{{ $history->created_at ? $history->created_at->format('M d, Y h:i A') : '-' }}</td>
+                                                            <td>{{ $history->created_at ? $history->created_at->format('M d, Y h:i A') : '-' }}
+                                                            </td>
                                                             <td>
                                                                 @if ($history->variant)
                                                                     @php
                                                                         $variantOptions = [];
-                                                                        foreach ($history->variant->option_values as $optionValue) {
-                                                                            $variantOptions[] = $optionValue->option->name . ': ' . $optionValue->value;
+                                                                        foreach (
+                                                                            $history->variant->option_values
+                                                                            as $optionValue
+                                                                        ) {
+                                                                            $variantOptions[] =
+                                                                                $optionValue->option->name .
+                                                                                ': ' .
+                                                                                $optionValue->value;
                                                                         }
                                                                     @endphp
                                                                     <small>{{ implode(', ', $variantOptions) }}</small>
@@ -318,21 +331,23 @@
                                                                 @endif
                                                             </td>
 
-                                                            <td class="text-center">{{ abs($history->quantity ?? 0) }}</td>
+                                                            <td class="text-center">{{ abs($history->quantity ?? 0) }}
+                                                            </td>
 
                                                             <td class="text-center">
                                                                 @switch($history->type)
                                                                     @case(\App\Enums\StockType::ADD_STOCK)
                                                                         <span class="badge bg-success">Added</span>
-                                                                        @break
+                                                                    @break
 
                                                                     @case(\App\Enums\StockType::REMOVE_STOCK)
                                                                         <span class="badge bg-danger">Removed</span>
-                                                                        @break
+                                                                    @break
 
                                                                     @case(\App\Enums\StockType::SET_EXACT_STOCK)
-                                                                        <span class="badge bg-warning text-dark">Set Exact Stock</span>
-                                                                        @break
+                                                                        <span class="badge bg-warning text-dark">Set Exact
+                                                                            Stock</span>
+                                                                    @break
 
                                                                     @default
                                                                         <span class="badge bg-secondary">Unknown</span>
@@ -342,7 +357,8 @@
                                                     @endforeach
                                                 @else
                                                     <tr>
-                                                        <td colspan="4" class="text-center">No stock history available</td>
+                                                        <td colspan="4" class="text-center">No stock history available
+                                                        </td>
                                                     </tr>
                                                 @endif
                                             </tbody>
@@ -451,7 +467,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
-                <form action="{{ route('seller.productVariants.store', $product->id) }}" method="POST"
+                <div id="variantAlert"></div>
+
+                <form id="variantForm" action="{{ route('seller.productVariants.store', $product->id) }}" method="POST"
                     enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
@@ -633,6 +651,61 @@
                     } else {
                         $('#optionSelect').empty();
                         $('#optionSelect').append('<option disabled selected>Select Attribute Option</option>');
+                    }
+                });
+            });
+        </script>
+        <script>
+            $('#saveVariant').click(function(e) {
+                e.preventDefault();
+
+                let form = $('#variantForm')[0];
+                let formData = new FormData(form);
+
+                $('#variantAlert').html(''); // Clear any previous messages
+                $('#saveVariant').attr('disabled', true).text('Saving...');
+
+                $.ajax({
+                    url: "{{ route('seller.productVariants.store', $product->id) }}",
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        $('#variantAlert').html(`
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                Variant added successfully!
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        `);
+
+                        // Optional: Close modal and reload page or refresh variants table
+                        setTimeout(function() {
+                            $('#addVariantModal').modal('hide');
+                            location.reload(); // Or use AJAX to refresh just the variants list
+                        }, 1000);
+                    },
+                    error: function(xhr) {
+                        $('#saveVariant').attr('disabled', false).text('Save Variant');
+
+                        if (xhr.status === 422) {
+                            let errors = xhr.responseJSON.errors;
+                            let messages = Object.values(errors).map(item => `<div>${item[0]}</div>`).join(
+                                '');
+                            $('#variantAlert').html(`
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    ${messages}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            `);
+                        } else {
+                            $('#variantAlert').html(`
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    Something went wrong. Please try again.
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            `);
+                        }
                     }
                 });
             });

@@ -6,6 +6,7 @@
         <h4 class="mb-0">Add Product</h4>
     </div>
 
+    <div id="alertBox"></div>
 
     <div class="row">
         <div class="col-12">
@@ -168,7 +169,7 @@
                         </div>
 
                     </div>
-                    <button type="submit" id="submitBtn" class="btn btn-theme">Save</button>
+                    <button type="button" id="submitBtn" class="btn btn-theme">Save</button>
                 </form>
             </div>
         </div>
@@ -242,7 +243,60 @@
                 }
             });
 
+            $('#submitBtn').click(function(e) {
+                e.preventDefault();
 
+                let form = $('#form')[0];
+                let formData = new FormData(form);
+
+                // Clear any previous alerts
+                $('#alertBox').html('');
+
+                $.ajax({
+                    url: "{{ route('seller.products.store') }}",
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function() {
+                        $('#submitBtn').attr('disabled', true).text('Saving...');
+                    },
+                    success: function(response) {
+                        $('#alertBox').html(`
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        Product added successfully!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                `);
+
+                        setTimeout(function() {
+                            window.location.href = "{{ route('seller.products.index') }}";
+                        }, 1500);
+                    },
+                    error: function(xhr) {
+                        $('#submitBtn').attr('disabled', false).text('Save');
+
+                        if (xhr.status === 422) {
+                            let errors = xhr.responseJSON.errors;
+                            let messages = Object.values(errors).map(item => `<div>${item[0]}</div>`).join(
+                                '');
+                            $('#alertBox').html(`
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            ${messages}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    `);
+                        } else {
+                            $('#alertBox').html(`
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            Something went wrong. Please try again.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    `);
+                        }
+                    }
+                });
+            });
         </script>
     @endpush
 

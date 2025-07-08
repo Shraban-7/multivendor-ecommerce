@@ -19,7 +19,7 @@ class ProductVariantController extends Controller
             'discount_type'      => 'required|string',
             'discount_value'     => 'required|numeric',
             'low_stock_quantity' => 'required|numeric',
-            'image'              => 'required|mimes:jpeg,png,jpg,gif|max:4000',
+            'image' => 'required|mimes:jpeg,jpg,png,gif,webp,svg,bmp,ico|max:4000',
             'option_values'      => 'nullable|array|min:1',
             'option_values.*'    => 'nullable|exists:option_values,id',
             'is_default' => 'required|boolean'
@@ -49,7 +49,7 @@ class ProductVariantController extends Controller
             ]);
         }
 
-        return redirect()->back()->with('success', 'Variant Added Successfully');
+        return response()->json(['success' => true, 'message' => 'Variant Added Successfully']);
     }
 
     public function destroy(ProductVariant $variant)
