@@ -241,7 +241,7 @@ if (! function_exists('removeZeroFromDecimal')) {
     function removeZeroFromDecimal($number, $dataType = 'string')
     {
         if(is_null($number)) return null;
-        
+
         $decimal = explode('.', $number);
         if (isset($decimal[1]) && $decimal[1] == '00') {
             $number = str_replace('.00', '', $number);
@@ -312,18 +312,38 @@ if (! function_exists('settings')) {
     }
 }
 
-if (! function_exists('calculate_discount_price')) {
-    function calculate_discount_price(float $price, ?string $type, ?float $value)
+if (! function_exists('calculate_discounted_price')) {
+    function calculate_discounted_price(float $price, ?string $type, ?float $value): float
     {
         if (! $type || ! $value) {
             return $price;
         }
 
-        return match ($type) {
-            DiscountType::PERCENTAGE => round($price - (($price * $value) / 100), 2),
-            DiscountType::FLAT => max(round($price - $value, 2), 0),
-            default => $price,
+        $discountAmount = match ($type) {
+            DiscountType::PERCENTAGE->value => ($price * $value) / 100,
+            DiscountType::FLAT->value => $value,
+            default => 0,
         };
 
+        $finalPrice = $price - $discountAmount;
+
+        return max(round($finalPrice, 2), 0);
     }
 }
+
+
+if (! function_exists('calculate_discount_amount')) {
+    function calculate_discount_amount(float $price, ?string $type, ?float $value): ?float
+    {
+        if (! $type || ! $value) {
+            return null;
+        }
+
+        return match ($type) {
+            DiscountType::PERCENTAGE->value => round(($price * $value) / 100, 2),
+            DiscountType::FLAT->value => round($value, 2),
+            default => null,
+        };
+    }
+}
+

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Seller\AuthController;
 use App\Http\Controllers\Seller\CustomerController;
 use App\Http\Controllers\Seller\DashboardController;
+use App\Http\Controllers\Seller\OptionController;
 use App\Http\Controllers\Seller\OrderController;
 use App\Http\Controllers\Seller\ProductAttributeController;
 use App\Http\Controllers\Seller\ProductController;
@@ -48,8 +49,8 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::Post('/update-status/{order}', [OrderController::class, 'updateStatus'])->name('updateStatus');
     });
 
-    Route::prefix('product-attributes')->as('productAttributes.')->group(function () {
-        Route::post('{product}/store', [ProductAttributeController::class, 'store'])->name('store');
+    Route::prefix('options')->as('options.')->group(function () {
+        Route::post('{product}/store', [OptionController::class, 'store'])->name('store');
     });
 
     Route::prefix('product-variants')->as('productVariants.')->group(function () {

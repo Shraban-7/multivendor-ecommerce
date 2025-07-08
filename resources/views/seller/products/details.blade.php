@@ -5,7 +5,7 @@
         <div class="container-fluid">
             <div class="row align-items-center">
                 <div class="col-sm-6">
-                    <h4 class="m-0 text-dark">{{ $product['name'] }}</h4>
+                    <h4 class="m-0 text-dark">{{ $product->name }}</h4>
                     <ol class="mt-1 breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('seller.dashboard') }}">Dashboard</a></li>
                         <li class="breadcrumb-item"><a href="{{ route('seller.products.index') }}">Products</a></li>
@@ -34,12 +34,12 @@
                             <h5 class="mb-0 card-title">Product Overview</h5>
                             <div>
                                 <button type="button" class="btn btn-outline-success btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#addAttributeModal">
-                                    <i data-feather="plus" class="icon-xs"></i> Add Attribute
+                                    data-bs-target="#addOptionModal">
+                                    <i data-feather="plus" class="icon-xs"></i> Add Option
                                 </button>
 
                                 <button class="btn btn-outline-danger btn-sm" title="Delete" data-bs-toggle="modal"
-                                    data-bs-target="#deleteModal-{{ $product['id'] }}">
+                                    data-bs-target="#deleteModal-{{ $product->id }}">
                                     <i data-feather="trash-2" class="icon-xs"></i> Delete Product
                                 </button>
                             </div>
@@ -49,7 +49,7 @@
                                 <!-- Product Images -->
                                 <div class="col-md-5">
                                     <div class="mb-3 product-primary-image">
-                                        <img src="{{ storage_url($product['thumbnail']) }}" alt="{{ $product['name'] }}"
+                                        <img src="{{ storage_url($product->thumbnail) }}" alt="{{ $product->name }}"
                                             class="border rounded shadow-sm img-fluid"
                                             style="width: 100%; height: 250px; object-fit: contain;">
                                     </div>
@@ -57,44 +57,46 @@
                                 <!-- Product Details -->
                                 <div class="col-md-7">
                                     <div class="mb-3 d-flex align-items-center">
-                                        <h4 class="mb-0 me-2">{{ $product['name'] }}</h4>
-                                        <span class="product-id text-muted small">(ID: {{ $product['id'] }})</span>
+                                        <h4 class="mb-0 me-2">{{ $product->name }}</h4>
+                                        <span class="product-id text-muted small">(ID: {{ $product->id }})</span>
                                     </div>
 
                                     <div class="mb-3">
                                         <span
-                                            class="px-3 py-2 badge bg-info rounded-pill">{{ $product['category'] }}</span>
+                                            class="px-3 py-2 badge bg-info rounded-pill">{{ $product->category->name }}</span>
                                         @if ($product['subcategory'])
                                             <span
-                                                class="px-3 py-2 badge bg-secondary rounded-pill">{{ $product['subcategory'] }}</span>
+                                                class="px-3 py-2 badge bg-secondary rounded-pill">{{ $product->subcategory->name }}</span>
                                         @endif
                                         <span
-                                            class="px-3 py-2 badge bg-primary rounded-pill">{{ $product['brand'] }}</span>
+                                            class="px-3 py-2 badge bg-primary rounded-pill">{{ $product->brand->name }}</span>
                                     </div>
 
                                     <table class="table mb-0 table-sm product-info">
                                         <tbody>
                                             <tr>
                                                 <td class="fw-bold pe-3" style="width: 30%;">SKU</td>
-                                                <td>{{ $product['sku'] }}</td>
+                                                <td>{{ $product->sku }}</td>
                                             </tr>
                                             <tr>
                                                 <td class="fw-bold pe-3">Product Collecting Price</td>
-                                                <td>{{ money($product['buying_cost']) }}</td>
+                                                <td>{{ money($product->cost_price) }}</td>
                                             </tr>
                                             <tr>
                                                 <td class="fw-bold pe-3">Selling Price</td>
-                                                <td>{{ money($product['price']) }}</td>
+                                                <td>{{ money($product->selling_price) }}</td>
                                             </tr>
                                             <tr>
                                                 <td class="fw-bold pe-3">Profit Margin</td>
                                                 <td>
-                                                    {{ money($product['profit']['margin']) }}
                                                     <span
-                                                        class="badge {{ $product['profit']['percent'] >= 30 ? 'bg-success' : ($product['profit']['percent'] >= 15 ? 'bg-warning' : 'bg-danger') }}">
-                                                        {{ number_format($product['profit']['percent'], 1) }}%
+                                                        class="badge
+                                                            {{ $product->profit_percent >= 30 ? 'bg-success' : ($product->profit_percent >= 15 ? 'bg-warning' : 'bg-danger') }}">
+                                                        {{ number_format($product->profit_percent, 1) }}%
                                                     </span>
-
+                                                    <small class="d-block text-muted">
+                                                        Profit: {{ money($product->profit_amount) }}
+                                                    </small>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -118,18 +120,21 @@
                                             </button>
                                         </div>
 
-                                        @foreach ($product['variants'] as $variant)
+                                        @foreach ($product->variants as $variant)
                                             <div class="col-12 col-md-6 col-lg-4 g-3">
                                                 <div class="border p-3 rounded shadow-sm mb-3">
                                                     <div class="d-flex justify-content-between align-items-start">
                                                         <div>
                                                             @if ($variant['image'])
-                                                                <img src="{{ storage_url($variant['image']) }}"
+                                                                <img src="{{ storage_url($variant->image) }}"
                                                                     alt="Variant Image"
                                                                     style="width: 40px; height: 40px; object-fit: cover;"
                                                                     class="me-2 rounded">
                                                             @endif
-                                                            <small><strong>SKU:</strong> {{ $variant['sku'] }}</small>
+                                                            <small><strong>SKU:</strong> {{ $variant->sku }}</small>
+                                                            @if ($variant['is_default'])
+                                                                <small class="text-success">(Default)</small>
+                                                            @endif
                                                         </div>
                                                         <div class="d-flex">
                                                             <button class="btn btn-danger border btn-sm"
@@ -143,14 +148,16 @@
                                                     <hr class="my-2">
 
                                                     <p class="mb-1">
-                                                        <small>
-                                                            <strong>{{ $variant['attributeName'] }}: </strong>
-                                                            {{ $variant['attributeValue'] }}
-                                                        </small>
+                                                        @foreach ($variant->option_values as $option_value)
+                                                            <p>{{ $option_value->option->name }} :
+                                                                {{ $option_value->value }}</p>
+                                                        @endforeach
                                                     </p>
+
                                                     <small class="text-muted">
-                                                        Stock: {{ $variant['stock'] }},
-                                                        Price: {{ money($variant['price']) }}
+                                                        Stock: {{ $variant->stock }},
+                                                        Price: {{ money($variant->selling_price) }},
+                                                        Discounted Price: {{ money($variant->discounted_price) }}
                                                     </small>
                                                 </div>
                                             </div>
@@ -158,17 +165,17 @@
 
                                             <!-- variant delete modal -->
                                             <div class="modal fade" id="deleteVariantModal{{ $loop->iteration }}"
-                                                tabindex="-1" aria-labelledby="deleteModalLabel-{{ $variant['id'] }}"
+                                                tabindex="-1" aria-labelledby="deleteModalLabel-{{ $variant->id }}"
                                                 aria-hidden="true">
                                                 <div class="modal-dialog modal-dialog-centered">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
                                                             <h5 class="modal-title"
-                                                                id="deleteModalLabel-{{ $variant['id'] }}">
+                                                                id="deleteModalLabel-{{ $variant->id }}">
                                                                 Confirm
                                                                 Delete</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                aria-label="Close"></button>
+                                                            <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
                                                         <div class="text-center modal-body">
                                                             <div class="alert alert-warning d-flex" role="alert">
@@ -176,7 +183,7 @@
                                                                     style="font-size: 1.5rem;"></i>
                                                                 <p class="mt-1 text-secondary">
                                                                     Are you sure you want to delete this Product
-                                                                    {{ $variant['id'] }}
+                                                                    {{ $variant->id }}
                                                                     Variant?
                                                                 </p>
                                                             </div>
@@ -185,7 +192,7 @@
                                                             <button type="button" class="btn btn-secondary"
                                                                 data-bs-dismiss="modal">Cancel</button>
                                                             <form
-                                                                action="{{ route('seller.productVariants.delete', $variant['id']) }}"
+                                                                action="{{ route('seller.productVariants.delete', $variant->id) }}"
                                                                 method="POST">
                                                                 @csrf
                                                                 <button type="submit"
@@ -202,42 +209,42 @@
                         </div>
                     </div>
 
-                    @if ($product['images'])
+                    @if (!empty($product->images))
                         <div class="card card-body">
                             <div class="product-gallery">
                                 <h6 class="mb-2 text-muted fw-bold small">Gallery Images</h6>
                                 <div class="gap-3 d-flex">
-                                    @foreach ($product['images'] as $image)
-                                        <div class="">
-                                            <a href="{{ storage_url($image) }}" data-lightbox="product-gallery"
-                                                data-title="{{ $product['name'] }}">
-                                                <img src="{{ storage_url($image) }}" alt="Gallery image"
-                                                    class="border rounded img-fluid"
-                                                    style="height: 100px; object-fit: cover; width: 100px;">
-                                            </a>
-                                        </div>
+                                    @foreach ($product->images as $image)
+                                        @if ($image)
+                                            <div>
+                                                <a href="{{ storage_url($image) }}" data-lightbox="product-gallery"
+                                                    data-title="{{ $product->name }}">
+                                                    <img src="{{ storage_url($image->image) }}" alt="Gallery image"
+                                                        class="border rounded img-fluid"
+                                                        style="height: 100px; object-fit: cover; width: 100px;">
+                                                </a>
+                                            </div>
+                                        @endif
                                     @endforeach
                                 </div>
                             </div>
                         </div>
                     @endif
 
-                    <!-- Product Description Card (if applicable) -->
-                    @if ($product['description'])
+                    @if (!empty($product->description))
                         <div class="mt-4 shadow-sm card">
                             <div class="bg-white card-header">
                                 <h5 class="mb-0 card-title">Product Description</h5>
                             </div>
                             <div class="card-body">
                                 <div class="product-description">
-                                    {!! $product['description'] !!}
+                                    {!! $product->description !!}
                                 </div>
                             </div>
                         </div>
                     @endif
                 </div>
 
-                <!-- Right Column - Stats & Actions -->
                 <div class="col-lg-4">
                     <!-- Stock Status Card -->
                     <div class="mb-4 shadow-sm card">
@@ -258,7 +265,27 @@
                                         </h6>
                                         <div class="d-flex align-items-center ">
                                             <i class="fas fa-exclamation-triangle me-2"></i>
-                                            <div>In Stock ({{ $product['in_stock'] }} )</div>
+                                            <div>
+                                                @if ($product->variants && $product->variants->count() > 0)
+                                                    @foreach ($product->variants as $variant)
+                                                        @php
+                                                            $variantOptions = [];
+                                                            foreach ($variant->option_values as $optionValue) {
+                                                                $variantOptions[] = $optionValue->option->name . ': ' . $optionValue->value;
+                                                            }
+                                                            $variantStock = ($variant->stock_in ?? 0) - ($variant->stock_out ?? 0);
+                                                        @endphp
+                                                        <div>
+                                                            <strong>{{ implode(', ', $variantOptions) }}:</strong> In Stock ({{ $variantStock }})
+                                                        </div>
+                                                    @endforeach
+                                                @else
+                                                    <div>
+                                                        In Stock ({{ ($product->stock_in ?? 0) - ($product->stock_out ?? 0) }})
+                                                    </div>
+                                                @endif
+                                            </div>
+
                                         </div>
                                     </div>
 
@@ -267,40 +294,61 @@
                                             <thead class="table-light">
                                                 <tr>
                                                     <th>Date</th>
+                                                    <th>Variant</th>
                                                     <th class="text-center">Quantity</th>
                                                     <th class="text-center">Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @if (isset($product['stock_history']))
-                                                    @foreach ($product['stock_history'] as $history)
+                                                @if (!empty($product->stock_history) && $product->stock_history->count() > 0)
+                                                    @foreach ($product->stock_history as $history)
                                                         <tr>
-                                                            <td>{{ $history['created_at']->format('M d, Y h:i A') }}
-                                                            </td>
-                                                            <td class="text-center">
-                                                                {{ abs($history['quantity']) }}</td>
-                                                            <td class="text-center">
-                                                                @if ($history->type == \App\Enums\StockType::ADD_STOCK)
-                                                                    <span class="badge bg-success">Added</span>
-                                                                @elseif($history->type == \App\Enums\StockType::REMOVE_STOCK)
-                                                                    <span class="badge bg-danger">Removed</span>
-                                                                @elseif($history->type == \App\Enums\StockType::SET_EXACT_STOCK)
-                                                                    <span class="badge bg-warning">Set
-                                                                        Exact Stock</span>
+                                                            <td>{{ $history->created_at ? $history->created_at->format('M d, Y h:i A') : '-' }}</td>
+                                                            <td>
+                                                                @if ($history->variant)
+                                                                    @php
+                                                                        $variantOptions = [];
+                                                                        foreach ($history->variant->option_values as $optionValue) {
+                                                                            $variantOptions[] = $optionValue->option->name . ': ' . $optionValue->value;
+                                                                        }
+                                                                    @endphp
+                                                                    <small>{{ implode(', ', $variantOptions) }}</small>
+                                                                @else
+                                                                    <small>Main Product</small>
                                                                 @endif
+                                                            </td>
+
+                                                            <td class="text-center">{{ abs($history->quantity ?? 0) }}</td>
+
+                                                            <td class="text-center">
+                                                                @switch($history->type)
+                                                                    @case(\App\Enums\StockType::ADD_STOCK)
+                                                                        <span class="badge bg-success">Added</span>
+                                                                        @break
+
+                                                                    @case(\App\Enums\StockType::REMOVE_STOCK)
+                                                                        <span class="badge bg-danger">Removed</span>
+                                                                        @break
+
+                                                                    @case(\App\Enums\StockType::SET_EXACT_STOCK)
+                                                                        <span class="badge bg-warning text-dark">Set Exact Stock</span>
+                                                                        @break
+
+                                                                    @default
+                                                                        <span class="badge bg-secondary">Unknown</span>
+                                                                @endswitch
                                                             </td>
                                                         </tr>
                                                     @endforeach
                                                 @else
                                                     <tr>
-                                                        <td colspan="3" class="text-center">No
-                                                            stock history available
-                                                        </td>
+                                                        <td colspan="4" class="text-center">No stock history available</td>
                                                     </tr>
                                                 @endif
                                             </tbody>
                                         </table>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
@@ -311,12 +359,12 @@
     </div>
 
     <!-- product delete modal -->
-    <div class="modal fade" id="deleteModal-{{ $product['id'] }}" tabindex="-1"
-        aria-labelledby="deleteModalLabel-{{ $product['id'] }}" aria-hidden="true">
+    <div class="modal fade" id="deleteModal-{{ $product->id }}" tabindex="-1"
+        aria-labelledby="deleteModalLabel-{{ $product->id }}" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="deleteModalLabel-{{ $product['id'] }}">Confirm
+                    <h5 class="modal-title" id="deleteModalLabel-{{ $product->id }}">Confirm
                         Delete</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -330,7 +378,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <form action="{{ route('seller.products.delete', $product['id']) }}" method="POST">
+                    <form action="{{ route('seller.products.delete', $product->id) }}" method="POST">
                         @method('DELETE')
                         @csrf
                         <button type="submit" class="btn btn-danger">Delete</button>
@@ -341,10 +389,10 @@
     </div>
 
     <!-- Stock Update Modal -->
-    <div class="modal fade" id="stockUpdateModal" tabindex="-1" aria-hidden="true" data-id="{{ $product['id'] }}">
+    <div class="modal fade" id="stockUpdateModal" tabindex="-1" aria-hidden="true" data-id="{{ $product->id }}">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <form action="{{ route('seller.products.stockUpdate', $product['id']) }}" method="POST">
+                <form action="{{ route('seller.products.stockUpdate', $product->id) }}" method="POST">
                     <div class="modal-header">
                         <h5 class="modal-title">Update Inventory</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -352,11 +400,14 @@
                     <div class="modal-body">
                         @csrf
                         <div class="mb-3">
-                            <label class="form-label">Current Stock</label>
-                            <input type="text" class="form-control-plaintext" readonly
-                                value="{{ $product['in_stock'] }} units">
+                            <label class="form-label">Variants</label>
+                            <select class="form-select" id="variant" name="product_variant_id">
+                                <option value="">--Select Variant--</option>
+                                @foreach ($product->variants as $variant)
+                                    <option value="{{ $variant->id }}">{{ $variant->sku }}</option>
+                                @endforeach
+                            </select>
                         </div>
-
                         <div class="mb-3">
                             <label class="form-label">Action</label>
                             <select class="form-select" id="stockAction" name="stock_action">
@@ -395,13 +446,12 @@
     <div class="modal fade" id="addVariantModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-
                 <div class="modal-header">
                     <h5 class="modal-title">Add Variant</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
-                <form action="{{ route('seller.productVariants.store', $product['id']) }}" method="POST"
+                <form action="{{ route('seller.productVariants.store', $product->id) }}" method="POST"
                     enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
@@ -412,36 +462,65 @@
                                     placeholder="Enter SKU (Optional)" value="{{ strtoupper(uniqid()) }}">
                             </div>
                             <div class="mb-3 col-6">
-                                <label class="form-label">Price</label>
+                                <label class="form-label">Cost Price</label>
                                 <div class="input-group">
                                     <span class="input-group-text">{{ currency() }}</span>
-                                    <input type="number" class="form-control" name="additional_price" step="0.01"
+                                    <input type="number" class="form-control" name="cost_price" step="0.01"
                                         placeholder="Enter Price" required>
                                 </div>
                             </div>
                             <div class="mb-3 col-6">
-                                <label class="form-label">Available Stock</label>
-                                <input type="number" class="form-control" name="stock_in" step="0.01" required>
+                                <label class="form-label">Selling Price</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">{{ currency() }}</span>
+                                    <input type="number" class="form-control" name="selling_price" step="0.01"
+                                        placeholder="Enter Price" required>
+                                </div>
                             </div>
-                            <div class="mb-3 col-6">
-                                <label class="form-label">Attributes</label>
-                                <select name="product_attribute_id" id="attributeSelect" class="form-select">
-                                    <option value="" disabled selected>Select Attribute</option>
-                                    @foreach ($productAttributes as $productAttribute)
-                                        <option value="{{ $productAttribute->id }}">{{ $productAttribute->name }}
-                                        </option>
-                                    @endforeach
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label">Discount Type</label>
+                                <select name="discount_type" class="form-select w-100" id="" required>
+                                    <option value="" selected disabled>--Choose--</option>
+                                    <option value="{{ \App\Enums\DiscountType::FLAT->value }}">
+                                        {{ ucfirst(\App\Enums\DiscountType::FLAT->label()) }}</option>
+                                    <option value="{{ \App\Enums\DiscountType::PERCENTAGE->value }}">
+                                        {{ ucfirst(\App\Enums\DiscountType::PERCENTAGE->label()) }}</option>
                                 </select>
                             </div>
-                            <div class="mb-3 col-6">
-                                <label class="form-label">Attribute Option</label>
-                                <select name="option_id" id="optionSelect" class="form-select">
-                                    <option value="" disabled selected>Select Attribute Option</option>
-                                </select>
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label">Discount Value</label>
+                                <input name="discount_value" type="number" value="" class="form-control"
+                                    required>
                             </div>
+                            <div class="mb-3 col-md-12">
+                                <label class="form-label">Low Stock Quantity</label>
+                                <input name="low_stock_quantity" type="number" value="" class="form-control">
+                            </div>
+                            <div>
+                                <label class="form-label">Options</label>
+                                @foreach ($product_options as $option)
+                                    <div class="input-group mb-3 col-6">
+                                        <select name="option_values[]" class="form-select">
+                                            <option value="">Choose...</option>
+                                            @foreach ($option->options as $item)
+                                                <option value="{{ $item->id }}">{{ $item->value }}</option>
+                                            @endforeach
+                                        </select>
+                                        <label class="input-group-text">{{ $option->name }}</label>
+                                    </div>
+                                @endforeach
+                            </div>
+
                             <div class="mb-3 col-12">
                                 <label class="form-label">Image</label>
                                 <x-image-input name="image" />
+                            </div>
+
+                            <div class="mb-3 col-12">
+                                <select name="is_default" id="" class="form-select">
+                                    <option value="0">No</option>
+                                    <option value="1">Yes</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -456,44 +535,35 @@
         </div>
     </div>
 
-
-
-    <div class="modal fade" id="addAttributeModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="addOptionModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <form method="POST" action="{{ route('seller.productAttributes.store', $product['id']) }}">
+                <form method="POST" action="{{ route('seller.options.store', $product->id) }}">
                     @csrf
                     <div class="modal-header bg-white text-dark">
-                        <h5 class="modal-title" id="addAttributeModalLabel">Add Product Attribute</h5>
+                        <h5 class="modal-title" id="addOptionModalLabel">Add Product Option</h5>
                         <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                     </div>
 
                     <div class="modal-body">
-                        <!-- Existing Attribute -->
                         <div class="mb-4">
-                            <label for="attribute_name" class="form-label fw-bold">Select Existing Attribute</label>
-                            <select class="form-select" id="attribute_name" name="product_attribute_id">
-                                <option value="" disabled selected>Select an attribute</option>
-                                @foreach ($productAttributes as $productAttribute)
-                                    <option value="{{ $productAttribute->id }}">{{ $productAttribute->name }}</option>
+                            <label for="attribute_name" class="form-label fw-bold">Select Existing Option</label>
+                            <select class="form-select" id="attribute_name" name="option_id">
+                                <option value="" disabled selected>Select an option</option>
+                                @foreach ($product_options as $option)
+                                    <option value="{{ $option->id }}">{{ $option->name }}</option>
                                 @endforeach
                             </select>
                         </div>
-
                         <div class="text-center mb-3 fw-semibold text-muted">— or create new —</div>
-
-                        <!-- New Attribute Name -->
                         <div class="mb-3">
-                            <label for="new_attribute_name" class="form-label fw-bold">New Attribute Name</label>
+                            <label for="new_attribute_name" class="form-label fw-bold">New Option Name</label>
                             <input type="text" class="form-control" id="new_attribute_name" name="name"
                                 placeholder="Enter new attribute name">
                         </div>
-
-                        <!-- Attribute Value -->
                         <div class="mb-3">
-                            <label for="attribute_value" class="form-label fw-bold">Attribute Value <span
+                            <label for="attribute_value" class="form-label fw-bold">Value <span
                                     class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="attribute_value" name="value"
                                 placeholder="e.g., Red, XL" required>
@@ -502,7 +572,7 @@
 
                     <div class="modal-footer bg-light">
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Save Attribute</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
                     </div>
                 </form>
             </div>

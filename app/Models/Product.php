@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -95,18 +94,23 @@ class Product extends Model
             ->withTimestamps();
     }
 
+    public function stock_history()
+    {
+        return $this->hasMany(StockHistory::class, 'product_id');
+    }
+
     public function toDetailsArray()
     {
         $this->load('images', 'category', 'subcategory', 'variants', 'seller', 'reviews.user');
 
-        $sold                   = OrderItem::where('product_id', $this->id)->count();
-        $revenue                = $sold * $this->selling_price;
-        $profit                 = $revenue - ($sold * $this->buying_price);
-        $lastOrder              = OrderItem::where('product_id', $this->id)->latest('created_at')->first();
-        $lastSale               = $lastOrder?->created_at;
-        $stockHistory           = StockHistory::where('product_id', $this->id)->latest()->get();
-        $margin                 = $this->selling_price - $this->buying_price;
-        $marginPercent          = $this->buying_price > 0 ? ($margin / $this->buying_price) * 100 : 0;
+        $sold          = OrderItem::where('product_id', $this->id)->count();
+        $revenue       = $sold * $this->selling_price;
+        $profit        = $revenue - ($sold * $this->buying_price);
+        $lastOrder     = OrderItem::where('product_id', $this->id)->latest('created_at')->first();
+        $lastSale      = $lastOrder?->created_at;
+        $stockHistory  = StockHistory::where('product_id', $this->id)->latest()->get();
+        $margin        = $this->selling_price - $this->buying_price;
+        $marginPercent = $this->buying_price > 0 ? ($margin / $this->buying_price) * 100 : 0;
         return [
             'id'                => $this->id,
             'slug'              => $this->slug,
@@ -151,6 +155,7 @@ class Product extends Model
                     'discounted_price' => $variant->discounted_price,
                     'image'            => $variant->image,
                     'value_ids'        => $variant->optionValues->pluck('id')->sort()->values()->toArray(),
+                    'is_default'       => $variant->is_default,
                 ];
             }),
             'options'           => $this->grouped_options,
@@ -160,7 +165,7 @@ class Product extends Model
             'revenue'           => $revenue,
             'profit'            => $profit,
             'last_sale'         => $lastSale,
-            'stock_history'     => $stockHistory,    
+            'stock_history'     => $stockHistory,
             'profit'            => [
                 'margin'  => (float) $margin,
                 'percent' => round($marginPercent, 2),
@@ -190,10 +195,10 @@ class Product extends Model
                     $option = $group->first()->option;
 
                     return [
-                        'id' => $option->id,
-                        'name' => $option->name,
+                        'id'     => $option->id,
+                        'name'   => $option->name,
                         'values' => $group->unique('id')->map(fn($v) => [
-                            'id' => $v->id,
+                            'id'    => $v->id,
                             'value' => $v->value,
                         ])->values()->toArray(),
                     ];

@@ -1,17 +1,17 @@
 <?php
 namespace App\Http\Controllers\Seller;
 
-use App\Enums\StockType;
-use App\Http\Controllers\Controller;
 use App\Models\Brand;
-use App\Models\Category;
+use App\Models\Option;
 use App\Models\Product;
-use App\Models\ProductAttribute;
-use App\Models\ProductAttributeOption;
-use App\Models\ProductImage;
+use App\Enums\StockType;
+use App\Models\Category;
 use App\Models\ProductUnit;
+use App\Models\ProductImage;
 use App\Models\StockHistory;
 use Illuminate\Http\Request;
+use App\Models\ProductVariant;
+use App\Http\Controllers\Controller;
 
 class ProductController extends Controller
 {
@@ -45,11 +45,11 @@ class ProductController extends Controller
             'short_description'    => 'nullable|string',
             'description'          => 'nullable|string',
             'sku'                  => 'nullable|string|max:255',
-            'cost_price'         => 'required|numeric',
+            'cost_price'           => 'required|numeric',
             'selling_price'        => 'required|numeric',
             'tax'                  => 'required|numeric',
             'discount_type'        => 'required|string',
-            'discount_value'      => 'required|numeric',
+            'discount_value'       => 'required|numeric',
             'unit_id'              => 'required|numeric',
             'unit_value'           => 'required|string',
             'is_trending'          => 'required|boolean',
@@ -63,18 +63,19 @@ class ProductController extends Controller
             'thumbnail'            => 'required|image|mimes:jpeg,png,jpg,gif|max:4000',
             'video'                => 'nullable|file',
             'files'                => 'nullable|array',
-            'files.*' => 'file|max:4096|mimetypes:image/*',
-            'meta_title' => 'nullable|string',
+            'files.*'              => 'file|max:4096|mimetypes:image/*',
+            'meta_title'           => 'nullable|string',
         ]);
 
         $validated['thumbnail'] = upload_file($request->file('thumbnail'), 'images/products/thumb');
         if ($request->hasFile('video')) {
             $validated['video'] = upload_file($request->file('video'), 'videos/products');
         }
-        $validated['seller_id'] = seller()->id;
-        $validated['slug']      = str_slug('products', 'slug', $validated['name']);
-        $validated['sku']       = $validated['sku'] ?? strtoupper(uniqid());
-        $validated['discount_amount'] 
+        $validated['seller_id']        = seller()->id;
+        $validated['slug']             = str_slug('products', 'slug', $validated['name']);
+        $validated['sku']              = $validated['sku'] ?? strtoupper(uniqid());
+        $validated['discount_amount']  = calculate_discount_amount($validated['selling_price'], $validated['discount_type'], $validated['discount_value']);
+        $validated['discounted_price'] = calculate_discounted_price($validated['selling_price'], $validated['discount_type'], $validated['discount_value']);
 
         $product = Product::create($validated);
 
@@ -87,22 +88,33 @@ class ProductController extends Controller
             }
         }
 
-        return redirect()->route('seller.products.index')->with('success','Product Added Successfully');
+        return redirect()->route('seller.products.index')->with('success', 'Product Added Successfully');
     }
 
     public function show($slug)
     {
         $product = Product::where('slug', $slug)->first();
-        $product = $product->toDetailsArray();
 
-        return $product;
+        $product->load('variants.option_values','stock_history');
 
-        // $productAttributes   = ProductAttribute::where('category_id', $product['category_id'])->get();
-        // $productAttributeIds = $productAttributes->pluck('id');
+        $costPrice    = $product->cost_price ?? 0;
+        $sellingPrice = $product->selling_price ?? 0;
 
-        // $productAttributeOptions = ProductAttributeOption::whereIn('product_attribute_id', $productAttributeIds)->get();
+        $profitAmount  = $sellingPrice - $costPrice;
+        $profitPercent = $costPrice > 0 ? ($profitAmount / $costPrice) * 100 : 0;
+        $productStock  = $product->stock_in - $product->stock_out;
 
-        return view('seller.products.details', compact('product', 'productAttributes', 'productAttributeOptions'));
+        $product->profit_amount  = $profitAmount;
+        $product->profit_percent = $profitPercent;
+        $product->stock          = $product->stock;
+
+        foreach ($product->variants as $variant) {
+            $variant->stock = ($variant->stock_in ?? 0) - ($variant->stock_out ?? 0);
+        }
+
+        $product_options = Option::with('options')->get();
+
+        return view('seller.products.details', compact('product', 'product_options'));
     }
 
     public function edit(Product $product)
@@ -209,41 +221,88 @@ class ProductController extends Controller
     public function stockUpdate(Request $request, Product $product)
     {
         $request->validate([
-            'stock_quantity' => 'required|numeric',
-            'stock_action'   => 'required|numeric',
+            'stock_quantity'     => 'required|numeric|min:0',
+            'stock_action'       => 'required|numeric',
+            'stock_note'         => 'nullable|string',
+            'product_variant_id' => 'nullable|numeric',
         ]);
 
-        if (($product->stock_in > 0) && ($request->stock_quantity > $product->stock_in) && ($request->stock_action == StockType::REMOVE_STOCK->value)) {
-            return redirect()->back()->with('error', 'Not enough stock to remove.');
+        $stockQuantity = $request->stock_quantity;
+        $stockAction   = $request->stock_action;
+        $variantId     = $request->product_variant_id;
+
+        $newStock = 0;
+
+        if ($variantId) {
+            $variant = ProductVariant::find($variantId);
+
+            if (! $variant) {
+                return redirect()->back()->with('error', 'Invalid product variant.');
+            }
+
+            $currentStock = ($variant->stock_in ?? 0) - ($variant->stock_out ?? 0);
+
+            if ($stockAction == StockType::REMOVE_STOCK->value && $stockQuantity > $currentStock) {
+                return redirect()->back()->with('error', 'Not enough variant stock to remove.');
+            }
+
+            $log = StockHistory::create([
+                'product_id'         => $product->id,
+                'product_variant_id' => $variant->id,
+                'quantity'           => $stockQuantity,
+                'type'               => $stockAction,
+                'note'               => $request->stock_note,
+            ]);
+
+            if ($log->type->value == StockType::SET_EXACT_STOCK->value) {
+                $newStock           = $stockQuantity;
+                $variant->stock_in  = $newStock;
+                $variant->stock_out = 0;
+            } elseif ($log->type->value == StockType::ADD_STOCK->value) {
+                $variant->stock_in += $stockQuantity;
+            } elseif ($log->type->value == StockType::REMOVE_STOCK->value) {
+                $variant->stock_in -= $stockQuantity;
+                if ($variant->stock_in < 0) {
+                    $variant->stock_in = 0;
+                }
+
+            }
+
+            $variant->save();
+
+        }
+        else {
+            $currentStock = ($product->stock_in ?? 0) - ($product->stock_out ?? 0);
+
+            if ($stockAction == StockType::REMOVE_STOCK->value && $stockQuantity > $currentStock) {
+                return redirect()->back()->with('error', 'Not enough product stock to remove.');
+            }
+
+            $log = StockHistory::create([
+                'product_id' => $product->id,
+                'quantity'   => $stockQuantity,
+                'type'       => $stockAction,
+                'note'       => $request->stock_note,
+            ]);
+
+            if ($log->type->value == StockType::SET_EXACT_STOCK->value) {
+                $newStock           = $stockQuantity;
+                $product->stock_in  = $newStock;
+                $product->stock_out = 0;
+            } elseif ($log->type->value == StockType::ADD_STOCK->value) {
+                $product->stock_in += $stockQuantity;
+            } elseif ($log->type->value == StockType::REMOVE_STOCK->value) {
+                $product->stock_in -= $stockQuantity;
+                if ($product->stock_in < 0) {
+                    $product->stock_in = 0;
+                }
+
+            }
+
+            $product->save();
         }
 
-        $new_stock = $product->stock_in;
-
-        $log = StockHistory::create([
-            'product_id' => $product->id,
-            'quantity'   => $request->stock_quantity,
-            'type'       => $request->stock_action,
-            'note'       => $request->stock_note,
-        ]);
-
-        if ($log->type->value == StockType::SET_EXACT_STOCK->value) {
-            $new_stock = $request->stock_quantity;
-        } elseif ($log->type->value == StockType::ADD_STOCK->value) {
-            $new_stock = $product->stock_in + $request->stock_quantity;
-        } elseif ($log->type->value == StockType::REMOVE_STOCK->value) {
-            $new_stock = $product->stock_in - $request->stock_quantity;
-        }
-
-        $product->update(['stock_in' => $new_stock]);
-
-        return redirect()->back()->with('success', "Quantity Update successfully!");
-    }
-
-    public function getOptions($attributeId)
-    {
-        $options = ProductAttributeOption::where('product_attribute_id', $attributeId)->get();
-
-        return response()->json($options);
+        return redirect()->back()->with('success', 'Quantity updated successfully!');
     }
 
 }

@@ -2,42 +2,58 @@
 namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
+use App\Models\OptionValue;
 use App\Models\Product;
 use App\Models\ProductVariant;
+use App\Models\ProductVariantOption;
 use Illuminate\Http\Request;
 
 class ProductVariantController extends Controller
 {
     public function store(Request $request, Product $product)
     {
-        // dd($request->all());
         $data = $request->validate([
-            'sku'                  => 'nullable|string',
-            'stock_in'             => 'required|numeric',
-            'additional_price'       => 'required|string',
-            'product_attribute_id' => 'required|numeric',
-            'option_id'            => 'required|numeric',
-            'image'                => 'required|mimes:jpeg,png,jpg,gif|max:4000',
+            'sku'                => 'nullable|string',
+            'cost_price'         => 'required|string',
+            'selling_price'      => 'required|string',
+            'discount_type'      => 'required|string',
+            'discount_value'     => 'required|numeric',
+            'low_stock_quantity' => 'required|numeric',
+            'image'              => 'required|mimes:jpeg,png,jpg,gif|max:4000',
+            'option_values'      => 'nullable|array|min:1',
+            'option_values.*'    => 'nullable|exists:option_values,id',
+            'is_default' => 'required|boolean'
         ]);
 
         $data['product_id'] = $product->id;
+
+        $optionValues = collect($request->option_values)
+            ->filter()
+            ->unique()
+            ->values()
+            ->toArray();
 
         if (! $request->sku) {
             $data['sku'] = strtoupper(uniqid());
         }
 
+        $data['discount_amount']  = calculate_discount_amount($data['selling_price'], $data['discount_type'], $data['discount_value']);
+        $data['discounted_price'] = calculate_discounted_price($data['selling_price'], $data['discount_type'], $data['discount_value']);
         $data['image'] = upload_file($request->file('image'), 'images/products/variant');
 
-        // dd($data);
-
-        ProductVariant::create($data);
+        $variant = ProductVariant::create($data);
+        foreach ($optionValues as $valueId) {
+                ProductVariantOption::create([
+                'product_variant_id' => $variant->id,
+                'option_value_id'    => $valueId,
+            ]);
+        }
 
         return redirect()->back()->with('success', 'Variant Added Successfully');
     }
 
     public function destroy(ProductVariant $variant)
     {
-        // dd($variant);
         $variant->delete();
         return redirect()->back()->with('success', 'Variant Deleted Successfully!');
     }

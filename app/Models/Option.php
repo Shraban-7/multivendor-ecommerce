@@ -8,6 +8,8 @@ class Option extends Model
 {
     use HasFactory;
 
+    protected $guarded = ['id'];
+
     public function options()
     {
         return $this->hasMany(OptionValue::class);

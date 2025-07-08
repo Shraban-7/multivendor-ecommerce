@@ -59,10 +59,10 @@
                         </div>
                         <div class="mb-3 col-md-3">
                             <label class="form-label">SKU</label>
-                            <input name="sku" type="text" value="" class="form-control">
+                            <input name="sku" type="text" value="{{ strtoupper(uniqid()) }}" class="form-control">
                         </div>
                         <div class="mb-3 col-md-3">
-                            <label class="form-label">Buying Price</label>
+                            <label class="form-label">Cost Price</label>
                             <input name="cost_price" type="number" value="" class="form-control" required>
                         </div>
                         <div class="mb-3 col-md-3">
@@ -84,8 +84,8 @@
                             </select>
                         </div>
                         <div class="mb-3 col-md-3">
-                            <label class="form-label">Discount Amount</label>
-                            <input name="discount_amount" type="number" value="" class="form-control" required>
+                            <label class="form-label">Discount Value</label>
+                            <input name="discount_value" type="number" value="" class="form-control" required>
                         </div>
                         <div class="mb-3 col-md-3">
                             <label class="form-label">Unit <small class="text-muted">(e.g., 2.5 kg)</small></label>

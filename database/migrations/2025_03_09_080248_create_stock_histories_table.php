@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('stock_histories', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('product_id')->nullable();
+            $table->unsignedBigInteger('product_variant_id')->nullable();
             $table->integer('quantity');
             $table->tinyInteger('type');
             $table->string('note')->nullable();
