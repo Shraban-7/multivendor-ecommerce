@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ProductListResource extends JsonResource
+class ProductResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
@@ -38,9 +38,9 @@ class ProductListResource extends JsonResource
             'images' => $this->whenLoaded('images', function () {
                 return $this->imageToArray($this->images);
             }),
-            
-            'available_options' => [],
-            'variants' => [],
+
+            'available_options' => $this->grouped_options,
+            'variants' => ProductVariantResource::collection($this->variants),
         ];
     }
 
