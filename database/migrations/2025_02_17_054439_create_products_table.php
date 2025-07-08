@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('thumbnail')->nullable();
             $table->string('video')->nullable();
 
-            $table->decimal('cost_price', 10, 2);
+            $table->decimal('buying_price', 10, 2);
             $table->decimal('selling_price', 10, 2);
 
             $table->string('discount_type')->nullable();

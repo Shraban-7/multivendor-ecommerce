@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('product_id')->nullable();
             $table->string('sku')->unique();
             $table->string('image')->nullable();
-            $table->decimal('cost_price', 10, 2);
+            $table->decimal('buying_price', 10, 2);
             $table->decimal('selling_price', 10, 2);
             $table->string('discount_type')->nullable();
             $table->decimal('discount_value', 6, 1)->nullable();

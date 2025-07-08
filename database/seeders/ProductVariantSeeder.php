@@ -41,7 +41,7 @@ class ProductVariantSeeder extends Seeder
                     'product_id'         => $product->id,
                     'sku'                => strtoupper(Str::random(8)),
                     'image'              => null,
-                    'cost_price'         => $costPrice,
+                    'buying_price'         => $costPrice,
                     'selling_price'      => $sellingPrice,
                     'discount_type'      => $discountType,
                     'discount_value'     => $discountValue,

@@ -136,7 +136,7 @@ class Product extends Model
             'description'       => $this->description,
             'price'             => $this->selling_price,
             'discounted_price'  => $this->discounted_price,
-            'buying_cost'       => $this->cost_price,
+            'buying_cost'       => $this->buying_price,
             'discount'          => [
                 'type'  => $this->discount_type,
                 'value' => $this->discount_value,

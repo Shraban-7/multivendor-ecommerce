@@ -14,7 +14,7 @@ class ProductVariantController extends Controller
     {
         $data = $request->validate([
             'sku'                => 'nullable|string',
-            'cost_price'         => 'required|string',
+            'buying_price'         => 'required|string',
             'selling_price'      => 'required|string',
             'discount_type'      => 'required|string',
             'discount_value'     => 'required|numeric',

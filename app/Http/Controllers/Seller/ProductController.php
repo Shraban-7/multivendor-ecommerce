@@ -45,7 +45,7 @@ class ProductController extends Controller
             'short_description'    => 'nullable|string',
             'description'          => 'nullable|string',
             'sku'                  => 'nullable|string|max:255',
-            'cost_price'           => 'required|numeric',
+            'buying_price'           => 'required|numeric',
             'selling_price'        => 'required|numeric',
             'tax'                  => 'required|numeric',
             'discount_type'        => 'required|string',
@@ -97,7 +97,7 @@ class ProductController extends Controller
 
         $product->load('variants.option_values', 'stock_history');
 
-        $costPrice    = $product->cost_price ?? 0;
+        $costPrice    = $product->buying_price ?? 0;
         $sellingPrice = $product->selling_price ?? 0;
 
         $profitAmount  = $sellingPrice - $costPrice;

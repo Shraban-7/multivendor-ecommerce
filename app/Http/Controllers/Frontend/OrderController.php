@@ -100,7 +100,7 @@ class OrderController extends Controller
             $orderItems[] = [
                 'product_id'            => $product->id,
                 'product_variant_id'   => $cartItem->product_variant_id ?? null,
-                'buying_price'          => $variant? $variant->cost_price :$product->cost_price,
+                'buying_price'          => $variant? $variant->buying_price :$product->buying_price,
                 'unit_price'            => $cartItem->price,
                 'quantity'              => $cartItem->quantity,
                 'discount'              => $itemDiscount,

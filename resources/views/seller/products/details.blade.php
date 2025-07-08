@@ -80,7 +80,7 @@
                                         </tr>
                                         <tr>
                                             <td class="fw-bold pe-3">Product Collecting Price</td>
-                                            <td>{{ money($product->cost_price) }}</td>
+                                            <td>{{ money($product->buying_price) }}</td>
                                         </tr>
                                         <tr>
                                             <td class="fw-bold pe-3">Selling Price</td>
@@ -482,10 +482,10 @@
                                 placeholder="Enter SKU (Optional)" value="{{ strtoupper(uniqid()) }}">
                         </div>
                         <div class="mb-3 col-6">
-                            <label class="form-label">Cost Price</label>
+                            <label class="form-label">Buying Price</label>
                             <div class="input-group">
                                 <span class="input-group-text">{{ currency() }}</span>
-                                <input type="number" class="form-control" name="cost_price" step="0.01"
+                                <input type="number" class="form-control" name="buying_price" step="0.01"
                                     placeholder="Enter Price" required>
                             </div>
                         </div>
