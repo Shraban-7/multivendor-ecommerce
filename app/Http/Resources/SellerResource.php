@@ -14,6 +14,7 @@ class SellerResource extends JsonResource
             'name' => $this->business_name,
             'email' => $this->business_email,
             'address' => $this->business_address,
+            'is_best_seller' => (bool) $this->is_best_seller,
             'image' => storage_url($this->business_logo),
             'products_count' => (string) $this->total_items,
             'sales_count' => (string) $this->total_items,
