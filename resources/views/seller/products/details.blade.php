@@ -539,11 +539,13 @@
                         </div>
 
                         <div class="mb-3 col-12">
-                            <select name="is_default" id="" class="form-select">
-                                <option value="0">No</option>
-                                <option value="1">Yes</option>
-                            </select>
+                            <div class="form-check form-switch">
+                                <input type="hidden" name="is_default" value="0">
+                                <input class="form-check-input" type="checkbox" id="is_default" name="is_default" value="1">
+                                <label class="form-check-label" for="is_default">Default Variant</label>
+                            </div>
                         </div>
+
                     </div>
                 </form>
             </div>
@@ -664,7 +666,7 @@
         let form = $('#variantForm')[0];
         let formData = new FormData(form);
 
-        $('#variantAlert').html(''); // Clear any previous messages
+        $('#variantAlert').html('');
         $('#saveVariant').attr('disabled', true).text('Saving...');
 
         $.ajax({
@@ -681,10 +683,9 @@
                             </div>
                         `);
 
-                // Optional: Close modal and reload page or refresh variants table
                 setTimeout(function() {
                     $('#addVariantModal').modal('hide');
-                    location.reload(); // Or use AJAX to refresh just the variants list
+                    location.reload();
                 }, 1000);
             },
             error: function(xhr) {
