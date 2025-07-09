@@ -8,12 +8,12 @@
             ← Back to Details
         </a>
     </div>
-
+    <div id="alertBox"></div>
     <div class="row">
         <div class="col-12">
             <div class="card card-body">
-                <form id="form" action="{{ route('seller.products.update', $product->id) }}" enctype="multipart/form-data"
-                    method="POST">
+                <form id="productUpdateForm" action="{{ route('seller.products.update', $product->slug) }}"
+                    enctype="multipart/form-data" method="POST">
                     @csrf
                     <div class="row">
                         <div class="mb-3 col-md-3">
@@ -137,7 +137,9 @@
                         </div>
                         <div class="mb-3 col-md-3">
                             <label class="form-label">Low Stock Quantity</label>
-                            <input name="low_stock_quantity" type="number" value="{{ old('low_stock_quantity',$product->low_stock_quantity) }}" class="form-control">
+                            <input name="low_stock_quantity" type="number"
+                                value="{{ old('low_stock_quantity', $product->low_stock_quantity) }}"
+                                class="form-control">
                         </div>
                         <div class="mb-3 col-md-12">
                             <div class="gap-3 d-flex align-items-center">
@@ -321,6 +323,59 @@
                     });
                 }
             }
+
+
+            $('#productUpdateForm').submit(function(e) {
+                e.preventDefault();
+
+                let form = $('#productUpdateForm')[0];
+                let formData = new FormData(form);
+                $('#alertBox').html('');
+                $.ajax({
+                    url: "{{ route('seller.products.update', $product->slug) }}",
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function() {
+                        $('#updateBtn').attr('disabled', true).text('Updating...');
+                    },
+                    success: function(response) {
+                        $('#updateBtn').attr('disabled', false).text('Update');
+                        $('#alertBox').html(`
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        Product added successfully!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                `);
+                        setTimeout(function() {
+                            window.location.href = response.redirect;
+                        }, 1500);
+                    },
+                    error: function(xhr) {
+                        $('#updateBtn').attr('disabled', false).text('Update');
+
+                        if (xhr.status === 422) {
+                            let errors = xhr.responseJSON.errors;
+                            let messages = Object.values(errors).map(item => `<div>${item[0]}</div>`).join(
+                                '');
+                            $('#alertBox').html(`
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            ${messages}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    `);
+                        } else {
+                            $('#alertBox').html(`
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            Something went wrong. Please try again.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    `);
+                        }
+                    }
+                });
+            });
         </script>
     @endpush
 

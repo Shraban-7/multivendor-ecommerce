@@ -13,7 +13,7 @@
                 </ol>
             </div>
             <div class="col-sm-6 text-end">
-                <a href="{{ route('seller.products.edit', $product['id']) }}" class="btn btn-primary">
+                <a href="{{ route('seller.products.edit', $product->slug) }}" class="btn btn-primary">
                     <i class="fas fa-edit me-1"></i> Edit Product
                 </a>
                 <a href="{{ route('seller.products.index') }}" class="btn btn-secondary">

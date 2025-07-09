@@ -25,8 +25,8 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::get('/create', [ProductController::class, 'create'])->name('add');
         Route::post('/store', [ProductController::class, 'store'])->name('store');
         Route::get('/{product}/show', [ProductController::class, 'show'])->name('show');
-        Route::get('/{product}/edit', [ProductController::class, 'edit'])->name('edit');
-        Route::post('/{product}/update', [ProductController::class, 'update'])->name('update');
+        Route::get('/{slug}/edit', [ProductController::class, 'edit'])->name('edit');
+        Route::post('/{slug}/update', [ProductController::class, 'update'])->name('update');
         Route::post('/{product}/stock-update', [ProductController::class, 'stockUpdate'])->name('stockUpdate');
         Route::post('/{product}/add-variant', [ProductController::class, 'addVariant'])->name('addVariant');
         Route::post('/{product}/update-variant/{variant}', [ProductController::class, 'updateVariant'])->name('updateVariant');

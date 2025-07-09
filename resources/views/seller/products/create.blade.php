@@ -240,7 +240,6 @@
                 let form = $('#form')[0];
                 let formData = new FormData(form);
 
-                // Clear any previous alerts
                 $('#alertBox').html('');
 
                 $.ajax({

@@ -38,31 +38,31 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'category_id'          => 'required|integer|exists:categories,id',
-            'subcategory_id'       => 'nullable',
-            'brand_id'             => 'nullable',
-            'name'                 => 'required|string|max:255',
-            'short_description'    => 'nullable|string',
-            'description'          => 'nullable|string',
-            'sku'                  => 'nullable|string|max:255',
-            'buying_price'           => 'required|numeric',
-            'selling_price'        => 'required|numeric',
-            'tax'                  => 'required|numeric',
-            'discount_type'        => 'required|string',
-            'discount_value'       => 'required|numeric',
-            'unit_id'              => 'required|numeric',
-            'unit_value'           => 'required|string',
-            'is_trending'          => 'required|boolean',
-            'best_selling'         => 'required|boolean',
-            'is_featured'          => 'required|boolean',
-            'is_interest'          => 'required|boolean',
-            'is_community'         => 'required|boolean',
-            'low_stock_quantity'   => 'required|numeric',
-            'thumbnail'            => 'required|image|mimes:jpeg,jpg,png,gif,webp,svg,bmp,ico|max:4096',
-            'video'                => 'nullable|file',
-            'files'                => 'nullable|array',
-            'files.*'              => 'file|max:4096|mimetypes:image/*',
-            'meta_title'           => 'nullable|string',
+            'category_id'        => 'required|integer|exists:categories,id',
+            'subcategory_id'     => 'nullable',
+            'brand_id'           => 'nullable',
+            'name'               => 'required|string|max:255',
+            'short_description'  => 'nullable|string',
+            'description'        => 'nullable|string',
+            'sku'                => 'nullable|string|max:255',
+            'buying_price'       => 'required|numeric',
+            'selling_price'      => 'required|numeric',
+            'tax'                => 'required|numeric',
+            'discount_type'      => 'required|string',
+            'discount_value'     => 'required|numeric',
+            'unit_id'            => 'required|numeric',
+            'unit_value'         => 'required|string',
+            'is_trending'        => 'required|boolean',
+            'best_selling'       => 'required|boolean',
+            'is_featured'        => 'required|boolean',
+            'is_interest'        => 'required|boolean',
+            'is_community'       => 'required|boolean',
+            'low_stock_quantity' => 'required|numeric',
+            'thumbnail'          => 'required|image|mimes:jpeg,jpg,png,gif,webp,svg,bmp,ico|max:4096',
+            'video'              => 'nullable|file',
+            'files'              => 'nullable|array',
+            'files.*'            => 'file|max:4096|mimetypes:image/*',
+            'meta_title'         => 'nullable|string',
         ]);
 
         $validated['thumbnail'] = upload_file($request->file('thumbnail'), 'images/products/thumb');
@@ -93,6 +93,12 @@ class ProductController extends Controller
     {
         $product = Product::where('slug', $slug)->first();
 
+        // return $product;
+
+        if (! $product) {
+            abort(404, 'Product not found');
+        }
+
         $product->load('variants.option_values', 'stock_history');
 
         $costPrice    = $product->buying_price ?? 0;
@@ -115,8 +121,10 @@ class ProductController extends Controller
         return view('seller.products.details', compact('product', 'product_options'));
     }
 
-    public function edit(Product $product)
+    public function edit($slug)
     {
+        $product = Product::where('slug', $slug)->first();
+
         $categories = Category::category()->with('subcategories')->get();
         $brands     = Brand::all();
         $units      = ProductUnit::all();
@@ -124,33 +132,37 @@ class ProductController extends Controller
         return view('seller.products.edit', compact('product', 'categories', 'brands', 'units'));
     }
 
-    public function update(Product $product, Request $request)
+    public function update($slug, Request $request)
     {
+        $product = Product::where('slug', $slug)->first();
+
         $validated = $request->validate([
-            'category_id'          => 'required|integer|exists:categories,id',
-            'subcategory_id'       => 'nullable',
-            'brand_id'             => 'nullable',
-            'name'                 => 'required|string|max:255',
-            'short_description'    => 'nullable|string',
-            'description'          => 'nullable|string',
-            'sku'                  => 'nullable|string|max:255',
-            'buying_price'         => 'required|numeric',
-            'selling_price'        => 'required|numeric',
-            'unit_id'              => 'required|numeric',
-            'unit_value'           => 'required|string',
-            'is_trending'          => 'required|boolean',
-            'best_selling'         => 'required|boolean',
-            'is_featured'          => 'required|boolean',
-            'is_interest'          => 'required|boolean',
-            'is_community'         => 'required|boolean',
-            'low_stock_quantity'   => 'required|numeric',
-            'thumbnail'            => 'nullable|image|mimes:jpeg,jpg,png,gif,webp,svg,bmp,ico|max:4096',
-            'video'                => 'nullable|file',
-            'files'                => 'nullable|array',
-            'files.*'              => 'mimetypes:image/*',
+            'category_id'        => 'required|integer|exists:categories,id',
+            'subcategory_id'     => 'nullable',
+            'brand_id'           => 'nullable',
+            'name'               => 'required|string|max:255',
+            'short_description'  => 'nullable|string',
+            'description'        => 'nullable|string',
+            'sku'                => 'nullable|string|max:255',
+            'buying_price'       => 'required|numeric',
+            'selling_price'      => 'required|numeric',
+            'unit_id'            => 'required|numeric',
+            'unit_value'         => 'required|string',
+            'is_trending'        => 'required|boolean',
+            'best_selling'       => 'required|boolean',
+            'is_featured'        => 'required|boolean',
+            'is_interest'        => 'required|boolean',
+            'is_community'       => 'required|boolean',
+            'low_stock_quantity' => 'required|numeric',
+            'thumbnail'          => 'nullable|image|mimes:jpeg,jpg,png,gif,webp,svg,bmp,ico|max:4096',
+            'video'              => 'nullable|file',
+            'files'              => 'nullable|array',
+            'files.*'            => 'mimetypes:image/*',
         ]);
 
-        $validated['slug'] = str_slug('products', 'slug', $validated['name']);
+        if ($validated['name'] && $validated['name'] !== $product->name) {
+            $validated['slug'] = str_slug('products', 'slug', $validated['name']);
+        }
 
         $validated['sku'] = $validated['sku'] ?? strtoupper(uniqid());
 
@@ -185,7 +197,11 @@ class ProductController extends Controller
             }
         }
 
-        return redirect()->back()->with('success', "Product Updated successfully!");
+        return response()->json([
+            'success' => true,
+            'message' => 'Product Updated Successfully',
+            'redirect' => route('seller.products.edit', $product->slug)
+        ]);
     }
 
     public function delete(Product $product)
