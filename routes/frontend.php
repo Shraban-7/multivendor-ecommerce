@@ -9,8 +9,7 @@ use App\Http\Controllers\Frontend\SellerController;
 use App\Http\Controllers\Frontend\WishlistController;
 use Illuminate\Support\Facades\Route;
 
-
-Route::get('{slug}/category', [CategoryController::class, 'details'])->name('category.details');
+Route::get('categories/{slug}', [CategoryController::class, 'details'])->name('category.details');
 
 Route::get('/contact-us', [ContactUsController::class, 'contactUs'])->name('contactUs');
 

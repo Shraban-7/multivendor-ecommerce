@@ -219,7 +219,7 @@
 
             <!-- Product Card's Wrapper -->
             <div id="product-list"
-                class="mt-8 grid grid-cols-1 xsm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-6 gap-3">
+                class="mt-8 grid items-start grid-cols-1 gap-5 p-2 xsm:grid-cols-2 md:grid-cols-4 xl:gap-8 lg:p-0">
                 @include('frontend.partials.product-card-load', ['products' => $products])
             </div>
 
