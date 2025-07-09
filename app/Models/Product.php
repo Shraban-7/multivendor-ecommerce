@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -187,24 +188,26 @@ class Product extends Model
 
     public function groupedOptions(): Attribute
     {
-        return Attribute::get(function () {
-            return $this->variants
-                ->flatMap(fn($variant) => $variant->optionValues)
-                ->groupBy(fn($val) => $val->option->id)
-                ->map(function ($group) {
-                    $option = $group->first()->option;
+        $options =  $this->variants
+            ->flatMap(fn($variant) => $variant->option_values)
+            ->groupBy(fn($val) => $val->option->id)
+            ->map(function ($group) {
+                $option = $group->first()->option;
 
-                    return [
-                        'id'     => $option->id,
-                        'name'   => $option->name,
-                        'values' => $group->unique('id')->map(fn($v) => [
-                            'id'    => $v->id,
-                            'value' => $v->value,
-                        ])->values()->toArray(),
-                    ];
-                })
-                ->values()
-                ->toArray();
-        });
+                return [
+                    'id'     => $option->id,
+                    'name'   => $option->name,
+                    'values' => $group->unique('id')->map(fn($v) => [
+                        'id'    => $v->id,
+                        'value' => $v->value,
+                    ])->values()->toArray(),
+                ];
+            })
+            ->values()
+            ->toArray();
+
+        return Attribute::make(
+            get: fn() => $options
+        );
     }
 }

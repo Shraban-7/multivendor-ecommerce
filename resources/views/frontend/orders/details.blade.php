@@ -168,9 +168,9 @@
                                                     @endif
                                                 </p>
 
-                                                @if ($item->variant && $item->variant->optionValues->count())
+                                                @if ($item->variant && $item->variant->option_values->count())
                                                     <div class="w-full text-xs xsm:text-sm text-gray-600 mt-1">
-                                                        @foreach ($item->variant->optionValues as $optionValue)
+                                                        @foreach ($item->variant->option_values as $optionValue)
                                                             <span class="mr-2">
                                                                 {{ $optionValue->option->name ?? '' }}:
                                                                 {{ $optionValue->value ?? '' }}
