@@ -23,7 +23,7 @@ class ProductController extends Controller
                 'images',
                 'seller',
                 'reviews',
-                'variants.optionValues.option',
+                'variants.option_values.option',
             ])->firstOrFail();
 
         $categoryId = $productModel->category->id;
@@ -110,11 +110,11 @@ class ProductController extends Controller
     // public function details($slug, Request $request)
     // {
     //     $product = Product::with([
-    //         'variants.optionValues.option',
+    //         'variants.option_values.option',
     //     ])->where('slug', $slug)->firstOrFail();
 
     //     $options = $product->variants
-    //         ->flatMap(fn($variant) => $variant->optionValues)
+    //         ->flatMap(fn($variant) => $variant->option_values)
     //         ->groupBy(fn($val) => $val->option->id)
     //         ->map(function ($group) {
     //             $option = $group->first()->option;
@@ -135,7 +135,7 @@ class ProductController extends Controller
     //         'sku' => $variant->sku,
     //         'price' => $variant->selling_price,
     //         'stock' => max(0, $variant->stock_in - $variant->stock_out),
-    //         'value_ids' => $variant->optionValues->pluck('id')->sort()->values()->toArray(),
+    //         'value_ids' => $variant->option_values->pluck('id')->sort()->values()->toArray(),
     //     ])->toArray();
 
     //     $productArray = [
