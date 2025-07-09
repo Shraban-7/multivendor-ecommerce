@@ -42,7 +42,7 @@
         <span class="mt-1 inline-block text-xs text-leaf-green font-medium">Almost Sold Out</span>
         @endif
 
-        <div class="flex items-center justify-between text-xs text-black mt-2">
+        <div class="flex items-center justify-between text-xs text-gray-500 mt-2">
             @if ($product['rating'] > 0)
             <div class="flex items-center gap-0.5 text-sm">
                 @for ($i = 1; $i <= 5; $i++)
@@ -81,7 +81,7 @@
             @endif
         </div>
 
-        <div class="mt-4 flex items-center justify-between bg-davy-gray">
+        <div class="mt-4 flex items-center justify-between">
             <div class="flex items-baseline gap-2">
                 <span class="text-primary font-bold text-lg">
                     {{ money($product['discounted_price']) }}
