@@ -6,6 +6,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
+use App\Models\Option;
 use App\Models\Product;
 use App\Models\ProductAttribute;
 
@@ -54,7 +55,7 @@ class CategoryController extends Controller
                 ->having('avg_review', '=', $request->review);
         }
 
-        $productAttributes = ProductAttribute::where('category_id', $category->id)->with('options')->get();
+        $productAttributes = Option::with('options')->get();
 
         foreach ($request->all() as $key => $value) {
             if (in_array(strtolower($key), $productAttributes->pluck('name')->map('strtolower')->toArray()) && $value != 'all') {
