@@ -91,8 +91,6 @@ class ProductSeeder extends Seeder
                             'is_trending'          => rand(0, 1),
                             'is_community'         => rand(0, 1),
                             'is_interest'          => rand(0, 1),
-                            'is_lightdeal'         => rand(0, 1),
-                            'lightdeal_expired_at' => now()->addDays(rand(1, 30)),
                             'best_selling'         => rand(0, 1),
                             'is_featured'          => rand(0, 1),
                             'tax'                  => 10,

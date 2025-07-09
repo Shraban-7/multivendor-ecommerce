@@ -23,15 +23,13 @@ class ProductController extends Controller
                 'images',
                 'seller',
                 'reviews',
-                'variants.optionValues.option',
+                'variants.option_values.option',
             ])->firstOrFail();
 
         $categoryId = $productModel->category->id;
         $sellerId   = $productModel->seller->id;
 
         $product = $productModel->toDetailsArray();
-
-        // return $product['variants'];
 
         $interest_products = Product::where('category_id', $categoryId)
             ->where('id', '!=', $product['id'])

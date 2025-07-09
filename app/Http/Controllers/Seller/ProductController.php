@@ -57,10 +57,8 @@ class ProductController extends Controller
             'is_featured'          => 'required|boolean',
             'is_interest'          => 'required|boolean',
             'is_community'         => 'required|boolean',
-            'is_lightdeal'         => 'required|boolean',
             'low_stock_quantity'   => 'required|numeric',
-            'lightdeal_expired_at' => 'nullable|date|date_format:Y-m-d',
-            'thumbnail'            => 'required|image|mimes:jpeg,png,jpg,gif|max:4000',
+            'thumbnail'            => 'required|image|mimes:jpeg,jpg,png,gif,webp,svg,bmp,ico|max:4096',
             'video'                => 'nullable|file',
             'files'                => 'nullable|array',
             'files.*'              => 'file|max:4096|mimetypes:image/*',
@@ -145,13 +143,11 @@ class ProductController extends Controller
             'is_featured'          => 'required|boolean',
             'is_interest'          => 'required|boolean',
             'is_community'         => 'required|boolean',
-            'is_lightdeal'         => 'required|boolean',
             'low_stock_quantity'   => 'required|numeric',
-            'lightdeal_expired_at' => 'nullable|date|date_format:Y-m-d',
-            'thumbnail'            => 'nullable|image|mimes:jpeg,png,jpg,gif|max:4000',
+            'thumbnail'            => 'nullable|image|mimes:jpeg,jpg,png,gif,webp,svg,bmp,ico|max:4096',
             'video'                => 'nullable|file',
             'files'                => 'nullable|array',
-            'files.*'              => 'mimes:jpeg,png,jpg,gif,pdf,doc,docx,zip|max:4000',
+            'files.*'              => 'mimetypes:image/*',
         ]);
 
         $validated['slug'] = str_slug('products', 'slug', $validated['name']);

@@ -104,10 +104,6 @@
                             </div>
                         </div>
                         <div class="mb-3 col-md-3">
-                            <label class="form-label">Light Deal Expire Date</label>
-                            <input name="lightdeal_expired_at" type="date" value="" class="form-control">
-                        </div>
-                        <div class="mb-3 col-md-3">
                             <label class="form-label">Low Stock Quantity</label>
                             <input name="low_stock_quantity" type="number" value="" class="form-control">
                         </div>
@@ -144,12 +140,7 @@
                                     <label class="form-check-label" for="flexSwitchCheckDefault">Community
                                         Products</label>
                                 </div>
-                                <div class="form-check form-switch">
-                                    <input type="hidden" name="is_lightdeal" value="0">
-                                    <input class="form-check-input" type="checkbox" name="is_lightdeal" value="1"
-                                        role="switch" id="flexSwitchCheckDefault">
-                                    <label class="form-check-label" for="flexSwitchCheckDefault">Light Deal</label>
-                                </div>
+
                             </div>
                         </div>
 

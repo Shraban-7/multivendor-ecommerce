@@ -139,12 +139,6 @@
                             <label class="form-label">Low Stock Quantity</label>
                             <input name="low_stock_quantity" type="number" value="{{ old('low_stock_quantity',$product->low_stock_quantity) }}" class="form-control">
                         </div>
-                        <div class="mb-3 col-md-3">
-                            <label class="form-label">Light Deal Expire Date</label>
-                            <input name="lightdeal_expired_at" type="date"
-                                value="{{ old('lightdeal_expired_at', optional($product->lightdeal_expired_at)->format('Y-m-d')) }}"
-                                class="form-control">
-                        </div>
                         <div class="mb-3 col-md-12">
                             <div class="gap-3 d-flex align-items-center">
                                 <div class="form-check form-switch">
@@ -182,13 +176,6 @@
                                         id="flexSwitchCheckDefault">
                                     <label class="form-check-label" for="flexSwitchCheckDefault">Community
                                         Products</label>
-                                </div>
-                                <div class="form-check form-switch">
-                                    <input type="hidden" name="is_lightdeal" value="0">
-                                    <input class="form-check-input" type="checkbox" name="is_lightdeal"
-                                        {{ $product->is_lightdeal ? 'checked' : '' }} value="1" role="switch"
-                                        id="flexSwitchCheckDefault">
-                                    <label class="form-check-label" for="flexSwitchCheckDefault">Light Deal</label>
                                 </div>
                             </div>
                         </div>

@@ -38,7 +38,7 @@ class ProductListResource extends JsonResource
             'images' => $this->whenLoaded('images', function () {
                 return $this->imageToArray($this->images);
             }),
-            
+
             'available_options' => [],
             'variants' => [],
         ];

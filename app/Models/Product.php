@@ -154,7 +154,7 @@ class Product extends Model
                     'price'            => $variant->selling_price,
                     'discounted_price' => $variant->discounted_price,
                     'image'            => $variant->image,
-                    'value_ids'        => $variant->optionValues->pluck('id')->sort()->values()->toArray(),
+                    'value_ids'        => $variant->option_values->pluck('id')->sort()->values()->toArray(),
                     'is_default'       => $variant->is_default,
                 ];
             }),

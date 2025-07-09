@@ -57,13 +57,15 @@ class CategoryController extends Controller
 
         $productOptions = Option::with('options')->get();
 
-        foreach ($request->all() as $key => $value) {
-            if (in_array(strtolower($key), $productAttributes->pluck('name')->map('strtolower')->toArray()) && $value != 'all') {
-                $query->whereHas('variants.attributeOptions', function ($q) use ($value) {
-                    $q->where('value', ucfirst($value));
-                });
-            }
-        }
+        // foreach ($request->all() as $key => $value) {
+        //     if (in_array(strtolower($key), $productAttributes->pluck('name')->map('strtolower')->toArray()) && $value != 'all') {
+        //         $query->whereHas('variants.attributeOptions', function ($q) use ($value) {
+        //             $q->where('value', ucfirst($value));
+        //         });
+        //     }
+        // }
+
+        // return $productOptions;
 
         $category_products = $query->with('variants','unit', 'images')
             ->latest()
@@ -79,6 +81,6 @@ class CategoryController extends Controller
             return view('frontend.partials.product-card-load', compact('products'))->render();
         }
 
-        return view('frontend.categories.details', compact('category', 'productAttributes', 'products', 'brands'));
+        return view('frontend.categories.details', compact('category', 'productOptions', 'products', 'brands'));
     }
 }
