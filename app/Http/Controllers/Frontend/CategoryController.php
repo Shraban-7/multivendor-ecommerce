@@ -55,7 +55,7 @@ class CategoryController extends Controller
                 ->having('avg_review', '=', $request->review);
         }
 
-        $productAttributes = Option::with('options')->get();
+        $productOptions = Option::with('options')->get();
 
         foreach ($request->all() as $key => $value) {
             if (in_array(strtolower($key), $productAttributes->pluck('name')->map('strtolower')->toArray()) && $value != 'all') {
