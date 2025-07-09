@@ -25,7 +25,7 @@ class ProductVariantResource extends JsonResource
             'discounted_price' => removeZeroFromDecimal($discountedPrice),
             'discount' => $discount,
             'image'            => $this->image,
-            'value_ids'        => $this->optionValues->pluck('id')->sort()->values()->toArray(),
+            'value_ids'        => $this->option_values->pluck('id')->sort()->values()->toArray(),
             'default'          => $this->is_default,
             'variant_options'  => ProductVariantOptionResource::collection($this->options),
         ];
