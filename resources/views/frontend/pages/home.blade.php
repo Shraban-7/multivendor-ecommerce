@@ -8,7 +8,7 @@
         <!-- Hero Section Ended -->
 
         <!-- Light Deals Section Starts -->
-            @include('frontend.partials.home.light-deal-section')
+            {{-- @include('frontend.partials.home.light-deal-section') --}}
         <!-- Light Deals Section Ended -->
 
         <!-- Interest Section Starts -->

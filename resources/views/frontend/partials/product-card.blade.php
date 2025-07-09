@@ -29,7 +29,7 @@
             <i class="fa-regular fa-eye mr-1"></i> Quick View
         </button>
     </div>
-    
+
     <div class="p-4 flex flex-col justify-between h-full">
         <h3 class="text-sm sm:text-base font-semibold text-gray-800 line-clamp-2">
             <a href="{{ route('products.details', $product['slug']) }}"
@@ -42,7 +42,7 @@
         <span class="mt-1 inline-block text-xs text-leaf-green font-medium">Almost Sold Out</span>
         @endif
 
-        <div class="flex items-center justify-between text-xs text-gray-500 mt-2">
+        <div class="flex items-center justify-between text-xs text-black mt-2">
             @if ($product['rating'] > 0)
             <div class="flex items-center gap-0.5 text-sm">
                 @for ($i = 1; $i <= 5; $i++)
@@ -81,10 +81,10 @@
             @endif
         </div>
 
-        <div class="mt-4 flex items-center justify-between">
+        <div class="mt-4 flex items-center justify-between bg-davy-gray">
             <div class="flex items-baseline gap-2">
                 <span class="text-primary font-bold text-lg">
-                    {{ money($product['discount']['price']) }}
+                    {{ money($product['discounted_price']) }}
                 </span>
                 <span class="text-sm text-gray-400 line-through">
                     {{ money($product['price']) }}

@@ -16,11 +16,7 @@ class HomeController extends Controller
     {
         $data['categories'] = Category::slider()->get();
         $data['special_category'] = Category::special()->with(['banners', 'products'])->first();
-        $data['light_deals'] = Product::lightDeal()->with('unit')
-            ->withAvg('reviews', 'rating')
-            ->withCount('reviews')
-            ->take(8)
-            ->get();
+    
         $data['interest_products'] = Product::interest()
             ->with('unit')
             ->withAvg('reviews', 'rating')
