@@ -274,7 +274,8 @@
                                 <input type="hidden" id="variantSku{{ $product['id'] }}" value="">
 
                                 @if ($product['in_stock'] > 0)
-                                    <button data-id="{{ $product['id'] }}" data-modal="{{ true }}" type="button"
+                                    <button data-id="{{ $product['id'] }}" data-modal="{{ true }}"
+                                        type="button"
                                         class="cartBtn text-sm md:text-base font-medium flex-1 px-6 py-2 border border-primary text-primary rounded-full hover:bg-primary hover:text-white transition-all">
                                         Add To Cart
                                     </button>
@@ -303,18 +304,16 @@
 
 @push('scripts')
     <script>
-        $(document).ready(function() {
-            // Loop through all modals by their ID pattern
+        function initQuickViewModals() {
             $('[id^="quick-view-modal-"]').each(function() {
                 const modal = $(this);
                 const productId = this.id.replace('quick-view-modal-', '');
-                let quantity = 1;
 
+                let quantity = 1;
                 const quantityElement = $('#quantity' + productId);
                 const decreaseBtn = $('#decreaseBtn' + productId);
                 const increaseBtn = $('#increaseBtn' + productId);
                 const hiddenInput = $('.qtyInputValue' + productId);
-
 
                 const updateQuantity = () => {
                     quantityElement.val(quantity.toString().padStart(2, "0"));
@@ -322,19 +321,19 @@
                     updatePriceAndSku();
                 };
 
-                increaseBtn.on('click', function() {
+                increaseBtn.off('click').on('click', function() {
                     quantity++;
                     updateQuantity();
                 });
 
-                decreaseBtn.on('click', function() {
+                decreaseBtn.off('click').on('click', function() {
                     if (quantity > 1) {
                         quantity--;
                         updateQuantity();
                     }
                 });
 
-                quantityElement.on('input', function() {
+                quantityElement.off('input').on('input', function() {
                     const newQuantity = parseInt($(this).val()) || 1;
                     quantity = newQuantity < 1 ? 1 : newQuantity;
                     updateQuantity();
@@ -349,27 +348,23 @@
 
                     if (checkedOptions.length > 0) {
                         basePrice = parseFloat(checkedOptions.first().data('product-price')) || 0;
-                        baseDiscountedPrice = parseFloat(checkedOptions.first().data('discounted-price')) ||
-                            0;
+                        baseDiscountedPrice = parseFloat(checkedOptions.first().data('discounted-price')) || 0;
 
                         checkedOptions.each(function() {
                             const selected = $(this);
                             const additionalPrice = parseFloat(selected.data('price')) || 0;
                             totalAdditionalPrice += additionalPrice;
-
                             selectedSku = selected.data('sku');
                         });
                     } else {
                         basePrice = parseFloat($('#productBasePrice' + productId).val()) || 0;
-                        baseDiscountedPrice = parseFloat($('#productDiscountedPrice' + productId).val()) ||
-                            0;
+                        baseDiscountedPrice = parseFloat($('#productDiscountedPrice' + productId).val()) || 0;
                     }
 
                     const finalPrice = basePrice + totalAdditionalPrice;
                     const finalDiscountedPrice = baseDiscountedPrice + totalAdditionalPrice;
 
-                    $('#current-price' + productId).text('৳ ' + (finalDiscountedPrice * quantityVal)
-                        .toFixed(2));
+                    $('#current-price' + productId).text('৳ ' + (finalDiscountedPrice * quantityVal).toFixed(2));
                     $('#old-price' + productId).text('৳ ' + (finalPrice * quantityVal).toFixed(2));
                     $('#variantSku' + productId).val(selectedSku);
                 }
@@ -380,22 +375,18 @@
 
                     $('.swiper-slide').each(function() {
                         const slide = $(this);
-                        const img = $(this).find('img').attr('src')?.trim().toLowerCase();
-
+                        const img = slide.find('img').attr('src')?.trim().toLowerCase();
                         if (img === selectedImageUrl) {
-                            console.log("variant image match");
                             slide.addClass('swiper-slide-active swiper-slide-thumb-active');
                             return false;
                         }
                     });
 
-                    console.log($('.swiper-slide-active'))
-
                     $('.main').removeClass('swiper-slide-active');
 
-                    $('.main').each(function(index) {
-                        const mainSlide = $(this)
-                        const imgSrc = $(this).find('img').attr('src')?.trim().toLowerCase();
+                    $('.main').each(function() {
+                        const mainSlide = $(this);
+                        const imgSrc = mainSlide.find('img').attr('src')?.trim().toLowerCase();
                         if (imgSrc === normalizedUrl) {
                             mainSlide.addClass('swiper-slide-active');
                             return false;
@@ -404,21 +395,18 @@
                 }
 
                 const seenAttributes = new Set();
-
                 $('.variantForm .variant-option').each(function() {
                     const attrId = $(this).data('attribute');
-
                     if (!seenAttributes.has(attrId)) {
                         seenAttributes.add(attrId);
                         $(this).prop('checked', true);
                     }
                 });
 
-                $('.variantForm').on('change', '.variant-option', function() {
+                $('.variantForm').off('change').on('change', '.variant-option', function() {
                     const changedInput = $(this);
                     const newVariantId = changedInput.data('variant-id');
                     const attributeId = changedInput.data('attribute');
-                    const productId = $(this).closest('.variantForm').data('id');
                     const imageUrl = $(this).data('image');
 
                     $('.variantForm .variant-option').each(function() {
@@ -440,8 +428,58 @@
                 });
 
                 updateQuantity(productId);
-
             });
-        });
+        }
+
+        function initProductSwipers() {
+            document
+                .querySelectorAll(".product-multi-slider-container")
+                .forEach((container) => {
+                    const thumbsEl = container.querySelector(".product-thumbnails");
+                    const mainEl = container.querySelector(".product-swiper");
+
+                    // Skip if already initialized (prevent duplicate Swipers)
+                    if (!thumbsEl || !mainEl || thumbsEl.classList.contains('swiper-initialized') || mainEl.classList
+                        .contains('swiper-initialized')) {
+                        return;
+                    }
+
+                    // Initialize thumbnail Swiper
+                    const thumbsSwiper = new Swiper(thumbsEl, {
+                        spaceBetween: 10,
+                        slidesPerView: 5,
+                        watchSlidesProgress: true,
+                        direction: "horizontal",
+                        grabCursor: true,
+                        breakpoints: {
+                            1024: {
+                                direction: "vertical",
+                                spaceBetween: 5,
+                            },
+                            1280: {
+                                direction: "vertical",
+                                spaceBetween: 10,
+                            },
+                        },
+                    });
+
+                    // Initialize main Swiper linked with thumbnails
+                    const mainSwiper = new Swiper(mainEl, {
+                        spaceBetween: 10,
+                        grabCursor: true,
+                        navigation: {
+                            nextEl: mainEl.querySelector(".swiper-button-next"),
+                            prevEl: mainEl.querySelector(".swiper-button-prev"),
+                        },
+                        thumbs: {
+                            swiper: thumbsSwiper,
+                        },
+                    });
+                });
+        }
+
+
+        // Call once on page load
+        initQuickViewModals();
     </script>
 @endpush

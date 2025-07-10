@@ -275,6 +275,18 @@
                             button.prop('disabled', false).html(
                                 '<span>Load More</span> <i class="fa-solid fa-chevron-down text-sm"></i>'
                             );
+
+                            if (typeof initFlowbite === 'function') {
+                                initFlowbite();
+                            }
+
+                            if (typeof initQuickViewModals === 'function') {
+                                initQuickViewModals();
+                            }
+
+                            if (typeof initProductSwipers === 'function') {
+                                initProductSwipers();
+                            }
                         } else {
                             button.hide();
                         }

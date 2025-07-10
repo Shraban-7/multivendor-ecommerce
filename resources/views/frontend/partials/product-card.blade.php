@@ -6,7 +6,7 @@
 
     @php
     $original = $product['price'];
-    $discounted = $product['discount']['price'];
+    $discounted = $product['discounted_price'];
     $discountPercent = round((($original - $discounted) / $original) * 100);
     @endphp
 

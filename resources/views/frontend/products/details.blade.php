@@ -764,8 +764,6 @@
 
         <script>
             $(document).ready(function() {
-
-
                 function updateSliderThumbnailActive(selectedImageUrl) {
                     const normalizedUrl = selectedImageUrl.trim().toLowerCase();
                     $('.swiper-slide').removeClass('swiper-slide-active swiper-slide-thumb-active');
@@ -867,6 +865,18 @@
                             button.prop('disabled', false).html(
                                 '<span>Load More</span> <i class="fa-solid fa-chevron-down text-sm"></i>'
                             );
+
+                            if (typeof initFlowbite === 'function') {
+                                initFlowbite();
+                            }
+
+                            if (typeof initQuickViewModals === 'function') {
+                                initQuickViewModals();
+                            }
+
+                            if (typeof initProductSwipers === 'function') {
+                                initProductSwipers();
+                            }
                         } else {
                             button.hide();
                         }
@@ -880,8 +890,6 @@
         </script>
 
         <script>
-            // Single Product Swiper JS Slider Script's
-            // Vertical Product Image Thumbnails
             const productThumbs = new Swiper(".single-product-thumbnails", {
                 spaceBetween: 10,
                 slidesPerView: 5,

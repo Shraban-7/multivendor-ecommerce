@@ -105,54 +105,6 @@ class ProductController extends Controller
         ]);
     }
 
-    // public function details($slug, Request $request)
-    // {
-    //     $product = Product::with([
-    //         'variants.option_values.option',
-    //     ])->where('slug', $slug)->firstOrFail();
-
-    //     $options = $product->variants
-    //         ->flatMap(fn($variant) => $variant->option_values)
-    //         ->groupBy(fn($val) => $val->option->id)
-    //         ->map(function ($group) {
-    //             $option = $group->first()->option;
-    //             return [
-    //                 'id' => $option->id,
-    //                 'name' => $option->name,
-    //                 'values' => $group->unique('id')->map(fn($v) => [
-    //                     'id' => $v->id,
-    //                     'value' => $v->value,
-    //                 ])->values()->toArray(),
-    //             ];
-    //         })
-    //         ->values()
-    //         ->toArray();
-
-    //     $variants = $product->variants->map(fn($variant) => [
-    //         'id' => $variant->id,
-    //         'sku' => $variant->sku,
-    //         'price' => $variant->selling_price,
-    //         'stock' => max(0, $variant->stock_in - $variant->stock_out),
-    //         'value_ids' => $variant->option_values->pluck('id')->sort()->values()->toArray(),
-    //     ])->toArray();
-
-    //     $productArray = [
-    //         'name' => $product->name,
-    //         'options' => $options,
-    //         'variants' => $variants,
-    //     ];
-
-    //     // return $productArray;
-
-    //     $defaultVariant = collect($productArray['variants'])->firstWhere('stock', '>', 0);
-
-    //     return view('product-variant',[
-    //         'product'=> $productArray,
-    //         'defaultVariant' => $defaultVariant
-    //     ]);
-
-    // }
-
     public function loadReview(Request $request)
     {
         if ($request->ajax()) {
