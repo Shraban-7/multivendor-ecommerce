@@ -1,3 +1,13 @@
+<style>
+    .chevron-icon {
+        transition: transform 0.3s ease;
+    }
+
+    .nav-link[aria-expanded="true"] .chevron-icon {
+        transform: rotate(90deg);
+    }
+</style>
+
 <?php
 $routePath = request()->path();
 $settings = settings();
@@ -71,10 +81,19 @@ $settings = settings();
             @endif
 
             <li class="nav-item">
-                <a class="nav-link has-arrow  collapsed " href="#!" data-bs-toggle="collapse"
-                    data-bs-target="#navMembers" aria-expanded="false" aria-controls="navMembers">
-                    <i data-feather="users" class="nav-icon icon-xs me-2"></i> Manage Members
+                <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center" href="#!"
+                    data-bs-toggle="collapse" data-bs-target="#navMembers"
+                    aria-expanded="{{ request()->routeIs('admin.admins.*') ? 'true' : 'false' }}"
+                    aria-controls="navMembers">
+
+                    <div>
+                        <i data-feather="users" class="nav-icon icon-xs me-2"></i>
+                        Manage Members
+                    </div>
+
+                    <i data-feather="chevron-right" class="chevron-icon transition"></i>
                 </a>
+
                 <div id="navMembers" class="collapse {{ request()->routeIs('admin.admins.*') ? 'show' : '' }}"
                     data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
@@ -92,6 +111,7 @@ $settings = settings();
                 </div>
             </li>
 
+
             @if (hasPermission('admin.roles.index'))
                 <x-dashboard.nav-item-link :route="'admin.roles.index'">
                     <i data-feather="layers" class="nav-icon icon-xs me-2"></i>Permissions
@@ -99,10 +119,19 @@ $settings = settings();
             @endif
 
             <li class="nav-item">
-                <a class="nav-link has-arrow  collapsed " href="#!" data-bs-toggle="collapse"
-                    data-bs-target="#navSettings" aria-expanded="false" aria-controls="navSettings">
-                    <i data-feather="settings" class="nav-icon icon-xs me-2"></i> Settings
+                <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center" href="#!"
+                    data-bs-toggle="collapse" data-bs-target="#navSettings"
+                    aria-expanded="{{ request()->routeIs('admin.settings.*') ? 'true' : 'false' }}"
+                    aria-controls="navSettings">
+
+                    <div>
+                        <i data-feather="settings" class="nav-icon icon-xs me-2"></i>
+                        Settings
+                    </div>
+
+                    <i data-feather="chevron-right" class="chevron-icon transition"></i>
                 </a>
+
                 <div id="navSettings" class="collapse {{ request()->routeIs('admin.settings.*') ? 'show' : '' }}"
                     data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
@@ -144,6 +173,7 @@ $settings = settings();
                     </ul>
                 </div>
             </li>
+
         </ul>
     </div>
 </nav>

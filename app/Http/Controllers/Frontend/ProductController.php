@@ -60,7 +60,6 @@ class ProductController extends Controller
             'shop_name'       => $sellerModel->business_name,
             'shop_logo'       => $sellerModel->business_logo,
             'total_followers' => number_shorten_format($sellerModel->followers->count()),
-            // 'total_sell'      => number_shorten_format(Product::where('seller_id', $sellerId)->sum('stock_out')),
             'rating'          => round($averageRating),
             'total_products'  => Product::where('seller_id', $sellerId)->count(),
         ];
