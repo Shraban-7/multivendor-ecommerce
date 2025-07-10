@@ -4,9 +4,6 @@
 
     <div class="mb-3 d-flex justify-content-between align-items-end">
         <h4 class="mb-0">Products</h4>
-        <a href="{{ route('seller.products.add') }}" class="btn btn-theme">
-            <i data-feather="plus" class="icon-xs"></i> Add Product
-        </a>
     </div>
 
     <div class="table-responsive">

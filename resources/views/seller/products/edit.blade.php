@@ -4,7 +4,7 @@
 
     <div class="mb-3 d-flex justify-content-between align-items-end">
         <h4 class="mb-0">Edit Product</h4>
-        <a href="{{ route('seller.products.show', $product->slug) }}" class="btn btn-secondary btn-sm border ">
+        <a href="{{ route('seller.products.show', $product->slug) }}" class="btn btn-secondary border ">
             ← Back to Details
         </a>
     </div>

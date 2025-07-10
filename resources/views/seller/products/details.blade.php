@@ -14,7 +14,7 @@
                 </div>
                 <div class="col-sm-6 text-end">
                     <a href="{{ route('seller.products.edit', $product->slug) }}" class="btn btn-primary">
-                        <i class="fas fa-edit me-1"></i> Edit Product
+                        <i data-feather="edit" class="icon-xs me-1"></i> Edit Product
                     </a>
                 </div>
             </div>
