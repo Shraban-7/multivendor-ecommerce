@@ -27,6 +27,7 @@ class ProductResource extends JsonResource
             'discounted_price' => removeZeroFromDecimal($discountedPrice),
             'discount' => $discount,
             'stock' => ($this->stock_in - $this->stock_out),
+            'low_stock' => ($this->stock_in - $this->stock_out) <= $this->low_stock_quantity ? true : false,
             'total_sold' => number_shorten_format($this->stock_out),
             'avg_rating' => $this->avg_rating,
             'rating_count' => number_shorten_format($this->rating_count),
