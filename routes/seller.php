@@ -24,12 +24,10 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::get('/', [ProductController::class, 'index'])->name('index');
         Route::get('/create', [ProductController::class, 'create'])->name('add');
         Route::post('/store', [ProductController::class, 'store'])->name('store');
-        Route::get('/{product}/show', [ProductController::class, 'show'])->name('show');
+        Route::get('/{product}', [ProductController::class, 'show'])->name('show');
         Route::get('/{slug}/edit', [ProductController::class, 'edit'])->name('edit');
         Route::post('/{slug}/update', [ProductController::class, 'update'])->name('update');
         Route::post('/{product}/stock-update', [ProductController::class, 'stockUpdate'])->name('stockUpdate');
-        Route::post('/{product}/add-variant', [ProductController::class, 'addVariant'])->name('addVariant');
-        Route::post('/{product}/update-variant/{variant}', [ProductController::class, 'updateVariant'])->name('updateVariant');
         Route::delete('/delete-variant/{variant}', [ProductController::class, 'deleteVariant'])->name('deleteVariant');
         Route::delete('images/{image}/delete', [ProductController::class, 'deleteImage'])->name('image.delete');
 
@@ -55,6 +53,7 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
 
     Route::prefix('product-variants')->as('productVariants.')->group(function () {
         Route::post('{product}/store', [ProductVariantController::class, 'store'])->name('store');
+        Route::post('{product}/{variant}/update/', [ProductVariantController::class, 'update'])->name('update');
         Route::post('{variant}/delete', [ProductVariantController::class, 'destroy'])->name('delete');
     });
 
