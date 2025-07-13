@@ -1,23 +1,23 @@
 <?php
-
 namespace App\Http\Controllers\Frontend;
 
+use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\Product;
+use App\Models\ReportReview;
 use App\Models\Review;
 use App\Models\Seller;
-use App\Models\Product;
-use App\Models\Category;
-use Illuminate\Http\Request;
+use App\Models\SellerCampaign;
 use App\Models\SellerFollower;
-use App\Http\Controllers\Controller;
-use App\Models\ReportReview;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class SellerController extends Controller
 {
     public function follow(Seller $seller)
     {
-        $userId = Auth::id();
+        $userId          = Auth::id();
         $alreadyFollowed = SellerFollower::where('seller_id', $seller->id)->where('user_id', $userId)->first();
 
         if ($alreadyFollowed) {
@@ -28,11 +28,11 @@ class SellerController extends Controller
 
         SellerFollower::create([
             'seller_id' => $seller->id,
-            'user_id' => $userId,
+            'user_id'   => $userId,
         ]);
 
         $seller->update([
-            'total_followers' => $seller->total_followers + 1
+            'total_followers' => $seller->total_followers + 1,
         ]);
 
         return redirect()->back()->with('success', "Followed Successfully");
@@ -40,11 +40,11 @@ class SellerController extends Controller
 
     public function shop($username, Request $request)
     {
-        $seller = Seller::where('username', $username)->firstOrFail();
+        $seller = Seller::with('campaigns')->where('username', $username)->firstOrFail();
 
         $limit = 8;
-        $page = $request->get('page', 1);
-        $skip = ($page - 1) * $limit;
+        $page  = $request->get('page', 1);
+        $skip  = ($page - 1) * $limit;
 
         $productQuery = Product::with('category')
             ->where('seller_id', $seller->id);
@@ -56,7 +56,7 @@ class SellerController extends Controller
         } elseif ($request->sortBy == 'new-arrivals') {
             $productQuery->latest();
         } else {
-            $productQuery->orderBy('id','asc');
+            $productQuery->orderBy('id', 'asc');
         }
 
         $shop_products = $productQuery->skip($skip)->take($limit)->get();
@@ -98,18 +98,17 @@ class SellerController extends Controller
         ));
     }
 
-
-    public function review(Seller $seller,Request $request)
+    public function review(Seller $seller, Request $request)
     {
-        $userId = Auth::id();
-        $totalItem = Product::where('seller_id', $seller->id)->count();
+        $userId          = Auth::id();
+        $totalItem       = Product::where('seller_id', $seller->id)->count();
         $alreadyFollowed = SellerFollower::where('seller_id', $seller->id)
             ->where('user_id', $userId)->first();
         $categoryIds = Product::with('category')
             ->where('seller_id', $seller->id)->pluck('category_id')->unique()->values()->all();
 
         $categories = Category::whereIn('id', $categoryIds)->get();
-        $avgRating = Review::whereIn('product_id', function ($query) use ($seller) {
+        $avgRating  = Review::whereIn('product_id', function ($query) use ($seller) {
             $query->select('id')
                 ->from('products')
                 ->where('seller_id', $seller->id);
@@ -129,8 +128,8 @@ class SellerController extends Controller
 
         for ($i = 5; $i >= 1; $i--) {
             $ratingDistribution[$i] = isset($ratingsCount[$i])
-                ? round(($ratingsCount[$i] / $totalReviews) * 100)
-                : 0;
+            ? round(($ratingsCount[$i] / $totalReviews) * 100)
+            : 0;
         }
 
         $reviews = Review::with('user', 'images')
@@ -143,7 +142,6 @@ class SellerController extends Controller
             ->skip($request->offset ?? 0)
             ->take(2)
             ->get();
-
 
         if ($request->ajax()) {
             // $reviews = Review::with('user', 'images')
@@ -158,16 +156,16 @@ class SellerController extends Controller
             //     ->get();
 
             if ($reviews->isEmpty()) {
-                    return '';
-                }
+                return '';
+            }
 
-                return view('frontend.partials.review-card', [
-                    'reviews' => $reviews
-                ])->render();
+            return view('frontend.partials.review-card', [
+                'reviews' => $reviews,
+            ])->render();
 
         }
 
-        return view('frontend.shops.review', compact('seller','totalItem', 'alreadyFollowed','categories', 'avgRating','totalReviews', 'ratingDistribution','reviews'));
+        return view('frontend.shops.review', compact('seller', 'totalItem', 'alreadyFollowed', 'categories', 'avgRating', 'totalReviews', 'ratingDistribution', 'reviews'));
     }
 
     public function markHelpful(Request $request, Review $review)
@@ -176,24 +174,24 @@ class SellerController extends Controller
 
         return response()->json([
             'message' => 'Marked as helpful!',
-            'count' => $review->helpful_count,
+            'count'   => $review->helpful_count,
         ]);
     }
 
     public function reviewReport(Request $request)
     {
         $seller = Seller::where('id', auth('seller')->id())->first();
-        $user = User::where('id', auth()->id())->first();
+        $user   = User::where('id', auth()->id())->first();
 
         if ($seller) {
             ReportReview::create([
                 'seller_id' => $seller->id,
-                'review_id' => $request->review_id
+                'review_id' => $request->review_id,
             ]);
         } elseif ($user) {
             ReportReview::create([
-                'user_id' => $user->id,
-                'review_id' => $request->review_id
+                'user_id'   => $user->id,
+                'review_id' => $request->review_id,
             ]);
         } else {
             return response()->json(['message' => 'Unauthorized'], 401);
@@ -201,4 +199,14 @@ class SellerController extends Controller
 
         return response()->json(['message' => 'Review reported successfully.']);
     }
+
+    public function campaign_products($slug)
+    {
+        $campaign = SellerCampaign::with(['products.reviews'])->where('slug', $slug)->firstOrFail();
+
+        $products = $campaign->products->map(fn($product) => $product->toDetailsArray());
+
+        return view('frontend.shops.campaign', compact('campaign', 'products'));
+    }
+
 }

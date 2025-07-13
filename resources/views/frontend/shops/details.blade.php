@@ -1,5 +1,5 @@
 @extends('frontend.layouts.app')
-@section('title',$seller->business_name)
+@section('title', $seller->business_name)
 
 @section('content')
     <main class="shop-details-page">
@@ -48,10 +48,21 @@
 
                         <div class="flex flex-col md:gap-2">
                             <h1 class="text-xl md:text-2xl font-light">{{ $seller->business_name }}</h1>
-                            <div class="flex items-center gap-1 flex-nowrap text-sm">
+
+                            <div class="flex items-center gap-2 flex-wrap text-sm">
                                 @if ($seller->is_best_seller)
-                                    <span class="bg-leaf-green text-white text-xs px-2.5 py-1 rounded-full">Best
-                                        Seller</span>
+                                    <span class="bg-leaf-green text-white text-xs px-2.5 py-1 rounded-full">
+                                        Best Seller
+                                    </span>
+                                @endif
+
+                                @if ($seller->campaigns && $seller->campaigns->where('end_date', '>=', now())->count())
+                                    @foreach ($seller->campaigns as $campaign)
+                                    <a href="{{ route('campaigns.campaign_products', $campaign->slug) }}"
+                                        class="bg-primary text-white text-xs px-3 py-1.5 rounded-lg hover:bg-primary-dark transition">
+                                        {{ $campaign->title }}
+                                    </a>
+                                    @endforeach
                                 @endif
                             </div>
                         </div>

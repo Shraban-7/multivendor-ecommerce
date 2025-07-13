@@ -1,12 +1,11 @@
 <?php
-
 namespace App\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 class Seller extends Authenticatable
 {
@@ -23,12 +22,12 @@ class Seller extends Authenticatable
 
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
+        'password'          => 'hashed',
     ];
 
     public function scopeActive($query)
     {
-        return $query->where('is_active',1);
+        return $query->where('is_active', 1);
     }
 
     public function orders()
@@ -69,5 +68,10 @@ class Seller extends Authenticatable
     public function followerUsers()
     {
         return $this->belongsToMany(User::class, 'seller_followers', 'seller_id', 'user_id');
+    }
+
+    public function campaigns()
+    {
+        return $this->hasMany(SellerCampaign::class);
     }
 }

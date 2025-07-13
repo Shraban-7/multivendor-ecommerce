@@ -81,8 +81,12 @@
                                     <!-- Time -->
                                     <div class="flex items-center text-sm text-gray-700 whitespace-nowrap">
                                         <i class="fa-regular fa-clock me-1 text-primary"></i>
-                                        {{ $light_deal->lightdeal_expired_at->format('d:h:i:s') }}
+                                        <span class="countdown-timer"
+                                            data-end-time="{{ $light_deal->campaign_end_date }}">
+                                            Loading...
+                                        </span>
                                     </div>
+
                                 </div>
 
                                 <!-- rating -->
@@ -120,3 +124,4 @@
         </div>
     </div>
 </section>
+

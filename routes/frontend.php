@@ -34,6 +34,12 @@ Route::prefix('sellers')->as('sellers.')->group(function () {
     Route::post('/reviews/report', [SellerController::class, 'reviewReport'])->name('reviews.report');
 });
 
+Route::prefix('campaigns')->as('campaigns.')->group(function () {
+    Route::get('{slug}/products', [SellerController::class, 'campaign_products'])->name('campaign_products');
+});
+
+
+
 Route::middleware('auth')->group(function () {
     Route::prefix('cart')->as('cart.')->group(function () {
         Route::post('/add', [CartController::class, 'add'])->name('add');

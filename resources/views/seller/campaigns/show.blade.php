@@ -93,7 +93,7 @@
 
     <!-- Add Products Modal -->
     <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <form action="{{ route('seller.campaigns.add_products', $campaign->id) }}" method="POST">
                     @csrf
@@ -102,7 +102,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
-                    <div class="modal-body">
+                    <div class="modal-body"  style="max-height: 60vh; overflow-y: auto;">
                         @if ($products->count())
                             <div class="row">
                                 @foreach ($products as $product)

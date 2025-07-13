@@ -159,7 +159,7 @@
                                     </svg>
                                     <h3 id="current-price{{ $product['id'] }}"
                                         class="font-bold text-primary text-nowrap">
-                                        {{ $product['discount']['price'] }}
+                                        {{ $product['discounted_price'] }}
                                     </h3>
                                 </div>
                                 <h6 id="old-price{{ $product['id'] }}" class=" text-jet-gray line-through">
@@ -183,7 +183,7 @@
                                     <input type="hidden" id="productBasePrice{{ $product['id'] }}"
                                         value="{{ $product['price'] }}">
                                     <input type="hidden" id="productDiscountedPrice{{ $product['id'] }}"
-                                        value="{{ $product['discount']['price'] }}">
+                                        value="{{ $product['discounted_price'] }}">
 
                                     <form data-slug="{{ $product['slug'] }}"
                                         class="flex flex-wrap flex-col variantForm{{ $product['id'] }}"

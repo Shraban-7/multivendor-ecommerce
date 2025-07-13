@@ -22,8 +22,6 @@
                 <i data-feather="home" class="nav-icon icon-xs me-2"></i> Dashboard
             </x-dashboard.nav-item-link>
 
-
-
             <li class="nav-item">
                 <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center" href="#!"
                     data-bs-toggle="collapse" data-bs-target="#navProducts"
@@ -70,6 +68,9 @@
                     <ul class="nav flex-column">
                         <x-dashboard.nav-item-link :route="'seller.campaigns.index'">
                             All Campaigns
+                        </x-dashboard.nav-item-link>
+                        <x-dashboard.nav-item-link :route="'seller.campaigns.create'">
+                            Add Campaign
                         </x-dashboard.nav-item-link>
                     </ul>
                 </div>

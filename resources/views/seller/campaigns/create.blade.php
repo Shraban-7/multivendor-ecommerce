@@ -31,7 +31,7 @@
                     <textarea name="description" rows="4" class="form-control"></textarea>
                 </div>
 
-                <div class="mb-3 form-check">
+                <div class="mb-3">
                     <input type="checkbox" class="form-check-input" name="is_active" value="1">
                     <label class="form-check-label">Active</label>
                 </div>

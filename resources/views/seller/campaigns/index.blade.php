@@ -4,9 +4,6 @@
 
     <div class="mb-3 d-flex justify-content-between align-items-end">
         <h4 class="mb-0">Campaigns</h4>
-        <a href="{{ route('seller.campaigns.create') }}" class="btn btn-theme">
-            <i data-feather="plus" class="icon-xs"></i> Add Campaign
-        </a>
     </div>
 
     <div class="row">

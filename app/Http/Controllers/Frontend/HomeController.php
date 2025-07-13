@@ -1,22 +1,35 @@
 <?php
-
 namespace App\Http\Controllers\Frontend;
 
-use App\Models\Product;
+use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\HeroBanner;
-use App\Models\PromoPoster;
-use Illuminate\Http\Request;
 use App\Models\HomeMidBanner;
-use App\Http\Controllers\Controller;
+use App\Models\Product;
+use App\Models\PromoPoster;
+use App\Models\SellerCampaign;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        $data['categories'] = Category::slider()->get();
+        $data['categories']       = Category::slider()->get();
         $data['special_category'] = Category::special()->with(['banners', 'products'])->first();
-    
+        $campaigns                = SellerCampaign::with('products')->latest()->get();
+
+        $light_deals = [];
+
+        foreach ($campaigns as $campaign) {
+            foreach ($campaign->products as $product) {
+                $product->campaign_start_date = $campaign->start_date;
+                $product->campaign_end_date   = $campaign->end_date;
+
+                $light_deals[] = $product;
+            }
+        }
+
+        $data['light_deals'] = $light_deals;
+
         $data['interest_products'] = Product::interest()
             ->with('unit')
             ->withAvg('reviews', 'rating')
@@ -40,25 +53,24 @@ class HomeController extends Controller
 
         $data['new_arrival_products'] = Product::with('unit')
             ->withAvg('reviews', 'rating')
-            ->where('is_featured',0)
+            ->where('is_featured', 0)
             ->withCount('reviews')
             ->orderByDesc('id')
             ->skip(6)
             ->take(Product::count() - 12)
             ->get();
 
-
-        $data['hero_grid_one'] = HeroBanner::where('position', 1)->first();
-        $data['hero_grid_two'] = HeroBanner::where('position', 2)->first();
+        $data['hero_grid_one']   = HeroBanner::where('position', 1)->first();
+        $data['hero_grid_two']   = HeroBanner::where('position', 2)->first();
         $data['hero_grid_three'] = HeroBanner::where('position', 3)->first();
-        $data['hero_grid_four'] = HeroBanner::where('position', 4)->first();
-        $data['hero_grid_five'] = HeroBanner::where('position', 5)->first();
+        $data['hero_grid_four']  = HeroBanner::where('position', 4)->first();
+        $data['hero_grid_five']  = HeroBanner::where('position', 5)->first();
 
-        $data['gallery_feature_pro_one'] = HomeMidBanner::where('position', 1)->first();
-        $data['gallery_feature_pro_two'] = HomeMidBanner::where('position', 2)->first();
+        $data['gallery_feature_pro_one']   = HomeMidBanner::where('position', 1)->first();
+        $data['gallery_feature_pro_two']   = HomeMidBanner::where('position', 2)->first();
         $data['gallery_feature_pro_three'] = HomeMidBanner::where('position', 3)->first();
-        $data['gallery_feature_pro_four'] = HomeMidBanner::where('position', 4)->first();
-        $data['gallery_feature_pro_five'] = HomeMidBanner::where('position', 5)->first();
+        $data['gallery_feature_pro_four']  = HomeMidBanner::where('position', 4)->first();
+        $data['gallery_feature_pro_five']  = HomeMidBanner::where('position', 5)->first();
 
         $data['promo_poster_one'] = PromoPoster::where('position', 1)->first();
         $data['promo_poster_two'] = PromoPoster::where('position', 2)->first();
