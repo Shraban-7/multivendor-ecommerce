@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\HeroBannerController;
+use App\Http\Controllers\Admin\OptionController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\SocialLinkController;
@@ -47,11 +48,11 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
         Route::get('/', [OrderController::class, 'index'])->name('index');
     });
 
-    Route::prefix('product-attributes')->as('productAttributes.')->group(function () {
-    Route::get('/', [ProductAttributeController::class, 'index'])->name('index');
-    Route::post('{option}/option-delete', [ProductAttributeController::class, 'optionDelete'])->name('option_delete');
-    Route::post('{product_attribute}/delete', [ProductAttributeController::class, 'destroy'])->name('delete');
-
+    Route::prefix('options')->as('options.')->group(function () {
+    Route::get('/', [OptionController::class, 'index'])->name('index');
+    Route::post('/store', [OptionController::class, 'store'])->name('store');
+    Route::post('{value}/option-value-delete', [OptionController::class, 'optionDelete'])->name('option_value_delete');
+    Route::post('{option}/delete', [OptionController::class, 'destroy'])->name('delete');
 });
 
 

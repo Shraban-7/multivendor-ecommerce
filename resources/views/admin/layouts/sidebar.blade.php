@@ -44,8 +44,8 @@ $settings = settings();
             @endif
 
             @if (hasPermission('admin.productAttributes.index'))
-                <x-dashboard.nav-item-link :route="'admin.productAttributes.index'">
-                    <i data-feather="package" class="nav-icon icon-xs me-2"></i> Manage Attribute
+                <x-dashboard.nav-item-link :route="'admin.options.index'">
+                    <i data-feather="package" class="nav-icon icon-xs me-2"></i> Manage Options
                 </x-dashboard.nav-item-link>
             @endif
 
