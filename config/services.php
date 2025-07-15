@@ -31,4 +31,9 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'aamarpay' => [
+        'store_id' => env('AAMARPAY_STORE_ID'),
+        'signature_key' => env('AAMARPAY_SIGNATURE_KEY'),
+        'sandbox' => env('AAMARPAY_SANDBOX', true),
+    ],
 ];
