@@ -194,23 +194,6 @@ $settings = settings();
                 });
             });
 
-            function updateCartData() {
-                $.ajax({
-                    url: "{{ route('cart.data') }}",
-                    type: "GET",
-                    success: function(data) {
-                        $('#cartCount').text(data.cartCount);
-                        $('#totalPrice').text(data.totalPrice);
-                    },
-                    error: function() {
-                        toastr.error('Failed to update cart data.');
-                    }
-                });
-            }
-        });
-    </script>
-    <script>
-        $(document).ready(function() {
             $('.buyNowBtn').click(function() {
                 var product_id = $(this).data('id');
                 var seller_id = $(this).data('seller');
@@ -271,24 +254,6 @@ $settings = settings();
                 });
             });
 
-            function updateCartData() {
-                $.ajax({
-                    url: "{{ route('cart.data') }}",
-                    type: "GET",
-                    success: function(data) {
-                        $('#cartCount').text(data.cartCount);
-                        $('#totalPrice').text(data.totalPrice);
-                    },
-                    error: function() {
-                        toastr.error('Failed to update cart data.');
-                    }
-                });
-            }
-        });
-    </script>
-
-    <script>
-        $(document).ready(function() {
             $('.wishlistBtn').click(function() {
                 var product_id = $(this).data('id');
                 if (!product_id) {
@@ -320,6 +285,23 @@ $settings = settings();
                     }
                 });
             });
+
+            function updateCartData() {
+                $.ajax({
+                    url: "{{ route('cart.data') }}",
+                    type: "GET",
+                    success: function(data) {
+                        if (data.cartCount > 0) {
+                            $('#cartCount').removeClass('hidden')
+                        }
+                        $('#cartCount').text(data.cartCount);
+                        $('#totalPrice').text(data.totalPrice);
+                    },
+                    error: function() {
+                        toastr.error('Failed to update cart data.');
+                    }
+                });
+            }
         });
     </script>
 

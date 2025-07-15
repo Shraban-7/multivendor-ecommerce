@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -123,16 +122,20 @@ class Product extends Model
             'name'              => $this->name,
             'thumbnail'         => $this->thumbnail,
             'images'            => $this->images->pluck('image'),
-            'slider'            => collect([
-                $this->thumbnail,
+            'slider'            => $this->variants->pluck('image')->filter()->isNotEmpty()
+            ? collect([
+                optional($this->variants->firstWhere('is_default', true))->image,
             ])
                 ->filter()
-                ->concat($this->images->pluck('image'))
-                ->concat(
-                    $this->variants->pluck('image')->filter()
-                )
+                ->concat($this->variants->pluck('image')->filter())
+                ->unique()
+                ->values()
+            : collect([$this->thumbnail])
+                ->filter()
+                ->concat($this->images->pluck('image')->filter())
                 ->unique()
                 ->values(),
+
             'short_description' => $this->short_description,
             'description'       => $this->description,
             'price'             => $this->selling_price,
@@ -146,6 +149,7 @@ class Product extends Model
             'stock_status'      => $this->stock_status,
             'in_stock'          => $this->stock_in,
             'sold_out'          => $this->stock_out,
+            'stock'             => $this->stock_in - $this->stock_out,
             'almost_sold_out'   => ($this->stock_in - $this->stock_out) <= $this->low_stock_quantity ? true : false,
             'variants'          => $this->variants->map(function ($variant) {
                 return [
@@ -188,7 +192,7 @@ class Product extends Model
 
     public function groupedOptions(): Attribute
     {
-        $options =  $this->variants
+        $options = $this->variants
             ->flatMap(fn($variant) => $variant->option_values)
             ->groupBy(fn($val) => $val->option->id)
             ->map(function ($group) {

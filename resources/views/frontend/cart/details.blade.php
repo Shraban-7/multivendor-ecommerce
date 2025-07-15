@@ -241,7 +241,7 @@
                                 <p class="flex justify-between">
                                     <span class="text-theme-dark">Item's total:</span>
                                     <span id="itemsTotal"
-                                        class="line-through text-jet-gray">{{ money($grand_total) }}</span>
+                                        class="{{ $discount ==0 ? 'line-through' : '' }}  text-jet-gray">{{ money($grand_total) }}</span>
                                 </p>
                                 <p class="flex justify-between">
                                     <span class="text-theme-dark">Item Discount:</span>

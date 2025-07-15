@@ -50,43 +50,31 @@
                     <!-- Product Images Section -->
                     <div class="lg:w-[55%] md:w-[50%] w-full flex flex-col lg:flex-row gap-3 lg:gap-5">
                         <!-- Thumbnails -->
-                        <div class="order-2 w-full space-y-3 lg:w-1/6 lg:order-1">
-                            <div class="single-product-thumbnails overflow-hidden xl:h-[37rem] lg:h-[41rem] h-auto">
-                                <div class="swiper-wrapper">
-                                    @foreach ($product['slider'] as $img)
-                                        <div class="swiper-slide">
-                                            <div
-                                                class="slide-thumb w-full xl:h-24 md:h-22 lg:h-28 h-20 rounded-2xl cursor-pointer border-2 border-transparent hover:border-primary-500 overflow-hidden">
-                                                <img src="{{ storage_url($img) }}"
-                                                    alt="{{ $product->name ?? 'Product Image' }}"
-                                                    class="w-full h-full object-cover" />
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
+                        <div class="order-2 w-full lg:w-1/6 lg:order-1">
+                            <div id="thumbnailWrapper"
+                                class="single-product-thumbnails flex flex-col space-y-3 overflow-hidden xl:h-[37rem] lg:h-[41rem] h-auto">
+                                @foreach ($product['slider'] as $index => $img)
+                                    <div
+                                        class="slide-thumb w-full xl:h-24 md:h-22 lg:h-28 h-20 rounded-2xl cursor-pointer border-2 overflow-hidden {{ $index === 0 ? 'border-primary' : 'border-transparent' }}">
+                                        <img src="{{ storage_url($img) }}" alt="{{ $product['name'] ?? 'Product Image' }}"
+                                            class="w-full h-full object-cover thumb-img"
+                                            data-full="{{ storage_url($img) }}" />
+                                    </div>
+                                @endforeach
                             </div>
                         </div>
 
-                        <!-- Main Image Slider -->
+                        <!-- Main Image -->
                         <div class="relative order-1 w-full lg:w-5/6 lg:order-2">
                             <div
-                                class="single-product-swiper overflow-hidden w-full h-96 md:h-[37rem] xl:h-[37rem] lg:h-[41rem] rounded-2xl overflow-hidden relative">
-                                <div class="swiper-wrapper">
-                                    @foreach ($product['slider'] as $img)
-                                        <div class="swiper-slide main h-full aspect-[4/3] rounded-2xl overflow-hidden">
-                                            <img src="{{ storage_url($img) }}"
-                                                alt="{{ $product['name'] ?? 'Product Image' }}"
-                                                class="w-full h-full object-cover" />
-                                        </div>
-                                    @endforeach
-
-                                </div>
-                                <!-- Navigation Buttons -->
-                                <div class="swiper-button-prev text-theme-light"></div>
-                                <div class="swiper-button-next text-theme-light"></div>
+                                class="overflow-hidden w-full h-96 md:h-[37rem] xl:h-[37rem] lg:h-[41rem] rounded-2xl relative">
+                                <img id="main-product-image" src="{{ storage_url($product['slider'][0] ?? '') }}"
+                                    alt="{{ $product['name'] ?? 'Product Image' }}"
+                                    class="w-full h-full object-cover rounded-2xl transition-all duration-300" />
                             </div>
                         </div>
                     </div>
+
 
                     <!-- Product Details Section -->
                     <div class="lg:w-[45%] md:w-[50%] w-full md:px-2 xl:px-3">
@@ -145,7 +133,7 @@
 
                             </div>
 
-                            <div class="flex flex-wrap items-center gap-2">
+                            <div class="flex flex-wrap items-center gap-4">
                                 @php
                                     $hasVariants =
                                         isset($product['variants']) &&
@@ -163,38 +151,56 @@
                                         $product['discounted_price'] < $product['price'];
                                 @endphp
 
-                                @if ($showVariantDiscount)
-                                    <div class="flex flex-no-wrap items-center gap-1 new-price">
-                                        <h3 id="discounted_price"
-                                            class="font-bold current-price text-primary product-price">
-                                            {{ money($variantDiscountedPrice) }}
-                                        </h3>
-                                    </div>
-                                    <h6 id="price" class="line-through text-jet-gray">
-                                        {{ money($variantPrice) }}
-                                    </h6>
-                                @elseif ($showProductDiscount)
-                                    <div class="flex flex-no-wrap items-center gap-1 new-price">
-                                        <h3 id="discounted_price"
-                                            class="font-bold current-price text-primary product-price">
-                                            {{ money($product['discounted_price']) }}
-                                        </h3>
-                                    </div>
-                                    <h6 id="price" class="line-through text-jet-gray">
-                                        {{ money($product['price']) }}
-                                    </h6>
-                                @else
-                                    <div class="flex flex-no-wrap items-center gap-1 new-price">
-                                        <h3 id="price" class="font-bold current-price text-primary product-price">
-                                            {{ money($product['price']) }}
-                                        </h3>
-                                    </div>
-                                @endif
+                                <div class="flex flex-wrap items-center gap-2">
+                                    @if ($showVariantDiscount)
+                                        <div class="flex items-center gap-1">
+                                            <h3 id="discounted_price" class="font-bold text-primary text-lg product-price">
+                                                {{ money($variantDiscountedPrice) }}
+                                            </h3>
+                                            <h6 id="price" class="text-jet-gray line-through text-sm">
+                                                {{ money($variantPrice) }}
+                                            </h6>
+                                        </div>
+                                    @elseif ($showProductDiscount)
+                                        <div class="flex items-center gap-1">
+                                            <h3 id="discounted_price" class="font-bold text-primary text-lg product-price">
+                                                {{ money($product['discounted_price']) }}
+                                            </h3>
+                                            <h6 id="price" class="text-jet-gray line-through text-sm">
+                                                {{ money($product['price']) }}
+                                            </h6>
+                                        </div>
+                                    @else
+                                        <div class="flex items-center gap-1">
+                                            <h3 id="price" class="font-bold text-primary text-lg product-price">
+                                                {{ money($product['price']) }}
+                                            </h3>
+                                        </div>
+                                    @endif
 
-                                @if ($product['almost_sold_out'])
-                                    <span class="text-xs text-leaf-green">Almost Sold Out</span>
-                                @endif
+                                    @if ($product['almost_sold_out'])
+                                        <span class="text-xs text-leaf-green">Almost Sold Out</span>
+                                    @endif
+                                </div>
+
+                                <div id="variantInfo" class="flex flex-wrap items-center gap-3 text-sm text-gray-700">
+                                    <div>
+                                        <strong>SKU:</strong> <span
+                                            id="sku">{{ $firstVariant['sku'] ?? $product['sku'] }}</span>
+                                    </div>
+                                    <div>
+                                        <strong>Stock:</strong> <span
+                                            id="stock">{{ $firstVariant['stock'] ?? $product['stock'] }}</span>
+                                    </div>
+                                </div>
                             </div>
+
+                            @if (count($product['variants']) > 0)
+                                <div id="variantNotFound"
+                                    class="hidden mt-4 p-4 rounded-md bg-red-100 text-red-700 text-sm font-medium">
+                                    Variant not found for selected options.
+                                </div>
+                            @endif
                         </div>
 
                         <div
@@ -213,14 +219,14 @@
                                     <input type="hidden" id="productDiscountedPrice{{ $product['id'] }}"
                                         value="{{ $product['discounted_price'] }}">
 
+                                    <!-- Variant Form -->
                                     <form id="variantForm" data-slug="{{ $product['slug'] ?? '' }}"
                                         class="flex flex-wrap flex-col" data-id="{{ $product['id'] ?? '' }}">
 
                                         @php
                                             $defaultVariant = collect($product['variants'])->firstWhere(
-                                                'stock',
-                                                '>',
-                                                0,
+                                                'is_default',
+                                                1,
                                             );
                                             $defaultValueIds = $defaultVariant['value_ids'] ?? [];
                                         @endphp
@@ -229,16 +235,12 @@
                                             <div class="mb-6" data-option-id="{{ $option['id'] }}">
                                                 <h6 class="text-davy-gray text-base sm:text-lg font-medium mb-2">
                                                     {{ $option['name'] }}:</h6>
-
                                                 <div class="flex flex-wrap gap-3">
                                                     @foreach ($option['values'] as $value)
-                                                        @php
-                                                            $isActive = in_array($value['id'], $defaultValueIds);
-                                                        @endphp
-
+                                                        @php $isActive = in_array($value['id'], $defaultValueIds); @endphp
                                                         <button type="button"
                                                             class="option-value-btn px-4 py-2 text-sm border rounded-md transition-all duration-200
-        {{ $isActive ? 'bg-primary text-white border-primary' : 'bg-white text-gray-800 border-gray-300 hover:bg-primary/90' }}"
+                        {{ $isActive ? 'bg-primary text-white border-primary' : 'bg-white text-gray-800 border-gray-300 hover:bg-primary/90' }}"
                                                             data-option-id="{{ $option['id'] }}"
                                                             data-value-id="{{ $value['id'] }}">
                                                             {{ $value['value'] }}
@@ -247,18 +249,6 @@
                                                 </div>
                                             </div>
                                         @endforeach
-
-
-                                        <div class="alert alert-info d-none mt-4" id="variantInfo">
-                                            <p><strong>SKU:</strong> <span id="sku"></span></p>
-                                            {{-- <p><strong>Price:</strong> $<span id="price"></span></p> --}}
-                                            <p><strong>Stock:</strong> <span id="stock"></span></p>
-                                        </div>
-
-                                        <div class="alert alert-danger d-none mt-4" id="variantNotFound">
-                                            Variant not found for selected options.
-                                        </div>
-
                                     </form>
 
                                 </div>
@@ -396,7 +386,7 @@
                         <div class="text-sm comments-tags lg:text-base text-davy-gray">
                             <h4>Item Reviews</h4>
                             <!-- review tags -->
-                            <div class="flex flex-wrap gap-2 my-3 font-medium review-tags lg:gap-3 md:my-5">
+                            {{-- <div class="flex flex-wrap gap-2 my-3 font-medium review-tags lg:gap-3 md:my-5">
                                 <button
                                     class="inline-flex items-center lg:px-4 lg:py-1.5 px-3 py-1 rounded-full border border-jet-gray gap-2">
                                     <span class="w-auto h-5 flag-wrap lg:h-7"><img class="object-contain w-auto h-full"
@@ -416,7 +406,7 @@
                                     class="inline-flex items-center lg:px-4 lg:py-1.5 px-3 py-1 rounded-full border border-jet-gray">
                                     Beautiful (250)
                                 </button>
-                            </div>
+                            </div> --}}
 
                             <!-- User Reviews -->
                             <div class="pt-5 space-y-5 reviews-wrapper">
@@ -637,6 +627,13 @@
 
     @push('scripts')
         <script>
+            $(document).on('click', '.thumb-img', function() {
+                const fullImageUrl = $(this).data('full');
+                $('#main-product-image').attr('src', fullImageUrl);
+                $('.slide-thumb').removeClass('border-primary').addClass('border-transparent');
+                $(this).closest('.slide-thumb').addClass('border-primary').removeClass('border-transparent');
+            });
+
             const product = @json($product);
             const variants = product.variants;
             const defaultVariant = @json($defaultVariant);
@@ -645,6 +642,7 @@
 
             let quantity = 1;
             let currentVariant = defaultVariant;
+
 
             const quantityElement = $('#quantity');
             const decreaseBtn = $('#decreaseBtn');
@@ -657,17 +655,30 @@
 
                 if (currentVariant) {
                     $('#variantId').val(currentVariant.id);
-                    const basePrice = parseFloat(currentVariant.price) || 0;
-                    const baseDiscountedPrice = parseFloat(currentVariant.discounted_price) || 0;
+
+                    const basePrice = Number(currentVariant.price ?? 0);
+                    const discountedPrice = currentVariant.discounted_price !== null && currentVariant.discounted_price !==
+                        undefined ?
+                        Number(currentVariant.discounted_price) :
+                        null;
+
                     const totalPrice = (basePrice * quantity).toFixed(2);
-                    const totalDiscountedPrice = (baseDiscountedPrice * quantity).toFixed(2);
+                    const totalDiscountedPrice = discountedPrice !== null ? (discountedPrice * quantity).toFixed(2) : null;
 
                     $('#sku').text(currentVariant.sku);
-                    $('#price').text(`৳ ${totalPrice}`);
-                    $('#discounted_price').text(`৳ ${totalDiscountedPrice}`);
+                    $('#stock').text(currentVariant.stock);
                     $('#availability').text(currentVariant.stock > 0 ? 'In Stock' : 'Out of Stock');
+
+                    if (discountedPrice !== null && discountedPrice > 0) {
+                        $('#discounted_price').text(`৳ ${totalDiscountedPrice}`).removeClass('hidden');
+                        $('#price').text(`৳ ${totalPrice}`).removeClass('hidden').addClass('line-through');
+                    } else {
+                        $('#price').text(`৳ ${totalPrice}`).addClass('hidden');
+                        $('#discounted_price').text(`৳ ${totalPrice}`).removeClass('hidden');
+                    }
                 }
             };
+
 
             increaseBtn.on('click', function() {
                 quantity++;
@@ -693,7 +704,7 @@
                 });
             });
 
-            if (defaultVariant && defaultVariant.value_ids) {
+            if (defaultVariant?.value_ids?.length) {
                 defaultVariant.value_ids.forEach(valueId => {
                     const optionId = valueToOptionMap[valueId];
                     if (optionId) {
@@ -715,7 +726,6 @@
                 $('.option-value-btn').on('click', function() {
                     const optionId = $(this).data('option-id');
                     const valueId = $(this).data('value-id');
-
                     selectedOptions[optionId] = valueId;
 
                     $(`.option-value-btn[data-option-id="${optionId}"]`)
@@ -726,40 +736,83 @@
                         .removeClass('bg-white text-gray-800 border-gray-300')
                         .addClass('bg-primary text-white border-primary');
 
-                    const totalOptions = product.options.length;
-                    if (Object.keys(selectedOptions).length === totalOptions) {
-                        const selectedIds = Object.values(selectedOptions).map(Number).sort();
+                    const selectedIds = Object.values(selectedOptions).map(Number).sort();
+                    const matchingVariant = variants.find(variant => {
+                        const sorted = variant.value_ids.slice().sort();
+                        return JSON.stringify(sorted) === JSON.stringify(selectedIds);
+                    });
 
-                        const matchingVariant = variants.find(variant => {
-                            const sorted = variant.value_ids.slice().sort();
-                            return JSON.stringify(sorted) === JSON.stringify(selectedIds);
-                        });
+                    if (matchingVariant) {
+                        currentVariant = matchingVariant;
 
-                        if (matchingVariant) {
-                            currentVariant = matchingVariant;
-                            $('#variantId').val(currentVariant.id);
+                        if (matchingVariant.image) {
+                            const imageUrl = `/storage/${matchingVariant.image}`;
+                            $('#main-product-image').attr('src', imageUrl);
+                            $('.slide-thumb').removeClass('border-primary').addClass('border-transparent');
 
-                            const basePrice = parseFloat(currentVariant.price) || 0;
-                            const baseDiscountedPrice = parseFloat(currentVariant.discounted_price) || 0;
-                            const totalPrice = (basePrice * quantity).toFixed(2);
-                            const totalDiscountedPrice = (baseDiscountedPrice * quantity).toFixed(2);
-
-                            $('#sku').text(currentVariant.sku);
-                            $('#price').text(`৳ ${totalPrice}`);
-                            $('#discounted_price').text(`৳ ${totalDiscountedPrice}`);
-                            $('#availability').text(currentVariant.stock > 0 ? 'In Stock' : 'Out of Stock');
-                        } else {
-                            currentVariant = null;
-                            $('#variantId').val('');
-                            $('#sku').text('N/A');
-                            $('#price').text('0.00');
-                            $('#availability').text('Not Available');
+                            $(`.thumb-img[data-full="${imageUrl}"]`).closest('.slide-thumb')
+                                .addClass('border-primary')
+                                .removeClass('border-transparent');
                         }
+
+                        $('#variantId').val(currentVariant.id);
+                        $('#sku').text(currentVariant.sku);
+                        $('#stock').text(currentVariant.stock);
+                        const basePrice = parseFloat(currentVariant.price) || 0;
+                        const baseDiscountedPrice = parseFloat(currentVariant.discounted_price);
+                        const totalPrice = (basePrice * quantity).toFixed(2);
+                        const totalDiscountedPrice = baseDiscountedPrice !== null ? (baseDiscountedPrice *
+                            quantity).toFixed(2) : (basePrice * quantity).toFixed(2);
+
+                        if (baseDiscountedPrice && baseDiscountedPrice > 0) {
+                            $('#discounted_price')
+                                .text(`৳ ${totalDiscountedPrice}`)
+                                .removeClass('hidden');
+                            $('#price')
+                                .text(`৳ ${totalPrice}`)
+                                .removeClass('hidden')
+                                .addClass('line-through');
+                        } else {
+                            $('#price')
+                                .text(`৳ ${totalPrice}`)
+                                .addClass('hidden');
+                            $('#discounted_price')
+                                .text(`৳ ${totalPrice}`)
+                                .removeClass('hidden');
+                        }
+
+                        $('#availability').text(currentVariant.stock > 0 ? 'In Stock' : 'Out of Stock');
+
+                        $('#variantInfo').removeClass('hidden');
+                        $('#variantNotFound').addClass('hidden');
+                    } else {
+                        currentVariant = null;
+                        $('#variantId').val('');
+                        $('#sku').text('N/A');
+                        $('#price').text('৳ 0.00');
+                        $('#discounted_price').text('৳ 0.00');
+                        $('#stock').text('0');
+                        $('#availability').text('Not Available');
+
+                        let allThumbs = '';
+                        product.slider.forEach((img, i) => {
+                            const full = `/storage/${img}`;
+                            const border = i === 0 ? 'border-primary' : 'border-transparent';
+                            allThumbs += `
+                        <div class="slide-thumb w-full xl:h-24 md:h-22 lg:h-28 h-20 rounded-2xl cursor-pointer border-2 ${border} overflow-hidden">
+                            <img src="${full}" class="w-full h-full object-cover thumb-img" data-full="${full}" />
+                        </div>
+                    `;
+                        });
+                        $('#thumbnailWrapper').html(allThumbs);
+                        $('#main-product-image').attr('src', `/storage/${product.slider[0] ?? ''}`);
+
+                        $('#variantInfo').addClass('hidden');
+                        $('#variantNotFound').removeClass('hidden');
                     }
                 });
             });
         </script>
-
 
 
         <script>

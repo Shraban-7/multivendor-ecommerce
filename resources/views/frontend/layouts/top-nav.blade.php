@@ -6,8 +6,7 @@
     <!-- Logo and Location -->
     <div class="flex items-center justify-between md:justify-start gap-2 lg:gap-5 rtl:space-x-reverse">
         <a href="/">
-            <img src="{{ storage_url($settings->logo) }}" class="lg:h-8 md:h-6 h-8 self-center"
-                alt="Logo" />
+            <img src="{{ storage_url($settings->logo) }}" class="lg:h-8 md:h-6 h-8 self-center" alt="Logo" />
         </a>
 
         {{-- <div class="flex items-center flex-nowrap gap-2 text-base md:text-xs lg:text-base">
@@ -115,7 +114,7 @@
                 <span class="block relative">
                     <i class="fa-solid fa-cart-arrow-down"></i>
                     <span id="cartCount"
-                        class="absolute flex items-center justify-center w-5 h-5 bg-theme-light text-light-yellow rounded-full -top-3 -end-4 font-[arial] font-bold text-[10px]">
+                        class="absolute hidden flex items-center justify-center w-5 h-5 bg-theme-light text-light-yellow rounded-full -top-3 -end-4 font-[arial] font-bold text-[10px]">
                         {{ $cartCount }}
                     </span>
                 </span>

@@ -11,6 +11,98 @@ class ProductVariantSeeder extends Seeder
 {
     public function run(): void
     {
+        $images = [
+            'images/products/variant/automotive1.jpg',
+            'images/products/variant/automotive2.jpg',
+            'images/products/variant/automotive3.jpg',
+            'images/products/variant/automotive4.jpg',
+            'images/products/variant/automotive5.jpg',
+            'images/products/variant/automotive6.jpg',
+            'images/products/variant/automotive7.jpg',
+            'images/products/variant/automotive8.jpg',
+            'images/products/variant/automotive9.jpg',
+            'images/products/variant/automotive10.jpg',
+            'images/products/variant/automotive11.jpg',
+            'images/products/variant/automotive12.jpg',
+            'images/products/variant/automotive13.jpg',
+            'images/products/variant/automotive14.jpg',
+            'images/products/variant/automotive15.jpg',
+            'images/products/variant/automotive16.jpg',
+            'images/products/variant/automotive17.jpg',
+            'images/products/variant/automotive18.jpg',
+            'images/products/variant/automotive19.jpg',
+            'images/products/variant/automotive20.jpg',
+            'images/products/variant/automotive21.jpg',
+            'images/products/variant/automotive22.jpg',
+            'images/products/variant/automotive23.jpg',
+            'images/products/variant/automotive24.jpg',
+            'images/products/variant/appliance1.jpg',
+            'images/products/variant/appliance2.jpg',
+            'images/products/variant/appliance3.jpg',
+            'images/products/variant/appliance4.jpg',
+            'images/products/variant/appliance5.jpg',
+            'images/products/variant/appliance6.jpg',
+            'images/products/variant/appliance7.jpg',
+            'images/products/variant/appliance8.jpg',
+            'images/products/variant/appliance9.jpg',
+            'images/products/variant/appliance10.jpg',
+            'images/products/variant/appliance11.jpg',
+            'images/products/variant/appliance12.jpg',
+            'images/products/variant/appliance13.jpg',
+            'images/products/variant/appliance14.jpg',
+            'images/products/variant/appliance15.jpg',
+            'images/products/variant/appliance16.jpg',
+            'images/products/variant/appliance17.jpg',
+            'images/products/variant/appliance18.jpg',
+            'images/products/variant/appliance19.jpg',
+            'images/products/variant/appliance20.jpg',
+            'images/products/variant/appliance21.jpg',
+            'images/products/variant/appliance22.jpg',
+            'images/products/variant/appliance23.jpg',
+            'images/products/variant/appliance24.jpg',
+            'images/products/variant/fashion-1.jpg',
+            'images/products/variant/fashion-2.jpg',
+            'images/products/variant/fashion-3.jpg',
+            'images/products/variant/fashion-4.jpg',
+            'images/products/variant/fashion-5.jpg',
+            'images/products/variant/fashion-6.jpg',
+            'images/products/variant/fashion-7.jpg',
+            'images/products/variant/fashion-8.jpg',
+            'images/products/variant/fashion-9.jpg',
+            'images/products/variant/fashion-10.jpg',
+            'images/products/variant/fashion-11.jpg',
+            'images/products/variant/fashion-12.jpg',
+            'images/products/variant/fashion-13.jpg',
+            'images/products/variant/fashion-14.jpg',
+            'images/products/variant/fashion-15.jpg',
+            'images/products/variant/fashion-16.jpg',
+            'images/products/variant/fashion-17.jpg',
+            'images/products/variant/fashion-18.jpg',
+            'images/products/variant/fashion-19.jpg',
+            'images/products/variant/fashion-20.jpg',
+            'images/products/variant/fashion-21.jpg',
+            'images/products/variant/fashion-22.jpg',
+            'images/products/variant/fashion-23.jpg',
+            'images/products/variant/fashion-24.jpg',
+            'images/products/variant/electronics-1.jpg',
+            'images/products/variant/electronics-2.jpg',
+            'images/products/variant/electronics-3.jpg',
+            'images/products/variant/electronics-4.jpg',
+            'images/products/variant/electronics-5.jpg',
+            'images/products/variant/electronics-6.jpg',
+            'images/products/variant/electronics-7.jpg',
+            'images/products/variant/electronics-8.jpg',
+            'images/products/variant/electronics-9.jpg',
+            'images/products/variant/electronics-10.jpg',
+            'images/products/variant/electronics-11.jpg',
+            'images/products/variant/electronics-12.jpg',
+            'images/products/variant/electronics-13.jpg',
+            'images/products/variant/electronics-14.jpg',
+            'images/products/variant/electronics-15.jpg',
+        ];
+
+        $imageIndex = 0;
+
         $products = Product::where('seller_id', 5)->get();
 
         foreach ($products as $product) {
@@ -37,11 +129,14 @@ class ProductVariantSeeder extends Seeder
                     $discountedPrice = max(round($sellingPrice - $discountAmount, 2), 0);
                 }
 
+                $imagePath = $images[$imageIndex] ?? null;
+                $imageIndex++;
+
                 $variant = ProductVariant::create([
                     'product_id'         => $product->id,
                     'sku'                => strtoupper(Str::random(8)),
-                    'image'              => null,
-                    'buying_price'         => $costPrice,
+                    'image'              => $imagePath,
+                    'buying_price'       => $costPrice,
                     'selling_price'      => $sellingPrice,
                     'discount_type'      => $discountType,
                     'discount_value'     => $discountValue,
@@ -62,5 +157,4 @@ class ProductVariantSeeder extends Seeder
             }
         }
     }
-
 }
