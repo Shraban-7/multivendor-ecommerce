@@ -125,4 +125,11 @@ class PaymentController extends Controller
 
         return response('IPN received', 200);
     }
+
+    public function manual(Request $request)
+    {
+        if($request->isMethod("GET")) {
+            return view('payment.manual');
+        }
+    }
 }

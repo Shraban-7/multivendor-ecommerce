@@ -27,4 +27,5 @@ Route::prefix('payment')->as('payment.')->group(function () {
     Route::get('/test', function () {
         return view('payment.test');
     });
+    Route::get('/manual', [PaymentController::class, 'manual']);
 });
