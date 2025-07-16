@@ -129,7 +129,7 @@ class ProductVariantSeeder extends Seeder
                     $discountedPrice = max(round($sellingPrice - $discountAmount, 2), 0);
                 }
 
-                $imagePath = $images[$imageIndex] ?? null;
+                $imagePath = $images[$imageIndex % count($images)];
                 $imageIndex++;
 
                 $variant = ProductVariant::create([
