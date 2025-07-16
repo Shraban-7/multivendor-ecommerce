@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AamarpayPayment;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Services\AamarpayService;
 use Illuminate\Support\Facades\Auth;
@@ -57,7 +58,7 @@ class PaymentController extends Controller
                 'cus_phone' => $request->cus_phone,
                 'opt_a' => base64_encode(json_encode([
                     'user_id' => Auth::id(),
-                    'return_url' => url('/payment/test')
+                    'return_url' => route('cart.details')
                 ]))
             ]);
 
@@ -75,6 +76,8 @@ class PaymentController extends Controller
     {
         $transactionId = $request->input('mer_txnid');
 
+        //call verify payment API here
+
         $payment = AamarpayPayment::where('transaction_id', $transactionId)->first();
 
         if ($payment) {
@@ -83,9 +86,14 @@ class PaymentController extends Controller
                 'gateway_trxid' => $request->input('pg_txnid'),
                 'response' => $request->all(),
             ]);
+
+            $this->updateOrder($payment);
         }
 
-        return view('payment.success', ['data' => $request->all()]);
+        session()->flash('Payment Successful');
+        return redirect($request->return_url);
+
+        //return view('payment.success', ['data' => $request->all()]);
     }
 
     public function cancel(Request $request)
@@ -99,9 +107,13 @@ class PaymentController extends Controller
                 'status' => AamarpayPayment::FAILED,
                 'response' => $request->all(),
             ]);
+
+            $this->updateOrder($payment);
         }
 
-        return view('payment.failed', ['data' => $request->all()]);
+        session()->flash('Payment Failed');
+        return redirect($request->return_url);
+        //return view('payment.failed', ['data' => $request->all()]);
     }
 
     public function notify(Request $request)
@@ -119,6 +131,8 @@ class PaymentController extends Controller
                 'gateway_trxid' => $request->pg_txnid,
                 'response' => $request->all(),
             ]);
+
+            $this->updateOrder($payment);
         }
 
         //update order status in DB
@@ -136,5 +150,12 @@ class PaymentController extends Controller
         if ($request->isMethod("GET")) {
             return view('payment.manual');
         }
+    }
+
+    private function updateOrder(AamarpayPayment $payment)
+    {
+        Order::where('invoice_id', $payment->transaction_id)->update([
+            'payment_id' => $payment->id
+        ]);
     }
 }

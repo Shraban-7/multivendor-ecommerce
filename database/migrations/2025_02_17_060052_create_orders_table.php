@@ -27,6 +27,7 @@ return new class extends Migration
             $table->decimal('total', 10, 2)->nullable();
             $table->decimal('payable', 10, 2)->nullable();
             $table->decimal('due', 10, 2)->nullable();
+            $table->unsignedBigInteger('payment_id')->nullable();
 
             $table->string('commission_type')->nullable();
             $table->decimal('commission_amount', 6, 1)->nullable();
