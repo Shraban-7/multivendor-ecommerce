@@ -68,24 +68,24 @@
                                 <!-- Customer Name -->
                                 <div class="space-y-2">
                                     <label for="customer-name" class="block text-sm">Customer Name</label>
-                                    <input type="text" id="customer-name" value="{{ auth()->user()->name }}" name="customer_name"
-                                        placeholder="Enter customer name"
+                                    <input type="text" id="customer-name" value="{{ auth()->user()->name }}"
+                                        name="customer_name" placeholder="Enter customer name"
                                         class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
                                 </div>
 
                                 <!-- Customer Email -->
                                 <div class="space-y-2">
                                     <label for="customer-email" class="block text-sm">Customer Email</label>
-                                    <input type="email" id="customer-email" value="{{ auth()->user()->email }}"  name="customer_email"
-                                        placeholder="customer@example.com"
+                                    <input type="email" id="customer-email" value="{{ auth()->user()->email }}"
+                                        name="customer_email" placeholder="customer@example.com"
                                         class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
                                 </div>
 
                                 <!-- Customer Phone -->
                                 <div class="space-y-2">
                                     <label for="customer-phone" class="block text-sm">Customer Phone</label>
-                                    <input type="text" id="customer-phone" value="{{ auth()->user()->phone }}"  name="customer_phone"
-                                        placeholder="+88012364899"
+                                    <input type="text" id="customer-phone" value="{{ auth()->user()->phone }}"
+                                        name="customer_phone" placeholder="+88012364899"
                                         class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
                                 </div>
                             </div>
@@ -265,7 +265,7 @@
                                 <p class="flex justify-between">
                                     <span class="text-theme-dark">Item's total:</span>
                                     <span id="itemsTotal"
-                                        class="text-jet-gray mr-2">{{ money($sub_total+$discount) }}</span>
+                                        class="text-jet-gray mr-2">{{ money($sub_total + $discount) }}</span>
                                 </p>
                                 <p class="flex justify-between">
                                     <span class="text-theme-dark">Item Discount:</span>
@@ -345,20 +345,37 @@
             $(document).ready(function() {
                 $('#continue-payment-btn').click(function(e) {
                     e.preventDefault();
+
+                    const $btn = $(this);
+                    const originalText = $btn.text();
+                    $btn.attr('disabled', true)
+                        .addClass('opacity-60 cursor-not-allowed')
+                        .html(`
+                    <div class="flex items-center gap-2">
+                        <svg class="w-5 h-5 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor"
+                                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                        </svg>
+                        <span>Processing...</span>
+                    </div>
+                `);
+
                     $.ajax({
                         type: 'POST',
                         url: "{{ route('orders.checkout') }}",
                         data: $('#checkout-form').serialize(),
                         success: function(response) {
                             toastr.success(response.message);
-                            if(response.payment_url != '') {
+                            if (response.payment_url !== '') {
                                 window.location.href = response.payment_url;
                             }
-                            // window.location.href = "{{ route('orders.success', ':orderId') }}"
-                            //     .replace(':orderId', response.order.id);
                         },
-                        error: function(xhr, status, error) {
+                        error: function(xhr) {
                             console.error(xhr.responseText);
+                            $btn.html(originalText)
+                                .attr('disabled', false)
+                                .removeClass('opacity-60 cursor-not-allowed');
                         }
                     });
                 });

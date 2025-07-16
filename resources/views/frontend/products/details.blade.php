@@ -139,10 +139,11 @@
                                         isset($product['variants']) &&
                                         is_array($product['variants']) &&
                                         count($product['variants']) > 0;
-                                    $firstVariant = $hasVariants ? $product['variants'][0] : null;
 
-                                    $variantDiscountedPrice = $firstVariant['discounted_price'] ?? null;
-                                    $variantPrice = $firstVariant['price'] ?? null;
+                                    $defaultVariant = $product['defaultVariant'] ?? null;
+
+                                    $variantDiscountedPrice = $defaultVariant['discounted_price'] ?? null;
+                                    $variantPrice = $defaultVariant['selling_price'] ?? null;
 
                                     $showVariantDiscount =
                                         $variantDiscountedPrice !== null && $variantDiscountedPrice < $variantPrice;
@@ -150,6 +151,7 @@
                                         $product['discounted_price'] !== null &&
                                         $product['discounted_price'] < $product['price'];
                                 @endphp
+
 
                                 <div class="flex flex-wrap items-center gap-2">
                                     @if ($showVariantDiscount)
