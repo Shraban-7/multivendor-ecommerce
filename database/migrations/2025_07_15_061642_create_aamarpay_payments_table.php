@@ -14,6 +14,7 @@ return new class extends Migration
     {
         Schema::create('aamarpay_payments', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->string('gateway')->default('aamarpay');
             $table->string('transaction_id')->unique();
             $table->string('gateway_trxid')->nullable();

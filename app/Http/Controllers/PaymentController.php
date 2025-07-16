@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AamarpayPayment;
 use Illuminate\Http\Request;
 use App\Services\AamarpayService;
+use Illuminate\Support\Facades\Auth;
 
 class PaymentController extends Controller
 {
@@ -54,6 +55,10 @@ class PaymentController extends Controller
                 'cus_postcode' => '',
                 'cus_country' => 'Bangladesh',
                 'cus_phone' => $request->cus_phone,
+                'opt_a' => base64_encode(json_encode([
+                    'user_id' => Auth::id(),
+                    'return_url' => url('/payment/test')
+                ]))
             ]);
 
             if (isset($response['payment_url'])) {
@@ -128,7 +133,7 @@ class PaymentController extends Controller
 
     public function manual(Request $request)
     {
-        if($request->isMethod("GET")) {
+        if ($request->isMethod("GET")) {
             return view('payment.manual');
         }
     }
