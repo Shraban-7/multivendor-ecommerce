@@ -14,4 +14,9 @@ class Payment extends Model
     const PENDING = 'Pending';
     const SUCCESSFUL = 'Successful';
     const FAILED = 'Failed';
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

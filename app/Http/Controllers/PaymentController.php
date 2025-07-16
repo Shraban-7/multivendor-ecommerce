@@ -30,6 +30,7 @@ class PaymentController extends Controller
 
         Payment::create([
             'gateway' => 'aamarpay',
+            'user_id' => Auth::id(),
             'transaction_id' => $tran_id,
             'status' => Payment::PENDING,
             'amount' => $request->amount,

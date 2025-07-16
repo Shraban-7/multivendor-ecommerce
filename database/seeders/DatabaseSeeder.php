@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
             HeroBannerSeeder::class,
             HomeMidBannerSeeder::class,
             SocialLinkSeeder::class,
-            PaymentGatewaySeeder::class,
+            PaymentOptionSeeder::class,
             PromoPosterSeeder::class,
             ProductVariantSeeder::class,
             VariantOptionSeeder::class,

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\PaymentGateway;
+use App\Models\PaymentOption;
 use Illuminate\Http\Request;
 
 class PaymentGatewayController extends Controller
@@ -30,12 +31,12 @@ class PaymentGatewayController extends Controller
 
         $data['image'] = $imagePath;
 
-        PaymentGateway::create($data);
+        PaymentOption::create($data);
 
         return redirect()->route('admin.settings.paymentGateways.index')->with('success', 'Promo Poster create successfully');
     }
 
-    public function update(Request $request, PaymentGateway $gateway)
+    public function update(Request $request, PaymentOption $gateway)
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',

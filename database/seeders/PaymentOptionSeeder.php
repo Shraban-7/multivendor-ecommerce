@@ -3,10 +3,11 @@
 namespace Database\Seeders;
 
 use App\Models\PaymentGateway;
+use App\Models\PaymentOption;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-class PaymentGatewaySeeder extends Seeder
+class PaymentOptionSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -42,7 +43,7 @@ class PaymentGatewaySeeder extends Seeder
         ];
 
         foreach ($gateways as $gateway) {
-            PaymentGateway::create([
+            PaymentOption::create([
                 'name' => $gateway['name'],
                 'image' => $gateway['image'],
                 'link' => $gateway['link'],

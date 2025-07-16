@@ -67,12 +67,33 @@ $settings = settings();
                 </x-dashboard.nav-item-link>
             @endif
 
-            {{-- @if (hasPermission('admin.orders.index')) --}}
-            <x-dashboard.nav-item-link :route="'admin.orders.index'">
-                <i data-feather="shopping-cart" class="nav-icon icon-xs me-2"></i> Orders
-            </x-dashboard.nav-item-link>
+            <li class="nav-item">
+                <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center" href="#!"
+                    data-bs-toggle="collapse" data-bs-target="#navOrders"
+                    aria-expanded="{{ request()->routeIs('admin.orders.*') || request()->routeIs('admin.payments.*') ? 'true' : 'false' }}"
+                    aria-controls="navOrders">
 
-            {{-- @endif --}}
+                    <div>
+                        <i data-feather="shopping-cart" class="nav-icon icon-xs me-2"></i>
+                        Manage Orders
+                    </div>
+
+                    <i data-feather="chevron-right" class="chevron-icon transition"></i>
+                </a>
+
+                <div id="navOrders" class="collapse {{ request()->routeIs('admin.orders.*') || request()->routeIs('admin.payments.*') ? 'show' : '' }}"
+                    data-bs-parent="#sideNavbar">
+                    <ul class="nav flex-column">
+                        <x-dashboard.nav-item-link :route="'admin.orders.index'">
+                                     Orders
+                        </x-dashboard.nav-item-link>
+                        <x-dashboard.nav-item-link :route="'admin.payments.index'">
+                                     Payments
+                        </x-dashboard.nav-item-link>
+                    </ul>
+                </div>
+            </li>
+
 
             @if (hasPermission('admin.reviews.index'))
                 <x-dashboard.nav-item-link :route="'admin.reviews.index'">
