@@ -106,9 +106,9 @@
           Tesko © 2020-<span id="current-year"></span>, All Rights Reserved
         </p>
         <div class="flex gap-2">
-          @foreach (payment_gateways() as $gateway)
+          @foreach (payment_options() as $option)
             <div class="w-12 sm:w-16">
-              <img src="{{ storage_url($gateway->image) }}" alt="{{ $gateway->name }}" class="w-full h-auto object-contain" />
+              <img src="{{ storage_url($option->image) }}" alt="{{ $option->name }}" class="w-full h-auto object-contain" />
             </div>
           @endforeach
         </div>

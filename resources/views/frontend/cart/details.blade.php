@@ -318,8 +318,8 @@
                                     01. <span class="font-medium">Payment Method</span>
                                 </h4>
                                 <div class="flex flex-wrap mt-2 gap-x-2 gap-y-1">
-                                    @foreach (payment_gateways() as $gateway)
-                                        <img src="{{ storage_url($gateway->image) }}" alt="{{ $gateway->name }}"
+                                    @foreach (payment_options() as $option)
+                                        <img src="{{ storage_url($option->image) }}" alt="{{ $option->name }}"
                                             class="w-auto h-8 sm:h-10" />
                                     @endforeach
                                 </div>

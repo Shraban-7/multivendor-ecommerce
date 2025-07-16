@@ -8,7 +8,7 @@ use App\Enums\DiscountType;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\SystemSetting;
-use App\Models\PaymentGateway;
+use App\Models\PaymentOption;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -271,10 +271,10 @@ if (! function_exists('social_links')) {
     }
 }
 
-if (! function_exists('payment_gateways')) {
-    function payment_gateways()
+if (! function_exists('payment_options')) {
+    function payment_options()
     {
-        return PaymentGateway::where('status', 1)->get();
+        return PaymentOption::where('status', 1)->get();
     }
 }
 

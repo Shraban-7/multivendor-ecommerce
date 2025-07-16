@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\PaymentGateway;
 use App\Models\PaymentOption;
 use Illuminate\Http\Request;
 
@@ -11,7 +10,7 @@ class PaymentGatewayController extends Controller
 {
     public function index()
     {
-        $paymentGateways = PaymentGateway::get();
+        $paymentGateways = PaymentOption::get();
 
         return view('admin.settings.payment_gateway.index', compact('paymentGateways'));
     }

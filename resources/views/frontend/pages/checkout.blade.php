@@ -327,8 +327,8 @@
                             </ul>
                             <!-- payment options -->
                             <div class="flex flex-wrap gap-x-2 gap-y-1 mt-5">
-                                @foreach (payment_gateways() as $gateway)
-                                    <img src="{{ storage_url($gateway->image) }}" alt="{{ $gateway->name }}"
+                                @foreach (payment_options() as $option)
+                                    <img src="{{ storage_url($option->image) }}" alt="{{ $option->name }}"
                                         class="w-auto h-8 sm:h-10" />
                                 @endforeach
                             </div>
