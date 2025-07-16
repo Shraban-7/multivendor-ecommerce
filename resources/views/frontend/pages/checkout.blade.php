@@ -351,8 +351,11 @@
                         data: $('#checkout-form').serialize(),
                         success: function(response) {
                             toastr.success(response.message);
-                            window.location.href = "{{ route('orders.success', ':orderId') }}"
-                                .replace(':orderId', response.order.id);
+                            if(response.payment_url != '') {
+                                window.location.href = response.payment_url;
+                            }
+                            // window.location.href = "{{ route('orders.success', ':orderId') }}"
+                            //     .replace(':orderId', response.order.id);
                         },
                         error: function(xhr, status, error) {
                             console.error(xhr.responseText);

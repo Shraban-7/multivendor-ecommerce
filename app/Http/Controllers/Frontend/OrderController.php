@@ -1,9 +1,11 @@
 <?php
+
 namespace App\Http\Controllers\Frontend;
 
 use App\Enums\CommissionType;
 use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
+use App\Models\AamarpayPayment;
 use App\Models\Cart;
 use App\Models\CustomerAddress;
 use App\Models\Order;
@@ -12,6 +14,7 @@ use App\Models\Product;
 use App\Models\Review;
 use App\Models\ReviewImage;
 use App\Models\Seller;
+use App\Services\AamarpayService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -100,7 +103,7 @@ class OrderController extends Controller
             $orderItems[] = [
                 'product_id'            => $product->id,
                 'product_variant_id'   => $cartItem->product_variant_id ?? null,
-                'buying_price'          => $variant? $variant->buying_price :$product->buying_price,
+                'buying_price'          => $variant ? $variant->buying_price : $product->buying_price,
                 'unit_price'            => $cartItem->price,
                 'quantity'              => $cartItem->quantity,
                 'discount'              => $itemDiscount,
@@ -129,10 +132,13 @@ class OrderController extends Controller
         if ($seller->commission_amount != null && $seller->commission_type != null) {
             if ($seller->commission_type === CommissionType::PERCENTAGE->value) {
                 $total_commission = ($sub_total + $tax + $shipping_fee) * ($seller->commission_amount / 100);
-            } else if($seller->commission_type === CommissionType::FLAT->value) {
+            } else if ($seller->commission_type === CommissionType::FLAT->value) {
                 $total_commission = $seller->commission_amount;
             }
         }
+
+        $payableAmount = $sub_total + $shipping_fee + $tax;
+        $invoiceId = uniqid('SM');
 
         $order = Order::create([
             'user_id'           => $user->id,
@@ -141,13 +147,13 @@ class OrderController extends Controller
             'customer_email'    => $request->input('customer_email', $user->email),
             'customer_phone'    => $request->input('customer_phone'),
             'customer_address'  => $request->input('address'),
-            'invoice_id'        => strtoupper(uniqid()),
+            'invoice_id'        => $invoiceId,
             'sub_total'         => $sub_total,
             'total'             => $sub_total + $tax + $shipping_fee,
             'discount'          => $discount,
             'tax'               => $tax,
             'shipping_fee'      => $shipping_fee,
-            'payable'           => $sub_total + $shipping_fee + $tax,
+            'payable'           => $payableAmount,
             'due'               => $sub_total + $shipping_fee + $tax,
             'commission_type'   => $seller->commission_type,
             'commission_amount' => $seller->commission_amount,
@@ -171,11 +177,79 @@ class OrderController extends Controller
             'total_sold' => $sellerOrderCount,
         ]);
 
+        $paymentGateway = $this->initiatePaymentGateway($request, $invoiceId, $payableAmount);
+
         return response()->json([
             'status'  => true,
-            'message' => 'Order placed successfully!',
+            'message' => $paymentGateway['message'],
+            'payment_url' => $paymentGateway['payment_url'],
             'order'   => $order,
         ]);
+    }
+
+    private function initiatePaymentGateway(Request $request, $invoiceId, $amount)
+    {
+        $user = Auth::user();
+        $customerName = $request->input('customer_name', $user->name);
+        $customerEmail = $request->input('customer_email', $user->customer_email);
+        $customerPhone = $request->input('customer_phone') ?? '';
+
+        AamarpayPayment::create([
+            'gateway' => 'aamarpay',
+            'transaction_id' => $invoiceId,
+            'status' => AamarpayPayment::PENDING,
+            'amount' => $amount,
+            'currency' => 'BDT',
+            'customer_name' => $customerName,
+            'customer_email' => $customerEmail,
+            'customer_phone' => $customerPhone,
+        ]);
+
+        $aamarpay = (new AamarpayService);
+
+        $message = 'Redirecting to payment gateway';
+        $paymentUrl = '';
+
+        try {
+            $response = $aamarpay->initiate([
+                'tran_id' => $invoiceId,
+                'success_url' => route('payment.success'),
+                'fail_url' => route('payment.cancel'),
+                'cancel_url' => route('payment.cancel'),
+                'amount' => $amount,
+                'desc' => 'Test Payment',
+                'cus_name' => $customerName,
+                'cus_email' => $customerEmail,
+                'cus_add1' => '',
+                'cus_add2' => '',
+                'cus_city' => '',
+                'cus_state' => '',
+                'cus_postcode' => '',
+                'cus_country' => 'Bangladesh',
+                'cus_phone' => $customerPhone,
+                'opt_a' => base64_encode(json_encode([
+                    'user_id' => $user->id,
+                    'return_url' => route('orders.index'),
+                ]))
+            ]);
+
+            if (isset($response['payment_url'])) {
+                $paymentUrl = $response['payment_url'];
+                //return redirect()->away($response['payment_url']);
+            } else {
+                $message = 'Payment URL not received.';
+            }
+
+            //return back()->with('error', 'Payment URL not received.');
+        } catch (\Exception $e) {
+            $message = $e->getMessage();
+            //return back()->with('error', $e->getMessage());
+        }
+
+        return [
+            'message' => $message,
+            'payment_url' => $paymentUrl,
+        ];
     }
 
     public function success(Order $order)
