@@ -29,5 +29,8 @@ Route::prefix('payment')->as('payment.')->group(function () {
     Route::get('/test', function () {
         return view('payment.test');
     })->middleware('auth');
+    Route::get('/mail', function () {
+        return view('payment.mail');
+    });
     Route::get('/manual', [PaymentController::class, 'manual']);
 });
