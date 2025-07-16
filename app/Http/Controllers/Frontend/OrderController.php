@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use App\Enums\CommissionType;
 use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
-use App\Models\AamarpayPayment;
+use App\Models\Payment;
 use App\Models\Cart;
 use App\Models\CustomerAddress;
 use App\Models\Order;
@@ -194,10 +194,10 @@ class OrderController extends Controller
         $customerEmail = $request->input('customer_email', $user->customer_email);
         $customerPhone = $request->input('customer_phone') ?? '';
 
-        AamarpayPayment::create([
+        Payment::create([
             'gateway' => 'aamarpay',
             'transaction_id' => $invoiceId,
-            'status' => AamarpayPayment::PENDING,
+            'status' => Payment::PENDING,
             'amount' => $amount,
             'currency' => 'BDT',
             'customer_name' => $customerName,

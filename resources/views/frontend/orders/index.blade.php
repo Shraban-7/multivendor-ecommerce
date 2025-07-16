@@ -5,6 +5,7 @@
 @section('content')
     <?php
     use App\Enums\OrderStatus;
+    use App\Models\Payment;
     ?>
     <main class="orders-page">
         <!-- Promotional Header Starts -->
@@ -72,6 +73,7 @@
                                     <th scope="col" class="px-6 py-3">Invoice #</th>
                                     <th scope="col" class="px-6 py-3">Date</th>
                                     <th scope="col" class="px-6 py-3">Status</th>
+                                    <th scope="col" class="px-6 py-3">Payment Status</th>
                                     <th scope="col" class="px-6 py-3">Total</th>
                                     <th scope="col" class="px-6 py-3">Actions</th>
                                 </tr>
@@ -117,6 +119,20 @@
                                                     class="bg-cyan-100 text-cyan-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
                                                     {{ OrderStatus::REFUNDED->label() }}
                                                 </span>
+                                            @endif
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            @if(!is_null($order->payment_id))
+                                                @if ($order->payment->status == Payment::SUCCESSFUL)
+                                                    <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                                                        Paid
+                                                    </span>
+                                                @else
+                                                    <a href="#"
+                                                        class="bg-primary text-white px-3 py-2 rounded text-xs hover:opacity-90 transition">
+                                                        Pay Now
+                                                    </a>
+                                                @endif
                                             @endif
                                         </td>
                                         <td class="px-6 py-4 font-semibold">{{ money($order->total) }}</td>
@@ -190,12 +206,22 @@
 
     @push('scripts')
         <script>
-            if (document.getElementById("order-table") && typeof simpleDatatables !== 'undefined' && typeof simpleDatatables
-                .DataTable !== 'undefined') {
+            if (document.getElementById("order-table") &&
+                typeof simpleDatatables !== 'undefined' &&
+                typeof simpleDatatables.DataTable !== 'undefined') {
+
                 const dataTable = new simpleDatatables.DataTable("#order-table", {
                     searchable: true,
                     sortable: true,
-                    perPage: 10
+                    perPage: 10,
+                    data: {
+                        headings: null,
+                        data: null
+                    },
+                    columns: [{
+                        select: 1,
+                        sort: "desc"
+                    }]
                 });
             }
         </script>

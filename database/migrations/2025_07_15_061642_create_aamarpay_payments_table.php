@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\AamarpayPayment;
+use App\Models\Payment;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,13 +12,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('aamarpay_payments', function (Blueprint $table) {
+        Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->string('gateway')->default('aamarpay');
             $table->string('transaction_id')->unique();
             $table->string('gateway_trxid')->nullable();
-            $table->string('status')->default(AamarpayPayment::PENDING);
+            $table->string('status')->default(Payment::PENDING);
             $table->decimal('amount', 10, 2);
             $table->string('currency')->default('BDT');
             $table->string('customer_name')->nullable();
@@ -34,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('aamarpay_payments');
+        Schema::dropIfExists('payments');
     }
 };

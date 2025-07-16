@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AamarpayPayment;
+use App\Models\Payment;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Services\AamarpayService;
@@ -28,10 +28,10 @@ class PaymentController extends Controller
             'cus_phone' => 'required|string',
         ]);
 
-        AamarpayPayment::create([
+        Payment::create([
             'gateway' => 'aamarpay',
             'transaction_id' => $tran_id,
-            'status' => AamarpayPayment::PENDING,
+            'status' => Payment::PENDING,
             'amount' => $request->amount,
             'currency' => 'BDT',
             'customer_name' => $request->cus_name,
@@ -78,11 +78,11 @@ class PaymentController extends Controller
 
         //call verify payment API here
 
-        $payment = AamarpayPayment::where('transaction_id', $transactionId)->first();
+        $payment = Payment::where('transaction_id', $transactionId)->first();
 
         if ($payment) {
             $payment->update([
-                'status' => AamarpayPayment::SUCCESSFUL,
+                'status' => Payment::SUCCESSFUL,
                 'gateway_trxid' => $request->input('pg_txnid'),
                 'response' => $request->all(),
             ]);
@@ -100,11 +100,11 @@ class PaymentController extends Controller
     {
         $transactionId = $request->input('mer_txnid');
 
-        $payment = AamarpayPayment::where('transaction_id', $transactionId)->first();
+        $payment = Payment::where('transaction_id', $transactionId)->first();
 
         if ($payment) {
             $payment->update([
-                'status' => AamarpayPayment::FAILED,
+                'status' => Payment::FAILED,
                 'response' => $request->all(),
             ]);
 
@@ -123,11 +123,11 @@ class PaymentController extends Controller
         $transactionId = $request->mer_txnid;
         $status = $request->pay_status;
 
-        $payment = AamarpayPayment::where('transaction_id', $transactionId)->first();
+        $payment = Payment::where('transaction_id', $transactionId)->first();
 
         if ($payment) {
             $payment->update([
-                'status' => $status === AamarpayPayment::SUCCESSFUL ? $status : AamarpayPayment::FAILED,
+                'status' => $status === Payment::SUCCESSFUL ? $status : Payment::FAILED,
                 'gateway_trxid' => $request->pg_txnid,
                 'response' => $request->all(),
             ]);
@@ -152,7 +152,7 @@ class PaymentController extends Controller
         }
     }
 
-    private function updateOrder(AamarpayPayment $payment)
+    private function updateOrder(Payment $payment)
     {
         Order::where('invoice_id', $payment->transaction_id)->update([
             'payment_id' => $payment->id

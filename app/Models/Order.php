@@ -69,4 +69,9 @@ class Order extends Model
             'product_id'
         );
     }
+
+    public function payment()
+    {
+        return $this->belongsTo(Payment::class);
+    }
 }
