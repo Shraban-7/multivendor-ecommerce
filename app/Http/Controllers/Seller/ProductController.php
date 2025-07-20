@@ -93,8 +93,6 @@ class ProductController extends Controller
     {
         $product = Product::where('slug', $slug)->first();
 
-        // return $product;
-
         if (! $product) {
             abort(404, 'Product not found');
         }

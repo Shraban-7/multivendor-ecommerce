@@ -1,13 +1,13 @@
 @extends('admin.layouts.app')
-@section('title', 'Payment Gateways')
+@section('title', 'Payment Options')
 
 @section('content')
     <div class="mb-3 d-flex justify-content-between align-items-center">
-        <h4 class="mb-0">Payment Gateways</h4>
+        <h4 class="mb-0">Payment Options</h4>
 
         @if (hasPermission('admin.settings.paymentOptions.store'))
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
-                <i data-feather="plus" class="icon-xs"></i> Add Gateway
+                <i data-feather="plus" class="icon-xs"></i> Add Option
             </button>
         @endif
     </div>

@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\HomeMidController;
 use App\Http\Controllers\Admin\OptionController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PaymentController;
+use App\Http\Controllers\Admin\PaymentGatewayController;
 use App\Http\Controllers\Admin\PaymentOptionController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ProductController;
@@ -105,6 +106,15 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
         Route::get('/{admin}/edit', [AdminController::class, 'edit'])->name('edit');
         Route::post('/{admin}/update', [AdminController::class, 'update'])->name('update');
         Route::post('/{admin}/delete', [AdminController::class, 'delete'])->name('delete');
+    });
+
+    Route::prefix('payment-gateways')->as('payment_gateways.')->group(function () {
+        Route::get('/', [PaymentGatewayController::class, 'index'])->name('index');
+        Route::get('/create', [PaymentGatewayController::class, 'create'])->name('create');
+        Route::post('/store', [PaymentGatewayController::class, 'store'])->name('store');
+        Route::get('/{paymentGateway}/edit', [PaymentGatewayController::class, 'edit'])->name('edit');
+        Route::post('/{paymentGateway}/update', [PaymentGatewayController::class, 'update'])->name('update');
+        Route::post('/{paymentGateway}/delete', [PaymentGatewayController::class, 'destroy'])->name('destroy');
     });
 
     Route::prefix('settings')->as('settings.')->group(function () {

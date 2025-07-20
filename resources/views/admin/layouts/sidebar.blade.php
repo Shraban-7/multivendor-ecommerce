@@ -141,6 +141,32 @@ $settings = settings();
 
             <li class="nav-item">
                 <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center" href="#!"
+                    data-bs-toggle="collapse" data-bs-target="#navGateways"
+                    aria-expanded="{{ request()->routeIs('admin.payment_gateways.*') ? 'true' : 'false' }}"
+                    aria-controls="navGateways">
+
+                    <div>
+                        <i data-feather="users" class="nav-icon icon-xs me-2"></i>
+                        Payment Gateways
+                    </div>
+
+                    <i data-feather="chevron-right" class="chevron-icon transition"></i>
+                </a>
+
+                <div id="navGateways" class="collapse {{ request()->routeIs('admin.admins.*') ? 'show' : '' }}"
+                    data-bs-parent="#sideNavbar">
+                    <ul class="nav flex-column">
+                        {{-- @if (hasPermission('admin.admins.index')) --}}
+                            <x-dashboard.nav-item-link :route="'admin.payment_gateways.index'">
+                                Payment Gateways
+                            </x-dashboard.nav-item-link>
+                        {{-- @endif --}}
+                    </ul>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center" href="#!"
                     data-bs-toggle="collapse" data-bs-target="#navSettings"
                     aria-expanded="{{ request()->routeIs('admin.settings.*') ? 'true' : 'false' }}"
                     aria-controls="navSettings">

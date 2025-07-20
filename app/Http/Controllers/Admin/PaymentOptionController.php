@@ -12,7 +12,7 @@ class PaymentOptionController extends Controller
     {
         $paymentOptions = PaymentOption::get();
 
-        return view('admin.settings.payment_gateway.index', compact('paymentOptions'));
+        return view('admin.settings.payment-options.index', compact('paymentOptions'));
     }
 
     public function store(Request $request)
