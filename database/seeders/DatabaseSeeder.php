@@ -39,8 +39,8 @@ class DatabaseSeeder extends Seeder
             ProductVariantSeeder::class,
             VariantOptionSeeder::class,
             SystemSettingSeeder::class,
-            PermissionSeeder::class
+            PermissionSeeder::class,
+            PaymentGatewaySeeder::class,
         ]);
-
     }
 }
