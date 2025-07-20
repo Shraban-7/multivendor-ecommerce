@@ -142,45 +142,55 @@
                                 class="form-control">
                         </div>
                         <div class="mb-3 col-md-12">
-                            <div class="gap-3 d-flex align-items-center">
-                                <div class="form-check form-switch">
-                                    <input type="hidden" name="is_trending" value="0">
-                                    <input class="form-check-input" type="checkbox" name="is_trending"
-                                        {{ $product->is_trending ? 'checked' : '' }} value="1" role="switch"
-                                        id="flexSwitchCheckDefault">
-                                    <label class="form-check-label" for="flexSwitchCheckDefault">Trending</label>
+                            <div class="row">
+                                <div class="col-md-3 col-sm-6 mb-2">
+                                    <div class="form-check form-switch">
+                                        <input type="hidden" name="is_trending" value="0">
+                                        <input class="form-check-input" type="checkbox" name="is_trending"
+                                            {{ $product->is_trending ? 'checked' : '' }} value="1" role="switch"
+                                            id="is_trending">
+                                        <label class="form-check-label" for="is_trending">Trending</label>
+                                    </div>
                                 </div>
-                                <div class="form-check form-switch">
-                                    <input type="hidden" name="best_selling" value="0">
-                                    <input class="form-check-input" type="checkbox" name="best_selling"
-                                        {{ $product->best_selling ? 'checked' : '' }} value="1" role="switch"
-                                        id="flexSwitchCheckDefault">
-                                    <label class="form-check-label" for="flexSwitchCheckDefault">Best Selling</label>
+                                <div class="col-md-3 col-sm-6 mb-2">
+                                    <div class="form-check form-switch">
+                                        <input type="hidden" name="best_selling" value="0">
+                                        <input class="form-check-input" type="checkbox" name="best_selling"
+                                            {{ $product->best_selling ? 'checked' : '' }} value="1" role="switch"
+                                            id="best_selling">
+                                        <label class="form-check-label" for="best_selling">Best Selling</label>
+                                    </div>
                                 </div>
-                                <div class="form-check form-switch">
-                                    <input type="hidden" name="is_featured" value="0">
-                                    <input class="form-check-input" type="checkbox" name="is_featured"
-                                        {{ $product->is_featured ? 'checked' : '' }} value="1" role="switch"
-                                        id="flexSwitchCheckDefault">
-                                    <label class="form-check-label" for="flexSwitchCheckDefault">Featured</label>
+                                <div class="col-md-3 col-sm-6 mb-2">
+                                    <div class="form-check form-switch">
+                                        <input type="hidden" name="is_featured" value="0">
+                                        <input class="form-check-input" type="checkbox" name="is_featured"
+                                            {{ $product->is_featured ? 'checked' : '' }} value="1" role="switch"
+                                            id="is_featured">
+                                        <label class="form-check-label" for="is_featured">Featured</label>
+                                    </div>
                                 </div>
-                                <div class="form-check form-switch">
-                                    <input type="hidden" name="is_interest" value="0">
-                                    <input class="form-check-input" type="checkbox" name="is_interest"
-                                        {{ $product->is_interest ? 'checked' : '' }} value="1" role="switch"
-                                        id="flexSwitchCheckDefault">
-                                    <label class="form-check-label" for="flexSwitchCheckDefault">Interest Products</label>
+                                <div class="col-md-3 col-sm-6 mb-2">
+                                    <div class="form-check form-switch">
+                                        <input type="hidden" name="is_interest" value="0">
+                                        <input class="form-check-input" type="checkbox" name="is_interest"
+                                            {{ $product->is_interest ? 'checked' : '' }} value="1" role="switch"
+                                            id="is_interest">
+                                        <label class="form-check-label" for="is_interest">Interest Products</label>
+                                    </div>
                                 </div>
-                                <div class="form-check form-switch">
-                                    <input type="hidden" name="is_community" value="0">
-                                    <input class="form-check-input" type="checkbox" name="is_community"
-                                        {{ $product->is_community ? 'checked' : '' }} value="1" role="switch"
-                                        id="flexSwitchCheckDefault">
-                                    <label class="form-check-label" for="flexSwitchCheckDefault">Community
-                                        Products</label>
+                                <div class="col-md-3 col-sm-6 mb-2">
+                                    <div class="form-check form-switch">
+                                        <input type="hidden" name="is_community" value="0">
+                                        <input class="form-check-input" type="checkbox" name="is_community"
+                                            {{ $product->is_community ? 'checked' : '' }} value="1" role="switch"
+                                            id="is_community">
+                                        <label class="form-check-label" for="is_community">Community Products</label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
 
                         <div class="mb-3 col-12">
                             <label class="form-label">Thumbnail</label>
@@ -203,21 +213,28 @@
                         </div>
 
 
-                        <div class="col-12">
+                        <div class="col-12 mb-3">
                             <label class="form-label">Gallery Images</label>
                             <input type="file" id="files" class="mb-2 form-control" name="files[]" multiple>
-                            <div id="selectedImages" class="mb-2 row">
+
+                            <div id="selectedImages" class="row g-2">
                                 @foreach ($product->images as $image)
-                                    <div class="mb-2 col-2">
-                                        <img src="{{ asset('storage/' . $image->image) }}" alt="image" class="col-2"
-                                            style="width: 100%; height: 150px;">
-                                        <button type="button" class="mt-2 btn btn-danger btn-sm" style="width: 50%"
-                                            onclick="deleteImage({{ $image->id }})">Delete
-                                        </button>
+                                    <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                        <div class="position-relative">
+                                            <img src="{{ asset('storage/' . $image->image) }}" alt="image"
+                                                class="img-fluid rounded"
+                                                style="height: 150px; object-fit: cover; width: 100%;">
+
+                                            <button type="button" class="btn btn-danger btn-sm w-100 mt-1"
+                                                onclick="deleteImage({{ $image->id }})">
+                                                Delete
+                                            </button>
+                                        </div>
                                     </div>
                                 @endforeach
                             </div>
                         </div>
+
                     </div>
                     <button type="submit" id="updateBtn" class="btn btn-theme">Update</button>
                 </form>

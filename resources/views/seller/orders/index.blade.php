@@ -36,11 +36,11 @@
                             @endif
                         </td>
                         <td>
-                            <a href="{{ route('seller.orders.details', $order->id) }}" title="Details"
+                            <a href="{{ route('seller.orders.details', $order->invoice_id) }}" title="Details"
                                 class="btn btn-light border btn-sm me-1">
                                 <i data-feather="clipboard" class="icon-xs"></i> Details
                             </a>
-                            <a href="{{ route('invoice', $order->id) }}" title="Details"
+                            <a href="{{ route('invoice', $order->invoice_id) }}" title="Details" target="__blank"
                                 class="btn btn-light border btn-sm me-1">
                                 <i data-feather="download" class="icon-xs"></i> Invoice
                             </a>

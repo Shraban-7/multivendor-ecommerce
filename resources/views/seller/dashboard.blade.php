@@ -1,19 +1,18 @@
 @extends('seller.layouts.app')
 @section('title', 'Seller Dashboard')
 @section('content')
-    <div class="row">
-        <div class="col-md-6"></div>
-        <div class="col-md-6">
-            <form id="dateRangeForm" method="GET" action="{{ route('seller.dashboard') }}">
-                <div class="d-flex mb-3">
-                    <input type="date" name="start_date" value="{{ request('start_date') }}" class="form-control me-3">
-                    <input type="date" name="end_date" value="{{ request('end_date') }}" class="form-control me-3">
-
-                    <button type="submit" class="btn btn-primary">Filter</button>
-                </div>
-            </form>
-        </div>
+    <div class="d-flex justify-content-end mb-3">
+        <form id="dateRangeForm" method="GET" action="{{ route('seller.dashboard') }}" class="w-100 w-md-auto">
+            <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-md-end gap-2">
+                <input type="date" name="start_date" value="{{ request('start_date') }}"
+                    class="form-control w-100 w-md-auto">
+                <input type="date" name="end_date" value="{{ request('end_date') }}"
+                    class="form-control w-100 w-md-auto">
+                <button type="submit" class="btn btn-primary w-100 w-md-auto">Filter</button>
+            </div>
+        </form>
     </div>
+
     <div class="row">
         <div class="col-12 mb-5">
             <div class="row row-cols-lg-4 row-cols-2 g-lg-5 g-2">
@@ -135,9 +134,9 @@
         </div>
     </div>
 
-    <div class="row mt-5">
+    <div class="row">
         <!-- Revenue Analytics Chart with Date Range Filter -->
-        <div class="col-7 d-flex flex-column">
+        <div class="col-md-7 d-flex flex-column mb-3">
             <div class="card flex-fill">
                 <div class="card-body">
                     <h5 class="fw-semi-bold">Sales & Order Analytics</h5>
@@ -147,7 +146,7 @@
         </div>
 
         <!-- Top Selling Products -->
-        <div class="col-5 d-flex flex-column">
+        <div class="col-md-5 d-flex flex-column mb-3">
             <div class="card flex-fill">
                 <div class="card-body">
                     <h5 class="fw-semi-bold">Top Selling Products</h5>
@@ -174,43 +173,45 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="fw-semi-bold">Latest Orders</h5>
-                    <table class="table table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th scope="col">Order ID</th>
-                                <th scope="col">Customer</th>
-                                <th scope="col">Total</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Date</th>
-                                <th scope="col">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($latest_orders as $order)
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
                                 <tr>
-                                    <td>{{ $order->id }}</td>
-                                    <td>{{ $order->user->name }}</td>
-                                    <td>{{ money($order->total) }}</td>
-                                    <td>
-                                        @if ($order->status->label() === 'pending')
-                                            <span class="badge bg-warning">Pending</span>
-                                        @elseif ($order->status->label() === 'shipped')
-                                            <span class="badge bg-primary">Shipped</span>
-                                        @elseif ($order->status->label() === 'cancelled')
-                                            <span class="badge bg-danger">Cancelled</span>
-                                        @elseif ($order->status->label() === 'delivered')
-                                            <span class="badge bg-success">Delivered</span>
-                                        @endif
-                                    </td>
-                                    <td>{{ optional($order->created_at)->format('Y-m-d H:i') ?? 'N/A' }}</td>
-                                    <td>
-                                        <a href="{{ route('seller.orders.details', $order->id) }}"
-                                            class="btn btn-info btn-sm">View</a>
-                                    </td>
+                                    <th scope="col">Order ID</th>
+                                    <th scope="col">Customer</th>
+                                    <th scope="col">Total</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Action</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach ($latest_orders as $order)
+                                    <tr>
+                                        <td>{{ $order->id }}</td>
+                                        <td>{{ $order->user->name }}</td>
+                                        <td>{{ money($order->total) }}</td>
+                                        <td>
+                                            @if ($order->status->label() === 'pending')
+                                                <span class="badge bg-warning">Pending</span>
+                                            @elseif ($order->status->label() === 'shipped')
+                                                <span class="badge bg-primary">Shipped</span>
+                                            @elseif ($order->status->label() === 'cancelled')
+                                                <span class="badge bg-danger">Cancelled</span>
+                                            @elseif ($order->status->label() === 'delivered')
+                                                <span class="badge bg-success">Delivered</span>
+                                            @endif
+                                        </td>
+                                        <td>{{ optional($order->created_at)->format('Y-m-d H:i') ?? 'N/A' }}</td>
+                                        <td>
+                                            <a href="{{ route('seller.orders.details', $order->id) }}"
+                                                class="btn btn-info btn-sm">View</a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

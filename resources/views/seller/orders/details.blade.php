@@ -15,14 +15,18 @@
         <!-- Order Summary -->
         <div class="col-lg-4 mb-4">
             <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Order Summary</h5>
+                    <a href="{{ route('invoice', $order->invoice_id) }}" title="Details" target="__blank"
+                        class="btn btn-light border btn-sm me-1">
+                        <i data-feather="download" class="icon-xs"></i>Invoice
+                    </a>
                 </div>
                 <div class="card-body">
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item d-flex justify-content-between px-0">
-                            <span>Order ID:</span>
-                            <span class="fw-medium">{{ $order->id }}</span>
+                            <span>Invoice ID:</span>
+                            <span class="fw-medium">{{ $order->invoice_id }}</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between px-0">
                             <span>Date:</span>
@@ -47,7 +51,7 @@
 
                             </span>
                         </li>
-                        <li class="list-group-item d-flex justify-content-between px-0">
+                        {{-- <li class="list-group-item d-flex justify-content-between px-0">
                             <span>Delivery Status:</span>
                             <span>
                                 @if ($order->delivery_status === \App\Enums\OrderStatus::ORDER_PLACED->value)
@@ -60,7 +64,7 @@
                                     <span class="badge bg-success">Delivered</span>
                                 @endif
                             </span>
-                        </li>
+                        </li> --}}
                         <li class="list-group-item d-flex justify-content-between px-0">
                             <span>Payment Method:</span>
                             <span class="fw-medium">{{ $order->payment_method ?? 'N/A' }}</span>
@@ -114,7 +118,7 @@
                 </div>
 
                 <!-- Update Order Delivery Status -->
-                <div class="card border-0 shadow-sm mt-4">
+                {{-- <div class="card border-0 shadow-sm mt-4">
                     <div class="card-header bg-white">
                         <h5 class="mb-0">Delivery Status</h5>
                     </div>
@@ -135,7 +139,7 @@
                         </div>
                         <button type="submit" class="btn btn-primary">Update</button>
                     </div>
-                </div>
+                </div> --}}
             </form>
         </div>
 
@@ -207,34 +211,48 @@
                                     <tr>
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                @if (isset($item->product->thumbnail))
-                                                    <img src="{{ storage_url($item->product->thumbnail) }}"
-                                                        alt="{{ $item->product->name }}" class="rounded me-3"
-                                                        width="50">
+                                                @php
+                                                    $imageUrl = null;
+
+                                                    if ($item->variant && $item->variant->image) {
+                                                        $imageUrl = storage_url($item->variant->image);
+                                                    } elseif (isset($item->product->thumbnail)) {
+                                                        $imageUrl = storage_url($item->product->thumbnail);
+                                                    }
+                                                @endphp
+
+                                                @if ($imageUrl)
+                                                    <img src="{{ $imageUrl }}" alt="{{ $item->product->name }}"
+                                                        class="rounded me-3" width="50">
                                                 @else
                                                     <div class="bg-white rounded me-3" style="width: 50px; height: 50px;">
                                                     </div>
                                                 @endif
+
                                                 <div>
                                                     <h6 class="mb-0">{{ $item->product->name }}</h6>
-                                                    @if (isset($item->options) && !empty($item->options))
-                                                        <small class="text-muted d-block">
-                                                            @foreach ($item->options as $key => $value)
-                                                                {{ ucfirst($key) }}:
-                                                                {{ $value }}{{ !$loop->last ? ', ' : '' }}
+                                                    @if ($item->product_variant_id && $item->variant && $item->variant->option_values)
+                                                        <div class="mt-1 small text-muted">
+                                                            @foreach ($item->variant->option_values as $value)
+                                                                <span class="me-2">
+                                                                    <strong>{{ $value->option->name ?? '' }}:</strong>
+                                                                    {{ $value->value }}
+                                                                </span>
                                                             @endforeach
-                                                        </small>
+                                                        </div>
                                                     @endif
+
 
                                                     @if (isset($item->variant))
                                                         <small class="text-muted d-block">
                                                             Variant SKU: {{ $item->variant->sku }}
                                                         </small>
                                                         <small class="text-muted d-block">
-                                                            Stock: {{ $item->variant->stock }}
+                                                            Stock:
+                                                            {{ $item->variant->stock_in - $item->variant->stock_out }}
                                                         </small>
                                                         <small class="text-muted d-block">
-                                                            Price: {{ money($item->product_variant_price) }}
+                                                            Price: {{ money($item->variant->selling_price) }}
                                                             (Without Discount)
                                                         </small>
                                                     @endif

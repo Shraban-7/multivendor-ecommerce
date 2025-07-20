@@ -19,7 +19,7 @@ class ProductController extends Controller
     {
         $seller_id = seller()->id;
 
-        $products   = Product::where('seller_id', $seller_id)->latest('id')->get();
+        $products   = Product::where('seller_id', $seller_id)->latest('id')->paginate(50);
         $categories = Category::category()->with('subcategories')->get();
         $brands     = Brand::all();
 

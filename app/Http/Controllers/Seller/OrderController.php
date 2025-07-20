@@ -27,8 +27,9 @@ class OrderController extends Controller
         return view('seller.orders.index', compact('orders', 'type'));
     }
 
-    public function details(Order $order)
+    public function details($invoice_id)
     {
+        $order = Order::where('invoice_id',$invoice_id)->first();
         $seller_id = seller()->id;
         if ($seller_id == $order->seller_id) {
             $order->load(['review', 'items']);
@@ -47,8 +48,9 @@ class OrderController extends Controller
         return redirect()->back()->with('success', 'Order update successfully');
     }
 
-    public function invoice(Order $order)
+    public function invoice($invoice_id)
     {
+        $order = Order::where('invoice_id',$invoice_id)->first();
         $order->load('items.product', 'seller', 'user.country','items.variant');
 
         return view('seller.orders.invoice', compact('order'));

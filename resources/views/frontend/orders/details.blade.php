@@ -147,8 +147,16 @@
                                     <!-- Item 1 -->
                                     @foreach ($order->items as $item)
                                         <div class="flex gap-2 md:gap-4 py-3 md:py-5 border-b border-gray-200">
+                                            @php
+                                                $imageUrl = null;
+                                                if ($item->variant && $item->variant->image) {
+                                                    $imageUrl = storage_url($item->variant->image);
+                                                } elseif (isset($item->product->thumbnail)) {
+                                                    $imageUrl = storage_url($item->product->thumbnail);
+                                                }
+                                            @endphp
                                             <div class="w-16 h-20 md:w-20 md:h-24 flex-shrink-0 rounded-xl overflow-hidden">
-                                                <img src="{{ storage_url($item->product->thumbnail) }}"
+                                                <img src="{{ $imageUrl }}"
                                                     alt="{{ $item->product->name }}" class="w-full h-full object-cover" />
                                             </div>
 

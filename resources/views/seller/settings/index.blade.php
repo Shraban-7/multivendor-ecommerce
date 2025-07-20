@@ -7,7 +7,7 @@
         <h4 class="mb-0">Settings</h4>
     </div>
     <div class="row">
-        <div class="col-8">
+        <div class="col-md-8 col-12">
             <div class="card card-body">
                 <form id="businessSettingsForm" action="{{ route('seller.settings.update') }}" method="POST"
                     enctype="multipart/form-data">

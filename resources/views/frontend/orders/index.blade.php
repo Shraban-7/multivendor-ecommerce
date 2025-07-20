@@ -138,11 +138,11 @@
                                         <td class="px-6 py-4 font-semibold">{{ money($order->total) }}</td>
                                         <td class="px-6 py-4">
                                             <div class="flex items-center gap-2">
-                                                <a href="{{ route('orders.details', $order->id) }}"
+                                                <a href="{{ route('orders.details', $order->invoice_id) }}"
                                                     class="bg-primary text-white px-3 py-2 rounded text-xs hover:opacity-90 transition">
                                                     <i class="fa-solid fa-eye mr-1"></i> View
                                                 </a>
-                                                <a href="{{ route('invoice', $order->id) }}" target="__blank"
+                                                <a href="{{ route('invoice', $order->invoice_id) }}" target="__blank"
                                                     class="bg-theme-light text-black px-3 py-2 rounded text-xs hover:opacity-90 transition">
                                                     <i class="fa-solid fa-download mr-1"></i> Invoice
                                                 </a>

@@ -7,7 +7,7 @@
     </div>
 
     <div class="table-responsive">
-        <table id="product-table" class="table mb-3 bg-white table-bordered">
+        <table class="table mb-3 bg-white table-bordered">
             <thead>
                 <tr>
                     <th scope="col">Product</th>
@@ -77,6 +77,10 @@
                 @endforeach
             </tbody>
         </table>
+
+        <div class="d-flex justify-content-end">
+            {{ $products->links() }}
+        </div>
     </div>
 
     <div class="modal fade" id="addModal" tabindex="-1" aria-hidden="true">

@@ -13,7 +13,7 @@ Route::get('/test', function () {
 
 Route::get('/states/{country_id}', [LocationController::class, 'getStatesByCountry'])->name('getStatesByCountry');
 
-Route::get('/invoice/{order}', [OrderController::class, 'invoice'])->name('invoice');
+Route::get('/invoice/{invoice_id}', [OrderController::class, 'invoice'])->name('invoice');
 
 Route::get('/product', function () {
     return view('product-variant');

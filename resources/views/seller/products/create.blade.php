@@ -107,42 +107,51 @@
                             <label class="form-label">Low Stock Quantity</label>
                             <input name="low_stock_quantity" type="number" value="" class="form-control">
                         </div>
-                        <div class="mb-3 col-md-12">
-                            <div class="gap-3 d-flex align-items-center">
-                                <div class="form-check form-switch">
-                                    <input type="hidden" name="is_trending" value="0">
-                                    <input class="form-check-input" type="checkbox" name="is_trending" value="1"
-                                        role="switch" id="flexSwitchCheckDefault">
-                                    <label class="form-check-label" for="flexSwitchCheckDefault">Trending</label>
+                        <div class="mb-3">
+                            <div class="row g-3">
+                                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                                    <div class="form-check form-switch">
+                                        <input type="hidden" name="is_trending" value="0">
+                                        <input class="form-check-input" type="checkbox" name="is_trending"
+                                            value="1" role="switch" id="is_trending">
+                                        <label class="form-check-label" for="is_trending">Trending</label>
+                                    </div>
                                 </div>
-                                <div class="form-check form-switch">
-                                    <input type="hidden" name="best_selling" value="0">
-                                    <input class="form-check-input" type="checkbox" name="best_selling" value="1"
-                                        role="switch" id="flexSwitchCheckDefault">
-                                    <label class="form-check-label" for="flexSwitchCheckDefault">Best Selling</label>
+                                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                                    <div class="form-check form-switch">
+                                        <input type="hidden" name="best_selling" value="0">
+                                        <input class="form-check-input" type="checkbox" name="best_selling"
+                                            value="1" role="switch" id="best_selling">
+                                        <label class="form-check-label" for="best_selling">Best Selling</label>
+                                    </div>
                                 </div>
-                                <div class="form-check form-switch">
-                                    <input type="hidden" name="is_featured" value="0">
-                                    <input class="form-check-input" type="checkbox" name="is_featured" value="1"
-                                        role="switch" id="flexSwitchCheckDefault">
-                                    <label class="form-check-label" for="flexSwitchCheckDefault">Featured</label>
+                                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                                    <div class="form-check form-switch">
+                                        <input type="hidden" name="is_featured" value="0">
+                                        <input class="form-check-input" type="checkbox" name="is_featured"
+                                            value="1" role="switch" id="is_featured">
+                                        <label class="form-check-label" for="is_featured">Featured</label>
+                                    </div>
                                 </div>
-                                <div class="form-check form-switch">
-                                    <input type="hidden" name="is_interest" value="0">
-                                    <input class="form-check-input" type="checkbox" name="is_interest" value="1"
-                                        role="switch" id="flexSwitchCheckDefault">
-                                    <label class="form-check-label" for="flexSwitchCheckDefault">Interest Products</label>
+                                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                                    <div class="form-check form-switch">
+                                        <input type="hidden" name="is_interest" value="0">
+                                        <input class="form-check-input" type="checkbox" name="is_interest"
+                                            value="1" role="switch" id="is_interest">
+                                        <label class="form-check-label" for="is_interest">Interest Products</label>
+                                    </div>
                                 </div>
-                                <div class="form-check form-switch">
-                                    <input type="hidden" name="is_community" value="0">
-                                    <input class="form-check-input" type="checkbox" name="is_community" value="1"
-                                        role="switch" id="flexSwitchCheckDefault">
-                                    <label class="form-check-label" for="flexSwitchCheckDefault">Community
-                                        Products</label>
+                                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                                    <div class="form-check form-switch">
+                                        <input type="hidden" name="is_community" value="0">
+                                        <input class="form-check-input" type="checkbox" name="is_community"
+                                            value="1" role="switch" id="is_community">
+                                        <label class="form-check-label" for="is_community">Community Products</label>
+                                    </div>
                                 </div>
-
                             </div>
                         </div>
+
 
                         <div class="mb-3 col-12">
                             <label class="form-label">Thumbnail</label>
@@ -152,13 +161,12 @@
                             <label class="form-label">Product Video</label>
                             <input type="file" id="video" class="mb-2 form-control" name="video">
                         </div>
-                        <div class="col-12">
+                        <div class="col-12 mb-3">
                             <label class="form-label">Gallery Images</label>
                             <input type="file" id="files" class="mb-2 form-control" name="files[]" multiple>
-                            <div id="selectedImages" class="mb-2 row">
-                            </div>
-                        </div>
 
+                            <div id="selectedImages" class="row g-2"></div>
+                        </div>
                     </div>
                     <button type="button" id="submitBtn" class="btn btn-theme">Save</button>
                 </form>
@@ -169,42 +177,41 @@
     @push('scripts')
         <script>
             document.getElementById("files").addEventListener("change", function(event) {
-                var selectedFiles = event.target.files;
-                var imageContainer = document.getElementById("selectedImages");
+                const selectedFiles = event.target.files;
+                const imageContainer = document.getElementById("selectedImages");
 
                 imageContainer.innerHTML = "";
 
-                for (var i = 0; i < selectedFiles.length; i++) {
-                    var file = selectedFiles[i];
-                    var reader = new FileReader();
+                Array.from(selectedFiles).forEach(file => {
+                    const reader = new FileReader();
 
                     reader.onload = function(e) {
-                        var imgElement = document.createElement("img");
-                        imgElement.src = e.target.result;
-                        imgElement.classList.add("col-2");
-                        imgElement.style.width = "100%";
-                        imgElement.style.height = "150px";
+                        const wrapper = document.createElement("div");
+                        wrapper.className = "col-6 col-sm-4 col-md-3 col-lg-2 text-center";
 
-                        var deleteButton = document.createElement("button");
-                        deleteButton.innerHTML = "Delete";
-                        deleteButton.classList.add("btn", "btn-danger", "btn-sm", "mt-2");
-                        deleteButton.style.width = "50%";
+                        const img = document.createElement("img");
+                        img.src = e.target.result;
+                        img.className = "img-fluid rounded";
+                        img.style.height = "150px";
+                        img.style.objectFit = "cover";
 
-                        var imageWrapper = document.createElement("div");
-                        imageWrapper.classList.add("col-2", "mb-2");
-                        imageWrapper.appendChild(imgElement);
-                        imageWrapper.appendChild(deleteButton);
+                        const btn = document.createElement("button");
+                        btn.type = "button";
+                        btn.innerHTML = "Delete";
+                        btn.className = "btn btn-danger btn-sm mt-2 w-100";
 
-                        imageContainer.appendChild(imageWrapper);
-
-                        deleteButton.addEventListener("click", function() {
-                            imageContainer.removeChild(imageWrapper);
+                        btn.addEventListener("click", () => {
+                            wrapper.remove();
                         });
+
+                        wrapper.appendChild(img);
+                        wrapper.appendChild(btn);
+                        imageContainer.appendChild(wrapper);
                     };
 
                     reader.readAsDataURL(file);
-                }
-            });
+                });
+            });;
 
             $('#categorySelect').change(function() {
                 var selectedCategoryId = $(this).val();

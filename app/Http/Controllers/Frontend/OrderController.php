@@ -54,8 +54,10 @@ class OrderController extends Controller
         ]);
     }
 
-    public function details(Order $order)
+    public function details($invoice_id)
     {
+        $order = Order::where('invoice_id', $invoice_id)->first();
+
         $order->load('items.product');
 
         return view('frontend.orders.details', compact('order'));
@@ -256,8 +258,9 @@ class OrderController extends Controller
         ];
     }
 
-    public function success(Order $order)
+    public function success($invoice_id)
     {
+        $order = Order::where('invoice_id',$invoice_id)->first();
         return view('frontend.orders.success', compact('order'));
     }
 

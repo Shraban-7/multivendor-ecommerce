@@ -15,6 +15,7 @@
                     <th scope="col">Country</th>
                     <th scope="col">Phone</th>
                     <th scope="col">Email</th>
+                    <th scope="col">Commission</th>
                     <th scope="col">Status</th>
                     <th scope="col">Action</th>
                 </tr>
@@ -41,6 +42,15 @@
                         <td> {{ $seller->country->name }} </td>
                         <td>{{ $seller->country->phone_code }} {{ $seller->phone }} </td>
                         <td> {{ $seller->email }} </td>
+                        <td>
+                            <div class="d-flex gap-2 align-items-center">
+                                {{ $seller->commission_amount }}
+                                <button class="btn btn-light border  btn-sm mb-1" data-bs-toggle="modal"
+                                    data-bs-target="#editModal-{{ $seller->id }}"><i data-feather="edit" class="icon-xs"></i>
+                                    Edit
+                                </button>
+                            </div>
+                        </td>
                         <td> <span
                                 class="badge text-bg-{{ $seller->is_active == 1 ? 'success' : 'warning' }}">{{ $seller->is_active == 1 ? 'Active' : 'In Active' }}</span>
                         </td>
@@ -54,10 +64,7 @@
                                         {{ $seller->is_best_seller ? 'Remove Best Seller' : 'Set Best Seller' }}
                                     </button>
                                 @endif
-                                <button class="btn btn-light border  btn-sm mb-1" data-bs-toggle="modal"
-                                    data-bs-target="#editModal-{{ $seller->id }}"><i data-feather="edit"
-                                        class="icon-xs"></i> Edit
-                                </button>
+
                                 <button class="btn btn-danger border btn-sm me-1 mb-1" data-bs-toggle="modal"
                                     data-bs-target="">
                                     <i data-feather="x-circle" class="icon-xs"></i> Block
