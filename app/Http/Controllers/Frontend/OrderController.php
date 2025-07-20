@@ -1,15 +1,15 @@
 <?php
-
 namespace App\Http\Controllers\Frontend;
 
 use App\Enums\CommissionType;
 use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
-use App\Models\Payment;
 use App\Models\Cart;
 use App\Models\CustomerAddress;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Payment;
+use App\Models\PaymentGateway;
 use App\Models\Product;
 use App\Models\Review;
 use App\Models\ReviewImage;
@@ -84,7 +84,7 @@ class OrderController extends Controller
             ], 404);
         }
 
-        $sub_total        = 0;
+        $sub_total    = 0;
         $discount     = 0;
         $tax          = 0;
         $orderItems   = [];
@@ -101,13 +101,13 @@ class OrderController extends Controller
             $discount += $itemDiscount;
 
             $orderItems[] = [
-                'product_id'            => $product->id,
-                'product_variant_id'   => $cartItem->product_variant_id ?? null,
-                'buying_price'          => $variant ? $variant->buying_price : $product->buying_price,
-                'unit_price'            => $cartItem->price,
-                'quantity'              => $cartItem->quantity,
-                'discount'              => $itemDiscount,
-                'sub_total'             => $itemTotal
+                'product_id'         => $product->id,
+                'product_variant_id' => $cartItem->product_variant_id ?? null,
+                'buying_price'       => $variant ? $variant->buying_price : $product->buying_price,
+                'unit_price'         => $cartItem->price,
+                'quantity'           => $cartItem->quantity,
+                'discount'           => $itemDiscount,
+                'sub_total'          => $itemTotal,
             ];
 
             if ($variant) {
@@ -121,13 +121,14 @@ class OrderController extends Controller
 
         if ($request->isMethod('GET')) {
             $customer_addresses = CustomerAddress::where('user_id', $user->id)->get();
-            return view('frontend.pages.checkout', compact('user', 'customer_addresses', 'selectedSellerId', 'sub_total', 'discount', 'tax', 'shipping_fee'));
+            $payment_gateways   = PaymentGateway::where('is_enabled', true)->get();
+
+            return view('frontend.pages.checkout', compact('user', 'customer_addresses', 'selectedSellerId', 'sub_total', 'discount', 'tax', 'shipping_fee', 'payment_gateways'));
         }
 
         $seller = Seller::where('id', $selectedSellerId)->first();
 
         $total_commission = 0;
-
 
         if ($seller->commission_amount != null && $seller->commission_type != null) {
             if ($seller->commission_type === CommissionType::PERCENTAGE->value) {
@@ -138,7 +139,7 @@ class OrderController extends Controller
         }
 
         $payableAmount = $sub_total + $shipping_fee + $tax;
-        $invoiceId = uniqid('SM');
+        $invoiceId     = uniqid('SM');
 
         $order = Order::create([
             'user_id'           => $user->id,
@@ -180,57 +181,57 @@ class OrderController extends Controller
         $paymentGateway = $this->initiatePaymentGateway($request, $invoiceId, $payableAmount);
 
         return response()->json([
-            'status'  => true,
-            'message' => $paymentGateway['message'],
+            'status'      => true,
+            'message'     => $paymentGateway['message'],
             'payment_url' => $paymentGateway['payment_url'],
-            'order'   => $order,
+            'order'       => $order,
         ]);
     }
 
     private function initiatePaymentGateway(Request $request, $invoiceId, $amount)
     {
-        $user = Auth::user();
-        $customerName = $request->input('customer_name', $user->name);
+        $user          = Auth::user();
+        $customerName  = $request->input('customer_name', $user->name);
         $customerEmail = $request->input('customer_email', $user->customer_email);
         $customerPhone = $request->input('customer_phone') ?? '';
 
         Payment::create([
-            'gateway' => 'aamarpay',
+            'gateway'        => 'aamarpay',
             'transaction_id' => $invoiceId,
-            'status' => Payment::PENDING,
-            'amount' => $amount,
-            'currency' => 'BDT',
-            'customer_name' => $customerName,
+            'status'         => Payment::PENDING,
+            'amount'         => $amount,
+            'currency'       => 'BDT',
+            'customer_name'  => $customerName,
             'customer_email' => $customerEmail,
             'customer_phone' => $customerPhone,
         ]);
 
         $aamarpay = (new AamarpayService);
 
-        $message = 'Redirecting to payment gateway';
+        $message    = 'Redirecting to payment gateway';
         $paymentUrl = '';
 
         try {
             $response = $aamarpay->initiate([
-                'tran_id' => $invoiceId,
-                'success_url' => route('payment.success'),
-                'fail_url' => route('payment.cancel'),
-                'cancel_url' => route('payment.cancel'),
-                'amount' => $amount,
-                'desc' => 'Test Payment',
-                'cus_name' => $customerName,
-                'cus_email' => $customerEmail,
-                'cus_add1' => '',
-                'cus_add2' => '',
-                'cus_city' => '',
-                'cus_state' => '',
+                'tran_id'      => $invoiceId,
+                'success_url'  => route('payment.success'),
+                'fail_url'     => route('payment.cancel'),
+                'cancel_url'   => route('payment.cancel'),
+                'amount'       => $amount,
+                'desc'         => 'Test Payment',
+                'cus_name'     => $customerName,
+                'cus_email'    => $customerEmail,
+                'cus_add1'     => '',
+                'cus_add2'     => '',
+                'cus_city'     => '',
+                'cus_state'    => '',
                 'cus_postcode' => '',
-                'cus_country' => 'Bangladesh',
-                'cus_phone' => $customerPhone,
-                'opt_a' => base64_encode(json_encode([
-                    'user_id' => $user->id,
+                'cus_country'  => 'Bangladesh',
+                'cus_phone'    => $customerPhone,
+                'opt_a'        => base64_encode(json_encode([
+                    'user_id'    => $user->id,
                     'return_url' => route('orders.index'),
-                ]))
+                ])),
             ]);
 
             if (isset($response['payment_url'])) {
@@ -247,7 +248,7 @@ class OrderController extends Controller
         }
 
         return [
-            'message' => $message,
+            'message'     => $message,
             'payment_url' => $paymentUrl,
         ];
     }

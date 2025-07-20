@@ -9,7 +9,7 @@ class PaymentGatewayController extends Controller
 {
     public function index()
     {
-        $paymentGateways = PaymentGateway::get();
+        $gateways = PaymentGateway::get();
 
         return view('admin.payment-gateways.index', compact('paymentGateways'));
     }
@@ -50,12 +50,12 @@ class PaymentGatewayController extends Controller
             ->with('success', 'Payment gateway added successfully.');
     }
 
-    public function edit(PaymentGateway $paymentGateway)
+    public function edit(PaymentGateway $gateway)
     {
-        return view('admin.payment-gateways.edit', compact('paymentGateway'));
+        return view('admin.payment-gateways.edit', compact('gateway'));
     }
 
-    public function update(Request $request, PaymentGateway $paymentGateway)
+    public function update(Request $request, PaymentGateway $gateway)
     {
         $data = $request->validate([
             'name'                 => 'required|string',
@@ -74,30 +74,30 @@ class PaymentGatewayController extends Controller
 
         $data['credentials'] = $credentials;
 
-        if ($data['name'] && $data['name'] !== $paymentGateway->name) {
+        if ($data['name'] && $data['name'] !== $gateway->name) {
             $data['slug'] = str_slug('payment_gateways', 'slug', $data['name']);
         }
         if ($request->hasFile('image')) {
-            if ($paymentGateway->image) {
-                delete_file($paymentGateway->image);
+            if ($gateway->image) {
+                delete_file($gateway->image);
             }
 
             $data['image'] = upload_file($request->file('image'), 'images/payment-gateways');
         }
 
-        $paymentGateway->update($data);
+        $gateway->update($data);
 
         return redirect()->route('admin.payment_gateways.index')
             ->with('success', 'Payment gateway updated successfully.');
     }
 
-    public function destroy(PaymentGateway $paymentGateway)
+    public function destroy(PaymentGateway $gateway)
     {
-        if ($paymentGateway->image != null) {
-            delete_file($paymentGateway->image);
+        if ($gateway->image != null) {
+            delete_file($gateway->image);
         }
 
-        $paymentGateway->delete();
+        $gateway->delete();
 
         return redirect()->route('admin.payment_gateways.index')
             ->with('success', 'Payment gateway deleted successfully.');

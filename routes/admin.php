@@ -112,9 +112,9 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
         Route::get('/', [PaymentGatewayController::class, 'index'])->name('index');
         Route::get('/create', [PaymentGatewayController::class, 'create'])->name('create');
         Route::post('/store', [PaymentGatewayController::class, 'store'])->name('store');
-        Route::get('/{paymentGateway}/edit', [PaymentGatewayController::class, 'edit'])->name('edit');
-        Route::post('/{paymentGateway}/update', [PaymentGatewayController::class, 'update'])->name('update');
-        Route::post('/{paymentGateway}/delete', [PaymentGatewayController::class, 'destroy'])->name('destroy');
+        Route::get('/{gateway}/edit', [PaymentGatewayController::class, 'edit'])->name('edit');
+        Route::post('/{gateway}/update', [PaymentGatewayController::class, 'update'])->name('update');
+        Route::post('/{gateway}/delete', [PaymentGatewayController::class, 'destroy'])->name('destroy');
     });
 
     Route::prefix('settings')->as('settings.')->group(function () {

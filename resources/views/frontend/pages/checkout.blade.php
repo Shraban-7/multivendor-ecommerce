@@ -168,48 +168,22 @@
                             <h3 class="sm:text-lg font-medium pl-5">Payment Option</h3>
                             <div
                                 class="grid grid-cols-2 xsm:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 items-center gap-2 md:gap-4 p-3 md:p-5 border-y border-jet-gray/30 md:divide-x md:divide-jet-gray/30">
-                                <label class="relative inline-flex flex-col gap-2 items-center p-2 cursor-pointer group">
-                                    <span class="text-2xl sm:text-3xl text-primary"><i
-                                            class="fa-solid fa-dollar-sign"></i></span>
-                                    <span class="font-medium text-sm whitespace-nowrap group-hover:text-primary eq">Cash on
-                                        Delivery</span>
-                                    <input type="radio" name="payment"
-                                        class="w-4 h-4 text-primary bg-gray-100 border-gray-300 focus:ring-primary focus:ring-2" />
-                                </label>
-                                <label class="relative inline-flex flex-col gap-2 items-center p-2 cursor-pointer group">
-                                    <img src="{{ asset('assets/frontend/images/payment-option-1.png') }}"
-                                        alt="Venmo Payment" class="h-6 sm:h-7 w-auto" />
-                                    <span
-                                        class="font-medium text-sm whitespace-nowrap group-hover:text-primary eq">Venmo</span>
-                                    <input type="radio" name="payment"
-                                        class="w-4 h-4 text-primary bg-gray-100 border-gray-300 focus:ring-primary focus:ring-2" />
-                                </label>
-                                <label class="relative inline-flex flex-col gap-2 items-center p-2 cursor-pointer group">
-                                    <img src="{{ asset('assets/frontend/images/payment-option-2.png') }}"
-                                        alt="PayPal Payment" class="h-6 sm:h-7 w-auto" />
-                                    <span
-                                        class="font-medium text-sm whitespace-nowrap group-hover:text-primary eq">Paypal</span>
-                                    <input type="radio" name="payment"
-                                        class="w-4 h-4 text-primary bg-gray-100 border-gray-300 focus:ring-primary focus:ring-2" />
-                                </label>
-                                <label class="relative inline-flex flex-col gap-2 items-center p-2 cursor-pointer group">
-                                    <img src="{{ asset('assets/frontend/images/payment-option-3.png') }}"
-                                        alt="Amazon Payment" class="h-6 sm:h-7 w-auto" />
-                                    <span class="font-medium text-sm whitespace-nowrap group-hover:text-primary eq">Amazon
-                                        Pay</span>
-                                    <input type="radio" name="payment"
-                                        class="w-4 h-4 text-primary bg-gray-100 border-gray-300 focus:ring-primary focus:ring-2" />
-                                </label>
-                                <label class="relative inline-flex flex-col gap-2 items-center p-2 cursor-pointer group">
-                                    <span class="text-2xl sm:text-3xl text-primary"><i
-                                            class="fa-regular fa-credit-card"></i></span>
-                                    <span
-                                        class="font-medium text-sm whitespace-nowrap group-hover:text-primary eq">Debit/Credit
-                                        Card</span>
-                                    <input type="radio" name="payment"
-                                        class="w-4 h-4 text-primary bg-gray-100 border-gray-300 focus:ring-primary focus:ring-2"
-                                        checked />
-                                </label>
+                                @foreach ($payment_gateways as $gateway)
+                                    <label
+                                        class="relative inline-flex flex-col gap-2 items-center p-2 cursor-pointer group">
+                                        @if ($gateway->image)
+                                            <img src="{{ storage_url($gateway->image) }}" alt="{{ $gateway->name }}"
+                                                class="h-6 sm:h-7 w-auto" />
+                                        @else
+                                            <span class="text-2xl sm:text-3xl text-primary">
+                                                <i class="fa-solid fa-credit-card"></i>
+                                            </span>
+                                        @endif
+                                        <input type="radio" name="payment" value="{{ $gateway->slug }}"
+                                            class="w-4 h-4 text-primary bg-gray-100 border-gray-300 focus:ring-primary focus:ring-2"
+                                            {{ $gateway->is_default ? 'checked' : '' }} />
+                                    </label>
+                                @endforeach
                             </div>
 
                             <!-- Card Details -->
