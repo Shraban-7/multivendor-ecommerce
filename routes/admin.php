@@ -11,7 +11,7 @@ use App\Http\Controllers\Admin\HomeMidController;
 use App\Http\Controllers\Admin\OptionController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PaymentController;
-use App\Http\Controllers\Admin\PaymentGatewayController;
+use App\Http\Controllers\Admin\PaymentOptionController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProfileController;
@@ -132,10 +132,10 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
             Route::post('/update/{socialLink}', [SocialLinkController::class, 'update'])->name('update');
         });
 
-        Route::prefix('payment-gateways')->as('paymentGateways.')->group(function () {
-            Route::get('/', [PaymentGatewayController::class, 'index'])->name('index');
-            Route::post('/store', [PaymentGatewayController::class, 'store'])->name('store');
-            Route::post('/update/{gateway}', [PaymentGatewayController::class, 'update'])->name('update');
+        Route::prefix('payment-options')->as('paymentOptions.')->group(function () {
+            Route::get('/', [PaymentOptionController::class, 'index'])->name('index');
+            Route::post('/store', [PaymentOptionController::class, 'store'])->name('store');
+            Route::post('/update/{gateway}', [PaymentOptionController::class, 'update'])->name('update');
         });
 
         Route::get('/', [SettingController::class, 'index'])->name('index');

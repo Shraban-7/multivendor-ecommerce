@@ -180,9 +180,9 @@ $settings = settings();
                             </x-dashboard.nav-item-link>
                         @endif
 
-                        @if (hasPermission('admin.settings.paymentGateways.index'))
-                            <x-dashboard.nav-item-link :route="'admin.settings.paymentGateways.index'">
-                                Payment Gateways
+                        @if (hasPermission('admin.settings.paymentOptions.index'))
+                            <x-dashboard.nav-item-link :route="'admin.settings.paymentOptions.index'">
+                                Payment Options
                             </x-dashboard.nav-item-link>
                         @endif
 

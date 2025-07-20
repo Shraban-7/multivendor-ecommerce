@@ -15,27 +15,27 @@ class PaymentOptionSeeder extends Seeder
         $gateways = [
             [
                 'name' => 'Visa',
-                'image' => 'images/payment_gateways/payment-gateway-1-min.png',
+                'image' => 'images/payment_options/payment-gateway-1-min.png',
                 'link' => 'https://bd.visa.com/pay-with-visa/find-a-card/credit-cards.html',
             ],
             [
                 'name' => 'MasterCard',
-                'image' => 'images/payment_gateways/payment-gateway-2-min.png',
+                'image' => 'images/payment_options/payment-gateway-2-min.png',
                 'link' => 'https://www.mastercard.com.bd',
             ],
             [
                 'name' => 'PayPal',
-                'image' => 'images/payment_gateways/payment-gateway-3-min.png',
+                'image' => 'images/payment_options/payment-gateway-3-min.png',
                 'link' => 'https://www.paypal.com/',
             ],
             [
                 'name' => 'iPay',
-                'image' => 'images/payment_gateways/payment-gateway-4-min.png',
+                'image' => 'images/payment_options/payment-gateway-4-min.png',
                 'link' => 'https://ipay.com.bd/',
             ],
             [
                 'name' => 'G Pay',
-                'image' => 'images/payment_gateways/payment-gateway-5-min.png',
+                'image' => 'images/payment_options/payment-gateway-5-min.png',
                 'link' => 'https://pay.google.com/',
             ],
         ];

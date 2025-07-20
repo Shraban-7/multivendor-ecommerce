@@ -6,13 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\PaymentOption;
 use Illuminate\Http\Request;
 
-class PaymentGatewayController extends Controller
+class PaymentOptionController extends Controller
 {
     public function index()
     {
-        $paymentGateways = PaymentOption::get();
+        $paymentOptions = PaymentOption::get();
 
-        return view('admin.settings.payment_gateway.index', compact('paymentGateways'));
+        return view('admin.settings.payment_gateway.index', compact('paymentOptions'));
     }
 
     public function store(Request $request)
@@ -25,14 +25,14 @@ class PaymentGatewayController extends Controller
 
         $imagePath = null;
         if ($request->hasFile('image')) {
-            $imagePath = upload_file($request->file('image'), 'images/home_mid_banners');
+            $imagePath = upload_file($request->file('image'), 'images/payment_options');
         }
 
         $data['image'] = $imagePath;
 
         PaymentOption::create($data);
 
-        return redirect()->route('admin.settings.paymentGateways.index')->with('success', 'Promo Poster create successfully');
+        return redirect()->route('admin.settings.paymentOptions.index')->with('success', 'Promo Poster create successfully');
     }
 
     public function update(Request $request, PaymentOption $gateway)
@@ -47,7 +47,7 @@ class PaymentGatewayController extends Controller
             if (!empty($gateway->image)) {
                 delete_file($gateway->image);
             }
-            $filePath = 'images/home_mid_banners';
+            $filePath = 'images/payment_options';
             $data['image'] = upload_file($request->file('image'), $filePath);
         } else {
             $data['image'] = $gateway->image;
@@ -57,6 +57,6 @@ class PaymentGatewayController extends Controller
 
         $gateway->update($data);
 
-        return redirect()->route('admin.settings.paymentGateways.index')->with('success', 'Promo Poster updated successfully');
+        return redirect()->route('admin.settings.paymentOptions.index')->with('success', 'Promo Poster updated successfully');
     }
 }
