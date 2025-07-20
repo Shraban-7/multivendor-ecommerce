@@ -47,7 +47,6 @@ class AppServiceProvider extends ServiceProvider
                 $carts = collect();
             }
 
-
             $view->with('cartCount', $cartCount)->with('totalPrice', $grand_total)->with('subTotal', $sub_total);
         });
     }

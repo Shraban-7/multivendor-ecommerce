@@ -100,6 +100,8 @@ class OrderController extends Controller
             $sub_total += $itemTotal;
             $discount += $itemDiscount;
 
+            $grand_total = $sub_total + $discount;
+
             $orderItems[] = [
                 'product_id'         => $product->id,
                 'product_variant_id' => $cartItem->product_variant_id ?? null,
@@ -123,7 +125,7 @@ class OrderController extends Controller
             $customer_addresses = CustomerAddress::where('user_id', $user->id)->get();
             $payment_gateways   = PaymentGateway::where('is_enabled', true)->get();
 
-            return view('frontend.pages.checkout', compact('user', 'customer_addresses', 'selectedSellerId', 'sub_total', 'discount', 'tax', 'shipping_fee', 'payment_gateways'));
+            return view('frontend.pages.checkout', compact('user', 'customer_addresses', 'selectedSellerId', 'sub_total', 'discount', 'tax', 'shipping_fee', 'payment_gateways', 'grand_total'));
         }
 
         $seller = Seller::where('id', $selectedSellerId)->first();
@@ -195,7 +197,7 @@ class OrderController extends Controller
         $customerEmail = $request->input('customer_email', $user->customer_email);
         $customerPhone = $request->input('customer_phone') ?? '';
 
-        Payment::create([
+        $payment = Payment::create([
             'gateway'        => 'aamarpay',
             'transaction_id' => $invoiceId,
             'status'         => Payment::PENDING,
@@ -237,6 +239,7 @@ class OrderController extends Controller
             if (isset($response['payment_url'])) {
                 $paymentUrl = $response['payment_url'];
                 //return redirect()->away($response['payment_url']);
+
             } else {
                 $message = 'Payment URL not received.';
             }

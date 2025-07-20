@@ -128,7 +128,7 @@
                                                     <div
                                                         class="relative w-24 overflow-hidden rounded-md item-image-wrap h-28 xsm:w-36 xsm:h-40">
                                                         <a href="{{ route('products.details', $item->product->slug) }}">
-                                                            <img src="{{ storage_url($item->product->thumbnail) }}"
+                                                            <img src="{{ $item->product_variant_id ? storage_url($item->variant->image) : storage_url($item->product->thumbnail) }}"
                                                                 alt="Product" class="object-cover w-full h-full" />
                                                         </a>
                                                     </div>
@@ -167,13 +167,13 @@
                                                                         </h3>
                                                                     </div>
                                                                 </div>
-                                                                @if ($item->variantOption)
+                                                                @if ($item->product_variant_id && $item->variant && $item->variant->option_values)
                                                                     <div
                                                                         class="w-full text-xs xsm:text-sm text-gray-600 mt-1">
-                                                                        @foreach ($item->variantOption as $variant)
+                                                                        @foreach ($item->variant->option_values as $value)
                                                                             <span class="mr-2">
-                                                                                {{ $variant['productAttribute'] }}:
-                                                                                {{ $variant['option'] }}
+                                                                                {{ $value->option->name ?? '' }}:
+                                                                                {{ $value->value }}
                                                                             </span>
                                                                         @endforeach
                                                                     </div>
@@ -241,7 +241,7 @@
                                 <p class="flex justify-between">
                                     <span class="text-theme-dark">Item's total:</span>
                                     <span id="itemsTotal"
-                                        class="{{ $discount ==0 ? 'line-through' : '' }}  text-jet-gray">{{ money($grand_total) }}</span>
+                                        class="{{ $discount == 0 ? 'line-through' : '' }}  text-jet-gray">{{ money($grand_total) }}</span>
                                 </p>
                                 <p class="flex justify-between">
                                     <span class="text-theme-dark">Item Discount:</span>
@@ -644,8 +644,6 @@
                             discountedTotal += discountedPrice * quantity;
                             originalTotal += price * quantity;
                             selectedCount += quantity;
-
-                            console.log(price);
                         }
                     });
 

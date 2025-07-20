@@ -32,11 +32,15 @@ class CartItem extends Model
 
     public function getDiscountedPriceAttribute()
     {
-        // return $this->variant;
-        if ($this->variant && $this->variant->discounted_price !== null) {
-            return $this->variant->discounted_price;
+        if ($this->variant) {
+            if ($this->variant->discounted_price !== null) {
+                return $this->variant->discounted_price;
+            }
+          return  $this->variant->selling_price;
+
+        }else{
+            return $this->product->discounted_price ?? $this->product->selling_price;
         }
 
-        return $this->product->discounted_price ?? $this->price;
     }
 }

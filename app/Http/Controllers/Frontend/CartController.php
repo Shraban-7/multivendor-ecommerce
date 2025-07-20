@@ -77,7 +77,7 @@ class CartController extends Controller
     public function details(Request $request)
     {
         $carts = Cart::where('user_id', Auth::user()->id)
-            ->with('cart_items.product')
+            ->with('cart_items.product','cart_items.variant')
             ->get()
             ->groupBy(function ($cart) {
                 return $cart->cart_items->first()->product->seller_id ?? null;

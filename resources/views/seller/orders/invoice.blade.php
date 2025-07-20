@@ -7,9 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="images/favicon.png" rel="icon" />
     <title>Invoice {{ $order->invoice_id }}</title>
-    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900' type='text/css'>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900'
+        type='text/css'>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+        integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/invoice/css/stylesheet.css') }}" />
 
     <style>
@@ -44,7 +48,7 @@
             <div class="row align-items-center gy-3">
                 <div class="col-sm-7 text-center text-sm-start">
                     @isset($order->seller->business_logo)
-                    <img src="{{ storage_url($order->seller->business_logo) }}" height="100" alt="img" />
+                        <img src="{{ storage_url($order->seller->business_logo) }}" height="100" alt="img" />
                     @endisset
                 </div>
                 <div class="col-sm-5 text-center text-sm-end">
@@ -63,20 +67,20 @@
             <div class="row">
                 <div class="col-sm-6 text-sm-end order-sm-1"> <strong>Pay To:</strong>
                     @isset($order->seller)
-                    <address>
-                        @if($order->seller->business_name)
-                        {{ $order->seller->business_name }} <br>
-                        @endif
-                        @if($order->seller->business_address)
-                        {{ $order->seller->business_address }} <br>
-                        @endif
-                        @if($order->seller->phone)
-                        {{ $order->seller->phone }} <br>
-                        @endif
-                        @if($order->seller->business_email)
-                        {{ $order->seller->business_email }} <br>
-                        @endif
-                    </address>
+                        <address>
+                            @if ($order->seller->business_name)
+                                {{ $order->seller->business_name }} <br>
+                            @endif
+                            @if ($order->seller->business_address)
+                                {{ $order->seller->business_address }} <br>
+                            @endif
+                            @if ($order->seller->phone)
+                                {{ $order->seller->phone }} <br>
+                            @endif
+                            @if ($order->seller->business_email)
+                                {{ $order->seller->business_email }} <br>
+                            @endif
+                        </address>
                     @endisset
                 </div>
                 <div class="col-sm-6 order-sm-0"> <strong>Invoiced To:</strong>
@@ -99,12 +103,25 @@
                     </thead>
                     <tbody>
                         @foreach ($order->items as $item)
-                        <tr>
-                            <td class="col-4">{{ $item->product->name }}</td>
-                            <td class="col-4 text-center">{{ $item->unit_price }}</td>
-                            <td class="col-1 text-center">{{ $item->quantity }}</td>
-                            <td class="col-2 text-end">{{ $item->sub_total }}</td>
-                        </tr>
+                            <tr>
+                                <td class="col-4">
+                                    {{ $item->product->name }}
+
+                                    @if ($item->product_variant_id && $item->variant && $item->variant->option_values)
+                                        <div class="text-xs text-gray-600 mt-1">
+                                            @foreach ($item->variant->option_values as $value)
+                                                <span class="mr-2">
+                                                    {{ $value->option->name ?? '' }}: {{ $value->value }}
+                                                </span>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </td>
+
+                                <td class="col-4 text-center">{{ money($item->unit_price) }}</td>
+                                <td class="col-1 text-center">{{ $item->quantity }}</td>
+                                <td class="col-2 text-end">{{ money($item->sub_total) }}</td>
+                            </tr>
                         @endforeach
                     </tbody>
                 </table>
@@ -113,27 +130,40 @@
                 <table class="table mb-0 table-borderless">
                     <tr>
                         <td class="text-end"><strong>Sub Total:</strong></td>
-                        <td class="col-sm-2 text-end">{{ $order->total }}</td>
+                        <td class="col-sm-2 text-end">{{ money($order->sub_total) }}</td>
                     </tr>
-                    @if($order->discount > 0)
-                    <tr>
-                        <td class="text-end"><strong>Discount (-):</strong></td>
-                        <td class="col-sm-2 text-end">{{ $order->discount }}</td>
-                    </tr>
-                    <tr>
-                        <td class="text-end"><strong>Total:</strong></td>
-                        <td class="col-sm-2 text-end fw-bold">{{ $order->payable }}</td>
-                    </tr>
+                    @if ($order->discount > 0)
+                        <tr>
+                            <td class="text-end"><strong>Discount (-):</strong></td>
+                            <td class="col-sm-2 text-end">{{ money($order->discount) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-end"><strong>TAX:</strong></td>
+                            <td class="col-sm-2 text-end">{{ money($order->tax) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-end"><strong>Shipping Fee:</strong></td>
+                            <td class="col-sm-2 text-end">{{ money($order->shipping_fee) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-end"><strong>Total:</strong></td>
+                            <td class="col-sm-2 text-end fw-bold">{{ money($order->total) }}</td>
+                        </tr>
                     @endif
-                    @if($order->due > 0)
-                    <tr>
-                        <td class="text-end"><strong>Paid:</strong></td>
-                        {{-- <td class="col-sm-2 text-end">{{ $order->paid }}</td> --}}
-                    </tr>
-                    <tr>
-                        <td class="text-end text-danger"><strong>Due:</strong></td>
-                        {{-- <td class="col-sm-2 text-end text-danger fw-bold">{{ $order->due }}</td> --}}
-                    </tr>
+                    @if ($order->due > 0)
+                        <tr>
+                            <td class="text-end"><strong>Paid:</strong></td>
+                            <td class="col-sm-2 text-end">{{ money($order->payable - $order->due) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-end text-danger"><strong>Due:</strong></td>
+                            <td class="col-sm-2 text-end text-danger fw-bold">{{ money($order->due) }}</td>
+                        </tr>
+                    @else
+                        <tr>
+                            <td class="text-end"><strong>Paid:</strong></td>
+                            <td class="col-sm-2 text-end fw-bold text-success">{{ money($order->payable) }}</td>
+                        </tr>
                     @endif
                 </table>
             </div>
@@ -152,7 +182,9 @@
         </footer>
     </div>
 </body>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous">
+</script>
 <script>
     window.print();
     window.onafterprint = function() {

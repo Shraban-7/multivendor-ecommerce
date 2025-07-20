@@ -49,7 +49,7 @@ class OrderController extends Controller
 
     public function invoice(Order $order)
     {
-        $order->load('items.product', 'seller', 'user.country');
+        $order->load('items.product', 'seller', 'user.country','items.variant');
 
         return view('seller.orders.invoice', compact('order'));
     }

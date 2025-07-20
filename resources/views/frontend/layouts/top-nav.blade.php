@@ -114,7 +114,7 @@
                 <span class="block relative">
                     <i class="fa-solid fa-cart-arrow-down"></i>
                     <span id="cartCount"
-                        class="absolute hidden flex items-center justify-center w-5 h-5 bg-theme-light text-light-yellow rounded-full -top-3 -end-4 font-[arial] font-bold text-[10px]">
+                        class="absolute flex items-center justify-center w-5 h-5 bg-theme-light text-light-yellow rounded-full -top-3 -end-4 font-[arial] font-bold text-[10px]">
                         {{ $cartCount }}
                     </span>
                 </span>

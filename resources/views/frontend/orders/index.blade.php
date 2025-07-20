@@ -142,7 +142,7 @@
                                                     class="bg-primary text-white px-3 py-2 rounded text-xs hover:opacity-90 transition">
                                                     <i class="fa-solid fa-eye mr-1"></i> View
                                                 </a>
-                                                <a href="{{ route('invoice', $order->id) }}"
+                                                <a href="{{ route('invoice', $order->id) }}" target="__blank"
                                                     class="bg-theme-light text-black px-3 py-2 rounded text-xs hover:opacity-90 transition">
                                                     <i class="fa-solid fa-download mr-1"></i> Invoice
                                                 </a>
