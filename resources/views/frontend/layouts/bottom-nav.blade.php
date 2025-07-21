@@ -51,7 +51,7 @@
                                                         {{ $subcategory->name }}
                                                     </h4>
                                                     <!-- brand feature products -->
-                                                    <div
+                                                    {{-- <div
                                                         class="hidden group-hover/brand:block absolute left-[10rem] top-0 w-[45vw] lg:w-[50vw] max-h-[31.2rem] p-4 bg-white border-t border-r border-b border-[#E4E7E9] rounded-tr rounded-br h-[31.2rem] xl:overflow-y-auto overflow-y-scroll">
                                                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 h-full">
                                                             <!-- Product Cards -->
@@ -149,7 +149,7 @@
                                                                 </a>
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    </div> --}}
                                                 </li>
                                             @endforeach
                                         </ul>
