@@ -2,14 +2,12 @@
 namespace Database\Seeders;
 
 use App\Models\Seller;
+use App\Enums\CommissionType;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class SellerSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         $sellers = [
@@ -23,7 +21,7 @@ class SellerSeeder extends Seeder
                 'business_logo'       => '/images/sellers/business/unilever-logo.png',
                 'business_email'      => 'business.unilever@gmail.com',
                 'business_address'    => 'Tejgaon I/A, Dhaka',
-                'country_id'          => 6, //Bangladesh
+                'country_id'          => 6,
                 'zip'                 => '1215',
                 'shipping_cost'       => 25,
                 'trade_license_no'    => 'UL-TL-2023001',
@@ -33,6 +31,8 @@ class SellerSeeder extends Seeder
                 'nid_front_image'     => '/images/sellers/nids/unilever-nid-front.jpg',
                 'nid_back_image'      => '/images/sellers/nids/unilever-nid-back.jpg',
                 'is_active'           => 1,
+                'commission_type'     => CommissionType::PERCENTAGE->value,
+                'commission_amount'   => 10.5,
             ],
             [
                 'name'                => 'Nestlé Partner',
@@ -44,7 +44,7 @@ class SellerSeeder extends Seeder
                 'business_logo'       => '/images/sellers/business/nestle-logo.png',
                 'business_email'      => 'business.nestle@gmail.com',
                 'business_address'    => 'Kawran Bazar, Dhaka',
-                'country_id'          => 6, //Bangladesh
+                'country_id'          => 6,
                 'zip'                 => '1207',
                 'shipping_cost'       => 20,
                 'trade_license_no'    => 'NE-TL-2023002',
@@ -54,6 +54,8 @@ class SellerSeeder extends Seeder
                 'nid_front_image'     => '/images/sellers/nids/nestle-nid-front.jpg',
                 'nid_back_image'      => '/images/sellers/nids/nestle-nid-back.jpg',
                 'is_active'           => 1,
+                'commission_type'     => CommissionType::FLAT->value,
+                'commission_amount'   => 30,
             ],
             [
                 'name'                => 'Marico Agent',
@@ -65,7 +67,7 @@ class SellerSeeder extends Seeder
                 'business_logo'       => '/images/sellers/business/marico-logo.png',
                 'business_email'      => 'business.marico@gmail.com',
                 'business_address'    => 'Gulshan, Dhaka',
-                'country_id'          => 6, //Bangladesh
+                'country_id'          => 6,
                 'zip'                 => '1212',
                 'shipping_cost'       => 15,
                 'trade_license_no'    => 'MA-TL-2023003',
@@ -75,6 +77,8 @@ class SellerSeeder extends Seeder
                 'nid_front_image'     => '/images/sellers/nids/marico-nid-front.jpg',
                 'nid_back_image'      => '/images/sellers/nids/marico-nid-back.jpg',
                 'is_active'           => 1,
+                'commission_type'     => CommissionType::PERCENTAGE->value,
+                'commission_amount'   => 8,
             ],
             [
                 'name'                => 'Aarong Vendor',
@@ -86,7 +90,7 @@ class SellerSeeder extends Seeder
                 'business_logo'       => '/images/sellers/business/aarong-logo.png',
                 'business_email'      => 'business.aarong@gmail.com',
                 'business_address'    => 'Uttara, Dhaka',
-                'country_id'          => 6, //Bangladesh
+                'country_id'          => 6,
                 'zip'                 => '1230',
                 'shipping_cost'       => 35,
                 'trade_license_no'    => 'AR-TL-2023004',
@@ -96,6 +100,8 @@ class SellerSeeder extends Seeder
                 'nid_front_image'     => '/images/sellers/nids/aarong-nid-front.jpg',
                 'nid_back_image'      => '/images/sellers/nids/aarong-nid-back.jpg',
                 'is_active'           => 1,
+                'commission_type'     => CommissionType::FLAT->value,
+                'commission_amount'   => 20,
             ],
             [
                 'name'                => 'Walton Distributor',
@@ -107,7 +113,7 @@ class SellerSeeder extends Seeder
                 'business_logo'       => '/images/sellers/business/walton-logo.png',
                 'business_email'      => 'business.walton@gmail.com',
                 'business_address'    => 'Bashundhara R/A, Dhaka',
-                'country_id'          => 6, //Bangladesh
+                'country_id'          => 6,
                 'zip'                 => '1229',
                 'shipping_cost'       => 40,
                 'trade_license_no'    => 'WA-TL-2023005',
@@ -117,6 +123,8 @@ class SellerSeeder extends Seeder
                 'nid_front_image'     => '/images/sellers/nids/walton-nid-front.jpg',
                 'nid_back_image'      => '/images/sellers/nids/walton-nid-back.jpg',
                 'is_active'           => 1,
+                'commission_type'     => CommissionType::PERCENTAGE->value,
+                'commission_amount'   => 5.5,
             ],
             [
                 'name'                => 'Test Distributor',
@@ -128,7 +136,7 @@ class SellerSeeder extends Seeder
                 'business_logo'       => '/images/sellers/business/walton-logo.png',
                 'business_email'      => 'business.test@gmail.com',
                 'business_address'    => 'Bashundhara R/A, Dhaka',
-                'country_id'          => 6, //Bangladesh
+                'country_id'          => 6,
                 'zip'                 => '1229',
                 'shipping_cost'       => 40,
                 'trade_license_no'    => 'WA-TL-2023005',
@@ -138,6 +146,8 @@ class SellerSeeder extends Seeder
                 'nid_front_image'     => '/images/sellers/nids/walton-nid-front.jpg',
                 'nid_back_image'      => '/images/sellers/nids/walton-nid-back.jpg',
                 'is_active'           => 0,
+                'commission_type'     => CommissionType::FLAT->value,
+                'commission_amount'   => 10,
             ],
         ];
 

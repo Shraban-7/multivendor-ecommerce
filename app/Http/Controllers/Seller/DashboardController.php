@@ -1,10 +1,10 @@
 <?php
 namespace App\Http\Controllers\Seller;
 
-use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Payment;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -27,7 +27,6 @@ class DashboardController extends Controller
         $orders = Order::selectRaw('DATE(orders.created_at) as label, COUNT(orders.id) as order_count, SUM(orders.payable) as sale, SUM(order_items.buying_price) as buying_price')
             ->join('order_items', 'orders.id', '=', 'order_items.order_id')
             ->where('orders.seller_id', $sellerId)
-            ->where('orders.status', OrderStatus::DELIVERED->value)
             ->whereDate('orders.created_at', '>=', $startDate)
             ->whereDate('orders.created_at', '<=', $endDate)
             ->groupBy('label')
@@ -41,9 +40,10 @@ class DashboardController extends Controller
             ->pluck('id');
 
         $orderItemProductIds = OrderItem::whereIn('order_id', $orderIds)->pluck('product_id');
-        $TotalBuyingPrice = OrderItem::whereIn('order_id', $orderIds)->sum('buying_price');
 
-        $profit = (clone $ordersQuery)->delivered()->sum('payable') - $TotalBuyingPrice;
+        $TotalBuyingPrice = $orders[0]['buying_price'];
+
+        $profit = (clone $ordersQuery)->sum('seller_earnings') - $TotalBuyingPrice;
 
         $chartData = [
             'labels'  => $orders->pluck('label'),
@@ -52,10 +52,18 @@ class DashboardController extends Controller
             'profits' => $orders->map(fn($order) => $order->sale - $order->buying_price),
         ];
 
+        $confirmOrderIds = Order::whereHas('payment', function ($q) {
+            $q->where('status', Payment::SUCCESSFUL);
+        })->pluck('id');
+
+        // return $confirmOrderIds;
+
+        $confirmOrderItemProductIds = OrderItem::whereIn('order_id',$confirmOrderIds)->pluck('product_id');
+
         $top_selling_products = Product::where('seller_id', $sellerId)
-            ->whereIn('id', $orderItemProductIds)
-            ->withCount(['orderItems as sales_count' => function ($query) use ($orderIds) {
-                $query->whereIn('order_id', $orderIds);
+            ->whereIn('id', $confirmOrderItemProductIds)
+            ->withCount(['orderItems as sales_count' => function ($query) use ($confirmOrderIds) {
+                $query->whereIn('order_id', $confirmOrderIds );
             }])
             ->orderByDesc('sales_count')
             ->limit(5)
@@ -73,7 +81,7 @@ class DashboardController extends Controller
             'shipped_orders'       => (clone $ordersQuery)->shipped()->count(),
             'cancelled_orders'     => (clone $ordersQuery)->cancelled()->count(),
             'delivered_orders'     => (clone $ordersQuery)->delivered()->count(),
-            'total_sales'          => (clone $ordersQuery)->delivered()->sum('payable'),
+            'total_sales'          => (clone $ordersQuery)->sum('seller_earnings'),
             'profit'               => $profit,
             'total_customers'      => (clone $ordersQuery)->distinct('user_id')->count('user_id'),
             'top_selling_products' => $top_selling_products,

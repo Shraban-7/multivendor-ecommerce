@@ -2,9 +2,9 @@
 @section('title', $product['name'])
 
 @section('content')
-@php
-    $settings = settings();
-@endphp
+    @php
+        $settings = settings();
+    @endphp
     <main class="product-details-page">
         <section class="container page-breadcrumb-links">
             <!-- Page Breadcrumb -->
@@ -174,6 +174,12 @@
                                             <h6 id="price" class="text-jet-gray line-through text-sm">
                                                 {{ money($product['price']) }}
                                             </h6>
+                                        </div>
+                                    @elseif($variantPrice)
+                                        <div class="flex items-center gap-1">
+                                            <h3 id="price" class="font-bold text-primary text-lg product-price">
+                                                {{ money($variantPrice) }}
+                                            </h3>
                                         </div>
                                     @else
                                         <div class="flex items-center gap-1">
@@ -667,8 +673,13 @@
                         Number(currentVariant.discounted_price) :
                         null;
 
-                    const totalPrice = (basePrice * quantity).toFixed(2);
-                    const totalDiscountedPrice = discountedPrice !== null ? (discountedPrice * quantity).toFixed(2) : null;
+                    const total = basePrice * quantity;
+                    const totalPrice = Number.isInteger(total) ? total.toString() : total.toFixed(2);
+
+                    const totalDiscounted = discountedPrice !== null ? discountedPrice * quantity : null;
+                    const totalDiscountedPrice = totalDiscounted !== null ?
+                        (Number.isInteger(totalDiscounted) ? totalDiscounted.toString() : totalDiscounted.toFixed(2)) :
+                        null;
 
                     $('#sku').text(currentVariant.sku);
                     $('#stock').text(currentVariant.stock);
@@ -678,7 +689,7 @@
                         $('#discounted_price').text(`৳ ${totalDiscountedPrice}`).removeClass('hidden');
                         $('#price').text(`৳ ${totalPrice}`).removeClass('hidden').addClass('line-through');
                     } else {
-                        $('#price').text(`৳ ${totalPrice}`).addClass('hidden');
+                        $('#price').text(`৳ ${totalPrice}`);
                         $('#discounted_price').text(`৳ ${totalPrice}`).removeClass('hidden');
                     }
                 }
@@ -764,10 +775,21 @@
                         $('#sku').text(currentVariant.sku);
                         $('#stock').text(currentVariant.stock);
                         const basePrice = parseFloat(currentVariant.price) || 0;
-                        const baseDiscountedPrice = parseFloat(currentVariant.discounted_price);
-                        const totalPrice = (basePrice * quantity).toFixed(2);
-                        const totalDiscountedPrice = baseDiscountedPrice !== null ? (baseDiscountedPrice *
-                            quantity).toFixed(2) : (basePrice * quantity).toFixed(2);
+                        const baseDiscountedPrice = currentVariant.discounted_price !== null ? parseFloat(
+                            currentVariant.discounted_price) : null;
+
+                        const rawTotalPrice = basePrice * quantity;
+                        const totalPrice = Number.isInteger(rawTotalPrice) ? rawTotalPrice.toString() :
+                            rawTotalPrice.toFixed(2);
+
+                        const rawTotalDiscountedPrice = baseDiscountedPrice !== null ?
+                            baseDiscountedPrice * quantity :
+                            rawTotalPrice;
+
+                        const totalDiscountedPrice = Number.isInteger(rawTotalDiscountedPrice) ?
+                            rawTotalDiscountedPrice.toString() :
+                            rawTotalDiscountedPrice.toFixed(2);
+
 
                         if (baseDiscountedPrice && baseDiscountedPrice > 0) {
                             $('#discounted_price')

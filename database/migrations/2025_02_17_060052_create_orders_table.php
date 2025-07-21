@@ -32,6 +32,7 @@ return new class extends Migration
             $table->string('commission_type')->nullable();
             $table->decimal('commission_amount', 6, 1)->nullable();
             $table->decimal('total_commission', 8, 2)->nullable();
+            $table->decimal('seller_earnings', 10, 2)->default(0);
 
             $table->tinyInteger('status')->default(1);
             $table->tinyInteger('delivery_status')->default(1);

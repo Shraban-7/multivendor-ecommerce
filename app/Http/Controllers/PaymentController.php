@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\Payment;
+use App\Models\Seller;
 use App\Services\AamarpayService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -160,6 +161,13 @@ class PaymentController extends Controller
 
         if ($due > 0 && $payment->status === Payment::SUCCESSFUL) {
             $due = $due - $payment->amount;
+            $seller = Seller::find($order->seller_id);
+
+            $balance =$seller->balance + $order->seller_earnings;
+
+            $seller->update([
+                'balance' => $balance
+            ]);
         }
         $order->update([
             'payment_id' => $payment->id,

@@ -43,6 +43,7 @@ return new class extends Migration
 
             $table->string('commission_type')->nullable();
             $table->decimal('commission_amount', 6, 1)->nullable();
+            $table->decimal('balance', 10, 2)->default(0);
 
             $table->boolean('is_active')->default(0);
 

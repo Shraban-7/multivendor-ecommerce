@@ -156,19 +156,23 @@
                                                 }
                                             @endphp
                                             <div class="w-16 h-20 md:w-20 md:h-24 flex-shrink-0 rounded-xl overflow-hidden">
-                                                <img src="{{ $imageUrl }}"
-                                                    alt="{{ $item->product->name }}" class="w-full h-full object-cover" />
+                                                <a href="{{ route('products.details', $item->product->slug) }}">
+                                                    <img src="{{ $imageUrl }}"
+                                                        alt="{{ $item->product->name }}" class="w-full h-full object-cover" />
+                                                </a>
                                             </div>
 
                                             <div class="flex-grow space-y-1 md:space-y-2">
-                                                <p class="font-medium text-sm md:text-base">
-                                                    {{ $item->product->name }}
-                                                </p>
+                                                <a href="{{ route('products.details', $item->product->slug) }}">
+                                                    <p class="font-medium text-sm md:text-base">
+                                                        {{ $item->product->name }}
+                                                    </p>
+                                                </a>
                                                 <p class="text-sm text-jet-gray">Quantity: {{ $item->quantity }}</p>
                                                 <p class="flex items-center gap-1 text-aqua-deep mt-1">
                                                     <span
                                                         class="text-lg md:text-2xl font-medium">{{ money($item->unit_price) }}</span>
-                                                    @if ($item->discount != null)
+                                                    @if ($item->discount != null && $item->discount != 0)
                                                         <span
                                                             class="text-lg md:text-xl text-jet-gray font-medium line-through">
                                                             {{ money($item->unit_price + $item->discount) }}
