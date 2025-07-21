@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('favicon')->nullable();
             $table->string('apk_version')->nullable();
             $table->string('apk_link')->nullable();
+            $table->text('footer_text')->nullable();
             $table->timestamps();
         });
     }

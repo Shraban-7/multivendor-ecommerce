@@ -16,6 +16,7 @@ class SystemSettingSeeder extends Seeder
             'logo_white' => '/logo/tesko-login-logo.png',
             'favicon' => 'favicon/favicon.ico',
             'apk_version' => '1.0.0',
+            'footer_text' => 'We have clothes that suit your style and which you\'re proud to wear. From women to men.'
         ]);
     }
 }

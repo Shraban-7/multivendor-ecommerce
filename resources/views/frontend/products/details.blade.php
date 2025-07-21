@@ -2,6 +2,9 @@
 @section('title', $product['name'])
 
 @section('content')
+@php
+    $settings = settings();
+@endphp
     <main class="product-details-page">
         <section class="container page-breadcrumb-links">
             <!-- Page Breadcrumb -->
@@ -428,17 +431,17 @@
                                     src="{{ asset('assets/frontend/images/top-rated-icon.png') }}" alt="Top rated icon"
                                     class="object-contain w-3 h-3" />
                                 #Top Rated</span>
-                            <p class="text-sm text-davy-gray">In Men's Iteams</p>
+                            {{-- <p class="text-sm text-davy-gray">In Men's Iteams</p> --}}
                         </div>
                         <!-- Shipping Info -->
-                        <div class="flex items-center gap-2 mb-5">
+                        {{-- <div class="flex items-center gap-2 mb-5">
                             <img src="{{ asset('assets/frontend/images/carbon_delivery.png') }}" alt="Shipping"
                                 class="object-contain w-7 h-7" />
                             <span class="font-medium text-davy-gray">Ships From Tesco</span>
-                        </div>
+                        </div> --}}
 
                         <!-- Shipping Options -->
-                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-1 xl:grid-cols-2">
+                        {{-- <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-1 xl:grid-cols-2">
                             <!-- Standard Shipping -->
                             <div class="bg-[#F5F5F5] p-4 rounded-lg text-davy-gray lg:space-y-2 space-y-1">
                                 <h4 class="text-sm font-semibold text-black">
@@ -475,13 +478,13 @@
                                     <span>DHL</span>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
 
                         <!-- Commitments -->
                         <div class="mt-5">
                             <div class="flex items-center gap-2 mb-5">
-                                <div class="w-10 h-10 overflow-hidden tesko-icon">
-                                    <img src="{{ asset('assets/frontend/images/tesko-icon.png') }}" alt="Tesko Icon"
+                                <div class="w-16 h-16 overflow-hidden tesko-icon">
+                                    <img src="{{ storage_url($settings->logo) }}" alt="{{ $settings->app_name }}"
                                         class="object-contain w-full h-full" />
                                 </div>
                                 <span class="font-medium text-davy-gray">Our Commitments</span>
