@@ -146,7 +146,7 @@ $settings = settings();
                     aria-controls="navGateways">
 
                     <div>
-                        <i data-feather="users" class="nav-icon icon-xs me-2"></i>
+                        <i data-feather="credit-card" class="nav-icon icon-xs me-2"></i>
                         Payment Gateways
                     </div>
 

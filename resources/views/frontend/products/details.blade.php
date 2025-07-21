@@ -251,7 +251,7 @@
                                                         @php $isActive = in_array($value['id'], $defaultValueIds); @endphp
                                                         <button type="button"
                                                             class="option-value-btn px-4 py-2 text-sm border rounded-md transition-all duration-200
-                        {{ $isActive ? 'bg-primary text-white border-primary' : 'bg-white text-gray-800 border-gray-300 hover:bg-primary/90' }}"
+                                                            {{ $isActive ? 'bg-primary text-white border-primary' : 'bg-white text-gray-800 border-gray-300 hover:bg-primary/90' }}"
                                                             data-option-id="{{ $option['id'] }}"
                                                             data-value-id="{{ $value['id'] }}">
                                                             {{ $value['value'] }}
