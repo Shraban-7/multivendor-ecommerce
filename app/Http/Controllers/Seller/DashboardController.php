@@ -1,10 +1,10 @@
 <?php
 namespace App\Http\Controllers\Seller;
 
+use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderItem;
-use App\Models\Payment;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -36,12 +36,10 @@ class DashboardController extends Controller
         $orderIds = Order::where('seller_id', $sellerId)
             ->whereDate('created_at', '>=', $startDate)
             ->whereDate('created_at', '<=', $endDate)
-            ->delivered()
             ->pluck('id');
 
         $orderItemProductIds = OrderItem::whereIn('order_id', $orderIds)->pluck('product_id');
-
-        $TotalBuyingPrice = $orders[0]['buying_price'];
+        $TotalBuyingPrice = OrderItem::whereIn('order_id', $orderIds)->sum('buying_price');
 
         $profit = (clone $ordersQuery)->sum('seller_earnings') - $TotalBuyingPrice;
 
@@ -52,18 +50,10 @@ class DashboardController extends Controller
             'profits' => $orders->map(fn($order) => $order->sale - $order->buying_price),
         ];
 
-        $confirmOrderIds = Order::whereHas('payment', function ($q) {
-            $q->where('status', Payment::SUCCESSFUL);
-        })->pluck('id');
-
-        // return $confirmOrderIds;
-
-        $confirmOrderItemProductIds = OrderItem::whereIn('order_id',$confirmOrderIds)->pluck('product_id');
-
         $top_selling_products = Product::where('seller_id', $sellerId)
-            ->whereIn('id', $confirmOrderItemProductIds)
-            ->withCount(['orderItems as sales_count' => function ($query) use ($confirmOrderIds) {
-                $query->whereIn('order_id', $confirmOrderIds );
+            ->whereIn('id', $orderItemProductIds)
+            ->withCount(['orderItems as sales_count' => function ($query) use ($orderIds) {
+                $query->whereIn('order_id', $orderIds);
             }])
             ->orderByDesc('sales_count')
             ->limit(5)
