@@ -48,11 +48,5 @@ class OrderController extends Controller
         return redirect()->back()->with('success', 'Order update successfully');
     }
 
-    public function invoice($invoice_id)
-    {
-        $order = Order::where('invoice_id',$invoice_id)->first();
-        $order->load('items.product', 'seller', 'user.country','items.variant');
-
-        return view('seller.orders.invoice', compact('order'));
-    }
+    
 }

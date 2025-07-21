@@ -43,12 +43,17 @@
 </head>
 
 <body>
+  @php
+      $settings = settings();
+  @endphp
     <div class="container-fluid invoice-container">
         <header>
             <div class="row align-items-center gy-3">
                 <div class="col-sm-7 text-center text-sm-start">
-                    @isset($order->seller->business_logo)
-                        <img src="{{ storage_url($order->seller->business_logo) }}" height="100" alt="img" />
+                    @isset($settings->logo)
+                        <a href="{{ route('home') }}">
+                            <img src="{{ storage_url($settings->logo) }}" height="100" alt="img" />
+                        </a>
                     @endisset
                 </div>
                 <div class="col-sm-5 text-center text-sm-end">

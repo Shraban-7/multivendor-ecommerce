@@ -43,7 +43,6 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::get('/refunded', [OrderController::class, 'index'])->name('refunded');
         Route::get('/returned', [OrderController::class, 'index'])->name('returned');
         Route::get('/details/{invoice_id}', [OrderController::class, 'details'])->name('details');
-        Route::get('/invoice/{invoice_id}', [OrderController::class, 'invoice'])->name('invoice');
         Route::Post('/update-status/{order}', [OrderController::class, 'updateStatus'])->name('updateStatus');
     });
 
