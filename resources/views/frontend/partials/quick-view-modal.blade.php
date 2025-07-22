@@ -280,7 +280,7 @@
 
                             <input type="hidden" id="variantSku{{ $product['id'] }}" value="">
 
-                            @if ($product['stock'] > 0 || $product['variants']['stock'] > 0)
+                            @if ($product['stock'] > 0 || collect($product['variants'])->sum('stock') > 0)
                                 <button data-id="{{ $product['id'] }}" data-modal="{{ true }}"
                                     type="button" id="addToCartBtn{{ $product['id'] }}"
                                     class="cartBtn text-sm md:text-base font-medium flex-1 px-6 py-2 border border-primary text-primary rounded-full hover:bg-primary hover:text-white transition-all">
