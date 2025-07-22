@@ -9,10 +9,47 @@ use Illuminate\Support\Facades\Storage;
 
 class ImageUploadController extends Controller
 {
-    public function showForm()
+    public function index()
     {
-        return view('upload');
+        return view('admin.crop-save');
     }
+
+    public function save(Request $request)
+    {
+        $request->validate([
+            'croppedImage' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
+        ]);
+
+        $imagePath = null;
+
+        if ($request->hasFile('croppedImage')) {
+            $imagePath = upload_file($request->file('croppedImage'), 'images/temp');
+
+            $watermark = Storage::disk('public')->get('images/watermark.png');
+
+            $newImagePath = str_replace('temp', 'products/new', $imagePath);
+ 
+            Image::read(Storage::disk('public')->get($imagePath))
+                ->place(
+                    element: $watermark,
+                    position: 'bottom-right',
+                    offset_x: 10,
+                    offset_y: 10,
+                    opacity: 70
+                )
+                ->save(Storage::path("public/{$newImagePath}"));
+
+            delete_file($imagePath);
+
+            return response()->json([
+                'success' => true,
+                'path' => asset('storage/' . $imagePath)
+            ]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'No file uploaded'], 400);
+    }
+
 
     public function upload(Request $request)
     {
@@ -35,9 +72,9 @@ class ImageUploadController extends Controller
             ->place(
                 element: $watermark,
                 position: 'bottom-right',
-                offset_x: 10, // 10px from the right
-                offset_y: 10, // 10px from the bottom
-                opacity: 70 // 70%
+                offset_x: 10,
+                offset_y: 10,
+                opacity: 70
             )
             ->save(Storage::path("public/{$newImagePath}"));
 
