@@ -91,7 +91,7 @@
                                             {{ money($product->selling_price) }}</p>
                                     @endif
 
-                                    <div class="add-cart">
+                                    {{-- <div class="add-cart">
                                         <input type="hidden" name="quantity" value="1"
                                             id="qtyInput{{ $product->id }}">
                                         <button data-id="{{ $product->id }}" type="button"
@@ -106,7 +106,7 @@
                                                 <i class="fa-solid fa-plus"></i>
                                             </span>
                                         </button>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         </div>

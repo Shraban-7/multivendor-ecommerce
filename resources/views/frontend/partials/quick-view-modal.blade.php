@@ -334,16 +334,16 @@
                 const productId = this.id.replace('quick-view-modal-', '');
 
                 if (modal.data('initialized')) return;
-                modal.data('initialized', true); 
+                modal.data('initialized', true);
 
                 const product = window.quickViewData[productId]?.product || {};
                 const defaultVariant = window.quickViewData[productId]?.defaultVariant || null;
                 const variants = product.variants || [];
 
                 let quantity = 1;
-                let currentVariant = {
+                let currentVariant = defaultVariant ? {
                     ...defaultVariant
-                };
+                } : null;
 
                 const quantityElement = modal.find('#quantity' + productId);
                 const decreaseBtn = modal.find('#decreaseBtn' + productId);
@@ -369,13 +369,13 @@
 
                     const total = basePrice * quantity;
                     const totalDiscounted = baseDiscountedPrice !== null ? baseDiscountedPrice * quantity :
-                        null;
+                    null;
 
                     const priceText = `৳ ${total.toFixed(2)}`;
                     const discountedText = totalDiscounted !== null ? `৳ ${totalDiscounted.toFixed(2)}` :
                         priceText;
 
-                    if (baseDiscountedPrice && baseDiscountedPrice > 0) {
+                    if (baseDiscountedPrice && baseDiscountedPrice < basePrice) {
                         modal.find('#discounted_price' + productId).text(discountedText).removeClass('hidden');
                         modal.find('#price' + productId).text(priceText).addClass('line-through');
                     } else {
@@ -419,7 +419,7 @@
 
                         modal.find(
                                 `.option-value-btn[data-option-id="${optionId}"][data-value-id="${valueId}"]`
-                            )
+                                )
                             .addClass('bg-primary text-white border-primary')
                             .removeClass('bg-white text-gray-800 border-gray-300');
                     });
@@ -454,8 +454,7 @@
                         modal.find('#variantInfo' + productId).removeClass('hidden');
 
                         if (currentVariant.image) {
-                            const imageUrl = `{{ storage_url('') }}` + currentVariant
-                                .image;
+                            const imageUrl = `{{ storage_url('') }}` + currentVariant.image;
                             modal.find('#main-product-image' + productId).attr('src', imageUrl);
 
                             const thumbImg = modal.find(`.thumb-img[data-full="${imageUrl}"]`);
@@ -470,8 +469,6 @@
                             }
                         }
 
-
-
                         updateQuantity();
                     } else {
                         currentVariant = null;
@@ -484,8 +481,46 @@
                         modal.find('#variantNotFound').removeClass('hidden');
                     }
                 });
+
+                if (!variants.length) {
+                    currentVariant = {
+                        sku: product.sku || 'N/A',
+                        stock: product.stock || 0,
+                        price: product.price || 0,
+                        discounted_price: product.discounted_price || null,
+                        image: product.thumbnail || null
+                    };
+
+                    variantSku.val(currentVariant.sku);
+                    modal.find('#sku' + productId).text(currentVariant.sku);
+                    modal.find('#stock' + productId).text(currentVariant.stock);
+                    modal.find('#variantNotFound').addClass('hidden');
+                    modal.find('#variantInfo' + productId).removeClass('hidden');
+
+                    const basePrice = parseFloat(currentVariant.price);
+                    const baseDiscountedPrice = currentVariant.discounted_price !== null ? parseFloat(currentVariant
+                        .discounted_price) : null;
+
+                    const priceText = `৳ ${basePrice.toFixed(2)}`;
+                    const discountedText = baseDiscountedPrice !== null ? `৳ ${baseDiscountedPrice.toFixed(2)}` :
+                        priceText;
+
+                    if (baseDiscountedPrice && baseDiscountedPrice < basePrice) {
+                        modal.find('#discounted_price' + productId).text(discountedText).removeClass('hidden');
+                        modal.find('#price' + productId).text(priceText).addClass('line-through');
+                    } else {
+                        modal.find('#price' + productId).text(priceText).removeClass('line-through');
+                        modal.find('#discounted_price' + productId).text(priceText).removeClass('hidden');
+                    }
+
+                    if (currentVariant.image) {
+                        const imageUrl = `{{ storage_url('') }}` + currentVariant.image;
+                        modal.find('#main-product-image' + productId).attr('src', imageUrl);
+                    }
+                }
             });
         }
+
 
         $(document).ready(function() {
             initQuickViewModals();
