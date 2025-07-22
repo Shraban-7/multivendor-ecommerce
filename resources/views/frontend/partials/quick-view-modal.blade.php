@@ -278,32 +278,32 @@
                         </div>
 
 
-                            <div class="flex flex-wrap w-full gap-3 mt-5 xsm:w-4/5 md:w-11/12 lg:w-4/5">
-                                <input type="hidden" name="quantity" class="qtyInputValue" value=""
-                                    id="qtyInput{{ $product['id'] }}">
+                        <div class="flex flex-wrap w-full gap-3 mt-5 xsm:w-4/5 md:w-11/12 lg:w-4/5">
+                            <input type="hidden" name="quantity" class="qtyInputValue" value=""
+                                id="qtyInput{{ $product['id'] }}">
 
-                                <input type="hidden" id="variantSku{{ $product['id'] }}" value="">
+                            <input type="hidden" id="variantSku{{ $product['id'] }}" value="">
 
-                                @if ($product['in_stock'] > 0)
-                                    <button data-id="{{ $product['id'] }}" data-modal="{{ true }}"
-                                        type="button"
-                                        class="cartBtn text-sm md:text-base font-medium flex-1 px-6 py-2 border border-primary text-primary rounded-full hover:bg-primary hover:text-white transition-all">
-                                        Add To Cart
-                                    </button>
-                                @else
-                                    <button data-id="{{ $product['id'] }}" type="button"
-                                        class="wishlistBtn text-sm md:text-base font-medium flex-1 px-6 py-2 border border-primary text-primary rounded-full hover:bg-primary hover:text-white transition-all">
-                                        <i class="fa-regular fa-heart"></i>
-                                        <span>Wishlist</span>
-                                    </button>
-                                @endif
-
-                                <button data-id="{{ $product['id'] }}" data-seller="{{ $product['seller']['id'] }}"
-                                    class="buyNowBtn text-sm md:text-base font-medium flex-1 px-6 py-2 bg-primary text-white rounded-full hover:bg-theme-dark transition-all">
-                                    Buy Now
-                                    <span class="block text-xs font-light">Faster Dispatch</span>
+                            @if ($product['in_stock'] > 0)
+                                <button data-id="{{ $product['id'] }}" data-modal="{{ true }}"
+                                    type="button"
+                                    class="cartBtn text-sm md:text-base font-medium flex-1 px-6 py-2 border border-primary text-primary rounded-full hover:bg-primary hover:text-white transition-all">
+                                    Add To Cart
                                 </button>
-                            </div>
+                            @else
+                                <button data-id="{{ $product['id'] }}" type="button"
+                                    class="wishlistBtn text-sm md:text-base font-medium flex-1 px-6 py-2 border border-primary text-primary rounded-full hover:bg-primary hover:text-white transition-all">
+                                    <i class="fa-regular fa-heart"></i>
+                                    <span>Wishlist</span>
+                                </button>
+                            @endif
+
+                            <button data-id="{{ $product['id'] }}" data-seller="{{ $product['seller']['id'] }}"
+                                class="buyNowBtn text-sm md:text-base font-medium flex-1 px-6 py-2 bg-primary text-white rounded-full hover:bg-theme-dark transition-all">
+                                Buy Now
+                                <span class="block text-xs font-light">Faster Dispatch</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -332,6 +332,9 @@
             $('[id^="quick-view-modal-"]').each(function() {
                 const modal = $(this);
                 const productId = this.id.replace('quick-view-modal-', '');
+
+                if (modal.data('initialized')) return;
+                modal.data('initialized', true); 
 
                 const product = window.quickViewData[productId]?.product || {};
                 const defaultVariant = window.quickViewData[productId]?.defaultVariant || null;
@@ -381,7 +384,6 @@
                     }
                 };
 
-                // Quantity control buttons
                 increaseBtn.on('click', function() {
                     quantity++;
                     updateQuantity();
@@ -400,14 +402,12 @@
                     updateQuantity();
                 });
 
-                // Prepare option-value map
                 (product.options || []).forEach(option => {
                     option.values.forEach(value => {
                         valueToOptionMap[value.id] = option.id;
                     });
                 });
 
-                // Set default option selections
                 if (defaultVariant?.value_ids?.length) {
                     defaultVariant.value_ids.forEach(valueId => {
                         const optionId = valueToOptionMap[valueId];
@@ -425,16 +425,13 @@
                     });
                 }
 
-                // Update quantity on init
                 updateQuantity();
 
-                // Variant switching
                 modal.find('.option-value-btn').on('click', function() {
                     const optionId = $(this).data('option-id');
                     const valueId = $(this).data('value-id');
                     selectedOptions[optionId] = valueId;
 
-                    // Update button styles
                     modal.find(`.option-value-btn[data-option-id="${optionId}"]`)
                         .removeClass('bg-primary text-white border-primary')
                         .addClass('bg-white text-gray-800 border-gray-300');
@@ -456,10 +453,9 @@
                         modal.find('#variantNotFound').addClass('hidden');
                         modal.find('#variantInfo' + productId).removeClass('hidden');
 
-                        // Update image if present
                         if (currentVariant.image) {
                             const imageUrl = `{{ storage_url('') }}` + currentVariant
-                            .image; // full match with Blade
+                                .image;
                             modal.find('#main-product-image' + productId).attr('src', imageUrl);
 
                             const thumbImg = modal.find(`.thumb-img[data-full="${imageUrl}"]`);

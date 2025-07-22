@@ -841,53 +841,6 @@
             });
         </script>
 
-
-        <script>
-            $(document).ready(function() {
-                function updateSliderThumbnailActive(selectedImageUrl) {
-                    const normalizedUrl = selectedImageUrl.trim().toLowerCase();
-                    $('.swiper-slide').removeClass('swiper-slide-active swiper-slide-thumb-active');
-
-                    $('.swiper-slide').each(function() {
-                        const slide = $(this);
-                        const img = $(this).find('img').attr('src')?.trim().toLowerCase();
-
-                        if (img === selectedImageUrl) {
-                            console.log("variant image match");
-                            slide.addClass('swiper-slide-active swiper-slide-thumb-active');
-                            return false;
-                        }
-                    });
-
-                    console.log($('.swiper-slide-active'))
-
-                    $('.main').removeClass('swiper-slide-active');
-
-                    $('.main').each(function(index) {
-                        const mainSlide = $(this)
-                        const imgSrc = $(this).find('img').attr('src')?.trim().toLowerCase();
-                        if (imgSrc === normalizedUrl) {
-                            mainSlide.addClass('swiper-slide-active');
-                            return false;
-                        }
-                    });
-                }
-
-                const seenAttributes = new Set();
-
-                $('.variantForm .variant-option').each(function() {
-                    const attrId = $(this).data('attribute');
-
-                    if (!seenAttributes.has(attrId)) {
-                        seenAttributes.add(attrId);
-                        $(this).prop('checked', true);
-                    }
-                });
-
-                updateQuantity();
-            });
-        </script>
-
         <script>
             $(document).ready(function() {
                 $('#loadMoreReviews').on('click', function() {
@@ -895,7 +848,6 @@
                     var offset = parseInt($button.data('offset'));
                     var url = $button.data('url');
                     var type = $button.data('type');
-
 
                     $.ajax({
                         url: url,
@@ -936,15 +888,32 @@
                     },
                     beforeSend: function() {
                         button.prop('disabled', true).html(
-                            '<i class="fa fa-spinner fa-spin"></i> Loading...');
+                            '<i class="fa fa-spinner fa-spin"></i> Loading...'
+                        );
                     },
                     success: function(response) {
                         if (response.trim() !== '') {
                             $('#product-wrapper').append(response);
+
                             button.data('page', page);
                             button.prop('disabled', false).html(
                                 '<span>Load More</span> <i class="fa-solid fa-chevron-down text-sm"></i>'
                             );
+
+                            const scriptTags = $(response).filter('script[data-quickview]');
+                            scriptTags.each(function() {
+                                const json = $(this).html();
+                                try {
+                                    const data = JSON.parse(json);
+                                    window.quickViewData = window.quickViewData || {};
+                                    window.quickViewData[data.id] = {
+                                        product: data.product,
+                                        defaultVariant: data.defaultVariant
+                                    };
+                                } catch (e) {
+                                    console.error('Invalid quick view JSON format', e);
+                                }
+                            });
 
                             if (typeof initFlowbite === 'function') {
                                 initFlowbite();
@@ -957,6 +926,7 @@
                             if (typeof initProductSwipers === 'function') {
                                 initProductSwipers();
                             }
+
                         } else {
                             button.hide();
                         }
@@ -969,38 +939,5 @@
             });
         </script>
 
-        <script>
-            const productThumbs = new Swiper(".single-product-thumbnails", {
-                spaceBetween: 10,
-                slidesPerView: 5,
-                watchSlidesProgress: true,
-                direction: "horizontal",
-                spaceBetween: 10,
-                grabCursor: true,
-                breakpoints: {
-                    1024: {
-                        direction: "vertical",
-                        spaceBetween: 5,
-                    },
-                    1280: {
-                        direction: "vertical",
-                        spaceBetween: 10,
-                    },
-                },
-            });
-
-            // Product Images Slider
-            const productSwiper = new Swiper(".single-product-swiper", {
-                spaceBetween: 10,
-                grabCursor: true,
-                navigation: {
-                    nextEl: ".swiper-button-next",
-                    prevEl: ".swiper-button-prev",
-                },
-                thumbs: {
-                    swiper: productThumbs,
-                },
-            });
-        </script>
     @endpush
 @endsection
