@@ -11,6 +11,7 @@ use App\Models\OrderItem;
 use App\Models\Payment;
 use App\Models\PaymentGateway;
 use App\Models\Product;
+use App\Models\ProductVariant;
 use App\Models\Review;
 use App\Models\ReviewImage;
 use App\Models\Seller;
@@ -34,7 +35,7 @@ class OrderController extends Controller
             $query->where('status', $statusValue);
         }
 
-        $orders = $query->paginate(10);
+        $orders = $query->get();
 
         $interest_products = Product::with([
             'category',
@@ -114,13 +115,6 @@ class OrderController extends Controller
                 'sub_total'          => $itemTotal,
             ];
 
-            if ($variant) {
-                $variant->decrement('stock_in', $cartItem->quantity);
-                $variant->increment('stock_out', $cartItem->quantity);
-            } else {
-                $product->decrement('stock_in', $cartItem->quantity);
-                $product->increment('stock_out', $cartItem->quantity);
-            }
         }
 
         if ($request->isMethod('GET')) {
@@ -143,6 +137,8 @@ class OrderController extends Controller
         }
 
         $payableAmount = $sub_total + $shipping_fee + $tax;
+
+        $sellerEarning = $payableAmount - $total_commission;
         $invoiceId     = uniqid('SM');
 
         $order = Order::create([
@@ -162,12 +158,28 @@ class OrderController extends Controller
             'due'               => $sub_total + $shipping_fee + $tax,
             'commission_type'   => $seller->commission_type,
             'commission_amount' => $seller->commission_amount,
+            'seller_earnings'   => $sellerEarning,
             'total_commission'  => $total_commission,
             'status'            => OrderStatus::PENDING->value,
             'delivery_status'   => OrderStatus::ORDER_PLACED->value,
         ]);
 
         $order->items()->createMany($orderItems);
+
+        foreach ($order->items as $item) {
+            $product = optional(Product::find($item['product_id']));
+            if (isset($item['product_variant_id'])) {
+                $variant = optional(ProductVariant::find($item['product_variant_id']));
+
+                if ($variant) {
+                    $variant->increment('stock_out', $item['quantity']);
+                }
+            } else {
+                if ($product) {
+                    $product->increment('stock_out', $item['quantity']);
+                }
+            }
+        }
 
         $cart->cart_items()->delete();
         $cart->delete();
@@ -260,7 +272,7 @@ class OrderController extends Controller
 
     public function success($invoice_id)
     {
-        $order = Order::where('invoice_id',$invoice_id)->first();
+        $order = Order::where('invoice_id', $invoice_id)->first();
         return view('frontend.orders.success', compact('order'));
     }
 

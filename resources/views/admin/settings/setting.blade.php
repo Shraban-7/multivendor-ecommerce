@@ -24,6 +24,12 @@
                             <label class="form-label">Favicon</label>
                             <input type="file" name="favicon" class="form-control mt-2" accept="image/*">
                         </div>
+                        <div class="mb-3 col-12">
+                            <label class="form-label">Footer Text</label>
+                            <textarea name="footer_text" class="form-control" id="">{{ old('footer_text',$setting->footer_text) }}</textarea>
+                        </div>
+
+
 
                         <div class="mb-3 col-12">
                             <label class="form-label">Logo</label>

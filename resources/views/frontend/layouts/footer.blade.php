@@ -44,7 +44,7 @@
             <img src="{{ storage_url($settings->logo_white) }}" alt="Tesko Logo" class="w-full h-auto object-contain" />
           </a>
           <p class="text-black/60 mb-4">
-            We have clothes that suit your style and which you're proud to wear. From women to men.
+            {{ $settings->footer_text }}
           </p>
           <div class="flex gap-2">
             @foreach (social_links() as $socialLink)
@@ -103,7 +103,7 @@
       <!-- Footer Bottom -->
       <div class="flex flex-col sm:flex-row justify-between items-center pt-5 border-t border-black/10">
         <p class="text-black/60 text-center sm:text-left mb-4 sm:mb-0">
-          Tesko © 2020-<span id="current-year"></span>, All Rights Reserved
+          {{ $settings->app_name }} © 2020-<span id="current-year"></span>, All Rights Reserved
         </p>
         <div class="flex gap-2">
           @foreach (payment_options() as $option)

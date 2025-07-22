@@ -338,19 +338,33 @@
                                 '<span>Load More</span> <i class="fa-solid fa-chevron-down text-sm"></i>'
                             );
 
-                            if (typeof initFlowbite === 'function') {
-                                initFlowbite();
-                            }
+                            // ✅ Parse and register new quick view data from JSON script tags
+                            const scriptTags = $(response).filter('script[data-quickview]');
+                            scriptTags.each(function() {
+                                const json = $(this).html();
+                                try {
+                                    const data = JSON.parse(json);
+                                    window.quickViewData = window.quickViewData || {};
+                                    window.quickViewData[data.id] = {
+                                        product: data.product,
+                                        defaultVariant: data.defaultVariant
+                                    };
+                                } catch (e) {
+                                    console.error('Invalid QuickView JSON for product modal', e);
+                                }
+                            });
 
+                            // ✅ Re-initialize QuickView modal JS for new elements
                             if (typeof initQuickViewModals === 'function') {
                                 initQuickViewModals();
                             }
 
-                            if (typeof initProductSwipers === 'function') {
-                                initProductSwipers();
+                            // (Optional) Re-init other components (e.g., tooltips, sliders)
+                            if (typeof initFlowbite === 'function') {
+                                initFlowbite();
                             }
                         } else {
-                            button.hide();
+                            button.hide(); // No more products
                         }
                     },
                     error: function() {

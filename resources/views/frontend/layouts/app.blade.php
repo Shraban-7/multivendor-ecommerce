@@ -152,8 +152,6 @@ $settings = settings();
                     selectedOptionIds.push($(this).val());
                 });
 
-
-
                 if (!product_id) {
                     alert("No Product Selected!");
                     return;

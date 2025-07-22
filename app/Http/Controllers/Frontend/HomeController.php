@@ -44,14 +44,16 @@ class HomeController extends Controller
             ->take(3)
             ->get();
 
-        $data['community_products'] = Product::community()
+        $community_products = Product::community()
             ->with('unit')
             ->withAvg('reviews', 'rating')
             ->withCount('reviews')
             ->take(8)
             ->get();
 
-        $data['new_arrival_products'] = Product::with('unit')
+        $data['community_products'] = $community_products->map(fn($product) => $product->toDetailsArray());
+
+         $new_arrival_products = Product::with('unit')
             ->withAvg('reviews', 'rating')
             ->where('is_featured', 0)
             ->withCount('reviews')
@@ -59,6 +61,8 @@ class HomeController extends Controller
             ->skip(6)
             ->take(Product::count() - 12)
             ->get();
+
+        $data['new_arrival_products'] = $new_arrival_products->map(fn($product) => $product->toDetailsArray());
 
         $data['hero_grid_one']   = HeroBanner::where('position', 1)->first();
         $data['hero_grid_two']   = HeroBanner::where('position', 2)->first();

@@ -58,10 +58,10 @@
 
                                 @if ($seller->campaigns && $seller->campaigns->where('end_date', '>=', now())->count())
                                     @foreach ($seller->campaigns as $campaign)
-                                    <a href="{{ route('campaigns.campaign_products', $campaign->slug) }}"
-                                        class="bg-primary text-white text-xs px-3 py-1.5 rounded-lg hover:bg-primary-dark transition">
-                                        {{ $campaign->title }}
-                                    </a>
+                                        <a href="{{ route('campaigns.campaign_products', $campaign->slug) }}"
+                                            class="bg-primary text-white text-xs px-3 py-1.5 rounded-lg hover:bg-primary-dark transition">
+                                            {{ $campaign->title }}
+                                        </a>
                                     @endforeach
                                 @endif
                             </div>
@@ -277,15 +277,32 @@
                     },
                     beforeSend: function() {
                         button.prop('disabled', true).html(
-                            '<i class="fa fa-spinner fa-spin"></i> Loading...');
+                            '<i class="fa fa-spinner fa-spin"></i> Loading...'
+                        );
                     },
                     success: function(response) {
                         if (response.trim() !== '') {
                             $('#product-list').append(response);
+
                             button.data('page', page);
                             button.prop('disabled', false).html(
                                 '<span>Load More</span> <i class="fa-solid fa-chevron-down text-sm"></i>'
                             );
+
+                            const scriptTags = $(response).filter('script[data-quickview]');
+                            scriptTags.each(function() {
+                                const json = $(this).html();
+                                try {
+                                    const data = JSON.parse(json);
+                                    window.quickViewData = window.quickViewData || {};
+                                    window.quickViewData[data.id] = {
+                                        product: data.product,
+                                        defaultVariant: data.defaultVariant
+                                    };
+                                } catch (e) {
+                                    console.error('Invalid quickview JSON format:', e);
+                                }
+                            });
 
                             if (typeof initFlowbite === 'function') {
                                 initFlowbite();
