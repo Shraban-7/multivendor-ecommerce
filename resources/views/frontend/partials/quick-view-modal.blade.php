@@ -1,12 +1,12 @@
 <div id="quick-view-modal-{{ $product['id'] }}" tabindex="-1"
     class="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full hidden"
-    aria-hidden="true">
+    aria-hidden="true" inert>
     <div class="relative container max-h-full">
         <!-- Modal content -->
         <div class="relative shadow-lg bg-white rounded-2xl md:rounded-3xl">
             <!-- Modal Close Triger -->
             <button type="button"
-                class="text-white bg-theme-dark hover:bg-theme-dark/80 rounded-full lg:w-10 lg:h-10 w-7 h-7 inline-flex justify-center items-center md:text-2xl text-lg absolute right-4 top-4 z-10"
+                class="close-modal-btn text-white bg-theme-dark hover:bg-theme-dark/80 rounded-full lg:w-10 lg:h-10 w-7 h-7 inline-flex justify-center items-center md:text-2xl text-lg absolute right-4 top-4 z-10"
                 data-modal-hide="quick-view-modal-{{ $product['id'] }}">
                 <i class="fas fa-x"></i>
                 <!-- <i class="fa-solid fa-xmark"></i> Font Awesome fontawesome.com -->
@@ -76,7 +76,8 @@
                                         <a href="{{ route('sellers.shop', $product['seller']['username']) }}"
                                             class="inline-block provider-icon w-10 h-10 overflow-hidden rounded-full">
                                             <img src="{{ storage_url($product['seller']['business_logo']) }}"
-                                                alt="Louis Vuitton" class="h-full w-full object-contain">
+                                                alt="{{ $product['seller']['business_name'] }}"
+                                                class="h-full w-full object-contain">
                                         </a>
                                         <a href="{{ route('sellers.shop', $product['seller']['username']) }}"
                                             class="inline-block ">
@@ -197,7 +198,7 @@
                             </div>
 
                             @if (count($product['variants']) > 0)
-                                <div id="variantNotFound"
+                                <div id="variantNotFound{{ $product['id'] }}"
                                     class="hidden mt-4 p-4 rounded-md bg-red-100 text-red-700 text-sm font-medium">
                                     Variant not found for selected options.
                                 </div>
@@ -205,14 +206,8 @@
                         </div>
                         <div
                             class="user-action rounded-lg border-primary border-2 overflow-hidden mt-5 w-full xsm:w-4/5 md:w-11/12 lg:w-4/5">
-                            <!-- Special Sale Banner -->
-                            <div
-                                class="bg-primary text-sm md:text-base text-white px-4 py-1 flex justify-between items-center">
-                                <span>Special Sale | Two Days Left</span>
-                                <i class="fas fa-arrow-right"></i>
-                            </div>
                             <div class="px-4 py-2 clr-size-qty">
-                                <div id="product-attributes">
+                                <div id="product-attributes{{ $product['id'] }}">
                                     <input type="hidden" id="productBasePrice{{ $product['id'] }}"
                                         value="{{ $product['price'] }}">
                                     <input type="hidden" id="productDiscountedPrice{{ $product['id'] }}"
@@ -232,14 +227,15 @@
                                         @endphp
 
                                         @foreach ($product['options'] as $option)
-                                            <div class="mb-6" data-option-id="{{ $option['id'] }}">
-                                                <h6 class="text-davy-gray text-base sm:text-lg font-medium mb-2">
-                                                    {{ $option['name'] }}:</h6>
+                                            <div class="mb-4 flex gap-1 items-center"
+                                                data-option-id="{{ $option['id'] }}">
+                                                <strong class="text-gray-700 text-base">
+                                                    {{ $option['name'] }} :</strong>
                                                 <div class="flex flex-wrap gap-3">
                                                     @foreach ($option['values'] as $value)
                                                         @php $isActive = in_array($value['id'], $defaultValueIds); @endphp
                                                         <button type="button"
-                                                            class="option-value-btn px-4 py-2 text-sm border rounded-md transition-all duration-200
+                                                            class="option-value-btn-modal px-4 py-2 text-sm border rounded-md transition-all duration-200
                                                             {{ $isActive ? 'bg-primary text-white border-primary' : 'bg-white text-gray-800 border-gray-300 hover:bg-primary/90' }}"
                                                             data-option-id="{{ $option['id'] }}"
                                                             data-value-id="{{ $value['id'] }}">
@@ -284,9 +280,9 @@
 
                             <input type="hidden" id="variantSku{{ $product['id'] }}" value="">
 
-                            @if ($product['in_stock'] > 0)
+                            @if ($product['stock'] > 0 || $product['variants']['stock'] > 0)
                                 <button data-id="{{ $product['id'] }}" data-modal="{{ true }}"
-                                    type="button"
+                                    type="button" id="addToCartBtn{{ $product['id'] }}"
                                     class="cartBtn text-sm md:text-base font-medium flex-1 px-6 py-2 border border-primary text-primary rounded-full hover:bg-primary hover:text-white transition-all">
                                     Add To Cart
                                 </button>
@@ -413,13 +409,13 @@
                         const optionId = valueToOptionMap[valueId];
                         selectedOptions[optionId] = valueId;
 
-                        modal.find(`.option-value-btn[data-option-id="${optionId}"]`).removeClass(
+                        modal.find(`.option-value-btn-modal[data-option-id="${optionId}"]`).removeClass(
                                 'bg-primary text-white border-primary')
                             .addClass('bg-white text-gray-800 border-gray-300');
 
                         modal.find(
-                                `.option-value-btn[data-option-id="${optionId}"][data-value-id="${valueId}"]`
-                                )
+                                `.option-value-btn-modal[data-option-id="${optionId}"][data-value-id="${valueId}"]`
+                            )
                             .addClass('bg-primary text-white border-primary')
                             .removeClass('bg-white text-gray-800 border-gray-300');
                     });
@@ -427,12 +423,12 @@
 
                 updateQuantity();
 
-                modal.find('.option-value-btn').on('click', function() {
+                modal.find('.option-value-btn-modal').on('click', function() {
                     const optionId = $(this).data('option-id');
                     const valueId = $(this).data('value-id');
                     selectedOptions[optionId] = valueId;
 
-                    modal.find(`.option-value-btn[data-option-id="${optionId}"]`)
+                    modal.find(`.option-value-btn-modal[data-option-id="${optionId}"]`)
                         .removeClass('bg-primary text-white border-primary')
                         .addClass('bg-white text-gray-800 border-gray-300');
 
@@ -450,8 +446,10 @@
                             ...matchingVariant
                         };
                         variantSku.val(currentVariant.sku);
-                        modal.find('#variantNotFound').addClass('hidden');
+                        modal.find('#variantNotFound' + productId).addClass('hidden');
                         modal.find('#variantInfo' + productId).removeClass('hidden');
+                        $('#addToCartBtn' + productId).prop('disabled', false).removeClass(
+                            'opacity-50 cursor-not-allowed');
 
                         if (currentVariant.image) {
                             const imageUrl = `{{ storage_url('') }}` + currentVariant.image;
@@ -470,6 +468,7 @@
                         }
 
                         updateQuantity();
+
                     } else {
                         currentVariant = null;
                         variantSku.val('');
@@ -478,7 +477,9 @@
                         modal.find('#discounted_price' + productId).text('৳ 0.00');
                         modal.find('#stock' + productId).text('0');
                         modal.find('#variantInfo' + productId).addClass('hidden');
-                        modal.find('#variantNotFound').removeClass('hidden');
+                        modal.find('#variantNotFound' + productId).removeClass('hidden');
+                        $('#addToCartBtn' + productId).prop('disabled', true).addClass(
+                            'opacity-50 cursor-not-allowed');
                     }
                 });
 
@@ -494,8 +495,10 @@
                     variantSku.val(currentVariant.sku);
                     modal.find('#sku' + productId).text(currentVariant.sku);
                     modal.find('#stock' + productId).text(currentVariant.stock);
-                    modal.find('#variantNotFound').addClass('hidden');
+                    modal.find('#variantNotFound' + productId).addClass('hidden');
                     modal.find('#variantInfo' + productId).removeClass('hidden');
+                    $('#addToCartBtn' + productId).prop('disabled', false).removeClass(
+                        'opacity-50 cursor-not-allowed');
 
                     const basePrice = parseFloat(currentVariant.price);
                     const baseDiscountedPrice = currentVariant.discounted_price !== null ? parseFloat(currentVariant
@@ -517,13 +520,40 @@
                         const imageUrl = `{{ storage_url('') }}` + currentVariant.image;
                         modal.find('#main-product-image' + productId).attr('src', imageUrl);
                     }
+                } else {
+                    $('#addToCartBtn' + productId).prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
                 }
             });
         }
 
-
         $(document).ready(function() {
             initQuickViewModals();
+        });
+
+        function openModal(modal) {
+            modal.removeAttribute('inert');
+            modal.setAttribute('aria-hidden', 'false');
+            modal.classList.remove('hidden');
+            const closeBtn = modal.querySelector('[data-modal-hide]');
+            closeBtn?.focus();
+        }
+
+        function closeModal(modal) {
+            modal.setAttribute('inert', '');
+            modal.setAttribute('aria-hidden', 'true');
+            modal.classList.add('hidden');
+        }
+
+        $(document).on('click', '[data-modal-toggle]', function() {
+            const id = $(this).data('modal-target') || $(this).data('modal-toggle');
+            const modal = document.getElementById(id);
+            if (modal) openModal(modal);
+        });
+
+        $(document).on('click', '[data-modal-hide]', function() {
+            const id = $(this).data('modal-hide');
+            const modal = document.getElementById(id);
+            if (modal) closeModal(modal);
         });
     </script>
 @endpush
