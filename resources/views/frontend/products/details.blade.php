@@ -49,265 +49,7 @@
         <section class="product-main-sec">
             <div class="container">
                 <!-- Product Contents  -->
-                <div class="flex flex-col gap-5 md:flex-row" id="product-details-wrapper">
-                    <!-- Product Images Section -->
-                    <div class="lg:w-[55%] md:w-[50%] w-full flex flex-col lg:flex-row gap-3 lg:gap-5">
-                        <!-- Thumbnails -->
-                        <div class="order-2 w-full lg:w-1/6 lg:order-1">
-                            <div id="thumbnailWrapper"
-                                class="single-product-thumbnails flex flex-col space-y-3 max-h-[21rem] overflow-y-auto sm:max-h-none sm:overflow-y-visible lg:h-[41rem] lg:overflow-hidden">
-                                @foreach ($product['slider'] as $index => $img)
-                                    <div
-                                        class="slide-thumb w-full h-20 lg:h-28 xl:h-24 rounded-2xl cursor-pointer border-2 overflow-hidden {{ $index === 0 ? 'border-primary' : 'border-transparent' }}">
-                                        <img src="{{ storage_url($img) }}" alt="{{ $product['name'] ?? 'Product Image' }}"
-                                            class="w-full h-full object-cover thumb-img"
-                                            data-full="{{ storage_url($img) }}" />
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-
-                        <!-- Main Image -->
-                        <div class="relative order-1 w-full lg:w-5/6 lg:order-2">
-                            <div
-                                class="overflow-hidden w-full h-96 md:h-[37rem] xl:h-[37rem] lg:h-[41rem] rounded-2xl relative">
-                                <img id="main-product-image" src="{{ storage_url($product['slider'][0] ?? '') }}"
-                                    alt="{{ $product['name'] ?? 'Product Image' }}"
-                                    class="w-full h-full object-cover rounded-2xl transition-all duration-300" />
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <!-- Product Details Section -->
-                    <div class="lg:w-[45%] md:w-[50%] w-full md:px-2 xl:px-3">
-                        <div class="w-full space-y-2">
-                            <!-- Free Shipping Banner -->
-                            <div
-                                class="flex flex-col xsm:flex-row flex-wrap items-center justify-between gap-2 px-4 py-3 text-sm lg:text-base bg-[#FEEFE1] text-rustic-red">
-                                <div class="flex items-center gap-2 text-center">
-                                    <i class="fa-solid fa-check text-theme-teal"></i>
-                                    <span>Free shipping special for you</span>
-                                </div>
-                                <span class="font-light text-jet-gray">Exclusive offer</span>
-                            </div>
-                            <h1 class="text-sm lg:text-base text-rustic-red lg:pr-5 xl:pr-16">
-                                {{ $product['name'] }}
-                            </h1>
-                            <div class="flex flex-wrap items-center gap-2 text-sm xsm:gap-5 sm:10 md:gap-2 lg:gap-10">
-                                <div class="flex items-center gap-2">
-                                    <div class="flex items-center gap-2 text-davy-gray">
-                                        <span>Seller: </span>
-                                        <a href="{{ route('sellers.shop', $seller['username']) }}" class="inline-block">
-                                            <span class="text-blue-500 font-bold">{{ $seller['shop_name'] }}</span>
-                                        </a>
-                                        <span class="border-r border-gray-400 h-4"></span>
-
-                                        @if ($product['sold_out'] > 0)
-                                            <span class="pl-2 text-jet-gray">
-                                                {{ number_shorten_format($product['sold_out']) }} sold
-                                            </span>
-                                        @endif
-                                    </div>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span class="text-xs">{{ $product['rating'] }} Star</span>
-                                    <span class="flex text-yellow-400 text-sm">
-                                        @for ($i = 1; $i <= 5; $i++)
-                                            @if ($i <= floor($product['rating']))
-                                                ★
-                                            @elseif ($i - $product['rating'] < 1)
-                                                <span class="relative -mx-0.5">★<span
-                                                        class="absolute inset-0 overflow-hidden"
-                                                        style="width: 50%">★</span></span>
-                                            @else
-                                                <span class="text-gray-300">★</span>
-                                            @endif
-                                        @endfor
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div class="flex items-center gap-2">
-                                @if ($product['seller']['best_seller'])
-                                    <span class="bg-leaf-green text-white text-xs px-2.5 py-1 rounded-full">Best
-                                        Seller</span>
-                                @endif
-
-                            </div>
-
-                            <div class="flex flex-wrap items-center gap-4">
-                                @php
-                                    $hasVariants =
-                                        isset($product['variants']) &&
-                                        is_array($product['variants']) &&
-                                        count($product['variants']) > 0;
-
-                                    $defaultVariant = $product['defaultVariant'] ?? null;
-
-                                    $variantDiscountedPrice = $defaultVariant['discounted_price'] ?? null;
-                                    $variantPrice = $defaultVariant['selling_price'] ?? null;
-
-                                    $showVariantDiscount =
-                                        $variantDiscountedPrice !== null && $variantDiscountedPrice < $variantPrice;
-                                    $showProductDiscount =
-                                        $product['discounted_price'] !== null &&
-                                        $product['discounted_price'] < $product['price'];
-                                @endphp
-
-
-                                <div class="flex flex-wrap items-center gap-2">
-                                    @if ($showVariantDiscount)
-                                        <div class="flex items-center gap-1">
-                                            <h3 id="discounted_price" class="font-bold text-primary text-lg product-price">
-                                                {{ money($variantDiscountedPrice) }}
-                                            </h3>
-                                            <h6 id="price" class="text-jet-gray line-through text-sm">
-                                                {{ money($variantPrice) }}
-                                            </h6>
-                                        </div>
-                                    @elseif ($showProductDiscount)
-                                        <div class="flex items-center gap-1">
-                                            <h3 id="discounted_price" class="font-bold text-primary text-lg product-price">
-                                                {{ money($product['discounted_price']) }}
-                                            </h3>
-                                            <h6 id="price" class="text-jet-gray line-through text-sm">
-                                                {{ money($product['price']) }}
-                                            </h6>
-                                        </div>
-                                    @elseif($variantPrice)
-                                        <div class="flex items-center gap-1">
-                                            <h3 id="price" class="font-bold text-primary text-lg product-price">
-                                                {{ money($variantPrice) }}
-                                            </h3>
-                                        </div>
-                                    @else
-                                        <div class="flex items-center gap-1">
-                                            <h3 id="price" class="font-bold text-primary text-lg product-price">
-                                                {{ money($product['price']) }}
-                                            </h3>
-                                        </div>
-                                    @endif
-
-                                    @if ($product['almost_sold_out'])
-                                        <span class="text-xs text-leaf-green">Almost Sold Out</span>
-                                    @endif
-                                </div>
-
-                                <div id="variantInfo" class="flex flex-wrap items-center gap-3 text-sm text-gray-700">
-                                    <div>
-                                        <strong>SKU:</strong> <span
-                                            id="sku">{{ $firstVariant['sku'] ?? $product['sku'] }}</span>
-                                    </div>
-                                    <div>
-                                        <strong>Stock:</strong> <span
-                                            id="stock">{{ $firstVariant['stock'] ?? $product['stock'] }}</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            @if (count($product['variants']) > 0)
-                                <div id="variantNotFound"
-                                    class="hidden mt-4 p-4 rounded-md bg-red-100 text-red-700 text-sm font-medium">
-                                    Variant not found for selected options.
-                                </div>
-                            @endif
-                        </div>
-
-                        <div
-                            class="w-full mt-5 overflow-hidden border-2 rounded-lg user-action border-primary xsm:w-4/5 md:w-11/12 lg:w-4/5">
-                            <div class="px-4 py-2 clr-size-qty">
-                                <div id="product-attributes">
-                                    <input type="hidden" id="productBasePrice" value="{{ $product['price'] }}">
-                                    <input type="hidden" id="productDiscountedPrice"
-                                        value="{{ $product['discounted_price'] }}">
-
-                                    <!-- Variant Form -->
-                                    <form id="variantForm" data-slug="{{ $product['slug'] ?? '' }}"
-                                        class="flex flex-wrap flex-col" data-id="{{ $product['id'] ?? '' }}">
-
-                                        @php
-                                            $defaultVariant = collect($product['variants'])->firstWhere(
-                                                'is_default',
-                                                1,
-                                            );
-                                            $defaultValueIds = $defaultVariant['value_ids'] ?? [];
-                                        @endphp
-
-                                        @foreach ($product['options'] as $option)
-                                            <div class="mb-4 flex gap-1 items-center"
-                                                data-option-id="{{ $option['id'] }}">
-                                                <strong class="text-gray-700 text-base">
-                                                    {{ $option['name'] }} :</strong>
-                                                <div class="flex flex-wrap gap-2">
-                                                    @foreach ($option['values'] as $value)
-                                                        @php $isActive = in_array($value['id'], $defaultValueIds); @endphp
-                                                        <button type="button"
-                                                            class="option-value-btn px-4 py-2 text-sm border rounded-md transition-all duration-200
-                                                            {{ $isActive ? 'bg-primary text-white border-primary' : 'bg-white text-gray-800 border-gray-300 hover:bg-primary/90' }}"
-                                                            data-option-id="{{ $option['id'] }}"
-                                                            data-value-id="{{ $value['id'] }}">
-                                                            {{ $value['value'] }}
-                                                        </button>
-                                                    @endforeach
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </form>
-
-                                </div>
-
-                                <!-- Quantity -->
-                                <div class="quantity mt-3">
-                                    <div class="text-davy-gray flex items-center gap-2">
-                                        <h6 class="sm:text-lg">Quantity :</h6>
-                                        <div class="flex items-center border border-jet-gray/30 rounded p-1">
-                                            <button id="decreaseBtn"
-                                                class="w-5 h-5 flex items-center justify-center text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 eq active:text-primary rounded text-sm font-bold">
-                                                <i class="fa-solid fa-minus"></i>
-                                            </button>
-                                            <input readonly id="quantity" type="number" min="1"
-                                                class="text-center text-persian-blue w-16 h-5 text-sm font-medium border-0 focus:ring-0" />
-
-                                            <button id="increaseBtn"
-                                                class="w-5 h-5 flex items-center justify-center text-persian-blue/40 bg-jet-gray/20 hover:bg-jet-gray/40 eq active:text-primary rounded text-sm font-bold">
-                                                <i class="fa-solid fa-plus"></i>
-                                            </button>
-                                        </div>
-                                        <span class="text-davy-gray text-xs">In Stock</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Action Buttons -->
-
-                        <div class="flex flex-wrap w-full gap-3 mt-5 xsm:w-4/5 md:w-11/12 lg:w-4/5">
-                            <input type="hidden" name="quantity" class="qtyInputValue" value=""
-                                id="qtyInput{{ $product['id'] }}">
-
-                            <input type="hidden" id="variantId" name="variant_id" value="">
-
-                            @if ($product['stock'] > 0 || collect($product['variants'])->sum('stock') > 0)
-                                <button data-id="{{ $product['id'] }}" type="button" id="addToCartBtn"
-                                    class="cartBtn text-sm md:text-base font-medium flex-1 px-6 py-2 border border-primary text-primary rounded-full hover:bg-primary hover:text-white transition-all">
-                                    Add To Cart
-                                </button>
-                            @else
-                                <button data-id="{{ $product['id'] }}" type="button"
-                                    class="wishlistBtn text-sm md:text-base font-medium flex-1 px-6 py-2 border border-primary text-primary rounded-full hover:bg-primary hover:text-white transition-all">
-                                    <i class="fa-regular fa-heart"></i>
-                                    <span>Wishlist</span>
-                                </button>
-                            @endif
-
-                            <button data-id="{{ $product['id'] }}" data-seller="{{ $product['seller']['id'] }}"
-                                class="buyNowBtn text-sm md:text-base font-medium flex-1 px-6 py-2 bg-primary text-white rounded-full hover:bg-theme-dark transition-all">
-                                Buy Now
-                                <span class="block text-xs font-light">Faster Dispatch</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <x-frontend.product-contents :product="$product"/>
 
                 <!-- Rating Overview Section -->
                 <div class="flex flex-col items-start gap-5 py-8 md:flex-row md:py-10">
@@ -527,8 +269,7 @@
                 @if ($product['reviews']->count() > 2)
                     <!-- Load More Comment Button -->
                     <div class="pb-10 text-center border-b-2 border-gray-400 border-dashed load-more-btn">
-                        <button id="loadMoreReviews" data-offset="2" data-type="reviews"
-                            data-url="{{ request()->url() }}"
+                        <button id="loadMoreReviews" data-offset="2" data-type="reviews" data-url="{{ request()->url() }}"
                             class="inline-flex items-center gap-2 px-5 py-2 text-base text-white theme-btn bg-theme-teal hover:bg-aqua-deep xl:text-xl md:text-lg eq"
                             type="button">
                             <span>Load More</span>
@@ -630,7 +371,7 @@
     </main>
 
     @push('scripts')
-        <script>
+        {{-- <script>
             $(document).on('click', '.thumb-img', function() {
                 const fullImageUrl = $(this).data('full');
                 $('#main-product-image').attr('src', fullImageUrl);
@@ -639,181 +380,381 @@
             });
 
             const product = @json($product);
+            const productId = product.id;
             const variants = product.variants;
             const defaultVariant = @json($defaultVariant);
             const selectedOptions = {};
             const valueToOptionMap = {};
-            let quantity = 1;
             let currentVariant = defaultVariant;
 
-            const wrapper = $('#product-details-wrapper');
-            const quantityElement = $('#quantity');
-            const decreaseBtn = $('#decreaseBtn');
-            const increaseBtn = $('#increaseBtn');
-            const hiddenInput = $('.qtyInputValue');
-            const addToCartBtn = wrapper.find('#addToCartBtn');
+            function initProductCard(wrapper) {
+                let quantity = 1;
+                const wrapper = $('#product-details-wrapper');
+                const quantityElement = $('#quantity' + productId);
+                const decreaseBtn = $('#decreaseBtn' + productId);
+                const increaseBtn = $('#increaseBtn' + productId);
+                const hiddenInput = $('.qtyInputValue' + productId);
+                const addToCartBtn = wrapper.find('#addToCartBtn' + productId);
 
-            const updateQuantity = () => {
-                quantityElement.val(quantity.toString().padStart(2, "0"));
-                hiddenInput.val(quantity);
+                const updateQuantity = () => {
+                    quantityElement.val(quantity.toString().padStart(1, ""));
+                    hiddenInput.val(quantity);
 
-                if (currentVariant) {
-                    wrapper.find('#variantId').val(currentVariant.id);
+                    if (currentVariant) {
+                        wrapper.find('#variantId' + productId).val(currentVariant.id);
 
-                    const basePrice = Number(currentVariant.price ?? 0);
-                    const discountedPrice = currentVariant.discounted_price !== null ? Number(currentVariant
-                        .discounted_price) : null;
+                        const basePrice = Number(currentVariant.price ?? 0);
+                        const discountedPrice = currentVariant.discounted_price !== null ? Number(currentVariant
+                            .discounted_price) : null;
 
-                    const total = basePrice * quantity;
-                    const totalPrice = Number.isInteger(total) ? total.toString() : total.toFixed(2);
-                    const totalDiscounted = discountedPrice !== null ? discountedPrice * quantity : null;
-                    const totalDiscountedPrice = totalDiscounted !== null ?
-                        (Number.isInteger(totalDiscounted) ? totalDiscounted.toString() : totalDiscounted.toFixed(2)) :
-                        null;
+                        const total = basePrice * quantity;
+                        const totalPrice = Number.isInteger(total) ? total.toString() : total.toFixed(2);
+                        const totalDiscounted = discountedPrice !== null ? discountedPrice * quantity : null;
+                        const totalDiscountedPrice = totalDiscounted !== null ?
+                            (Number.isInteger(totalDiscounted) ? totalDiscounted.toString() : totalDiscounted.toFixed(2)) :
+                            null;
 
-                    wrapper.find('#sku').text(currentVariant.sku);
-                    wrapper.find('#stock').text(currentVariant.stock);
-                    wrapper.find('#availability').text(currentVariant.stock > 0 ? 'In Stock' : 'Out of Stock');
+                        wrapper.find('#sku' + productId).text(currentVariant.sku);
+                        wrapper.find('#stock' + productId).text(currentVariant.stock);
+                        wrapper.find('#availability').text(currentVariant.stock > 0 ? 'In Stock' : 'Out of Stock');
 
-                    if (discountedPrice !== null && discountedPrice > 0) {
-                        wrapper.find('#discounted_price').text(`৳ ${totalDiscountedPrice}`).removeClass('hidden');
-                        wrapper.find('#price').text(`৳ ${totalPrice}`).removeClass('hidden').addClass('line-through');
-                    } else {
-                        wrapper.find('#price').text(`৳ ${totalPrice}`);
-                        wrapper.find('#discounted_price').text(`৳ ${totalPrice}`).removeClass('hidden');
+                        if (discountedPrice !== null && discountedPrice > 0) {
+                            wrapper.find('#discounted_price' + productId).text(`৳ ${totalDiscountedPrice}`).removeClass(
+                                'hidden');
+                            wrapper.find('#price' + productId).text(`৳ ${totalPrice}`).removeClass('hidden').addClass(
+                                'line-through');
+                        } else {
+                            wrapper.find('#price' + productId).text(`৳ ${totalPrice}`);
+                            wrapper.find('#discounted_price' + productId).text(`৳ ${totalPrice}`).removeClass('hidden');
+                        }
                     }
-                }
-            };
+                };
 
-            increaseBtn.on('click', function() {
-                quantity++;
-                updateQuantity();
-            });
-
-            decreaseBtn.on('click', function() {
-                if (quantity > 1) {
-                    quantity--;
+                increaseBtn.on('click', function() {
+                    quantity++;
+                    // console.log(quantity++);
                     updateQuantity();
-                }
-            });
-
-            quantityElement.on('input', function() {
-                const newQuantity = parseInt($(this).val()) || 1;
-                quantity = newQuantity < 1 ? 1 : newQuantity;
-                updateQuantity();
-            });
-
-            product.options.forEach(option => {
-                option.values.forEach(value => {
-                    valueToOptionMap[value.id] = option.id;
                 });
-            });
 
-            if (defaultVariant?.value_ids?.length) {
-                defaultVariant.value_ids.forEach(valueId => {
-                    const optionId = valueToOptionMap[valueId];
-                    if (optionId) {
-                        selectedOptions[optionId] = valueId;
-                        $(`.option-value-btn[data-option-id="${optionId}"]`).removeClass(
-                            'bg-primary text-white border-primary').addClass(
-                            'bg-white text-gray-800 border-gray-300');
-                        $(`.option-value-btn[data-option-id="${optionId}"][data-value-id="${valueId}"]`).removeClass(
-                            'bg-white text-gray-800 border-gray-300').addClass(
-                            'bg-primary text-white border-primary');
+                decreaseBtn.on('click', function() {
+                    if (quantity > 1) {
+                        quantity--;
+                        updateQuantity();
                     }
+                });
+
+                quantityElement.on('input', function() {
+                    const newQuantity = parseInt($(this).val()) || 1;
+                    quantity = newQuantity < 1 ? 1 : newQuantity;
+                    updateQuantity();
+                });
+
+                product.options.forEach(option => {
+                    option.values.forEach(value => {
+                        valueToOptionMap[value.id] = option.id;
+                    });
+                });
+
+                if (defaultVariant?.value_ids?.length) {
+                    defaultVariant.value_ids.forEach(valueId => {
+                        const optionId = valueToOptionMap[valueId];
+                        if (optionId) {
+                            selectedOptions[optionId] = valueId;
+                            $(`.option-value-btn${productId}[data-option-id="${optionId}"]`).removeClass(
+                                'bg-primary/10 text-primary border-primary').addClass(
+                                'bg-white text-gray-800 border-gray-300');
+                            $(`.option-value-btn${productId}[data-option-id="${optionId}"][data-value-id="${valueId}"]`)
+                                .removeClass(
+                                    'bg-white text-gray-800 border-gray-300').addClass(
+                                    'bg-primary/10 text-primary border-primary');
+                        }
+                    });
+                }
+
+                updateQuantity();
+
+                $(document).ready(function() {
+                    $('.option-value-btn' + productId).on('click', function() {
+                        const optionId = $(this).data('option-id');
+                        const valueId = $(this).data('value-id');
+                        selectedOptions[optionId] = valueId;
+
+                        $(`.option-value-btn${productId}[data-option-id="${optionId}"]`).removeClass(
+                            'bg-primary/10 text-primary border-primary').addClass(
+                            'bg-white text-gray-800 border-gray-300');
+                        $(this).removeClass('bg-white text-gray-800 border-gray-300').addClass(
+                            'bg-primary/10 text-primary border-primary');
+
+                        const selectedIds = Object.values(selectedOptions).map(Number).sort();
+                        const matchingVariant = variants.find(variant => {
+                            const sorted = variant.value_ids.slice().sort();
+                            return JSON.stringify(sorted) === JSON.stringify(selectedIds);
+                        });
+
+                        if (matchingVariant) {
+                            currentVariant = matchingVariant;
+
+                            if (matchingVariant.image) {
+                                const imageUrl = `/storage/${matchingVariant.image}`;
+                                wrapper.find('#main-product-image').attr('src', imageUrl);
+                                wrapper.find('.slide-thumb').removeClass('border-primary').addClass(
+                                    'border-transparent');
+                                wrapper.find(`.thumb-img[data-full="${imageUrl}"]`).closest('.slide-thumb')
+                                    .addClass('border-primary').removeClass('border-transparent');
+                            }
+
+                            wrapper.find('#variantId' + productId).val(currentVariant.id);
+                            wrapper.find('#sku' + productId).text(currentVariant.sku);
+                            wrapper.find('#stock' + productId).text(currentVariant.stock);
+                            const basePrice = parseFloat(currentVariant.price) || 0;
+                            const baseDiscountedPrice = currentVariant.discounted_price !== null ? parseFloat(
+                                currentVariant.discounted_price) : null;
+
+                            const rawTotalPrice = basePrice * quantity;
+                            const totalPrice = Number.isInteger(rawTotalPrice) ? rawTotalPrice.toString() :
+                                rawTotalPrice.toFixed(2);
+
+                            const rawTotalDiscountedPrice = baseDiscountedPrice !== null ? baseDiscountedPrice *
+                                quantity : rawTotalPrice;
+                            const totalDiscountedPrice = Number.isInteger(rawTotalDiscountedPrice) ?
+                                rawTotalDiscountedPrice.toString() : rawTotalDiscountedPrice.toFixed(2);
+
+                            if (baseDiscountedPrice && baseDiscountedPrice > 0) {
+                                wrapper.find('#discounted_price' + productId).text(`৳ ${totalDiscountedPrice}`)
+                                    .removeClass(
+                                        'hidden');
+                                wrapper.find('#price' + productId).text(`৳ ${totalPrice}`).removeClass('hidden')
+                                    .addClass(
+                                        'line-through');
+                            } else {
+                                wrapper.find('#price' + productId).text(`৳ ${totalPrice}`).removeClass(
+                                    'line-through');
+                                wrapper.find('#discounted_price' + productId).text(`৳ ${totalPrice}`)
+                                    .removeClass(
+                                        'hidden');
+                            }
+
+                            wrapper.find('#availability' + productId).text(currentVariant.stock > 0 ?
+                                'In Stock' :
+                                'Out of Stock');
+                            wrapper.find('#variantInfo' + productId).removeClass('hidden');
+                            wrapper.find('#variantNotFound' + productId).addClass('hidden');
+                            addToCartBtn.prop('disabled', false).removeClass('opacity-50 cursor-not-allowed');
+                        } else {
+                            currentVariant = null;
+                            wrapper.find('#variantId' + productId).val('');
+                            wrapper.find('#sku' + productId).text('N/A');
+                            wrapper.find('#stock' + productId).text('0');
+                            wrapper.find('#price' + productId).text('৳ 0.00').removeClass('line-through');
+                            wrapper.find('#discounted_price' + productId).text('৳ 0.00');
+                            wrapper.find('#availability' + productId).text('Not Available');
+
+                            let allThumbs = '';
+                            product.slider.forEach((img, i) => {
+                                const full = `/storage/${img}`;
+                                const border = i === 0 ? 'border-primary' : 'border-transparent';
+                                allThumbs += `<div class="slide-thumb w-full xl:h-24 md:h-22 lg:h-28 h-20 rounded-2xl cursor-pointer border-2 ${border} overflow-hidden">
+                        <img src="${full}" class="w-full h-full object-cover thumb-img" data-full="${full}" />
+                    </div>`;
+                            });
+                            wrapper.find('#thumbnailWrapper').html(allThumbs);
+                            wrapper.find('#main-product-image').attr('src',
+                                `/storage/${product.slider[0] ?? ''}`);
+
+                            wrapper.find('#variantInfo' + productId).addClass('hidden');
+                            wrapper.find('#variantNotFound' + productId).removeClass('hidden');
+                            addToCartBtn.prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
+                        }
+                    });
                 });
             }
 
-            updateQuantity();
 
-            $(document).ready(function() {
-                $('.option-value-btn').on('click', function() {
-                    const optionId = $(this).data('option-id');
-                    const valueId = $(this).data('value-id');
-                    selectedOptions[optionId] = valueId;
+        </script> --}}
 
-                    $(`.option-value-btn[data-option-id="${optionId}"]`).removeClass(
-                        'bg-primary text-white border-primary').addClass(
-                        'bg-white text-gray-800 border-gray-300');
-                    $(this).removeClass('bg-white text-gray-800 border-gray-300').addClass(
-                        'bg-primary text-white border-primary');
+        {{-- <script>
+            window.products = window.products || {};
+            window.products[{{ $product['id'] }}] = @json($product);
+        </script>
 
-                    const selectedIds = Object.values(selectedOptions).map(Number).sort();
-                    const matchingVariant = variants.find(variant => {
-                        const sorted = variant.value_ids.slice().sort();
-                        return JSON.stringify(sorted) === JSON.stringify(selectedIds);
+        <script>
+            $(function() {
+                $("[id^='product-wrapper']").each(function() {
+                    const $wrapper = $(this);
+                    const productId = $wrapper.data("id");
+                    const product = $wrapper.data("product") || (window.products?.[productId]);
+
+                    if (!product) return;
+
+                    const variants = product.variants || [];
+                    const defaultVariant = product.defaultVariant || {};
+                    const slider = product.slider || [];
+                    const options = product.options || [];
+
+                    let selectedOptions = {};
+                    let currentVariant = defaultVariant;
+                    let quantity = 1;
+
+                    const $mainImage = $wrapper.find(".main-product-image");
+                    const $thumbWrapper = $wrapper.find("#thumbnailWrapper");
+                    const $priceEl = $wrapper.find(`#price${productId}`);
+                    const $discountedPriceEl = $wrapper.find(`#discounted_price${productId}`);
+                    const $skuEl = $wrapper.find(`#sku${productId}`);
+                    const $stockEl = $wrapper.find(`#stock${productId}`);
+                    const $availability = $wrapper.find(`#availability${productId}`);
+                    const $variantInfo = $wrapper.find(`#variantInfo${productId}`);
+                    const $variantError = $wrapper.find(`#variantNotFound${productId}`);
+                    const $addToCartBtn = $wrapper.find(`#addToCartBtn${productId}`);
+                    const $variantIdInput = $wrapper.find(`#variantId${productId}`);
+                    const $qtyInput = $wrapper.find(`.qtyInputValue${productId}`);
+                    const $increaseBtn = $wrapper.find(`#increaseBtn${productId}`);
+                    const $decreaseBtn = $wrapper.find(`#decreaseBtn${productId}`);
+                    const $quantityInput = $wrapper.find(`#quantity${productId}`);
+                    const $optionBtns = $wrapper.find(`.option-value-btn${productId}`);
+
+                    // Build value-to-option map
+                    const valueToOptionMap = {};
+                    options.forEach(opt => {
+                        opt.values.forEach(val => {
+                            valueToOptionMap[val.id] = opt.id;
+                        });
                     });
 
-                    if (matchingVariant) {
-                        currentVariant = matchingVariant;
-
-                        if (matchingVariant.image) {
-                            const imageUrl = `/storage/${matchingVariant.image}`;
-                            wrapper.find('#main-product-image').attr('src', imageUrl);
-                            wrapper.find('.slide-thumb').removeClass('border-primary').addClass(
-                                'border-transparent');
-                            wrapper.find(`.thumb-img[data-full="${imageUrl}"]`).closest('.slide-thumb')
-                                .addClass('border-primary').removeClass('border-transparent');
-                        }
-
-                        wrapper.find('#variantId').val(currentVariant.id);
-                        wrapper.find('#sku').text(currentVariant.sku);
-                        wrapper.find('#stock').text(currentVariant.stock);
-                        const basePrice = parseFloat(currentVariant.price) || 0;
-                        const baseDiscountedPrice = currentVariant.discounted_price !== null ? parseFloat(
-                            currentVariant.discounted_price) : null;
-
-                        const rawTotalPrice = basePrice * quantity;
-                        const totalPrice = Number.isInteger(rawTotalPrice) ? rawTotalPrice.toString() :
-                            rawTotalPrice.toFixed(2);
-
-                        const rawTotalDiscountedPrice = baseDiscountedPrice !== null ? baseDiscountedPrice *
-                            quantity : rawTotalPrice;
-                        const totalDiscountedPrice = Number.isInteger(rawTotalDiscountedPrice) ?
-                            rawTotalDiscountedPrice.toString() : rawTotalDiscountedPrice.toFixed(2);
-
-                        if (baseDiscountedPrice && baseDiscountedPrice > 0) {
-                            wrapper.find('#discounted_price').text(`৳ ${totalDiscountedPrice}`).removeClass(
-                                'hidden');
-                            wrapper.find('#price').text(`৳ ${totalPrice}`).removeClass('hidden').addClass(
-                                'line-through');
-                        } else {
-                            wrapper.find('#price').text(`৳ ${totalPrice}`).removeClass('line-through');
-                            wrapper.find('#discounted_price').text(`৳ ${totalPrice}`).removeClass('hidden');
-                        }
-
-                        wrapper.find('#availability').text(currentVariant.stock > 0 ? 'In Stock' :
-                            'Out of Stock');
-                        wrapper.find('#variantInfo').removeClass('hidden');
-                        wrapper.find('#variantNotFound').addClass('hidden');
-                        addToCartBtn.prop('disabled', false).removeClass('opacity-50 cursor-not-allowed');
-                    } else {
-                        currentVariant = null;
-                        wrapper.find('#variantId').val('');
-                        wrapper.find('#sku').text('N/A');
-                        wrapper.find('#stock').text('0');
-                        wrapper.find('#price').text('৳ 0.00').removeClass('line-through');
-                        wrapper.find('#discounted_price').text('৳ 0.00');
-                        wrapper.find('#availability').text('Not Available');
-
-                        let allThumbs = '';
-                        product.slider.forEach((img, i) => {
-                            const full = `/storage/${img}`;
-                            const border = i === 0 ? 'border-primary' : 'border-transparent';
-                            allThumbs += `<div class="slide-thumb w-full xl:h-24 md:h-22 lg:h-28 h-20 rounded-2xl cursor-pointer border-2 ${border} overflow-hidden">
-                        <img src="${full}" class="w-full h-full object-cover thumb-img" data-full="${full}" />
-                    </div>`;
+                    // Initialize selectedOptions from default variant
+                    if (defaultVariant?.value_ids?.length) {
+                        defaultVariant.value_ids.forEach(valId => {
+                            const optId = valueToOptionMap[valId];
+                            if (optId) selectedOptions[optId] = valId;
                         });
-                        wrapper.find('#thumbnailWrapper').html(allThumbs);
-                        wrapper.find('#main-product-image').attr('src', `/storage/${product.slider[0] ?? ''}`);
-
-                        wrapper.find('#variantInfo').addClass('hidden');
-                        wrapper.find('#variantNotFound').removeClass('hidden');
-                        addToCartBtn.prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
                     }
+
+                    function updateUI() {
+                        if (!currentVariant) return;
+
+                        const basePrice = parseFloat(currentVariant.price) || 0;
+                        const discounted = currentVariant.discounted_price !== null ?
+                            parseFloat(currentVariant.discounted_price) :
+                            null;
+
+                        const total = (basePrice * quantity).toFixed(2);
+                        const discountTotal = discounted !== null ? (discounted * quantity).toFixed(2) : null;
+
+                        $skuEl.text(currentVariant.sku);
+                        $stockEl.text(currentVariant.stock);
+                        $availability.text(currentVariant.stock > 0 ? "In Stock" : "Out of Stock");
+
+                        if (discounted && discounted > 0) {
+                            $discountedPriceEl.text(`৳ ${discountTotal}`).removeClass("hidden");
+                            $priceEl.text(`৳ ${total}`).addClass("line-through");
+                        } else {
+                            $priceEl.text(`৳ ${total}`).removeClass("line-through");
+                            $discountedPriceEl.text(`৳ ${total}`).removeClass("hidden");
+                        }
+
+                        $variantIdInput.val(currentVariant.id);
+                        $qtyInput.val(quantity);
+                    }
+
+                    function resetUI() {
+                        $skuEl.text("N/A");
+                        $stockEl.text("0");
+                        $availability.text("Not Available");
+                        $priceEl.text("৳ 0.00").removeClass("line-through");
+                        $discountedPriceEl.text("৳ 0.00");
+                        $variantIdInput.val("");
+                    }
+
+                    function updateVariantSelection() {
+                        const selectedIds = Object.values(selectedOptions).map(Number).sort();
+                        const found = variants.find(v =>
+                            JSON.stringify([...v.value_ids].sort()) === JSON.stringify(selectedIds)
+                        );
+
+                        if (found) {
+                            currentVariant = found;
+                            updateUI();
+
+                            if (found.image) {
+                                const imageUrl = `/storage/${found.image}`;
+                                $mainImage.attr("src", imageUrl);
+                                $thumbWrapper.find(".slide-thumb").removeClass("border-primary");
+                                $thumbWrapper.find(`.thumb-img[data-full="${imageUrl}"]`)
+                                    .closest(".slide-thumb").addClass("border-primary");
+                            }
+
+                            $variantInfo.removeClass("hidden");
+                            $variantError.addClass("hidden");
+                            $addToCartBtn.prop("disabled", false).removeClass("opacity-50 cursor-not-allowed");
+                        } else {
+                            currentVariant = null;
+                            resetUI();
+
+                            $variantInfo.addClass("hidden");
+                            $variantError.removeClass("hidden");
+                            $addToCartBtn.prop("disabled", true).addClass("opacity-50 cursor-not-allowed");
+
+                            // Reset thumbnails
+                            let html = '';
+                            slider.forEach((img, idx) => {
+                                const full = `/storage/${img}`;
+                                html += `<div class="slide-thumb w-full h-20 rounded-2xl cursor-pointer border-2 ${idx === 0 ? 'border-primary' : 'border-transparent'} overflow-hidden">
+                            <img src="${full}" class="w-full h-full object-cover thumb-img" data-full="${full}" />
+                        </div>`;
+                            });
+                            $thumbWrapper.html(html);
+                            $mainImage.attr("src", `/storage/${slider[0]}`);
+                        }
+                    }
+
+                    // Variant option button click
+                    $optionBtns.on("click", function() {
+                        const $this = $(this);
+                        const optId = $this.data("option-id");
+                        const valId = $this.data("value-id");
+
+                        selectedOptions[optId] = parseInt(valId);
+
+                        $optionBtns.filter(`[data-option-id="${optId}"]`)
+                            .removeClass("bg-primary/10 text-primary border-primary")
+                            .addClass("bg-white text-gray-800 border-gray-300");
+
+                        $this.removeClass("bg-white text-gray-800 border-gray-300")
+                            .addClass("bg-primary/10 text-primary border-primary");
+
+                        updateVariantSelection();
+                    });
+
+                    // Quantity handling
+                    $increaseBtn.on("click", () => {
+                        quantity++;
+                        updateUI();
+                    });
+
+                    $decreaseBtn.on("click", () => {
+                        if (quantity > 1) {
+                            quantity--;
+                            updateUI();
+                        }
+                    });
+
+                    $quantityInput.on("input", () => {
+                        const val = parseInt($quantityInput.val()) || 1;
+                        quantity = val > 0 ? val : 1;
+                        updateUI();
+                    });
+
+                    // Thumbnail switching
+                    $wrapper.on("click", ".thumb-img", function() {
+                        const full = $(this).data("full");
+                        $mainImage.attr("src", full);
+                        $thumbWrapper.find(".slide-thumb").removeClass("border-primary");
+                        $(this).closest(".slide-thumb").addClass("border-primary");
+                    });
+
+                    updateUI();
                 });
             });
-        </script>
+        </script> --}}
 
 
         <script>

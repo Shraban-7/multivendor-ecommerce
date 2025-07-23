@@ -303,6 +303,416 @@ $settings = settings();
         });
     </script>
 
+
+    {{-- <script>
+        $(function() {
+            $("[id^='product-wrapper']").each(function() {
+                const $wrapper = $(this);
+                const productId = $wrapper.data("id");
+                const product = window.products?.[productId];
+
+                // console.log(productId);
+
+                if (!product) return;
+
+                const variants = product.variants || [];
+                const slider = product.slider || [];
+                const options = product.options || [];
+
+                let selectedOptions = {};
+                let currentVariant = variants.find(v => v.is_default) || null;
+                let quantity = 1;
+
+                const $mainImage = $wrapper.find(".main-product-image");
+                const $thumbWrapper = $wrapper.find(`#thumbnailWrapper${productId}`);
+                const $priceEl = $wrapper.find(".product-price");
+                const $skuEl = $wrapper.find(".sku-text");
+                const $stockEl = $wrapper.find(".stock-text");
+                const $availability = $wrapper.find(".availability-text");
+                const $variantError = $wrapper.find(".variant-error");
+                const $addToCartBtn = $wrapper.find(".addToCartBtn");
+                const $variantIdInput = $wrapper.find("input.variantId");
+                const $qtyInput = $wrapper.find(".qtyInputValue");
+                const $increaseBtn = $wrapper.find(".increaseBtn");
+                const $decreaseBtn = $wrapper.find(".decreaseBtn");
+                const $quantityInput = $wrapper.find("input.quantity");
+                const $optionBtns = $wrapper.find(".option-value-btn");
+
+                const valueToOptionMap = {};
+                options.forEach(opt => {
+                    opt.values.forEach(val => {
+                        valueToOptionMap[val.id] = opt.id;
+                    });
+                });
+
+                if (currentVariant?.value_ids?.length) {
+                    currentVariant.value_ids.forEach(valId => {
+                        const optId = valueToOptionMap[valId];
+                        if (optId) selectedOptions[optId] = valId;
+                    });
+                }
+
+                function updateUI() {
+                    if (!currentVariant) return;
+
+                    const basePrice = parseFloat(currentVariant.selling_price) || 0;
+                    const discounted = currentVariant.discounted_price !== null ? parseFloat(currentVariant
+                        .discounted_price) : null;
+
+                    const total = (basePrice * quantity).toFixed(2);
+                    const discountTotal = discounted !== null ? (discounted * quantity).toFixed(2) : null;
+
+                    $skuEl.text(currentVariant.sku);
+                    $stockEl.text(currentVariant.stock);
+                    $availability.text(currentVariant.stock > 0 ? "In Stock" : "Out of Stock");
+
+                    if (discounted && discounted > 0) {
+                        $priceEl.text(`৳ ${discountTotal}`).removeClass("line-through");
+                    } else {
+                        $priceEl.text(`৳ ${total}`).removeClass("line-through");
+                    }
+
+                    $variantIdInput.val(currentVariant.id);
+                    $qtyInput.val(quantity);
+                }
+
+                function resetUI() {
+                    $skuEl.text("N/A");
+                    $stockEl.text("0");
+                    $availability.text("Not Available");
+                    $priceEl.text("৳ 0.00");
+                    $variantIdInput.val("");
+                }
+
+                function updateVariantSelection() {
+                    const selectedIds = Object.values(selectedOptions).map(Number).sort();
+                    const found = variants.find(v =>
+                        JSON.stringify([...v.value_ids].sort()) === JSON.stringify(selectedIds)
+                    );
+
+                    if (found) {
+                        currentVariant = found;
+                        updateUI();
+                        if (found.image) {
+                            const imageUrl = `/storage/${found.image}`;
+                            $mainImage.attr("src", imageUrl);
+                            $thumbWrapper.find(".slide-thumb").removeClass("border-primary");
+                            $thumbWrapper.find(`.thumb-img[data-full="${imageUrl}"]`).closest(
+                                ".slide-thumb").addClass("border-primary");
+                        }
+                        $variantError.addClass("hidden");
+                        $addToCartBtn.prop("disabled", false).removeClass("opacity-50 cursor-not-allowed");
+                    } else {
+                        currentVariant = null;
+                        resetUI();
+                        $variantError.removeClass("hidden");
+                        $addToCartBtn.prop("disabled", true).addClass("opacity-50 cursor-not-allowed");
+
+                        let html = '';
+                        slider.forEach((img, idx) => {
+                            const full = `/storage/${img}`;
+                            html += `<div class="slide-thumb w-full h-20 rounded-2xl cursor-pointer border-2 ${idx === 0 ? 'border-primary' : 'border-transparent'} overflow-hidden">
+                        <img src="${full}" class="w-full h-full object-cover thumb-img" data-full="${full}" />
+                    </div>`;
+                        });
+                        $thumbWrapper.html(html);
+                        $mainImage.attr("src", `/storage/${slider[0]}`);
+                    }
+                }
+
+                $optionBtns.on("click", function() {
+                    const $btn = $(this);
+                    const optId = $btn.data("option-id");
+                    const valId = $btn.data("value-id");
+
+                    selectedOptions[optId] = parseInt(valId);
+
+                    $optionBtns.filter(`[data-option-id="${optId}"]`).removeClass(
+                        "bg-primary/10 text-primary border-primary").addClass(
+                        "bg-white text-gray-800 border-gray-300");
+
+                    $btn.removeClass("bg-white text-gray-800 border-gray-300").addClass(
+                        "bg-primary/10 text-primary border-primary");
+
+                    updateVariantSelection();
+                });
+
+                $increaseBtn.on("click", () => {
+                    quantity++;
+                    updateUI();
+
+                    console.log(quantity);
+                });
+
+                $decreaseBtn.on("click", () => {
+                    if (quantity > 1) {
+                        quantity--;
+                        updateUI();
+                    }
+                });
+
+                $quantityInput.on("input", () => {
+                    const val = parseInt($quantityInput.val()) || 1;
+                    quantity = val > 0 ? val : 1;
+                    updateUI();
+                });
+
+                // Thumbnail click
+                $wrapper.on("click", ".thumb-img", function() {
+                    const full = $(this).data("full");
+                    $mainImage.attr("src", full);
+                    $thumbWrapper.find(".slide-thumb").removeClass("border-primary");
+                    $(this).closest(".slide-thumb").addClass("border-primary");
+                });
+
+                updateUI();
+            });
+        });
+    </script> --}}
+
+    {{-- <script>
+        let quantity = 1;
+
+        $(document).on("click", ".increaseBtn", function() {
+            const $wrapper = $(this).closest(".product-contents");
+            const product = $wrapper.data("product");
+
+            quantity = parseInt($wrapper.find("input.quantity").val()) || 1;
+            quantity++;
+            updateUI($wrapper, quantity, product);
+        });
+
+        $(document).on("click", ".decreaseBtn", function() {
+            const $wrapper = $(this).closest(".product-contents");
+            const product = $wrapper.data("product");
+
+            quantity = parseInt($wrapper.find("input.quantity").val()) || 1;
+            if (quantity > 1) {
+                quantity--;
+            }
+
+            updateUI($wrapper, quantity, product);
+        });
+
+        function updateUI($wrapper, quantity, product) {
+            const $priceEl = $wrapper.find(".product-price");
+            const $qtyInput = $wrapper.find("input.quantity");
+
+            const basePrice = parseFloat(product.price) || 0;
+            const discounted = product.discounted_price !== null ? parseFloat(product.discounted_price) : null;
+
+            const finalPrice = discounted && discounted > 0 ? discounted : basePrice;
+            const total = finalPrice * quantity;
+
+            const formattedTotal = total;
+
+            $priceEl.text(`৳ ${formattedTotal}`);
+            $qtyInput.val(quantity);
+        }
+
+
+    </script> --}}
+
+    <script>
+        $(function() {
+            function formatPrice(price, quantity) {
+                const total = price * quantity;
+                return total.toLocaleString('en-BD', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            }
+
+            function updateProductUI($wrapper, variant, quantity) {
+                const $mainImage = $wrapper.find(".main-product-image");
+                const $thumbWrapper = $wrapper.find(".thumbnailWrapper");
+                const $priceEl = $wrapper.find(".product-price");
+                const $skuEl = $wrapper.find(".sku-text");
+                const $stockEl = $wrapper.find(".stock-text");
+                const $availability = $wrapper.find(".availability-text");
+                const $variantError = $wrapper.find(".variant-error");
+                const $addToCartBtn = $wrapper.find(".addToCartBtn");
+                const $variantIdInput = $wrapper.find("input.variantId");
+                const $qtyInput = $wrapper.find(".qtyInputValue");
+                const $qtyEl = $wrapper.find("input.quantity");
+                const product = $wrapper.data("product");
+
+                if (variant) {
+                    const basePrice = parseFloat(variant.price) || 0;
+                    const discounted = variant.discounted_price !== null ? parseFloat(variant.discounted_price) :
+                        null;
+                    const price = discounted && discounted > 0 ? discounted : basePrice;
+
+                    $priceEl.text(`৳ ${formatPrice(price, quantity)}`);
+                    $skuEl.text(variant.sku);
+                    $stockEl.text(variant.stock);
+                    $availability.text(variant.stock > 0 ? "In Stock" : "Out of Stock");
+                    $variantIdInput.val(variant.id);
+                    $variantError.addClass("hidden");
+                    $addToCartBtn.prop("disabled", false).removeClass("opacity-50 cursor-not-allowed");
+                    $qtyInput.val(quantity);
+                    $qtyEl.val(quantity);
+
+                    if (variant.image) {
+                        const imageUrl = 'http://127.0.0.1:8000/storage/' + variant.image;
+                        $wrapper.find('.main-product-image').attr('src', imageUrl);
+                        $wrapper.find('.slide-thumb').removeClass('border-primary').addClass('border-transparent');
+
+                        const $thumb = $wrapper.find('.thumb-img').data('full');
+                        const $thumbEl = $wrapper.find(`.thumb-img[data-full="${imageUrl}"]`)
+
+                        console.log($thumb ,imageUrl);
+                        if ($thumb == imageUrl) {
+                            $thumbEl.closest('.slide-thumb').addClass('border-primary').removeClass(
+                                'border-transparent');
+                        } else {
+                            console.warn("No thumbnail found matching:", imageUrl);
+                        }
+                    }
+
+
+                } else if (product.variants.length > 0 && !variant) {
+                    $skuEl.text("N/A");
+                    $stockEl.text("0");
+                    $availability.text("Not Available");
+                    $priceEl.text("৳ 0.00");
+                    $variantIdInput.val("");
+                    $variantError.removeClass("hidden");
+                    $addToCartBtn.prop("disabled", true).addClass("opacity-50 cursor-not-allowed");
+                    let allThumbs = '';
+                    product.slider.forEach((img, i) => {
+                        const full = `/storage/${img}`;
+                        const border = i === 0 ? 'border-primary' : 'border-transparent';
+                        allThumbs += `<div class="slide-thumb w-full xl:h-24 md:h-22 lg:h-28 h-20 rounded-2xl cursor-pointer border-2 ${border} overflow-hidden">
+                        <img src="${full}" class="w-full h-full object-cover thumb-img" data-full="${full}" />
+                    </div>`;
+                    });
+                    $wrapper.find('#thumbnailWrapper').html(allThumbs);
+                    $wrapper.find('#main-product-image').attr('src',
+                        `/storage/${product.slider[0] ?? ''}`);
+
+                } else {
+                    const basePrice = parseFloat(product.price) || 0;
+                    const discounted = product.discounted_price !== null ? parseFloat(product.discounted_price) :
+                        null;
+                    const price = discounted && discounted > 0 ? discounted : basePrice;
+
+                    $priceEl.text(`৳ ${formatPrice(price, quantity)}`);
+                    $skuEl.text(product.sku ?? "N/A");
+                    $stockEl.text(product.stock ?? 0);
+                    $availability.text((product.stock ?? 0) > 0 ? "In Stock" : "Out of Stock");
+                    $variantIdInput.val("");
+                    $variantError.addClass("hidden");
+                    $addToCartBtn.prop("disabled", false).removeClass("opacity-50 cursor-not-allowed");
+                    $qtyInput.val(quantity);
+                    $qtyEl.val(quantity)
+                    let allThumbs = '';
+                    product.slider.forEach((img, i) => {
+                        const full = `/storage/${img}`;
+                        const border = i === 0 ? 'border-primary' : 'border-transparent';
+                        allThumbs += `<div class="slide-thumb w-full xl:h-24 md:h-22 lg:h-28 h-20 rounded-2xl cursor-pointer border-2 ${border} overflow-hidden">
+                        <img src="${full}" class="w-full h-full object-cover thumb-img" data-full="${full}" />
+                    </div>`;
+                    });
+                    $wrapper.find('#thumbnailWrapper').html(allThumbs);
+                    $wrapper.find('#main-product-image').attr('src',
+                        `/storage/${product.slider[0] ?? ''}`);
+                }
+            }
+
+            function getSelectedVariant(product, selectedOptions) {
+                const selectedIds = Object.values(selectedOptions).map(Number).sort();
+                return (product.variants || []).find(v =>
+                    JSON.stringify([...v.value_ids].sort()) === JSON.stringify(selectedIds)
+                );
+            }
+
+            function collectSelectedOptions($wrapper) {
+                const selectedOptions = {};
+                $wrapper.find(".option-value-btn.bg-primary\\/10")
+                    .each(function() {
+                        const $btn = $(this);
+                        const optId = $btn.data("option-id");
+                        const valId = $btn.data("value-id");
+                        selectedOptions[optId] = parseInt(valId);
+                    });
+                return selectedOptions;
+            }
+
+            // Handle option value selection
+            $(document).on("click", ".option-value-btn", function() {
+                const $btn = $(this);
+                const $wrapper = $btn.closest("[id^='product-wrapper']");
+                const product = $wrapper.data("product");
+                if (!product) return;
+
+                const optId = $btn.data("option-id");
+                const valId = $btn.data("value-id");
+
+                // Style update
+                $wrapper.find(`.option-value-btn[data-option-id="${optId}"]`).removeClass(
+                    "bg-primary/10 text-primary border-primary"
+                ).addClass("bg-white text-gray-800 border-gray-300");
+
+                $btn.removeClass("bg-white text-gray-800 border-gray-300").addClass(
+                    "bg-primary/10 text-primary border-primary"
+                );
+
+                const selectedOptions = collectSelectedOptions($wrapper);
+                const variant = getSelectedVariant(product, selectedOptions);
+                const quantity = parseInt($wrapper.find(".qtyInputValue").val()) || 1;
+
+                updateProductUI($wrapper, variant, quantity);
+            });
+
+            // Handle thumbnail click
+            $(document).on("click", ".thumb-img", function() {
+                const $img = $(this);
+                const full = $img.data("full");
+                const $wrapper = $img.closest("[id^='product-wrapper']");
+                const $mainImage = $wrapper.find(".main-product-image");
+                const $thumbWrapper = $wrapper.find(".thumbnailWrapper");
+
+                $mainImage.attr("src", full);
+                $thumbWrapper.find(".slide-thumb").removeClass("border-primary").addClass(
+                    "border-transparent");
+                $img.closest(".slide-thumb").addClass("border-primary").removeClass("border-transparent");
+            });
+
+            // Handle quantity increase/decrease
+            $(document).on("click", ".increaseBtn, .decreaseBtn", function() {
+                const $btn = $(this);
+                const $wrapper = $btn.closest("[id^='product-wrapper']");
+                const product = $wrapper.data("product");
+                if (!product) return;
+
+                let quantity = parseInt($wrapper.find(".qtyInputValue").val()) || 1;
+                quantity = $btn.hasClass("increaseBtn") ? quantity + 1 : Math.max(1, quantity - 1);
+
+                const selectedOptions = collectSelectedOptions($wrapper);
+                const variant = getSelectedVariant(product, selectedOptions);
+
+                updateProductUI($wrapper, variant, quantity);
+            });
+
+            // Optional: Manual input (quantity text box)
+            $(document).on("input", ".qtyInputValue", function() {
+                const $input = $(this);
+                const $wrapper = $input.closest("[id^='product-wrapper']");
+                const product = $wrapper.data("product");
+                if (!product) return;
+
+                let quantity = parseInt($input.val()) || 1;
+                quantity = quantity > 0 ? quantity : 1;
+
+                const selectedOptions = collectSelectedOptions($wrapper);
+                const variant = getSelectedVariant(product, selectedOptions);
+
+                updateProductUI($wrapper, variant, quantity);
+            });
+        });
+    </script>
+
     @stack('scripts')
 </body>
 
