@@ -527,6 +527,7 @@ $settings = settings();
                 const $mainImage = $wrapper.find(".main-product-image");
                 const $thumbWrapper = $wrapper.find(".thumbnailWrapper");
                 const $priceEl = $wrapper.find(".product-price");
+                const $originalPriceEl = $wrapper.find(".original-price");
                 const $skuEl = $wrapper.find(".sku-text");
                 const $stockEl = $wrapper.find(".stock-text");
                 const $availability = $wrapper.find(".availability-text");
@@ -538,12 +539,15 @@ $settings = settings();
                 const product = $wrapper.data("product");
 
                 if (variant) {
-                    const basePrice = parseFloat(variant.price) || 0;
+                    const basePrice = parseFloat(variant.selling_price) || 0;
                     const discounted = variant.discounted_price !== null ? parseFloat(variant.discounted_price) :
                         null;
                     const price = discounted && discounted > 0 ? discounted : basePrice;
 
                     $priceEl.text(`৳ ${formatPrice(price, quantity)}`);
+                    if (basePrice == 0) {
+                        $originalPriceEl.addClass('hidden')
+                    }
                     $skuEl.text(variant.sku);
                     $stockEl.text(variant.stock);
                     $availability.text(variant.stock > 0 ? "In Stock" : "Out of Stock");
@@ -557,12 +561,13 @@ $settings = settings();
                         const imageUrl = 'http://127.0.0.1:8000/storage/' + variant.image;
                         $wrapper.find('.main-product-image').attr('src', imageUrl);
                         $wrapper.find('.slide-thumb').removeClass('border-primary').addClass('border-transparent');
-
-                        const $thumb = $wrapper.find('.thumb-img').data('full');
                         const $thumbEl = $wrapper.find(`.thumb-img[data-full="${imageUrl}"]`)
 
-                        console.log($thumb ,imageUrl);
-                        if ($thumb == imageUrl) {
+                        const currentMainImage = $wrapper.find('.main-product-image').attr('src');
+
+                        if (currentMainImage == imageUrl) {
+
+                            console.log($thumbEl.closest('.slide-thumb'));
                             $thumbEl.closest('.slide-thumb').addClass('border-primary').removeClass(
                                 'border-transparent');
                         } else {
@@ -570,12 +575,13 @@ $settings = settings();
                         }
                     }
 
-
                 } else if (product.variants.length > 0 && !variant) {
                     $skuEl.text("N/A");
                     $stockEl.text("0");
                     $availability.text("Not Available");
                     $priceEl.text("৳ 0.00");
+                    $originalPriceEl.addClass('hidden');
+
                     $variantIdInput.val("");
                     $variantError.removeClass("hidden");
                     $addToCartBtn.prop("disabled", true).addClass("opacity-50 cursor-not-allowed");

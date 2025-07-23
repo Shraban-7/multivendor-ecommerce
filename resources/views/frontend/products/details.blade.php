@@ -49,7 +49,7 @@
         <section class="product-main-sec">
             <div class="container">
                 <!-- Product Contents  -->
-                <x-frontend.product-contents :product="$product"/>
+                <x-frontend.product-contents :product="$product" />
 
                 <!-- Rating Overview Section -->
                 <div class="flex flex-col items-start gap-5 py-8 md:flex-row md:py-10">
@@ -755,6 +755,9 @@
                 });
             });
         </script> --}}
+
+    
+
 
 
         <script>

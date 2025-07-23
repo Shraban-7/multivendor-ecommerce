@@ -1,5 +1,18 @@
-<div id="product-wrapper{{ $product['id'] }}" class="product-contents flex flex-col gap-5 md:flex-row "
-    data-id="{{ $product['id'] }}" data-product='@json($product)'>
+@php
+    $publicProduct = [
+        'name' => $product['name'],
+        'price' => $product['price'],
+        'discounted_price' => $product['discounted_price'],
+        'sku' => $product['sku'],
+        'stock' => $product['stock'],
+        'slider' => $product['slider'],
+        'variants' => $product['variants'],
+    ];
+@endphp
+
+<div id="product-wrapper{{ $product['id'] }}" class="product-contents flex flex-col gap-5 md:flex-row"
+    data-id="{{ $product['id'] }}" data-product='@json($publicProduct)'>
+
     <!-- Product Images Section -->
     <div class="lg:w-[55%] md:w-[50%] w-full flex flex-col lg:flex-row gap-3 lg:gap-5">
         <!-- Thumbnails -->
@@ -10,7 +23,8 @@
                     <div
                         class="slide-thumb w-full h-20 lg:h-28 xl:h-24 rounded-2xl cursor-pointer border-2 overflow-hidden {{ $index === 0 ? 'border-primary' : 'border-transparent' }}">
                         <img src="{{ storage_url($img) }}" alt="{{ $product['name'] ?? 'Product Image' }}"
-                            class="w-full h-full object-cover thumb-img" data-image="{{ storage_url($img) }}" data-full="{{ storage_url($img) }}" />
+                            class="w-full h-full object-cover thumb-img" data-image="{{ storage_url($img) }}"
+                            data-full="{{ storage_url($img) }}" />
                     </div>
                 @endforeach
             </div>
@@ -84,18 +98,20 @@
                     $variantDiscountedPrice = $defaultVariant['discounted_price'] ?? null;
                     $variantPrice = $defaultVariant['selling_price'] ?? null;
                     $showVariantDiscount = $variantDiscountedPrice !== null && $variantDiscountedPrice < $variantPrice;
-                    $showProductDiscount = $product['discounted_price'] !== null && $product['discounted_price'] < $product['price'];
+                    $showProductDiscount =
+                        $product['discounted_price'] !== null && $product['discounted_price'] < $product['price'];
                 @endphp
 
                 <div class="flex flex-wrap items-center gap-2">
                     @if ($showVariantDiscount)
                         <h3 class="font-bold text-primary text-lg product-price">{{ money($variantDiscountedPrice) }}
                         </h3>
-                        <h6 class="text-jet-gray line-through text-sm">{{ money($variantPrice) }}</h6>
+                        <h6 class="text-jet-gray line-through text-sm original-price">{{ money($variantPrice) }}</h6>
                     @elseif ($showProductDiscount)
                         <h3 class="font-bold text-primary text-lg product-price">
                             {{ money($product['discounted_price']) }}</h3>
-                        <h6 class="text-jet-gray line-through text-sm">{{ money($product['price']) }}</h6>
+                        <h6 class="text-jet-gray line-through text-sm original-price">{{ money($product['price']) }}
+                        </h6>
                     @elseif ($variantPrice)
                         <h3 class="font-bold text-primary text-lg product-price">{{ money($variantPrice) }}</h3>
                     @else

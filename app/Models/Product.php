@@ -113,9 +113,9 @@ class Product extends Model
         $margin        = $this->selling_price - $this->buying_price;
         $marginPercent = $this->buying_price > 0 ? ($margin / $this->buying_price) * 100 : 0;
 
-        $images = $this->images->pluck('image')->toArray();
-        $variantImages =  $this->variants->pluck('image')->toArray();
-        $images = array_merge($images, $variantImages);
+      //  $images = $this->images->pluck('image')->toArray();
+        //$variantImages =  $this->variants->pluck('image')->toArray();
+        //$images = array_merge($images, $variantImages);
 
         return [
             'id'                => $this->id,
@@ -127,21 +127,21 @@ class Product extends Model
             'brand'             => $this->brand?->name,
             'name'              => $this->name,
             'thumbnail'         => $this->thumbnail,
-            'images'            => $images,
-            'slider' => $images,
-            // 'slider'            => $this->variants->pluck('image')->filter()->isNotEmpty()
-            //     ? collect([
-            //         optional($this->variants->firstWhere('is_default', true))->image,
-            //     ])
-            //     ->filter()
-            //     ->concat($this->variants->pluck('image')->filter())
-            //     ->unique()
-            //     ->values()
-            //     : collect([$this->thumbnail])
-            //     ->filter()
-            //     ->concat($this->images->pluck('image')->filter())
-            //     ->unique()
-            //     ->values(),
+            'images'            => $this->images->pluck('image'),
+            //'slider' => $images,
+            'slider'            => $this->variants->pluck('image')->filter()->isNotEmpty()
+                ? collect([
+                    optional($this->variants->firstWhere('is_default', true))->image,
+                ])
+                ->filter()
+                ->concat($this->variants->pluck('image')->filter())
+                ->unique()
+                ->values()
+                : collect([$this->thumbnail])
+                ->filter()
+                ->concat($this->images->pluck('image')->filter())
+                ->unique()
+                ->values(),
 
             'short_description' => $this->short_description,
             'description'       => $this->description,
