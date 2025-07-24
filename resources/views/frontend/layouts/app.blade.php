@@ -330,7 +330,7 @@ $settings = settings();
             }
 
             function updateProductUI($wrapper, variant, quantity) {
-                const baseURL = "{{ url() }}";
+                const baseURL = "{{ url('/') }}";
                 const $mainImage = $wrapper.find(".main-product-image");
                 const $thumbWrapper = $wrapper.find(".thumbnailWrapper");
                 const $priceEl = $wrapper.find(".product-price");
