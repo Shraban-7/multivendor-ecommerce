@@ -321,6 +321,11 @@ $settings = settings();
 
     <script>
         $(function() {
+
+            function storageURL(fileName) {
+                return "{{ url('/') }}" + '/storage/' + fileName;
+            }
+
             function formatPrice(price, quantity) {
                 const total = Math.round(price * quantity * 100) / 100;
                 return total.toLocaleString('en-BD', {
@@ -330,7 +335,6 @@ $settings = settings();
             }
 
             function updateProductUI($wrapper, variant, quantity) {
-                const baseURL = "{{ url('/') }}";
                 const $mainImage = $wrapper.find(".main-product-image");
                 const $thumbWrapper = $wrapper.find(".thumbnailWrapper");
                 const $priceEl = $wrapper.find(".product-price");
@@ -370,7 +374,7 @@ $settings = settings();
                     $qtyEl.val(quantity);
 
                     if (variant.image) {
-                        const imageUrl = baseURL + '/' + variant.image;
+                        const imageUrl = storageURL(variant.image);
                         $wrapper.find('.main-product-image').attr('src', imageUrl);
                         $wrapper.find('.slide-thumb').removeClass('border-primary').addClass('border-transparent');
                         const $thumbEl = $wrapper.find(`.thumb-img[data-full="${imageUrl}"]`)
