@@ -121,7 +121,7 @@
                 modal.find('#quantity' + productId).val('01');
                 modal.find('.qtyInputValue').val(1);
 
-                modal.find('.cartBtn').get(0)?.scrollIntoView({
+                modal.find('.addToCartBtn').get(0)?.scrollIntoView({
                     behavior: 'smooth',
                     block: 'center'
                 });

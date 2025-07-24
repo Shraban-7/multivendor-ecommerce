@@ -49,7 +49,7 @@
             <input type="hidden" name="quantity" class="qtyInputValue" value="">
 
             <input type="hidden" class="variantId" name="variant_id" value="">
-            <button data-id="{{ $product['id'] }}" type="button" class="cartBtn addToCartBtn bg-primary text-white px-5 py-2 text-sm rounded-md hover:bg-primary/90 transition">
+            <button data-id="{{ $product['id'] }}" type="button" class="addToCartBtn bg-primary text-white px-5 py-2 text-sm rounded-md hover:bg-primary/90 transition">
                 Add to Cart
             </button>
             <button class="bg-black text-white px-5 py-2 text-sm rounded-md hover:bg-gray-800 transition">
