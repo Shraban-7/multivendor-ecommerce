@@ -370,7 +370,7 @@ $settings = settings();
                     $qtyEl.val(quantity);
 
                     if (variant.image) {
-                        const imageUrl = baseURL + variant.image;
+                        const imageUrl = baseURL + '/' + variant.image;
                         $wrapper.find('.main-product-image').attr('src', imageUrl);
                         $wrapper.find('.slide-thumb').removeClass('border-primary').addClass('border-transparent');
                         const $thumbEl = $wrapper.find(`.thumb-img[data-full="${imageUrl}"]`)
