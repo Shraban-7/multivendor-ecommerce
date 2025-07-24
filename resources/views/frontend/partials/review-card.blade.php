@@ -6,7 +6,7 @@ $seller = seller();
 <div class="review-item space-y-2 py-6">
     <div class="flex items-center gap-3">
         <div class="user-avatar w-12 h-12 rounded-full overflow-hidden">
-            <img src="{{ storage_url($review->user->image) }}" alt="{{ $review->user->username }}" />
+            <img src="{{ $review->user->avatar }}" alt="{{ $review->user->username }}" />
         </div>
         <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
             <h3 class="font-medium">{{ $review->user->username }}</h3>
