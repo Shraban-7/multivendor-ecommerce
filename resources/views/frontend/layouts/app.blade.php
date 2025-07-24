@@ -539,15 +539,18 @@ $settings = settings();
                 const product = $wrapper.data("product");
 
                 if (variant) {
-                    const basePrice = parseFloat(variant.selling_price) || 0;
+                    const basePrice = parseFloat(variant.price) || 0;
                     const discounted = variant.discounted_price !== null ? parseFloat(variant.discounted_price) :
                         null;
                     const price = discounted && discounted > 0 ? discounted : basePrice;
 
                     $priceEl.text(`৳ ${formatPrice(price, quantity)}`);
-                    if (basePrice == 0) {
-                        $originalPriceEl.addClass('hidden')
+
+                    if (discounted) {
+                        $originalPriceEl.removeClass('hidden');
+                        $originalPriceEl.text(`৳ ${formatPrice(basePrice, quantity)}`)
                     }
+
                     $skuEl.text(variant.sku);
                     $stockEl.text(variant.stock);
                     $availability.text(variant.stock > 0 ? "In Stock" : "Out of Stock");
