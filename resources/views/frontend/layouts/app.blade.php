@@ -169,8 +169,6 @@ $settings = settings();
 
                 var qtyInput = $('.qtyInputValue').val();
 
-                // console.log(qtyInput);
-
                 $.ajax({
                     url: "{{ route('cart.add') }}",
                     type: "POST",
@@ -479,7 +477,6 @@ $settings = settings();
                 updateProductUI($wrapper, variant, quantity);
             });
 
-            // Handle thumbnail click
             $(document).on("click", ".thumb-img", function() {
                 const $img = $(this);
                 const full = $img.data("full");
@@ -493,7 +490,6 @@ $settings = settings();
                 $img.closest(".slide-thumb").addClass("border-primary").removeClass("border-transparent");
             });
 
-            // Handle quantity increase/decrease
             $(document).on("click", ".increaseBtn, .decreaseBtn", function() {
                 const $btn = $(this);
                 const $wrapper = $btn.closest("[id^='product-wrapper']");
@@ -509,7 +505,6 @@ $settings = settings();
                 updateProductUI($wrapper, variant, quantity);
             });
 
-            // Optional: Manual input (quantity text box)
             $(document).on("input", ".qtyInputValue", function() {
                 const $input = $(this);
                 const $wrapper = $input.closest("[id^='product-wrapper']");
@@ -526,7 +521,7 @@ $settings = settings();
             });
 
             function initDefaultVariant($wrapper) {
-                if ($wrapper.data('variant-initialized')) return; // avoid double init
+                if ($wrapper.data('variant-initialized')) return;
 
                 const product = $wrapper.data("product");
                 if (!product?.variants?.length) return;
@@ -538,12 +533,10 @@ $settings = settings();
                     const $btn = $wrapper.find(`.option-value-btn[data-value-id="${valId}"]`);
                     const optId = $btn.data("option-id");
 
-                    // Reset other buttons in this option group
                     $wrapper.find(`.option-value-btn[data-option-id="${optId}"]`)
                         .removeClass("bg-primary/10 text-primary border-primary")
                         .addClass("bg-white text-gray-800 border-gray-300");
 
-                    // Highlight default button
                     $btn.removeClass("bg-white text-gray-800 border-gray-300")
                         .addClass("bg-primary/10 text-primary border-primary");
                 });
@@ -554,16 +547,13 @@ $settings = settings();
                 $wrapper.data('variant-initialized', true);
             }
 
-            // 1. Init on page load for all products on the page
             $(document).ready(function() {
                 $("[id^='product-wrapper']").each(function() {
                     initDefaultVariant($(this));
                 });
             });
 
-            // 2. Init when Flowbite modal opens (replace '#yourModalId' with your modal's actual ID)
             document.addEventListener('modal:open', function(event) {
-                // event.detail contains modal element
                 const modalEl = event.detail;
                 const $modal = $(modalEl);
 
@@ -572,7 +562,6 @@ $settings = settings();
                 });
             });
 
-            // 3. Call this function after 'Load More' completes
             function onLoadMoreProducts() {
                 $("[id^='product-wrapper']").each(function() {
                     initDefaultVariant($(this));
