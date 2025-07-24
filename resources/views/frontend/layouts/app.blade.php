@@ -36,22 +36,22 @@ $settings = settings();
     <!-- Header Ended -->
 
     @if (session('error') || session('success'))
-    <div id="alert-border"
-        class="fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 text-sm flex items-center gap-2
+        <div id="alert-border"
+            class="fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 text-sm flex items-center gap-2
             {{ session('error') ? 'text-red-700 bg-red-100 border-red-500' : 'text-green-700 bg-green-100 border-green-500' }}
             border-l-4 rounded-md max-w-md w-[95%] sm:w-auto"
-        role="alert">
-        <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path
-                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-        </svg>
-        <span class="flex-1">{{ session('error') ?? session('success') }}</span>
-        <button type="button" class="text-current hover:text-black" data-dismiss-target="#alert-border">
-            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 14 14">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M1 1l6 6m0 0l6 6M7 7l6-6M7 7l-6 6" />
+            role="alert">
+            <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
             </svg>
-        </button>
-    </div>
+            <span class="flex-1">{{ session('error') ?? session('success') }}</span>
+            <button type="button" class="text-current hover:text-black" data-dismiss-target="#alert-border">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 14 14">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M1 1l6 6m0 0l6 6M7 7l6-6M7 7l-6 6" />
+                </svg>
+            </button>
+        </div>
     @endif
 
     @yield('content')
@@ -141,18 +141,23 @@ $settings = settings();
             $('body').on('click', '.addToCartBtn', function() {
                 var $btn = $(this);
                 var originalText = $btn.html();
-                $btn.html(`<svg class="animate-spin h-4 w-4 text-white inline-block mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg> Adding...`).prop('disabled', true);
+                $btn.html(
+                    `<svg class="animate-spin h-4 w-4 text-white inline-block mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg> Adding...`
+                ).prop('disabled', true);
 
                 var product_id = $btn.data('id');
                 var modal = $btn.data('modal');
                 var wishlistId = $btn.data('wishlist-id');
-                var variantId = $('.variantId').val() || null;
-                var product_price_text = $('.product-price').text().replace(/[^0-9.]/g, '');
+
+                var $product_content = $btn.closest('.product-contents');
+
+                var variantId = $product_content.find('.variantId').val() || null;
+                var product_price_text = $product_content.find('.product-price').text().replace(/[^0-9.]/g,
+                    '');
                 var product_price = parseFloat(product_price_text);
-                var $row = $btn.closest('.grid');
 
                 let selectedOptionIds = [];
-                $('.variant-option:checked').each(function() {
+                $product_content.find('.variant-option:checked').each(function() {
                     selectedOptionIds.push($(this).val());
                 });
 
@@ -162,7 +167,7 @@ $settings = settings();
                     return;
                 }
 
-                var qtyInput = $('.qtyInputValue').val();
+                var qtyInput = $product_content.find('.qtyInputValue').val() || 1;
 
                 $.ajax({
                     url: "{{ route('cart.add') }}",
@@ -172,6 +177,7 @@ $settings = settings();
                         variant_id: variantId,
                         quantity: qtyInput,
                         price: product_price,
+                        selected_options: selectedOptionIds
                     },
                     success: function(data) {
                         if (data.unauthorized) {
@@ -200,6 +206,7 @@ $settings = settings();
                     }
                 });
             });
+
 
             $('.buyNowBtn').click(function() {
                 var product_id = $(this).data('id');
@@ -345,9 +352,7 @@ $settings = settings();
 
                     $priceEl.text(`৳ ${formatPrice(price, quantity)}`);
 
-                    console.log(discounted);
                     if (discounted == 0 || discounted == null) {
-                        console.log("ok");
                         $originalPriceEl.addClass('hidden');
                     } else {
                         $originalPriceEl.removeClass('hidden');

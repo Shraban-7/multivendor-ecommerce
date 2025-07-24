@@ -102,6 +102,7 @@ class CartController extends Controller
         $discount = $sub_total - $grand_total;
 
         $total_products_count = $carts->flatten()->pluck('cart_items')->flatten()->count();
+        
 
         $interest_products = Product::latest()->limit(6)->get();
 
