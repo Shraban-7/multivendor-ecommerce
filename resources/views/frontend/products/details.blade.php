@@ -108,9 +108,6 @@
                         <!-- Average Rating -->
                         <div class="flex flex-wrap items-center gap-3 my-3 md:my-5">
                             @if ($totalReviews > 0)
-                                <span class="text-xl font-medium text-davy-gray sm:text-2xl">
-                                    {{ number_format($averageRating, 1) }}
-                                </span>
                                 <div class="flex gap-1 text-xs flex-nowrap md:text-sm">
                                     @for ($i = 1; $i <= 5; $i++)
                                         @if ($i <= floor($averageRating))
