@@ -11,9 +11,6 @@ $seller = seller();
         <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
             <h3 class="font-medium">{{ $review->user->username }}</h3>
             <span class="flex items-center gap-2 text-gray-400">
-                In
-                <span class="h-4 lg:h-6 w-auto"><img class="w-auto h-full object-contain"
-                        src="{{ asset('assets/frontend/images/us-flag.png') }}" alt="Flag of USA" /></span>
                 on {{ optional($review->created_at)->format('M d, Y') ?? '' }}
 
             </span>
@@ -30,15 +27,15 @@ $seller = seller();
     <div class="rating flex flex-wrap items-center gap-3">
         <div class="flex flex-nowrap gap-1 text-theme-dark text-xs md:text-sm">
             @for ($i = 0; $i < $fullStars; $i++)
-                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star text-yellow-400"></i>
                 @endfor
 
                 @if ($halfStar)
-                <i class="fa-solid fa-star-half-stroke"></i>
+                <i class="fa-solid fa-star-half-stroke text-yellow-400"></i>
                 @endif
 
                 @for ($i = 0; $i < $emptyStars; $i++)
-                    <i class="fa-regular fa-star"></i>
+                    <i class="fa-regular fa-star text-gray-400"></i>
                     @endfor
         </div>
         <span class="text-davy-gray text-lg sm:text-xl font-medium">{{ number_format($rating, 1) }}</span>
