@@ -109,31 +109,6 @@
                 <i class="fas fa-check-circle"></i> In Stock: {{ $firstVariant['stock'] ?? $product['stock'] }}
             </div>
         </div>
-
-        <!-- Variants -->
-        <x-frontend.variant-selection-card :product="$product" />
-
-        <!-- Action Buttons -->
-        <div class="flex gap-3 pt-4">
-            <button class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-md font-medium transition-colors">
-                <i class="fas fa-shopping-cart mr-2"></i> Add to Cart
-            </button>
-            <button class="w-12 h-12 flex items-center justify-center border border-gray-300 rounded-md hover:bg-gray-100 transition-colors">
-                <i class="far fa-heart text-gray-600"></i>
-            </button>
-        </div>
-
-        <!-- Seller Info -->
-        <div class="pt-4 border-t border-gray-200 mt-4">
-            <div class="flex items-center gap-3">
-                <img src="{{ storage_url($seller['business_logo']) }}" alt="{{ $seller['business_name'] }}" class="w-10 h-10 rounded-full object-cover">
-                <div>
-                    <div class="text-sm font-medium">Sold by</div>
-                    <a href="{{ route('sellers.shop', $seller['username']) }}" class="text-blue-600 hover:text-blue-800 text-sm">
-                        {{ $seller['business_name'] }}
-                    </a>
-                </div>
-            </div>
-        </div>
+        <x-frontend.variant-selection-card :product="$product" />       
     </div>
 </div>
