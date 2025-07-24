@@ -133,7 +133,7 @@
 
             @if (count($product['variants']) > 0)
                 <div class="variant-error hidden mt-4 p-4 rounded-md bg-red-100 text-red-700 text-sm font-medium">
-                    Variant not found for selected options.
+                    Not Found.
                 </div>
             @endif
         </div>

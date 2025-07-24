@@ -138,25 +138,38 @@ $settings = settings();
     <script>
         $(document).ready(function() {
             $('.cartBtn').click(function() {
-                var product_id = $(this).data('id');
-                var modal = $(this).data('modal');
-                var wishlistId = $(this).data('wishlist-id');
-                var variantId = $('#variantId').val() || null;
+                var $btn = $(this);
+                var originalText = $btn.html();
+
+                $btn
+                    .html(`<svg class="animate-spin h-4 w-4 text-white inline-block mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+               </svg> Adding...`)
+                    .prop('disabled', true);
+
+                var product_id = $btn.data('id');
+                var modal = $btn.data('modal');
+                var wishlistId = $btn.data('wishlist-id');
+                var variantId = $('.variantId').val() || null;
                 var product_price_text = $('.product-price').text().replace(/[^0-9.]/g, '');
                 var product_price = parseFloat(product_price_text);
-                var $row = $(this).closest('.grid');
+                var $row = $btn.closest('.grid');
 
                 let selectedOptionIds = [];
-
                 $('.variant-option:checked').each(function() {
                     selectedOptionIds.push($(this).val());
                 });
 
                 if (!product_id) {
                     alert("No Product Selected!");
+                    $btn.html(originalText).prop('disabled', false);
                     return;
                 }
-                var qtyInput = $('#qtyInput' + product_id).val();
+
+                var qtyInput = $('.qtyInputValue').val();
+
+                // console.log(qtyInput);
 
                 $.ajax({
                     url: "{{ route('cart.add') }}",
@@ -188,9 +201,13 @@ $settings = settings();
                         } else {
                             toastr.error('Something went wrong!');
                         }
+                    },
+                    complete: function() {
+                        $btn.html(originalText).prop('disabled', false);
                     }
                 });
             });
+
 
             $('.buyNowBtn').click(function() {
                 var product_id = $(this).data('id');
@@ -303,220 +320,10 @@ $settings = settings();
         });
     </script>
 
-
-    {{-- <script>
-        $(function() {
-            $("[id^='product-wrapper']").each(function() {
-                const $wrapper = $(this);
-                const productId = $wrapper.data("id");
-                const product = window.products?.[productId];
-
-                // console.log(productId);
-
-                if (!product) return;
-
-                const variants = product.variants || [];
-                const slider = product.slider || [];
-                const options = product.options || [];
-
-                let selectedOptions = {};
-                let currentVariant = variants.find(v => v.is_default) || null;
-                let quantity = 1;
-
-                const $mainImage = $wrapper.find(".main-product-image");
-                const $thumbWrapper = $wrapper.find(`#thumbnailWrapper${productId}`);
-                const $priceEl = $wrapper.find(".product-price");
-                const $skuEl = $wrapper.find(".sku-text");
-                const $stockEl = $wrapper.find(".stock-text");
-                const $availability = $wrapper.find(".availability-text");
-                const $variantError = $wrapper.find(".variant-error");
-                const $addToCartBtn = $wrapper.find(".addToCartBtn");
-                const $variantIdInput = $wrapper.find("input.variantId");
-                const $qtyInput = $wrapper.find(".qtyInputValue");
-                const $increaseBtn = $wrapper.find(".increaseBtn");
-                const $decreaseBtn = $wrapper.find(".decreaseBtn");
-                const $quantityInput = $wrapper.find("input.quantity");
-                const $optionBtns = $wrapper.find(".option-value-btn");
-
-                const valueToOptionMap = {};
-                options.forEach(opt => {
-                    opt.values.forEach(val => {
-                        valueToOptionMap[val.id] = opt.id;
-                    });
-                });
-
-                if (currentVariant?.value_ids?.length) {
-                    currentVariant.value_ids.forEach(valId => {
-                        const optId = valueToOptionMap[valId];
-                        if (optId) selectedOptions[optId] = valId;
-                    });
-                }
-
-                function updateUI() {
-                    if (!currentVariant) return;
-
-                    const basePrice = parseFloat(currentVariant.selling_price) || 0;
-                    const discounted = currentVariant.discounted_price !== null ? parseFloat(currentVariant
-                        .discounted_price) : null;
-
-                    const total = (basePrice * quantity).toFixed(2);
-                    const discountTotal = discounted !== null ? (discounted * quantity).toFixed(2) : null;
-
-                    $skuEl.text(currentVariant.sku);
-                    $stockEl.text(currentVariant.stock);
-                    $availability.text(currentVariant.stock > 0 ? "In Stock" : "Out of Stock");
-
-                    if (discounted && discounted > 0) {
-                        $priceEl.text(`৳ ${discountTotal}`).removeClass("line-through");
-                    } else {
-                        $priceEl.text(`৳ ${total}`).removeClass("line-through");
-                    }
-
-                    $variantIdInput.val(currentVariant.id);
-                    $qtyInput.val(quantity);
-                }
-
-                function resetUI() {
-                    $skuEl.text("N/A");
-                    $stockEl.text("0");
-                    $availability.text("Not Available");
-                    $priceEl.text("৳ 0.00");
-                    $variantIdInput.val("");
-                }
-
-                function updateVariantSelection() {
-                    const selectedIds = Object.values(selectedOptions).map(Number).sort();
-                    const found = variants.find(v =>
-                        JSON.stringify([...v.value_ids].sort()) === JSON.stringify(selectedIds)
-                    );
-
-                    if (found) {
-                        currentVariant = found;
-                        updateUI();
-                        if (found.image) {
-                            const imageUrl = `/storage/${found.image}`;
-                            $mainImage.attr("src", imageUrl);
-                            $thumbWrapper.find(".slide-thumb").removeClass("border-primary");
-                            $thumbWrapper.find(`.thumb-img[data-full="${imageUrl}"]`).closest(
-                                ".slide-thumb").addClass("border-primary");
-                        }
-                        $variantError.addClass("hidden");
-                        $addToCartBtn.prop("disabled", false).removeClass("opacity-50 cursor-not-allowed");
-                    } else {
-                        currentVariant = null;
-                        resetUI();
-                        $variantError.removeClass("hidden");
-                        $addToCartBtn.prop("disabled", true).addClass("opacity-50 cursor-not-allowed");
-
-                        let html = '';
-                        slider.forEach((img, idx) => {
-                            const full = `/storage/${img}`;
-                            html += `<div class="slide-thumb w-full h-20 rounded-2xl cursor-pointer border-2 ${idx === 0 ? 'border-primary' : 'border-transparent'} overflow-hidden">
-                        <img src="${full}" class="w-full h-full object-cover thumb-img" data-full="${full}" />
-                    </div>`;
-                        });
-                        $thumbWrapper.html(html);
-                        $mainImage.attr("src", `/storage/${slider[0]}`);
-                    }
-                }
-
-                $optionBtns.on("click", function() {
-                    const $btn = $(this);
-                    const optId = $btn.data("option-id");
-                    const valId = $btn.data("value-id");
-
-                    selectedOptions[optId] = parseInt(valId);
-
-                    $optionBtns.filter(`[data-option-id="${optId}"]`).removeClass(
-                        "bg-primary/10 text-primary border-primary").addClass(
-                        "bg-white text-gray-800 border-gray-300");
-
-                    $btn.removeClass("bg-white text-gray-800 border-gray-300").addClass(
-                        "bg-primary/10 text-primary border-primary");
-
-                    updateVariantSelection();
-                });
-
-                $increaseBtn.on("click", () => {
-                    quantity++;
-                    updateUI();
-
-                    console.log(quantity);
-                });
-
-                $decreaseBtn.on("click", () => {
-                    if (quantity > 1) {
-                        quantity--;
-                        updateUI();
-                    }
-                });
-
-                $quantityInput.on("input", () => {
-                    const val = parseInt($quantityInput.val()) || 1;
-                    quantity = val > 0 ? val : 1;
-                    updateUI();
-                });
-
-                // Thumbnail click
-                $wrapper.on("click", ".thumb-img", function() {
-                    const full = $(this).data("full");
-                    $mainImage.attr("src", full);
-                    $thumbWrapper.find(".slide-thumb").removeClass("border-primary");
-                    $(this).closest(".slide-thumb").addClass("border-primary");
-                });
-
-                updateUI();
-            });
-        });
-    </script> --}}
-
-    {{-- <script>
-        let quantity = 1;
-
-        $(document).on("click", ".increaseBtn", function() {
-            const $wrapper = $(this).closest(".product-contents");
-            const product = $wrapper.data("product");
-
-            quantity = parseInt($wrapper.find("input.quantity").val()) || 1;
-            quantity++;
-            updateUI($wrapper, quantity, product);
-        });
-
-        $(document).on("click", ".decreaseBtn", function() {
-            const $wrapper = $(this).closest(".product-contents");
-            const product = $wrapper.data("product");
-
-            quantity = parseInt($wrapper.find("input.quantity").val()) || 1;
-            if (quantity > 1) {
-                quantity--;
-            }
-
-            updateUI($wrapper, quantity, product);
-        });
-
-        function updateUI($wrapper, quantity, product) {
-            const $priceEl = $wrapper.find(".product-price");
-            const $qtyInput = $wrapper.find("input.quantity");
-
-            const basePrice = parseFloat(product.price) || 0;
-            const discounted = product.discounted_price !== null ? parseFloat(product.discounted_price) : null;
-
-            const finalPrice = discounted && discounted > 0 ? discounted : basePrice;
-            const total = finalPrice * quantity;
-
-            const formattedTotal = total;
-
-            $priceEl.text(`৳ ${formattedTotal}`);
-            $qtyInput.val(quantity);
-        }
-
-
-    </script> --}}
-
     <script>
         $(function() {
             function formatPrice(price, quantity) {
-                const total = price * quantity;
+                const total = Math.round(price * quantity * 100) / 100;
                 return total.toLocaleString('en-BD', {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2
@@ -546,7 +353,11 @@ $settings = settings();
 
                     $priceEl.text(`৳ ${formatPrice(price, quantity)}`);
 
-                    if (discounted) {
+                    console.log(discounted);
+                    if (discounted == 0 || discounted == null) {
+                        console.log("ok");
+                        $originalPriceEl.addClass('hidden');
+                    } else {
                         $originalPriceEl.removeClass('hidden');
                         $originalPriceEl.text(`৳ ${formatPrice(basePrice, quantity)}`)
                     }
@@ -569,12 +380,8 @@ $settings = settings();
                         const currentMainImage = $wrapper.find('.main-product-image').attr('src');
 
                         if (currentMainImage == imageUrl) {
-
-                            console.log($thumbEl.closest('.slide-thumb'));
                             $thumbEl.closest('.slide-thumb').addClass('border-primary').removeClass(
                                 'border-transparent');
-                        } else {
-                            console.warn("No thumbnail found matching:", imageUrl);
                         }
                     }
 
@@ -648,7 +455,6 @@ $settings = settings();
                 return selectedOptions;
             }
 
-            // Handle option value selection
             $(document).on("click", ".option-value-btn", function() {
                 const $btn = $(this);
                 const $wrapper = $btn.closest("[id^='product-wrapper']");
@@ -658,7 +464,6 @@ $settings = settings();
                 const optId = $btn.data("option-id");
                 const valId = $btn.data("value-id");
 
-                // Style update
                 $wrapper.find(`.option-value-btn[data-option-id="${optId}"]`).removeClass(
                     "bg-primary/10 text-primary border-primary"
                 ).addClass("bg-white text-gray-800 border-gray-300");
@@ -719,6 +524,61 @@ $settings = settings();
 
                 updateProductUI($wrapper, variant, quantity);
             });
+
+            function initDefaultVariant($wrapper) {
+                if ($wrapper.data('variant-initialized')) return; // avoid double init
+
+                const product = $wrapper.data("product");
+                if (!product?.variants?.length) return;
+
+                const defaultVariant = product.variants.find(v => v.is_default);
+                if (!defaultVariant) return;
+
+                defaultVariant.value_ids.forEach(valId => {
+                    const $btn = $wrapper.find(`.option-value-btn[data-value-id="${valId}"]`);
+                    const optId = $btn.data("option-id");
+
+                    // Reset other buttons in this option group
+                    $wrapper.find(`.option-value-btn[data-option-id="${optId}"]`)
+                        .removeClass("bg-primary/10 text-primary border-primary")
+                        .addClass("bg-white text-gray-800 border-gray-300");
+
+                    // Highlight default button
+                    $btn.removeClass("bg-white text-gray-800 border-gray-300")
+                        .addClass("bg-primary/10 text-primary border-primary");
+                });
+
+                const quantity = parseInt($wrapper.find(".qtyInputValue").val()) || 1;
+                updateProductUI($wrapper, defaultVariant, quantity);
+
+                $wrapper.data('variant-initialized', true);
+            }
+
+            // 1. Init on page load for all products on the page
+            $(document).ready(function() {
+                $("[id^='product-wrapper']").each(function() {
+                    initDefaultVariant($(this));
+                });
+            });
+
+            // 2. Init when Flowbite modal opens (replace '#yourModalId' with your modal's actual ID)
+            document.addEventListener('modal:open', function(event) {
+                // event.detail contains modal element
+                const modalEl = event.detail;
+                const $modal = $(modalEl);
+
+                $modal.find("[id^='product-wrapper']").each(function() {
+                    initDefaultVariant($(this));
+                });
+            });
+
+            // 3. Call this function after 'Load More' completes
+            function onLoadMoreProducts() {
+                $("[id^='product-wrapper']").each(function() {
+                    initDefaultVariant($(this));
+                });
+            }
+
         });
     </script>
 

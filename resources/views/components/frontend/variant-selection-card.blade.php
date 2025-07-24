@@ -34,7 +34,7 @@
                         class="decreaseBtn w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-100">
                         <i class="fa-solid fa-minus text-xs"></i>
                     </button>
-                    <input readonly  type="number" min="1" value="1"
+                    <input readonly  type="number"  min="1" value="1"
                     class="quantity w-16 text-center text-sm font-semibold text-gray-800 border-0 focus:ring-0" />
                     <button type="button"
                         class="increaseBtn w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-100">
