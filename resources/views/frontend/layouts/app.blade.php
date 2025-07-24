@@ -330,6 +330,7 @@ $settings = settings();
             }
 
             function updateProductUI($wrapper, variant, quantity) {
+                const baseURL = "{{ url('/') }}";
                 const $mainImage = $wrapper.find(".main-product-image");
                 const $thumbWrapper = $wrapper.find(".thumbnailWrapper");
                 const $priceEl = $wrapper.find(".product-price");
@@ -369,7 +370,7 @@ $settings = settings();
                     $qtyEl.val(quantity);
 
                     if (variant.image) {
-                        const imageUrl = 'http://127.0.0.1:8000/storage/' + variant.image;
+                        const imageUrl = baseURL + variant.image;
                         $wrapper.find('.main-product-image').attr('src', imageUrl);
                         $wrapper.find('.slide-thumb').removeClass('border-primary').addClass('border-transparent');
                         const $thumbEl = $wrapper.find(`.thumb-img[data-full="${imageUrl}"]`)
@@ -401,8 +402,7 @@ $settings = settings();
                     </div>`;
                     });
                     $wrapper.find('#thumbnailWrapper').html(allThumbs);
-                    $wrapper.find('#main-product-image').attr('src',
-                        `/storage/${product.slider[0] ?? ''}`);
+                    $wrapper.find('#main-product-image').attr('src', `/storage/${product.slider[0] ?? ''}`);
 
                 } else {
                     const basePrice = parseFloat(product.price) || 0;
