@@ -94,7 +94,7 @@ class ProductController extends Controller
             }
         }
 
-        return view('frontend.products.details_new', [
+        return view('frontend.products.details', [
             'product'       => $product,
             'products'      => $products,
             'ratings'       => $ratings,
