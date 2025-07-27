@@ -75,29 +75,37 @@ if (! function_exists('upload_file')) {
 }
 
 if (! function_exists('upload_with_watermark')) {
-    function upload_with_watermark($file, $finalDirectory, $tempDirectory = 'images/temp', $disk = 'public')
+    function upload_with_watermark($file, $directory, $disk = 'public')
     {
-        $tempPath = upload_file($file, $tempDirectory, $disk);
-
-        $watermark = Storage::disk($disk)->get('images/watermark.png');
-
-        $fileName = basename($tempPath);
-        $finalPath = $finalDirectory . '/' . $fileName;
-        $fullFinalPath = Storage::disk($disk)->path($finalPath);
-
-        if (!Storage::disk($disk)->exists($finalDirectory)) {
-            Storage::disk($disk)->makeDirectory($finalDirectory);
+        $watermark = null;
+        $watermarkPath = 'images/watermark.png';
+        if (Storage::disk($disk)->exists($watermarkPath)) {
+            $watermark = Storage::disk($disk)->get($watermarkPath);
         }
 
-        Image::read(Storage::disk($disk)->get($tempPath))
-            ->place(
-                element: $watermark,
-                position: 'bottom-right',
-                offset_x: 10,
-                offset_y: 10,
-                opacity: 70
-            )
-            ->save($fullFinalPath);
+        $tempPath = upload_file($file, 'images/temp', $disk);
+
+        $fileName = basename($tempPath);
+        $finalPath = $directory . '/' . $fileName;
+        $fullFinalPath = Storage::disk($disk)->path($finalPath);
+
+        if (!Storage::disk($disk)->exists($directory)) {
+            Storage::disk($disk)->makeDirectory($directory);
+        }
+
+        if (!is_null($watermark)) {
+            Image::read(Storage::disk($disk)->get($tempPath))
+                ->place(
+                    element: $watermark,
+                    position: 'bottom-right',
+                    offset_x: 10,
+                    offset_y: 10,
+                    opacity: 70
+                )
+                ->save($fullFinalPath);
+        } else {
+            Image::read(Storage::disk($disk)->get($tempPath))->save($fullFinalPath);
+        }
 
         delete_file($tempPath);
 

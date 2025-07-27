@@ -1,11 +1,11 @@
 @extends('seller.layouts.app')
 @section('title', 'Add Product')
-@section('content')
 
 @push('styles')
 <link href="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.css" rel="stylesheet">
 @endpush
 
+@section('content')
 <div class="mb-3 d-flex justify-content-between align-items-end">
     <h4 class="mb-0">Add Product</h4>
 </div>
