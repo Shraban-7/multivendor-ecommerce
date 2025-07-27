@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Category;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Support\Facades\DB;
 
 class CategorySeeder extends Seeder
 {
@@ -208,6 +209,179 @@ class CategorySeeder extends Seeder
                         'name' => $subcategory,
                         'slug' => str_slug('categories', 'slug', $subcategory),
                         'category_id' => $categoryId,
+                    ]);
+                }
+            }
+        }
+    }
+
+    public function new()
+    {
+        DB::table('categories')->truncate();
+
+        $categories = [
+            'Fashion & Clothing' => [
+                "Men's Fashion" => [
+                    "T-Shirts & Polos",
+                    "Shirts",
+                    "Jeans & Pants",
+                    "Suits & Blazers",
+                    "Activewear",
+                    "Innerwear & Sleepwear",
+                    "Traditional Wear",
+                    "Winter Wear",
+                    "Accessories (Belts, Ties, etc.)",
+                ],
+                "Women's Fashion" => [
+                    "Tops & Tees",
+                    "Dresses & Jumpsuits",
+                    "Blouses & Shirts",
+                    "Pants & Jeans",
+                    "Skirts",
+                    "Activewear",
+                    "Lingerie & Sleepwear",
+                    "Traditional Wear",
+                    "Winter Wear",
+                    "Accessories (Scarves, Gloves, etc.)",
+                ],
+                "Kids & Babies" => [
+                    "Boys Clothing",
+                    "Girls Clothing",
+                    "Baby Clothing (0-24 months)",
+                    "School Uniforms",
+                    "Kids Footwear",
+                    "Toys & Games",
+                    "Baby Care Products",
+                ],
+            ],
+
+            'Footwear' => [
+                "Men's Footwear" => [
+                    "Sneakers",
+                    "Casual Shoes",
+                    "Formal Shoes",
+                    "Sandals & Flip Flops",
+                    "Sports Shoes",
+                    "Boots",
+                ],
+                "Women's Footwear" => [
+                    "Sneakers",
+                    "Flats",
+                    "Heels",
+                    "Sandals",
+                    "Sports Shoes",
+                    "Boots",
+                ],
+                "Kids Footwear" => [
+                    "School Shoes",
+                    "Casual Shoes",
+                    "Sandals",
+                    "Sports Shoes",
+                ],
+            ],
+
+            'Electronics & Accessories' => [
+                'Mobile Accessories' => [
+                    "Chargers & Cables",
+                    "Power Banks",
+                    "Headphones & Earphones",
+                    "Mobile Cases & Covers",
+                    "Screen Protectors",
+                    "Bluetooth Devices",
+                ],
+                'Computer Accessories' => [
+                    "Keyboards & Mice",
+                    "USB Drives & Memory Cards",
+                    "Laptop Bags",
+                    "Webcams",
+                    "Cables & Adapters",
+                ],
+                'Audio & Video' => [
+                    "Headphones",
+                    "Speakers",
+                    "Microphones",
+                ],
+                'Gadgets' => [
+                    "Smart Watches",
+                    "VR Accessories",
+                    "Smart Home Devices",
+                    "Wearable Tech",
+                    "Drones",
+                    "Electronic Toys",
+                ],
+            ],
+
+            'Home & Living' => [
+                'Home Decor' => [
+                    "Showpieces",
+                    "Wall Decor",
+                    "Clocks",
+                    "Photo Frames",
+                    "Candles & Holders",
+                ],
+                'Gifts & Novelties' => [
+                    "Gift Sets",
+                    "Personalized Gifts",
+                    "Fancy Items",
+                    "Greeting Cards",
+                    "Party Supplies",
+                ],
+                'Kitchen & Dining' => [
+                    "Dinnerware",
+                    "Cookware",
+                    "Kitchen Tools",
+                    "Drinkware",
+                ],
+            ],
+
+            'Beauty & Personal Care' => [
+                "Skincare",
+                "Haircare",
+                "Makeup",
+                "Fragrances",
+                "Men's Grooming",
+            ],
+
+            'Toys & Games' => [
+                "Action Figures",
+                "Board Games",
+                "Educational Toys",
+                "Outdoor Toys",
+                "Puzzles",
+            ],
+
+            'Sports & Outdoors' => [
+                "Fitness Equipment",
+                "Team Sports",
+                "Outdoor Gear",
+                "Cycling",
+            ],
+        ];
+
+        $this->insertCategories($categories);
+    }
+
+    private function insertCategories(array $categories, $parentId = null)
+    {
+        foreach ($categories as $key => $value) {
+            $isAssoc = is_array($value) && array_keys($value) !== range(0, count($value) - 1);
+
+            $id = DB::table('categories')->insertGetId([
+                'name' => $key,
+                'category_id' => $parentId,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            if ($isAssoc) {
+                $this->insertCategories($value, $id);
+            } elseif (is_array($value)) {
+                foreach ($value as $sub) {
+                    DB::table('categories')->insert([
+                        'name' => $sub,
+                        'category_id' => $id,
+                        'created_at' => now(),
+                        'updated_at' => now(),
                     ]);
                 }
             }
