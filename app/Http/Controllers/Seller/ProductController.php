@@ -65,7 +65,8 @@ class ProductController extends Controller
             'meta_title'         => 'nullable|string',
         ]);
 
-        $validated['thumbnail'] = upload_file($request->file('thumbnail'), 'images/products/thumb');
+        $validated['thumbnail'] = upload_with_watermark($request->file('thumbnail'), 'images/products/thumb');
+
         if ($request->hasFile('video')) {
             $validated['video'] = upload_file($request->file('video'), 'videos/products');
         }
@@ -275,11 +276,9 @@ class ProductController extends Controller
                 if ($variant->stock_in < 0) {
                     $variant->stock_in = 0;
                 }
-
             }
 
             $variant->save();
-
         } else {
             $currentStock = ($product->stock_in ?? 0) - ($product->stock_out ?? 0);
 
@@ -305,7 +304,6 @@ class ProductController extends Controller
                 if ($product->stock_in < 0) {
                     $product->stock_in = 0;
                 }
-
             }
 
             $product->save();
@@ -313,5 +311,4 @@ class ProductController extends Controller
 
         return redirect()->back()->with('success', 'Quantity updated successfully!');
     }
-
 }

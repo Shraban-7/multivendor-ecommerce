@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Intervention\Image\Laravel\Facades\Image;
 
 define('CURRENCY_SYMBOL', '৳');
 
@@ -70,6 +71,37 @@ if (! function_exists('upload_file')) {
         Storage::disk($disk)->put($path, File::get($file));
 
         return $path;
+    }
+}
+
+if (! function_exists('upload_with_watermark')) {
+    function upload_with_watermark($file, $finalDirectory, $tempDirectory = 'images/temp', $disk = 'public')
+    {
+        $tempPath = upload_file($file, $tempDirectory, $disk);
+
+        $watermark = Storage::disk($disk)->get('images/watermark.png');
+
+        $fileName = basename($tempPath);
+        $finalPath = $finalDirectory . '/' . $fileName;
+        $fullFinalPath = Storage::disk($disk)->path($finalPath);
+
+        if (!Storage::disk($disk)->exists($finalDirectory)) {
+            Storage::disk($disk)->makeDirectory($finalDirectory);
+        }
+
+        Image::read(Storage::disk($disk)->get($tempPath))
+            ->place(
+                element: $watermark,
+                position: 'bottom-right',
+                offset_x: 10,
+                offset_y: 10,
+                opacity: 70
+            )
+            ->save($fullFinalPath);
+
+        delete_file($tempPath);
+
+        return $finalPath;
     }
 }
 
@@ -240,7 +272,7 @@ if (! function_exists('validateRequest')) {
 if (! function_exists('removeZeroFromDecimal')) {
     function removeZeroFromDecimal($number, $dataType = 'string')
     {
-        if(is_null($number)) return null;
+        if (is_null($number)) return null;
 
         $decimal = explode('.', $number);
         if (isset($decimal[1]) && $decimal[1] == '00') {
@@ -346,4 +378,3 @@ if (! function_exists('calculate_discount_amount')) {
         };
     }
 }
-
