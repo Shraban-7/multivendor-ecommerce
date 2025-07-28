@@ -463,24 +463,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Product Grid -->
-            <div id="product-list"
-                class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:gap-8">
-                @include('frontend.partials.product-card-load', ['products' => $products])
-            </div>
-
-            @if ($products->count() >= 8)
-            <!-- Load More Button -->
-            <div class="mt-12 text-center load-more-btn">
-                <button data-page="1" data-url="{{ route('category.details', $category->slug) }}" id="loadMoreBtn"
-                    class="inline-flex items-center gap-2 px-6 py-3 text-base font-medium text-white transition-colors rounded-lg bg-theme-teal hover:bg-aqua-deep"
-                    type="button">
-                    <span>Load More</span>
-                    <i class="text-sm fa-solid fa-chevron-down"></i>
-                </button>
-            </div>
-            @endif
         </div>
 
         <!-- Product Card's Wrapper -->
