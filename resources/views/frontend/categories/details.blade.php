@@ -362,112 +362,100 @@
                 </div>
 
                 <!-- Filters Section -->
-                <div class="flex flex-col gap-4">
-                    <!-- Main Filters Row -->
-                    <div class="flex flex-wrap items-center gap-3">
-                        <!-- All Categories -->
-                        <form method="GET" action="{{ route('category.details', $category->slug) }}"
-                            class="filter-dropdown group">
-                            <label for="sort-by" class="sr-only">All Categories</label>
-                            <div class="filter-dropdown-inner">
-                                <select name="subcategory" id="sort-by" onchange="this.form.submit()"
-                                    class="filter-select">
-                                    <option value="all" {{ request('subcategory') == 'all' ? 'selected' : '' }}>All Categories</option>
-                                    @foreach ($category->subcategories as $subcategory)
-                                    <option value="{{ $subcategory->slug }}"
-                                        {{ request('subcategory') == $subcategory->slug ? 'selected' : '' }}>
-                                        {{ $subcategory->name }}
-                                    </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <button type="submit" class="hidden">Search</button>
-                        </form>
+                <div class="flex flex-wrap items-center gap-3">
+                    <form method="GET" action="{{ route('category.details', $category->slug) }}"
+                        class="filter-dropdown group">
+                        <label for="sort-by" class="sr-only">All Categories</label>
+                        <div class="filter-dropdown-inner">
+                            <select name="subcategory" id="sort-by" onchange="this.form.submit()"
+                                class="filter-select">
+                                <option value="all" {{ request('subcategory') == 'all' ? 'selected' : '' }}>All Categories</option>
+                                @foreach ($category->subcategories as $subcategory)
+                                <option value="{{ $subcategory->slug }}"
+                                    {{ request('subcategory') == $subcategory->slug ? 'selected' : '' }}>
+                                    {{ $subcategory->name }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <button type="submit" class="hidden">Search</button>
+                    </form>
 
-                        <!-- Sort By -->
-                        <form class="filter-dropdown group">
-                            <label for="sort-by" class="sr-only">Sort By</label>
-                            <div class="filter-dropdown-inner">
-                                <select id="sort-by" class="filter-select">
-                                    <option selected>Sort By: Relevance</option>
-                                    <option value="best-selling">Best Selling</option>
-                                    <option value="trending">Trending</option>
-                                    <option value="popularity">Popularity</option>
-                                    <option value="new-arrivals">New Arrivals</option>
-                                </select>
-                            </div>
-                        </form>
+                    <form class="filter-dropdown group">
+                        <label for="sort-by" class="sr-only">Sort By</label>
+                        <div class="filter-dropdown-inner">
+                            <select id="sort-by" class="filter-select">
+                                <option selected>Sort By: Relevance</option>
+                                <option value="best-selling">Best Selling</option>
+                                <option value="trending">Trending</option>
+                                <option value="popularity">Popularity</option>
+                                <option value="new-arrivals">New Arrivals</option>
+                            </select>
+                        </div>
+                    </form>
 
-                        <!-- Dynamic Product Options -->
-                        @foreach ($productOptions as $productOption)
-                        <form method="GET" action="{{ route('category.details', $category->slug) }}"
-                            class="filter-dropdown group">
-                            <label for="attribute-{{ $productOption->name }}" class="sr-only">{{ $productOption->name }}</label>
-                            <div class="filter-dropdown-inner">
-                                <select name="{{ strtolower($productOption->name) }}"
-                                    id="attribute-{{ $productOption->name }}" onchange="this.form.submit()"
-                                    class="filter-select">
-                                    <option value="all"
-                                        {{ request(strtolower($productOption->name)) == 'all' ? 'selected' : '' }}>
-                                        {{ $productOption->name }}
-                                    </option>
-                                    @foreach ($productOption->options as $option)
-                                    <option value="{{ $option->value }}"
-                                        {{ request(strtolower($productOption->name)) == $option->value ? 'selected' : '' }}>
-                                        {{ strtoupper($option->value) }}
-                                    </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </form>
-                        @endforeach
-                    </div>
+                    @foreach ($productOptions as $productOption)
+                    <form method="GET" action="{{ route('category.details', $category->slug) }}"
+                        class="filter-dropdown group">
+                        <label for="attribute-{{ $productOption->name }}" class="sr-only">{{ $productOption->name }}</label>
+                        <div class="filter-dropdown-inner">
+                            <select name="{{ strtolower($productOption->name) }}"
+                                id="attribute-{{ $productOption->name }}" onchange="this.form.submit()"
+                                class="filter-select">
+                                <option value="all"
+                                    {{ request(strtolower($productOption->name)) == 'all' ? 'selected' : '' }}>
+                                    {{ $productOption->name }}
+                                </option>
+                                @foreach ($productOption->options as $option)
+                                <option value="{{ $option->value }}"
+                                    {{ request(strtolower($productOption->name)) == $option->value ? 'selected' : '' }}>
+                                    {{ strtoupper($option->value) }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </form>
+                    @endforeach
 
-                    <!-- Secondary Filters Row -->
-                    <div class="flex flex-wrap items-center gap-3">
-                        <!-- Review -->
-                        <form class="filter-dropdown group">
-                            <label for="review-filter" class="sr-only">Review</label>
-                            <div class="filter-dropdown-inner">
-                                <select id="review-filter" class="filter-select">
-                                    <option selected>Review</option>
-                                    <option value="highest-rated">Highest Rated</option>
-                                    <option value="most-reviewed">Most Reviewed</option>
-                                    <option value="top-feedback">Top Feedback</option>
-                                    <option value="verified-reviews">Verified Reviews</option>
-                                </select>
-                            </div>
-                        </form>
+                    <form class="filter-dropdown group">
+                        <label for="review-filter" class="sr-only">Review</label>
+                        <div class="filter-dropdown-inner">
+                            <select id="review-filter" class="filter-select">
+                                <option selected>Review</option>
+                                <option value="highest-rated">Highest Rated</option>
+                                <option value="most-reviewed">Most Reviewed</option>
+                                <option value="top-feedback">Top Feedback</option>
+                                <option value="verified-reviews">Verified Reviews</option>
+                            </select>
+                        </div>
+                    </form>
 
-                        <!-- Recommended -->
-                        <form class="filter-dropdown group">
-                            <label for="recommended-filter" class="sr-only">Recommended</label>
-                            <div class="filter-dropdown-inner">
-                                <select id="recommended-filter" class="filter-select">
-                                    <option selected>Recommended</option>
-                                    <option value="best-sellers">Best Sellers</option>
-                                    <option value="editor-pick">Editor's Pick</option>
-                                    <option value="customers-choice">Customers' Choice</option>
-                                    <option value="staff-recommended">Staff Recommended</option>
-                                </select>
-                            </div>
-                        </form>
+                    <form class="filter-dropdown group">
+                        <label for="recommended-filter" class="sr-only">Recommended</label>
+                        <div class="filter-dropdown-inner">
+                            <select id="recommended-filter" class="filter-select">
+                                <option selected>Recommended</option>
+                                <option value="best-sellers">Best Sellers</option>
+                                <option value="editor-pick">Editor's Pick</option>
+                                <option value="customers-choice">Customers' Choice</option>
+                                <option value="staff-recommended">Staff Recommended</option>
+                            </select>
+                        </div>
+                    </form>
 
-                        <!-- Desktop All Filters Button -->
-                        <button data-drawer-target="all-filters-drawer" data-drawer-show="all-filters-drawer"
-                            aria-controls="all-filters-drawer"
-                            class="hidden items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-colors rounded-lg md:flex bg-primary hover:bg-theme-dark">
-                            <span>All Filters</span>
-                            <i class="fa-solid fa-filter text-xs"></i>
-                        </button>
-                    </div>
+                    <button data-drawer-target="all-filters-drawer" data-drawer-show="all-filters-drawer"
+                        aria-controls="all-filters-drawer"
+                        class="hidden items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-colors rounded-lg md:flex bg-primary hover:bg-theme-dark">
+                        <span>All Filters</span>
+                        <i class="fa-solid fa-filter text-xs"></i>
+                    </button>
                 </div>
             </div>
         </div>
 
         <!-- Product Card's Wrapper -->
         <div id="product-list"
-            class="grid items-start grid-cols-1 gap-5 p-2 xsm:grid-cols-2 md:grid-cols-4 xl:gap-8 lg:p-0">
+            class="grid items-start grid-cols-2 gap-3 p-2 md:grid-cols-4 xl:gap-8 lg:p-0">
             @include('frontend.partials.product-card-load', ['products' => $products])
         </div>
 
