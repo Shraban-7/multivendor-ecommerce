@@ -11,9 +11,38 @@ class CategorySeeder extends Seeder
 {
     public function run()
     {
+        DB::table('categories')->truncate();
+
         $categories = [
             [
-                'name' => 'Skin Care',
+                'name' => 'Fashion & Clothing',
+                'image' => 'images/categories/base/category-3-min.png',
+                'cover_image' => 'images/categories/cover/fashion-promo-min.png',
+                'cover_title' => 'Get 50% CASHBACK ON SHOPPING $250',
+                'cover_description' => 'The retailer has worked to improve its fashion offerings in recent years, adding more trendy, sustainable, and inclusive pieces.',
+                'cover_text_color' => '#FFDB9C',
+                'cover_bg_color' => '#3A2732',
+                'cover_button_color' => '#0DA487',
+                'is_nav' => 1,
+                'is_slider' => 1,
+                'subcategories' => [
+                    "Men's Fashion",
+                    "Women's Fashion",
+                    'Kids & Babies',
+                ]
+            ],
+            [
+                'name' => 'Footwear',
+                'image' => 'images/categories/base/category-3-min.png',
+                'is_slider' => 1,
+                'subcategories' => [
+                    "Men's Footwear",
+                    "Women's Footwear",
+                    "Kids Footwear",
+                ],
+            ],
+            [
+                'name' => 'Beauty & Personal Care',
                 'image' => 'images/categories/base/category-5-min.png',
                 'cover_image' => 'images/categories/cover/skin-care-promo-min.png',
                 'cover_title' => 'Pamper Your Skin, Pamper Yourself',
@@ -22,34 +51,34 @@ class CategorySeeder extends Seeder
                 'cover_bg_color' => '#D0AB6A',
                 'cover_button_color' => '#FFB321',
                 'is_nav' => 1,
+                'is_slider' => 1,
                 'subcategories' => [
-                    'Cleansers',
-                    'Moisturizers',
-                    'Sunscreens',
-                    'Serums & Treatments',
-                    'Face Masks',
-                    'Eye Creams',
+                    "Skincare",
+                    "Haircare",
+                    "Makeup",
+                    "Fragrances",
+                    "Men's Grooming",
                 ]
             ],
-            [
-                'name' => 'Automotive',
-                'image' => 'images/categories/base/category-6-min.png',
-                'cover_image' => 'images/categories/cover/automotive-promo-min.png',
-                'cover_title' => 'You, asked for it. You got it, Toyota',
-                'cover_description' => 'Whether you need replacement parts, performance upgrades, or maintenance essentials, you can often find great offers.',
-                'cover_text_color' => '#FFFFFF',
-                'cover_bg_color' => '#334161',
-                'cover_button_color' => '#10387D',
-                'is_nav' => 1,
-                'subcategories' => [
-                    'Car Accessories',
-                    'Motorcycle Parts',
-                    'Engine Oils & Fluids',
-                    'Tires & Wheels',
-                    'Interior Accessories',
-                    'Tools & Equipment',
-                ]
-            ],
+            // [
+            //     'name' => 'Automotive',
+            //     'image' => 'images/categories/base/category-6-min.png',
+            //     'cover_image' => 'images/categories/cover/automotive-promo-min.png',
+            //     'cover_title' => 'You, asked for it. You got it, Toyota',
+            //     'cover_description' => 'Whether you need replacement parts, performance upgrades, or maintenance essentials, you can often find great offers.',
+            //     'cover_text_color' => '#FFFFFF',
+            //     'cover_bg_color' => '#334161',
+            //     'cover_button_color' => '#10387D',
+            //     'is_nav' => 1,
+            //     'subcategories' => [
+            //         'Car Accessories',
+            //         'Motorcycle Parts',
+            //         'Engine Oils & Fluids',
+            //         'Tires & Wheels',
+            //         'Interior Accessories',
+            //         'Tools & Equipment',
+            //     ]
+            // ],
             [
                 'name' => 'Electronics',
                 'image' => 'images/categories/base/category-4-min.png',
@@ -62,47 +91,32 @@ class CategorySeeder extends Seeder
                 'is_nav' => 1,
                 'is_slider' => 1,
                 'subcategories' => [
-                    'Laptops',
-                    'Smartphones',
-                    'Accessories'
+                    'Mobile Accessories',
+                    'Computer Accessories',
+                    'Gadgets',
+                    'Audio & Video'
                 ]
             ],
+
+            // [
+            //     'name' => 'Grocery & Essentials',
+            //     'image' => 'images/categories/base/category-1-min.png',
+            //     'cover_image' => 'images/categories/cover/grocery-promo-min.png',
+            //     'cover_title' => 'Get 50% CASHBACK ON SHOPPING $250',
+            //     'cover_description' => 'Provides shoppers with an extensive range of groceries, from fresh produce and meats to pantry staples, snacks, and household essentials.',
+            //     'cover_text_color' => '#FFDB9C',
+            //     'cover_bg_color' => '#8B2022',
+            //     'cover_button_color' => '#FD740F',
+            //     'is_nav' => 1,
+            //     'is_slider' => 1,
+            //     'subcategories' => [
+            //         'Fruits & Vegetables',
+            //         'Dairy Products',
+            //         'Snacks & Beverages'
+            //     ]
+            // ],
             [
-                'name' => 'Fashion',
-                'image' => 'images/categories/base/category-3-min.png',
-                'cover_image' => 'images/categories/cover/fashion-promo-min.png',
-                'cover_title' => 'Get 50% CASHBACK ON SHOPPING $250',
-                'cover_description' => 'The retailer has worked to improve its fashion offerings in recent years, adding more trendy, sustainable, and inclusive pieces.',
-                'cover_text_color' => '#FFDB9C',
-                'cover_bg_color' => '#3A2732',
-                'cover_button_color' => '#0DA487',
-                'is_nav' => 1,
-                'is_slider' => 1,
-                'subcategories' => [
-                    'Men\'s Wear',
-                    'Women\'s Wear',
-                    'Kids\' Fashion'
-                ]
-            ],
-            [
-                'name' => 'Grocery & Essentials',
-                'image' => 'images/categories/base/category-1-min.png',
-                'cover_image' => 'images/categories/cover/grocery-promo-min.png',
-                'cover_title' => 'Get 50% CASHBACK ON SHOPPING $250',
-                'cover_description' => 'Provides shoppers with an extensive range of groceries, from fresh produce and meats to pantry staples, snacks, and household essentials.',
-                'cover_text_color' => '#FFDB9C',
-                'cover_bg_color' => '#8B2022',
-                'cover_button_color' => '#FD740F',
-                'is_nav' => 1,
-                'is_slider' => 1,
-                'subcategories' => [
-                    'Fruits & Vegetables',
-                    'Dairy Products',
-                    'Snacks & Beverages'
-                ]
-            ],
-            [
-                'name' => 'Home Appliances',
+                'name' => 'Home & Living',
                 'image' => 'images/categories/base/category-5-min.png',
                 'cover_image' => 'images/categories/cover/home-appliances-promo-min.png',
                 'cover_title' => 'Revolutionize your home with our modern appliances',
@@ -111,80 +125,83 @@ class CategorySeeder extends Seeder
                 'cover_bg_color' => '#3F4C50',
                 'cover_button_color' => '#0DA487',
                 'is_nav' => 1,
+                'is_slider' => 1,
                 'subcategories' => [
-                    'Refrigerators',
-                    'Washing Machines',
-                    'Microwaves',
-                    'Air Conditioners',
-                    'Vacuum Cleaners',
-                    'Water Purifiers',
+                    'Home Decor',
+                    'Gifts & Novelties',
+                    'Kitchen & Dining',
                 ]
-            ],
-            [
-                'name' => 'Clothing shoes & Accessories',
-                'image' => 'images/categories/base/category-3-min.png',
-                'is_slider' => 1
             ],
             [
                 'name' => 'Toys, Kids And Baby',
-            ],
-            [
-                'name' => 'SmartPhone',
+                'is_nav' => 1,
                 'subcategories' => [
-                    'Apple',
-                    'Samsung',
-                    'Google',
-                    'OnePlus',
-                    'Xiaomi',
-                    'Oppo',
-                    'Vivo',
-                    'Realme',
-                    'Motorola',
-                    'Asus',
-                    'Huawei',
-                    'Honor',
-                    'Nothing',
-                    'Infinix',
-                    'Tecno',
-                    'Feature Phones',
-                ]
+                    "Action Figures",
+                    "Board Games",
+                    "Educational Toys",
+                    "Outdoor Toys",
+                    "Puzzles",
+                ],
             ],
-            [
-                'name' => 'Personal Care',
-                'image' => 'images/categories/base/category-5-min.png',
-                'is_slider' => 1
-            ],
-            [
-                'name' => 'Pharmacy, Health & Wellness',
-            ],
-            [
-                'name' => 'Auto & Tires',
-                'image' => 'images/categories/base/category-6-min.png',
-                'is_slider' => 1
-            ],
-            [
-                'name' => 'Household Essentials',
-                'image' => 'images/categories/base/category-2-min.png',
-                'is_slider' => 1
-            ],
-            [
-                'name' => 'Pets',
-            ],
+            // [
+            //     'name' => 'SmartPhone',
+            //     'subcategories' => [
+            //         'Apple',
+            //         'Samsung',
+            //         'Google',
+            //         'OnePlus',
+            //         'Xiaomi',
+            //         'Oppo',
+            //         'Vivo',
+            //         'Realme',
+            //         'Motorola',
+            //         'Asus',
+            //         'Huawei',
+            //         'Honor',
+            //         'Nothing',
+            //         'Infinix',
+            //         'Tecno',
+            //         'Feature Phones',
+            //     ]
+            // ],
+            // [
+            //     'name' => 'Pharmacy, Health & Wellness',
+            // ],
+            // [
+            //     'name' => 'Auto & Tires',
+            //     'image' => 'images/categories/base/category-6-min.png',
+            //     'is_slider' => 1
+            // ],
+            // [
+            //     'name' => 'Household Essentials',
+            //     'image' => 'images/categories/base/category-2-min.png',
+            //     'is_slider' => 1
+            // ],
+            // [
+            //     'name' => 'Pets',
+            // ],
             [
                 'name' => 'Sports & Outdoors',
+                'is_nav' => 1,
+                'subcategories' => [
+                    "Fitness Equipment",
+                    "Team Sports",
+                    "Outdoor Gear",
+                    "Cycling",
+                ],
             ],
-            [
-                'name' => 'School Office & Art Supplies',
-            ],
-            [
-                'name' => 'Movies Music & Books',
-            ],
-            [
-                'name' => 'Gifts Card',
-            ],
-            [
-                'name' => 'Shop With Purpose',
-            ],
+            // [
+            //     'name' => 'School Office & Art Supplies',
+            // ],
+            // [
+            //     'name' => 'Movies Music & Books',
+            // ],
+            // [
+            //     'name' => 'Gifts Card',
+            // ],
+            // [
+            //     'name' => 'Shop With Purpose',
+            // ],
         ];
 
         foreach ($categories as $categoryData) {

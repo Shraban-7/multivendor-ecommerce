@@ -183,11 +183,11 @@
         <div class="nav-links hidden w-full md:block md:w-auto" id="navbar-multi-level">
             <ul
                 class="flex flex-col font-light p-3 lg:p-4 md:p-0 mt-4 border border-gray-100 rounded-lg md:space-x-3 lg:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:ms-4 md:border-0 md:text-persian-blue md:text-sm lg:text-base md:flex-wrap">
-                <li>
+                <!-- <li>
                     <a href="/"
                         class="block py-2 px-3 text-persian-blue rounded hover:bg-primary md:hover:bg-transparent md:border-0 md:hover:text-primary md:p-0 eq md:text-persian-blue nav-link"
                         aria-current="page">Home</a>
-                </li>
+                </li> -->
                 @foreach (nav_categories() as $category)
                     <li>
                         <a href="{{ route('category.details',$category->slug) }}"
