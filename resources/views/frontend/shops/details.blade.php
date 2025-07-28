@@ -25,7 +25,7 @@
                     class="flex xsm:flex-1 md:flex-none items-center p-2 md:p-0 md:pl-16 justify-center gap-2 text-butterfly-blue border-t sm:border-t-0 sm:border-l sm:pl-16 border-white/30">
                     <i class="fa-solid fa-mobile-screen text-2xl"></i>
                     <div>
-                        <div class="text-sm">Get The Tesko App</div>
+                        <div class="text-sm">Get The SlashMart App</div>
                         <div class="text-xs">Refund for any issues</div>
                     </div>
                 </div>

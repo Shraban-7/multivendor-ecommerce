@@ -66,8 +66,8 @@
 
                     <div>
                         <h2 class="text-xl mb-2 md:mb-3">EMAIL US</h2>
-                        <a href="mailto:tesko546@gmail.com" target="_blank"
-                            class="inline-block hover:text-light-yellow eq">tesko544@gmail.com</a>
+                        <a href="mailto:slash-mart@gmail.com" target="_blank"
+                            class="inline-block hover:text-light-yellow eq">slash-mart@gmail.com</a>
                     </div>
 
                     <div class="flex flex-col items-start">

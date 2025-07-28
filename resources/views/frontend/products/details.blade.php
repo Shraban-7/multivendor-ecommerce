@@ -221,7 +221,7 @@
                         <!-- Commitments -->
                         <div class="mt-5">
                             <div class="flex items-center gap-2 mb-5">
-                                <div class="w-16 h-16 overflow-hidden tesko-icon">
+                                <div class="w-16 h-16 overflow-hidden slashmart-icon">
                                     <img src="{{ storage_url($settings->logo) }}" alt="{{ $settings->app_name }}"
                                         class="object-contain w-full h-full" />
                                 </div>
