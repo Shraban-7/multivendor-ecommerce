@@ -22,6 +22,8 @@ $settings = settings();
     <link rel="stylesheet" href="{{ asset('assets/libs/swiper/css/swiper-bundle.min.css') }}" />
 
     <title>@yield('title') | {{ $settings->app_name }}</title>
+
+    @stack('header')
 </head>
 
 <body>

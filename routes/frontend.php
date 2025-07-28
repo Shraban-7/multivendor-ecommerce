@@ -13,7 +13,7 @@ Route::get('categories/{slug}', [CategoryController::class, 'details'])->name('c
 
 Route::get('/contact-us', [ContactUsController::class, 'contactUs'])->name('contactUs');
 
-Route::prefix('products')->as('products.')->group(function(){
+Route::prefix('products')->as('products.')->group(function () {
     Route::get('{slug}/details', [ProductController::class, 'details'])->name('details');
     Route::post('{slug}/get-variant', [ProductController::class, 'getVariant']);
 });
@@ -38,8 +38,6 @@ Route::prefix('campaigns')->as('campaigns.')->group(function () {
     Route::get('{slug}/products', [SellerController::class, 'campaign_products'])->name('campaign_products');
 });
 
-
-
 Route::middleware('auth')->group(function () {
     Route::prefix('cart')->as('cart.')->group(function () {
         Route::post('/add', [CartController::class, 'add'])->name('add');
@@ -49,14 +47,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/data', [CartController::class, 'getLiveCartData'])->name('data');
     });
 
-
     Route::prefix('wishlist')->as('wishlist.')->group(function () {
         Route::get('/', [WishlistController::class, 'index'])->name('index');
         Route::post('/store', [WishlistController::class, 'store'])->name('store');
         Route::delete('{wishlist}/delete', [WishlistController::class, 'delete'])->name('delete');
     });
-
-
 
     Route::prefix('orders')->as('orders.')->group(function () {
         Route::match(['get', 'post'], 'checkout/', [OrderController::class, 'checkout'])->name('checkout');
@@ -66,6 +61,4 @@ Route::middleware('auth')->group(function () {
         Route::get('/tracking/{invoice_id}', [OrderController::class, 'tracking'])->name('tracking');
         Route::match(['get', 'post'], '/review/{product}', [OrderController::class, 'review'])->name('review');
     });
-
-
 });

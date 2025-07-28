@@ -57,16 +57,6 @@ class CategoryController extends Controller
 
         $productOptions = Option::with('options')->get();
 
-        // foreach ($request->all() as $key => $value) {
-        //     if (in_array(strtolower($key), $productAttributes->pluck('name')->map('strtolower')->toArray()) && $value != 'all') {
-        //         $query->whereHas('variants.attributeOptions', function ($q) use ($value) {
-        //             $q->where('value', ucfirst($value));
-        //         });
-        //     }
-        // }
-
-        // return $productOptions;
-
         $category_products = $query->with('variants','unit', 'images')
             ->latest()
             ->skip($skip)
