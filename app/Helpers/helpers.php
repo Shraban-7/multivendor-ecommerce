@@ -127,6 +127,13 @@ if (! function_exists('delete_file')) {
     }
 }
 
+if (! function_exists('all_categories')) {
+    function all_categories()
+    {
+        return Category::category()->orderBy('name', 'ASC')->with('subcategories')->get();
+    }
+}
+
 if (! function_exists('nav_categories')) {
     function nav_categories()
     {

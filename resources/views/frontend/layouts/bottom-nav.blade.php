@@ -20,7 +20,7 @@
                 <!-- Categories Column -->
                 <div class="border border-[#E4E7E9] rounded w-full h-[31.2rem]">
                     <ul class="py-2">
-                        @foreach (all_department_categories() as $category)
+                        @foreach (all_categories() as $category)
                             @if ($category->subcategories->isNotEmpty())
                                 <li
                                     class="category-item hover:bg-[#F2F4F5] hover:text-rangoon-green px-4 py-2 group/phone eq">
