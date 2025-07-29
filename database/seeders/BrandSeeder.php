@@ -25,7 +25,8 @@ class BrandSeeder extends Seeder
             ['name' => 'LG', 'slug' => 'lg', 'image' => 'images/brands/brand-6.png'],
             ['name' => 'Dell', 'slug' => 'dell', 'image' => 'images/brands/brand-7.png'],
             ['name' => 'HP', 'slug' => 'hp', 'image' => 'images/brands/brand-8.png'],
-            ['name' => 'Surpass', 'slug' => 'surpass', 'image' => 'images/brands/Surpass-logo.png'],
+            ['name' => 'Surpass', 'slug' => 'surpass', 'image' => 'images/brands/surpass-logo.png'],
+            ['name' => 'Zara', 'slug' => 'zara', 'image' => 'images/brands/zara-logo.png'],
         ];
 
         foreach ($brands as $brand) {

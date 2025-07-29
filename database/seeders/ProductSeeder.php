@@ -4,9 +4,14 @@ namespace Database\Seeders;
 use App\Enums\DiscountType;
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\Option;
+use App\Models\OptionValue;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductUnit;
+use App\Models\ProductVariant;
+use App\Models\ProductVariantOption;
+use App\Models\Seller;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -17,6 +22,9 @@ class ProductSeeder extends Seeder
 
     public function run(): void
     {
+        Product::truncate();
+        Brand::truncate();
+
         $jsonPath = database_path('data/products.json');
 
         if (! File::exists($jsonPath)) {
@@ -27,47 +35,159 @@ class ProductSeeder extends Seeder
         $json = File::get($jsonPath);
         $data = json_decode($json, true);
 
-        // dd($data);
-
         if (! isset($data['products']) || ! is_array($data['products'])) {
             dump("Invalid product JSON structure.");
             return;
         }
 
-            foreach ($data['products'] as $index => $productData) {
-                $category    = Category::where('name', $productData['category'])->first();
-                $subcategory = Category::where('name', $productData['subcategory'])->first();
-                $brand       = Brand::where('name', $productData['brand'])->first();
+        foreach ($data['products'] as $index => $productData) {
+            $category = Category::firstOrCreate(
+                ['name' => $productData['category']],
+                ['slug' => Str::slug($productData['category'])]
+            );
 
-                if (! $category || ! $subcategory || ! $brand) {
-                    continue;
-                }
+            $subcategory = Category::firstOrCreate(
+                ['name' => $productData['subcategory']],
+                ['slug' => Str::slug($productData['subcategory']), 'category_id' => $category->id]
+            );
 
-                $sellingPrice    = $productData['selling_price'];
-
-                Product::create([
-                    'name'               => $productData['name'],
-                    'slug'               => Str::slug($productData['name']) . '-' . uniqid(),
-                    'thumbnail'          => $productData['thumbnail'],
-                    'short_description'  => 'High-quality ' . strtolower($subcategory->name),
-                    'description'        => 'Premium and reliable ' . strtolower($subcategory->name),
-                    'buying_price'       => $productData['buying_price'],
-                    'selling_price'      => $sellingPrice,
-                    'unit_value'         => 1,
-                    'unit_id'            => $this->getPieceId(),
-                    'category_id'        => $category->id,
-                    'subcategory_id'     => $subcategory->id,
-                    'brand_id'           => $brand->id,
-                    'seller_id'          => 3,
-                    'sku'                => strtoupper(substr($category->name, 0, 2)) . '-' . strtoupper(Str::random(6)),
-                    'stock_in'           => 10,
-                    'stock_out'          => 0,
-                    'low_stock_quantity' => 5,
-                    'tax'                => 0,
-                    'views'              => 0,
-                ]);
+            $brand = null;
+            if (! empty($productData['brand'])) {
+                $brand = Brand::firstOrCreate(
+                    ['name' => $productData['brand']],
+                    ['slug' => Str::slug($productData['brand'])]
+                );
             }
 
+            if (! $category || ! $subcategory) {
+                dump('Missing category or subcategory for: ' . $productData['name']);
+                continue;
+            }
+
+            $sellerSlug = Str::slug(strtolower($productData['seller'] ?? ''));
+
+            $seller = Seller::where('username', [$sellerSlug])->first();
+
+            if (! $seller || ! $category || ! $subcategory) {
+                dump("Missing seller/category/subcategory/brand for: " . $productData['name']);
+                continue;
+            }
+
+            $sellerId = $seller->id;
+
+            $productThumbPath = Str::lower(trim($category->name)) === 'electronics'
+            ? downloadImageFromUrl($productData['thumbnail'], 'images/products')
+            : $productData['thumbnail'];
+
+            $product = Product::create([
+                'name'               => $productData['name'],
+                'slug'               => Str::slug($productData['name']),
+                'thumbnail'          => $productThumbPath,
+                'description'        => $productData['description'] ?? '',
+                'buying_price'       => $productData['buying_price'],
+                'selling_price'      => $productData['selling_price'],
+                'unit_value'         => 1,
+                'unit_id'            => $this->getPieceId(),
+                'category_id'        => $category->id,
+                'subcategory_id'     => $subcategory->id,
+                'brand_id'           => $brand?->id,
+                'seller_id'          => $sellerId,
+                'sku'                => strtoupper(substr($category->name, 0, 2)) . '-' . strtoupper(Str::random(6)),
+                'stock_in'           => 10,
+                'stock_out'          => 0,
+                'low_stock_quantity' => 5,
+                'tax'                => 0,
+                'views'              => 0,
+            ]);
+
+            // Insert images (only for fashion category)
+            if (! empty($productData['images']) && is_array($productData['images'])) {
+                foreach ($productData['images'] as $image) {
+                    $imagePath = Str::lower(trim($category->name)) === 'electronics'
+                    ? downloadImageFromUrl($image, 'images/products')
+                    : $image;
+
+                    // dd($imagePath);
+
+                    ProductImage::create([
+                        'product_id' => $product->id,
+                        'image'      => $imagePath,
+                    ]);
+                }
+            }
+
+            // Handle options and values
+            $optionValueIdMap = [];
+
+            if (! empty($productData['options'])) {
+                foreach ($productData['options'] as $optionData) {
+                    $option = Option::firstOrCreate(['name' => $optionData['name']]);
+
+                    foreach ($optionData['values'] as $value) {
+                        $optionValue = OptionValue::firstOrCreate([
+                            'option_id' => $option->id,
+                            'value'     => $value,
+                        ]);
+
+                        $optionValueIdMap[$value] = $optionValue->id;
+                    }
+                }
+            }
+
+            // Handle variants
+            if (! empty($productData['variants'])) {
+                foreach ($productData['variants'] as $variantData) {
+                    $variant = ProductVariant::create([
+                        'product_id'         => $product->id,
+                        'sku'                => strtoupper(Str::random(8)),
+                        'image'              => $product->thumbnail,
+                        'buying_price'       => $variantData['buying_price'] ?? $productData['buying_price'],
+                        'selling_price'      => $variantData['selling_price'] ?? $productData['selling_price'],
+                        'discounted_price'   => $variantData['discounted_price'] ?? null,
+                        'discount_type'      => null,
+                        'discount_value'     => null,
+                        'discount_amount'    => null,
+                        'stock_in'           => 10,
+                        'stock_out'          => 0,
+                        'low_stock_quantity' => 5,
+                        'is_default'         => $variantData['is_default'] ?? false,
+                    ]);
+
+                    if (! empty($variantData['value_ids'])) {
+                        foreach ($variantData['value_ids'] as $value) {
+                            $valueId = $optionValueIdMap[$value] ?? null;
+                            if ($valueId) {
+                                ProductVariantOption::create([
+                                    'product_variant_id' => $variant->id,
+                                    'option_value_id'    => $valueId,
+                                ]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Attach attributes to all product variants
+        $attributes = Option::with('options')->take(3)->get();
+
+        if ($attributes->isEmpty()) {
+            $this->command->warn('No attributes found. Seed product_attributes and options first.');
+            return;
+        }
+
+        ProductVariant::chunk(50, function ($variants) use ($attributes) {
+            foreach ($variants as $variant) {
+                foreach ($attributes as $attribute) {
+                    $option = $attribute->options->random();
+
+                    ProductVariantOption::firstOrCreate([
+                        'product_variant_id' => $variant->id,
+                        'option_value_id'    => $option->id,
+                    ]);
+                }
+            }
+        });
     }
 
     public function run_old(): void
