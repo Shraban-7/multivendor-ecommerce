@@ -1,10 +1,8 @@
 <?php
-
 namespace Database\Seeders;
 
 use App\Models\Category;
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Support\Facades\DB;
 
 class CategorySeeder extends Seeder
@@ -15,26 +13,26 @@ class CategorySeeder extends Seeder
 
         $categories = [
             [
-                'name' => 'Fashion & Clothing',
-                'image' => 'images/categories/base/category-3-min.png',
-                'cover_image' => 'images/categories/cover/fashion-promo-min.png',
-                'cover_title' => 'Get 50% CASHBACK ON SHOPPING $250',
-                'cover_description' => 'The retailer has worked to improve its fashion offerings in recent years, adding more trendy, sustainable, and inclusive pieces.',
-                'cover_text_color' => '#FFDB9C',
-                'cover_bg_color' => '#3A2732',
+                'name'               => 'Fashion & Clothing',
+                'image'              => 'images/categories/base/category-3-min.png',
+                'cover_image'        => 'images/categories/cover/fashion-promo-min.png',
+                'cover_title'        => 'Get 50% CASHBACK ON SHOPPING $250',
+                'cover_description'  => 'The retailer has worked to improve its fashion offerings in recent years, adding more trendy, sustainable, and inclusive pieces.',
+                'cover_text_color'   => '#FFDB9C',
+                'cover_bg_color'     => '#3A2732',
                 'cover_button_color' => '#0DA487',
-                'is_nav' => 1,
-                'is_slider' => 1,
-                'subcategories' => [
+                'is_nav'             => 1,
+                'is_slider'          => 1,
+                'subcategories'      => [
                     "Men's Fashion",
                     "Women's Fashion",
                     'Kids & Babies',
-                ]
+                ],
             ],
             [
-                'name' => 'Footwear',
-                'image' => 'images/categories/base/category-3-min.png',
-                'is_slider' => 1,
+                'name'          => 'Footwear',
+                'image'         => 'images/categories/base/category-3-min.png',
+                'is_slider'     => 1,
                 'subcategories' => [
                     "Men's Footwear",
                     "Women's Footwear",
@@ -42,41 +40,48 @@ class CategorySeeder extends Seeder
                 ],
             ],
             [
-                'name' => 'Beauty & Personal Care',
-                'image' => 'images/categories/base/category-5-min.png',
-                'cover_image' => 'images/categories/cover/skin-care-promo-min.png',
-                'cover_title' => 'Pamper Your Skin, Pamper Yourself',
-                'cover_description' => 'The retailer has worked to improve its fashion offerings in recent years, adding more trendy, sustainable, and inclusive pieces.',
-                'cover_text_color' => '#FFFFFF',
-                'cover_bg_color' => '#D0AB6A',
+                'name'               => 'Beauty & Personal Care',
+                'image'              => 'images/categories/base/category-5-min.png',
+                'cover_image'        => 'images/categories/cover/skin-care-promo-min.png',
+                'cover_title'        => 'Pamper Your Skin, Pamper Yourself',
+                'cover_description'  => 'The retailer has worked to improve its fashion offerings in recent years, adding more trendy, sustainable, and inclusive pieces.',
+                'cover_text_color'   => '#FFFFFF',
+                'cover_bg_color'     => '#D0AB6A',
                 'cover_button_color' => '#FFB321',
-                'is_nav' => 1,
-                'is_slider' => 1,
-                'subcategories' => [
+                'is_nav'             => 1,
+                'is_slider'          => 1,
+                'subcategories'      => [
                     "Skincare",
                     "Haircare",
                     "Makeup",
                     "Fragrances",
                     "Men's Grooming",
-                ]
+                ],
             ],
             [
-                'name' => 'Electronics',
-                'image' => 'images/categories/base/category-4-min.png',
-                'cover_image' => 'images/categories/cover/electronics-promo-min.png',
-                'cover_title' => 'Powering Possibilities, Empowering Lives.',
-                'cover_description' => 'Discounts on living room sets, bedroom furniture, outdoor furniture, and home office desks.',
-                'cover_text_color' => '#FFFFFF',
-                'cover_bg_color' => '#9EB5AF',
+                'name'               => 'Electronics',
+                'image'              => 'images/categories/base/category-4-min.png',
+                'cover_image'        => 'images/categories/cover/electronics-promo-min.png',
+                'cover_title'        => 'Powering Possibilities, Empowering Lives.',
+                'cover_description'  => 'Discounts on living room sets, bedroom furniture, outdoor furniture, and home office desks.',
+                'cover_text_color'   => '#FFFFFF',
+                'cover_bg_color'     => '#9EB5AF',
                 'cover_button_color' => '#5A422A',
-                'is_nav' => 1,
-                'is_slider' => 1,
-                'subcategories' => [
+                'is_nav'             => 1,
+                'is_slider'          => 1,
+                'subcategories'      => [
                     'Mobile Accessories',
                     'Computer Accessories',
                     'Gadgets',
-                    'Audio & Video'
-                ]
+                    'Audio & Video',
+                    'Cable',
+                    'Earphone (Wired)',
+                    'Neckband',
+                    'Ear Buds/TWS',
+                    'Bluetooth Speaker',
+                    'USB Adapter',
+                    'Charger',
+                ],
             ],
 
             // [
@@ -97,25 +102,25 @@ class CategorySeeder extends Seeder
             //     ]
             // ],
             [
-                'name' => 'Home & Living',
-                'image' => 'images/categories/base/category-5-min.png',
-                'cover_image' => 'images/categories/cover/home-appliances-promo-min.png',
-                'cover_title' => 'Revolutionize your home with our modern appliances',
-                'cover_description' => 'The retailer has worked to improve its fashion offerings in recent years, adding more trendy, sustainable, and inclusive pieces.',
-                'cover_text_color' => '#FFFFFF',
-                'cover_bg_color' => '#3F4C50',
+                'name'               => 'Home & Living',
+                'image'              => 'images/categories/base/category-5-min.png',
+                'cover_image'        => 'images/categories/cover/home-appliances-promo-min.png',
+                'cover_title'        => 'Revolutionize your home with our modern appliances',
+                'cover_description'  => 'The retailer has worked to improve its fashion offerings in recent years, adding more trendy, sustainable, and inclusive pieces.',
+                'cover_text_color'   => '#FFFFFF',
+                'cover_bg_color'     => '#3F4C50',
                 'cover_button_color' => '#0DA487',
-                'is_nav' => 1,
-                'is_slider' => 1,
-                'subcategories' => [
+                'is_nav'             => 1,
+                'is_slider'          => 1,
+                'subcategories'      => [
                     'Home Decor',
                     'Gifts & Novelties',
                     'Kitchen & Dining',
-                ]
+                ],
             ],
             [
-                'name' => 'Toys, Kids And Baby',
-                'is_nav' => 1,
+                'name'          => 'Toys, Kids And Baby',
+                'is_nav'        => 1,
                 'subcategories' => [
                     "Action Figures",
                     "Board Games",
@@ -162,8 +167,8 @@ class CategorySeeder extends Seeder
             //     'name' => 'Pets',
             // ],
             [
-                'name' => 'Sports & Outdoors',
-                'is_nav' => 1,
+                'name'          => 'Sports & Outdoors',
+                'is_nav'        => 1,
                 'subcategories' => [
                     "Fitness Equipment",
                     "Team Sports",
@@ -172,16 +177,16 @@ class CategorySeeder extends Seeder
                 ],
             ],
             [
-                'name' => 'Automobile',
-                'image' => 'images/categories/base/category-6-min.png',
-                'cover_image' => 'images/categories/cover/automotive-promo-min.png',
-                'cover_title' => 'You, asked for it. You got it, Toyota',
-                'cover_description' => 'Whether you need replacement parts, performance upgrades, or maintenance essentials, you can often find great offers.',
-                'cover_text_color' => '#FFFFFF',
-                'cover_bg_color' => '#334161',
+                'name'               => 'Automobile',
+                'image'              => 'images/categories/base/category-6-min.png',
+                'cover_image'        => 'images/categories/cover/automotive-promo-min.png',
+                'cover_title'        => 'You, asked for it. You got it, Toyota',
+                'cover_description'  => 'Whether you need replacement parts, performance upgrades, or maintenance essentials, you can often find great offers.',
+                'cover_text_color'   => '#FFFFFF',
+                'cover_bg_color'     => '#334161',
                 'cover_button_color' => '#10387D',
-                'is_nav' => 1,
-                'subcategories' => [
+                'is_nav'             => 1,
+                'subcategories'      => [
                     'Cars',
                     'Car Accessories',
                     'Motorcycle Parts',
@@ -189,7 +194,7 @@ class CategorySeeder extends Seeder
                     'Tires & Wheels',
                     'Interior Accessories',
                     'Tools & Equipment',
-                ]
+                ],
             ],
             // [
             //     'name' => 'School Office & Art Supplies',
@@ -207,25 +212,25 @@ class CategorySeeder extends Seeder
 
         foreach ($categories as $categoryData) {
             $categoryId = Category::insertGetId([
-                'name' => $categoryData['name'],
-                'image' => $categoryData['image'] ?? null,
-                'cover_image' => $categoryData['cover_image'] ?? null,
-                'cover_bg_color' => $categoryData['cover_bg_color'] ?? null,
-                'cover_title' => $categoryData['cover_title'] ?? null,
-                'cover_description' => $categoryData['cover_description'] ?? null,
-                'cover_text_color' => $categoryData['cover_text_color'] ?? null,
+                'name'               => $categoryData['name'],
+                'image'              => $categoryData['image'] ?? null,
+                'cover_image'        => $categoryData['cover_image'] ?? null,
+                'cover_bg_color'     => $categoryData['cover_bg_color'] ?? null,
+                'cover_title'        => $categoryData['cover_title'] ?? null,
+                'cover_description'  => $categoryData['cover_description'] ?? null,
+                'cover_text_color'   => $categoryData['cover_text_color'] ?? null,
                 'cover_button_color' => $categoryData['cover_button_color'] ?? null,
-                'is_nav' => $categoryData['is_nav'] ?? 0,
-                'is_special' => $categoryData['is_special'] ?? 0,
-                'is_slider' => $categoryData['is_slider'] ?? 0,
-                'slug' => str_slug('categories', 'slug', $categoryData['name']),
+                'is_nav'             => $categoryData['is_nav'] ?? 0,
+                'is_special'         => $categoryData['is_special'] ?? 0,
+                'is_slider'          => $categoryData['is_slider'] ?? 0,
+                'slug'               => str_slug('categories', 'slug', $categoryData['name']),
             ]);
 
-            if (!empty($categoryData['subcategories'])) {
+            if (! empty($categoryData['subcategories'])) {
                 foreach ($categoryData['subcategories'] as $subcategory) {
                     Category::insert([
-                        'name' => $subcategory,
-                        'slug' => str_slug('categories', 'slug', $subcategory),
+                        'name'        => $subcategory,
+                        'slug'        => str_slug('categories', 'slug', $subcategory),
                         'category_id' => $categoryId,
                     ]);
                 }
@@ -233,13 +238,13 @@ class CategorySeeder extends Seeder
         }
     }
 
-    public function new()
+    public function new ()
     {
         DB::table('categories')->truncate();
 
         $categories = [
-            'Fashion & Clothing' => [
-                "Men's Fashion" => [
+            'Fashion & Clothing'        => [
+                "Men's Fashion"   => [
                     "T-Shirts & Polos",
                     "Shirts",
                     "Jeans & Pants",
@@ -262,7 +267,7 @@ class CategorySeeder extends Seeder
                     "Winter Wear",
                     "Accessories (Scarves, Gloves, etc.)",
                 ],
-                "Kids & Babies" => [
+                "Kids & Babies"   => [
                     "Boys Clothing",
                     "Girls Clothing",
                     "Baby Clothing (0-24 months)",
@@ -273,8 +278,8 @@ class CategorySeeder extends Seeder
                 ],
             ],
 
-            'Footwear' => [
-                "Men's Footwear" => [
+            'Footwear'                  => [
+                "Men's Footwear"   => [
                     "Sneakers",
                     "Casual Shoes",
                     "Formal Shoes",
@@ -290,7 +295,7 @@ class CategorySeeder extends Seeder
                     "Sports Shoes",
                     "Boots",
                 ],
-                "Kids Footwear" => [
+                "Kids Footwear"    => [
                     "School Shoes",
                     "Casual Shoes",
                     "Sandals",
@@ -299,7 +304,7 @@ class CategorySeeder extends Seeder
             ],
 
             'Electronics & Accessories' => [
-                'Mobile Accessories' => [
+                'Mobile Accessories'   => [
                     "Chargers & Cables",
                     "Power Banks",
                     "Headphones & Earphones",
@@ -314,12 +319,12 @@ class CategorySeeder extends Seeder
                     "Webcams",
                     "Cables & Adapters",
                 ],
-                'Audio & Video' => [
+                'Audio & Video'        => [
                     "Headphones",
                     "Speakers",
                     "Microphones",
                 ],
-                'Gadgets' => [
+                'Gadgets'              => [
                     "Smart Watches",
                     "VR Accessories",
                     "Smart Home Devices",
@@ -329,8 +334,8 @@ class CategorySeeder extends Seeder
                 ],
             ],
 
-            'Home & Living' => [
-                'Home Decor' => [
+            'Home & Living'             => [
+                'Home Decor'        => [
                     "Showpieces",
                     "Wall Decor",
                     "Clocks",
@@ -344,7 +349,7 @@ class CategorySeeder extends Seeder
                     "Greeting Cards",
                     "Party Supplies",
                 ],
-                'Kitchen & Dining' => [
+                'Kitchen & Dining'  => [
                     "Dinnerware",
                     "Cookware",
                     "Kitchen Tools",
@@ -352,7 +357,7 @@ class CategorySeeder extends Seeder
                 ],
             ],
 
-            'Beauty & Personal Care' => [
+            'Beauty & Personal Care'    => [
                 "Skincare",
                 "Haircare",
                 "Makeup",
@@ -360,7 +365,7 @@ class CategorySeeder extends Seeder
                 "Men's Grooming",
             ],
 
-            'Toys & Games' => [
+            'Toys & Games'              => [
                 "Action Figures",
                 "Board Games",
                 "Educational Toys",
@@ -368,7 +373,7 @@ class CategorySeeder extends Seeder
                 "Puzzles",
             ],
 
-            'Sports & Outdoors' => [
+            'Sports & Outdoors'         => [
                 "Fitness Equipment",
                 "Team Sports",
                 "Outdoor Gear",
@@ -385,10 +390,10 @@ class CategorySeeder extends Seeder
             $isAssoc = is_array($value) && array_keys($value) !== range(0, count($value) - 1);
 
             $id = DB::table('categories')->insertGetId([
-                'name' => $key,
+                'name'        => $key,
                 'category_id' => $parentId,
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at'  => now(),
+                'updated_at'  => now(),
             ]);
 
             if ($isAssoc) {
@@ -396,10 +401,10 @@ class CategorySeeder extends Seeder
             } elseif (is_array($value)) {
                 foreach ($value as $sub) {
                     DB::table('categories')->insert([
-                        'name' => $sub,
+                        'name'        => $sub,
                         'category_id' => $id,
-                        'created_at' => now(),
-                        'updated_at' => now(),
+                        'created_at'  => now(),
+                        'updated_at'  => now(),
                     ]);
                 }
             }

@@ -15,7 +15,7 @@ class BrandSeeder extends Seeder
     public function run(): void
     {
         Brand::truncate();
-        
+
         $brands = [
             ['name' => 'Samsung', 'slug' => 'samsung', 'image' => 'images/brands/brand-1.png'],
             ['name' => 'Apple', 'slug' => 'apple', 'image' => 'images/brands/brand-2.png'],
@@ -25,6 +25,7 @@ class BrandSeeder extends Seeder
             ['name' => 'LG', 'slug' => 'lg', 'image' => 'images/brands/brand-6.png'],
             ['name' => 'Dell', 'slug' => 'dell', 'image' => 'images/brands/brand-7.png'],
             ['name' => 'HP', 'slug' => 'hp', 'image' => 'images/brands/brand-8.png'],
+            ['name' => 'Surpass', 'slug' => 'surpass', 'image' => 'images/brands/Surpass-logo.png'],
         ];
 
         foreach ($brands as $brand) {

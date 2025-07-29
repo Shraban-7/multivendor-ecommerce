@@ -1,14 +1,128 @@
 <?php
 namespace Database\Seeders;
 
-use App\Models\Seller;
 use App\Enums\CommissionType;
+use App\Models\Seller;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class SellerSeeder extends Seeder
 {
-    public function run(): void
+    public function run()
+    {
+        $sellers = [
+            [
+                'name'              => 'Spinner Fashion',
+                'image'             => '/images/sellers/avatar/spinner-fashion-logo.jpg',
+                'email'             => 'spinnerfashion@gmail.com',
+                'phone'             => '01720000001',
+                'password'          => Hash::make('password'),
+                'business_name'     => 'Spinner Fashion',
+                'business_logo'     => '/images/sellers/business/spinner-fashion-logo.jpg',
+                'business_email'    => 'business.spinnerfashion@gmail.com',
+                'business_address'  => 'Dhaka',
+                'country_id'        => 6,
+                'zip'               => '1219',
+                'shipping_cost'     => 100,
+                'is_active'         => 1,
+                'commission_type'   => CommissionType::PERCENTAGE->value,
+                'commission_amount' => 10.5,
+            ],
+            [
+                'name'              => 'Merinor',
+                'image'             => '/images/sellers/avatar/merinor-logo.jpg',
+                'email'             => 'merinor@gmail.com',
+                'phone'             => '01720000001',
+                'password'          => Hash::make('password'),
+                'business_name'     => 'Merinor',
+                'business_logo'     => '/images/sellers/business/merinor-logo.jpg',
+                'business_email'    => 'business.merinor@gmail.com',
+                'business_address'  => 'Dhaka',
+                'country_id'        => 6,
+                'zip'               => '1219',
+                'shipping_cost'     => 100,
+                'is_active'         => 1,
+                'commission_type'   => CommissionType::PERCENTAGE->value,
+                'commission_amount' => 10.5,
+            ],
+            [
+                'name'              => 'Pluxio',
+                'image'             => '/images/sellers/avatar/pluxio-logo.jpg',
+                'email'             => 'pluxio@gmail.com',
+                'phone'             => '01720000001',
+                'password'          => Hash::make('password'),
+                'business_name'     => 'Pluxio',
+                'business_logo'     => '/images/sellers/business/pluxio-logo.jpg',
+                'business_email'    => 'business.pluxio@gmail.com',
+                'business_address'  => 'Dhaka',
+                'country_id'        => 6,
+                'zip'               => '1219',
+                'shipping_cost'     => 100,
+                'is_active'         => 1,
+                'commission_type'   => CommissionType::PERCENTAGE->value,
+                'commission_amount' => 10.5,
+            ],
+            [
+                'name'              => 'Lianoa',
+                'image'             => '/images/sellers/avatar/lianoa-logo.jpg',
+                'email'             => 'lianoa@gmail.com',
+                'phone'             => '01720000001',
+                'password'          => Hash::make('password'),
+                'business_name'     => 'Lianoa',
+                'business_logo'     => '/images/sellers/business/lianoa-logo.jpg',
+                'business_email'    => 'business.lianoa@gmail.com',
+                'business_address'  => 'Dhaka',
+                'country_id'        => 6,
+                'zip'               => '1219',
+                'shipping_cost'     => 100,
+                'is_active'         => 1,
+                'commission_type'   => CommissionType::PERCENTAGE->value,
+                'commission_amount' => 10.5,
+            ],
+            [
+                'name'              => 'Sneaktra',
+                'image'             => '/images/sellers/avatar/sneaktra-logo.jpg',
+                'email'             => 'sneaktra@gmail.com',
+                'phone'             => '01720000001',
+                'password'          => Hash::make('password'),
+                'business_name'     => 'Sneaktra',
+                'business_logo'     => '/images/sellers/business/sneaktra-logo.jpg',
+                'business_email'    => 'business.sneaktra@gmail.com',
+                'business_address'  => 'Dhaka',
+                'country_id'        => 6,
+                'zip'               => '1219',
+                'shipping_cost'     => 100,
+                'is_active'         => 1,
+                'commission_type'   => CommissionType::PERCENTAGE->value,
+                'commission_amount' => 10.5,
+            ],
+            [
+                'name'              => 'Babee Shop',
+                'image'             => '/images/sellers/avatar/babee-shop-logo.jpg',
+                'email'             => 'babeeshop@gmail.com',
+                'phone'             => '01720000001',
+                'password'          => Hash::make('password'),
+                'business_name'     => 'Babee Shop',
+                'business_logo'     => '/images/sellers/business/babee-shop-logo.jpg',
+                'business_email'    => 'business.babeeshop@gmail.com',
+                'business_address'  => 'Dhaka',
+                'country_id'        => 6,
+                'zip'               => '1219',
+                'shipping_cost'     => 100,
+                'is_active'         => 1,
+                'commission_type'   => CommissionType::PERCENTAGE->value,
+                'commission_amount' => 10.5,
+            ],
+        ];
+
+        foreach ($sellers as $seller) {
+            $seller['username'] = str_slug('sellers', 'username', $seller['name']);
+            Seller::create($seller);
+        }
+
+    }
+
+    public function run_old(): void
     {
         $sellers = [
             [

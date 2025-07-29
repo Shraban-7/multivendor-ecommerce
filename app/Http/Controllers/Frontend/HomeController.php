@@ -30,15 +30,13 @@ class HomeController extends Controller
 
         $data['light_deals'] = $light_deals;
 
-        $data['interest_products'] = Product::interest()
-            ->with('unit')
+        $data['interest_products'] = Product::with('unit')
             ->withAvg('reviews', 'rating')
             ->withCount('reviews')
             ->take(8)
             ->get();
 
-        $data['trending_products'] = Product::trending()
-            ->with('unit')
+        $data['trending_products'] = Product::with('unit')
             ->withAvg('reviews', 'rating')
             ->withCount('reviews')
             ->take(3)
@@ -55,11 +53,11 @@ class HomeController extends Controller
 
          $new_arrival_products = Product::with('unit')
             ->withAvg('reviews', 'rating')
-            ->where('is_featured', 0)
+            // ->where('is_featured', 0)
             ->withCount('reviews')
             ->orderByDesc('id')
             ->skip(6)
-            ->take(Product::count() - 12)
+            ->take(8)
             ->get();
 
         $data['new_arrival_products'] = $new_arrival_products->map(fn($product) => $product->toDetailsArray());
