@@ -13,7 +13,12 @@ use Illuminate\Support\Str;
 class ProductSeeder extends Seeder
 {
 
-    public function run(): void
+    public function run()
+    {
+        
+    }
+
+    public function run_old(): void
     {
         $majorCategories = [
             'automotive'         => 5,
