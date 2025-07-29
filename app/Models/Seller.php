@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -71,5 +72,10 @@ class Seller extends Authenticatable
     public function campaigns()
     {
         return $this->hasMany(SellerCampaign::class);
+    }
+
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class);
     }
 }
