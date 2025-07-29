@@ -156,6 +156,7 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
     Route::prefix('images')->as('images.')->group(function () {
         Route::get('/', [ImageController::class, 'index'])->name('index');
         Route::post('/store', [ImageController::class, 'store'])->name('store');
+        Route::delete('/delete-all', [ImageController::class, 'deleteAll'])->name('delete-all');
     });
 });
 

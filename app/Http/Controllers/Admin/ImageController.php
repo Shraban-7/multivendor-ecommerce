@@ -12,7 +12,14 @@ class ImageController extends Controller
 {
     public function index()
     {
-        return view('admin.image');
+        $disk = 'public';
+        $directory = 'images/watermarked';
+
+        $files = Storage::disk($disk)->files($directory);
+
+        return view('admin.image', [
+            'watermarkedImages' => $files
+        ]);
     }
 
     public function store(Request $request)
@@ -60,6 +67,17 @@ class ImageController extends Controller
             }
         }
 
-        return redirect()->back()->with('success','Images uploaded with watermark successfully');
+        return redirect()->back()->with('success', 'Images uploaded with watermark successfully');
+    }
+
+    public function deleteAll()
+    {
+        $directory = 'images/watermarked';
+        $disk = 'public';
+
+        $files = Storage::disk($disk)->files($directory);
+        Storage::disk($disk)->delete($files);
+
+        return redirect()->back()->with('success', 'Deleted all watermarked images.');
     }
 }
