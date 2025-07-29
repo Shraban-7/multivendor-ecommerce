@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Laravel\Facades\Image;
@@ -391,5 +392,31 @@ if (! function_exists('calculate_discount_amount')) {
             DiscountType::FLAT->value => round($value, 2),
             default => null,
         };
+    }
+}
+
+if (!function_exists('downloadImageFromUrl')) {
+    function downloadImageFromUrl(string $url, string $folder, $fileName = null)
+    {
+        try {
+            $response = Http::get($url);
+
+            if (!$response->ok()) {
+                return null;
+            }
+
+            $imageContent = $response->body();
+            $extension = pathinfo(parse_url($url, PHP_URL_PATH), PATHINFO_EXTENSION);
+
+            $fileName = is_null($fileName) ? Str::uuid() : $fileName;
+
+            $path = "{$folder}/{$fileName}.{$extension}";
+
+            Storage::disk('public')->put($path, $imageContent);
+
+            return $path;
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 }
