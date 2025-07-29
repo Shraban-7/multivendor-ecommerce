@@ -11,8 +11,6 @@ class Seller extends Authenticatable
 {
     use HasFactory, Notifiable, SoftDeletes;
 
-    protected $guard = 'seller';
-
     protected $guarded = ['id'];
 
     protected $hidden = [
