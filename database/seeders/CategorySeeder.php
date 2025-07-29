@@ -60,25 +60,6 @@ class CategorySeeder extends Seeder
                     "Men's Grooming",
                 ]
             ],
-            // [
-            //     'name' => 'Automotive',
-            //     'image' => 'images/categories/base/category-6-min.png',
-            //     'cover_image' => 'images/categories/cover/automotive-promo-min.png',
-            //     'cover_title' => 'You, asked for it. You got it, Toyota',
-            //     'cover_description' => 'Whether you need replacement parts, performance upgrades, or maintenance essentials, you can often find great offers.',
-            //     'cover_text_color' => '#FFFFFF',
-            //     'cover_bg_color' => '#334161',
-            //     'cover_button_color' => '#10387D',
-            //     'is_nav' => 1,
-            //     'subcategories' => [
-            //         'Car Accessories',
-            //         'Motorcycle Parts',
-            //         'Engine Oils & Fluids',
-            //         'Tires & Wheels',
-            //         'Interior Accessories',
-            //         'Tools & Equipment',
-            //     ]
-            // ],
             [
                 'name' => 'Electronics',
                 'image' => 'images/categories/base/category-4-min.png',
@@ -189,6 +170,26 @@ class CategorySeeder extends Seeder
                     "Outdoor Gear",
                     "Cycling",
                 ],
+            ],
+            [
+                'name' => 'Automobile',
+                'image' => 'images/categories/base/category-6-min.png',
+                'cover_image' => 'images/categories/cover/automotive-promo-min.png',
+                'cover_title' => 'You, asked for it. You got it, Toyota',
+                'cover_description' => 'Whether you need replacement parts, performance upgrades, or maintenance essentials, you can often find great offers.',
+                'cover_text_color' => '#FFFFFF',
+                'cover_bg_color' => '#334161',
+                'cover_button_color' => '#10387D',
+                'is_nav' => 1,
+                'subcategories' => [
+                    'Cars',
+                    'Car Accessories',
+                    'Motorcycle Parts',
+                    'Engine Oils & Fluids',
+                    'Tires & Wheels',
+                    'Interior Accessories',
+                    'Tools & Equipment',
+                ]
             ],
             // [
             //     'name' => 'School Office & Art Supplies',
