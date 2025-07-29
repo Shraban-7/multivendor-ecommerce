@@ -39,22 +39,24 @@
             </div>
 
             @if(count($watermarkedImages))
-            <div class="row">
-                @foreach ($watermarkedImages as $image)
-                <div class="col-md-3 mb-4">
-                    <div class="card">
-                        <img src="{{ asset('storage/' . $image) }}"
-                            class="card-img-top"
-                            alt="Watermarked Image"
-                            style="height: 200px; object-fit: cover; width: 100%;">
+            <div style="max-height: 500px; overflow-y: auto;">
+                <div class="row">
+                    @foreach ($watermarkedImages as $image)
+                    <div class="col-md-3 mb-4">
+                        <div class="card">
+                            <img src="{{ asset('storage/' . $image) }}"
+                                class="card-img-top"
+                                alt="Watermarked Image"
+                                style="height: 200px; object-fit: cover; width: 100%;">
 
-                        <div class="card-footer text-center">
-                            <a href="{{ asset('storage/' . $image) }}" download class="btn btn-sm btn-light border w-100">
-                                <i data-feather="download" class="nav-icon icon-xs me-2"></i> Download</a>
+                            <div class="card-footer text-center">
+                                <a href="{{ asset('storage/' . $image) }}" download class="btn btn-sm btn-light border w-100">
+                                    <i data-feather="download" class="nav-icon icon-xs me-2"></i> Download</a>
+                            </div>
                         </div>
                     </div>
+                    @endforeach
                 </div>
-                @endforeach
             </div>
             @else
             <div class="text-muted">No watermarked images found.</div>
