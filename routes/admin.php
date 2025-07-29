@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\HeroBannerController;
 use App\Http\Controllers\Admin\HomeMidController;
+use App\Http\Controllers\Admin\ImageController;
 use App\Http\Controllers\Admin\OptionController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PaymentController;
@@ -150,6 +151,11 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
 
         Route::get('/', [SettingController::class, 'index'])->name('index');
         Route::post('/update', [SettingController::class, 'update'])->name('update');
+    });
+    
+    Route::prefix('images')->as('images.')->group(function () {
+        Route::get('/', [ImageController::class, 'index'])->name('index');
+        Route::post('/store', [ImageController::class, 'store'])->name('store');
     });
 });
 
