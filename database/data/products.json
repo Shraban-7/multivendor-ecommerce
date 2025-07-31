@@ -1110,7 +1110,48 @@
             "thumbnail": "images/products/thumb/IMG-20250729-WA0033.jpg",
             "buying_price": 0,
             "selling_price": 3500,
-            "discounted_price": 3000
+            "discounted_price": 3000,
+            "options": [
+                {
+                    "name": "Material",
+                    "values": [
+                        "Moslin cotton"
+                    ]
+                },
+                {
+                    "name": "Size",
+                    "values": [
+                        "34",
+                        "36",
+                        "38",
+                        "40",
+                        "42",
+                        "44",
+                        "46",
+                        "48"
+                    ]
+                },
+                {
+                    "name": "Long",
+                    "values": [
+                        "38",
+                        "40"
+                    ]
+                }
+            ],
+            "variants": [
+                {
+                    "buying_price": 0,
+                    "selling_price": 3500,
+                    "discounted_price": 3000,
+                    "is_default": true,
+                    "value_ids": [
+                        "Moslin cotton",
+                        "38",
+                        "38"
+                    ]
+                }
+            ]
         },
         {
             "name": "Premium Kurta - Naviblue",
@@ -1120,7 +1161,48 @@
             "thumbnail": "images/products/thumb/IMG-20250729-WA0031.jpg",
             "buying_price": 0,
             "selling_price": 3500,
-            "discounted_price": 3000
+            "discounted_price": 3000,
+            "options": [
+                {
+                    "name": "Material",
+                    "values": [
+                        "Moslin cotton"
+                    ]
+                },
+                {
+                    "name": "Size",
+                    "values": [
+                        "34",
+                        "36",
+                        "38",
+                        "40",
+                        "42",
+                        "44",
+                        "46",
+                        "48"
+                    ]
+                },
+                {
+                    "name": "Long",
+                    "values": [
+                        "38",
+                        "40"
+                    ]
+                }
+            ],
+            "variants": [
+                {
+                    "buying_price": 0,
+                    "selling_price": 3500,
+                    "discounted_price": 3000,
+                    "is_default": true,
+                    "value_ids": [
+                        "Moslin cotton",
+                        "38",
+                        "40"
+                    ]
+                }
+            ]
         },
         {
             "name": "Premium Cotton V-Neck Thread Kurta - Black",
@@ -1130,7 +1212,48 @@
             "thumbnail": "images/products/thumb/IMG-20250729-WA0034.jpg",
             "buying_price": 0,
             "selling_price": 3500,
-            "discounted_price": 3000
+            "discounted_price": 3000,
+            "options": [
+                {
+                    "name": "Material",
+                    "values": [
+                        "Moslin cotton"
+                    ]
+                },
+                {
+                    "name": "Size",
+                    "values": [
+                        "34",
+                        "36",
+                        "38",
+                        "40",
+                        "42",
+                        "44",
+                        "46",
+                        "48"
+                    ]
+                },
+                {
+                    "name": "Long",
+                    "values": [
+                        "38",
+                        "40"
+                    ]
+                }
+            ],
+            "variants": [
+                {
+                    "buying_price": 0,
+                    "selling_price": 3500,
+                    "discounted_price": 3000,
+                    "is_default": true,
+                    "value_ids": [
+                        "Moslin cotton",
+                        "36",
+                        "40"
+                    ]
+                }
+            ]
         },
         {
             "name": "Premium Kurta - Davygray",
@@ -1140,7 +1263,48 @@
             "thumbnail": "images/products/thumb/IMG-20250729-WA0032.jpg",
             "buying_price": 0,
             "selling_price": 3500,
-            "discounted_price": 3000
+            "discounted_price": 3000,
+            "options": [
+                {
+                    "name": "Material",
+                    "values": [
+                        "Moslin cotton"
+                    ]
+                },
+                {
+                    "name": "Size",
+                    "values": [
+                        "34",
+                        "36",
+                        "38",
+                        "40",
+                        "42",
+                        "44",
+                        "46",
+                        "48"
+                    ]
+                },
+                {
+                    "name": "Long",
+                    "values": [
+                        "38",
+                        "40"
+                    ]
+                }
+            ],
+            "variants": [
+                {
+                    "buying_price": 0,
+                    "selling_price": 3500,
+                    "discounted_price": 3000,
+                    "is_default": true,
+                    "value_ids": [
+                        "Moslin cotton",
+                        "40",
+                        "38"
+                    ]
+                }
+            ]
         },
         {
             "name": "Premium Kurta - Offwhite",
@@ -1150,7 +1314,48 @@
             "thumbnail": "images/products/thumb/IMG-20250729-WA0029.jpg",
             "buying_price": 0,
             "selling_price": 3500,
-            "discounted_price": 3000
+            "discounted_price": 3000,
+            "options": [
+                {
+                    "name": "Material",
+                    "values": [
+                        "Moslin cotton"
+                    ]
+                },
+                {
+                    "name": "Size",
+                    "values": [
+                        "34",
+                        "36",
+                        "38",
+                        "40",
+                        "42",
+                        "44",
+                        "46",
+                        "48"
+                    ]
+                },
+                {
+                    "name": "Long",
+                    "values": [
+                        "38",
+                        "40"
+                    ]
+                }
+            ],
+            "variants": [
+                {
+                    "buying_price": 0,
+                    "selling_price": 3500,
+                    "discounted_price": 3000,
+                    "is_default": true,
+                    "value_ids": [
+                        "Moslin cotton",
+                        "34",
+                        "38"
+                    ]
+                }
+            ]
         },
         {
             "name": "Premium Kurta - White",
@@ -1160,7 +1365,48 @@
             "thumbnail": "images/products/thumb/IMG-20250729-WA0030.jpg",
             "buying_price": 0,
             "selling_price": 3500,
-            "discounted_price": 3000
+            "discounted_price": 3000,
+            "options": [
+                {
+                    "name": "Material",
+                    "values": [
+                        "Moslin cotton"
+                    ]
+                },
+                {
+                    "name": "Size",
+                    "values": [
+                        "34",
+                        "36",
+                        "38",
+                        "40",
+                        "42",
+                        "44",
+                        "46",
+                        "48"
+                    ]
+                },
+                {
+                    "name": "Long",
+                    "values": [
+                        "38",
+                        "40"
+                    ]
+                }
+            ],
+            "variants": [
+                {
+                    "buying_price": 0,
+                    "selling_price": 3500,
+                    "discounted_price": 3000,
+                    "is_default": true,
+                    "value_ids": [
+                        "Moslin cotton",
+                        "48",
+                        "40"
+                    ]
+                }
+            ]
         },
         {
             "name": "Premium Sliders - Dark Gray",

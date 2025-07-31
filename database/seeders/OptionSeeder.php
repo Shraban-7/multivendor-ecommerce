@@ -11,7 +11,7 @@ class OptionSeeder extends Seeder
     public function run(): void
     {
         $attributeOptions = [
-            'Size'         => ['S', 'M', 'L', 'XL','XXL', '22 Inch', '24 Inch', '27 Inch'],
+            'Size'         => ['S', 'M', 'L', 'XL'],
         ];
 
         foreach ($attributeOptions as $attrName => $options) {
