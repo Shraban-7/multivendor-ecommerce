@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Seeders;
 
 use App\Enums\DiscountType;
@@ -74,10 +75,10 @@ class ProductSeeder extends Seeder
             }
 
             $sellerId = $seller->id;
+            $imageFolder = "images/{$seller->username}/products";
 
-            $productThumbPath = Str::lower(trim($category->name)) === 'electronics'
-            ? downloadImageFromUrl($productData['thumbnail'], 'images/products')
-            : $productData['thumbnail'];
+            $productThumbPath = strtolower(trim($category->name)) === 'electronics'
+                ? downloadImageFromUrl($productData['thumbnail'], $imageFolder) : $productData['thumbnail'];
 
             $product = Product::create([
                 'name'               => $productData['name'],
@@ -103,15 +104,11 @@ class ProductSeeder extends Seeder
             // Insert images (only for fashion category)
             if (! empty($productData['images']) && is_array($productData['images'])) {
                 foreach ($productData['images'] as $image) {
-                    $imagePath = Str::lower(trim($category->name)) === 'electronics'
-                    ? downloadImageFromUrl($image, 'images/products')
-                    : $image;
-
-                    // dd($imagePath);
+                    $imagePath = Str::lower(trim($category->name)) === 'electronics' ? downloadImageFromUrl($image, $imageFolder) : $image;
 
                     ProductImage::create([
                         'product_id' => $product->id,
-                        'image'      => $imagePath,
+                        'image' => $imagePath,
                     ]);
                 }
             }
@@ -218,8 +215,8 @@ class ProductSeeder extends Seeder
                 }
 
                 $subcategories = $category->subcategories->isNotEmpty()
-                ? $category->subcategories
-                : collect([(object) ['id' => null, 'name' => $category->name]]);
+                    ? $category->subcategories
+                    : collect([(object) ['id' => null, 'name' => $category->name]]);
 
                 foreach ($subcategories as $sub) {
                     for ($i = 1; $i <= 15; $i++) {

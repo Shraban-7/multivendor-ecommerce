@@ -1,10 +1,12 @@
 <?php
+
 namespace Database\Seeders;
 
 use App\Enums\CommissionType;
 use App\Models\Seller;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class SellerSeeder extends Seeder
 {
@@ -13,12 +15,12 @@ class SellerSeeder extends Seeder
         $sellers = [
             [
                 'name'              => 'Spinner Fashion',
-                'image'             => '/images/sellers/avatar/spinner-fashion-logo.jpg',
+                'image'             => 'spinner-fashion-logo.jpg',
                 'email'             => 'spinnerfashion@gmail.com',
                 'phone'             => '01720000001',
                 'password'          => Hash::make('password'),
                 'business_name'     => 'Spinner Fashion',
-                'business_logo'     => '/images/sellers/business/spinner-fashion-logo.jpg',
+                'business_logo'     => 'spinner-fashion-logo.jpg',
                 'business_email'    => 'business.spinnerfashion@gmail.com',
                 'business_address'  => 'Dhaka',
                 'country_id'        => 6,
@@ -30,12 +32,12 @@ class SellerSeeder extends Seeder
             ],
             [
                 'name'              => 'Merinor',
-                'image'             => '/images/sellers/avatar/merinor-logo.jpg',
+                'image'             => 'merinor-logo.jpg',
                 'email'             => 'merinor@gmail.com',
                 'phone'             => '01720000001',
                 'password'          => Hash::make('password'),
                 'business_name'     => 'Merinor',
-                'business_logo'     => '/images/sellers/business/merinor-logo.jpg',
+                'business_logo'     => 'merinor-logo.jpg',
                 'business_email'    => 'business.merinor@gmail.com',
                 'business_address'  => 'Dhaka',
                 'country_id'        => 6,
@@ -47,12 +49,12 @@ class SellerSeeder extends Seeder
             ],
             [
                 'name'              => 'Pluxio',
-                'image'             => '/images/sellers/avatar/pluxio-logo.jpg',
+                'image'             => 'pluxio-logo.jpg',
                 'email'             => 'pluxio@gmail.com',
                 'phone'             => '01720000001',
                 'password'          => Hash::make('password'),
                 'business_name'     => 'Pluxio',
-                'business_logo'     => '/images/sellers/business/pluxio-logo.jpg',
+                'business_logo'     => 'pluxio-logo.jpg',
                 'business_email'    => 'business.pluxio@gmail.com',
                 'business_address'  => 'Dhaka',
                 'country_id'        => 6,
@@ -64,12 +66,12 @@ class SellerSeeder extends Seeder
             ],
             [
                 'name'              => 'Lianoa',
-                'image'             => '/images/sellers/avatar/lianoa-logo.jpg',
+                'image'             => 'lianoa-logo.jpg',
                 'email'             => 'lianoa@gmail.com',
                 'phone'             => '01720000001',
                 'password'          => Hash::make('password'),
                 'business_name'     => 'Lianoa',
-                'business_logo'     => '/images/sellers/business/lianoa-logo.jpg',
+                'business_logo'     => 'lianoa-logo.jpg',
                 'business_email'    => 'business.lianoa@gmail.com',
                 'business_address'  => 'Dhaka',
                 'country_id'        => 6,
@@ -81,12 +83,12 @@ class SellerSeeder extends Seeder
             ],
             [
                 'name'              => 'Sneaktra',
-                'image'             => '/images/sellers/avatar/sneaktra-logo.jpg',
+                'image'             => 'sneaktra-logo.jpg',
                 'email'             => 'sneaktra@gmail.com',
                 'phone'             => '01720000001',
                 'password'          => Hash::make('password'),
                 'business_name'     => 'Sneaktra',
-                'business_logo'     => '/images/sellers/business/sneaktra-logo.jpg',
+                'business_logo'     => 'sneaktra-logo.jpg',
                 'business_email'    => 'business.sneaktra@gmail.com',
                 'business_address'  => 'Dhaka',
                 'country_id'        => 6,
@@ -98,12 +100,12 @@ class SellerSeeder extends Seeder
             ],
             [
                 'name'              => 'Babee Shop',
-                'image'             => '/images/sellers/avatar/babee-shop-logo.jpg',
+                'image'             => 'babee-shop-logo.jpg',
                 'email'             => 'babeeshop@gmail.com',
                 'phone'             => '01720000001',
                 'password'          => Hash::make('password'),
                 'business_name'     => 'Babee Shop',
-                'business_logo'     => '/images/sellers/business/babee-shop-logo.jpg',
+                'business_logo'     => 'babee-shop-logo.jpg',
                 'business_email'    => 'business.babeeshop@gmail.com',
                 'business_address'  => 'Dhaka',
                 'country_id'        => 6,
@@ -116,10 +118,13 @@ class SellerSeeder extends Seeder
         ];
 
         foreach ($sellers as $seller) {
-            $seller['username'] = str_slug('sellers', 'username', $seller['name']);
+            $username = Str::slug($seller['name']);
+            $seller['username'] = $username;
+            $seller['image'] = "images/{$username}/logo/{$seller['image']}";
+            $seller['business_logo'] = "images/{$username}/logo/{$seller['business_logo']}";
+            
             Seller::create($seller);
         }
-
     }
 
     public function run_old(): void
