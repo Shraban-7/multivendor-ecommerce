@@ -26,45 +26,45 @@ $settings = settings();
             </x-dashboard.nav-item-link>
 
             @if (hasPermission('admin.brands.index'))
-                <x-dashboard.nav-item-link :route="'admin.brands.index'">
-                    <i data-feather="layers" class="nav-icon icon-xs me-2"></i> Brands
-                </x-dashboard.nav-item-link>
+            <x-dashboard.nav-item-link :route="'admin.brands.index'">
+                <i data-feather="layers" class="nav-icon icon-xs me-2"></i> Brands
+            </x-dashboard.nav-item-link>
             @endif
 
             @if (hasPermission('admin.categories.index'))
-                <x-dashboard.nav-item-link :route="'admin.categories.index'">
-                    <i data-feather="layers" class="nav-icon icon-xs me-2"></i> Categories
-                </x-dashboard.nav-item-link>
+            <x-dashboard.nav-item-link :route="'admin.categories.index'">
+                <i data-feather="layers" class="nav-icon icon-xs me-2"></i> Categories
+            </x-dashboard.nav-item-link>
             @endif
 
             @if (hasPermission('admin.subcategories.index'))
-                <x-dashboard.nav-item-link :route="'admin.subcategories.index'">
-                    <i data-feather="layers" class="nav-icon icon-xs me-2"></i> Subcategories
-                </x-dashboard.nav-item-link>
+            <x-dashboard.nav-item-link :route="'admin.subcategories.index'">
+                <i data-feather="layers" class="nav-icon icon-xs me-2"></i> Subcategories
+            </x-dashboard.nav-item-link>
             @endif
 
             @if (hasPermission('admin.productAttributes.index'))
-                <x-dashboard.nav-item-link :route="'admin.options.index'">
-                    <i data-feather="package" class="nav-icon icon-xs me-2"></i> Manage Options
-                </x-dashboard.nav-item-link>
+            <x-dashboard.nav-item-link :route="'admin.options.index'">
+                <i data-feather="package" class="nav-icon icon-xs me-2"></i> Manage Options
+            </x-dashboard.nav-item-link>
             @endif
 
             @if (hasPermission('admin.products.index'))
-                <x-dashboard.nav-item-link :route="'admin.products.index'">
-                    <i data-feather="package" class="nav-icon icon-xs me-2"></i> Products
-                </x-dashboard.nav-item-link>
+            <x-dashboard.nav-item-link :route="'admin.products.index'">
+                <i data-feather="package" class="nav-icon icon-xs me-2"></i> Products
+            </x-dashboard.nav-item-link>
             @endif
 
             @if (hasPermission('admin.customers.index'))
-                <x-dashboard.nav-item-link :route="'admin.customers.index'">
-                    <i data-feather="users" class="nav-icon icon-xs me-2"></i> Customers
-                </x-dashboard.nav-item-link>
+            <x-dashboard.nav-item-link :route="'admin.customers.index'">
+                <i data-feather="users" class="nav-icon icon-xs me-2"></i> Customers
+            </x-dashboard.nav-item-link>
             @endif
 
             @if (hasPermission('admin.sellers.index'))
-                <x-dashboard.nav-item-link :route="'admin.sellers.index'">
-                    <i data-feather="users" class="nav-icon icon-xs me-2"></i>Sellers
-                </x-dashboard.nav-item-link>
+            <x-dashboard.nav-item-link :route="'admin.sellers.index'">
+                <i data-feather="users" class="nav-icon icon-xs me-2"></i>Sellers
+            </x-dashboard.nav-item-link>
             @endif
 
             <li class="nav-item">
@@ -85,10 +85,10 @@ $settings = settings();
                     data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
                         <x-dashboard.nav-item-link :route="'admin.orders.index'">
-                                     Orders
+                            Orders
                         </x-dashboard.nav-item-link>
                         <x-dashboard.nav-item-link :route="'admin.payments.index'">
-                                     Payments
+                            Payments
                         </x-dashboard.nav-item-link>
                     </ul>
                 </div>
@@ -96,9 +96,9 @@ $settings = settings();
 
 
             @if (hasPermission('admin.reviews.index'))
-                <x-dashboard.nav-item-link :route="'admin.reviews.index'">
-                    <i data-feather="layers" class="nav-icon icon-xs me-2"></i>Reviews
-                </x-dashboard.nav-item-link>
+            <x-dashboard.nav-item-link :route="'admin.reviews.index'">
+                <i data-feather="layers" class="nav-icon icon-xs me-2"></i>Reviews
+            </x-dashboard.nav-item-link>
             @endif
 
             <li class="nav-item">
@@ -119,14 +119,14 @@ $settings = settings();
                     data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
                         @if (hasPermission('admin.admins.index'))
-                            <x-dashboard.nav-item-link :route="'admin.admins.index'">
-                                Admin List
-                            </x-dashboard.nav-item-link>
+                        <x-dashboard.nav-item-link :route="'admin.admins.index'">
+                            Admin List
+                        </x-dashboard.nav-item-link>
                         @endif
                         @if (hasPermission('admin.admins.create'))
-                            <x-dashboard.nav-item-link :route="'admin.admins.create'">
-                                Add Admin
-                            </x-dashboard.nav-item-link>
+                        <x-dashboard.nav-item-link :route="'admin.admins.create'">
+                            Add Admin
+                        </x-dashboard.nav-item-link>
                         @endif
                     </ul>
                 </div>
@@ -134,9 +134,9 @@ $settings = settings();
 
 
             @if (hasPermission('admin.roles.index'))
-                <x-dashboard.nav-item-link :route="'admin.roles.index'">
-                    <i data-feather="layers" class="nav-icon icon-xs me-2"></i>Permissions
-                </x-dashboard.nav-item-link>
+            <x-dashboard.nav-item-link :route="'admin.roles.index'">
+                <i data-feather="layers" class="nav-icon icon-xs me-2"></i>Permissions
+            </x-dashboard.nav-item-link>
             @endif
 
             <li class="nav-item">
@@ -157,9 +157,9 @@ $settings = settings();
                     data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
                         {{-- @if (hasPermission('admin.admins.index')) --}}
-                            <x-dashboard.nav-item-link :route="'admin.payment_gateways.index'">
-                                Payment Gateways
-                            </x-dashboard.nav-item-link>
+                        <x-dashboard.nav-item-link :route="'admin.payment_gateways.index'">
+                            Payment Gateways
+                        </x-dashboard.nav-item-link>
                         {{-- @endif --}}
                     </ul>
                 </div>
@@ -183,43 +183,49 @@ $settings = settings();
                     data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
                         @if (hasPermission('admin.settings.hero.index'))
-                            <x-dashboard.nav-item-link :route="'admin.settings.hero.index'">
-                                Hero Banners
-                            </x-dashboard.nav-item-link>
+                        <x-dashboard.nav-item-link :route="'admin.settings.hero.index'">
+                            Hero Banners
+                        </x-dashboard.nav-item-link>
                         @endif
 
                         @if (hasPermission('admin.settings.banners.index'))
-                            <x-dashboard.nav-item-link :route="'admin.settings.banners.index'">
-                                Home Mid Banners
-                            </x-dashboard.nav-item-link>
+                        <x-dashboard.nav-item-link :route="'admin.settings.banners.index'">
+                            Home Mid Banners
+                        </x-dashboard.nav-item-link>
                         @endif
 
                         @if (hasPermission('admin.settings.posters.index'))
-                            <x-dashboard.nav-item-link :route="'admin.settings.posters.index'">
-                                Promo Posters
-                            </x-dashboard.nav-item-link>
+                        <x-dashboard.nav-item-link :route="'admin.settings.posters.index'">
+                            Promo Posters
+                        </x-dashboard.nav-item-link>
                         @endif
 
                         @if (hasPermission('admin.settings.socialLinks.index'))
-                            <x-dashboard.nav-item-link :route="'admin.settings.socialLinks.index'">
-                                Social Links
-                            </x-dashboard.nav-item-link>
+                        <x-dashboard.nav-item-link :route="'admin.settings.socialLinks.index'">
+                            Social Links
+                        </x-dashboard.nav-item-link>
                         @endif
 
                         @if (hasPermission('admin.settings.paymentOptions.index'))
-                            <x-dashboard.nav-item-link :route="'admin.settings.paymentOptions.index'">
-                                Payment Options
-                            </x-dashboard.nav-item-link>
+                        <x-dashboard.nav-item-link :route="'admin.settings.paymentOptions.index'">
+                            Payment Options
+                        </x-dashboard.nav-item-link>
                         @endif
 
                         @if (hasPermission('admin.settings.index'))
-                            <x-dashboard.nav-item-link :route="'admin.settings.index'">
-                                General
-                            </x-dashboard.nav-item-link>
+                        <x-dashboard.nav-item-link :route="'admin.settings.index'">
+                            General
+                        </x-dashboard.nav-item-link>
                         @endif
                     </ul>
                 </div>
             </li>
+
+            @if (hasPermission('admin.images.index'))
+            <x-dashboard.nav-item-link :route="'admin.images.index'">
+                <i data-feather="image" class="nav-icon icon-xs me-2"></i>Image
+            </x-dashboard.nav-item-link>
+            @endif
 
         </ul>
     </div>
