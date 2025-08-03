@@ -7,18 +7,18 @@
 
         {{-- @include('frontend.partials.home.light-deal-section') --}}
 
-        @include('frontend.partials.home.interest-section')
+        @include('frontend.partials.home.categories')
+        
         {{-- @include('frontend.partials.home.new-arrival-section') --}}
+        
         <x-frontend.home.products-section-slider section="New Arrival" :products="$new_arrival_products" />
         <x-frontend.home.products-section-slider section="Trending" :products="$trending_products" />
         <x-frontend.home.products-section-slider section="Best Selling" :products="$bestselling_products" />
-        <x-frontend.home.products-section-slider section="Featured" :products="$featured_products" />
-
+        <x-frontend.home.products-section-slider section="Featured Products" :products="$featured_products" />
 
         {{-- @include('frontend.partials.home.feature-gallery-section') --}}
 
         {{-- @include('frontend.partials.home.promotional-header-section') --}}
-
 
         {{-- @include('frontend.partials.home.community-product-section') --}}
 

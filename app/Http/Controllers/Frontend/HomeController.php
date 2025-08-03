@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
@@ -13,9 +14,9 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $data['categories']       = Category::slider()->get();
+        $data['categories'] = Category::slider()->get();
         $data['special_category'] = Category::special()->with(['banners', 'products'])->first();
-        $campaigns                = SellerCampaign::with('products')->latest()->get();
+        $campaigns = SellerCampaign::with('products')->latest()->get();
 
         $light_deals = [];
 
@@ -53,7 +54,7 @@ class HomeController extends Controller
 
         $new_arrival_products = Product::with('unit')
             ->withAvg('reviews', 'rating')
-        // ->where('is_featured', 0)
+            // ->where('is_featured', 0)
             ->withCount('reviews')
             ->orderByDesc('id')
             ->skip(6)
