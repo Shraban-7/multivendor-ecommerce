@@ -54,7 +54,7 @@ $settings = settings();
     @include('frontend.layouts.footer')
 
     @vite('resources/js/app.js')
-    
+
     <script src="{{ asset('assets/libs/swiper/js/swiper-bundle.min.js') }}"></script>
     <script src="{{ asset('assets/frontend/js/swiperSliders.js') }}"></script>
     <script src="{{ asset('assets/frontend/js/multipleProductsSwiper.js') }}"></script>
@@ -333,6 +333,7 @@ $settings = settings();
                 const $qtyEl = $wrapper.find("input.quantity");
                 const product = $wrapper.data("product");
 
+
                 if (variant) {
                     const basePrice = parseFloat(variant.price) || 0;
                     const discounted = variant.discounted_price !== null ? parseFloat(variant.discounted_price) :
@@ -458,7 +459,9 @@ $settings = settings();
                 );
 
                 const selectedOptions = collectSelectedOptions($wrapper);
+
                 const variant = getSelectedVariant(product, selectedOptions);
+
                 const quantity = parseInt($wrapper.find(".qtyInputValue").val()) || 1;
 
                 updateProductUI($wrapper, variant, quantity);

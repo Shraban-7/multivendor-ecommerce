@@ -22,7 +22,7 @@ class ProductVariantController extends Controller
 
             'option_values'      => 'nullable|array|min:1',
             'option_values.*'    => 'nullable|exists:option_values,id',
-            'is_default'         => 'required|boolean',
+            'is_default'         => 'nullable|boolean',
         ]);
 
         $data['product_id'] = $product->id;

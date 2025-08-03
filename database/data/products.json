@@ -1252,6 +1252,17 @@
                         "36",
                         "40"
                     ]
+                },
+                {
+                    "buying_price": 0,
+                    "selling_price": 3500,
+                    "discounted_price": 3000,
+                    "is_default": true,
+                    "value_ids": [
+                        "Moslin cotton",
+                        "38",
+                        "40"
+                    ]
                 }
             ]
         },
