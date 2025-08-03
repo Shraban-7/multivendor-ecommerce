@@ -10,16 +10,14 @@ $settings = settings();
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset($settings->favicon) }}">
-    <!-- Link jQuery -->
     <script src="{{ asset('assets/libs/jquery/jquery-3.7.1.min.js') }}"></script>
     @vite('resources/css/app.css')
 
-    <!-- Link Font Awesome's CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
         integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- Link Swiper's CSS -->
     <link rel="stylesheet" href="{{ asset('assets/libs/swiper/css/swiper-bundle.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/libs/toastr/css/toastr.min.css') }}">
 
     <title>@yield('title') | {{ $settings->app_name }}</title>
 
@@ -27,15 +25,10 @@ $settings = settings();
 </head>
 
 <body>
-    <!-- Header Starts -->
     <header class="header-section bg-persian-red text-white font-primary">
-        <!-- top nav -->
         @include('frontend.layouts.top-nav')
-        <!-- bottom nav -->
         @include('frontend.layouts.bottom-nav')
-
     </header>
-    <!-- Header Ended -->
 
     @if (session('error') || session('success'))
         <div id="alert-border"
@@ -58,27 +51,16 @@ $settings = settings();
 
     @yield('content')
 
-    <!-- Footer Section Starts -->
     @include('frontend.layouts.footer')
-    <!-- Footer Section Ended -->
 
     @vite('resources/js/app.js')
-
-    <!-- Swiper JS Custom Cacarousel slider Script's-->
+    
     <script src="{{ asset('assets/libs/swiper/js/swiper-bundle.min.js') }}"></script>
     <script src="{{ asset('assets/frontend/js/swiperSliders.js') }}"></script>
     <script src="{{ asset('assets/frontend/js/multipleProductsSwiper.js') }}"></script>
-
-    <!-- Data table  -->
-
     <script src="{{ asset('assets/libs/datatables/simple-datatables@9.0.3.js') }}"></script>
-
-    <!-- Toastr CSS & js -->
-    <link rel="stylesheet" href="{{ asset('assets/libs/toastr/css/toastr.min.css') }}">
-
     <script src="{{ asset('assets/libs/toastr/js/toastr.min.js') }}"></script>
 
-    <!-- custom scripts -->
     <script>
         $.ajaxSetup({
             headers: {
