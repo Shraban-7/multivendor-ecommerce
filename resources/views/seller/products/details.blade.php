@@ -66,7 +66,7 @@
                                             <span
                                                 class="badge bg-secondary rounded-pill me-1">{{ $product->subcategory->name }}</span>
                                         @endif
-                                        <span class="badge bg-primary rounded-pill">{{ $product->brand->name }}</span>
+                                        <span class="badge bg-primary rounded-pill">{{ $product->brand?->name }}</span>
                                     </div>
 
                                     <div class="table-responsive">
