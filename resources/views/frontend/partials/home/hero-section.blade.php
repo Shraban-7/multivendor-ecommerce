@@ -103,7 +103,7 @@ loading="lazy" />
             </div>
             @endforeach
         </div> -->
-        <div class="w-full md:w-[35%] flex flex-row flex-wrap md:flex-col gap-6">
+        <div class="w-full md:w-[35%] flex flex-row flex-wrap md:flex-col gap-4">
             @foreach ($hero_blocks as $hero_block)
             <div class="w-[calc(50%-8px)] md:w-full h-36 md:h-72 rounded-lg overflow-hidden">
                 <a href="{{ $hero_block->button_link ?? '#' }}">
