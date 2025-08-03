@@ -12,13 +12,13 @@ $settings = settings();
             </div>
 
             @if (!auth('web')->check() && !auth()->guard('seller')->check())
-            <a href="{{ route('login') }}" class="text-sm hover:text-light-yellow flex items-center gap-1">
-                <i class="fa-regular fa-user"></i> <span>Sign In</span>
-            </a>
+                <a href="{{ route('login') }}" class="text-sm hover:text-light-yellow flex items-center gap-1">
+                    <i class="fa-regular fa-user"></i> <span>Sign In</span>
+                </a>
             @else
-            <a href="{{ route('profile') }}" class="flex items-center gap-1 text-sm hover:text-light-yellow">
-                <i class="fa-regular fa-user"></i>
-            </a>
+                <a href="{{ route('profile') }}" class="flex items-center gap-1 text-sm hover:text-light-yellow">
+                    <i class="fa-regular fa-user"></i>
+                </a>
             @endif
         </div>
 
@@ -51,31 +51,46 @@ $settings = settings();
 
         <div class="flex justify-end items-center gap-4">
             @if (!auth('web')->check() && !auth()->guard('seller')->check())
-            <a href="{{ route('login') }}" class="flex items-center gap-1 hover:text-light-yellow">
-                <i class="fa-regular fa-user"></i>
-                <span class="text-sm lg:text-base">Sign In</span>
-            </a>
+                <a href="{{ route('login') }}" class="flex items-center gap-1 hover:text-light-yellow">
+                    <i class="fa-regular fa-user"></i>
+                    <span class="text-sm lg:text-base">Sign In</span>
+                </a>
             @else
-            <div class="relative group">
-                <button class="flex items-center gap-2 hover:text-light-yellow">
-                    <i class="fa-regular fa-user text-lg"></i>
-                    <span class="text-sm lg:text-base">{{ auth('web')->user()->name ?? auth('seller')->user()->name }}</span>
-                </button>
-                <div class="absolute hidden group-hover:block bg-white shadow-lg rounded-md mt-2 w-40 right-0 z-50">
-                    <ul class="py-2 text-gray-700">
-                        <li><a href="{{ route('profile') }}" class="block px-4 py-2 hover:bg-gray-100">Profile</a></li>
-                        <li><a href="{{ route('orders.index') }}" class="block px-4 py-2 hover:bg-gray-100">Orders</a></li>
-                        <li class="border-t">
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" class="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100">
-                                    Logout
-                                </button>
-                            </form>
-                        </li>
-                    </ul>
+                <div class="relative group inline-block">
+                    <!-- Button -->
+                    <button type="button" class="flex items-center gap-2 hover:text-light-yellow focus:outline-none">
+                        <i class="fa-regular fa-user text-lg"></i>
+                        <span class="text-sm lg:text-base">
+                            {{ auth('web')->user()->name ?? auth('seller')->user()->name }}
+                        </span>
+                    </button>
+
+                    <!-- Dropdown -->
+                    <div
+                        class="absolute right-0 z-50 hidden group-hover:block bg-white shadow-lg rounded-md w-40 top-full">
+                        <ul class="py-2 text-gray-700">
+                            <li>
+                                <a href="{{ route('profile') }}" class="block px-4 py-2 hover:bg-gray-100">
+                                    Profile
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('orders.index') }}" class="block px-4 py-2 hover:bg-gray-100">
+                                    Orders
+                                </a>
+                            </li>
+                            <li class="border-t">
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit"
+                                        class="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100">
+                                        Logout
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
             @endif
         </div>
     </div>
