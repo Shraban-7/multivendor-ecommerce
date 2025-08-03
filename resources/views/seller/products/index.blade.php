@@ -24,8 +24,8 @@
                     <div class="d-flex align-items-center">
                         <img src="{{ storage_url($product->thumbnail) }}" class="border" alt="Image" style="height:80px; width:80px">
                         <div class="mt-2 ms-3">
-                            <div>{{ $product->name }}</div>
-                            <div class="mt-2">
+                            <p class="fw-bold mb-0">{{ $product->name }}</p>
+                            <div>
                                 <small>Category: <strong>{{ $product->category->name }}</strong></small><br>
                                 <small>Brand: <strong>{{ $product->brand?->name }}</strong></small><br>
                             </div>
