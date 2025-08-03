@@ -13,12 +13,13 @@ class ImageController extends Controller
     public function index()
     {
         $disk = 'public';
-        $directory = 'images/watermarked';
 
-        $files = Storage::disk($disk)->files($directory);
+        $watermarkedImages = Storage::disk($disk)->files('images/watermarked');
+        $croppedImages = Storage::disk($disk)->files('images/cropped');
 
         return view('admin.image', [
-            'watermarkedImages' => $files
+            'watermarkedImages' => $watermarkedImages,
+            'croppedImages' => $croppedImages
         ]);
     }
 
@@ -79,5 +80,32 @@ class ImageController extends Controller
         Storage::disk($disk)->delete($files);
 
         return redirect()->back()->with('success', 'Deleted all watermarked images.');
+    }
+
+    public function croppedImage(Request $request)
+    {
+        $request->validate([
+            'image'     => 'required|mimes:jpeg,png,jpg,gif,webp',
+        ]);
+
+        if ($request->hasFile('image')) {
+            upload_file($request->file('image'), 'images/cropped');
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Cropped image saved successfully'
+        ]);
+    }
+
+    public function deleteCroppedImage()
+    {
+        $directory = 'images/cropped';
+        $disk = 'public';
+
+        $files = Storage::disk($disk)->files($directory);
+        Storage::disk($disk)->delete($files);
+
+        return redirect()->back()->with('success', 'Deleted all cropped images.');
     }
 }

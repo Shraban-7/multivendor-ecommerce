@@ -152,11 +152,13 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
         Route::get('/', [SettingController::class, 'index'])->name('index');
         Route::post('/update', [SettingController::class, 'update'])->name('update');
     });
-    
+
     Route::prefix('images')->as('images.')->group(function () {
         Route::get('/', [ImageController::class, 'index'])->name('index');
         Route::post('/store', [ImageController::class, 'store'])->name('store');
         Route::delete('/delete-all', [ImageController::class, 'deleteAll'])->name('delete-all');
+        Route::post('/cropped-image', [ImageController::class, 'croppedImage'])->name('cropped-image');
+        Route::delete('/delete-cropped-image', [ImageController::class, 'deleteCroppedImage'])->name('delete-cropped-image');
     });
 });
 

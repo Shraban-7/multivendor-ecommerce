@@ -20,6 +20,7 @@
 
     <!-- <link href="assets/dashboard/libs/@mdi/font/css/materialdesignicons.min.css" rel="stylesheet" />
         <link href="assets/dashboard/libs/prismjs/themes/okaidia.css" rel="stylesheet"> -->
+    @stack('styles')
 
     <title>@yield('title')</title>
 </head>
