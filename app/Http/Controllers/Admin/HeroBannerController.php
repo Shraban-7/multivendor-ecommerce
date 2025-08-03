@@ -28,9 +28,8 @@ class HeroBannerController extends Controller
             'description' => 'nullable|string',
             'button_text' => 'nullable|string|max:255',
             // 'button_link' => 'nullable|url|max:255',
-            'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:6000',
         ]);
-
 
         $imagePath = null;
         if ($request->hasFile('image')) {
@@ -52,8 +51,8 @@ class HeroBannerController extends Controller
             'subtitle' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'button_text' => 'nullable|string|max:255',
-            'button_link' => 'nullable|url|max:255',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'button_link' => 'nullable|max:255',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:6000',
         ]);
 
         if ($request->hasFile('image')) {
