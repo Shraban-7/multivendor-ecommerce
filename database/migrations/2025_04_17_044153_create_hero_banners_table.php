@@ -19,7 +19,8 @@ return new class extends Migration
             $table->string('button_text')->nullable();
             $table->string('button_link')->nullable();
             $table->string('image')->nullable();
-            $table->boolean('is_active')->default(true);
+            $table->boolean('is_active')->default(1);
+            $table->boolean('is_slider')->default(0);
             $table->integer('position')->default(0);
             $table->timestamps();
         });

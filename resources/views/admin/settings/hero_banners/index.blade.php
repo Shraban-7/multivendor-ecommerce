@@ -5,11 +5,9 @@
         <h4 class="mb-0">Hero Banners</h4>
 
         @if (hasPermission('admin.settings.hero.store'))
-            @if (count($hero_banners) < 5)
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
-                    <i data-feather="plus" class="icon-xs"></i> Add Hero Banner
-                </button>
-            @endif
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+                <i data-feather="plus" class="icon-xs"></i> Add Hero Banner
+            </button>
         @endif
     </div>
     <div class="row">
@@ -46,19 +44,39 @@
                             @csrf
                             <div class="modal-body">
                                 <div class="row">
-                                    <div class="mb-3 col-md-12">
+                                    <div class="mb-3 col-md-6">
                                         <label class="form-label">Position</label>
                                         <select name="position" class="form-select w-100" required>
-                                            <option value="" disabled>--Choose--</option>
-                                            @for ($i = 1; $i <= 5; $i++)
+                                            <option value="" disabled
+                                                {{ old('position', $banner->position) ? '' : 'selected' }}>--Choose--
+                                            </option>
+
+                                            @php
+                                                $allPositions = array_unique(
+                                                    array_merge($usedPositions, $availablePositions),
+                                                );
+                                                sort($allPositions);
+                                            @endphp
+
+                                            @foreach ($allPositions as $i)
                                                 <option value="{{ $i }}"
                                                     @if ($banner->position == $i) selected
-                                                @elseif (in_array($i, $usedPositions) && $banner->position != $i) disabled @endif>
+                                                    @elseif (in_array($i, $usedPositions) && $banner->position != $i) disabled @endif>
                                                     {{ $i }}
                                                 </option>
-                                            @endfor
+                                            @endforeach
                                         </select>
                                     </div>
+                                    <div class="mb-3 col-md-6">
+                                        <label class="form-label">Is Slider</label>
+                                        <select name="is_slider" class="form-select w-100" required>
+                                            <option value="1" {{ $banner->is_slider == 1 ? '' : 'selected' }}>Yes
+                                            </option>
+                                            <option value="0" {{ $banner->is_slider == 1 ? '' : 'selected' }}>No
+                                            </option>
+                                        </select>
+                                    </div>
+
                                     <div class="mb-3 col-12">
                                         <label class="form-label">Title</label>
                                         <input name="title" type="text" value="{{ $banner->title }}"
@@ -115,13 +133,22 @@
                     @csrf
                     <div class="modal-body">
                         <div class="row">
-                            <div class="mb-3 col-md-12">
+                            <div class="mb-3 col-md-6">
                                 <label class="form-label">Position</label>
                                 <select name="position" class="form-select w-100" id="positionSelect" required>
                                     <option value="" selected disabled>--Choose--</option>
                                     @foreach ($availablePositions as $position)
                                         <option value="{{ $position }}">{{ $position }}</option>
                                     @endforeach
+                                </select>
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label">Is Slider</label>
+                                <select name="is_slider" class="form-select w-100" required>
+                                    <option value="1">Yes
+                                    </option>
+                                    <option value="0">No
+                                    </option>
                                 </select>
                             </div>
                             <div class="mb-3 col-12">

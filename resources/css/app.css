@@ -13,6 +13,7 @@
 /* Define theme tokens */
 @theme {
     --color-primary: #FD740F;
+    --color-orange-400: #e2b974;
     --color-rustic-red: #5A0000;
     --color-light-yellow: #FFB321;
     --color-persian-blue: #002D58;
