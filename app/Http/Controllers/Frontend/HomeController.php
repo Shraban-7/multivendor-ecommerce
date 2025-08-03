@@ -57,8 +57,7 @@ class HomeController extends Controller
             // ->where('is_featured', 0)
             ->withCount('reviews')
             ->orderByDesc('id')
-            ->skip(6)
-            ->take(8)
+            ->limit(16)
             ->get();
 
         $data['new_arrival_products'] = $new_arrival_products->map(fn($product) => $product->toDetailsArray());
@@ -68,8 +67,7 @@ class HomeController extends Controller
             ->where('is_trending', 1)
             ->withCount('reviews')
             ->orderByDesc('id')
-            ->skip(6)
-            ->take(8)
+            ->limit(16)
             ->get();
 
         $data['trending_products'] = $trending_products->map(fn($product) => $product->toDetailsArray());
@@ -79,8 +77,7 @@ class HomeController extends Controller
             ->where('best_selling', 1)
             ->withCount('reviews')
             ->orderByDesc('id')
-            ->skip(6)
-            ->take(8)
+            ->limit(16)
             ->get();
 
         $data['bestselling_products'] = $bestselling_products->map(fn($product) => $product->toDetailsArray());
@@ -90,8 +87,7 @@ class HomeController extends Controller
             ->where('is_featured', 1)
             ->withCount('reviews')
             ->orderByDesc('id')
-            ->skip(6)
-            ->take(8)
+            ->limit(16)
             ->get();
 
         $data['featured_products'] = $featured_products->map(fn($product) => $product->toDetailsArray());
@@ -110,7 +106,6 @@ class HomeController extends Controller
 
         $data['promo_poster_one'] = PromoPoster::where('position', 1)->first();
         $data['promo_poster_two'] = PromoPoster::where('position', 2)->first();
-
 
         return view('frontend.pages.home', $data);
     }
