@@ -18,7 +18,7 @@
     <div class="relative aspect-[4/3] overflow-hidden">
         <a href="{{ route('products.details', $product['slug']) }}">
             <img src="{{ storage_url($product['thumbnail']) }}" alt="{{ $product['name'] }}"
-                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                class="h-auto max-w-full transition-transform duration-300 group-hover:scale-105" />
         </a>
         <button type="button" data-modal-target="quick-view-modal-{{ $product['id'] }}"
             data-modal-toggle="quick-view-modal-{{ $product['id'] }}" data-action="quick-view"
@@ -37,10 +37,10 @@
         </h3>
 
         @if ($product['almost_sold_out'])
-            <span class="mt-1 inline-block text-xs text-leaf-green font-medium">Almost Sold Out</span>
+            <span class="mt-1 inline-block text-xs text-leaf-green font-medium {{ $product['almost_sold_out'] ? 'hidden' : '' }}">Almost Sold Out</span>
         @endif
 
-        <div class="flex items-center justify-between text-xs text-gray-500 mt-2">
+        <div class="flex items-center justify-between text-xs text-gray-500">
             @if ($product['rating'] > 0)
                 <div class="flex items-center gap-0.5 text-sm">
                     @for ($i = 1; $i <= 5; $i++)

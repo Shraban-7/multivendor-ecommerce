@@ -23,7 +23,7 @@
                     <div
                         class="slide-thumb w-full h-20 lg:h-28 xl:h-24 rounded-2xl cursor-pointer border-2 overflow-hidden {{ $index === 0 ? 'border-primary' : 'border-transparent' }}">
                         <img src="{{ storage_url($img) }}" alt="{{ $product['name'] ?? 'Product Image' }}"
-                            class="w-full h-full object-cover thumb-img" data-image="{{ storage_url($img) }}"
+                            class="max-w-full h-auto thumb-img" data-image="{{ storage_url($img) }}"
                             data-full="{{ storage_url($img) }}" />
                     </div>
                 @endforeach
@@ -35,7 +35,7 @@
             <div class="overflow-hidden w-full h-96 md:h-[37rem] xl:h-[37rem] lg:h-[41rem] rounded-2xl relative">
                 <img src="{{ storage_url($product['slider'][0] ?? '') }}"
                     alt="{{ $product['name'] ?? 'Product Image' }}"
-                    class="w-full h-full object-cover rounded-2xl transition-all duration-300 main-product-image" />
+                    class="max-w-full h-full  rounded-2xl transition-all duration-300 main-product-image" />
             </div>
         </div>
     </div>

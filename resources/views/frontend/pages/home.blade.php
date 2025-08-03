@@ -2,59 +2,64 @@
 @section('title', 'A Multi-Vendor E-Commerce platform')
 
 @section('content')
-<main class="home-page">
-    @include('frontend.partials.home.hero-section')
+    <main class="home-page">
+        @include('frontend.partials.home.hero-section')
 
-    {{-- @include('frontend.partials.home.light-deal-section') --}}
+        {{-- @include('frontend.partials.home.light-deal-section') --}}
 
-    @include('frontend.partials.home.interest-section')
+        @include('frontend.partials.home.interest-section')
+        {{-- @include('frontend.partials.home.new-arrival-section') --}}
+        <x-frontend.home.products-section-slider section="New Arrival" :products="$new_arrival_products" />
+        <x-frontend.home.products-section-slider section="Trending" :products="$trending_products" />
+        <x-frontend.home.products-section-slider section="Best Selling" :products="$bestselling_products" />
+        <x-frontend.home.products-section-slider section="Featured" :products="$featured_products" />
 
-    @include('frontend.partials.home.feature-gallery-section')
 
-    @include('frontend.partials.home.promotional-header-section')
+        {{-- @include('frontend.partials.home.feature-gallery-section') --}}
 
-    @include('frontend.partials.home.new-arrival-section')
+        {{-- @include('frontend.partials.home.promotional-header-section') --}}
 
-    @include('frontend.partials.home.community-product-section')
 
-    @include('frontend.partials.home.sessional-promotion-thumbnail-section')
+        {{-- @include('frontend.partials.home.community-product-section') --}}
 
-    {{-- @include('frontend.partials.home.halloween-product-section') --}}
+        {{-- @include('frontend.partials.home.sessional-promotion-thumbnail-section') --}}
 
-    @include('frontend.partials.home.feature-video-section')
-</main>
+        {{-- @include('frontend.partials.home.halloween-product-section') --}}
 
-@push('scripts')
-<script>
-    function initializeCountdownTimers() {
-        const timers = document.querySelectorAll('.countdown-timer');
+        {{-- @include('frontend.partials.home.feature-video-section') --}}
+    </main>
 
-        timers.forEach(timer => {
-            const endTime = new Date(timer.dataset.endTime).getTime();
+    @push('scripts')
+        <script>
+            function initializeCountdownTimers() {
+                const timers = document.querySelectorAll('.countdown-timer');
 
-            function updateCountdown() {
-                const now = new Date().getTime();
-                const distance = endTime - now;
+                timers.forEach(timer => {
+                    const endTime = new Date(timer.dataset.endTime).getTime();
 
-                if (distance < 0) {
-                    timer.innerText = "Expired";
-                    return;
-                }
+                    function updateCountdown() {
+                        const now = new Date().getTime();
+                        const distance = endTime - now;
 
-                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                        if (distance < 0) {
+                            timer.innerText = "Expired";
+                            return;
+                        }
 
-                timer.innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+                        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                        timer.innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+                    }
+
+                    updateCountdown();
+                    setInterval(updateCountdown, 1000);
+                });
             }
 
-            updateCountdown();
-            setInterval(updateCountdown, 1000);
-        });
-    }
-
-    document.addEventListener('DOMContentLoaded', initializeCountdownTimers);
-</script>
-@endpush
+            document.addEventListener('DOMContentLoaded', initializeCountdownTimers);
+        </script>
+    @endpush
 @endsection

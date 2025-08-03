@@ -51,9 +51,9 @@ class HomeController extends Controller
 
         $data['community_products'] = $community_products->map(fn($product) => $product->toDetailsArray());
 
-         $new_arrival_products = Product::with('unit')
+        $new_arrival_products = Product::with('unit')
             ->withAvg('reviews', 'rating')
-            // ->where('is_featured', 0)
+        // ->where('is_featured', 0)
             ->withCount('reviews')
             ->orderByDesc('id')
             ->skip(6)
@@ -61,6 +61,39 @@ class HomeController extends Controller
             ->get();
 
         $data['new_arrival_products'] = $new_arrival_products->map(fn($product) => $product->toDetailsArray());
+
+        $trending_products = Product::with('unit')
+            ->withAvg('reviews', 'rating')
+            ->where('is_trending', 1)
+            ->withCount('reviews')
+            ->orderByDesc('id')
+            ->skip(6)
+            ->take(8)
+            ->get();
+
+        $data['trending_products'] = $trending_products->map(fn($product) => $product->toDetailsArray());
+
+        $bestselling_products = Product::with('unit')
+            ->withAvg('reviews', 'rating')
+            ->where('best_selling', 1)
+            ->withCount('reviews')
+            ->orderByDesc('id')
+            ->skip(6)
+            ->take(8)
+            ->get();
+
+        $data['bestselling_products'] = $bestselling_products->map(fn($product) => $product->toDetailsArray());
+
+        $featured_products = Product::with('unit')
+            ->withAvg('reviews', 'rating')
+            ->where('is_featured', 1)
+            ->withCount('reviews')
+            ->orderByDesc('id')
+            ->skip(6)
+            ->take(8)
+            ->get();
+
+        $data['featured_products'] = $featured_products->map(fn($product) => $product->toDetailsArray());
 
         $data['hero_grid_one']   = HeroBanner::where('position', 1)->first();
         $data['hero_grid_two']   = HeroBanner::where('position', 2)->first();
@@ -77,7 +110,6 @@ class HomeController extends Controller
         $data['promo_poster_one'] = PromoPoster::where('position', 1)->first();
         $data['promo_poster_two'] = PromoPoster::where('position', 2)->first();
 
-        $data['featured_products'] = Product::featured()->take(8)->latest()->get();
 
         return view('frontend.pages.home', $data);
     }
