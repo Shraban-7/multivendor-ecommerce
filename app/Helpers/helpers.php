@@ -78,14 +78,8 @@ if (! function_exists('upload_file')) {
 if (! function_exists('upload_with_watermark')) {
     function upload_with_watermark($file, $directory, $disk = 'public')
     {
-        $watermark = null;
         $watermarkPath = 'images/watermark.png';
-        if (Storage::disk($disk)->exists($watermarkPath)) {
-            $watermark = Storage::disk($disk)->get($watermarkPath);
-        }
-
         $tempPath = upload_file($file, 'images/temp', $disk);
-
         $fileName = basename($tempPath);
         $finalPath = $directory . '/' . $fileName;
         $fullFinalPath = Storage::disk($disk)->path($finalPath);
@@ -94,20 +88,25 @@ if (! function_exists('upload_with_watermark')) {
             Storage::disk($disk)->makeDirectory($directory);
         }
 
-        if (!is_null($watermark)) {
-            Image::read(Storage::disk($disk)->get($tempPath))
-                ->place(
-                    element: $watermark,
-                    position: 'bottom-right',
-                    offset_x: 10,
-                    offset_y: 10,
-                    opacity: 70
-                )
-                ->save($fullFinalPath);
-        } else {
-            Image::read(Storage::disk($disk)->get($tempPath))->save($fullFinalPath);
+        $image = Image::read(Storage::disk($disk)->get($tempPath));
+
+        if (Storage::disk($disk)->exists($watermarkPath)) {
+            $watermark = Image::read(Storage::disk($disk)->get($watermarkPath));
+
+            $imageWidth = $image->width();
+            $offset_x = (int) ($imageWidth * 0.06);
+            $offset_y = 50;
+
+            $image->place(
+                element: $watermark,
+                position: 'bottom-right',
+                offset_x: $offset_x,
+                offset_y: $offset_y,
+                opacity: 70
+            );
         }
 
+        $image->save($fullFinalPath);
         delete_file($tempPath);
 
         return $finalPath;
