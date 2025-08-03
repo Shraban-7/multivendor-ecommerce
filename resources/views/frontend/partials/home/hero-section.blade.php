@@ -1,6 +1,7 @@
 <section class="hero-section">
     <div class="container mx-auto px-4 py-8">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 h-[80vh] max-h-[800px]">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+            <!-- Left big banner -->
             <div class="relative group overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300">
                 <a href="#" class="block h-full">
                     <img src="{{ storage_url($hero_grid_one->image) }}" alt="{{ $hero_grid_one->title }}"
@@ -18,50 +19,20 @@
                 </a>
             </div>
 
+            <!-- Right side smaller banners -->
             <div class="grid grid-cols-2 gap-4 md:gap-6">
-                <div class="relative group overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300">
-                    <a href="#" class="block h-full">
-                        <img src="{{ storage_url($hero_grid_two->image) }}" alt="{{ $hero_grid_two->title }}"
-                            class="object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-500"
-                            loading="lazy" />
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-4">
-                            <h3 class="text-lg font-semibold text-white">{{ $hero_grid_two->title }}</h3>
-                        </div>
-                    </a>
-                </div>
-
-                <div class="relative group overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300">
-                    <a href="#" class="block h-full">
-                        <img src="{{ storage_url($hero_grid_three->image) }}" alt="{{ $hero_grid_three->title }}"
-                            class="object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-500"
-                            loading="lazy" />
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-4">
-                            <h3 class="text-lg font-semibold text-white">{{ $hero_grid_three->title }}</h3>
-                        </div>
-                    </a>
-                </div>
-
-                <div class="relative group overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300">
-                    <a href="#" class="block h-full">
-                        <img src="{{ storage_url($hero_grid_four->image) }}" alt="{{ $hero_grid_four->title }}"
-                            class="object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-500"
-                            loading="lazy" />
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-4">
-                            <h3 class="text-lg font-semibold text-white">{{ $hero_grid_four->title }}</h3>
-                        </div>
-                    </a>
-                </div>
-
-                <div class="relative group overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300">
-                    <a href="#" class="block h-full">
-                        <img src="{{ storage_url($hero_grid_five->image) }}" alt="{{ $hero_grid_five->title }}"
-                            class="object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-500"
-                            loading="lazy" />
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-4">
-                            <h3 class="text-lg font-semibold text-white">{{ $hero_grid_five->title }}</h3>
-                        </div>
-                    </a>
-                </div>
+                @foreach ([$hero_grid_two, $hero_grid_three, $hero_grid_four, $hero_grid_five] as $grid)
+                    <div class="relative group overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300">
+                        <a href="#" class="block h-full">
+                            <img src="{{ storage_url($grid->image) }}" alt="{{ $grid->title }}"
+                                class="object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-500"
+                                loading="lazy" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-4">
+                                <h3 class="text-lg font-semibold text-white">{{ $grid->title }}</h3>
+                            </div>
+                        </a>
+                    </div>
+                @endforeach
             </div>
         </div>
     </div>

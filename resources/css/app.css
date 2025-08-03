@@ -108,7 +108,7 @@
 
     /* Custom Utility Classes */
     .section-padding {
-        padding: 1.5rem 0;
+        padding: 1.2rem 0;
     }
 
     .nav-links a[aria-current="page"] {
@@ -301,7 +301,7 @@
     }
 
     .section-padding {
-        padding: 2rem 0;
+        padding: 1.5rem 0;
     }
 
     /* order progress  */
@@ -340,7 +340,7 @@
 
     /* Section Padding */
     .section-padding {
-        padding: 3rem 0;
+        padding: 1.5rem 0;
     }
 
     /* nav active page */
