@@ -1,31 +1,34 @@
 <section class="interest-section section-padding">
     <div class="container">
-        <div class="relative sec-heading">
-            <h2
-                class="font-semibold uppercase md:text-center sm:text-xl xl:text-4xl lg:text-3xl md:text-2xl text-theme-dark">
+        <!-- Section Heading -->
+        <div class="sec-heading">
+            <h2 class="font-semibold uppercase text-theme-dark text-center text-xl md:text-2xl lg:text-3xl xl:text-4xl">
                 Featured Categories
             </h2>
-            <span class="absolute right-0 inline-block -translate-y-1/2 top-1/2">
-                <a href="#" class="theme-btn theme-outline-btn">View All</a>
-            </span>
         </div>
-        
-        <div class="mt-10 swiper categoriesSwiper md:mt-16">
+
+        <!-- Categories Slider -->
+        <div class="mt-10 md:mt-16 swiper categoriesSwiper">
             <div class="swiper-wrapper">
                 @foreach ($categories as $category)
-                <div class="swiper-slide group/categores eq">
-                    <a href="{{ route('category.details', $category->slug) }}"
-                        class="flex flex-col items-center block w-full product-card">
-                        <div class="relative w-16 h-16 card-image lg:h-28 lg:w-28 md:w-24 md:h-24">
-                            <img src="{{ storage_url($category->image) }}" alt="Grocery" class="object-contain w-full h-full" />
-                        </div>
-                        <div class="mt-3 card-content lg:mt-5">
-                            <a href="#"
-                                class="block text-sm font-medium text-center text-black group-hover/categores:text-light-yellow md:text-lg lg:text-xl eq">{{ $category->name }}
-                            </a>
-                        </div>
-                    </a>
-                </div>
+                    <div class="swiper-slide group/categores eq min-h-[150px]">
+                        <a href="{{ route('category.details', $category->slug) }}"
+                           class="flex flex-col items-center w-full product-card">
+                            <!-- Image -->
+                            <div class="w-16 h-16 md:w-24 md:h-24 lg:w-28 lg:h-28">
+                                <img src="{{ storage_url($category->image) }}"
+                                     alt="{{ $category->name }}"
+                                     class="object-contain w-full h-full" />
+                            </div>
+
+                            <!-- Name -->
+                            <div class="mt-3 lg:mt-5">
+                                <span class="block text-sm md:text-lg lg:text-xl font-medium text-center text-black group-hover/categores:text-light-yellow eq">
+                                    {{ $category->name }}
+                                </span>
+                            </div>
+                        </a>
+                    </div>
                 @endforeach
             </div>
         </div>
