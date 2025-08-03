@@ -12,7 +12,8 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $data['categories'] = Category::slider()->get();
+        $data['categories'] = Category::category()->get();
+        
         $data['special_category'] = Category::special()->with(['banners', 'products'])->first();
 
         $new_arrival_products = Product::with('unit')
@@ -60,8 +61,6 @@ class HomeController extends Controller
         $data['hero_grid_three'] = HeroBanner::where('position', 3)->first();
         $data['hero_grid_four']  = HeroBanner::where('position', 4)->first();
         $data['hero_grid_five']  = HeroBanner::where('position', 5)->first();
-
-
 
         return view('frontend.pages.home', $data);
     }
