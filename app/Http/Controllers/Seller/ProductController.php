@@ -170,7 +170,7 @@ class ProductController extends Controller
                 delete_file($product->thumbnail);
             }
 
-            $validated['thumbnail'] = upload_file($request->file('thumbnail'), 'images/products/thumb');
+            $validated['thumbnail'] = upload_with_watermark($request->file('thumbnail'), 'images/products/thumb');
         }
 
         if ($request->hasFile('video')) {
