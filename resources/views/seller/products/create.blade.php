@@ -140,22 +140,6 @@
                                     <label class="form-check-label" for="is_featured">Featured</label>
                                 </div>
                             </div>
-                            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                                <div class="form-check form-switch">
-                                    <input type="hidden" name="is_interest" value="0">
-                                    <input class="form-check-input" type="checkbox" name="is_interest"
-                                        value="1" role="switch" id="is_interest">
-                                    <label class="form-check-label" for="is_interest">Interest Products</label>
-                                </div>
-                            </div>
-                            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                                <div class="form-check form-switch">
-                                    <input type="hidden" name="is_community" value="0">
-                                    <input class="form-check-input" type="checkbox" name="is_community"
-                                        value="1" role="switch" id="is_community">
-                                    <label class="form-check-label" for="is_community">Community Products</label>
-                                </div>
-                            </div>
                         </div>
                     </div>
 
@@ -346,7 +330,7 @@
     const cropButton = document.getElementById('cropThumbnailBtn');
 
     thumbnailInput.addEventListener('change', function() {
-        const file = this.files[0]; 
+        const file = this.files[0];
         if (!file) return;
 
         const reader = new FileReader();

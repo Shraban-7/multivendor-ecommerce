@@ -176,24 +176,6 @@
                                     <label class="form-check-label" for="is_featured">Featured</label>
                                 </div>
                             </div>
-                            <div class="col-md-3 col-sm-6 mb-2">
-                                <div class="form-check form-switch">
-                                    <input type="hidden" name="is_interest" value="0">
-                                    <input class="form-check-input" type="checkbox" name="is_interest"
-                                        {{ $product->is_interest ? 'checked' : '' }} value="1" role="switch"
-                                        id="is_interest">
-                                    <label class="form-check-label" for="is_interest">Interest Products</label>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-6 mb-2">
-                                <div class="form-check form-switch">
-                                    <input type="hidden" name="is_community" value="0">
-                                    <input class="form-check-input" type="checkbox" name="is_community"
-                                        {{ $product->is_community ? 'checked' : '' }} value="1" role="switch"
-                                        id="is_community">
-                                    <label class="form-check-label" for="is_community">Community Products</label>
-                                </div>
-                            </div>
                         </div>
                     </div>
 

@@ -37,6 +37,8 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
+        $seller = seller();
+
         $validated = $request->validate([
             'category_id'        => 'required|integer|exists:categories,id',
             'subcategory_id'     => 'nullable',
@@ -52,11 +54,9 @@ class ProductController extends Controller
             'discount_value'     => 'required|numeric',
             'unit_id'            => 'required|numeric',
             'unit_value'         => 'required|string',
-            'is_trending'        => 'required|boolean',
-            'best_selling'       => 'required|boolean',
-            'is_featured'        => 'required|boolean',
-            'is_interest'        => 'required|boolean',
-            'is_community'       => 'required|boolean',
+            'is_trending'        => 'nullable|boolean',
+            'best_selling'       => 'nullable|boolean',
+            'is_featured'        => 'nullable|boolean',
             'low_stock_quantity' => 'required|numeric',
             'thumbnail'          => 'required|image|max:4096',
             'video'              => 'nullable|file',
@@ -65,12 +65,15 @@ class ProductController extends Controller
             'meta_title'         => 'nullable|string',
         ]);
 
-        $validated['thumbnail'] = upload_with_watermark($request->file('thumbnail'), 'images/products/thumb');
+        $imageFolder = "images/{$seller->username}/products";
+
+        $validated['thumbnail'] = upload_with_watermark($request->file('thumbnail'), "$imageFolder/thumb");
 
         if ($request->hasFile('video')) {
-            $validated['video'] = upload_file($request->file('video'), 'videos/products');
+            $validated['video'] = upload_file($request->file('video'), "videos/{$seller->username}/products");
         }
-        $validated['seller_id']        = seller()->id;
+
+        $validated['seller_id']        = $seller->id;
         $validated['slug']             = str_slug('products', 'slug', $validated['name']);
         $validated['sku']              = $validated['sku'] ?? strtoupper(uniqid());
         $validated['discount_amount']  = calculate_discount_amount($validated['selling_price'], $validated['discount_type'], $validated['discount_value']);
@@ -82,7 +85,7 @@ class ProductController extends Controller
             foreach ($request->file('files') as $file) {
                 ProductImage::create([
                     'product_id' => $product->id,
-                    'image'      => upload_file($file, 'images/products'),
+                    'image'      => upload_file($file, $imageFolder),
                 ]);
             }
         }
@@ -133,6 +136,8 @@ class ProductController extends Controller
 
     public function update($slug, Request $request)
     {
+        $seller = seller();
+
         $product = Product::where('slug', $slug)->first();
 
         $validated = $request->validate([
@@ -147,17 +152,17 @@ class ProductController extends Controller
             'selling_price'      => 'required|numeric',
             'unit_id'            => 'required|numeric',
             'unit_value'         => 'required|string',
-            'is_trending'        => 'required|boolean',
-            'best_selling'       => 'required|boolean',
-            'is_featured'        => 'required|boolean',
-            'is_interest'        => 'required|boolean',
-            'is_community'       => 'required|boolean',
+            'is_trending'        => 'nullable|boolean',
+            'best_selling'       => 'nullable|boolean',
+            'is_featured'        => 'nullable|boolean',
             'low_stock_quantity' => 'required|numeric',
             'thumbnail'          => 'nullable|image|max:4096',
             'video'              => 'nullable|file',
             'files'              => 'nullable|array',
             'files.*'            => 'mimetypes:image/*',
         ]);
+
+        $imageFolder = "images/{$seller->username}/products";
 
         if ($validated['name'] && $validated['name'] !== $product->name) {
             $validated['slug'] = str_slug('products', 'slug', $validated['name']);
@@ -170,7 +175,7 @@ class ProductController extends Controller
                 delete_file($product->thumbnail);
             }
 
-            $validated['thumbnail'] = upload_with_watermark($request->file('thumbnail'), 'images/products/thumb');
+            $validated['thumbnail'] = upload_with_watermark($request->file('thumbnail'), "$imageFolder/thumb");
         }
 
         if ($request->hasFile('video')) {
@@ -178,7 +183,8 @@ class ProductController extends Controller
                 delete_file($product->video);
             }
 
-            $validated['video'] = upload_file($request->file('video'), 'videos/products');
+            $validated['video'] = upload_file($request->file('video'), "videos/{$seller->username}/products");
+
         }
         $product->update($validated);
 
@@ -188,18 +194,21 @@ class ProductController extends Controller
                 $image->delete();
             });
 
-            foreach ($request->file('files') as $file) {
-                ProductImage::create([
-                    'product_id' => $product->id,
-                    'image'      => upload_file($file, 'images/products'),
-                ]);
+            if ($request->hasFile('files')) {
+                foreach ($request->file('files') as $file) {
+                    ProductImage::create([
+                        'product_id' => $product->id,
+                        'image'      => upload_file($file, $imageFolder),
+                    ]);
+                }
             }
+
         }
 
         return response()->json([
-            'success' => true,
-            'message' => 'Product Updated Successfully',
-            'redirect' => route('seller.products.edit', $product->slug)
+            'success'  => true,
+            'message'  => 'Product Updated Successfully',
+            'redirect' => route('seller.products.edit', $product->slug),
         ]);
     }
 
