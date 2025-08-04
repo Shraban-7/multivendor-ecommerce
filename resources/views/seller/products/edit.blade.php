@@ -17,8 +17,7 @@
 <div class="row">
     <div class="col-12">
         <div class="card card-body">
-            <form id="productUpdateForm" action="{{ route('seller.products.update', $product->slug) }}"
-                enctype="multipart/form-data" method="POST">
+            <form id="productUpdateForm" enctype="multipart/form-data" method="POST">
                 @csrf
                 <div class="row">
                     <div class="mb-3 col-md-3">
@@ -309,11 +308,7 @@
     });
 
     $(document).ready(function() {
-        if (!{
-                {
-                    $product - > subcategory_id ? 'true' : 'false'
-                }
-            }) {
+        if (!{{$product->subcategory_id ? 'true' : 'false'}}) {
             $('#subcategorySelect').attr('disabled', true).val('');
             $('#hiddenSubcategoryId').val('');
         }
@@ -350,8 +345,6 @@
         }
     });
 
-
-
     function deleteImage(imageId) {
         var url = "{{ route('seller.products.image.delete', ':id') }}".replace(':id', imageId);
         if (confirm("Are you sure you want to delete this image?")) {
@@ -370,7 +363,6 @@
             });
         }
     }
-
 
     $('#productUpdateForm').submit(function(e) {
         e.preventDefault();
@@ -424,7 +416,6 @@
         });
     });
 </script>
-
 
 <script src="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.js"></script>
 <script>

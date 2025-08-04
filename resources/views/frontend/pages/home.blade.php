@@ -13,8 +13,8 @@
         
         <x-frontend.home.products-section-slider section="New Arrival" :products="$new_arrival_products" />
         <x-frontend.home.products-section-slider section="Trending" :products="$trending_products" />
-        <x-frontend.home.products-section-slider section="Best Selling" :products="$bestselling_products" />
-        <x-frontend.home.products-section-slider section="Featured Products" :products="$featured_products" />
+        <x-frontend.home.products-section-slider section="Best Selling" :products="$bestselling_products" :slider="false" />
+        <x-frontend.home.products-section-slider section="Featured Products" :products="$featured_products" :slider="false" />
 
         {{-- @include('frontend.partials.home.feature-gallery-section') --}}
 

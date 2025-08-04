@@ -41,7 +41,7 @@ class HomeController extends Controller
             ->where('best_selling', 1)
             ->withCount('reviews')
             ->orderByDesc('id')
-            ->limit(16)
+            ->limit(10)
             ->get();
 
         $data['bestselling_products'] = $bestselling_products->map(fn($product) => $product->toDetailsArray());
@@ -51,7 +51,7 @@ class HomeController extends Controller
             ->where('is_featured', 1)
             ->withCount('reviews')
             ->orderByDesc('id')
-            ->limit(16)
+            ->limit(10)
             ->get();
 
         $data['featured_products'] = $featured_products->map(fn($product) => $product->toDetailsArray());
@@ -62,7 +62,7 @@ class HomeController extends Controller
         $data['hero_grid_four']  = HeroBanner::where('position', 4)->first();
         $data['hero_grid_five']  = HeroBanner::where('position', 5)->first();
 
-        $data['hero_banners'] = HeroBanner::active()->get();
+        $data['hero_banners'] = HeroBanner::active()->orderBy('position')->get();
 
         return view('frontend.pages.home', $data);
     }
