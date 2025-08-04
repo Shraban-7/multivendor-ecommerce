@@ -32,7 +32,7 @@ class HeroBannerController extends Controller
             'button_text' => 'nullable|string|max:255',
             // 'button_link' => 'nullable|url|max:255',
             'image'       => 'required|image|mimes:jpg,jpeg,png,webp|max:6000',
-            'is_slider'  => 'required|boolean'
+            'is_slider'   => 'required|boolean',
         ]);
 
         $imagePath = null;
@@ -41,7 +41,7 @@ class HeroBannerController extends Controller
         }
 
         $data['image'] = $imagePath;
-        
+
         HeroBanner::create($data);
 
         return redirect()->route('admin.settings.hero.index')->with('success', 'Hero banner create successfully');
@@ -57,7 +57,7 @@ class HeroBannerController extends Controller
             'button_text' => 'nullable|string|max:255',
             'button_link' => 'nullable|max:255',
             'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:6000',
-            'is_slider' => 'required|boolean'
+            'is_slider'   => 'required|boolean',
 
         ]);
 
@@ -74,5 +74,16 @@ class HeroBannerController extends Controller
         $heroBanner->update($data);
 
         return redirect()->route('admin.settings.hero.index')->with('success', 'Hero banner updated successfully');
+    }
+
+    public function destroy(HeroBanner $heroBanner)
+    {
+        if (! empty($heroBanner->image)) {
+            delete_file($heroBanner->image);
+        }
+
+        $heroBanner->delete();
+
+        return redirect()->route('admin.settings.hero.index')->with('success',"Hero banner delete successfully");
     }
 }

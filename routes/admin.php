@@ -123,6 +123,7 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
             Route::get('/', [HeroBannerController::class, 'index'])->name('index');
             Route::post('/store', [HeroBannerController::class, 'store'])->name('store');
             Route::post('/update/{heroBanner}', [HeroBannerController::class, 'update'])->name('update');
+            Route::post('/destroy/{heroBanner}', [HeroBannerController::class, 'destroy'])->name('destroy');
         });
 
         Route::prefix('banners')->as('banners.')->group(function () {
