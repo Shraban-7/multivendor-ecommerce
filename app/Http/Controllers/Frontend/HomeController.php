@@ -62,8 +62,7 @@ class HomeController extends Controller
         $data['hero_grid_four']  = HeroBanner::where('position', 4)->first();
         $data['hero_grid_five']  = HeroBanner::where('position', 5)->first();
 
-        $data['hero_banners'] = HeroBanner::get();
-        $data['hero_blocks'] = HeroBanner::limit(2)->get();
+        $data['hero_banners'] = HeroBanner::active()->get();
 
         return view('frontend.pages.home', $data);
     }
