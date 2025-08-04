@@ -95,7 +95,7 @@ if (! function_exists('upload_with_watermark')) {
 
             $imageWidth = $image->width();
             $offset_x = (int) ($imageWidth * 0.06);
-            $offset_y = 50;
+            $offset_y = 10;
 
             $image->place(
                 element: $watermark,
