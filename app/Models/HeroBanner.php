@@ -15,4 +15,9 @@ class HeroBanner extends Model
     {
         return $query->where('is_active', true);
     }
+
+    public function scopeSlider($query)
+    {
+        return $query->where('is_slider', true);
+    }
 }
