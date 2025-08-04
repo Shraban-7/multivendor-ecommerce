@@ -419,3 +419,68 @@ if (!function_exists('downloadImageFromUrl')) {
         }
     }
 }
+
+if (! function_exists('convert_number_to_words_bdt')) {
+    function convert_number_to_words_bdt($number)
+    {
+        $number = (int) $number;
+
+        $words = [
+            0  => '', 1          => 'One', 2       => 'Two', 3      => 'Three', 4 => 'Four',
+            5  => 'Five', 6      => 'Six', 7       => 'Seven', 8    => 'Eight', 9 => 'Nine',
+            10 => 'Ten', 11      => 'Eleven', 12   => 'Twelve', 13  => 'Thirteen',
+            14 => 'Fourteen', 15 => 'Fifteen', 16  => 'Sixteen', 17 => 'Seventeen',
+            18 => 'Eighteen', 19 => 'Nineteen', 20 => 'Twenty', 30  => 'Thirty',
+            40 => 'Forty', 50    => 'Fifty', 60    => 'Sixty', 70   => 'Seventy',
+            80 => 'Eighty', 90   => 'Ninety',
+        ];
+
+        $units = [
+            '', 'Thousand', 'Lakh', 'Crore',
+        ];
+
+        if ($number == 0) {
+            return 'Zero';
+        }
+
+        $result = '';
+
+        $numStr = str_pad($number, 9, '0', STR_PAD_LEFT); 
+
+        $crore    = (int) substr($numStr, 0, 2);
+        $lakh     = (int) substr($numStr, 2, 2);
+        $thousand = (int) substr($numStr, 4, 2);
+        $hundred  = (int) substr($numStr, 6, 1);
+        $rest     = (int) substr($numStr, 7, 2);
+
+        if ($crore) {
+            $result .= number_to_words_bdt($crore, $words) . ' Crore ';
+        }
+        if ($lakh) {
+            $result .= number_to_words_bdt($lakh, $words) . ' Lakh ';
+        }
+        if ($thousand) {
+            $result .= number_to_words_bdt($thousand, $words) . ' Thousand ';
+        }
+        if ($hundred) {
+            $result .= $words[$hundred] . ' Hundred ';
+        }
+        if ($rest) {
+            $result .= ($result != '' ? 'and ' : '') . number_to_words_bdt($rest, $words);
+        }
+
+        return trim($result);
+    }
+
+    function number_to_words_bdt($num, $words)
+    {
+        if ($num < 21) {
+            return $words[$num];
+        } else {
+            $tens  = ((int) ($num / 10)) * 10;
+            $units = $num % 10;
+            return $words[$tens] . ($units ? ' ' . $words[$units] : '');
+        }
+    }
+}
+
