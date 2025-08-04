@@ -20,7 +20,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $data['banners'] = HeroBannerResource::collection(HeroBanner::active()->get());
+        $data['banners'] = HeroBannerResource::collection(HeroBanner::active()->orderBy('position')->get());
         
         $data['brands'] = BrandResource::collection(Brand::get());
         $data['categories'] = CategoryResource::collection(Category::category()->get());
