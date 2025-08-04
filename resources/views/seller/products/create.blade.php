@@ -167,7 +167,7 @@
 
 <!-- Image Cropper Modal -->
 <div class="modal fade" id="thumbnailCropperModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Crop Thumbnail</h5>
@@ -183,7 +183,6 @@
         </div>
     </div>
 </div>
-
 
 @push('scripts')
 <script>
@@ -307,7 +306,6 @@
     });
 </script>
 
-
 <script src="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.js"></script>
 <script>
     let cropper;
@@ -342,8 +340,14 @@
             cropper = new Cropper(cropperImage, {
                 aspectRatio: 1,
                 viewMode: 2,
-                autoCropArea: 1,
-                responsive: true
+                // autoCropArea: 1,
+                // responsive: true               
+                autoCropArea: 0.8,
+                minCropBoxWidth: 800,
+                minCropBoxHeight: 800,
+                cropBoxResizable: false,
+                movable: true,
+                zoomable: true,
             });
         };
         reader.readAsDataURL(file);
@@ -351,7 +355,14 @@
 
     cropButton.addEventListener('click', function() {
         if (cropper) {
-            cropper.getCroppedCanvas().toBlob(function(blob) {
+            const cropperOptions = {
+                width: 800,
+                height: 800,
+                imageSmoothingEnabled: true,
+                imageSmoothingQuality: 'high'
+            };
+
+            cropper.getCroppedCanvas(cropperOptions).toBlob(function(blob) {
                 croppedBlob = blob;
 
                 const previewURL = URL.createObjectURL(blob);

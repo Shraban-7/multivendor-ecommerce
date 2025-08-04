@@ -290,7 +290,11 @@
     });
 
     $(document).ready(function() {
-        if (!{{$product->subcategory_id ? 'true' : 'false'}}) {
+        if (!{
+                {
+                    $product - > subcategory_id ? 'true' : 'false'
+                }
+            }) {
             $('#subcategorySelect').attr('disabled', true).val('');
             $('#hiddenSubcategoryId').val('');
         }
@@ -431,7 +435,13 @@
             cropper = new Cropper(cropperImage, {
                 aspectRatio: 1,
                 viewMode: 2,
-                autoCropArea: 1
+                // autoCropArea: 1,
+                // autoCropArea: 0.8,
+                minCropBoxWidth: 800,
+                minCropBoxHeight: 800,
+                cropBoxResizable: false,
+                movable: true,
+                zoomable: true,
             });
         };
         reader.readAsDataURL(file);
@@ -440,7 +450,14 @@
     cropButton.addEventListener('click', function() {
         if (!cropper) return;
 
-        cropper.getCroppedCanvas().toBlob(function(blob) {
+        const cropperOptions = {
+            width: 800,
+            height: 800,
+            imageSmoothingEnabled: true,
+            imageSmoothingQuality: 'high'
+        };
+
+        cropper.getCroppedCanvas(cropperOptions).toBlob(function(blob) {
             const previewURL = URL.createObjectURL(blob);
 
             imagePreviewDiv.innerHTML = `<img src="${previewURL}" class="w-100 h-100 position-absolute top-0 start-0 object-fit-cover" style="z-index: 1;">`;
