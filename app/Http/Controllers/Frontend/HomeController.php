@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\HeroBanner;
 use App\Models\Product;
-
+use App\Models\Seller;
 
 class HomeController extends Controller
 {
@@ -63,6 +63,8 @@ class HomeController extends Controller
         $data['hero_grid_five']  = HeroBanner::where('position', 5)->first();
 
         $data['hero_banners'] = HeroBanner::active()->orderBy('position')->get();
+
+        $data['sellers'] = Seller::active()->get();
 
         return view('frontend.pages.home', $data);
     }
