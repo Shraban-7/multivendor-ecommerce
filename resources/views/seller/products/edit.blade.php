@@ -97,7 +97,7 @@
                     </div>
                     <div class="mb-3 col-md-3">
                         <label class="form-label">Discount Type</label>
-                        <select name="discount_type" class="form-select w-100" id="" required>
+                        <select name="discount_type" class="form-select w-100" id="">
                             <option value="" selected disabled>--Choose--</option>
                             <option value="{{ \App\Enums\DiscountType::FLAT->value }}"
                                 {{ \App\Enums\DiscountType::FLAT->value == $product->discount_type ? 'selected' : '' }}>
@@ -112,8 +112,7 @@
                     <div class="mb-3 col-md-3">
                         <label class="form-label">Discount Amount</label>
                         <input name="discount_amount" type="number"
-                            value="{{ old('discount_amount', $product->discount_amount) }}" class="form-control"
-                            required>
+                            value="{{ old('discount_amount', $product->discount_amount) }}" class="form-control">
                     </div>
                     <div class="mb-3 col-md-3">
                         <label class="form-label">Unit <small class="text-muted">(e.g., 2.5 kg)</small></label>

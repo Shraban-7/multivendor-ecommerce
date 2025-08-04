@@ -50,8 +50,8 @@ class ProductController extends Controller
             'buying_price'       => 'required|numeric',
             'selling_price'      => 'required|numeric',
             'tax'                => 'required|numeric',
-            'discount_type'      => 'required|string',
-            'discount_value'     => 'required|numeric',
+            'discount_type'      => 'nullable|string',
+            'discount_value'     => 'nullable|numeric',
             'unit_id'            => 'required|numeric',
             'unit_value'         => 'required|string',
             'is_trending'        => 'nullable|boolean',
@@ -73,11 +73,13 @@ class ProductController extends Controller
             $validated['video'] = upload_file($request->file('video'), "videos/{$seller->username}/products");
         }
 
-        $validated['seller_id']        = $seller->id;
-        $validated['slug']             = str_slug('products', 'slug', $validated['name']);
-        $validated['sku']              = $validated['sku'] ?? strtoupper(uniqid());
-        $validated['discount_amount']  = calculate_discount_amount($validated['selling_price'], $validated['discount_type'], $validated['discount_value']);
-        $validated['discounted_price'] = calculate_discounted_price($validated['selling_price'], $validated['discount_type'], $validated['discount_value']);
+        $validated['seller_id'] = $seller->id;
+        $validated['slug']      = str_slug('products', 'slug', $validated['name']);
+        $validated['sku']       = $validated['sku'] ?? strtoupper(uniqid());
+        if (isset($validated['discount_type'], $validated['discount_value'])) {
+            $validated['discount_amount']  = calculate_discount_amount($validated['selling_price'], $validated['discount_type'], $validated['discount_value']);
+            $validated['discounted_price'] = calculate_discounted_price($validated['selling_price'], $validated['discount_type'], $validated['discount_value']);
+        }
 
         $product = Product::create($validated);
 
@@ -150,6 +152,8 @@ class ProductController extends Controller
             'sku'                => 'nullable|string|max:255',
             'buying_price'       => 'required|numeric',
             'selling_price'      => 'required|numeric',
+            'discount_type'      => 'nullable|string',
+            'discount_value'     => 'nullable|numeric',
             'unit_id'            => 'required|numeric',
             'unit_value'         => 'required|string',
             'is_trending'        => 'nullable|boolean',
@@ -169,6 +173,11 @@ class ProductController extends Controller
         }
 
         $validated['sku'] = $validated['sku'] ?? strtoupper(uniqid());
+
+        if (isset($validated['discount_type'], $validated['discount_value'])) {
+            $validated['discount_amount']  = calculate_discount_amount($validated['selling_price'], $validated['discount_type'], $validated['discount_value']);
+            $validated['discounted_price'] = calculate_discounted_price($validated['selling_price'], $validated['discount_type'], $validated['discount_value']);
+        }
 
         if ($request->hasFile('thumbnail')) {
             if ($product->thumbnail != null) {
