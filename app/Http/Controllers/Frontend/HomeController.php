@@ -41,7 +41,7 @@ class HomeController extends Controller
             ->where('best_selling', 1)
             ->withCount('reviews')
             ->orderByDesc('id')
-            ->limit(16)
+            ->limit(10)
             ->get();
 
         $data['bestselling_products'] = $bestselling_products->map(fn($product) => $product->toDetailsArray());
@@ -51,7 +51,7 @@ class HomeController extends Controller
             ->where('is_featured', 1)
             ->withCount('reviews')
             ->orderByDesc('id')
-            ->limit(16)
+            ->limit(10)
             ->get();
 
         $data['featured_products'] = $featured_products->map(fn($product) => $product->toDetailsArray());
