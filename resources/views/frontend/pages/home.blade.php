@@ -16,6 +16,8 @@
         <x-frontend.home.products-section-slider section="Best Selling" :products="$bestselling_products" :slider="false" />
         <x-frontend.home.products-section-slider section="Featured Products" :products="$featured_products" :slider="false" />
 
+        @include('frontend.partials.home.sellers')
+
         {{-- @include('frontend.partials.home.feature-gallery-section') --}}
 
         {{-- @include('frontend.partials.home.promotional-header-section') --}}
