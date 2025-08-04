@@ -100,7 +100,7 @@
             @foreach ($products as $product)
             <div class="swiper-slide group/product-card eq h-full">
                 <div class="flex flex-col items-center w-full p-2 product-card h-full">
-                    <div class="w-full h-full bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition duration-200 flex flex-col overflow-hidden">
+                    <div class="w-full h-full bg-white border border-gray-200 rounded-xl hover:shadow-md transition duration-200 flex flex-col overflow-hidden">
 
                         <!-- Image with aspect ratio box -->
                         <div class="bg-gray-50 relative pt-[100%] overflow-hidden">
@@ -175,7 +175,7 @@
             @endforeach
         </div>
     </div>
-    
+
     @foreach ($products as $product)
     @include('frontend.partials.quick-view-modal', ['product' => $product])
     @endforeach
