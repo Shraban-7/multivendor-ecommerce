@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
@@ -15,6 +16,13 @@ use Illuminate\Support\Facades\Auth;
 
 class SellerController extends Controller
 {
+    public function index()
+    {
+        $sellers = Seller::orderBy('name')->paginate(25);
+
+        return view('frontend.shops.index', compact('sellers'));
+    }
+
     public function follow(Seller $seller)
     {
         $userId          = Auth::id();
@@ -128,8 +136,8 @@ class SellerController extends Controller
 
         for ($i = 5; $i >= 1; $i--) {
             $ratingDistribution[$i] = isset($ratingsCount[$i])
-            ? round(($ratingsCount[$i] / $totalReviews) * 100)
-            : 0;
+                ? round(($ratingsCount[$i] / $totalReviews) * 100)
+                : 0;
         }
 
         $reviews = Review::with('user', 'images')
@@ -162,7 +170,6 @@ class SellerController extends Controller
             return view('frontend.partials.review-card', [
                 'reviews' => $reviews,
             ])->render();
-
         }
 
         return view('frontend.shops.review', compact('seller', 'totalItem', 'alreadyFollowed', 'categories', 'avgRating', 'totalReviews', 'ratingDistribution', 'reviews'));
@@ -208,5 +215,4 @@ class SellerController extends Controller
 
         return view('frontend.shops.campaign', compact('campaign', 'products'));
     }
-
 }

@@ -27,6 +27,7 @@ Route::get('/tracking', function () {
 })->name('tracking');
 
 Route::prefix('sellers')->as('sellers.')->group(function () {
+    Route::get('/', [SellerController::class, 'index'])->name('index');
     Route::get('{seller:username}/shop', [SellerController::class, 'shop'])->name('shop');
     Route::post('{seller:username}/follow', [SellerController::class, 'follow'])->middleware('auth')->name('follow');
     Route::get('{seller:username}/reviews', [SellerController::class, 'review'])->name('reviews');

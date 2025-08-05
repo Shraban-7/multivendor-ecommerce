@@ -1,6 +1,12 @@
 <section class="bg-white py-16">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-3xl font-semibold text-gray-900 text-center mb-12">Top Sellers</h2>
+    <div class="px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl font-semibold text-gray-900 text-center mb-3">Top Sellers</h2>
+        <div class="text-center mb-12">
+            <a href="{{ route('sellers.index') }}"
+                class="text-sm text-indigo-600 hover:text-indigo-800">
+                View All →
+            </a>
+        </div>
 
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-6">
             @foreach ($sellers as $seller)
