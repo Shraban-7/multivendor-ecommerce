@@ -19,7 +19,7 @@ return new class extends Migration
             $table->boolean('is_read')->default(false);
             $table->boolean('send_push')->default(false);
             $table->string('target_type')->nullable();
-            $table->unsignedBigInteger('target_id')->nullable();
+            $table->string('target_id')->nullable();
             $table->timestamps();
         });
     }

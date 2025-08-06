@@ -92,7 +92,8 @@ $settings = settings();
                             @endif
                             @if (auth('seller')->user())
                                 <li>
-                                    <a href="{{ route('seller.dashboard') }}" class="block px-4 py-2 hover:bg-gray-100">
+                                    <a href="{{ route('seller.dashboard') }}"
+                                        class="block px-4 py-2 hover:bg-gray-100">
                                         Dashboard
                                     </a>
                                 </li>
@@ -100,6 +101,44 @@ $settings = settings();
                         </ul>
                     </div>
                 </div>
+
+                <!-- Notification -->
+                <div class="relative group inline-block">
+
+                    @php
+                        $notifications = notifications(10);
+                        $notificationCount = notificationCount();
+                    @endphp
+                    <!-- Bell Icon -->
+                    <button type="button"
+                        class="relative flex items-center hover:text-light-yellow focus:outline-none">
+                        <i class="fa-regular fa-bell text-lg"></i>
+                        @if ($notificationCount > 0)
+                            <span
+                                class="absolute -top-2 -end-2 w-4 h-4 bg-white text-persian-red text-[10px] font-bold rounded-full flex items-center justify-center">
+                                {{ $notificationCount }}
+                            </span>
+                        @endif
+                    </button>
+
+                    <!-- Dropdown -->
+                    <div
+                        class="absolute right-0 z-50 hidden group-hover:block bg-white shadow-lg rounded-md w-64 top-full mt-2 overflow-hidden">
+                        <div class="p-3 text-gray-800 text-sm font-semibold border-b">Notifications</div>
+                        <ul class="max-h-60 overflow-y-auto text-sm text-gray-700 divide-y">
+                            @forelse ($notifications as $notification)
+                                <li class="px-4 py-2 hover:bg-gray-100">
+                                    <a href="{{ $notification->link ?? '#' }}" class="block">
+                                        {{ $notification->message }}
+                                    </a>
+                                </li>
+                            @empty
+                                <li class="px-4 py-2 text-gray-500">No notifications</li>
+                            @endforelse
+                        </ul>
+                    </div>
+                </div>
+
                 <!-- Cart -->
                 <a href="{{ route('cart.details') }}"
                     class="flex flex-col items-center leading-none hover:text-light-yellow eq">

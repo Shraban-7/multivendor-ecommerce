@@ -35,8 +35,7 @@
                                     </div>
 
                                     <!-- Content -->
-                                    <div
-                                        class="flex flex-col justify-between px-3 py-3 sm:px-4 sm:py-4 space-y-2">
+                                    <div class="flex flex-1 flex-col justify-between px-3 py-3 sm:px-4 sm:py-4 space-y-2">
                                         @php
                                             $avgRating = $product['rating'] ?? 0;
                                             $fullStars = floor($avgRating);
@@ -61,31 +60,26 @@
                                             </div>
                                         @endif
 
+                                        <p
+                                            class="text-sm font-medium text-gray-800 group-hover/product-card:text-primary transition-colors line-clamp-2 leading-snug">
+                                            <a href="{{ route('products.details', $product['slug']) }}">
+                                                {{ $product['name'] }}
+                                            </a>
+                                        </p>
                                         <!-- Name + Price + Cart -->
                                         <div class="flex items-end justify-between gap-2">
-                                            <div class="">
-                                                <!-- Name -->
-                                                <p
-                                                    class="text-sm font-medium text-gray-800 group-hover/product-card:text-primary transition-colors line-clamp-2 leading-snug">
-                                                    <a href="{{ route('products.details', $product['slug']) }}">
-                                                        {{ $product['name'] }}
-                                                    </a>
-                                                </p>
-
-                                                <!-- Price -->
-                                                <div class="flex gap-2 items-center mt-1 text-sm sm:text-base">
-                                                    @if ($product['discounted_price'] !== null)
-                                                        <span
-                                                            class="font-semibold text-primary">{{ money($product['discounted_price']) }}</span>
-                                                        <span
-                                                            class="line-through text-gray-400 text-xs sm:text-sm">{{ money($product['price']) }}</span>
-                                                    @else
-                                                        <span
-                                                            class="font-semibold text-primary">{{ money($product['price']) }}</span>
-                                                    @endif
-                                                </div>
+                                            <!-- Price -->
+                                            <div class="flex gap-2 items-center mt-1 text-sm sm:text-base">
+                                                @if ($product['discounted_price'] !== null)
+                                                    <span
+                                                        class="font-semibold text-primary">{{ money($product['discounted_price']) }}</span>
+                                                    <span
+                                                        class="line-through text-gray-400 text-xs sm:text-sm">{{ money($product['price']) }}</span>
+                                                @else
+                                                    <span
+                                                        class="font-semibold text-primary">{{ money($product['price']) }}</span>
+                                                @endif
                                             </div>
-
                                             <!-- Add to Cart Button -->
                                             <div class="shrink-0">
                                                 <button type="button"
@@ -121,7 +115,7 @@
                             </div>
 
                             <!-- Content -->
-                            <div class="flex flex-col justify-between  px-3 py-3 sm:px-4 sm:py-4 space-y-2">
+                            <div class="flex flex-1 flex-col justify-between  px-3 py-3 sm:px-4 sm:py-4 space-y-2">
                                 @php
                                     $avgRating = $product['rating'] ?? 0;
                                     $fullStars = floor($avgRating);
@@ -147,30 +141,26 @@
                                     </div>
                                 @endif
 
+                                <p
+                                    class="text-sm font-medium text-gray-800 group-hover/product-card:text-primary transition-colors line-clamp-2 leading-snug">
+                                    <a href="{{ route('products.details', $product['slug']) }}">
+                                        {{ $product['name'] }}
+                                    </a>
+                                </p>
                                 <!-- Name + Price + Cart -->
                                 <div class="flex items-end justify-between gap-2">
                                     <!-- Name & Price -->
-                                    <div class="">
-                                        <!-- Name (2 lines max) -->
-                                        <p
-                                            class="text-sm font-medium text-gray-800 group-hover/product-card:text-primary transition-colors line-clamp-2 leading-snug">
-                                            <a href="{{ route('products.details', $product['slug']) }}">
-                                                {{ $product['name'] }}
-                                            </a>
-                                        </p>
-
-                                        <!-- Price -->
-                                        <div class="flex gap-2 items-center mt-1 text-sm sm:text-base">
-                                            @if ($product['discounted_price'] !== null)
-                                                <span
-                                                    class="font-semibold text-primary">{{ money($product['discounted_price']) }}</span>
-                                                <span
-                                                    class="line-through text-gray-400 text-xs sm:text-sm">{{ money($product['price']) }}</span>
-                                            @else
-                                                <span
-                                                    class="font-semibold text-primary">{{ money($product['price']) }}</span>
-                                            @endif
-                                        </div>
+                                    <!-- Price -->
+                                    <div class="flex gap-2 items-center mt-1 text-sm sm:text-base">
+                                        @if ($product['discounted_price'] !== null)
+                                            <span
+                                                class="font-semibold text-primary">{{ money($product['discounted_price']) }}</span>
+                                            <span
+                                                class="line-through text-gray-400 text-xs sm:text-sm">{{ money($product['price']) }}</span>
+                                        @else
+                                            <span
+                                                class="font-semibold text-primary">{{ money($product['price']) }}</span>
+                                        @endif
                                     </div>
 
                                     <!-- Add to Cart Button -->

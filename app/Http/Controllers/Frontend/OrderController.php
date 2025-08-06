@@ -206,7 +206,7 @@ class OrderController extends Controller
         );
 
         sendNotification(
-            $selectedSellerId->id,
+            $selectedSellerId,
             'New Order Received',
             "You have received a new order #{$invoiceId}.",
             Notification::TARGET_ORDER,
