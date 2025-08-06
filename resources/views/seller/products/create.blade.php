@@ -111,6 +111,10 @@
                         </div>
                     </div>
                     <div class="mb-3 col-md-3">
+                        <label class="form-label">Current Stock</label>
+                        <input name="stock_in" type="number" value="" class="form-control">
+                    </div>
+                    <div class="mb-3 col-md-3">
                         <label class="form-label">Low Stock Quantity</label>
                         <input name="low_stock_quantity" type="number" value="" class="form-control">
                     </div>
@@ -341,7 +345,7 @@
                 aspectRatio: 1,
                 viewMode: 2,
                 // autoCropArea: 1,
-                // responsive: true               
+                // responsive: true
                 autoCropArea: 0.8,
                 minCropBoxWidth: 800,
                 minCropBoxHeight: 800,

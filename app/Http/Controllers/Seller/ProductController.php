@@ -58,6 +58,7 @@ class ProductController extends Controller
             'best_selling'       => 'nullable|boolean',
             'is_featured'        => 'nullable|boolean',
             'low_stock_quantity' => 'required|numeric',
+            'stock_in'           => 'nullable|numeric',
             'thumbnail'          => 'required|image|max:4096',
             'video'              => 'nullable|file',
             'files'              => 'nullable|array',
@@ -82,6 +83,12 @@ class ProductController extends Controller
         }
 
         $product = Product::create($validated);
+
+        StockHistory::create([
+            'product_id' => $product->id,
+            'quantity'   => $validated['stock_in'],
+            'type'       => StockType::ADD_STOCK->value,
+        ]);
 
         if ($request->hasFile('files')) {
             foreach ($request->file('files') as $file) {
