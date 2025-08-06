@@ -69,25 +69,34 @@ $settings = settings();
                     <div
                         class="absolute right-0 z-50 hidden group-hover:block bg-white shadow-lg rounded-md w-40 top-full">
                         <ul class="py-2 text-gray-700">
-                            <li>
-                                <a href="{{ route('profile') }}" class="block px-4 py-2 hover:bg-gray-100">
-                                    Profile
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('orders.index') }}" class="block px-4 py-2 hover:bg-gray-100">
-                                    Orders
-                                </a>
-                            </li>
-                            <li class="border-t">
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit"
-                                        class="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100">
-                                        Logout
-                                    </button>
-                                </form>
-                            </li>
+                            @if (auth('web')->user())
+                                <li>
+                                    <a href="{{ route('profile') }}" class="block px-4 py-2 hover:bg-gray-100">
+                                        Profile
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('orders.index') }}" class="block px-4 py-2 hover:bg-gray-100">
+                                        Orders
+                                    </a>
+                                </li>
+                                <li class="border-t">
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button type="submit"
+                                            class="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100">
+                                            Logout
+                                        </button>
+                                    </form>
+                                </li>
+                            @endif
+                            @if (auth('seller')->user())
+                                <li>
+                                    <a href="{{ route('seller.dashboard') }}" class="block px-4 py-2 hover:bg-gray-100">
+                                        Dashboard
+                                    </a>
+                                </li>
+                            @endif
                         </ul>
                     </div>
                 </div>
@@ -97,7 +106,7 @@ $settings = settings();
                     <span class="block relative">
                         <i class="fa-solid fa-cart-arrow-down"></i>
                         <span id="cartCount"
-                            class="absolute flex {{ $cartCount> 0 ? '' : 'hidden'  }} items-center justify-center w-5 h-5 bg-theme-light text-light-yellow rounded-full -top-3 -end-4 font-[arial] font-bold text-[10px]">
+                            class="absolute flex {{ $cartCount > 0 ? '' : 'hidden' }} items-center justify-center w-5 h-5 bg-theme-light text-light-yellow rounded-full -top-3 -end-4 font-[arial] font-bold text-[10px]">
                             {{ $cartCount }}
                         </span>
                     </span>
