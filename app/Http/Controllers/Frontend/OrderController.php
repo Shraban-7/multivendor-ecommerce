@@ -139,7 +139,7 @@ class OrderController extends Controller
         $payableAmount = $sub_total + $shipping_fee + $tax;
 
         $sellerEarning = $payableAmount - $total_commission;
-        $invoiceId     = uniqid('SM');
+        $invoiceId = Order::generateInvoiceID();
 
         $order = Order::create([
             'user_id'           => $user->id,
