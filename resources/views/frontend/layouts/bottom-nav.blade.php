@@ -24,32 +24,39 @@
                             @if ($category->subcategories->isNotEmpty())
                                 <li
                                     class="category-item hover:bg-[#F2F4F5] hover:text-rangoon-green px-4 py-2 group/phone eq">
-                                    <p class="flex justify-between items-center hover:font-semibold cursor-pointer eq">
-                                        {{ $category->name }}
-                                        <span class="invisible group-hover/phone:visible">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M9 5l7 7-7 7" />
-                                            </svg>
-                                        </span>
-                                    </p>
+
+                                    <a href="{{ route('category.details', $category->slug) }}">
+                                        <p
+                                            class="flex justify-between items-center hover:font-semibold cursor-pointer eq">
+                                            {{ $category->name }}
+
+                                            <span class="invisible group-hover/phone:visible">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M9 5l7 7-7 7" />
+                                                </svg>
+                                            </span>
+                                        </p>
+                                    </a>
                                     <!-- Brands Submenu -->
                                     <div
                                         class="hidden group-hover/phone:block absolute left-60 top-0 min-h-[31.2rem] w-44 text-jet-gray">
                                         <ul
                                             class="py-4 px-3 bg-white border border-[#E4E7E9] rounded ms-3 h-[31.2rem] overflow-y-auto">
                                             <li class="brand-item">
-                                                <a href="{{ route('category.details',$category->slug) }}"
+                                                <a href="{{ route('category.details', $category->slug) }}"
                                                     class="block hover:bg-[#F2F4F5] px-4 py-2 hover:text-rangoon-green hover:font-semibold eq rounded-sm">All</a>
                                             </li>
                                             @foreach ($category->subcategories as $subcategory)
                                                 <li
                                                     class="brand-item hover:bg-gray-100 px-4 py-2 rounded-sm group/brand eq">
-                                                    <h4
-                                                        class="hover:font-semibold eq cursor-pointer hover:text-rangoon-green">
-                                                        {{ $subcategory->name }}
-                                                    </h4>
+                                                    <a href="{{ route('category.details', $subcategory->slug) }}">
+                                                        <h4
+                                                            class="hover:font-semibold eq cursor-pointer hover:text-rangoon-green">
+                                                            {{ $subcategory->name }}
+                                                        </h4>
+                                                    </a>
                                                     <!-- brand feature products -->
                                                     {{-- <div
                                                         class="hidden group-hover/brand:block absolute left-[10rem] top-0 w-[45vw] lg:w-[50vw] max-h-[31.2rem] p-4 bg-white border-t border-r border-b border-[#E4E7E9] rounded-tr rounded-br h-[31.2rem] xl:overflow-y-auto overflow-y-scroll">
@@ -157,7 +164,7 @@
                                 </li>
                             @elseif ($category->subcategories->isEmpty())
                                 <li class="category-item">
-                                    <a href="{{ route('category.details',$category->slug) }}"
+                                    <a href="{{ route('category.details', $category->slug) }}"
                                         class="block hover:bg-[#F2F4F5] px-4 py-2 hover:text-rangoon-green hover:font-semibold eq">{{ $category->name }}</a>
                                 </li>
                             @endif
@@ -190,7 +197,7 @@
                 </li> -->
                 @foreach (nav_categories() as $category)
                     <li>
-                        <a href="{{ route('category.details',$category->slug) }}"
+                        <a href="{{ route('category.details', $category->slug) }}"
                             class="block py-2 px-3 text-persian-blue rounded hover:bg-primary md:hover:bg-transparent md:border-0 md:hover:text-primary md:p-0 eq md:text-persian-blue nav-link">{{ $category->name }}</a>
                     </li>
                 @endforeach
