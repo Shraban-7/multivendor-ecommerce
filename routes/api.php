@@ -48,8 +48,6 @@ Route::middleware('auth:sanctum')->group(function () {
         // Route::get('{invoice_id}/tracking',[OrderController::class,'tracking']);
     });
 
-
-
     Route::prefix('reviews')->group(function () {
         Route::post('store', [OrderController::class, 'submitReview']);
     });
@@ -60,5 +58,4 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [ProfileController::class, 'profile']);
         Route::post('/', [ProfileController::class, 'update']);
     });
-
 });

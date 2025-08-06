@@ -517,19 +517,6 @@ if (! function_exists('sendNotification')) {
     }
 }
 
-if (! function_exists('notifications')) {
-    function notifications($limit = null)
-    {
-        $userId = auth('web')->id() ?? auth('seller')->id();
-
-        if (! $userId) {
-            return collect();
-        }
-
-        return Notification::where('user_id', $userId)->latest()->take($limit)->get();
-    }
-}
-
 if (! function_exists('notificationCount')) {
     function notificationCount()
     {
@@ -539,6 +526,6 @@ if (! function_exists('notificationCount')) {
             return 0;
         }
 
-        return Notification::where('user_id', $userId)->count();
+        return Notification::where('user_id', $userId)->where('is_read', 0)->count();
     }
 }
