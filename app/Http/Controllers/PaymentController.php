@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Order;
@@ -92,9 +93,13 @@ class PaymentController extends Controller
         }
 
         session()->flash('Payment Successful');
-        return redirect($request->return_url);
 
-        //return view('payment.success', ['data' => $request->all()]);
+        //return redirect($request->return_url);
+
+        $status = Payment::SUCCESSFUL;
+        $return_url = $request->return_url;
+
+        return view('payment.status', compact('status', 'return_url'));
     }
 
     public function cancel(Request $request)
@@ -113,8 +118,12 @@ class PaymentController extends Controller
         }
 
         session()->flash('Payment Failed');
-        return redirect($request->return_url);
-        //return view('payment.failed', ['data' => $request->all()]);
+        //return redirect($request->return_url);
+
+        $status = Payment::FAILED;
+        $return_url = $request->return_url;
+
+        return view('payment.status', compact('status', 'return_url'));
     }
 
     public function notify(Request $request)
@@ -163,16 +172,16 @@ class PaymentController extends Controller
             $due = $due - $payment->amount;
             $seller = Seller::find($order->seller_id);
 
-            $balance =$seller->balance + $order->seller_earnings;
+            $balance = $seller->balance + $order->seller_earnings;
 
             $seller->update([
                 'balance' => $balance
             ]);
         }
+
         $order->update([
             'payment_id' => $payment->id,
             'due'        => $due,
         ]);
-
     }
 }

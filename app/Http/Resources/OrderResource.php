@@ -9,6 +9,12 @@ class OrderResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        $paymentStatus = 1;
+
+        if (is_null($this->payment_id) && $this->due > 0) {
+            $paymentStatus = 0;
+        }
+
         return [
             'id' => $this->id,
             'invoice_id' => $this->invoice_id,
@@ -24,6 +30,7 @@ class OrderResource extends JsonResource
             'payable' => money($this->payable),
             'due' => money($this->due),
             'status' => $this->status,
+            'payment_status' => $paymentStatus,
             'delivery_status'  => $this->delivery_status,
             'created_at' => $this->created_at->format('d m Y h:i A'),
             'seller' => SellerResource::make($this->whenLoaded('seller')),

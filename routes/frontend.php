@@ -3,6 +3,7 @@
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\CategoryController;
 use App\Http\Controllers\Frontend\ContactUsController;
+use App\Http\Controllers\Frontend\NotificationController;
 use App\Http\Controllers\Frontend\OrderController;
 use App\Http\Controllers\Frontend\ProductController;
 use App\Http\Controllers\Frontend\SellerController;
@@ -27,6 +28,7 @@ Route::get('/tracking', function () {
 })->name('tracking');
 
 Route::prefix('sellers')->as('sellers.')->group(function () {
+    Route::get('/', [SellerController::class, 'index'])->name('index');
     Route::get('{seller:username}/shop', [SellerController::class, 'shop'])->name('shop');
     Route::post('{seller:username}/follow', [SellerController::class, 'follow'])->middleware('auth')->name('follow');
     Route::get('{seller:username}/reviews', [SellerController::class, 'review'])->name('reviews');
@@ -39,6 +41,9 @@ Route::prefix('campaigns')->as('campaigns.')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
+
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+
     Route::prefix('cart')->as('cart.')->group(function () {
         Route::post('/add', [CartController::class, 'add'])->name('add');
         Route::post('/update', [CartController::class, 'update'])->name('update');

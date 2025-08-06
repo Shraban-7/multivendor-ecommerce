@@ -1,4 +1,4 @@
-<div class="max-w-7xl mx-auto p-4">
+<div>
     <div class="flex flex-col md:flex-row gap-4">
         <div class="w-full md:w-[65%] rounded-lg overflow-hidden">
             <div class="swiper hero-swiper aspect-[4/3] md:aspect-[4/3] rounded-lg">

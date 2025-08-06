@@ -38,7 +38,7 @@ class Order extends Model
         return $query->where('status', OrderStatus::CANCELLED->value);
     }
 
-    public function user() : BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
@@ -73,5 +73,10 @@ class Order extends Model
     public function payment()
     {
         return $this->belongsTo(Payment::class);
+    }
+
+    public static function generateInvoiceID()
+    {
+        return uniqid('SM');
     }
 }

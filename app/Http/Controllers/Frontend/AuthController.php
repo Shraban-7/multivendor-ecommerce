@@ -1,12 +1,11 @@
 <?php
-
 namespace App\Http\Controllers\Frontend;
 
-use App\Models\User;
-use App\Models\Seller;
-use App\Models\Country;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Country;
+use App\Models\Seller;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -19,8 +18,8 @@ class AuthController extends Controller
         }
 
         $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:5|confirmed',
         ]);
 
@@ -38,37 +37,38 @@ class AuthController extends Controller
         }
 
         $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
-            'email' => 'required|string|email|max:255|unique:sellers,email',
-            'phone' => 'required|string|max:200',
-            'nid_no' => 'required|string|max:50',
-            'nid_front_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
-            'nid_back_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
-            'password' => 'required|string|min:5|confirmed',
+            'name'                => 'required|string|max:255',
+            'image'               => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
+            'email'               => 'required|string|email|max:255|unique:sellers,email',
+            'phone'               => 'required|string|max:200',
+            'nid_no'              => 'required|string|max:50',
+            'nid_front_image'     => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
+            'nid_back_image'      => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
+            'password'            => 'required|string|min:5|confirmed',
 
-            'business_name' => 'required|string|max:255',
-            'business_logo' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
-            'business_email' => 'required|string|email|max:255|unique:sellers,business_email',
-            'business_address' => 'required|string|max:1000',
-            'trade_license_no' => 'required|string|max:100',
+            'business_name'       => 'required|string|max:255',
+            'business_logo'       => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
+            'business_email'      => 'required|string|email|max:255|unique:sellers,business_email',
+            'business_address'    => 'required|string|max:1000',
+            'trade_license_no'    => 'required|string|max:100',
             'trade_license_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
-            'shop_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
+            'shop_image'          => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
 
-            'country_id' => 'nullable|integer|exists:countries,id',
-            'state_id' => 'nullable|integer',
-            'zip' => 'nullable|string|max:20',
+            'country_id'          => 'nullable|integer|exists:countries,id',
+            'state_id'            => 'nullable|integer',
+            'zip'                 => 'nullable|string|max:20',
         ]);
 
         $data['username'] = str_slug('sellers', 'username', $data['name']);
+        $username         = $data['username'];
 
         $imageFields = [
-            'image' => 'images/sellers/avatar',
-            'nid_front_image' => 'images/sellers/nids',
-            'nid_back_image' => 'images/sellers/nids',
-            'business_logo' => 'images/sellers/business',
-            'trade_license_image' => 'images/sellers/licenses',
-            'shop_image' => 'images/sellers/shops',
+            'image'               => "images/{$username}/avatar",
+            'nid_front_image'     => "images/{$username}/nids",
+            'nid_back_image'      => "images/{$username}/nids",
+            'business_logo'       => "images/{$username}/logo",
+            'trade_license_image' => "images/{$username}/licenses",
+            'shop_image'          => "images/{$username}/shops",
         ];
 
         foreach ($imageFields as $field => $folder) {
@@ -81,7 +81,6 @@ class AuthController extends Controller
 
         return redirect()->route('login')->with('success', 'Signup successful! Please log in.');
     }
-
 
     public function logout()
     {
@@ -101,7 +100,7 @@ class AuthController extends Controller
         $user = User::find(Auth::id());
 
         $data = $request->validate([
-            'name' => 'required|string|max:255',
+            'name'  => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'image' => 'nullable|image|mimes:jpg,jpeg,png,svg|max:2048',
         ]);
@@ -112,22 +111,20 @@ class AuthController extends Controller
             $data['username'] = $user->username;
         }
 
-
-        $data['phone'] = $request->phone;
+        $data['phone']           = $request->phone;
         $data['secondary_email'] = $request->secondary_email;
-        $data['country_id'] = $request->country_id;
+        $data['country_id']      = $request->country_id;
 
         if ($request->hasFile('image')) {
-            if (!empty($user->image)) {
+            if (! empty($user->image)) {
                 delete_file($user->image);
             }
 
-            $filePath = 'images/user/avatar';
+            $filePath      = 'images/user/avatar';
             $data['image'] = upload_file($request->file('image'), $filePath);
         } else {
             $data['image'] = $user->image;
         }
-
 
         $user->update($data);
 
@@ -140,10 +137,10 @@ class AuthController extends Controller
 
         $request->validate([
             'current_password' => 'required|string',
-            'password' => 'required|string|confirmed',
+            'password'         => 'required|string|confirmed',
         ]);
 
-        if (!Hash::check($request->current_password, $user->password)) {
+        if (! Hash::check($request->current_password, $user->password)) {
             return redirect()->back()->with("warning", "Incorrect old password!");
         }
 

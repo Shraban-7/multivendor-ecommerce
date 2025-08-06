@@ -1,4 +1,4 @@
-<section class="max-w-7xl mx-auto px-4 py-12">
+<section class="px-4 py-12">
     <h2 class="uppercase md:text-center sm:text-xl xl:text-4xl lg:text-3xl md:text-2xl text-theme-dark mb-8">
         Featured Categories
     </h2>

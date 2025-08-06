@@ -81,7 +81,7 @@
                     </div>
                     <div class="mb-3 col-md-3">
                         <label class="form-label">Discount Type</label>
-                        <select name="discount_type" class="form-select w-100" id="" required>
+                        <select name="discount_type" class="form-select w-100" id="" >
                             <option value="" selected disabled>--Choose--</option>
                             <option value="{{ \App\Enums\DiscountType::FLAT->value }}">
                                 {{ ucfirst(\App\Enums\DiscountType::FLAT->label()) }}
@@ -93,7 +93,7 @@
                     </div>
                     <div class="mb-3 col-md-3">
                         <label class="form-label">Discount Value</label>
-                        <input name="discount_value" type="number" value="" class="form-control" required>
+                        <input name="discount_value" type="number" value="" class="form-control">
                     </div>
                     <div class="mb-3 col-md-3">
                         <label class="form-label">Unit <small class="text-muted">(e.g., 2.5 kg)</small></label>
@@ -109,6 +109,10 @@
                                 @endforeach
                             </select>
                         </div>
+                    </div>
+                    <div class="mb-3 col-md-3">
+                        <label class="form-label">Current Stock</label>
+                        <input name="stock_in" type="number" value="" class="form-control">
                     </div>
                     <div class="mb-3 col-md-3">
                         <label class="form-label">Low Stock Quantity</label>
@@ -140,22 +144,6 @@
                                     <label class="form-check-label" for="is_featured">Featured</label>
                                 </div>
                             </div>
-                            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                                <div class="form-check form-switch">
-                                    <input type="hidden" name="is_interest" value="0">
-                                    <input class="form-check-input" type="checkbox" name="is_interest"
-                                        value="1" role="switch" id="is_interest">
-                                    <label class="form-check-label" for="is_interest">Interest Products</label>
-                                </div>
-                            </div>
-                            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                                <div class="form-check form-switch">
-                                    <input type="hidden" name="is_community" value="0">
-                                    <input class="form-check-input" type="checkbox" name="is_community"
-                                        value="1" role="switch" id="is_community">
-                                    <label class="form-check-label" for="is_community">Community Products</label>
-                                </div>
-                            </div>
                         </div>
                     </div>
 
@@ -183,7 +171,7 @@
 
 <!-- Image Cropper Modal -->
 <div class="modal fade" id="thumbnailCropperModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Crop Thumbnail</h5>
@@ -199,7 +187,6 @@
         </div>
     </div>
 </div>
-
 
 @push('scripts')
 <script>
@@ -323,7 +310,6 @@
     });
 </script>
 
-
 <script src="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.js"></script>
 <script>
     let cropper;
@@ -346,7 +332,7 @@
     const cropButton = document.getElementById('cropThumbnailBtn');
 
     thumbnailInput.addEventListener('change', function() {
-        const file = this.files[0]; 
+        const file = this.files[0];
         if (!file) return;
 
         const reader = new FileReader();
@@ -358,8 +344,14 @@
             cropper = new Cropper(cropperImage, {
                 aspectRatio: 1,
                 viewMode: 2,
-                autoCropArea: 1,
-                responsive: true
+                // autoCropArea: 1,
+                // responsive: true
+                autoCropArea: 0.8,
+                minCropBoxWidth: 800,
+                minCropBoxHeight: 800,
+                cropBoxResizable: false,
+                movable: true,
+                zoomable: true,
             });
         };
         reader.readAsDataURL(file);
@@ -367,7 +359,14 @@
 
     cropButton.addEventListener('click', function() {
         if (cropper) {
-            cropper.getCroppedCanvas().toBlob(function(blob) {
+            const cropperOptions = {
+                width: 800,
+                height: 800,
+                imageSmoothingEnabled: true,
+                imageSmoothingQuality: 'high'
+            };
+
+            cropper.getCroppedCanvas(cropperOptions).toBlob(function(blob) {
                 croppedBlob = blob;
 
                 const previewURL = URL.createObjectURL(blob);

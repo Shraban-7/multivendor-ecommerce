@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Frontend;
 
 use App\Enums\CommissionType;
@@ -6,6 +7,7 @@ use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\CustomerAddress;
+use App\Models\Notification;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Payment;
@@ -114,7 +116,6 @@ class OrderController extends Controller
                 'discount'           => $itemDiscount,
                 'sub_total'          => $itemTotal,
             ];
-
         }
 
         if ($request->isMethod('GET')) {
@@ -139,7 +140,7 @@ class OrderController extends Controller
         $payableAmount = $sub_total + $shipping_fee + $tax;
 
         $sellerEarning = $payableAmount - $total_commission;
-        $invoiceId     = uniqid('SM');
+        $invoiceId = Order::generateInvoiceID();
 
         $order = Order::create([
             'user_id'           => $user->id,
@@ -195,6 +196,22 @@ class OrderController extends Controller
         ]);
 
         $paymentGateway = $this->initiatePaymentGateway($request, $invoiceId, $payableAmount);
+
+        sendNotification(
+            $user->id,
+            'Order Placed Successfully',
+            "Your order #{$invoiceId} has been placed successfully.",
+            Notification::TARGET_ORDER,
+            $invoiceId,
+        );
+
+        sendNotification(
+            $selectedSellerId,
+            'New Order Received',
+            "You have received a new order #{$invoiceId}.",
+            Notification::TARGET_ORDER,
+            $invoiceId,
+        );
 
         return response()->json([
             'status'      => true,

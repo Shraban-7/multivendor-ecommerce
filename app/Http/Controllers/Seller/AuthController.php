@@ -69,7 +69,7 @@ class AuthController extends Controller
                 delete_file($seller->image);
             }
 
-            $filePath = 'images/seller/avatar';
+            $filePath = 'images/sellers/avatar';
             $data['image'] = upload_file($request->file('image'), $filePath);
         } else {
             $data['image'] = $seller->image;

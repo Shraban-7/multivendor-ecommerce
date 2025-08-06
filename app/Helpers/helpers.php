@@ -1,21 +1,22 @@
 <?php
 
-use Carbon\Carbon;
 use App\Enums\AdminRole;
-use App\Models\Category;
-use App\Models\SocialLink;
 use App\Enums\DiscountType;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use App\Models\SystemSetting;
+use App\Models\Category;
+use App\Models\Notification;
 use App\Models\PaymentOption;
-use Illuminate\Support\Facades\DB;
+use App\Models\SocialLink;
+use App\Models\SystemSetting;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Intervention\Image\Laravel\Facades\Image;
 
 define('CURRENCY_SYMBOL', '৳');
@@ -79,12 +80,12 @@ if (! function_exists('upload_with_watermark')) {
     function upload_with_watermark($file, $directory, $disk = 'public')
     {
         $watermarkPath = 'images/watermark.png';
-        $tempPath = upload_file($file, 'images/temp', $disk);
-        $fileName = basename($tempPath);
-        $finalPath = $directory . '/' . $fileName;
+        $tempPath      = upload_file($file, 'images/temp', $disk);
+        $fileName      = basename($tempPath);
+        $finalPath     = $directory . '/' . $fileName;
         $fullFinalPath = Storage::disk($disk)->path($finalPath);
 
-        if (!Storage::disk($disk)->exists($directory)) {
+        if (! Storage::disk($disk)->exists($directory)) {
             Storage::disk($disk)->makeDirectory($directory);
         }
 
@@ -94,8 +95,8 @@ if (! function_exists('upload_with_watermark')) {
             $watermark = Image::read(Storage::disk($disk)->get($watermarkPath));
 
             $imageWidth = $image->width();
-            $offset_x = (int) ($imageWidth * 0.06);
-            $offset_y = 10;
+            $offset_x   = (int) ($imageWidth * 0.06);
+            $offset_y   = 10;
 
             $image->place(
                 element: $watermark,
@@ -287,7 +288,9 @@ if (! function_exists('validateRequest')) {
 if (! function_exists('removeZeroFromDecimal')) {
     function removeZeroFromDecimal($number, $dataType = 'string')
     {
-        if (is_null($number)) return null;
+        if (is_null($number)) {
+            return null;
+        }
 
         $decimal = explode('.', $number);
         if (isset($decimal[1]) && $decimal[1] == '00') {
@@ -378,7 +381,6 @@ if (! function_exists('calculate_discounted_price')) {
     }
 }
 
-
 if (! function_exists('calculate_discount_amount')) {
     function calculate_discount_amount(float $price, ?string $type, ?float $value): ?float
     {
@@ -394,18 +396,18 @@ if (! function_exists('calculate_discount_amount')) {
     }
 }
 
-if (!function_exists('downloadImageFromUrl')) {
+if (! function_exists('downloadImageFromUrl')) {
     function downloadImageFromUrl(string $url, string $folder, $fileName = null)
     {
         try {
             $response = Http::get($url);
 
-            if (!$response->ok()) {
+            if (! $response->ok()) {
                 return null;
             }
 
             $imageContent = $response->body();
-            $extension = pathinfo(parse_url($url, PHP_URL_PATH), PATHINFO_EXTENSION);
+            $extension    = pathinfo(parse_url($url, PHP_URL_PATH), PATHINFO_EXTENSION);
 
             $fileName = is_null($fileName) ? Str::uuid() : $fileName;
 
@@ -417,5 +419,113 @@ if (!function_exists('downloadImageFromUrl')) {
         } catch (\Exception $e) {
             return null;
         }
+    }
+}
+
+if (! function_exists('convert_number_to_words_bdt')) {
+    function convert_number_to_words_bdt($number)
+    {
+        $number = (int) $number;
+
+        $words = [
+            0  => '',
+            1  => 'One',
+            2  => 'Two',
+            3  => 'Three',
+            4  => 'Four',
+            5  => 'Five',
+            6  => 'Six',
+            7  => 'Seven',
+            8  => 'Eight',
+            9  => 'Nine',
+            10 => 'Ten',
+            11 => 'Eleven',
+            12 => 'Twelve',
+            13 => 'Thirteen',
+            14 => 'Fourteen',
+            15 => 'Fifteen',
+            16 => 'Sixteen',
+            17 => 'Seventeen',
+            18 => 'Eighteen',
+            19 => 'Nineteen',
+            20 => 'Twenty',
+            30 => 'Thirty',
+            40 => 'Forty',
+            50 => 'Fifty',
+            60 => 'Sixty',
+            70 => 'Seventy',
+            80 => 'Eighty',
+            90 => 'Ninety',
+        ];
+
+        $units = [
+            '',
+            'Thousand',
+            'Lakh',
+            'Crore',
+        ];
+
+        if ($number == 0) {
+            return 'Zero';
+        }
+
+        $result = '';
+
+        $numStr = str_pad($number, 9, '0', STR_PAD_LEFT);
+
+        $crore    = (int) substr($numStr, 0, 2);
+        $lakh     = (int) substr($numStr, 2, 2);
+        $thousand = (int) substr($numStr, 4, 2);
+        $hundred  = (int) substr($numStr, 6, 1);
+        $rest     = (int) substr($numStr, 7, 2);
+
+        if ($crore) {
+            $result .= number_to_words_bdt($crore, $words) . ' Crore ';
+        }
+        if ($lakh) {
+            $result .= number_to_words_bdt($lakh, $words) . ' Lakh ';
+        }
+        if ($thousand) {
+            $result .= number_to_words_bdt($thousand, $words) . ' Thousand ';
+        }
+        if ($hundred) {
+            $result .= $words[$hundred] . ' Hundred ';
+        }
+        if ($rest) {
+            $result .= ($result != '' ? 'and ' : '') . number_to_words_bdt($rest, $words);
+        }
+
+        return trim($result);
+    }
+
+    function number_to_words_bdt($num, $words)
+    {
+        if ($num < 21) {
+            return $words[$num];
+        } else {
+            $tens  = ((int) ($num / 10)) * 10;
+            $units = $num % 10;
+            return $words[$tens] . ($units ? ' ' . $words[$units] : '');
+        }
+    }
+}
+
+if (! function_exists('sendNotification')) {
+    function sendNotification($userId, $title, $message, $targetType = null, $targetId = null, $sendPush = false)
+    {
+        return \App\Services\NotificationService::send($userId, $title, $message, $targetType, $targetId, $sendPush);
+    }
+}
+
+if (! function_exists('notificationCount')) {
+    function notificationCount()
+    {
+        $userId = auth('web')->id() ?? auth('seller')->id();
+
+        if (! $userId) {
+            return 0;
+        }
+
+        return Notification::where('user_id', $userId)->where('is_read', 0)->count();
     }
 }

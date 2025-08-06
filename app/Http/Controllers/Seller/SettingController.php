@@ -20,7 +20,8 @@ class SettingController extends Controller
     public function update(Request $request)
     {
         $seller = seller();
-        $data   = $request->validate([
+
+        $data = $request->validate([
             'business_name'    => 'required|string|max:255',
             'business_logo'    => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
             'business_email'   => 'required|string|email|max:255|unique:sellers,business_email,' . $seller->id,
@@ -34,20 +35,24 @@ class SettingController extends Controller
             'files.*'          => 'file|max:9096|mimetypes:image/*',
         ]);
 
-        if ($request->hasFile('business_logo')) {
-            if ($seller->business_logo != null) {
-                delete_file($seller->business_logo);
-            }
-
-            $data['business_logo'] = upload_file($request->file('business_logo'), 'images/sellers/business');
-        }
+        $username = $seller->username;
 
         if ($request->hasFile('shop_image')) {
-            if ($seller->shop_image != null) {
+            if (! empty($seller->shop_image)) {
                 delete_file($seller->shop_image);
             }
+            $data['shop_image'] = upload_file($request->file('shop_image'), "images/{$username}/shop");
+        } else {
+            $data['shop_image'] = $seller->shop_image;
+        }
 
-            $data['shop_image'] = upload_file($request->file('shop_image'), 'images/sellers/shops');
+        if ($request->hasFile('business_logo')) {
+            if (! empty($seller->business_logo)) {
+                delete_file($seller->business_logo);
+            }
+            $data['business_logo'] = upload_file($request->file('business_logo'), "images/{$username}/logo");
+        } else {
+            $data['business_logo'] = $seller->business_logo;
         }
 
         $seller->update($data);
@@ -61,7 +66,7 @@ class SettingController extends Controller
             foreach ($request->file('files') as $file) {
                 SellerBannerImage::create([
                     'seller_id' => $seller->id,
-                    'image'     => upload_file($file, 'images/seller/banners'),
+                    'image'     => upload_file($file, "images/{$username}/banners"),
                 ]);
             }
         }
@@ -75,6 +80,6 @@ class SettingController extends Controller
 
         $image->delete();
 
-        return redirect()->back()->with('success',"Seller banner deleted successfully!");
+        return redirect()->back()->with('success', "Seller banner deleted successfully!");
     }
 }
