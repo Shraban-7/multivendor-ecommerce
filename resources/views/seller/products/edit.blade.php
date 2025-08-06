@@ -308,7 +308,7 @@
     });
 
     $(document).ready(function() {
-        if (!{{$product->subcategory_id ? 'true' : 'false'}}) {
+        if (!"{{$product->subcategory_id ? 'true' : 'false'}}") {
             $('#subcategorySelect').attr('disabled', true).val('');
             $('#hiddenSubcategoryId').val('');
         }
