@@ -1,16 +1,17 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CartController;
-use App\Http\Controllers\Api\CategoryController;
-use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\ShopController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\SellerController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProfileController;
-use App\Http\Controllers\Api\SellerController;
 use App\Http\Controllers\Api\SettingController;
-use App\Http\Controllers\Api\ShopController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\NotificationController;
 
 Route::middleware('guest')->group(function () {
     Route::post('login', [AuthController::class, 'login']);
@@ -32,6 +33,8 @@ Route::get('shops', [ShopController::class, 'index']);
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('logout', [AuthController::class, 'logout']);
+
+    Route::get('/notifications', [NotificationController::class, 'index']);
 
     Route::prefix('cart')->group(function () {
         Route::get('/', [CartController::class, 'index']);
