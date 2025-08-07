@@ -9,10 +9,10 @@ use App\Http\Controllers\Seller\ProductController;
 use App\Http\Controllers\Seller\SettingController;
 use App\Http\Controllers\Seller\CustomerController;
 use App\Http\Controllers\Seller\DashboardController;
+use App\Http\Controllers\Seller\SellerChatController;
 use App\Http\Controllers\Seller\NotificationController;
 use App\Http\Controllers\Seller\ProductVariantController;
 use App\Http\Controllers\Seller\SellerCampaignController;
-use App\Http\Controllers\Seller\ProductAttributeController;
 
 Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -20,6 +20,12 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
     Route::match(['get','post'],'/profile/{username}', [SellerController::class, 'profile'])->name('profile');
 
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+
+    Route::prefix('chat')->as('chat.')->group(function () {
+        Route::get('/list', [SellerChatController::class, 'chatList'])->name('list');
+        Route::get('/messages', [SellerChatController::class, 'messages'])->name('messages');
+        Route::post('/send', [SellerChatController::class, 'sendMessage'])->name('send');
+    });
 
     Route::get('/customers', [CustomerController::class, 'index'])->name('customers');
 

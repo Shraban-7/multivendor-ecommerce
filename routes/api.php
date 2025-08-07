@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\SellerChatController;
 
 Route::middleware('guest')->group(function () {
     Route::post('login', [AuthController::class, 'login']);
@@ -36,6 +37,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/notifications', [NotificationController::class, 'index']);
 
+    Route::prefix('chat')->group(function () {
+        Route::get('/messages', [SellerChatController::class, 'messages']);
+        Route::post('/send', [SellerChatController::class, 'sendMessage']);
+    });
+
     Route::prefix('cart')->group(function () {
         Route::get('/', [CartController::class, 'index']);
         Route::post('/store', [CartController::class, 'store']);
@@ -47,7 +53,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [OrderController::class, 'index']);
         Route::post('/store', [OrderController::class, 'store']);
         Route::get('{order}', [OrderController::class, 'show']);
-        Route::get('{order}/invoice',[OrderController::class,'invoice']);
+        Route::get('{order}/invoice', [OrderController::class, 'invoice']);
         // Route::get('{invoice_id}/tracking',[OrderController::class,'tracking']);
     });
 

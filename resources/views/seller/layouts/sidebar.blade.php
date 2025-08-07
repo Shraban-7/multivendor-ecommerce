@@ -109,6 +109,10 @@
                 <i data-feather="users" class="nav-icon icon-xs me-2"></i> Manage Customers
             </x-dashboard.nav-item-link>
 
+            <x-dashboard.nav-item-link :route="'seller.chat.list'">
+                <i data-feather="message-circle" class="nav-icon icon-xs me-2"></i> Messages
+            </x-dashboard.nav-item-link>
+
             <x-dashboard.nav-item-link :route="'seller.settings.index'">
                 <i data-feather="settings" class="nav-icon icon-xs me-2"></i> Settings
             </x-dashboard.nav-item-link>
