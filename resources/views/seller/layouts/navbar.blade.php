@@ -9,10 +9,10 @@
         <li class="dropdown stopevent position-relative">
             <a class="indicator indicator-primary text-muted position-relative" href="{{ route('seller.notifications.index') }}">
                 <i class="icon-xs" data-feather="bell"></i>
-                @if (notificationCount() > 0)
+                @if (notificationCount(auth('seller')->id()) > 0)
                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
                         style="font-size: 10px;">
-                        {{ notificationCount() }}
+                        {{ notificationCount(auth('seller')->id()) }}
                     </span>
                 @endif
             </a>

@@ -1,6 +1,6 @@
 <?php
 $settings = settings();
-$notificationCount = notificationCount();
+$notificationCount = notificationCount(auth('web')->id());
 ?>
 
 <nav class="container mx-auto px-4 py-3">

@@ -518,10 +518,8 @@ if (! function_exists('sendNotification')) {
 }
 
 if (! function_exists('notificationCount')) {
-    function notificationCount()
+    function notificationCount($userId =  null)
     {
-        $userId = auth('web')->id() ?? auth('seller')->id();
-
         if (! $userId) {
             return 0;
         }

@@ -15,13 +15,14 @@ use App\Models\HeroBanner;
 use App\Models\Product;
 use App\Models\Seller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function index()
     {
         $data['banners'] = HeroBannerResource::collection(HeroBanner::active()->orderBy('position')->get());
-        
+
         $data['brands'] = BrandResource::collection(Brand::get());
         $data['categories'] = CategoryResource::collection(Category::category()->get());
 
