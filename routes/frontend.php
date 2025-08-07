@@ -40,6 +40,9 @@ Route::prefix('campaigns')->as('campaigns.')->group(function () {
     Route::get('{slug}/products', [SellerController::class, 'campaign_products'])->name('campaign_products');
 });
 
+Route::get('/get-districts/{divisionId}', [OrderController::class, 'getDistricts']);
+
+
 Route::middleware('auth')->group(function () {
 
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');

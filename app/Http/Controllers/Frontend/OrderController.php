@@ -2,23 +2,26 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Enums\CommissionType;
-use App\Enums\OrderStatus;
-use App\Http\Controllers\Controller;
 use App\Models\Cart;
-use App\Models\CustomerAddress;
-use App\Models\Notification;
 use App\Models\Order;
-use App\Models\OrderItem;
-use App\Models\Payment;
-use App\Models\PaymentGateway;
-use App\Models\Product;
-use App\Models\ProductVariant;
 use App\Models\Review;
-use App\Models\ReviewImage;
 use App\Models\Seller;
-use App\Services\AamarpayService;
+use App\Models\Payment;
+use App\Models\Product;
+use App\Models\District;
+use App\Models\OrderItem;
+use App\Enums\OrderStatus;
+use App\Models\ReviewImage;
+use App\Models\Notification;
 use Illuminate\Http\Request;
+use App\Enums\CommissionType;
+use App\Models\BillingAddress;
+use App\Models\PaymentGateway;
+use App\Models\ProductVariant;
+use App\Models\CustomerAddress;
+use App\Services\AamarpayService;
+use App\Http\Controllers\Controller;
+use App\Models\Division;
 use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
@@ -72,6 +75,12 @@ class OrderController extends Controller
 
         $validated = $request->validate([
             'seller_id' => 'required|exists:sellers,id',
+            'customer_name' => 'nullable|string',
+            'customer_phone' => 'nullable|string',
+            'division_id' => 'nullable|numeric',
+            'district_id' => 'nullable|numeric',
+            'type' => 'nullable|string',
+            'address' => 'nullable|string',
         ]);
 
         $selectedSellerId = $validated['seller_id'];
@@ -121,9 +130,23 @@ class OrderController extends Controller
         if ($request->isMethod('GET')) {
             $customer_addresses = CustomerAddress::where('user_id', $user->id)->get();
             $payment_gateways   = PaymentGateway::where('is_enabled', true)->get();
+            $divisions = Division::get();
+            $districts = District::get();
+            $billingAddress = BillingAddress::where('user_id', Auth::id())
+                ->latest()
+                ->first();
 
-            return view('frontend.pages.checkout', compact('user', 'customer_addresses', 'selectedSellerId', 'sub_total', 'discount', 'tax', 'shipping_fee', 'payment_gateways', 'grand_total'));
+            $billingAddresses = BillingAddress::where('user_id', Auth::id())
+                ->latest()
+                ->get();
+
+            return view('frontend.pages.checkout', compact('user', 'customer_addresses', 'selectedSellerId', 'sub_total', 'discount', 'tax', 'shipping_fee', 'payment_gateways', 'grand_total', 'divisions', 'districts', 'billingAddress', 'billingAddresses'));
         }
+
+        $billingData = collect($validated)->except('seller_id')->toArray();
+        $billingData['user_id'] =$user->id;
+
+        $billingInformation = BillingAddress::create($billingData);
 
         $seller = Seller::where('id', $selectedSellerId)->first();
 
@@ -145,10 +168,8 @@ class OrderController extends Controller
         $order = Order::create([
             'user_id'           => $user->id,
             'seller_id'         => $selectedSellerId,
-            'customer_name'     => $request->input('customer_name', $user->name),
-            'customer_email'    => $request->input('customer_email', $user->email),
-            'customer_phone'    => $request->input('customer_phone'),
-            'customer_address'  => $request->input('address'),
+            'billing_address_id' => $billingInformation->id,
+            'billing_information' => json_encode($billingInformation),
             'invoice_id'        => $invoiceId,
             'sub_total'         => $sub_total,
             'total'             => $sub_total + $tax + $shipping_fee,
@@ -225,7 +246,7 @@ class OrderController extends Controller
     {
         $user          = Auth::user();
         $customerName  = $request->input('customer_name', $user->name);
-        $customerEmail = $request->input('customer_email', $user->customer_email);
+        $customerEmail = $user->email;
         $customerPhone = $request->input('customer_phone') ?? '';
 
         $payment = Payment::create([
@@ -337,5 +358,11 @@ class OrderController extends Controller
         }
 
         return redirect()->route('orders.index');
+    }
+
+    public function getDistricts($divisionId)
+    {
+        $districts = District::where('division_id', $divisionId)->pluck('name', 'id');
+        return response()->json($districts);
     }
 }

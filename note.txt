@@ -1,9 +1,8 @@
-frontend product details page problem
+7/08/25 :
 
-->product modal variant does not working
+order_table change
 
-->product variant image image slider not working
+delete columns:customer_name,customer_email,customer_phone,customer_address
+new added columns:billing_information, billing_address_id
 
 
-product id =362,
-qty =1

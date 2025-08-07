@@ -64,7 +64,7 @@
                         <div class="space-y-4">
                             <h2 class="sm:text-lg font-semibold">Billing Information</h2>
 
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <!-- Customer Name -->
                                 <div class="space-y-2">
                                     <label for="customer-name" class="block text-sm">Customer Name</label>
@@ -72,15 +72,6 @@
                                         name="customer_name" placeholder="Enter customer name"
                                         class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
                                 </div>
-
-                                <!-- Customer Email -->
-                                <div class="space-y-2">
-                                    <label for="customer-email" class="block text-sm">Customer Email</label>
-                                    <input type="email" id="customer-email" value="{{ auth()->user()->email }}"
-                                        name="customer_email" placeholder="customer@example.com"
-                                        class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
-                                </div>
-
                                 <!-- Customer Phone -->
                                 <div class="space-y-2">
                                     <label for="customer-phone" class="block text-sm">Customer Phone</label>
@@ -89,6 +80,29 @@
                                         class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
                                 </div>
                             </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <label for="division_id" class="block text-sm">Division</label>
+                                    <select id="division_id" name="division_id"
+                                        class="select2 w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
+                                        <option value="">Select Division</option>
+                                        @foreach ($divisions as $division)
+                                            <option value="{{ $division->id }}" {{ old('division_id', $billingAddress->division_id ?? '') == $division->id ? 'selected' : '' }}>{{ $division->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="space-y-2">
+                                    <label for="district_id" class="block text-sm">District</label>
+                                    <select id="district_id" name="district_id"
+                                        class="select2 w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
+                                        <option value="">Select District</option>
+                                    </select>
+                                </div>
+                            </div>
+
+
 
                             <!-- Address -->
                             <div class="flex space-x-4">
@@ -105,9 +119,10 @@
                                 <div class="w-3/4 space-y-2">
                                     <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
                                     <input required list="addressList" id="address" name="address"
-                                        class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-light-yellow focus:border-light-yellow transition" />
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-light-yellow focus:border-light-yellow transition"
+                                        value="{{ old('address', $billingAddress->address ?? '') }}" />
                                     <datalist id="addressList">
-                                        @foreach ($customer_addresses as $customer_address)
+                                        @foreach ($billingAddresses as $customer_address)
                                             <option value="{{ $customer_address->address }}">
                                         @endforeach
                                     </datalist>
@@ -116,44 +131,6 @@
                                 <input type="hidden" name="seller_id" id="" value="{{ $selectedSellerId }}">
                             </div>
 
-                            <!-- Location Details -->
-                            {{-- <div class="grid grid-cols-1 xsm:grid-cols-2 md:grid-cols-4 gap-4">
-                                <div class="space-y-2">
-                                    <label class="block text-sm" for="country">Country</label>
-                                    <select id="country"
-                                        class="eq w-full px-4 py-2 border border-gray-300 rounded focus:ring-[1] focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base text-jet-gray">
-                                        <option>Select...</option>
-                                        <option value="BD">Bangladesh</option>
-                                        <option value="IN">India</option>
-                                        <option value="PK">Pakistan</option>
-                                    </select>
-                                </div>
-                                <div class="space-y-2">
-                                    <label class="block text-sm" for="region/state">Region/State</label>
-                                    <select id="region/state"
-                                        class="eq w-full px-4 py-2 border border-gray-300 rounded focus:ring-[1] focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base text-jet-gray">
-                                        <option>Select...</option>
-                                        <option value="DH">Dhaka</option>
-                                        <option value="WB">West Bengal</option>
-                                        <option value="IS">Islamabad</option>
-                                    </select>
-                                </div>
-                                <div class="space-y-2">
-                                    <label class="block text-sm" for="city">City</label>
-                                    <select id="city"
-                                        class="eq w-full px-4 py-2 border border-gray-300 rounded focus:ring-[1] focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base text-jet-gray">
-                                        <option>Select...</option>
-                                        <option value="DHA">Dhaka</option>
-                                        <option value="CTH">Chittagong</option>
-                                        <option value="BAR">Bartishal</option>
-                                    </select>
-                                </div>
-                                <div class="space-y-2">
-                                    <label class="block text-sm" for="zip-code">Zip Code</label>
-                                    <input type="text" id="zip-code"
-                                        class="eq w-full px-4 py-2 border border-gray-300 rounded focus:ring-[1] focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
-                                </div>
-                            </div> --}}
 
                             <!-- Different Address Checkbox -->
                             <div class="flex items-center">
@@ -238,8 +215,7 @@
                             <div class="space-y-2 item-info">
                                 <p class="flex justify-between">
                                     <span class="text-theme-dark">Item's total:</span>
-                                    <span id="itemsTotal"
-                                        class="text-jet-gray mr-2">{{ money($grand_total) }}</span>
+                                    <span id="itemsTotal" class="text-jet-gray mr-2">{{ money($grand_total) }}</span>
                                 </p>
                                 <p class="flex justify-between">
                                     <span class="text-theme-dark">Item Discount:</span>
@@ -315,6 +291,47 @@
     </main>
 
     @push('scripts')
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+        <script>
+            $(document).ready(function() {
+                $('.select2').select2();
+
+                function loadDistricts(divisionId, selectedDistrictId = null) {
+                    let districtDropdown = $('#district_id');
+                    districtDropdown.html('<option value="">Loading...</option>');
+
+                    if (divisionId) {
+                        $.get(`/get-districts/${divisionId}`, function(data) {
+                            let options = '<option value="">Select District</option>';
+                            $.each(data, function(id, name) {
+                                options += `<option value="${id}">${name}</option>`;
+                            });
+                            districtDropdown.html(options);
+
+                            if (selectedDistrictId) {
+                                districtDropdown.val(selectedDistrictId).trigger('change');
+                            }
+                        });
+                    } else {
+                        districtDropdown.html('<option value="">Select District</option>');
+                    }
+                }
+
+                $('#division_id').on('change', function() {
+                    let divisionId = $(this).val();
+                    loadDistricts(divisionId);
+                });
+
+                let selectedDivisionId = $('#division_id').val();
+                let selectedDistrictId = '{{ $billingAddress->district_id ?? '' }}';
+
+                if (selectedDivisionId) {
+                    loadDistricts(selectedDivisionId, selectedDistrictId);
+                }
+            });
+        </script>
         <script>
             $(document).ready(function() {
                 $('#continue-payment-btn').click(function(e) {
