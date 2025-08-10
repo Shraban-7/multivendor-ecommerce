@@ -217,7 +217,7 @@ class OrderController extends Controller
 
         $paymentGateway = $this->initiatePaymentGateway($request, $invoiceId, $payableAmount);
 
-        sendNotification(
+        notify_user(
             $user->id,
             'Order Placed Successfully',
             "Your order #{$invoiceId} has been placed successfully.",
@@ -225,7 +225,7 @@ class OrderController extends Controller
             $invoiceId,
         );
 
-        sendNotification(
+        notify_seller(
             $selectedSellerId,
             'New Order Received',
             "You have received a new order #{$invoiceId}.",

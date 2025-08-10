@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\InvoiceResource;
 use App\Http\Resources\OrderResource;
 use App\Models\Cart;
+use App\Models\Notification;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Payment;
@@ -156,6 +157,22 @@ class OrderController extends Controller
         ]);
 
         $paymentGateway = $this->initiatePaymentGateway($request, $invoiceId, $payableAmount);
+
+        notify_user(
+            $user->id,
+            'Order Placed Successfully',
+            "Your order #{$invoiceId} has been placed successfully.",
+            Notification::TARGET_ORDER,
+            $invoiceId,
+        );
+
+        notify_seller(
+            $selectedSellerId,
+            'New Order Received',
+            "You have received a new order #{$invoiceId}.",
+            Notification::TARGET_ORDER,
+            $invoiceId,
+        );
 
         return apiResponse([
             'status' => true,

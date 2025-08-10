@@ -510,10 +510,17 @@ if (! function_exists('convert_number_to_words_bdt')) {
     }
 }
 
-if (! function_exists('sendNotification')) {
-    function sendNotification($userId, $title, $message, $targetType = null, $targetId = null, $sendPush = false)
+if (! function_exists('notify_user')) {
+    function notify_user($userId, $title, $message, $targetType = null, $targetId = null, $sendPush = false)
     {
-        return \App\Services\NotificationService::send($userId, $title, $message, $targetType, $targetId, $sendPush);
+        return \App\Services\NotificationService::send("user_id", $userId, $title, $message, $targetType, $targetId, $sendPush);
+    }
+}
+
+if (! function_exists('notify_seller')) {
+    function notify_seller($sellerID, $title, $message, $targetType = null, $targetId = null, $sendPush = false)
+    {
+        return \App\Services\NotificationService::send("seller_id", $sellerID, $title, $message, $targetType, $targetId, $sendPush);
     }
 }
 
