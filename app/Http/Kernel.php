@@ -67,6 +67,8 @@ class Kernel extends HttpKernel
 
         'seller' => \App\Http\Middleware\SellerMiddleware::class,
         'admin' => \App\Http\Middleware\AdminMiddleware::class,
-        'aamarpay' => \App\Http\Middleware\AamarpayMiddleware::class
+        'aamarpay' => \App\Http\Middleware\AamarpayMiddleware::class,
+
+        'markReadAuto' => \App\Http\Middleware\AutoMarkNotificationsAsRead::class,
     ];
 }

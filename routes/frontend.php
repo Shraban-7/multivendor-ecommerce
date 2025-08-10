@@ -45,7 +45,7 @@ Route::get('/get-districts/{divisionId}', [OrderController::class, 'getDistricts
 
 Route::middleware('auth')->group(function () {
 
-    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index')->middleware('markReadAuto');
 
     Route::prefix('cart')->as('cart.')->group(function () {
         Route::post('/add', [CartController::class, 'add'])->name('add');

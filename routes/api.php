@@ -36,7 +36,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
 
     Route::get('/notifications/count', [NotificationController::class, 'notificationCount']);
-    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::get('/notifications', [NotificationController::class, 'index'])->middleware('markReadAuto');
 
     Route::prefix('chat')->group(function () {
         Route::get('/messages', [SellerChatController::class, 'messages']);
