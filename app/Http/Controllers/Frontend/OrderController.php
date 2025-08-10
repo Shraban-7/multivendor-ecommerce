@@ -18,7 +18,6 @@ use App\Enums\CommissionType;
 use App\Models\BillingAddress;
 use App\Models\PaymentGateway;
 use App\Models\ProductVariant;
-use App\Models\CustomerAddress;
 use App\Services\AamarpayService;
 use App\Http\Controllers\Controller;
 use App\Models\Division;
@@ -128,7 +127,7 @@ class OrderController extends Controller
         }
 
         if ($request->isMethod('GET')) {
-            $customer_addresses = CustomerAddress::where('user_id', $user->id)->get();
+            $customer_addresses = BillingAddress::where('user_id', $user->id)->get();
             $payment_gateways   = PaymentGateway::where('is_enabled', true)->get();
             $divisions = Division::get();
             $districts = District::get();
