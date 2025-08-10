@@ -16,4 +16,13 @@ class NotificationController extends Controller
 
         return apiResourceResponse(NotificationResource::collection($notifications));
     }
+
+    public function notificationCount()
+    {
+        return apiResponse([
+            'count' => Notification::where('user_id', Auth::id())
+                ->where('is_read', false)
+                ->count()
+        ], "Unread notification count");
+    }
 }
