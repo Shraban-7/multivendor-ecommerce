@@ -525,12 +525,19 @@ if (! function_exists('notify_seller')) {
 }
 
 if (! function_exists('notificationCount')) {
-    function notificationCount($userId =  null)
+    function notificationCount()
     {
-        if (! $userId) {
+        if (!auth('web')->check() && !auth()->guard('seller')->check()) {
             return 0;
         }
+        if(auth()->guard('seller')->check()) {
+            return Notification::where('seller_id', auth('seller')->id())->where('is_read', 0)->count();
+        } 
 
-        return Notification::where('user_id', $userId)->where('is_read', 0)->count();
+        if(auth('web')->check()) {
+            return Notification::where('user_id', auth('web')->id())->where('is_read', 0)->count();
+        }
+
+       
     }
 }

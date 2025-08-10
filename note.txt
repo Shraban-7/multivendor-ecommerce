@@ -8,3 +8,4 @@ new added columns:billing_information, billing_address_id
 
 [8/10/2025]
 ALTER TABLE `notifications` ADD `seller_id` BIGINT UNSIGNED NULL AFTER `user_id`;
+ALTER TABLE `notifications` CHANGE `user_id` `user_id` BIGINT UNSIGNED NULL;
