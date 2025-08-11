@@ -427,16 +427,26 @@
             cropperImage.classList.remove('d-none');
 
             if (cropper) cropper.destroy();
+            // cropper = new Cropper(cropperImage, {
+            //     aspectRatio: 1,
+            //     viewMode: 2,
+            //     // autoCropArea: 1,
+            //     // autoCropArea: 0.8,
+            //     minCropBoxWidth: 800,
+            //     minCropBoxHeight: 800,
+            //     cropBoxResizable: false,
+            //     movable: true,
+            //     zoomable: true,
+            // });
             cropper = new Cropper(cropperImage, {
-                aspectRatio: 1,
-                viewMode: 2,
-                // autoCropArea: 1,
-                // autoCropArea: 0.8,
-                minCropBoxWidth: 800,
-                minCropBoxHeight: 800,
-                cropBoxResizable: false,
+                aspectRatio: 3 / 4,
+                viewMode: 1,
+                autoCropArea: 1,
+                responsive: true,
                 movable: true,
                 zoomable: true,
+                scalable: false,
+                cropBoxResizable: true,
             });
         };
         reader.readAsDataURL(file);
@@ -446,8 +456,10 @@
         if (!cropper) return;
 
         const cropperOptions = {
-            width: 800,
-            height: 800,
+            // width: 800,
+            // height: 800,
+            width: 900,
+            height: 1200,
             imageSmoothingEnabled: true,
             imageSmoothingQuality: 'high'
         };
