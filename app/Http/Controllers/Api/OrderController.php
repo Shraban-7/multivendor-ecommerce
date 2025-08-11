@@ -43,11 +43,8 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $validator = validateRequest($request, [
-            'seller_id'      => 'required|exists:sellers,id',
-            'customer_name'  => 'required|string|max:255',
-            'customer_email' => 'nullable|email',
-            'customer_phone' => 'required|string|max:20',
-            'address'        => 'required|string|max:500',
+            'seller_id' => 'required|exists:sellers,id',
+            'billing_address_id' => 'required|exists:billing_addresses,id'
         ]);
 
         if ($validator->fails()) {
@@ -122,10 +119,7 @@ class OrderController extends Controller
         $order = Order::create([
             'user_id'           => $user->id,
             'seller_id'         => $selectedSellerId,
-            'customer_name'     => $request->input('customer_name', $user->name),
-            'customer_email'    => $request->input('customer_email', $user->email),
-            'customer_phone'    => $request->input('customer_phone'),
-            'customer_address'  => $request->input('address'),
+            'billing_address_id' => $request->billing_address_id,
             'invoice_id'        => $invoiceId,
             'sub_total'         => $sub_total,
             'total'             => $sub_total + $tax + $shipping_fee,
