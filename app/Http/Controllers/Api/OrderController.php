@@ -35,7 +35,7 @@ class OrderController extends Controller
             $query->where('status', $statusValue);
         }
 
-        $orders = $query->with('seller', 'items')->latest('id')->paginate(15);
+        $orders = $query->with('seller', 'items', 'billing_address')->latest('id')->paginate(15);
 
         return apiResourceResponse(OrderResource::collection($orders));
     }

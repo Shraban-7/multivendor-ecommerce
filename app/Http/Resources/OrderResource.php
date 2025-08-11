@@ -18,10 +18,6 @@ class OrderResource extends JsonResource
         return [
             'id' => $this->id,
             'invoice_id' => $this->invoice_id,
-            'customer_name' => $this->customer_name ?? '',
-            'customer_email' => $this->customer_email ?? '',
-            'customer_phone' => $this->customer_phone ?? '',
-            'customer_address' => $this->customer_address ?? '',
             'sub_total' => money($this->sub_total),
             'discount' => money($this->discount),
             'tax' => money($this->tax),
@@ -35,6 +31,7 @@ class OrderResource extends JsonResource
             'created_at' => $this->created_at->format('d m Y h:i A'),
             'seller' => SellerResource::make($this->whenLoaded('seller')),
             'items' => OrderItemResource::collection($this->whenLoaded('items')),
+            'billing_address' => BillingAddressResource::collection($this->whenLoaded('billing_address')),
         ];
     }
 }
