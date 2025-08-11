@@ -12,7 +12,7 @@ class BillingAddressController extends Controller
 {
     public function index()
     {
-        $addresses = BillingAddress::where('user_id', Auth::id())->orderBy('is_default')->get();
+        $addresses = BillingAddress::where('user_id', Auth::id())->orderBy('is_default', 'DESC')->get();
 
         return apiResourceResponse(BillingAddressResource::collection($addresses));
     }
@@ -65,7 +65,7 @@ class BillingAddressController extends Controller
         if ($validator->fails()) {
             return sendValidationError($validator->errors());
         }
-        
+
         $data = $validator->validated();
 
         if ($data['is_default'] == true) {
