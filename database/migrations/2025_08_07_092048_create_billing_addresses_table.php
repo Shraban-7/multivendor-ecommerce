@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('district_id')->nullable();
             $table->string('customer_name')->nullable();
             $table->string('customer_phone')->nullable();
-            $table->string('type')->nullable();
+            $table->tinyInteger('type')->nullable();
             $table->text('address')->nullable();
             $table->boolean('is_default')->default(0);
             $table->timestamps();

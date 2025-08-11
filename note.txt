@@ -12,3 +12,5 @@ ALTER TABLE `notifications` CHANGE `user_id` `user_id` BIGINT UNSIGNED NULL;
 
 [8/11/2025]
 ALTER TABLE `billing_addresses` ADD `is_default` TINYINT(1) NOT NULL DEFAULT '0' AFTER `district_id`;
+update  `billing_addresses` set `type` = 1
+ALTER TABLE `billing_addresses` CHANGE `type` `type` TINYINT(1) NULL DEFAULT NULL;

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BillingAddressController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\ShopController;
 use App\Http\Controllers\Api\OrderController;
@@ -73,5 +74,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('profile')->group(function () {
         Route::get('/', [ProfileController::class, 'profile']);
         Route::post('/', [ProfileController::class, 'update']);
+    });
+
+    Route::prefix('billing-addresses')->group(function () {
+        Route::get('/', [BillingAddressController::class, 'index']);
+        Route::post('/store', [BillingAddressController::class, 'store']);
+        Route::post('/{address}/update', [BillingAddressController::class, 'update']);
     });
 });
