@@ -7,6 +7,7 @@ use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\InvoiceResource;
 use App\Http\Resources\OrderResource;
+use App\Models\BillingAddress;
 use App\Models\Cart;
 use App\Models\Notification;
 use App\Models\Order;
@@ -150,7 +151,9 @@ class OrderController extends Controller
             'total_sold' => $sellerOrderCount,
         ]);
 
-        $paymentGateway = $this->initiatePaymentGateway($request, $invoiceId, $payableAmount);
+        $billingAddress = BillingAddress::find($request->billing_address_id);
+
+        $paymentGateway = $this->initiatePaymentGateway($billingAddress, $invoiceId, $payableAmount);
 
         notify_user(
             $user->id,
@@ -178,12 +181,12 @@ class OrderController extends Controller
         ]);
     }
 
-    private function initiatePaymentGateway(Request $request, $invoiceId, $amount)
+    private function initiatePaymentGateway(BillingAddress $billingAddress, $invoiceId, $amount)
     {
         $user = Auth::user();
-        $customerName  = $request->input('customer_name', $user->name);
-        $customerEmail = $request->input('customer_email', $user->customer_email);
-        $customerPhone = $request->input('customer_phone') ?? '';
+        $customerName  = $billingAddress->customer_name;
+        $customerPhone  = $billingAddress->customer_phone;
+        $customerEmail = $user->email;
 
         $payment = Payment::create([
             'gateway' => 'aamarpay',
