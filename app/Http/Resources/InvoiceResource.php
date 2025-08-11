@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -6,11 +7,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class InvoiceResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
     public function toArray(Request $request): array
     {
         return [
@@ -33,6 +29,7 @@ class InvoiceResource extends JsonResource
             'discount' => money($this->discount),
             'payable' => money($this->payable),
             'due' => money($this->due),
+            'billing_address' => BillingAddressResource::make('billing_address'),
         ];
     }
 }
