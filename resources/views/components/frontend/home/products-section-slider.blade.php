@@ -26,7 +26,7 @@
                                 <div
                                     class="w-full h-full bg-white border border-gray-200 rounded-xl hover:shadow-md transition duration-200 flex flex-col overflow-hidden">
                                     <div class="bg-gray-50 relative pt-[100%] overflow-hidden">
-                                        <a href="{{ route('products.details', $product['slug']) }}"
+                                        <a href="{{ route('products.details', $product['slug']) }}?ref={{ auth()->user()->referral_code ?? '' }}"
                                             aria-label="View {{ $product['name'] }}">
                                             <img src="{{ storage_url($product['thumbnail']) }}"
                                                 alt="{{ $product['slug'] }}" loading="lazy"
@@ -62,7 +62,7 @@
 
                                         <p
                                             class="text-sm font-medium text-gray-800 group-hover/product-card:text-primary transition-colors line-clamp-2 leading-snug">
-                                            <a href="{{ route('products.details', $product['slug']) }}">
+                                            <a href="{{ route('products.details', $product['slug']) }}?ref={{ auth()->user()->referral_code ?? '' }}">
                                                 {{ $product['name'] }}
                                             </a>
                                         </p>

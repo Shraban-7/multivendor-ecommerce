@@ -28,6 +28,12 @@
                     <input type="email" name="email" id="email" required placeholder="john@example.com"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-light-yellow focus:border-light-yellow text-sm" />
                 </div>
+                <!-- Phone -->
+                <div class="form-ctrl space-y-1">
+                    <label for="phone" class="block text-sm font-medium text-gray-700">Phone</label>
+                    <input type="text" name="phone" id="phone" required placeholder="017xxxxxxxx"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-light-yellow focus:border-light-yellow text-sm" />
+                </div>
 
                 <!-- Password -->
                 <div class="form-ctrl space-y-1">
@@ -44,6 +50,12 @@
                         placeholder="••••••••"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-light-yellow focus:border-light-yellow text-sm" />
                 </div>
+
+                <input type="hidden" name="role"
+                    value="{{ request('role') === App\Enums\UserRole::AFFILIATE->label()
+                        ? App\Enums\UserRole::AFFILIATE->label()
+                        : App\Enums\UserRole::CUSTOMER->label() }}">
+
 
                 <!-- Terms Agreement -->
                 <div class="flex items-start text-sm text-gray-700">

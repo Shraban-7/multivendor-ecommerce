@@ -3,12 +3,13 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use App\Enums\UserRole;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
@@ -26,6 +27,24 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($user) {
+            $user->referral_code = static::generateReferralCode();
+        });
+    }
+
+    public static function generateReferralCode()
+    {
+        do {
+            $code = strtoupper(substr(str_replace('.', '', uniqid()), -8));
+        } while (self::where('referral_code', $code)->exists());
+
+        return $code;
+    }
+
     public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);
@@ -39,5 +58,10 @@ class User extends Authenticatable
     public function followedSellers()
     {
         return $this->belongsToMany(Seller::class, 'seller_followers', 'user_id', 'seller_id');
+    }
+
+    public function isAffiliate()
+    {
+        return $this->role === UserRole::AFFILIATE->value;
     }
 }

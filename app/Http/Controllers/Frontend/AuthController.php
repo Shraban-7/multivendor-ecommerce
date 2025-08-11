@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Frontend;
 
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Models\Country;
 use App\Models\Seller;
@@ -20,10 +21,17 @@ class AuthController extends Controller
         $data = $request->validate([
             'name'     => 'required|string|max:255',
             'email'    => 'required|string|email|max:255|unique:users',
+            'phone'    => 'required|string|max:20',
             'password' => 'required|string|min:5|confirmed',
         ]);
 
         $data['username'] = str_slug('users', 'username', $data['name']);
+
+        if ($request->has('role') && $request->role === UserRole::AFFILIATE->label()) {
+            $data['role'] = UserRole::AFFILIATE->value;
+        } else {
+            $data['role'] = UserRole::CUSTOMER;
+        }
 
         User::create($data);
 

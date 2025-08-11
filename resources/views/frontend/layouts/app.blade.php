@@ -11,7 +11,7 @@ $settings = settings();
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <x-favicons />
     <script src="{{ asset('assets/libs/jquery/jquery-3.7.1.min.js') }}"></script>
-   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
 
     @vite('resources/css/app.css')
 
@@ -33,22 +33,22 @@ $settings = settings();
     </header>
 
     @if (session('error') || session('success'))
-    <div id="alert-border"
-        class="fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 text-sm flex items-center gap-2
+        <div id="alert-border"
+            class="fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 text-sm flex items-center gap-2
             {{ session('error') ? 'text-red-700 bg-red-100 border-red-500' : 'text-green-700 bg-green-100 border-green-500' }}
             border-l-4 rounded-md max-w-md w-[95%] sm:w-auto"
-        role="alert">
-        <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path
-                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-        </svg>
-        <span class="flex-1">{{ session('error') ?? session('success') }}</span>
-        <button type="button" class="text-current hover:text-black" data-dismiss-target="#alert-border">
-            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 14 14">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M1 1l6 6m0 0l6 6M7 7l6-6M7 7l-6 6" />
+            role="alert">
+            <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
             </svg>
-        </button>
-    </div>
+            <span class="flex-1">{{ session('error') ?? session('success') }}</span>
+            <button type="button" class="text-current hover:text-black" data-dismiss-target="#alert-border">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 14 14">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M1 1l6 6m0 0l6 6M7 7l6-6M7 7l-6 6" />
+                </svg>
+            </button>
+        </div>
     @endif
 
     <main class="max-w-7xl mx-auto p-4">
@@ -564,6 +564,26 @@ $settings = settings();
 
         });
     </script>
+
+    @if (auth()->check() && auth()->user()->isAffiliate())
+        <script>
+            function copyReferralLink(button, referralCode, productUrl) {
+                // Append ?ref=referralCode to the product URL
+                const referralUrl = `${productUrl}?ref=${referralCode}`;
+
+                navigator.clipboard.writeText(referralUrl).then(() => {
+                    const tooltip = button.querySelector('.tooltip-text');
+                    tooltip.classList.remove('opacity-0');
+                    tooltip.classList.add('opacity-100');
+
+                    setTimeout(() => {
+                        tooltip.classList.remove('opacity-100');
+                        tooltip.classList.add('opacity-0');
+                    }, 2000);
+                });
+            }
+        </script>
+    @endif
 
     @stack('scripts')
 </body>

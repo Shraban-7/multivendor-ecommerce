@@ -129,7 +129,14 @@ $settings = settings();
                                 Become a Seller
                             </a>
                         </p>
+                        <p class="text-jet-gray/80">
+                            Want to earn by referring people?
+                            <a href="{{ route('signup') }}?role={{ App\Enums\UserRole::AFFILIATE->label() }}" class="text-primary hover:underline">
+                                Become an Affiliator
+                            </a>
+                        </p>
                     </div>
+
                 </div>
             </div>
 

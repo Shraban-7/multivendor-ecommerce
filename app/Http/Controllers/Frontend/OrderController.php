@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Models\Cart;
+use App\Models\User;
 use App\Models\Order;
 use App\Models\Review;
 use App\Models\Seller;
 use App\Models\Payment;
 use App\Models\Product;
 use App\Models\District;
+use App\Models\Division;
 use App\Models\OrderItem;
 use App\Enums\OrderStatus;
 use App\Models\ReviewImage;
@@ -19,12 +21,14 @@ use App\Models\BillingAddress;
 use App\Models\PaymentGateway;
 use App\Models\ProductVariant;
 use App\Services\AamarpayService;
+use App\Models\AffiliateCommission;
 use App\Http\Controllers\Controller;
-use App\Models\Division;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 
 class OrderController extends Controller
 {
+    const AFFILIATE_COMMISSION_PERCENTAGE = 0.05;
     public function index(Request $request)
     {
         $statusLabel = (string) $request->input('status', 'all');
@@ -74,10 +78,11 @@ class OrderController extends Controller
 
         $validated = $request->validate([
             'seller_id' => 'required|exists:sellers,id',
-            'customer_name' => 'nullable|string',
-            'customer_phone' => 'nullable|string',
-            'division_id' => 'nullable|numeric',
-            'district_id' => 'nullable|numeric',
+            // 'customer_name' => 'nullable|string',
+            // 'customer_phone' => 'nullable|string',
+            // 'division_id' => 'nullable|numeric',
+            // 'district_id' => 'nullable|numeric',
+            'billing_address_id' => 'required|exists:billing_addresses,id',
             'type' => 'nullable|string',
             'address' => 'nullable|string',
         ]);
@@ -143,7 +148,7 @@ class OrderController extends Controller
         }
 
         $billingData = collect($validated)->except('seller_id')->toArray();
-        $billingData['user_id'] =$user->id;
+        $billingData['user_id'] = $user->id;
 
         $billingInformation = BillingAddress::create($billingData);
 
@@ -217,6 +222,10 @@ class OrderController extends Controller
 
         $paymentGateway = $this->initiatePaymentGateway($request, $invoiceId, $payableAmount);
 
+        $affiliateCommission = $this->processAffiliateCommissions($order->items, auth()->user(), $order->id);
+
+
+
         sendNotification(
             $user->id,
             'Order Placed Successfully',
@@ -239,6 +248,47 @@ class OrderController extends Controller
             'payment_url' => $paymentGateway['payment_url'],
             'order'       => $order,
         ]);
+    }
+
+    private function processAffiliateCommissions($orderItems, $user, $invoiceId)
+    {
+        $cookieValue = Cookie::get('affiliate_refs');
+        $affiliateRefs = json_decode($cookieValue, true) ?: [];
+
+        foreach ($orderItems as $item) {
+
+            if (!isset($item->product) || !isset($item->product->slug)) {
+                continue;
+            }
+
+            $productSlug = $item->product->slug;
+
+            if (isset($affiliateRefs[$productSlug])) {
+                $referralCodes = $affiliateRefs[$productSlug];
+
+                foreach ($referralCodes as $refCode) {
+                    $affiliateUser = User::where('referral_code', $refCode)->first();
+
+                    if (!$affiliateUser || $affiliateUser->id === $user->id) {
+                        continue;
+                    }
+
+                    $commissionAmount = $item->unit_price * $item->quantity * self::AFFILIATE_COMMISSION_PERCENTAGE;
+
+                    AffiliateCommission::create([
+                        'user_id' => $user->id,
+                        'order_id' => $invoiceId,
+                        'product_id' => $item->product_id,
+                        'referer_id' => $affiliateUser->id,
+                        'commission_amount' => $commissionAmount,
+                        'commission_date' => now(),
+                    ]);
+                }
+            }
+        }
+
+
+        Cookie::queue(Cookie::forget('affiliate_refs'));
     }
 
     private function initiatePaymentGateway(Request $request, $invoiceId, $amount)
@@ -286,6 +336,8 @@ class OrderController extends Controller
                     'return_url' => route('orders.index'),
                 ])),
             ]);
+
+            dd($response);
 
             if (isset($response['payment_url'])) {
                 $paymentUrl = $response['payment_url'];

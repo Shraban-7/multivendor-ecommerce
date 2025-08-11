@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\User;
+use App\Enums\UserRole;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -15,16 +17,31 @@ class AuthController extends Controller
         $validator = validateRequest($request, [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
+            'phone'    => 'required|string|max:20',
             'password' => 'required|string|min:5|confirmed',
+            'role' => ['nullable', Rule::in([
+                UserRole::AFFILIATE->label(),
+                UserRole::CUSTOMER->label(),
+            ])],
         ]);
 
         if ($validator->fails()) {
             return sendValidationError($validator->errors());
         }
 
-        $data = $request->only(['name', 'email', 'password']);
+        $data = $request->only(['name', 'email','phone', 'password','role']);
         $data['password'] = Hash::make($data['password']);
         $data['username'] = str_slug('users', 'username', $data['name']);
+        $data['username'] = str_slug('users', 'username', $data['name']);
+
+        $data['username'] = str_slug('users', 'username', $data['name']);
+
+        if ($request->has('role') && $request->role === UserRole::AFFILIATE->label()) {
+            $data['role'] = UserRole::AFFILIATE->value;
+        } else {
+            $data['role'] = UserRole::CUSTOMER->value;
+        }
+
         $user = User::create($data);
 
         return apiResponse([

@@ -128,6 +128,21 @@
                             class="sku-text">{{ $firstVariant['sku'] ?? $product['sku'] }}</span></div>
                     <div><strong>Stock:</strong> <span
                             class="stock-text">{{ $firstVariant['stock'] ?? $product['stock'] }}</span></div>
+
+                    @if (auth()->check() && auth()->user()->isAffiliate())
+                        <button
+                            onclick="copyReferralLink(this, '{{ auth()->user()->referral_code }}', '{{ route('products.details', $product['slug']) }}')"
+                            class="relative px-3 py-1 border border-gray-300 rounded hover:bg-gray-100 transition"
+                            type="button">
+                            Refer Link
+                            <span
+                                class="tooltip-text absolute -top-6 left-1/2 -translate-x-1/2 bg-black text-white text-xs rounded px-2 py-1 opacity-0 pointer-events-none transition-opacity"
+                                style="white-space: nowrap;">
+                                Copied!
+                            </span>
+                        </button>
+                    @endif
+
                 </div>
             </div>
 
