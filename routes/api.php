@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\DataController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\SellerChatController;
 
@@ -30,6 +31,11 @@ Route::get('sellers', [SellerController::class, 'index']);
 Route::get('sellers/{seller}', [SellerController::class, 'show']);
 
 Route::get('shops', [ShopController::class, 'index']);
+
+Route::prefix('data')->group(function () {
+    Route::get('/divisions', [DataController::class, 'divisions']);
+    Route::get('/districts', [DataController::class, 'districts']);
+});
 
 Route::middleware('auth:sanctum')->group(function () {
 
