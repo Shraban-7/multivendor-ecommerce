@@ -510,20 +510,34 @@ if (! function_exists('convert_number_to_words_bdt')) {
     }
 }
 
-if (! function_exists('sendNotification')) {
-    function sendNotification($userId, $title, $message, $targetType = null, $targetId = null, $sendPush = false)
+if (! function_exists('notify_user')) {
+    function notify_user($userId, $title, $message, $targetType = null, $targetId = null, $sendPush = false)
     {
-        return \App\Services\NotificationService::send($userId, $title, $message, $targetType, $targetId, $sendPush);
+        return \App\Services\NotificationService::send("user_id", $userId, $title, $message, $targetType, $targetId, $sendPush);
+    }
+}
+
+if (! function_exists('notify_seller')) {
+    function notify_seller($sellerID, $title, $message, $targetType = null, $targetId = null, $sendPush = false)
+    {
+        return \App\Services\NotificationService::send("seller_id", $sellerID, $title, $message, $targetType, $targetId, $sendPush);
     }
 }
 
 if (! function_exists('notificationCount')) {
-    function notificationCount($userId =  null)
+    function notificationCount()
     {
-        if (! $userId) {
+        if (!auth('web')->check() && !auth()->guard('seller')->check()) {
             return 0;
         }
+        if(auth()->guard('seller')->check()) {
+            return Notification::where('seller_id', auth('seller')->id())->where('is_read', 0)->count();
+        } 
 
-        return Notification::where('user_id', $userId)->where('is_read', 0)->count();
+        if(auth('web')->check()) {
+            return Notification::where('user_id', auth('web')->id())->where('is_read', 0)->count();
+        }
+
+       
     }
 }

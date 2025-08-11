@@ -6,10 +6,10 @@ use App\Models\Notification;
 
 class NotificationService
 {
-    public static function send($userId, $title, $message, $targetType = null, $targetID = null, $sendPush = false)
+    public static function send($column, $userId, $title, $message, $targetType = null, $targetID = null, $sendPush = false)
     {
         $notification = Notification::create([
-            'user_id' => $userId,
+            $column => $userId,
             'title' => $title,
             'message' => $message,
             'send_push' => $sendPush,

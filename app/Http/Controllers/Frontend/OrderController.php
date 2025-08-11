@@ -82,7 +82,7 @@ class OrderController extends Controller
             // 'customer_phone' => 'nullable|string',
             // 'division_id' => 'nullable|numeric',
             // 'district_id' => 'nullable|numeric',
-            'billing_address_id' => 'required|exists:billing_addresses,id',
+            // 'billing_address_id' => 'required|exists:billing_addresses,id',
             'type' => 'nullable|string',
             'address' => 'nullable|string',
         ]);
@@ -224,9 +224,7 @@ class OrderController extends Controller
 
         $affiliateCommission = $this->processAffiliateCommissions($order->items, auth()->user(), $order->id);
 
-
-
-        sendNotification(
+        notify_user(
             $user->id,
             'Order Placed Successfully',
             "Your order #{$invoiceId} has been placed successfully.",
@@ -234,7 +232,7 @@ class OrderController extends Controller
             $invoiceId,
         );
 
-        sendNotification(
+        notify_seller(
             $selectedSellerId,
             'New Order Received',
             "You have received a new order #{$invoiceId}.",
