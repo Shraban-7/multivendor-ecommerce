@@ -1,14 +1,15 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Frontend\CartController;
+use App\Http\Controllers\Frontend\OrderController;
+use App\Http\Controllers\Frontend\SellerController;
+use App\Http\Controllers\Frontend\ProductController;
 use App\Http\Controllers\Frontend\CategoryController;
+use App\Http\Controllers\Frontend\WishlistController;
 use App\Http\Controllers\Frontend\ContactUsController;
 use App\Http\Controllers\Frontend\NotificationController;
-use App\Http\Controllers\Frontend\OrderController;
-use App\Http\Controllers\Frontend\ProductController;
-use App\Http\Controllers\Frontend\SellerController;
-use App\Http\Controllers\Frontend\WishlistController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Frontend\BillingAddressController;
 
 Route::get('categories/{slug}', [CategoryController::class, 'details'])->name('category.details');
 
@@ -68,5 +69,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/success/{invoice_id}', [OrderController::class, 'success'])->name('success');
         Route::get('/tracking/{invoice_id}', [OrderController::class, 'tracking'])->name('tracking');
         Route::match(['get', 'post'], '/review/{product}', [OrderController::class, 'review'])->name('review');
+    });
+
+    Route::prefix('billing-addresses')->as('billing_addresses.')->group(function () {
+        Route::post('/store', [BillingAddressController::class, 'store'])->name('store');
+        Route::post('/{address}/update', [BillingAddressController::class, 'update'])->name('update');
     });
 });

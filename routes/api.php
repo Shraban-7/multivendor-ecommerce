@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BillingAddressController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\ShopController;
 use App\Http\Controllers\Api\OrderController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\DataController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\SellerChatController;
 
@@ -30,6 +32,11 @@ Route::get('sellers', [SellerController::class, 'index']);
 Route::get('sellers/{seller}', [SellerController::class, 'show']);
 
 Route::get('shops', [ShopController::class, 'index']);
+
+Route::prefix('data')->group(function () {
+    Route::get('/divisions', [DataController::class, 'divisions']);
+    Route::get('/districts', [DataController::class, 'districts']);
+});
 
 Route::middleware('auth:sanctum')->group(function () {
 
@@ -67,5 +74,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('profile')->group(function () {
         Route::get('/', [ProfileController::class, 'profile']);
         Route::post('/', [ProfileController::class, 'update']);
+    });
+
+    Route::prefix('billing-addresses')->group(function () {
+        Route::get('/', [BillingAddressController::class, 'index']);
+        Route::post('/store', [BillingAddressController::class, 'store']);
+        Route::post('/{address}/update', [BillingAddressController::class, 'update']);
     });
 });

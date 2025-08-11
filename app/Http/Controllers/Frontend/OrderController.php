@@ -76,18 +76,22 @@ class OrderController extends Controller
     {
         $user = Auth::user();
 
+        // dd($request->all());
+
         $validated = $request->validate([
             'seller_id' => 'required|exists:sellers,id',
             // 'customer_name' => 'nullable|string',
             // 'customer_phone' => 'nullable|string',
             // 'division_id' => 'nullable|numeric',
             // 'district_id' => 'nullable|numeric',
-            // 'billing_address_id' => 'required|exists:billing_addresses,id',
+            'billing_address_id' => 'nullable|exists:billing_addresses,id',
             'type' => 'nullable|string',
             'address' => 'nullable|string',
         ]);
 
         $selectedSellerId = $validated['seller_id'];
+
+        // dd($selectedSellerId);
 
         $seller = Seller::find($selectedSellerId);
         $cart   = Cart::where('user_id', $user->id)
@@ -136,21 +140,24 @@ class OrderController extends Controller
             $payment_gateways   = PaymentGateway::where('is_enabled', true)->get();
             $divisions = Division::get();
             $districts = District::get();
-            $billingAddress = BillingAddress::where('user_id', Auth::id())
-                ->latest()
-                ->first();
+
 
             $billingAddresses = BillingAddress::where('user_id', Auth::id())
                 ->latest()
                 ->get();
 
-            return view('frontend.pages.checkout', compact('user', 'customer_addresses', 'selectedSellerId', 'sub_total', 'discount', 'tax', 'shipping_fee', 'payment_gateways', 'grand_total', 'divisions', 'districts', 'billingAddress', 'billingAddresses'));
+            return view('frontend.pages.checkout', compact('user', 'customer_addresses', 'selectedSellerId', 'sub_total', 'discount', 'tax', 'shipping_fee', 'payment_gateways', 'grand_total', 'divisions', 'districts', 'billingAddresses'));
         }
 
         $billingData = collect($validated)->except('seller_id')->toArray();
         $billingData['user_id'] = $user->id;
 
-        $billingInformation = BillingAddress::create($billingData);
+        $billingInformation = BillingAddress::where('id', $validated['billing_address_id'])
+            ->where('user_id', $user->id)
+            ->first();
+
+        // dd($billingInformation);
+
 
         $seller = Seller::where('id', $selectedSellerId)->first();
 
@@ -220,7 +227,9 @@ class OrderController extends Controller
             'total_sold' => $sellerOrderCount,
         ]);
 
-        $paymentGateway = $this->initiatePaymentGateway($request, $invoiceId, $payableAmount);
+        $billingAddressId = $billingInformation->id;
+
+        $paymentGateway = $this->initiatePaymentGateway($request, $invoiceId, $payableAmount,$billingAddressId);
 
         $affiliateCommission = $this->processAffiliateCommissions($order->items, auth()->user(), $order->id);
 
@@ -289,12 +298,14 @@ class OrderController extends Controller
         Cookie::queue(Cookie::forget('affiliate_refs'));
     }
 
-    private function initiatePaymentGateway(Request $request, $invoiceId, $amount)
+    private function initiatePaymentGateway(Request $request, $invoiceId, $amount ,$billingAddressId)
     {
+
         $user          = Auth::user();
+        $billingInformation = BillingAddress::find($billingAddressId);
         $customerName  = $request->input('customer_name', $user->name);
         $customerEmail = $user->email;
-        $customerPhone = $request->input('customer_phone') ?? '';
+        $customerPhone = $request->input('customer_phone', $user->phone) ?? '';
 
         $payment = Payment::create([
             'gateway'        => 'aamarpay',
@@ -302,9 +313,9 @@ class OrderController extends Controller
             'status'         => Payment::PENDING,
             'amount'         => $amount,
             'currency'       => 'BDT',
-            'customer_name'  => $customerName,
-            'customer_email' => $customerEmail,
-            'customer_phone' => $customerPhone,
+            'customer_name'  => $billingInformation->customer_name ?? $customerName,
+            'customer_email' => $billingInformation->customer_email ?? $customerEmail,
+            'customer_phone' => $billingInformation->customer_phone ?? $customerPhone,
         ]);
 
         $aamarpay = (new AamarpayService);
@@ -320,22 +331,22 @@ class OrderController extends Controller
                 'cancel_url'   => route('payment.cancel'),
                 'amount'       => $amount,
                 'desc'         => 'Test Payment',
-                'cus_name'     => $customerName,
-                'cus_email'    => $customerEmail,
+                'cus_name'     => $billingInformation->customer_name ?? $customerName,
+                'cus_email'    => $billingInformation->customer_email ?? $customerEmail,
                 'cus_add1'     => '',
                 'cus_add2'     => '',
                 'cus_city'     => '',
                 'cus_state'    => '',
                 'cus_postcode' => '',
                 'cus_country'  => 'Bangladesh',
-                'cus_phone'    => $customerPhone,
+                'cus_phone'    => $billingInformation->customer_phone ?? $customerPhone,
                 'opt_a'        => base64_encode(json_encode([
                     'user_id'    => $user->id,
                     'return_url' => route('orders.index'),
                 ])),
             ]);
 
-            dd($response);
+            // dd($response);
 
             if (isset($response['payment_url'])) {
                 $paymentUrl = $response['payment_url'];

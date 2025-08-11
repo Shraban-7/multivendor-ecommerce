@@ -14,12 +14,13 @@ return new class extends Migration
         Schema::create('billing_addresses', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
-            $table->string('customer_name')->nullable();
-            $table->string('customer_phone')->nullable();
-            $table->string('type')->nullable();
-            $table->text('address')->nullable();
             $table->unsignedBigInteger('division_id')->nullable();
             $table->unsignedBigInteger('district_id')->nullable();
+            $table->string('customer_name')->nullable();
+            $table->string('customer_phone')->nullable();
+            $table->tinyInteger('type')->nullable();
+            $table->text('address')->nullable();
+            $table->boolean('is_default')->default(0);
             $table->timestamps();
         });
     }

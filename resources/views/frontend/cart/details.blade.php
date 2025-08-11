@@ -1,5 +1,5 @@
 @extends('frontend.layouts.app')
-@section('title', 'Card Details')
+@section('title', 'Cart Details')
 
 @section('content')
     <main class="pb-5 cart-details-page sm:pb-10">

@@ -55,90 +55,66 @@
         </section>
 
         <!-- Checkout Main Section Starts -->
-        <section class="checkout-section container section-padding">
-            <form id="checkout-form" class="block lg:grid gap-5 xl:gap-10 2xl:gap-20 lg:grid-cols-3">
+        <section class="checkout-section container  section-padding">
+            <form id="checkout-form" class="block lg:grid gap-5 xl:gap-5 2xl:gap-20 lg:grid-cols-3">
                 <!-- Billing information -->
-                {{-- <div class="lg:col-span-2">
+                <div class="lg:col-span-2">
                     <div class="space-y-6 text-theme-dark">
                         <!-- Billing Information -->
                         <div class="space-y-4">
-                            <h2 class="sm:text-lg font-semibold">Billing Information</h2>
-
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <!-- Customer Name -->
-                                <div class="space-y-2">
-                                    <label for="customer-name" class="block text-sm">Customer Name</label>
-                                    <input type="text" id="customer-name" value="{{ auth()->user()->name }}"
-                                        name="customer_name" placeholder="Enter customer name"
-                                        class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
-                                </div>
-                                <!-- Customer Phone -->
-                                <div class="space-y-2">
-                                    <label for="customer-phone" class="block text-sm">Customer Phone</label>
-                                    <input type="text" id="customer-phone" value="{{ auth()->user()->phone }}"
-                                        name="customer_phone" placeholder="+88012364899"
-                                        class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
-                                </div>
+                            <!-- Title & Add Button in Same Row -->
+                            <div class="flex items-center justify-between">
+                                <h2 class="sm:text-lg font-semibold">Billing Information</h2>
+                                <button data-modal-target="add-billing-address-modal"
+                                    data-modal-toggle="add-billing-address-modal"
+                                    class="text-white bg-primary hover:bg-primary/90 focus:ring-4 focus:outline-none focus:ring-primary/70 font-medium rounded-lg text-sm px-4 py-2">
+                                   + Add Billing Address
+                                </button>
                             </div>
 
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div class="space-y-2">
-                                    <label for="division_id" class="block text-sm">Division</label>
-                                    <select id="division_id" name="division_id"
-                                        class="select2 w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
-                                        <option value="">Select Division</option>
-                                        @foreach ($divisions as $division)
-                                            <option value="{{ $division->id }}" {{ old('division_id', $billingAddress->division_id ?? '') == $division->id ? 'selected' : '' }}>{{ $division->name }}</option>
-                                        @endforeach
-                                    </select>
+                            @if ($billingAddresses->count() > 0)
+                                <!-- Scrollable container with max 3 cards visible -->
+                                <div class="overflow-y-auto px-2 space-y-3" style="max-height: calc(3 * 6.5rem + 1.5rem);">
+                                    @foreach ($billingAddresses as $address)
+                                        <label
+                                            class="flex items-start gap-3 py-4 px-6 border rounded cursor-pointer hover:border-primary transition
+                                                {{ $address->is_default == 1 ? 'border-primary bg-primary/5' : 'border-gray-300' }}">
+
+                                            <input type="radio" name="billing_address_id" value="{{ $address->id }}"
+                                                class="mt-1 w-4 h-4 text-primary focus:ring-primary border-gray-300"
+                                                {{ $address->is_default == 1 ? 'checked' : '' }}>
+
+                                            <div class="text-sm">
+                                                <p class="font-medium">
+                                                    {{ ucfirst(
+                                                        $address->type == \App\Enums\AddressType::HOME->value
+                                                            ? \App\Enums\AddressType::HOME->title()
+                                                            : \App\Enums\AddressType::OFFICE->title(),
+                                                    ) }}
+                                                    - {{ $address->address }}
+                                                </p>
+                                                <p><strong>Name:</strong> {{ $address->customer_name }}</p>
+                                                <p><strong>Phone:</strong> {{ $address->customer_phone }}</p>
+                                                <p><strong>Division:</strong> {{ $address->division->name }}</p>
+                                                <p><strong>District:</strong> {{ $address->district->name }}</p>
+                                            </div>
+
+                                            <div class="ml-auto flex flex-col gap-2">
+                                                <button type="button"
+                                                    data-modal-target="edit-address-modal-{{ $address->id }}"
+                                                    data-modal-toggle="edit-address-modal-{{ $address->id }}"
+                                                    class="px-3 py-1 bg-blue-500 text-white rounded text-xs">
+                                                    Edit
+                                                </button>
+                                            </div>
+                                        </label>
+                                    @endforeach
                                 </div>
-
-                                <div class="space-y-2">
-                                    <label for="district_id" class="block text-sm">District</label>
-                                    <select id="district_id" name="district_id"
-                                        class="select2 w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
-                                        <option value="">Select District</option>
-                                    </select>
-                                </div>
-                            </div>
-
-
-
-                            <!-- Address -->
-                            <div class="flex space-x-4">
-                                <div class="w-1/4 space-y-2">
-                                    <label class="block text-sm" for="type">Type</label>
-                                    <select id="type" required name="type"
-                                        class="eq w-full px-4 py-2 border border-gray-300 rounded focus:ring-[1] focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
-                                        <option value="home">Home</option>
-                                        <option value="office">Office</option>
-                                        <option value="other">Other</option>
-                                    </select>
-                                </div>
-
-                                <div class="w-3/4 space-y-2">
-                                    <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
-                                    <input required list="addressList" id="address" name="address"
-                                        class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-light-yellow focus:border-light-yellow transition"
-                                        value="{{ old('address', $billingAddress->address ?? '') }}" />
-                                    <datalist id="addressList">
-                                        @foreach ($billingAddresses as $customer_address)
-                                            <option value="{{ $customer_address->address }}">
-                                        @endforeach
-                                    </datalist>
-                                </div>
-
-                                <input type="hidden" name="seller_id" id="" value="{{ $selectedSellerId }}">
-                            </div>
-
-
-                            <!-- Different Address Checkbox -->
-                            <div class="flex items-center">
-                                <input id="diff-addr" type="checkbox"
-                                    class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded" />
-                                <label for="diff-addr" class="ml-2 text-sm">Ship into different address</label>
-                            </div>
+                            @endif
                         </div>
+
+
+
 
                         <!-- Payment Options -->
                         <div class="flex flex-col gap-y-4 !my-6 md:!my-10 border border-jet-gray/30 py-5">
@@ -201,124 +177,11 @@
                             </div>
                         </div>
                     </div>
-                </div> --}}
-
-                <!-- Billing Information -->
-                <div class="space-y-4">
-                    <h2 class="sm:text-lg font-semibold">Billing Information</h2>
-
-                    @if ($billingAddresses->count() > 0)
-                        <!-- Select Billing Address -->
-                        <div class="space-y-2">
-                            <label for="billing_address_id" class="block text-sm">Select Billing Address</label>
-                            <select name="billing_address_id" id="billing_address_id"
-                                class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
-                                @foreach ($billingAddresses as $address)
-                                    <option value="{{ $address->id }}"
-                                        {{ old('billing_address_id', $billingAddress->id ?? '') == $address->id ? 'selected' : '' }}>
-                                        {{ ucfirst($address->type) }} - {{ $address->address }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <!-- Accordion -->
-                        <div class="border rounded" id="billingAddressAccordion">
-                            @foreach ($billingAddresses as $address)
-                                <div class="border-b">
-                                    <button class="accordion-header w-full px-4 py-3 flex justify-between items-center"
-                                        data-id="{{ $address->id }}">
-                                        <span>{{ ucfirst($address->type) }} - {{ $address->address }}</span>
-                                        <span class="caret">&#9660;</span>
-                                    </button>
-                                    <div class="accordion-body hidden px-4 py-3 bg-gray-50 text-sm">
-                                        <p><strong>Name:</strong> {{ $address->customer_name }}</p>
-                                        <p><strong>Phone:</strong> {{ $address->customer_phone }}</p>
-                                        <p><strong>Division:</strong> {{ $address->division->name }}</p>
-                                        <p><strong>District:</strong> {{ $address->district->name }}</p>
-                                        <p><strong>Address:</strong> {{ $address->address }}</p>
-                                        <div class="flex gap-2 mt-2">
-                                            <button type="button"
-                                                class="edit-address px-3 py-1 bg-blue-500 text-white rounded"
-                                                data-id="{{ $address->id }}">Edit</button>
-                                            <button type="button"
-                                                class="delete-address px-3 py-1 bg-red-500 text-white rounded"
-                                                data-id="{{ $address->id }}">Delete</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-
-                        <!-- Add New Address -->
-                        <div class="mt-4">
-                            <button type="button" id="addNewAddress" class="px-4 py-2 bg-green-500 text-white rounded">Add
-                                New Address</button>
-                        </div>
-                    @endif
                 </div>
-
-                <!-- Create/Edit Modal -->
-                <div id="addressModal"
-                    class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div class="bg-white p-6 rounded shadow w-full max-w-lg">
-                        <h3 id="modalTitle" class="text-lg font-semibold mb-4">Add Address</h3>
-                        <form id="addressForm">
-                            @csrf
-                            <input type="hidden" name="address_id" id="address_id">
-
-                            <!-- Full Form Fields -->
-                            <div class="space-y-3">
-                                <input type="text" name="customer_name" placeholder="Full Name"
-                                    class="w-full border px-3 py-2 rounded">
-                                <input type="text" name="customer_phone" placeholder="Phone Number"
-                                    class="w-full border px-3 py-2 rounded">
-                                <select name="division_id" class="w-full border px-3 py-2 rounded">
-                                    <option value="">Select Division</option>
-                                    @foreach ($divisions as $division)
-                                        <option value="{{ $division->id }}">{{ $division->name }}</option>
-                                    @endforeach
-                                </select>
-                                <select name="district_id" class="w-full border px-3 py-2 rounded">
-                                    <option value="">Select District</option>
-                                </select>
-                                <select name="type" class="w-full border px-3 py-2 rounded">
-                                    <option value="home">Home</option>
-                                    <option value="office">Office</option>
-                                </select>
-                                <textarea name="address" placeholder="Address" class="w-full border px-3 py-2 rounded"></textarea>
-                            </div>
-
-                            <div class="flex justify-end gap-2 mt-4">
-                                <button type="button" id="closeModal"
-                                    class="px-3 py-1 bg-gray-300 rounded">Cancel</button>
-                                <button type="submit" class="px-3 py-1 bg-blue-500 text-white rounded">Save</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Delete Confirmation Modal -->
-                <div id="deleteModal"
-                    class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div class="bg-white p-6 rounded shadow w-full max-w-md">
-                        <h3 class="text-lg font-semibold mb-4">Delete Address</h3>
-                        <p>Are you sure you want to delete this address?</p>
-                        <form id="deleteForm" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <div class="flex justify-end gap-2 mt-4">
-                                <button type="button" id="closeDeleteModal"
-                                    class="px-3 py-1 bg-gray-300 rounded">Cancel</button>
-                                <button type="submit" class="px-3 py-1 bg-red-500 text-white rounded">Delete</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
 
                 <!-- Continue Payment -->
                 <div class="lg:col-span-1">
+                    <input type="hidden" name="seller_id" id="seller_id" value="{{ $selectedSellerId }}">
                     <!-- Security Info -->
                     <div class="space-y-2">
                         <h2 class="mb-4 font-semibold lg:text-xl md:text-lg">
@@ -353,6 +216,7 @@
                                     class="text-xl">{{ money($sub_total + $tax + $shipping_fee) }}</span>
                             </div>
                         </div>
+
                         <!-- checkout btn -->
                         <button id="continue-payment-btn" type="button" data-seller-id="{{ $selectedSellerId }}"
                             class="eq 2xl:text-2xl lg:text-xl text-lg w-full flex flex-col items-center bg-primary hover:bg-theme-dark text-white sm:py-4 py-3 rounded-full font-medium">
@@ -400,6 +264,173 @@
                     </div>
                 </div>
             </form>
+
+            <!-- Add Billing Address Modal modal -->
+            <div id="add-billing-address-modal" tabindex="-1" aria-hidden="true"
+                class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                <div class="relative p-4 w-full max-w-md max-h-full">
+                    <!-- Modal content -->
+                    <div class="relative bg-white rounded-lg shadow-sm ">
+                        <!-- Modal header -->
+                        <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t  border-gray-200">
+                            <h3 class="text-lg font-semibold mb-4">Add New Address</h3>
+                            <button type="button"
+                                class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center "
+                                data-modal-hide="add-billing-address-modal">
+                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                    fill="none" viewBox="0 0 14 14">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                </svg>
+                                <span class="sr-only">Close modal</span>
+                            </button>
+                        </div>
+                        <!--Add Billing Address Modal -->
+                        <div class="p-4 md:p-5">
+                            <form id="addAddressForm" method="POST" action="{{ route('billing_addresses.store') }}">
+                                @csrf
+                                <div class="space-y-3">
+                                    <input type="text" name="customer_name" placeholder="Full Name"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
+                                    <input type="text" name="customer_phone" placeholder="Phone Number"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
+                                    <select name="division_id" id="division_id"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
+                                        <option value="">Select Division</option>
+                                        @foreach ($divisions as $division)
+                                            <option value="{{ $division->id }}">{{ $division->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+
+                                    <select name="district_id" id="district_id"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
+                                        <option value="">Select District</option>
+                                    </select>
+
+                                    <select name="type"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
+                                        <option value="{{ \App\Enums\AddressType::HOME->value }}">
+                                            {{ \App\Enums\AddressType::HOME->title() }}</option>
+                                        <option value="{{ \App\Enums\AddressType::OFFICE->value }}">
+                                            {{ \App\Enums\AddressType::HOME->title() }}</option>
+                                    </select>
+                                    <textarea name="address" placeholder="Address"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base"></textarea>
+                                    <div class="flex items-start">
+                                        <div class="flex items-center h-5">
+                                            <input id="remember" name="is_default" type="checkbox" value="1"
+                                                class="w-4 h-4 border border-gray-300 rounded-sm bg-gray-50 focus:ring-light-yellow focus:border-light-yellow "
+                                                required />
+                                        </div>
+                                        <label for="remember" class="ms-2 text-sm font-medium text-gray-900">Mark as
+                                            default</label>
+                                    </div>
+                                </div>
+                                <div class="flex justify-end gap-2 mt-4">
+                                    <button type="button" class="px-3 py-1 bg-gray-300 rounded"
+                                        data-modal-hide="addAddressModal">Cancel</button>
+                                    <button type="submit" class="px-3 py-1 bg-primary text-white rounded">Save</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @foreach ($billingAddresses as $address)
+                <!-- Edit Address Modal -->
+                <div id="edit-address-modal-{{ $address->id }}" tabindex="-1" aria-hidden="true"
+                    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                    <div class="relative p-4 w-full max-w-md max-h-full">
+                        <!-- Modal content -->
+                        <div class="relative bg-white rounded-lg shadow-sm">
+                            <!-- Modal header -->
+                            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-200">
+                                <h3 class="text-lg font-semibold mb-4">Edit Address</h3>
+                                <button type="button"
+                                    class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
+                                    data-modal-hide="edit-address-modal-{{ $address->id }}">
+                                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 14 14">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                    </svg>
+                                    <span class="sr-only">Close modal</span>
+                                </button>
+                            </div>
+
+                            <!-- Edit Billing Address Modal -->
+                            <div class="p-4 md:p-5">
+                                <form id="editAddressForm-{{ $address->id }}" method="POST"
+                                    action="{{ route('billing_addresses.update', $address->id) }}">
+                                    @csrf
+
+
+                                    <div class="space-y-3">
+                                        <input type="text" name="customer_name" placeholder="Full Name"
+                                            value="{{ old('customer_name', $address->customer_name) }}"
+                                            class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
+
+                                        <input type="text" name="customer_phone" placeholder="Phone Number"
+                                            value="{{ old('customer_phone', $address->customer_phone) }}"
+                                            class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
+
+                                        <select name="division_id" id="division_id_{{ $address->id }}"
+                                            class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base division-select">
+                                            <option value="">Select Division</option>
+                                            @foreach ($divisions as $division)
+                                                <option value="{{ $division->id }}"
+                                                    {{ old('division_id', $address->division_id) == $division->id ? 'selected' : '' }}>
+                                                    {{ $division->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+
+                                        <select name="district_id" id="district_id_{{ $address->id }}"
+                                            class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base district-select">
+                                            <option value="">Select District</option>
+                                            <!-- districts loaded by JS -->
+                                        </select>
+
+                                        <select name="type"
+                                            class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
+                                            <option value="{{ \App\Enums\AddressType::HOME->value }}"
+                                                {{ old('type', $address->type) == \App\Enums\AddressType::HOME->value ? 'selected' : '' }}>
+                                                {{ \App\Enums\AddressType::HOME->title() }}</option>
+                                            <option value="{{ \App\Enums\AddressType::OFFICE->value }}"
+                                                {{ old('type', $address->type) == \App\Enums\AddressType::OFFICE->value ? 'selected' : '' }}>
+                                                {{ \App\Enums\AddressType::OFFICE->title() }}</option>
+                                        </select>
+
+                                        <textarea name="address" placeholder="Address"
+                                            class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">{{ old('address', $address->address) }}</textarea>
+
+                                        <div class="flex items-start">
+                                            <div class="flex items-center h-5">
+                                                <input id="is_default_{{ $address->id }}" name="is_default"
+                                                    type="checkbox" value="1"
+                                                    class="w-4 h-4 border border-gray-300 rounded-sm bg-gray-50 focus:ring-light-yellow focus:border-light-yellow"
+                                                    {{ old('is_default', $address->is_default) ? 'checked' : '' }} />
+                                            </div>
+                                            <label for="is_default_{{ $address->id }}"
+                                                class="ms-2 text-sm font-medium text-gray-900">Mark as default</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex justify-end gap-2 mt-4">
+                                        <button type="button" class="px-3 py-1 bg-gray-300 rounded"
+                                            data-modal-hide="edit-address-modal-{{ $address->id }}">Cancel</button>
+                                        <button type="submit"
+                                            class="px-3 py-1 bg-primary text-white rounded">Save</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+
         </section>
         <!-- Checkout Main Section Ended -->
     </main>
@@ -410,7 +441,6 @@
 
         <script>
             $(document).ready(function() {
-                $('.select2').select2();
 
                 function loadDistricts(divisionId, selectedDistrictId = null) {
                     let districtDropdown = $('#district_id');
@@ -419,13 +449,14 @@
                     if (divisionId) {
                         $.get(`/get-districts/${divisionId}`, function(data) {
                             let options = '<option value="">Select District</option>';
+                            // data assumed to be an object like { "1": "District 1", "2": "District 2" }
                             $.each(data, function(id, name) {
                                 options += `<option value="${id}">${name}</option>`;
                             });
                             districtDropdown.html(options);
 
                             if (selectedDistrictId) {
-                                districtDropdown.val(selectedDistrictId).trigger('change');
+                                districtDropdown.val(selectedDistrictId);
                             }
                         });
                     } else {
@@ -438,6 +469,7 @@
                     loadDistricts(divisionId);
                 });
 
+                // On page load: pre-select district if applicable
                 let selectedDivisionId = $('#division_id').val();
                 let selectedDistrictId = '{{ $billingAddress->district_id ?? '' }}';
 
@@ -446,73 +478,62 @@
                 }
             });
         </script>
+
+        <script>
+            $(document).ready(function() {
+                function loadDistricts(divisionId, districtId, districtSelect) {
+                    if (!divisionId) {
+                        districtSelect.html('<option value="">Select District</option>');
+                        return;
+                    }
+                    districtSelect.html('<option value="">Loading...</option>');
+
+                    $.get(`/get-districts/${divisionId}`, function(data) {
+                        let options = '<option value="">Select District</option>';
+                        $.each(data, function(id, name) {
+                            options += `<option value="${id}">${name}</option>`;
+                        });
+                        districtSelect.html(options);
+
+                        if (districtId) {
+                            districtSelect.val(districtId);
+                        }
+                    });
+                }
+
+                @foreach ($billingAddresses as $address)
+                    let divisionId{{ $address->id }} = $('#division_id_{{ $address->id }}').val();
+                    let districtId{{ $address->id }} = '{{ old('district_id', $address->district_id) }}';
+                    let districtSelect{{ $address->id }} = $('#district_id_{{ $address->id }}');
+
+                    if (divisionId{{ $address->id }}) {
+                        loadDistricts(divisionId{{ $address->id }}, districtId{{ $address->id }},
+                            districtSelect{{ $address->id }});
+                    }
+                @endforeach
+
+                $('.division-select').on('change', function() {
+                    let divisionId = $(this).val();
+                    let modalId = $(this).attr('id').split('_').pop();
+                    let districtSelect = $('#district_id_' + modalId);
+
+                    loadDistricts(divisionId, null, districtSelect);
+                });
+            });
+        </script>
+
+
         <script>
             $(function() {
                 // Accordion toggle
-                $('#billingAddressAccordion').on('click', '.accordion-header', function() {
+                $('#billingAddressAccordion').on('click', '.accordion-header', function(e) {
+                    e.preventDefault();
                     $(this).next('.accordion-body').slideToggle();
                     $(this).find('.caret').toggleClass('rotate-180');
                 });
-
-                // Add New
-                $('#addNewAddress').click(function() {
-                    $('#modalTitle').text('Add Address');
-                    $('#addressForm')[0].reset();
-                    $('#address_id').val('');
-                    $('#addressModal').fadeIn();
-                });
-
-                // Edit
-                $('.edit-address').click(function() {
-                    let id = $(this).data('id');
-                    $.get(`/billing-address/${id}/edit`, function(data) {
-                        $('#modalTitle').text('Edit Address');
-                        $('#address_id').val(data.id);
-                        $('[name=customer_name]').val(data.customer_name);
-                        $('[name=customer_phone]').val(data.customer_phone);
-                        $('[name=division_id]').val(data.division_id);
-                        $('[name=district_id]').val(data.district_id);
-                        $('[name=type]').val(data.type);
-                        $('[name=address]').val(data.address);
-                        $('#addressModal').fadeIn();
-                    });
-                });
-
-                // Delete
-                $('.delete-address').click(function() {
-                    $('#deleteForm').attr('action', `/billing-address/${$(this).data('id')}`);
-                    $('#deleteModal').fadeIn();
-                });
-
-                // Close modals
-                $('#closeModal').click(() => $('#addressModal').fadeOut());
-                $('#closeDeleteModal').click(() => $('#deleteModal').fadeOut());
-
-                // Create/Edit submit
-                $('#addressForm').submit(function(e) {
-                    e.preventDefault();
-                    $.post('/billing-address/save', $(this).serialize(), function() {
-                        location.reload();
-                    });
-                });
-
-                // Delete submit
-                $('#deleteForm').submit(function(e) {
-                    e.preventDefault();
-                    $.ajax({
-                        url: $(this).attr('action'),
-                        type: 'DELETE',
-                        data: $(this).serialize(),
-                        success: () => location.reload()
-                    });
-                });
-
-                // Auto-open modal if no addresses exist
-                @if ($billingAddresses->count() == 0)
-                    $('#addNewAddress').trigger('click');
-                @endif
             });
         </script>
+
         <script>
             $(document).ready(function() {
                 $('#continue-payment-btn').click(function(e) {
@@ -532,6 +553,8 @@
                         <span>Processing...</span>
                     </div>
                 `);
+
+                    console.log('Form data:', $('#checkout-form').serialize());
 
                     $.ajax({
                         type: 'POST',
