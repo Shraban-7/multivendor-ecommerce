@@ -14,9 +14,6 @@ class InvoiceResource extends JsonResource
             'invoice_id'       => $this->invoice_id,
             'date' => $this->created_at->format('Y-m-d'),
             'logo'             => storage_url($this->seller->business_logo),
-            'customer_name'    => $this->customer_name ?? null,
-            'customer_address' => $this->customer_address ?? null,
-            'customer_phone'   => $this->customer_phone ?? null,
             'items'            => $this->items->map(function ($item) {
                 return [
                     'product_name' => $item->product->name,
@@ -29,7 +26,6 @@ class InvoiceResource extends JsonResource
             'discount' => money($this->discount),
             'payable' => money($this->payable),
             'due' => money($this->due),
-            'billing_address' => BillingAddressResource::make('billing_address'),
         ];
     }
 }
