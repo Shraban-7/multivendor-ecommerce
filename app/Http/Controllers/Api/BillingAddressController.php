@@ -26,7 +26,7 @@ class BillingAddressController extends Controller
             'district_id' => 'required|exists:districts,id',
             'address' => 'required|string',
             'type' => 'required|numeric|in:1,2',
-            'is_default' => 'required|boolean',
+            'is_default' => 'required|in:0,1',
         ]);
 
         if ($validator->fails()) {
@@ -37,9 +37,8 @@ class BillingAddressController extends Controller
         $data = $validator->validated();
         $data['user_id'] = $user_id;
 
-        if ($data['is_default'] == true) {
+        if ($data['is_default'] == 1) {
             BillingAddress::where('user_id', $user_id)
-                ->where('is_default')
                 ->update([
                     'is_default' => false
                 ]);
@@ -68,9 +67,8 @@ class BillingAddressController extends Controller
 
         $data = $validator->validated();
 
-        if ($data['is_default'] == true) {
+        if ($data['is_default'] == 1) {
             BillingAddress::where('user_id', Auth::id())
-                ->where('is_default')
                 ->update([
                     'is_default' => false
                 ]);

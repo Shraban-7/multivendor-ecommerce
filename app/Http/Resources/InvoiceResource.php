@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -6,11 +7,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class InvoiceResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
     public function toArray(Request $request): array
     {
         return [
@@ -18,9 +14,6 @@ class InvoiceResource extends JsonResource
             'invoice_id'       => $this->invoice_id,
             'date' => $this->created_at->format('Y-m-d'),
             'logo'             => storage_url($this->seller->business_logo),
-            'customer_name'    => $this->customer_name ?? null,
-            'customer_address' => $this->customer_address ?? null,
-            'customer_phone'   => $this->customer_phone ?? null,
             'items'            => $this->items->map(function ($item) {
                 return [
                     'product_name' => $item->product->name,

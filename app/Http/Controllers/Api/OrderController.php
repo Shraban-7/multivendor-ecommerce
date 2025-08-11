@@ -7,6 +7,7 @@ use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\InvoiceResource;
 use App\Http\Resources\OrderResource;
+use App\Models\BillingAddress;
 use App\Models\Cart;
 use App\Models\Notification;
 use App\Models\Order;
@@ -35,7 +36,7 @@ class OrderController extends Controller
             $query->where('status', $statusValue);
         }
 
-        $orders = $query->with('seller', 'items')->latest('id')->paginate(15);
+        $orders = $query->with('seller', 'items', 'billing_address')->latest('id')->paginate(15);
 
         return apiResourceResponse(OrderResource::collection($orders));
     }
@@ -43,11 +44,8 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $validator = validateRequest($request, [
-            'seller_id'      => 'required|exists:sellers,id',
-            'customer_name'  => 'required|string|max:255',
-            'customer_email' => 'nullable|email',
-            'customer_phone' => 'required|string|max:20',
-            'address'        => 'required|string|max:500',
+            'seller_id' => 'required|exists:sellers,id',
+            'billing_address_id' => 'required|exists:billing_addresses,id'
         ]);
 
         if ($validator->fails()) {
@@ -122,10 +120,7 @@ class OrderController extends Controller
         $order = Order::create([
             'user_id'           => $user->id,
             'seller_id'         => $selectedSellerId,
-            'customer_name'     => $request->input('customer_name', $user->name),
-            'customer_email'    => $request->input('customer_email', $user->email),
-            'customer_phone'    => $request->input('customer_phone'),
-            'customer_address'  => $request->input('address'),
+            'billing_address_id' => $request->billing_address_id,
             'invoice_id'        => $invoiceId,
             'sub_total'         => $sub_total,
             'total'             => $sub_total + $tax + $shipping_fee,
@@ -156,7 +151,9 @@ class OrderController extends Controller
             'total_sold' => $sellerOrderCount,
         ]);
 
-        $paymentGateway = $this->initiatePaymentGateway($request, $invoiceId, $payableAmount);
+        $billingAddress = BillingAddress::find($request->billing_address_id);
+
+        $paymentGateway = $this->initiatePaymentGateway($billingAddress, $invoiceId, $payableAmount);
 
         notify_user(
             $user->id,
@@ -184,12 +181,12 @@ class OrderController extends Controller
         ]);
     }
 
-    private function initiatePaymentGateway(Request $request, $invoiceId, $amount)
+    private function initiatePaymentGateway(BillingAddress $billingAddress, $invoiceId, $amount)
     {
         $user = Auth::user();
-        $customerName  = $request->input('customer_name', $user->name);
-        $customerEmail = $request->input('customer_email', $user->customer_email);
-        $customerPhone = $request->input('customer_phone') ?? '';
+        $customerName  = $billingAddress->customer_name;
+        $customerPhone  = $billingAddress->customer_phone;
+        $customerEmail = $user->email;
 
         $payment = Payment::create([
             'gateway' => 'aamarpay',

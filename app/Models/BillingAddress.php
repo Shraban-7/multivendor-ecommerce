@@ -12,6 +12,9 @@ class BillingAddress extends Model
 
     protected $guarded = ['id'];
 
+    const TYPE_HOME = 1;
+    const TYPE_OFFICE = 2;
+
     public function division(): BelongsTo
     {
         return $this->belongsTo(Division::class);

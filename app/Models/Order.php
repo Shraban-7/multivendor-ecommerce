@@ -18,6 +18,11 @@ class Order extends Model
         'created_at' => 'datetime',
     ];
 
+    public function billing_address()
+    {
+        return $this->belongsTo(BillingAddress::class);
+    }
+
     public function scopePending($query)
     {
         return $query->where('status', OrderStatus::PENDING->value);
