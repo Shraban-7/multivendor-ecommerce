@@ -9,3 +9,6 @@ new added columns:billing_information, billing_address_id
 [8/10/2025]
 ALTER TABLE `notifications` ADD `seller_id` BIGINT UNSIGNED NULL AFTER `user_id`;
 ALTER TABLE `notifications` CHANGE `user_id` `user_id` BIGINT UNSIGNED NULL;
+
+[8/11/2025]
+ALTER TABLE `billing_addresses` ADD `is_default` TINYINT(1) NOT NULL DEFAULT '0' AFTER `district_id`;

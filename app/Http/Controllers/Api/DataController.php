@@ -13,7 +13,7 @@ class DataController extends Controller
 {
     public function divisions()
     {
-        $divisions = Division::all();
+        $divisions = Division::orderBy('name', 'ASC')->get();
 
         return apiResourceResponse(DivisionResource::collection($divisions));
     }
@@ -28,7 +28,7 @@ class DataController extends Controller
             return errorResponse($validator->errors()->first());
         }
 
-        $districts = District::where('division_id', $request->division_id)->get();
+        $districts = District::where('division_id', $request->division_id)->orderBy('name', 'ASC')->get();
 
         return apiResourceResponse(DistrictResource::collection($districts));
     }
