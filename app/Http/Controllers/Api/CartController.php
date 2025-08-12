@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CartResource;
+use App\Http\Resources\ProductListResource;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Product;
@@ -20,7 +21,37 @@ class CartController extends Controller
             ->with('cart_items.product.category', 'cart_items.product.subcategory', 'seller')
             ->get();
 
-        return apiResourceResponse(CartResource::collection($carts));
+        $cartProductIds = [];
+        $categoryIds = [];
+        $subcategoryIds = [];
+
+        foreach ($carts as $cart) {
+            foreach ($cart->cart_items as $item) {
+                $cartProductIds[] = $item->product->id;
+                $categoryIds[] = $item->product->category->id ?? null;
+                $subcategoryIds[] = $item->product->subcategory->id ?? null;
+            }
+        }
+
+        $categoryIds = array_filter(array_unique($categoryIds));
+        $subcategoryIds = array_filter(array_unique($subcategoryIds));
+
+        $suggestedProducts = Product::query()
+            ->whereNotIn('id', $cartProductIds)
+            ->where(function ($query) use ($categoryIds, $subcategoryIds) {
+                $query->whereIn('category_id', $categoryIds)
+                    ->orWhereIn('subcategory_id', $subcategoryIds);
+            })
+            ->with('category', 'subcategory')
+            ->inRandomOrder()
+            ->take(10)
+            ->get();
+
+        $data['carts'] = CartResource::collection($carts);
+
+        $data['products'] = ProductListResource::collection($suggestedProducts);
+
+        return apiResponse($data);
     }
 
     public function store(Request $request)
@@ -94,7 +125,13 @@ class CartController extends Controller
 
     public function deleteItem(CartItem $item)
     {
+        $cart = $item->cart;
+        
         $item->delete();
+
+        if ($cart->cart_items()->count() === 0) {
+            $cart->delete();
+        }
 
         return apiResponse([
             'cart_count' => Cart::getCount(),
