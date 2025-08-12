@@ -47,9 +47,9 @@ class CartController extends Controller
             ->take(10)
             ->get();
 
-        $data['carts'] = CartResource::collection($carts);
+        $data['cart'] = CartResource::collection($carts);
 
-        $data['products'] = ProductListResource::collection($suggestedProducts);
+        $data['suggested_products'] = ProductListResource::collection($suggestedProducts);
 
         return apiResponse($data);
     }
