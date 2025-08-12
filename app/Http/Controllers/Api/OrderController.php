@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\AddressType;
 use App\Enums\CommissionType;
 use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
@@ -124,7 +125,8 @@ class OrderController extends Controller
             'customer_phone' => $billingAddress->customer_phone,
             'division' => $billingAddress->division->name,
             'district' => $billingAddress->district->name,
-            'address' => $billingAddress->address
+            'address' => $billingAddress->address,
+            'type' => $billingAddress->type->title(),
         );
 
         $order = Order::create([

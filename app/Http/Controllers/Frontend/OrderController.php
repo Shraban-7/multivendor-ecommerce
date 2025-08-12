@@ -151,7 +151,8 @@ class OrderController extends Controller
             'customer_phone' => $billingAddress->customer_phone,
             'division' => $billingAddress->division->name,
             'district' => $billingAddress->district->name,
-            'address' => $billingAddress->address
+            'address' => $billingAddress->address,
+            'type' => $billingAddress->type->title(),
         );
 
         $seller = Seller::where('id', $selectedSellerId)->first();
@@ -222,9 +223,7 @@ class OrderController extends Controller
             'total_sold' => $sellerOrderCount,
         ]);
 
-        $billingAddressId = $billingInformation->id;
-
-        $paymentGateway = $this->initiatePaymentGateway($request, $invoiceId, $payableAmount, $billingAddressId);
+        $paymentGateway = $this->initiatePaymentGateway($request, $invoiceId, $payableAmount, $billingAddress->id);
 
         $this->processAffiliateCommissions($order->items, auth()->user(), $order->id);
 
