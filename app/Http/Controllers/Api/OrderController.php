@@ -117,10 +117,21 @@ class OrderController extends Controller
         $invoiceId = Order::generateInvoiceID();
         $payableAmount = $sub_total + $shipping_fee + $tax;
 
+        $billingAddress = BillingAddress::find($request->billing_address_id);
+
+        $billingAddressArray = array(
+            'customer_name' => $billingAddress->customer_name,
+            'customer_phone' => $billingAddress->customer_phone,
+            'division' => $billingAddress->division->name,
+            'district' => $billingAddress->district->name,
+            'address' => $billingAddress->address
+        );
+
         $order = Order::create([
             'user_id'           => $user->id,
             'seller_id'         => $selectedSellerId,
             'billing_address_id' => $request->billing_address_id,
+            'billing_information' => json_encode($billingAddressArray),
             'invoice_id'        => $invoiceId,
             'sub_total'         => $sub_total,
             'total'             => $sub_total + $tax + $shipping_fee,
@@ -150,8 +161,6 @@ class OrderController extends Controller
         $seller->update([
             'total_sold' => $sellerOrderCount,
         ]);
-
-        $billingAddress = BillingAddress::find($request->billing_address_id);
 
         $paymentGateway = $this->initiatePaymentGateway($billingAddress, $invoiceId, $payableAmount);
 

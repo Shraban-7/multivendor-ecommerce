@@ -76,22 +76,14 @@ class OrderController extends Controller
     {
         $user = Auth::user();
 
-        // dd($request->all());
-
         $validated = $request->validate([
             'seller_id' => 'required|exists:sellers,id',
-            // 'customer_name' => 'nullable|string',
-            // 'customer_phone' => 'nullable|string',
-            // 'division_id' => 'nullable|numeric',
-            // 'district_id' => 'nullable|numeric',
             'billing_address_id' => 'nullable|exists:billing_addresses,id',
             'type' => 'nullable|string',
             'address' => 'nullable|string',
         ]);
 
         $selectedSellerId = $validated['seller_id'];
-
-        // dd($selectedSellerId);
 
         $seller = Seller::find($selectedSellerId);
         $cart   = Cart::where('user_id', $user->id)
@@ -152,12 +144,15 @@ class OrderController extends Controller
         $billingData = collect($validated)->except('seller_id')->toArray();
         $billingData['user_id'] = $user->id;
 
-        $billingInformation = BillingAddress::where('id', $validated['billing_address_id'])
-            ->where('user_id', $user->id)
-            ->first();
+        $billingAddress = BillingAddress::find('id', $validated['billing_address_id']);
 
-        // dd($billingInformation);
-
+        $billingAddressArray = array(
+            'customer_name' => $billingAddress->customer_name,
+            'customer_phone' => $billingAddress->customer_phone,
+            'division' => $billingAddress->division->name,
+            'district' => $billingAddress->district->name,
+            'address' => $billingAddress->address
+        );
 
         $seller = Seller::where('id', $selectedSellerId)->first();
 
@@ -179,8 +174,8 @@ class OrderController extends Controller
         $order = Order::create([
             'user_id'           => $user->id,
             'seller_id'         => $selectedSellerId,
-            'billing_address_id' => $billingInformation->id,
-            'billing_information' => json_encode($billingInformation),
+            'billing_address_id' => $billingAddress->id,
+            'billing_information' => json_encode($billingAddressArray),
             'invoice_id'        => $invoiceId,
             'sub_total'         => $sub_total,
             'total'             => $sub_total + $tax + $shipping_fee,
@@ -229,9 +224,9 @@ class OrderController extends Controller
 
         $billingAddressId = $billingInformation->id;
 
-        $paymentGateway = $this->initiatePaymentGateway($request, $invoiceId, $payableAmount,$billingAddressId);
+        $paymentGateway = $this->initiatePaymentGateway($request, $invoiceId, $payableAmount, $billingAddressId);
 
-        $affiliateCommission = $this->processAffiliateCommissions($order->items, auth()->user(), $order->id);
+        $this->processAffiliateCommissions($order->items, auth()->user(), $order->id);
 
         notify_user(
             $user->id,
@@ -298,7 +293,7 @@ class OrderController extends Controller
         Cookie::queue(Cookie::forget('affiliate_refs'));
     }
 
-    private function initiatePaymentGateway(Request $request, $invoiceId, $amount ,$billingAddressId)
+    private function initiatePaymentGateway(Request $request, $invoiceId, $amount, $billingAddressId)
     {
 
         $user          = Auth::user();
