@@ -129,11 +129,11 @@ class CartController extends Controller
 
     public function deleteItem(CartItem $item)
     {
-        $cart = $item->cart;
+        $cart = Cart::withCount('cart_items')->find($item->cart_id);
 
         $item->delete();
 
-        if ($cart->cart_items()->count() === 0) {
+        if ($cart && $cart->cart_items_count === 0) {
             $cart->delete();
         }
 
