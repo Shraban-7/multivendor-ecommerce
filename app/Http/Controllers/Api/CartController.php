@@ -21,6 +21,16 @@ class CartController extends Controller
             ->with('cart_items.product.category', 'cart_items.product.subcategory', 'seller')
             ->get();
 
+        return apiResourceResponse(CartResource::collection($carts));
+    }
+
+    public function suggestions()
+    {
+        $carts = Cart::query()
+            ->where('user_id', Auth::id())
+            ->with('cart_items.product.category', 'cart_items.product.subcategory', 'seller')
+            ->get();
+
         $cartProductIds = [];
         $categoryIds = [];
         $subcategoryIds = [];
@@ -43,15 +53,9 @@ class CartController extends Controller
                     ->orWhereIn('subcategory_id', $subcategoryIds);
             })
             ->with('category', 'subcategory')
-            ->inRandomOrder()
-            ->take(10)
-            ->get();
+            ->paginate(15);
 
-        $data['cart'] = CartResource::collection($carts);
-
-        $data['suggested_products'] = ProductListResource::collection($suggestedProducts);
-
-        return apiResponse($data);
+        return apiResourceResponse(ProductListResource::collection($suggestedProducts));
     }
 
     public function store(Request $request)
@@ -126,7 +130,7 @@ class CartController extends Controller
     public function deleteItem(CartItem $item)
     {
         $cart = $item->cart;
-        
+
         $item->delete();
 
         if ($cart->cart_items()->count() === 0) {
