@@ -133,7 +133,7 @@ class CartController extends Controller
 
         $item->delete();
 
-        if ($cart && $cart->cart_items_count === 0) {
+        if ($cart && ($cart->cart_items_count - 1) === 0) {
             $cart->delete();
         }
 
