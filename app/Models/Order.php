@@ -16,6 +16,7 @@ class Order extends Model
     protected $casts = [
         'status' => OrderStatus::class,
         'created_at' => 'datetime',
+        'billing_information' => 'json'
     ];
 
     public function billing_address()
