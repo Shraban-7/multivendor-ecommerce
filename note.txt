@@ -17,3 +17,4 @@ ALTER TABLE `billing_addresses` CHANGE `type` `type` TINYINT(1) NULL DEFAULT NUL
 
 [8/14/2025]
 ALTER TABLE `reviews` ADD `order_id` BIGINT UNSIGNED NOT NULL AFTER `id`, ADD `order_item_id` BIGINT UNSIGNED NOT NULL AFTER `order_id`;
+ALTER TABLE `order_items` ADD `is_reviewed` TINYINT(1) NOT NULL DEFAULT '0' AFTER `sub_total`;

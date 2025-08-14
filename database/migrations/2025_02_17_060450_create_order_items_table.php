@@ -21,6 +21,7 @@ return new class extends Migration
             $table->integer('quantity');
             $table->decimal('discount', 10, 2);
             $table->decimal('sub_total', 10, 2);
+            $table->boolean('is_reviewed')->default(0);
             $table->timestamps();
         });
     }
