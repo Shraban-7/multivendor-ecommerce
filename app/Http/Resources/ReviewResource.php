@@ -15,7 +15,7 @@ class ReviewResource extends JsonResource
             'user_image' => $this->user->avatar,
             'rating' => $this->rating,
             'description' => $this->description,
-            'review_images' => $this->whenLoaded('images', function () {
+            'images' => $this->whenLoaded('images', function () {
                 return $this->imageToArray($this->images);
             }),
         ];
