@@ -139,7 +139,7 @@ class OrderController extends Controller
                 'user_id'           => $user->id,
                 'seller_id'         => $selectedSellerId,
                 'billing_address_id' => $request->billing_address_id,
-                'billing_information' => json_encode($billingAddressArray),
+                'billing_information' => $billingAddressArray,
                 'invoice_id'        => $invoiceId,
                 'sub_total'         => $sub_total,
                 'total'             => $sub_total + $tax + $shipping_fee,
