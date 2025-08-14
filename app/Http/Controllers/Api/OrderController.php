@@ -274,9 +274,13 @@ class OrderController extends Controller
         return apiResponse(OrderResource::make($order));
     }
 
-    public function submitReview(Request $request)
+    public function submitReview(Request $request, $invoice_id)
     {
         $user = Auth::user();
+
+        $order = Order::where('invoice_id', $invoice_id)
+            ->where('user_id', $user->id)
+            ->first();
 
         $validator = validateRequest($request, [
             'product_id'  => 'required',
@@ -292,7 +296,11 @@ class OrderController extends Controller
 
         $product = Product::find($request->product_id);
 
-        $review_exist = Review::where('product_id', $product->id)
+        $orderItem = OrderItem::where('order_id', $order->id)
+            ->where('product_id', $product->id)
+            ->first();
+
+        $review_exist = Review::where('order_id', $order->id)
             ->where('user_id', $user->id)
             ->first();
 
@@ -302,6 +310,8 @@ class OrderController extends Controller
 
         $review = Review::create([
             'product_id'  => $product->id,
+            'order_id'    => $order->id,
+            'order_item_id' => $orderItem->id,
             'user_id'     => $user->id,
             'rating'      => $request->rating,
             'description' => $request->description,

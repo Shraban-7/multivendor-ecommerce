@@ -68,7 +68,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::prefix('reviews')->group(function () {
-        Route::post('store', [OrderController::class, 'submitReview']);
+        Route::post('/order/{invoice_id}/store', [OrderController::class, 'submitReview']);
     });
 
     // Route::get('categories', [ContentCategoryController::class, 'index']);
