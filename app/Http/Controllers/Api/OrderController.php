@@ -302,9 +302,7 @@ class OrderController extends Controller
 
         $orderItem = OrderItem::find($request->order_item_id);
 
-        $reviewExists = Review::where('order_item_id', $orderItem->id)->first();
-
-        if ($reviewExists) {
+        if ($orderItem->is_reviewed) {
             return errorResponse('You have already reviewed this product.');
         }
 
@@ -325,6 +323,9 @@ class OrderController extends Controller
                 ]);
             }
         }
+
+        $orderItem->is_reviewed = 1;
+        $orderItem->save();
 
         return successResponse('Review Submit Successfully');
     }
