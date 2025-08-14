@@ -57,7 +57,7 @@ class ProductController extends Controller
 
         $data['related_products'] = ProductListResource::collection($relatedProducts);
 
-        $data['reviews'] = ReviewResource::collection(Review::with(['user', 'product', 'images'])->where('product_id', $product->id)->get());
+        $data['reviews'] = ReviewResource::collection(Review::with(['user', 'images'])->where('product_id', $product->id)->get());
 
         return apiResponse($data);
     }
