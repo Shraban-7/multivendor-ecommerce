@@ -68,7 +68,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/details/{invoice_id}', [OrderController::class, 'details'])->name('details');
         Route::get('/success/{invoice_id}', [OrderController::class, 'success'])->name('success');
         Route::get('/tracking/{invoice_id}', [OrderController::class, 'tracking'])->name('tracking');
-        Route::match(['get', 'post'], '/review/{product}', [OrderController::class, 'review'])->name('review');
+        Route::match(['get', 'post'], '/review', [OrderController::class, 'review'])->name('review');
     });
 
     Route::prefix('billing-addresses')->as('billing_addresses.')->group(function () {

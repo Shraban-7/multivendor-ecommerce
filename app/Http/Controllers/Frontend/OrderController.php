@@ -65,11 +65,12 @@ class OrderController extends Controller
 
     public function details($invoice_id)
     {
+        $user = Auth::user();
         $order = Order::where('invoice_id', $invoice_id)->first();
 
         $order->load('items.product');
 
-        return view('frontend.orders.details', compact('order'));
+        return view('frontend.orders.details', compact('order','user'));
     }
 
     public function checkout(Request $request)
@@ -374,7 +375,7 @@ class OrderController extends Controller
         return view('frontend.orders.tracking', compact('order'));
     }
 
-    public function review(Product $product, Request $request)
+    public function review(Request $request)
     {
         $user = Auth::user();
 
@@ -384,19 +385,24 @@ class OrderController extends Controller
 
         $request->validate([
             'rating'      => 'required|integer|min:1|max:5',
+            'order_item_id' => 'required|exists:order_items,id',
             'description' => 'required|string',
             'images'      => 'nullable|array',
             'images.*'    => 'mimes:jpeg,png,jpg,gif,pdf,doc,docx,zip|max:4000',
         ]);
 
-        $review_exist = Review::where('product_id', $product->id)->where('user_id', $user->id)->first();
+        $orderItem = OrderItem::find($request->order_item_id);
 
-        if ($review_exist) {
-            return redirect()->back();
+        $reviewExists = Review::where('order_item_id', $orderItem->id)->first();
+
+        if ($reviewExists) {
+            return redirect()->back()->with('error','You have already reviewed this product.');
         }
 
         $review = Review::create([
-            'product_id'  => $product->id,
+            'product_id'  => $orderItem->product_id,
+            'order_id'    => $orderItem->order_id,
+            'order_item_id' => $orderItem->id,
             'user_id'     => $user->id,
             'rating'      => $request->rating,
             'description' => $request->description,
@@ -411,7 +417,7 @@ class OrderController extends Controller
             }
         }
 
-        return redirect()->route('orders.index');
+        return redirect()->back()->with('success', 'Review submitted successfully.');
     }
 
     public function getDistricts($divisionId)
