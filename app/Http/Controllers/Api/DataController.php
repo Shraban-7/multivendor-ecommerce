@@ -7,6 +7,7 @@ use App\Http\Resources\DistrictResource;
 use App\Http\Resources\DivisionResource;
 use App\Models\District;
 use App\Models\Division;
+use App\Models\PaymentOption;
 use Illuminate\Http\Request;
 
 class DataController extends Controller
@@ -31,5 +32,10 @@ class DataController extends Controller
         $districts = District::where('division_id', $request->division_id)->orderBy('name', 'ASC')->get();
 
         return apiResourceResponse(DistrictResource::collection($districts));
+    }
+
+    public function paymentOptions()
+    {
+        $paymentOptions = PaymentOption::all();
     }
 }
