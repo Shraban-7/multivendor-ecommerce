@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\District;
+use App\Models\Division;
+use Illuminate\Http\Request;
+use App\Models\PaymentOption;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DistrictResource;
 use App\Http\Resources\DivisionResource;
-use App\Models\District;
-use App\Models\Division;
-use App\Models\PaymentOption;
-use Illuminate\Http\Request;
+use App\Http\Resources\PaymentOptionResource;
 
 class DataController extends Controller
 {
@@ -37,5 +38,7 @@ class DataController extends Controller
     public function paymentOptions()
     {
         $paymentOptions = PaymentOption::all();
+
+        return apiResourceResponse(PaymentOptionResource::collection($paymentOptions));
     }
 }
