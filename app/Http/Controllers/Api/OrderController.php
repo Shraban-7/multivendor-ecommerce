@@ -274,45 +274,33 @@ class OrderController extends Controller
         return apiResponse(OrderResource::make($order));
     }
 
-    public function submitReview(Request $request, $invoice_id)
+    public function submitReview(Request $request)
     {
-        $user = Auth::user();
-
-        $order = Order::where('invoice_id', $invoice_id)
-            ->where('user_id', $user->id)
-            ->first();
-
         $validator = validateRequest($request, [
-            'product_id'  => 'required',
-            'rating'      => 'required|integer|min:1|max:5',
+            'order_item_id' => 'required|exists:order_items,id',
+            'rating' => 'required|integer|min:1|max:5',
             'description' => 'required|string',
-            'images'      => 'nullable|array',
-            'images.*'    => 'mimes:jpeg,png,jpg,gif,pdf,doc,docx,zip|max:4000',
+            'images' => 'nullable|array',
+            'images.*' => 'mimes:jpeg,png,jpg,gif,pdf,doc,docx,zip|max:4000',
         ]);
 
         if ($validator->fails()) {
             return sendValidationError($validator->errors());
         }
 
-        $product = Product::find($request->product_id);
+        $orderItem = OrderItem::find($request->order_item_id);
 
-        $orderItem = OrderItem::where('order_id', $order->id)
-            ->where('product_id', $product->id)
-            ->first();
+        $reviewExists = Review::where('order_item_id', $orderItem->id)->first();
 
-        $review_exist = Review::where('order_id', $order->id)
-            ->where('user_id', $user->id)
-            ->first();
-
-        if ($review_exist) {
+        if ($reviewExists) {
             return errorResponse('You have already reviewed this product.');
         }
 
         $review = Review::create([
-            'product_id'  => $product->id,
-            'order_id'    => $order->id,
+            'product_id'  => $orderItem->product_id,
+            'order_id'    => $orderItem->order_id,
             'order_item_id' => $orderItem->id,
-            'user_id'     => $user->id,
+            'user_id'     => Auth::id(),
             'rating'      => $request->rating,
             'description' => $request->description,
         ]);
