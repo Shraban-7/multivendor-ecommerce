@@ -157,8 +157,8 @@
                                             @endphp
                                             <div class="w-16 h-20 md:w-20 md:h-24 flex-shrink-0 rounded-xl overflow-hidden">
                                                 <a href="{{ route('products.details', $item->product->slug) }}">
-                                                    <img src="{{ $imageUrl }}"
-                                                        alt="{{ $item->product->name }}" class="w-full h-full object-cover" />
+                                                    <img src="{{ $imageUrl }}" alt="{{ $item->product->name }}"
+                                                        class="w-full h-full object-cover" />
                                                 </a>
                                             </div>
 
@@ -193,10 +193,105 @@
 
 
                                                 <!-- Submit Review Button -->
-                                                <a href="{{ route('orders.review', ['product' => $item->product->id]) }}"
-                                                    class="inline-block mt-2 text-xs md:text-sm text-white  bg-primary hover:bg-theme-dark px-4 py-2 rounded transition-all duration-200">
+                                                <button type="button"
+                                                    class="inline-block mt-2 text-xs md:text-sm text-white bg-primary hover:bg-theme-dark px-4 py-2 rounded transition-all duration-200"
+                                                    id="open-review-modal">
                                                     Submit a Review
-                                                </a>
+                                                </button>
+                                                <!-- Review Modal -->
+                                                <div id="review-modal"
+                                                    class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+                                                    <div
+                                                        class="bg-white rounded-xl shadow-lg w-full max-w-2xl p-6 relative">
+
+                                                        <!-- Close Button -->
+                                                        <button type="button" id="close-review-modal"
+                                                            class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl font-bold">
+                                                            ✕
+                                                        </button>
+
+                                                        <!-- Modal Content -->
+                                                        <div class="w-full flex flex-col items-center">
+                                                            <!-- User Avatar -->
+                                                            <div
+                                                                class="w-20 h-20 rounded-full overflow-hidden mb-4 border border-gray-300 shadow-sm">
+                                                                <img src="{{ $user->avatar }}" alt="Profile"
+                                                                    class="w-full h-full object-cover" />
+                                                            </div>
+
+                                                            <!-- Heading -->
+                                                            <h2
+                                                                class="text-xl md:text-2xl font-semibold text-davy-gray mb-1 text-center">
+                                                                Share your experience</h2>
+                                                            <p class="text-sm text-jet-gray mb-4 text-center max-w-md">
+                                                                Your feedback helps us ensure top-quality service.
+                                                            </p>
+
+                                                            <!-- Review Form -->
+                                                            <form action="{{ route('orders.review') }}" method="POST"
+                                                                enctype="multipart/form-data" class="w-full space-y-6"
+                                                                id="review-form">
+                                                                @csrf
+
+                                                                <input type="hidden" name="order_item_id"
+                                                                    value="{{ $item->id }}">
+                                                                <!-- Star Rating -->
+                                                                <div id="stars-container"
+                                                                    class="flex justify-center gap-2 mb-1">
+                                                                    @for ($i = 1; $i <= 5; $i++)
+                                                                        <span
+                                                                            class="review-star text-3xl cursor-pointer text-gray-300"
+                                                                            data-rating="{{ $i }}">
+                                                                            <i class="fa-solid fa-star"></i>
+                                                                        </span>
+                                                                    @endfor
+
+                                                                </div>
+                                                                <input type="hidden" name="rating" id="star-rating"
+                                                                    value="3">
+
+                                                                <!-- Review Text -->
+                                                                <textarea id="feedback-text" name="description" required
+                                                                    class="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 focus:ring-2 focus:ring-primary text-base"
+                                                                    placeholder="Write your review here..." rows="2"></textarea>
+
+                                                                <!-- Image Upload -->
+                                                                <div>
+                                                                    <label for="image-input"
+                                                                        class="block text-sm font-medium text-davy-gray mb-2">
+                                                                        Upload Images (Optional)
+                                                                    </label>
+
+                                                                    <div id="dropzone"
+                                                                        class="relative flex flex-col items-center justify-center w-full p-4 text-center border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 transition hover:border-primary">
+                                                                        <p class="text-sm text-gray-500">Click or drag &
+                                                                            drop to upload</p>
+                                                                        <input name="images[]" type="file"
+                                                                            id="image-input" multiple
+                                                                            class="absolute inset-0 opacity-0 cursor-pointer z-10" />
+                                                                    </div>
+                                                                    <div id="preview-container"
+                                                                        class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Buttons -->
+                                                                <div class="flex flex-col md:flex-row gap-3">
+                                                                    <button type="submit"
+                                                                        class="w-full bg-primary text-white py-2 rounded-lg hover:bg-theme-dark transition">
+                                                                        Submit Review
+                                                                    </button>
+                                                                    <button type="button" id="cancel-review"
+                                                                        class="w-full text-center bg-gray-100 text-gray-800 py-2 rounded-lg hover:bg-gray-200 transition">
+                                                                        Cancel
+                                                                    </button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
                                             </div>
                                         </div>
                                     @endforeach
@@ -257,5 +352,115 @@
     </main>
 
     @push('scripts')
+        <script>
+            $(document).ready(function() {
+
+                // ==== Modal Open/Close ====
+                $('#open-review-modal').on('click', function() {
+                    $('#review-modal').removeClass('hidden');
+                });
+
+                $('#close-review-modal, #cancel-review').on('click', function() {
+                    $('#review-modal').addClass('hidden');
+                });
+
+                let currentRating = 0;
+
+                setStarState(currentRating);
+
+                $('#stars-container').on('click', '.review-star', function() {
+                    currentRating = $(this).data('rating');
+                    setStarState(currentRating);
+                    $('#star-rating').val(currentRating);
+                });
+
+                $('#stars-container').on('mouseover', '.review-star', function() {
+                    const hoverRating = $(this).data('rating');
+                    setStarState(hoverRating, true);
+                });
+
+                $('#stars-container').on('mouseout', function() {
+                    setStarState(currentRating);
+                });
+
+                function setStarState(rating, isHover = false) {
+                    $('#stars-container .review-star').each(function() {
+                        const starRating = $(this).data('rating');
+                        if (isHover) {
+                            $(this).toggleClass('active', starRating <= rating);
+                        } else {
+                            $(this).toggleClass('active', starRating <= rating);
+                        }
+                    });
+                }
+
+                // ==== Image Upload & Preview ====
+                const $dropzone = $('#dropzone');
+                const $input = $('#image-input');
+                const $previewContainer = $('#preview-container');
+                let selectedFiles = [];
+
+                $dropzone.on('dragover', function(e) {
+                    e.preventDefault();
+                    $dropzone.addClass('border-primary bg-gray-100');
+                });
+
+                $dropzone.on('dragleave', function() {
+                    $dropzone.removeClass('border-primary bg-gray-100');
+                });
+
+                $dropzone.on('drop', function(e) {
+                    e.preventDefault();
+                    $dropzone.removeClass('border-primary bg-gray-100');
+                    const files = Array.from(e.originalEvent.dataTransfer.files);
+                    selectedFiles = selectedFiles.concat(files);
+                    updateInputFiles();
+                    showPreviews();
+                });
+
+                $input.on('change', function(e) {
+                    const files = Array.from(e.target.files);
+                    selectedFiles = selectedFiles.concat(files);
+                    updateInputFiles();
+                    showPreviews();
+                });
+
+                function showPreviews() {
+                    $previewContainer.empty();
+                    selectedFiles.forEach((file, index) => {
+                        if (!file.type.startsWith('image/')) return;
+
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const $wrapper = $('<div class="relative group">');
+                            const $img = $('<img>', {
+                                src: e.target.result,
+                                class: 'w-full h-24 object-cover rounded-lg border border-gray-200'
+                            });
+                            const $removeBtn = $(
+                                `<button type="button" data-index="${index}" class="absolute top-1 right-1 bg-red-600 text-white rounded-full w-6 h-6 text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition">&times;</button>`
+                            );
+
+                            $removeBtn.on('click', function() {
+                                const idx = $(this).data('index');
+                                selectedFiles.splice(idx, 1);
+                                updateInputFiles();
+                                showPreviews();
+                            });
+
+                            $wrapper.append($img).append($removeBtn);
+                            $previewContainer.append($wrapper);
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                }
+
+                function updateInputFiles() {
+                    const dataTransfer = new DataTransfer();
+                    selectedFiles.forEach(file => dataTransfer.items.add(file));
+                    $input[0].files = dataTransfer.files;
+                }
+            });
+        </script>
     @endpush
 @endsection
