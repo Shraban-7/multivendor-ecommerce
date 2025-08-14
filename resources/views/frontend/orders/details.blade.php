@@ -192,12 +192,15 @@
                                                 @endif
 
 
+                                                @if ($item->is_reviewed == 0)
                                                 <!-- Submit Review Button -->
                                                 <button type="button"
                                                     class="inline-block mt-2 text-xs md:text-sm text-white bg-primary hover:bg-theme-dark px-4 py-2 rounded transition-all duration-200"
                                                     id="open-review-modal">
                                                     Submit a Review
                                                 </button>
+
+                                                @endif
                                                 <!-- Review Modal -->
                                                 <div id="review-modal"
                                                     class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50">
