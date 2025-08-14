@@ -417,6 +417,9 @@ class OrderController extends Controller
             }
         }
 
+        $orderItem->is_reviewed = 1;
+        $orderItem->save();
+
         return redirect()->back()->with('success', 'Review submitted successfully.');
     }
 
