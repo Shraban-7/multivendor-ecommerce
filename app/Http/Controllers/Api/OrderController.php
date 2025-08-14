@@ -19,8 +19,10 @@ use App\Models\Review;
 use App\Models\ReviewImage;
 use App\Models\Seller;
 use App\Services\AamarpayService;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -129,42 +131,52 @@ class OrderController extends Controller
             'type' => $billingAddress->type->title(),
         );
 
-        $order = Order::create([
-            'user_id'           => $user->id,
-            'seller_id'         => $selectedSellerId,
-            'billing_address_id' => $request->billing_address_id,
-            'billing_information' => json_encode($billingAddressArray),
-            'invoice_id'        => $invoiceId,
-            'sub_total'         => $sub_total,
-            'total'             => $sub_total + $tax + $shipping_fee,
-            'discount'          => $discount,
-            'tax'               => $tax,
-            'shipping_fee'      => $shipping_fee,
-            'payable'           => $payableAmount,
-            'due'               => $payableAmount,
-            'commission_type'   => $seller->commission_type,
-            'commission_amount' => $seller->commission_amount,
-            'total_commission'  => $total_commission,
-            'status'            => OrderStatus::PENDING->value,
-            'delivery_status'   => OrderStatus::ORDER_PLACED->value,
-        ]);
+        try {
 
-        $order->items()->createMany($orderItems);
+            DB::beginTransaction();
 
-        $cart->cart_items()->delete();
-        $cart->delete();
+            $order = Order::create([
+                'user_id'           => $user->id,
+                'seller_id'         => $selectedSellerId,
+                'billing_address_id' => $request->billing_address_id,
+                'billing_information' => json_encode($billingAddressArray),
+                'invoice_id'        => $invoiceId,
+                'sub_total'         => $sub_total,
+                'total'             => $sub_total + $tax + $shipping_fee,
+                'discount'          => $discount,
+                'tax'               => $tax,
+                'shipping_fee'      => $shipping_fee,
+                'payable'           => $payableAmount,
+                'due'               => $payableAmount,
+                'commission_type'   => $seller->commission_type,
+                'commission_amount' => $seller->commission_amount,
+                'total_commission'  => $total_commission,
+                'status'            => OrderStatus::PENDING->value,
+                'delivery_status'   => OrderStatus::ORDER_PLACED->value,
+            ]);
 
-        $seller = Seller::find($selectedSellerId);
+            $order->items()->createMany($orderItems);
 
-        $sellerOrderIds = Order::where('seller_id', $seller->id)->pluck('id');
+            $cart->cart_items()->delete();
+            $cart->delete();
 
-        $sellerOrderCount = OrderItem::whereIn('order_id', $sellerOrderIds)->count();
+            $seller = Seller::find($selectedSellerId);
 
-        $seller->update([
-            'total_sold' => $sellerOrderCount,
-        ]);
+            $sellerOrderIds = Order::where('seller_id', $seller->id)->pluck('id');
 
-        $paymentGateway = $this->initiatePaymentGateway($billingAddress, $invoiceId, $payableAmount);
+            $sellerOrderCount = OrderItem::whereIn('order_id', $sellerOrderIds)->count();
+
+            $seller->update([
+                'total_sold' => $sellerOrderCount,
+            ]);
+
+            DB::commit();
+
+            $paymentGateway = $this->initiatePaymentGateway($billingAddress, $invoiceId, $payableAmount);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return errorResponse($e->getMessage());
+        }
 
         notify_user(
             $user->id,
@@ -199,7 +211,7 @@ class OrderController extends Controller
         $customerPhone  = $billingAddress->customer_phone;
         $customerEmail = $user->email;
 
-        $payment = Payment::create([
+        Payment::create([
             'gateway' => 'aamarpay',
             'transaction_id' => $invoiceId,
             'status' => Payment::PENDING,
@@ -290,9 +302,7 @@ class OrderController extends Controller
 
         $orderItem = OrderItem::find($request->order_item_id);
 
-        $reviewExists = Review::where('order_item_id', $orderItem->id)->first();
-
-        if ($reviewExists) {
+        if ($orderItem->is_reviewed) {
             return errorResponse('You have already reviewed this product.');
         }
 
@@ -313,6 +323,9 @@ class OrderController extends Controller
                 ]);
             }
         }
+
+        $orderItem->is_reviewed = 1;
+        $orderItem->save();
 
         return successResponse('Review Submit Successfully');
     }

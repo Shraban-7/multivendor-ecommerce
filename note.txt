@@ -14,3 +14,7 @@ ALTER TABLE `notifications` CHANGE `user_id` `user_id` BIGINT UNSIGNED NULL;
 ALTER TABLE `billing_addresses` ADD `is_default` TINYINT(1) NOT NULL DEFAULT '0' AFTER `district_id`;
 update  `billing_addresses` set `type` = 1
 ALTER TABLE `billing_addresses` CHANGE `type` `type` TINYINT(1) NULL DEFAULT NULL;
+
+[8/14/2025]
+ALTER TABLE `reviews` ADD `order_id` BIGINT UNSIGNED NOT NULL AFTER `id`, ADD `order_item_id` BIGINT UNSIGNED NOT NULL AFTER `order_id`;
+ALTER TABLE `order_items` ADD `is_reviewed` TINYINT(1) NOT NULL DEFAULT '0' AFTER `sub_total`;
