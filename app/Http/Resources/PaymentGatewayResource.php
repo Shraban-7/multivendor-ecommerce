@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PaymentOptionResource extends JsonResource
+class PaymentGatewayResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -18,8 +18,10 @@ class PaymentOptionResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'image' => storage_url($this->image),
-            'link' => $this->link,
-            'is_active' => $this->status,
+            'payment_url' => $this->payment_url,
+            'credentials' => $this->credentials,
+            'is_enable' => $this->is_enabled,
+            'is_default' => $this->is_default
         ];
     }
 }

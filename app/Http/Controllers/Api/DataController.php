@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Models\District;
 use App\Models\Division;
 use Illuminate\Http\Request;
-use App\Models\PaymentOption;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DistrictResource;
 use App\Http\Resources\DivisionResource;
-use App\Http\Resources\PaymentOptionResource;
+use App\Http\Resources\PaymentGatewayResource;
+use App\Models\PaymentGateway;
 
 class DataController extends Controller
 {
@@ -35,10 +35,11 @@ class DataController extends Controller
         return apiResourceResponse(DistrictResource::collection($districts));
     }
 
-    public function paymentOptions()
+    public function paymentGateways()
     {
-        $paymentOptions = PaymentOption::all();
+        $paymentGateways = PaymentGateway::all();
 
-        return apiResourceResponse(PaymentOptionResource::collection($paymentOptions));
+        return apiResourceResponse(PaymentGatewayResource::collection($paymentGateways));
     }
+
 }

@@ -36,7 +36,7 @@ Route::get('shops', [ShopController::class, 'index']);
 Route::prefix('data')->group(function () {
     Route::get('/divisions', [DataController::class, 'divisions']);
     Route::get('/districts', [DataController::class, 'districts']);
-    Route::get('/payment-options', [DataController::class, 'paymentOptions']);
+    Route::get('/payment-gateways', [DataController::class, 'paymentGateways']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
