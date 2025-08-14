@@ -37,7 +37,7 @@ class DataController extends Controller
 
     public function paymentGateways()
     {
-        $paymentGateways = PaymentGateway::all();
+        $paymentGateways = PaymentGateway::where('is_enabled', true)->get();
 
         return apiResourceResponse(PaymentGatewayResource::collection($paymentGateways));
     }
