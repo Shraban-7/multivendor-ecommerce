@@ -20,8 +20,6 @@ class PaymentOptionResource extends JsonResource
             'image' => storage_url($this->image),
             'link' => $this->link,
             'is_active' => $this->status,
-            // 'created_at' => $this->created_at,
-            // 'updated_at' => $this->updated_at,
         ];
     }
 }
