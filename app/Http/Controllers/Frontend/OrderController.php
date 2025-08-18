@@ -298,43 +298,32 @@ class OrderController extends Controller
 
         $user          = Auth::user();
         $billingInformation = BillingAddress::find($billingAddressId);
-        $customerName  = $request->input('customer_name', $user->name);
+        $customerName  = $billingInformation->customer_name;
         $customerEmail = $user->email;
-        $customerPhone = $request->input('customer_phone', $user->phone) ?? '';
+        $customerPhone = $billingInformation->customer_phone;
 
-        $payment = Payment::where('transaction_id', $invoiceId)
-            ->where('status', Payment::FAILED)
-            ->first();
+        $payment = Payment::where('transaction_id', $invoiceId)->first();
 
-        if ($payment) {
-            $payment->update([
-                'gateway'        => 'aamarpay',
-                'status'         => Payment::PENDING,
-                'amount'         => $amount,
-                'currency'       => 'BDT',
-                'customer_name'  => $billingInformation->customer_name ?? $customerName,
-                'customer_email' => $billingInformation->customer_email ?? $customerEmail,
-                'customer_phone' => $billingInformation->customer_phone ?? $customerPhone,
-            ]);
-        } else {
-            $exists = Payment::where('transaction_id', $invoiceId)->exists();
-            if ($exists) {
-                throw new \Exception("Payment with this transaction ID already exists.");
-            }
-
+        if (!$payment) {
             $payment = Payment::create([
-                'gateway'        => 'aamarpay',
+                'gateway' => 'aamarpay',
                 'transaction_id' => $invoiceId,
-                'status'         => Payment::PENDING,
-                'amount'         => $amount,
-                'currency'       => 'BDT',
-                'customer_name'  => $billingInformation->customer_name ?? $customerName,
-                'customer_email' => $billingInformation->customer_email ?? $customerEmail,
-                'customer_phone' => $billingInformation->customer_phone ?? $customerPhone,
+                'status' => Payment::PENDING,
+                'amount' => $amount,
+                'currency' => 'BDT',
+                'customer_name' => $customerName,
+                'customer_email' => $customerPhone,
+                'customer_phone' => $customerEmail,
             ]);
         }
 
+        if ($payment->status == Payment::SUCCESSFUL) {
+            return redirect()->route('orders.index')->with('success', 'Payment already completed for this order.');
+        }
 
+        if ($payment->status == Payment::FAILED) {
+            $payment->update(['status' => Payment::PENDING]);
+        }
 
         $aamarpay = (new AamarpayService);
 
@@ -349,15 +338,15 @@ class OrderController extends Controller
                 'cancel_url'   => route('payment.cancel'),
                 'amount'       => $amount,
                 'desc'         => 'Test Payment',
-                'cus_name'     => $billingInformation->customer_name ?? $customerName,
-                'cus_email'    => $billingInformation->customer_email ?? $customerEmail,
+                'cus_name'     => $customerName,
+                'cus_email'    => $customerEmail,
                 'cus_add1'     => '',
                 'cus_add2'     => '',
                 'cus_city'     => '',
                 'cus_state'    => '',
                 'cus_postcode' => '',
                 'cus_country'  => 'Bangladesh',
-                'cus_phone'    => $billingInformation->customer_phone ?? $customerPhone,
+                'cus_phone'    => $customerPhone,
                 'opt_a'        => base64_encode(json_encode([
                     'user_id'    => $user->id,
                     'return_url' => route('orders.index'),
