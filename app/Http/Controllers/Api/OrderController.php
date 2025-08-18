@@ -336,4 +336,11 @@ class OrderController extends Controller
 
         return apiResourceResponse(InvoiceResource::make($order));
     }
+
+    public function payNow(Order $order)
+    {
+        //check pending amount
+
+        //initialize payment gateway
+    }
 }
