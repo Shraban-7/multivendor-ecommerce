@@ -368,6 +368,10 @@ class OrderController extends Controller
             $order->payable,
         );
 
+        if (is_null($paymentGateway['payment_url'])) {
+            return errorResponse($paymentGateway['message']);
+        }
+
         return apiResponse([
             'status' => true,
             'message' => $paymentGateway['message'],
