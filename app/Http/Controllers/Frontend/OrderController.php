@@ -366,16 +366,13 @@ class OrderController extends Controller
 
             if (isset($response['payment_url'])) {
                 $paymentUrl = $response['payment_url'];
-                //return redirect()->away($response['payment_url']);
 
             } else {
                 $message = 'Payment URL not received.';
             }
 
-            //return back()->with('error', 'Payment URL not received.');
         } catch (\Exception $e) {
             $message = $e->getMessage();
-            //return back()->with('error', $e->getMessage());
         }
 
         return [

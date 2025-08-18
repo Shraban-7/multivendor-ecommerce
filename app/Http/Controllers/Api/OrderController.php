@@ -24,6 +24,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
+use function PHPUnit\Framework\returnSelf;
+
 class OrderController extends Controller
 {
     public function index(Request $request)
@@ -211,16 +213,37 @@ class OrderController extends Controller
         $customerPhone  = $billingAddress->customer_phone;
         $customerEmail = $user->email;
 
-        Payment::create([
-            'gateway' => 'aamarpay',
-            'transaction_id' => $invoiceId,
-            'status' => Payment::PENDING,
-            'amount' => $amount,
-            'currency' => 'BDT',
-            'customer_name' => $customerName,
-            'customer_email' => $customerEmail,
-            'customer_phone' => $customerPhone,
-        ]);
+        $payment = Payment::where('transaction_id', $invoiceId)
+            ->where('status', Payment::FAILED)
+            ->first();
+
+        if ($payment) {
+            $payment->update([
+                'gateway'        => 'aamarpay',
+                'status'         => Payment::PENDING,
+                'amount'         => $amount,
+                'currency'       => 'BDT',
+                'customer_name'  => $billingInformation->customer_name ?? $customerName,
+                'customer_email' => $billingInformation->customer_email ?? $customerEmail,
+                'customer_phone' => $billingInformation->customer_phone ?? $customerPhone,
+            ]);
+        } else {
+            $exists = Payment::where('transaction_id', $invoiceId)->exists();
+            if ($exists) {
+                throw new \Exception("Payment with this transaction ID already exists.");
+            }
+
+            $payment = Payment::create([
+                'gateway'        => 'aamarpay',
+                'transaction_id' => $invoiceId,
+                'status'         => Payment::PENDING,
+                'amount'         => $amount,
+                'currency'       => 'BDT',
+                'customer_name'  => $billingInformation->customer_name ?? $customerName,
+                'customer_email' => $billingInformation->customer_email ?? $customerEmail,
+                'customer_phone' => $billingInformation->customer_phone ?? $customerPhone,
+            ]);
+        }
 
         $aamarpay = (new AamarpayService);
 
@@ -341,24 +364,11 @@ class OrderController extends Controller
     {
         $billingAddress = BillingAddress::find($order->billing_address_id);
 
-        $payment_id = $order->payment_id;
-        $payment = Payment::where('id', $payment_id)
-            ->where('status', Payment::SUCCESSFUL)
-            ->where('transaction_id', $order->invoice_id)
-            ->first();
-
-        if($payment)
-        {
-            return;
-        }
-
         $paymentGateway = $this->initiatePaymentGateway(
+            $billingAddress,
             $order->invoice_id,
             $order->payable,
-            $billingAddress->id
         );
-
-        $this->processAffiliateCommissions($order->items, auth()->user(), $order->id);
 
         return apiResponse([
             'status' => true,
