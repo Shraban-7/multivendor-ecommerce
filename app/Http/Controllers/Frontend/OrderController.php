@@ -70,7 +70,7 @@ class OrderController extends Controller
 
         $order->load('items.product');
 
-        return view('frontend.orders.details', compact('order','user'));
+        return view('frontend.orders.details', compact('order', 'user'));
     }
 
     public function checkout(Request $request)
@@ -396,7 +396,7 @@ class OrderController extends Controller
         $reviewExists = Review::where('order_item_id', $orderItem->id)->first();
 
         if ($reviewExists) {
-            return redirect()->back()->with('error','You have already reviewed this product.');
+            return redirect()->back()->with('error', 'You have already reviewed this product.');
         }
 
         $review = Review::create([
@@ -427,5 +427,12 @@ class OrderController extends Controller
     {
         $districts = District::where('division_id', $divisionId)->pluck('name', 'id');
         return response()->json($districts);
+    }
+
+    public function payNow(Order $order)
+    {
+        //check pending amount
+
+        //initialize payment gateway
     }
 }
