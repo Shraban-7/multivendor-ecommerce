@@ -196,8 +196,11 @@ class OrderController extends Controller
             $invoiceId,
         );
 
+        if (is_null($paymentGateway['payment_url'])) {
+            return errorResponse($paymentGateway['message']);
+        }
+
         return apiResponse([
-            'status' => true,
             'message' => $paymentGateway['message'],
             'payment_url' => $paymentGateway['payment_url'],
             'success_url' => route('payment.success'),
@@ -206,49 +209,44 @@ class OrderController extends Controller
         ]);
     }
 
-    private function initiatePaymentGateway(BillingAddress $billingAddress, $invoiceId, $amount)
+    private function initiatePaymentGateway(BillingAddress $billingAddress, $invoiceId, $amount): array
     {
         $user = Auth::user();
-        $customerName  = $billingAddress->customer_name;
-        $customerPhone  = $billingAddress->customer_phone;
+
+        $payment = Payment::where('transaction_id', $invoiceId)->first();
+
+        $customerName = $billingAddress->customer_name;
+        $customerPhone = $billingAddress->customer_phone;
         $customerEmail = $user->email;
 
-        $payment = Payment::where('transaction_id', $invoiceId)
-            ->where('status', Payment::FAILED)
-            ->first();
-
-        if ($payment) {
-            $payment->update([
-                'gateway'        => 'aamarpay',
-                'status'         => Payment::PENDING,
-                'amount'         => $amount,
-                'currency'       => 'BDT',
-                'customer_name'  => $billingInformation->customer_name ?? $customerName,
-                'customer_email' => $billingInformation->customer_email ?? $customerEmail,
-                'customer_phone' => $billingInformation->customer_phone ?? $customerPhone,
-            ]);
-        } else {
-            $exists = Payment::where('transaction_id', $invoiceId)->exists();
-            if ($exists) {
-                throw new \Exception("Payment with this transaction ID already exists.");
-            }
-
+        if (!$payment) {
             $payment = Payment::create([
-                'gateway'        => 'aamarpay',
+                'gateway' => 'aamarpay',
                 'transaction_id' => $invoiceId,
-                'status'         => Payment::PENDING,
-                'amount'         => $amount,
-                'currency'       => 'BDT',
-                'customer_name'  => $billingInformation->customer_name ?? $customerName,
-                'customer_email' => $billingInformation->customer_email ?? $customerEmail,
-                'customer_phone' => $billingInformation->customer_phone ?? $customerPhone,
+                'status' => Payment::PENDING,
+                'amount' => $amount,
+                'currency' => 'BDT',
+                'customer_name' => $customerName,
+                'customer_email' => $customerPhone,
+                'customer_phone' => $customerEmail,
             ]);
+        }
+
+        if ($payment->status == Payment::SUCCESSFUL) {
+            return [
+                'message' => 'This payment is already complete!',
+                'payment_url' => null,
+            ];
+        }
+
+        if ($payment->status == Payment::FAILED) {
+            $payment->update(['status' => Payment::PENDING]);
         }
 
         $aamarpay = (new AamarpayService);
 
         $message = 'Redirecting to payment gateway';
-        $paymentUrl = '';
+        $paymentUrl = null;;
 
         try {
             $response = $aamarpay->initiate([
