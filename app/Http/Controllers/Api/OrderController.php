@@ -339,8 +339,34 @@ class OrderController extends Controller
 
     public function payNow(Order $order)
     {
-        //check pending amount
+        $billingAddress = BillingAddress::find($order->billing_address_id);
 
-        //initialize payment gateway
+        $payment_id = $order->payment_id;
+        $payment = Payment::where('id', $payment_id)
+            ->where('status', Payment::SUCCESSFUL)
+            ->where('transaction_id', $order->invoice_id)
+            ->first();
+
+        if($payment)
+        {
+            return;
+        }
+
+        $paymentGateway = $this->initiatePaymentGateway(
+            $order->invoice_id,
+            $order->payable,
+            $billingAddress->id
+        );
+
+        $this->processAffiliateCommissions($order->items, auth()->user(), $order->id);
+
+        return apiResponse([
+            'status' => true,
+            'message' => $paymentGateway['message'],
+            'payment_url' => $paymentGateway['payment_url'],
+            'success_url' => route('payment.success'),
+            'fail_url' => route('payment.cancel'),
+            'cancel_url' => route('payment.cancel'),
+        ]);
     }
 }

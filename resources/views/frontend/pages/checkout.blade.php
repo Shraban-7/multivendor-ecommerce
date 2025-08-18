@@ -65,7 +65,7 @@
                             <!-- Title & Add Button in Same Row -->
                             <div class="flex items-center justify-between">
                                 <h2 class="sm:text-lg font-semibold">Billing Information</h2>
-                                <button data-modal-target="add-billing-address-modal"
+                                <button data-modal-target="add-billing-address-modal" type="button"
                                     data-modal-toggle="add-billing-address-modal"
                                     class="text-white bg-primary hover:bg-primary/90 focus:ring-4 focus:outline-none focus:ring-primary/70 font-medium rounded-lg text-sm px-4 py-2">
                                    + Add Billing Address

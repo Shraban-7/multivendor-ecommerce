@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
             // OrderSeeder::class,
             // OrderItemSeeder::class,
             WishlistSeeder::class,
-            ReviewSeeder::class,
+            // ReviewSeeder::class,
             CouponSeeder::class,
             CategoryBannerSeeder::class,
             HeroBannerSeeder::class,

@@ -16,10 +16,7 @@ return new class extends Migration
             $table->string('invoice_id')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('seller_id')->nullable();
-            $table->string('customer_name')->nullable();
-            $table->string('customer_email')->nullable();
-            $table->string('customer_phone')->nullable();
-            $table->text('customer_address')->nullable();
+            $table->unsignedBigInteger('_id')->nullable();
             $table->json('billing_information')->nullable();
             $table->decimal('sub_total', 10, 2);
             $table->decimal('discount', 6, 2)->nullable();

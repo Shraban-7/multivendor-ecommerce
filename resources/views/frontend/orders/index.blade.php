@@ -122,17 +122,21 @@
                                             @endif
                                         </td>
                                         <td class="px-6 py-4">
-                                            @if(!is_null($order->payment_id))
-                                                @if ($order->payment->status == Payment::SUCCESSFUL)
-                                                    <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
-                                                        Paid
-                                                    </span>
-                                                @else
-                                                    <a href="#"
+
+                                            @if (!is_null($order->payment_id) && $order->payment->status == Payment::SUCCESSFUL)
+                                                <span
+                                                    class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                                                    Paid
+                                                </span>                                                
+                                            @else
+                                                <form action="{{ route('orders.payNow', $order->id) }}" method="POST"
+                                                    class="inline">
+                                                    @csrf
+                                                    <button type="submit"
                                                         class="bg-primary text-white px-3 py-2 rounded text-xs hover:opacity-90 transition">
                                                         Pay Now
-                                                    </a>
-                                                @endif
+                                                    </button>
+                                                </form>
                                             @endif
                                         </td>
                                         <td class="px-6 py-4 font-semibold">{{ money($order->total) }}</td>

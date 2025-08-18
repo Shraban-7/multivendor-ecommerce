@@ -65,7 +65,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('orders')->as('orders.')->group(function () {
         Route::get('/', [OrderController::class, 'index'])->name('index');
         Route::match(['get', 'post'], 'checkout', [OrderController::class, 'checkout'])->name('checkout');
-        Route::post('{order}/pay-now', [OrderController::class, 'payNow']);
+        Route::post('{order}/pay-now', [OrderController::class, 'payNow'])->name('payNow');
         Route::get('/details/{invoice_id}', [OrderController::class, 'details'])->name('details');
         Route::get('/success/{invoice_id}', [OrderController::class, 'success'])->name('success');
         Route::get('/tracking/{invoice_id}', [OrderController::class, 'tracking'])->name('tracking');

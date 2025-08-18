@@ -145,7 +145,7 @@ class OrderController extends Controller
         $billingData = collect($validated)->except('seller_id')->toArray();
         $billingData['user_id'] = $user->id;
 
-        $billingAddress = BillingAddress::find('id', $validated['billing_address_id']);
+        $billingAddress = BillingAddress::find($validated['billing_address_id']);
 
         $billingAddressArray = array(
             'customer_name' => $billingAddress->customer_name,
@@ -302,16 +302,39 @@ class OrderController extends Controller
         $customerEmail = $user->email;
         $customerPhone = $request->input('customer_phone', $user->phone) ?? '';
 
-        $payment = Payment::create([
-            'gateway'        => 'aamarpay',
-            'transaction_id' => $invoiceId,
-            'status'         => Payment::PENDING,
-            'amount'         => $amount,
-            'currency'       => 'BDT',
-            'customer_name'  => $billingInformation->customer_name ?? $customerName,
-            'customer_email' => $billingInformation->customer_email ?? $customerEmail,
-            'customer_phone' => $billingInformation->customer_phone ?? $customerPhone,
-        ]);
+        $payment = Payment::where('transaction_id', $invoiceId)
+            ->where('status', Payment::FAILED)
+            ->first();
+
+        if ($payment) {
+            $payment->update([
+                'gateway'        => 'aamarpay',
+                'status'         => Payment::PENDING,
+                'amount'         => $amount,
+                'currency'       => 'BDT',
+                'customer_name'  => $billingInformation->customer_name ?? $customerName,
+                'customer_email' => $billingInformation->customer_email ?? $customerEmail,
+                'customer_phone' => $billingInformation->customer_phone ?? $customerPhone,
+            ]);
+        } else {
+            $exists = Payment::where('transaction_id', $invoiceId)->exists();
+            if ($exists) {
+                throw new \Exception("Payment with this transaction ID already exists.");
+            }
+
+            $payment = Payment::create([
+                'gateway'        => 'aamarpay',
+                'transaction_id' => $invoiceId,
+                'status'         => Payment::PENDING,
+                'amount'         => $amount,
+                'currency'       => 'BDT',
+                'customer_name'  => $billingInformation->customer_name ?? $customerName,
+                'customer_email' => $billingInformation->customer_email ?? $customerEmail,
+                'customer_phone' => $billingInformation->customer_phone ?? $customerPhone,
+            ]);
+        }
+
+
 
         $aamarpay = (new AamarpayService);
 
@@ -340,8 +363,6 @@ class OrderController extends Controller
                     'return_url' => route('orders.index'),
                 ])),
             ]);
-
-            // dd($response);
 
             if (isset($response['payment_url'])) {
                 $paymentUrl = $response['payment_url'];
@@ -429,10 +450,19 @@ class OrderController extends Controller
         return response()->json($districts);
     }
 
-    public function payNow(Order $order)
+    public function payNow(Order $order, Request $request)
     {
-        //check pending amount
+        $billingAddress = BillingAddress::find($order->billing_address_id);
 
-        //initialize payment gateway
+        $paymentGateway = $this->initiatePaymentGateway(
+            $request,
+            $order->invoice_id,
+            $order->payable,
+            $billingAddress->id
+        );
+
+        $this->processAffiliateCommissions($order->items, auth()->user(), $order->id);
+
+        return redirect()->away($paymentGateway['payment_url']);
     }
 }
