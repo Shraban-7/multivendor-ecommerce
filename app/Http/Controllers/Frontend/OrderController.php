@@ -99,17 +99,17 @@ class OrderController extends Controller
             ], 404);
         }
 
-        $sub_total    = 0;
-        $discount     = 0;
-        $tax          = 0;
-        $orderItems   = [];
+        $sub_total = 0;
+        $discount = 0;
+        $tax = 0;
+        $orderItems = [];
         $shipping_fee = $seller->shipping_cost;
 
         foreach ($cart->cart_items as $cartItem) {
-            $product      = $cartItem->product;
-            $variant      = $cartItem->variant;
-            $unitPrice    = $cartItem->price;
-            $itemTotal    = $cartItem->quantity * $unitPrice;
+            $product = $cartItem->product;
+            $variant = $cartItem->variant;
+            $unitPrice = $cartItem->price;
+            $itemTotal = $cartItem->quantity * $unitPrice;
             $itemDiscount = $cartItem->quantity * ($cartItem->original_price - $cartItem->discounted_price);
             $tax += floatval($product->tax) * $cartItem->quantity;
             $sub_total += $itemTotal;
@@ -118,28 +118,25 @@ class OrderController extends Controller
             $grand_total = $sub_total + $discount;
 
             $orderItems[] = [
-                'product_id'         => $product->id,
+                'product_id' => $product->id,
                 'product_variant_id' => $cartItem->product_variant_id ?? null,
-                'buying_price'       => $variant ? $variant->buying_price : $product->buying_price,
-                'unit_price'         => $cartItem->price,
-                'quantity'           => $cartItem->quantity,
-                'discount'           => $itemDiscount,
-                'sub_total'          => $itemTotal,
+                'buying_price' => $variant ? $variant->buying_price : $product->buying_price,
+                'unit_price' => $cartItem->price,
+                'quantity' => $cartItem->quantity,
+                'discount' => $itemDiscount,
+                'sub_total' => $itemTotal,
             ];
         }
 
         if ($request->isMethod('GET')) {
-            $customer_addresses = BillingAddress::where('user_id', $user->id)->get();
-            $payment_gateways   = PaymentGateway::where('is_enabled', true)->get();
+            $payment_gateways = PaymentGateway::where('is_enabled', true)->get();
             $divisions = Division::get();
             $districts = District::get();
-
-
-            $billingAddresses = BillingAddress::where('user_id', Auth::id())
+            $billingAddresses = BillingAddress::where('user_id', $user->id)
                 ->latest()
                 ->get();
 
-            return view('frontend.pages.checkout', compact('user', 'customer_addresses', 'selectedSellerId', 'sub_total', 'discount', 'tax', 'shipping_fee', 'payment_gateways', 'grand_total', 'divisions', 'districts', 'billingAddresses'));
+            return view('frontend.pages.checkout', compact('user', 'selectedSellerId', 'sub_total', 'discount', 'tax', 'shipping_fee', 'payment_gateways', 'grand_total', 'divisions', 'districts', 'billingAddresses'));
         }
 
         $billingData = collect($validated)->except('seller_id')->toArray();
@@ -174,24 +171,24 @@ class OrderController extends Controller
         $invoiceId = Order::generateInvoiceID();
 
         $order = Order::create([
-            'user_id'           => $user->id,
-            'seller_id'         => $selectedSellerId,
+            'user_id' => $user->id,
+            'seller_id' => $selectedSellerId,
             'billing_address_id' => $billingAddress->id,
             'billing_information' => json_encode($billingAddressArray),
-            'invoice_id'        => $invoiceId,
-            'sub_total'         => $sub_total,
-            'total'             => $sub_total + $tax + $shipping_fee,
-            'discount'          => $discount,
-            'tax'               => $tax,
-            'shipping_fee'      => $shipping_fee,
-            'payable'           => $payableAmount,
-            'due'               => $sub_total + $shipping_fee + $tax,
-            'commission_type'   => $seller->commission_type,
+            'invoice_id' => $invoiceId,
+            'sub_total' => $sub_total,
+            'total'=> $sub_total + $tax + $shipping_fee,
+            'discount' => $discount,
+            'tax' => $tax,
+            'shipping_fee' => $shipping_fee,
+            'payable' => $payableAmount,
+            'due' => $sub_total + $shipping_fee + $tax,
+            'commission_type' => $seller->commission_type,
             'commission_amount' => $seller->commission_amount,
-            'seller_earnings'   => $sellerEarning,
-            'total_commission'  => $total_commission,
-            'status'            => OrderStatus::PENDING->value,
-            'delivery_status'   => OrderStatus::ORDER_PLACED->value,
+            'seller_earnings' => $sellerEarning,
+            'total_commission' => $total_commission,
+            'status' => OrderStatus::PENDING->value,
+            'delivery_status' => OrderStatus::ORDER_PLACED->value,
         ]);
 
         $order->items()->createMany($orderItems);
@@ -245,10 +242,10 @@ class OrderController extends Controller
         );
 
         return response()->json([
-            'status'      => true,
-            'message'     => $paymentGateway['message'],
+            'status' => true,
+            'message' => $paymentGateway['message'],
             'payment_url' => $paymentGateway['payment_url'],
-            'order'       => $order,
+            'order' => $order,
         ]);
     }
 
@@ -296,7 +293,7 @@ class OrderController extends Controller
     private function initiatePaymentGateway(Request $request, $invoiceId, $amount, $billingAddressId)
     {
 
-        $user          = Auth::user();
+        $user = Auth::user();
         $billingInformation = BillingAddress::find($billingAddressId);
         $customerName  = $billingInformation->customer_name;
         $customerEmail = $user->email;
@@ -332,22 +329,22 @@ class OrderController extends Controller
 
         try {
             $response = $aamarpay->initiate([
-                'tran_id'      => $invoiceId,
-                'success_url'  => route('payment.success'),
-                'fail_url'     => route('payment.cancel'),
-                'cancel_url'   => route('payment.cancel'),
-                'amount'       => $amount,
-                'desc'         => 'Test Payment',
-                'cus_name'     => $customerName,
-                'cus_email'    => $customerEmail,
-                'cus_add1'     => '',
-                'cus_add2'     => '',
-                'cus_city'     => '',
-                'cus_state'    => '',
+                'tran_id' => $invoiceId,
+                'success_url' => route('payment.success'),
+                'fail_url' => route('payment.cancel'),
+                'cancel_url' => route('payment.cancel'),
+                'amount' => $amount,
+                'desc' => 'Test Payment',
+                'cus_name' => $customerName,
+                'cus_email' => $customerEmail,
+                'cus_add1' => '',
+                'cus_add2' => '',
+                'cus_city' => '',
+                'cus_state' => '',
                 'cus_postcode' => '',
-                'cus_country'  => 'Bangladesh',
-                'cus_phone'    => $customerPhone,
-                'opt_a'        => base64_encode(json_encode([
+                'cus_country' => 'Bangladesh',
+                'cus_phone' => $customerPhone,
+                'opt_a' => base64_encode(json_encode([
                     'user_id'    => $user->id,
                     'return_url' => route('orders.index'),
                 ])),
@@ -355,17 +352,15 @@ class OrderController extends Controller
 
             if (isset($response['payment_url'])) {
                 $paymentUrl = $response['payment_url'];
-
             } else {
                 $message = 'Payment URL not received.';
             }
-
         } catch (\Exception $e) {
             $message = $e->getMessage();
         }
 
         return [
-            'message'     => $message,
+            'message' => $message,
             'payment_url' => $paymentUrl,
         ];
     }
@@ -391,11 +386,11 @@ class OrderController extends Controller
         }
 
         $request->validate([
-            'rating'      => 'required|integer|min:1|max:5',
+            'rating' => 'required|integer|min:1|max:5',
             'order_item_id' => 'required|exists:order_items,id',
             'description' => 'required|string',
-            'images'      => 'nullable|array',
-            'images.*'    => 'mimes:jpeg,png,jpg,gif,pdf,doc,docx,zip|max:4000',
+            'images' => 'nullable|array',
+            'images.*' => 'mimes:jpeg,png,jpg,gif,pdf,doc,docx,zip|max:4000',
         ]);
 
         $orderItem = OrderItem::find($request->order_item_id);
@@ -407,11 +402,11 @@ class OrderController extends Controller
         }
 
         $review = Review::create([
-            'product_id'  => $orderItem->product_id,
-            'order_id'    => $orderItem->order_id,
+            'product_id' => $orderItem->product_id,
+            'order_id' => $orderItem->order_id,
             'order_item_id' => $orderItem->id,
-            'user_id'     => $user->id,
-            'rating'      => $request->rating,
+            'user_id' => $user->id,
+            'rating' => $request->rating,
             'description' => $request->description,
         ]);
 
@@ -419,7 +414,7 @@ class OrderController extends Controller
             foreach ($request->file('images') as $file) {
                 ReviewImage::create([
                     'review_id' => $review->id,
-                    'image'     => upload_file($file, 'images/reviews'),
+                    'image' => upload_file($file, 'images/reviews'),
                 ]);
             }
         }
