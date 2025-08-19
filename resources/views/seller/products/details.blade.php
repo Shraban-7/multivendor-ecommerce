@@ -639,8 +639,8 @@
                                                 <div class="col-md-6 mb-3">
                                                     <label class="form-label fw-bold">{{ $option->name }}</label>
                                                     <select name="option_values[{{ $option->id }}][]"
-                                                        class="form-select multiple-select-clear-field"
-                                                        data-placeholder="Choose options" multiple>
+                                                        class="form-select"
+                                                        data-placeholder="Choose options" >
                                                         @foreach ($option->options as $item)
                                                             <option value="{{ $item->id }}">
                                                                 {{ $item->value }}
