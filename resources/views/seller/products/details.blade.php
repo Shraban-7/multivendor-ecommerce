@@ -615,22 +615,22 @@
                                         <label class="form-label">Discount Type</label>
                                         <select name="discount_type" class="form-select w-100" id="" required>
                                             <option value="" selected disabled>--Choose--</option>
-                                            <option value="{{ \App\Enums\DiscountType::FLAT->value }}">
+                                            <option value="{{ \App\Enums\DiscountType::FLAT->value }}" {{ $product->discount_type == \App\Enums\DiscountType::FLAT->value ? 'selected' : '' }}>
                                                 {{ ucfirst(\App\Enums\DiscountType::FLAT->label()) }}
                                             </option>
-                                            <option value="{{ \App\Enums\DiscountType::PERCENTAGE->value }}">
+                                            <option value="{{ \App\Enums\DiscountType::PERCENTAGE->value }}" {{ $product->discount_type == \App\Enums\DiscountType::PERCENTAGE->value ? 'selected' : '' }}>
                                                 {{ ucfirst(\App\Enums\DiscountType::PERCENTAGE->label()) }}
                                             </option>
                                         </select>
                                     </div>
                                     <div class="mb-3 col-md-6">
                                         <label class="form-label">Discount Value</label>
-                                        <input name="discount_value" type="number" value="" class="form-control"
+                                        <input name="discount_value" type="number" value="{{ $product->discount_value }}" class="form-control"
                                             required>
                                     </div>
                                     <div class="mb-3 col-md-12">
                                         <label class="form-label">Low Stock Quantity</label>
-                                        <input name="low_stock_quantity" type="number" value="" class="form-control">
+                                        <input name="low_stock_quantity" type="number" value="{{ $product->low_stock_quantity }}" class="form-control">
                                     </div>
                                     <div>
                                         <label class="form-label">Options</label>
