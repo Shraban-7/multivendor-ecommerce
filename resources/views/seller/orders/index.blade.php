@@ -44,6 +44,10 @@
                                 class="btn btn-light border btn-sm me-1">
                                 <i data-feather="download" class="icon-xs"></i> Invoice
                             </a>
+                            <a href="{{ route('receipt', $order->invoice_id) }}" title="Details" target="__blank"
+                                class="btn btn-light border btn-sm me-1">
+                                <i data-feather="download" class="icon-xs"></i> Receipt
+                            </a>
                         </td>
                     </tr>
                 @endforeach

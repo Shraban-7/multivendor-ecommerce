@@ -14,4 +14,14 @@ class InvoiceController extends Controller
 
         return view('invoice', compact('order'));
     }
+
+    public function receipt($invoice_id)
+    {
+        $order = Order::where('invoice_id', $invoice_id)->first();
+        $seller_id = seller()->id;
+        if ($seller_id == $order->seller_id) {
+            return view('seller.orders.receipt', compact('order'));
+        }
+        return redirect()->back();
+    }
 }

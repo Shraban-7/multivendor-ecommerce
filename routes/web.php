@@ -15,6 +15,7 @@ Route::get('/test', function () {
 Route::get('/states/{country_id}', [LocationController::class, 'getStatesByCountry'])->name('getStatesByCountry');
 
 Route::get('/invoice/{invoice_id}', [InvoiceController::class, 'invoice'])->name('invoice');
+Route::get('/receipt/{invoice_id}', [InvoiceController::class, 'receipt'])->name('receipt');
 
 Route::get('/product', function () {
     return view('product-variant');
