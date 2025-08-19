@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\OrderStatus;
+use App\Enums\PaymentType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,6 +16,7 @@ class Order extends Model
 
     protected $casts = [
         'status' => OrderStatus::class,
+        'payment_type' => PaymentType::class,
         'created_at' => 'datetime',
         'billing_information' => 'json'
     ];

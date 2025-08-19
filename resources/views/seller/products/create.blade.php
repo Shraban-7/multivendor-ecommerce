@@ -118,21 +118,18 @@
                         <label class="form-label">Low Stock Quantity</label>
                         <input name="low_stock_quantity" type="number" value="" class="form-control">
                     </div>
+
                     <div class="mb-3 col-md-3">
                         <label class="form-label">Payment Type</label>
-                        <select name="payment_type" class="form-select w-100" id="">
-                            <option value="" selected disabled>--Choose--</option>
-                            <option value="{{ \App\Enums\PaymentType::FULL_PAYMENT->value }}">
-                                {{ ucfirst(\App\Enums\PaymentType::FULL_PAYMENT->title()) }}
+                        <select name="payment_type" class="form-select w-100">
+                            @foreach (App\Enums\PaymentType::cases() as $paymentType)
+                            <option value="{{ $paymentType->value }}">
+                                {{ $paymentType->title() }}
                             </option>
-                            <option value="{{ \App\Enums\PaymentType::COD_ONLY->value }}">
-                                {{ ucfirst(\App\Enums\PaymentType::COD_ONLY->title()) }}
-                            </option>
-                            <option value="{{ \App\Enums\PaymentType::COD_WITH_DELIVERY_CHARGE->value }}">
-                                {{ ucfirst(\App\Enums\PaymentType::COD_WITH_DELIVERY_CHARGE->title()) }}
-                            </option>
+                            @endforeach
                         </select>
                     </div>
+
                     <div class="mb-3">
                         <div class="row g-3">
                             <div class="col-12 col-sm-6 col-md-4 col-lg-3">

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\PaymentType;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,6 +15,7 @@ class Product extends Model
 
     protected $casts = [
         'lightdeal_expired_at' => 'datetime',
+        'payment_type' => PaymentType::class,
     ];
 
     public function scopeLightDeal($query)
