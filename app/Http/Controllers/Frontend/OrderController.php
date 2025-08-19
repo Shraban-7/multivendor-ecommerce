@@ -17,6 +17,7 @@ use App\Models\ReviewImage;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Enums\CommissionType;
+use App\Enums\PaymentType;
 use App\Models\BillingAddress;
 use App\Models\PaymentGateway;
 use App\Models\ProductVariant;
@@ -101,9 +102,11 @@ class OrderController extends Controller
 
         $sub_total = 0;
         $discount = 0;
-        $tax = 0;
+        $vat_amount = 0;
         $orderItems = [];
         $shipping_fee = $seller->shipping_cost;
+
+        $payment_type = PaymentType::COD_ONLY->value; 
 
         foreach ($cart->cart_items as $cartItem) {
             $product = $cartItem->product;
@@ -111,11 +114,16 @@ class OrderController extends Controller
             $unitPrice = $cartItem->price;
             $itemTotal = $cartItem->quantity * $unitPrice;
             $itemDiscount = $cartItem->quantity * ($cartItem->original_price - $cartItem->discounted_price);
-            $tax += floatval($product->tax) * $cartItem->quantity;
+            $vat_amount += floatval(($product->vat_percent*$unitPrice)/100) * $cartItem->quantity;
             $sub_total += $itemTotal;
             $discount += $itemDiscount;
-
             $grand_total = $sub_total + $discount;
+
+            if($product->payment_type->value == PaymentType::FULL_PAYMENT->value) {
+                $payment_type = PaymentType::FULL_PAYMENT->value;
+            } elseif($product->payment_type->value == PaymentType::COD_WITH_DELIVERY_CHARGE->value) {
+                $payment_type = PaymentType::COD_WITH_DELIVERY_CHARGE->value; 
+            }
 
             $orderItems[] = [
                 'product_id' => $product->id,
@@ -125,6 +133,8 @@ class OrderController extends Controller
                 'quantity' => $cartItem->quantity,
                 'discount' => $itemDiscount,
                 'sub_total' => $itemTotal,
+                'vat_percent' => $product->vat_percent,
+                'vat_amount' => floatval(($product->vat_percent*$unitPrice)/100) * $cartItem->quantity,
             ];
         }
 
@@ -136,7 +146,7 @@ class OrderController extends Controller
                 ->latest()
                 ->get();
 
-            return view('frontend.pages.checkout', compact('user', 'selectedSellerId', 'sub_total', 'discount', 'tax', 'shipping_fee', 'payment_gateways', 'grand_total', 'divisions', 'districts', 'billingAddresses'));
+            return view('frontend.pages.checkout', compact('user', 'selectedSellerId', 'sub_total', 'discount', 'vat_amount', 'shipping_fee', 'payment_gateways', 'grand_total', 'divisions', 'districts', 'billingAddresses'));
         }
 
         $billingData = collect($validated)->except('seller_id')->toArray();
@@ -159,13 +169,13 @@ class OrderController extends Controller
 
         if ($seller->commission_amount != null && $seller->commission_type != null) {
             if ($seller->commission_type === CommissionType::PERCENTAGE->value) {
-                $total_commission = ($sub_total + $tax + $shipping_fee) * ($seller->commission_amount / 100);
+                $total_commission = ($sub_total + $vat_amount + $shipping_fee) * ($seller->commission_amount / 100);
             } else if ($seller->commission_type === CommissionType::FLAT->value) {
                 $total_commission = $seller->commission_amount;
             }
         }
 
-        $payableAmount = $sub_total + $shipping_fee + $tax;
+        $payableAmount = $sub_total + $shipping_fee + $vat_amount;
 
         $sellerEarning = $payableAmount - $total_commission;
         $invoiceId = Order::generateInvoiceID();
@@ -177,18 +187,19 @@ class OrderController extends Controller
             'billing_information' => json_encode($billingAddressArray),
             'invoice_id' => $invoiceId,
             'sub_total' => $sub_total,
-            'total'=> $sub_total + $tax + $shipping_fee,
+            'total'=> $sub_total + $vat_amount + $shipping_fee,
             'discount' => $discount,
-            'tax' => $tax,
+            'vat_amount' => $vat_amount,
             'shipping_fee' => $shipping_fee,
             'payable' => $payableAmount,
-            'due' => $sub_total + $shipping_fee + $tax,
+            'due' => $payableAmount,
             'commission_type' => $seller->commission_type,
             'commission_amount' => $seller->commission_amount,
             'seller_earnings' => $sellerEarning,
             'total_commission' => $total_commission,
             'status' => OrderStatus::PENDING->value,
             'delivery_status' => OrderStatus::ORDER_PLACED->value,
+            'payment_type' => $payment_type,
         ]);
 
         $order->items()->createMany($orderItems);
@@ -221,7 +232,18 @@ class OrderController extends Controller
             'total_sold' => $sellerOrderCount,
         ]);
 
-        $paymentGateway = $this->initiatePaymentGateway($request, $invoiceId, $payableAmount, $billingAddress->id);
+        if($payment_type == PaymentType::COD_WITH_DELIVERY_CHARGE->value) {
+            $payableAmount = $shipping_fee;
+        } 
+
+        if($payment_type == PaymentType::COD_ONLY->value) {
+            $paymentGateway = [
+                'message' => 'Order placed successfully',
+                'payment_url' => route('orders.index'),
+            ];
+        } else {   
+            $paymentGateway = $this->initiatePaymentGateway($request, $invoiceId, $payableAmount, $billingAddress->id);
+        }
 
         $this->processAffiliateCommissions($order->items, auth()->user(), $order->id);
 

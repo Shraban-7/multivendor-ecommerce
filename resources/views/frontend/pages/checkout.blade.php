@@ -200,7 +200,7 @@
                                 </p>
                                 <p class="flex justify-between">
                                     <span class="text-theme-dark">TAX:</span>
-                                    <span id="itemDiscount" class="font-bold text-jet-gray">+{{ money($tax) }}</span>
+                                    <span id="itemDiscount" class="font-bold text-jet-gray">+{{ money($vat_amount) }}</span>
                                 </p>
                                 <p class="flex justify-between">
                                     <span class="text-theme-dark">Shipping Fee:</span>
@@ -213,7 +213,7 @@
                                 class="flex justify-between pt-3 mt-6 font-medium border-t-2 border-dashed total border-jet-gray/50">
                                 <span>Estimated Total</span>
                                 <span id="estimatedTotal"
-                                    class="text-xl">{{ money($sub_total + $tax + $shipping_fee) }}</span>
+                                    class="text-xl">{{ money($sub_total + $vat_amount + $shipping_fee) }}</span>
                             </div>
                         </div>
 

@@ -12,7 +12,7 @@ class CartItem extends Model
     protected $guarded = ['id'];
 
     protected $casts = [
-        'quantity' => 'integer'
+        'quantity' => 'integer',
     ];
 
     public function product()
