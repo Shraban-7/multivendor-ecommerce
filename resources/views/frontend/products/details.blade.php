@@ -329,7 +329,7 @@ $settings = settings();
                 <div class="mt-5">
                     <h2>Description:</h2>
                     <p class="mt-2">
-                        {{ $product['description'] }}
+                        {!! $product['description'] !!}
                     </p>
                 </div>
             </div>
