@@ -15,11 +15,15 @@ return new class extends Migration
         Schema::table('products', function (Blueprint $table) {
             $table->decimal('vat_percent', 5, 2)->default(0);
             $table->tinyInteger('payment_type')->default(PaymentType::FULL_PAYMENT->value);
+
+            $table->dropColumn('tax');
         });
 
         Schema::table('orders', function (Blueprint $table) {
             $table->tinyInteger('payment_type')->default(PaymentType::FULL_PAYMENT->value);
             $table->decimal('vat_amount', 10, 2)->default(0);
+
+            $table->dropColumn('tax');
         });
 
         Schema::table('order_items', function (Blueprint $table) {
