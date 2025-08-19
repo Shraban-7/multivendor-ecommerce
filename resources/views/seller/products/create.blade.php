@@ -76,8 +76,8 @@
                         <input name="selling_price" type="number" value="" class="form-control" required>
                     </div>
                     <div class="mb-3 col-md-3">
-                        <label class="form-label">Tax</label>
-                        <input name="tax" type="number" value="" class="form-control" required>
+                        <label class="form-label">VAT (%)</label>
+                        <input name="vat_percent" type="number" value="" class="form-control" required>
                     </div>
                     <div class="mb-3 col-md-3">
                         <label class="form-label">Discount Type</label>
@@ -117,6 +117,21 @@
                     <div class="mb-3 col-md-3">
                         <label class="form-label">Low Stock Quantity</label>
                         <input name="low_stock_quantity" type="number" value="" class="form-control">
+                    </div>
+                    <div class="mb-3 col-md-3">
+                        <label class="form-label">Payment Type</label>
+                        <select name="payment_type" class="form-select w-100" id="">
+                            <option value="" selected disabled>--Choose--</option>
+                            <option value="{{ \App\Enums\PaymentType::FULL_PAYMENT->value }}">
+                                {{ ucfirst(\App\Enums\PaymentType::FULL_PAYMENT->title()) }}
+                            </option>
+                            <option value="{{ \App\Enums\PaymentType::COD_ONLY->value }}">
+                                {{ ucfirst(\App\Enums\PaymentType::COD_ONLY->title()) }}
+                            </option>
+                            <option value="{{ \App\Enums\PaymentType::COD_WITH_DELIVERY_CHARGE->value }}">
+                                {{ ucfirst(\App\Enums\PaymentType::COD_WITH_DELIVERY_CHARGE->title()) }}
+                            </option>
+                        </select>
                     </div>
                     <div class="mb-3">
                         <div class="row g-3">

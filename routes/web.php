@@ -21,6 +21,7 @@ Route::get('/product', function () {
     return view('product-variant');
 });
 
+
 Route::prefix('payment')->as('payment.')->group(function () {
     Route::get('/pay', [PaymentController::class, 'pay'])->name('pay');
     Route::middleware('aamarpay')->group(function () {
