@@ -152,21 +152,21 @@
                             <label class="form-label">Payment Type</label>
                             <select name="payment_type" class="form-select w-100" id="">
                                 <option value="" disabled
-                                    {{ old('payment_type', $model->payment_type ?? '') == '' ? 'selected' : '' }}>
+                                    {{ old('payment_type', $product->payment_type ?? '') == '' ? 'selected' : '' }}>
                                     --Choose--</option>
 
                                 <option value="{{ \App\Enums\PaymentType::FULL_PAYMENT->value }}"
-                                    {{ old('payment_type', $model->payment_type ?? '') == \App\Enums\PaymentType::FULL_PAYMENT->value ? 'selected' : '' }}>
+                                    {{ old('payment_type', $product->payment_type ?? '') == \App\Enums\PaymentType::FULL_PAYMENT->value ? 'selected' : '' }}>
                                     {{ ucfirst(\App\Enums\PaymentType::FULL_PAYMENT->title()) }}
                                 </option>
 
                                 <option value="{{ \App\Enums\PaymentType::COD_ONLY->value }}"
-                                    {{ old('payment_type', $model->payment_type ?? '') == \App\Enums\PaymentType::COD_ONLY->value ? 'selected' : '' }}>
+                                    {{ old('payment_type', $prduct->payment_type ?? '') == \App\Enums\PaymentType::COD_ONLY->value ? 'selected' : '' }}>
                                     {{ ucfirst(\App\Enums\PaymentType::COD_ONLY->title()) }}
                                 </option>
 
                                 <option value="{{ \App\Enums\PaymentType::COD_WITH_DELIVERY_CHARGE->value }}"
-                                    {{ old('payment_type', $model->payment_type ?? '') == \App\Enums\PaymentType::COD_WITH_DELIVERY_CHARGE->value ? 'selected' : '' }}>
+                                    {{ old('payment_type', $prduct->payment_type ?? '') == \App\Enums\PaymentType::COD_WITH_DELIVERY_CHARGE->value ? 'selected' : '' }}>
                                     {{ ucfirst(\App\Enums\PaymentType::COD_WITH_DELIVERY_CHARGE->title()) }}
                                 </option>
                             </select>
