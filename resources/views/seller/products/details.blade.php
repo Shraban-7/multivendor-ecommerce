@@ -599,16 +599,16 @@
                                         <label class="form-label">Buying Price</label>
                                         <div class="input-group">
                                             <span class="input-group-text">{{ currency() }}</span>
-                                            <input type="number" class="form-control" name="buying_price" step="0.01"
-                                                placeholder="Enter Price" required>
+                                            <input type="number" class="form-control" name="buying_price"
+                                                placeholder="Enter Price" value="{{ $product->buying_price }}" required>
                                         </div>
                                     </div>
                                     <div class="mb-3 col-6">
                                         <label class="form-label">Selling Price</label>
                                         <div class="input-group">
                                             <span class="input-group-text">{{ currency() }}</span>
-                                            <input type="number" class="form-control" name="selling_price" step="0.01"
-                                                placeholder="Enter Price" required>
+                                            <input type="number" class="form-control" name="selling_price"
+                                                value="{{ $product->selling_price }}" placeholder="Enter Price" required>
                                         </div>
                                     </div>
                                     <div class="mb-3 col-md-6">
@@ -634,18 +634,26 @@
                                     </div>
                                     <div>
                                         <label class="form-label">Options</label>
-                                        @foreach ($product_options as $option)
-                                            <div class="input-group mb-3 col-6">
-                                                <label class="input-group-text">{{ $option->name }}</label>
-                                                <select name="option_values[]" class="form-select">
-                                                    <option value="">Choose...</option>
-                                                    @foreach ($option->options as $item)
-                                                        <option value="{{ $item->id }}">{{ $item->value }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        @endforeach
+                                        <div class="row">
+                                            @foreach ($product_options as $option)
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label fw-bold">{{ $option->name }}</label>
+                                                    <select name="option_values[{{ $option->id }}][]"
+                                                        class="form-select multiple-select-clear-field"
+                                                        data-placeholder="Choose options" multiple>
+                                                        @foreach ($option->options as $item)
+                                                            <option value="{{ $item->id }}">
+                                                                {{ $item->value }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+
+                                                </div>
+                                            @endforeach
+                                        </div>
                                     </div>
+
+
 
                                     <div class="mb-3 col-12">
                                         <label class="form-label">Image</label>
@@ -721,6 +729,15 @@
 
             @push('scripts')
                 <script>
+                    $(".multiple-select-clear-field").select2({
+                        theme: "bootstrap-5",
+                        placeholder: "Choose options",
+                        allowClear: true,
+                        selectionCssClass: "select2",
+                        dropdownCssClass: "select2"
+                    });
+
+
                     $('#generateSkuBtn').on('click', function() {
                         let skuParts = [];
 

@@ -21,9 +21,8 @@ use Intervention\Image\Laravel\Facades\Image;
 
 
 if (!defined('CURRENCY_SYMBOL')) {
-    define('CURRENCY_SYMBOL', html_entity_decode('&#2547;', ENT_NOQUOTES, 'UTF-8'));
+    define('CURRENCY_SYMBOL', "\u{09F3}"); // ৳
 }
-
 
 
 if (! function_exists('redirect_intended')) {
