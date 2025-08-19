@@ -161,12 +161,12 @@
                                 </option>
 
                                 <option value="{{ \App\Enums\PaymentType::COD_ONLY->value }}"
-                                    {{ old('payment_type', $prduct->payment_type ?? '') == \App\Enums\PaymentType::COD_ONLY->value ? 'selected' : '' }}>
+                                    {{ old('payment_type', $product->payment_type ?? '') == \App\Enums\PaymentType::COD_ONLY->value ? 'selected' : '' }}>
                                     {{ ucfirst(\App\Enums\PaymentType::COD_ONLY->title()) }}
                                 </option>
 
                                 <option value="{{ \App\Enums\PaymentType::COD_WITH_DELIVERY_CHARGE->value }}"
-                                    {{ old('payment_type', $prduct->payment_type ?? '') == \App\Enums\PaymentType::COD_WITH_DELIVERY_CHARGE->value ? 'selected' : '' }}>
+                                    {{ old('payment_type', $product->payment_type ?? '') == \App\Enums\PaymentType::COD_WITH_DELIVERY_CHARGE->value ? 'selected' : '' }}>
                                     {{ ucfirst(\App\Enums\PaymentType::COD_WITH_DELIVERY_CHARGE->title()) }}
                                 </option>
                             </select>
