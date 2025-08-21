@@ -32,12 +32,7 @@
                         <div class="bg-white card-header d-flex justify-content-between">
                             <h5 class="mb-0 card-title">Product Overview</h5>
                             <div class="d-flex flex-column flex-sm-row justify-content-sm-end gap-2">
-                                <button type="button" class="btn btn-outline-success btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#addOptionModal">
-                                    <i data-feather="plus" class="icon-xs"></i> Add Option
-                                </button>
-
-                                <button class="btn btn-outline-danger btn-sm" title="Delete" data-bs-toggle="modal"
+                                <button class="btn btn-danger btn-sm" title="Delete" data-bs-toggle="modal"
                                     data-bs-target="#deleteModal-{{ $product->id }}">
                                     <i data-feather="trash-2" class="icon-xs"></i> Delete Product
                                 </button>
@@ -83,19 +78,22 @@
                                                     <td class="fw-bold pe-3">Selling Price</td>
                                                     <td>{{ money($product->selling_price) }}</td>
                                                 </tr>
-                                                <tr>
-                                                    <td class="fw-bold pe-3">Profit Margin</td>
-                                                    <td>
-                                                        <small class="text-muted">
-                                                            {{ money($product->profit_amount) }}
-                                                        </small>
-                                                        <span
-                                                            class="badge
-                                                                {{ $product->profit_percent >= 30 ? 'bg-success' : ($product->profit_percent >= 15 ? 'bg-warning' : 'bg-danger') }}">
-                                                            {{ number_format($product->profit_percent, 1) }}%
-                                                        </span>
-                                                    </td>
-                                                </tr>
+
+                                                @if ($product->profit_amount>0)
+                                                    <tr>
+                                                        <td class="fw-bold pe-3">Profit Margin</td>
+                                                        <td>
+                                                            <small class="text-muted">
+                                                                {{ money($product->profit_amount) }}
+                                                            </small>
+                                                            <span
+                                                                class="
+                                                                {{ $product->profit_percent >= 30 ? 'text-success' : ($product->profit_percent >= 15 ? 'text-warning' : 'text-danger') }}">
+                                                                {{ number_format($product->profit_percent, 1) }}%
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                @endif
                                                 <tr>
                                                     <td class="fw-bold pe-3">Created On</td>
                                                     <td>{{ $product['created_at']->format('M d, Y h:i A') }}</td>
@@ -118,10 +116,16 @@
                     <div class="mb-4 shadow-sm card">
                         <div class="bg-white card-header d-flex justify-content-between align-items-center">
                             <h5 class="mb-0 card-title">Product Variants ({{ $product->variants->count() }})</h5>
-                            <button type="button" class="btn btn-sm btn-outline-success" data-bs-toggle="modal"
-                                data-bs-target="#addVariantModal">
-                                <i data-feather="plus"></i> Add Variant
-                            </button>
+                            <div>
+                                <button type="button" class="btn btn-outline-success btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#addOptionModal">
+                                    <i data-feather="plus" class="icon-xs"></i> Add Option
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-success btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#addVariantModal">
+                                    <i data-feather="plus" class="icon-xs"></i> Add Variant
+                                </button>
+                            </div>
                         </div>
 
                         <div class="card-body">
