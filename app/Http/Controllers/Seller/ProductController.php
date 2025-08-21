@@ -40,31 +40,31 @@ class ProductController extends Controller
         $seller = seller();
 
         $validated = $request->validate([
-            'category_id'        => 'required|integer|exists:categories,id',
-            'subcategory_id'     => 'nullable',
-            'brand_id'           => 'nullable',
-            'name'               => 'required|string|max:255',
-            'short_description'  => 'nullable|string',
-            'description'        => 'nullable|string',
-            'sku'                => 'nullable|string|max:255',
-            'buying_price'       => 'required|numeric',
-            'selling_price'      => 'required|numeric',
-            'vat_percent'        => 'required|numeric',
-            'discount_type'      => 'nullable|string',
-            'discount_value'     => 'nullable|numeric',
-            'payment_type'       => 'required|numeric',
-            'unit_id'            => 'required|numeric',
-            'unit_value'         => 'required|string',
-            'is_trending'        => 'nullable|boolean',
-            'best_selling'       => 'nullable|boolean',
-            'is_featured'        => 'nullable|boolean',
+            'category_id' => 'required|integer|exists:categories,id',
+            'subcategory_id' => 'nullable',
+            'brand_id' => 'nullable',
+            'name' => 'required|string|max:255',
+            'short_description' => 'nullable|string',
+            'description' => 'nullable|string',
+            'sku' => 'nullable|string|max:255',
+            'buying_price' => 'required|numeric',
+            'selling_price' => 'required|numeric',
+            'vat_percent' => 'required|numeric',
+            'discount_type' => 'nullable|string',
+            'discount_value' => 'nullable|numeric',
+            'payment_type' => 'required|numeric',
+            'unit_id' => 'required|numeric',
+            'unit_value' => 'required|string',
+            'is_trending' => 'nullable|boolean',
+            'best_selling' => 'nullable|boolean',
+            'is_featured' => 'nullable|boolean',
             'low_stock_quantity' => 'required|numeric',
-            'stock_in'           => 'nullable|numeric',
-            'thumbnail'          => 'required|image|max:4096',
-            'video'              => 'nullable|file',
-            'files'              => 'nullable|array',
-            'files.*'            => 'file|max:4096|mimetypes:image/*',
-            'meta_title'         => 'nullable|string',
+            'stock_in' => 'nullable|numeric',
+            'thumbnail' => 'required|image|max:4096',
+            'video' => 'nullable|file',
+            'files' => 'nullable|array',
+            'files.*' => 'file|max:4096|mimetypes:image/*',
+            'meta_title' => 'nullable|string',
         ]);
 
         $imageFolder = "images/{$seller->username}/products";
@@ -76,8 +76,8 @@ class ProductController extends Controller
         }
 
         $validated['seller_id'] = $seller->id;
-        $validated['slug']      = str_slug('products', 'slug', $validated['name']);
-        $validated['sku']       = $validated['sku'] ?? strtoupper(uniqid());
+        $validated['slug'] = str_slug('products', 'slug', $validated['name']);
+        $validated['sku'] = $validated['sku'] ?? strtoupper(uniqid());
         if (isset($validated['discount_type'], $validated['discount_value'])) {
             $validated['discount_amount']  = calculate_discount_amount($validated['selling_price'], $validated['discount_type'], $validated['discount_value']);
             $validated['discounted_price'] = calculate_discounted_price($validated['selling_price'], $validated['discount_type'], $validated['discount_value']);
@@ -87,15 +87,15 @@ class ProductController extends Controller
 
         StockHistory::create([
             'product_id' => $product->id,
-            'quantity'   => $validated['stock_in'],
-            'type'       => StockType::ADD_STOCK->value,
+            'quantity' => $validated['stock_in'],
+            'type' => StockType::ADD_STOCK->value,
         ]);
 
         if ($request->hasFile('files')) {
             foreach ($request->file('files') as $file) {
                 ProductImage::create([
                     'product_id' => $product->id,
-                    'image'      => upload_file($file, $imageFolder),
+                    'image' => upload_file($file, $imageFolder),
                 ]);
             }
         }
@@ -113,7 +113,7 @@ class ProductController extends Controller
 
         $product->load('variants.option_values', 'stock_history');
 
-        $costPrice    = $product->buying_price ?? 0;
+        $costPrice = $product->buying_price ?? 0;
         $sellingPrice = $product->selling_price ?? 0;
 
         $profitAmount  = $sellingPrice - $costPrice;
@@ -138,8 +138,8 @@ class ProductController extends Controller
         $product = Product::where('slug', $slug)->first();
 
         $categories = Category::category()->with('subcategories')->get();
-        $brands     = Brand::all();
-        $units      = ProductUnit::all();
+        $brands = Brand::all();
+        $units = ProductUnit::all();
 
         return view('seller.products.edit', compact('product', 'categories', 'brands', 'units'));
     }
@@ -151,29 +151,29 @@ class ProductController extends Controller
         $product = Product::where('slug', $slug)->first();
 
         $validated = $request->validate([
-            'category_id'        => 'required|integer|exists:categories,id',
-            'subcategory_id'     => 'nullable',
-            'brand_id'           => 'nullable',
-            'name'               => 'required|string|max:255',
+            'category_id' => 'required|integer|exists:categories,id',
+            'subcategory_id' => 'nullable',
+            'brand_id' => 'nullable',
+            'name' => 'required|string|max:255',
             'short_description'  => 'nullable|string',
-            'description'        => 'nullable|string',
-            'sku'                => 'nullable|string|max:255',
-            'vat_percent'        => 'required|numeric',
-            'buying_price'       => 'required|numeric',
-            'selling_price'      => 'required|numeric',
-            'discount_type'      => 'nullable|string',
-            'discount_value'     => 'nullable|numeric',
-            'payment_type'       => 'required|numeric',
-            'unit_id'            => 'required|numeric',
-            'unit_value'         => 'required|string',
-            'is_trending'        => 'nullable|boolean',
-            'best_selling'       => 'nullable|boolean',
-            'is_featured'        => 'nullable|boolean',
+            'description' => 'nullable|string',
+            'sku' => 'nullable|string|max:255',
+            'vat_percent' => 'required|numeric',
+            'buying_price' => 'required|numeric',
+            'selling_price' => 'required|numeric',
+            'discount_type' => 'nullable|string',
+            'discount_value' => 'nullable|numeric',
+            'payment_type' => 'required|numeric',
+            'unit_id' => 'required|numeric',
+            'unit_value' => 'required|string',
+            'is_trending' => 'nullable|boolean',
+            'best_selling' => 'nullable|boolean',
+            'is_featured' => 'nullable|boolean',
             'low_stock_quantity' => 'required|numeric',
-            'thumbnail'          => 'nullable|image|max:4096',
-            'video'              => 'nullable|file',
-            'files'              => 'nullable|array',
-            'files.*'            => 'mimetypes:image/*',
+            'thumbnail' => 'nullable|image|max:4096',
+            'video' => 'nullable|file',
+            'files' => 'nullable|array',
+            'files.*' => 'mimetypes:image/*',
         ]);
 
         $imageFolder = "images/{$seller->username}/products";
@@ -225,8 +225,8 @@ class ProductController extends Controller
         }
 
         return response()->json([
-            'success'  => true,
-            'message'  => 'Product Updated Successfully',
+            'success' => true,
+            'message' => 'Product Updated Successfully',
             'redirect' => route('seller.products.edit', $product->slug),
         ]);
     }
@@ -260,9 +260,9 @@ class ProductController extends Controller
     public function stockUpdate(Request $request, Product $product)
     {
         $request->validate([
-            'stock_quantity'     => 'required|numeric|min:0',
-            'stock_action'       => 'required|numeric',
-            'stock_note'         => 'nullable|string',
+            'stock_quantity' => 'required|numeric|min:0',
+            'stock_action' => 'required|numeric',
+            'stock_note' => 'nullable|string',
             'product_variant_id' => 'nullable|numeric',
         ]);
 
@@ -286,15 +286,15 @@ class ProductController extends Controller
             }
 
             $log = StockHistory::create([
-                'product_id'         => $product->id,
+                'product_id' => $product->id,
                 'product_variant_id' => $variant->id,
-                'quantity'           => $stockQuantity,
-                'type'               => $stockAction,
-                'note'               => $request->stock_note,
+                'quantity' => $stockQuantity,
+                'type' => $stockAction,
+                'note' => $request->stock_note,
             ]);
 
             if ($log->type->value == StockType::SET_EXACT_STOCK->value) {
-                $newStock           = $stockQuantity;
+                $newStock = $stockQuantity;
                 $variant->stock_in  = $newStock;
                 $variant->stock_out = 0;
             } elseif ($log->type->value == StockType::ADD_STOCK->value) {
@@ -316,13 +316,13 @@ class ProductController extends Controller
 
             $log = StockHistory::create([
                 'product_id' => $product->id,
-                'quantity'   => $stockQuantity,
-                'type'       => $stockAction,
-                'note'       => $request->stock_note,
+                'quantity' => $stockQuantity,
+                'type' => $stockAction,
+                'note' => $request->stock_note,
             ]);
 
             if ($log->type->value == StockType::SET_EXACT_STOCK->value) {
-                $newStock           = $stockQuantity;
+                $newStock = $stockQuantity;
                 $product->stock_in  = $newStock;
                 $product->stock_out = 0;
             } elseif ($log->type->value == StockType::ADD_STOCK->value) {
