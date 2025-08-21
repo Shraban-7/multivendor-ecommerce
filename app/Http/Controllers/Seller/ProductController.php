@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Seller;
 
 use App\Enums\StockType;
@@ -42,7 +43,7 @@ class ProductController extends Controller
         $validated = $request->validate([
             'category_id' => 'required|integer|exists:categories,id',
             'subcategory_id' => 'nullable',
-            'brand_id' => 'nullable',
+            'brand' => 'nullable',
             'name' => 'required|string|max:255',
             'short_description' => 'nullable|string',
             'description' => 'nullable|string',
@@ -59,12 +60,29 @@ class ProductController extends Controller
             'best_selling' => 'nullable|boolean',
             'is_featured' => 'nullable|boolean',
             'low_stock_quantity' => 'required|numeric',
-            'thumbnail' => 'required|image|max:4096',
             'video' => 'nullable|file',
             'files' => 'nullable|array',
             'files.*' => 'file|max:4096|mimetypes:image/*',
             'meta_title' => 'nullable|string',
         ]);
+
+        $brandId = null;
+
+        if (!empty($validated['brand'])) {
+            if (is_numeric($validated['brand'])) {
+                $brandId = (int) $validated['brand'];
+            } else {
+                $brand = Brand::firstOrCreate(
+                    ['name' => trim($validated['brand'])],
+                    ['slug' => str_slug('brands','slug',$validated['brand'])]
+                );
+                $brandId = $brand->id;
+            }
+        }
+
+        $validated['brand_id'] = $brandId;
+
+        unset($validated['brand']);
 
         $imageFolder = "images/{$seller->username}/products";
 
@@ -146,7 +164,7 @@ class ProductController extends Controller
         $validated = $request->validate([
             'category_id' => 'required|integer|exists:categories,id',
             'subcategory_id' => 'nullable',
-            'brand_id' => 'nullable',
+            'brand' => 'nullable',
             'name' => 'required|string|max:255',
             'short_description'  => 'nullable|string',
             'description' => 'nullable|string',
@@ -168,6 +186,25 @@ class ProductController extends Controller
             'files' => 'nullable|array',
             'files.*' => 'mimetypes:image/*',
         ]);
+
+
+        $brandId = null;
+
+        if (!empty($validated['brand'])) {
+            if (is_numeric($validated['brand'])) {
+                $brandId = (int) $validated['brand'];
+            } else {
+                $brand = Brand::firstOrCreate(
+                    ['name' => trim($validated['brand'])],
+                    ['slug' => str_slug('brands','slug',$validated['brand'])]
+                );
+                $brandId = $brand->id;
+            }
+        }
+
+        $validated['brand_id'] = $brandId;
+
+        unset($validated['brand']);
 
         $imageFolder = "images/{$seller->username}/products";
 
@@ -196,7 +233,6 @@ class ProductController extends Controller
             }
 
             $validated['video'] = upload_file($request->file('video'), "videos/{$seller->username}/products");
-
         }
         $product->update($validated);
 
@@ -214,7 +250,6 @@ class ProductController extends Controller
                     ]);
                 }
             }
-
         }
 
         return response()->json([

@@ -57,15 +57,17 @@
 
                         <div class="mb-3 col-md-3">
                             <label class="form-label">Brand</label>
-                            <select name="brand_id" class="form-select w-100" required>
+                            <select name="brand" class="form-select w-100 brand-select" required>
                                 <option value="" disabled>--Choose--</option>
                                 @foreach ($brands as $brand)
                                     <option value="{{ $brand->id }}"
-                                        {{ $brand->id == $product->brand_id ? 'selected' : '' }}>{{ $brand->name }}
+                                        {{ isset($product) && $product->brand_id == $brand->id ? 'selected' : '' }}>
+                                        {{ $brand->name }}
                                     </option>
                                 @endforeach
                             </select>
                         </div>
+
                         <div class="mb-3 col-md-6">
                             <label class="form-label">Short Description</label>
                             <x-textarea-input name="short_description" :value="$product->short_description" />
@@ -116,9 +118,8 @@
                         <div class="mb-3 col-md-3">
                             <label class="form-label">Unit <small class="text-muted">(e.g., 2.5 kg)</small></label>
                             <div class="d-flex align-items-center gap-2">
-                                <input type="number" step="0.01" name="unit_value"
-                                    value="{{ $product->unit_value  }}" class="form-control form-control"
-                                    placeholder="Value" style="width: 60%;" required>
+                                <input type="number" step="0.01" name="unit_value" value="{{ $product->unit_value }}"
+                                    class="form-control form-control" placeholder="Value" style="width: 60%;" required>
                                 <select name="unit_id" class="form-select form-select" style="width: 40%;" required>
                                     <option value="" disabled {{ $product->unit_id === null ? 'selected' : '' }}>--
                                     </option>
@@ -253,43 +254,54 @@
 
     @push('scripts')
         <script>
-            document.getElementById("files").addEventListener("change", function(event) {
+            $(".brand-select").select2({
+                tags: true,
+                theme: "bootstrap-5",
+            });
+
+            $("#files").on("change", function(event) {
                 var selectedFiles = event.target.files;
-                var imageContainer = document.getElementById("selectedImages");
+                var $imageContainer = $("#selectedImages");
 
-                imageContainer.innerHTML = "";
+                $imageContainer.empty();
 
-                for (var i = 0; i < selectedFiles.length; i++) {
-                    var file = selectedFiles[i];
+                $.each(selectedFiles, function(i, file) {
                     var reader = new FileReader();
 
                     reader.onload = function(e) {
-                        var imgElement = document.createElement("img");
-                        imgElement.src = e.target.result;
-                        imgElement.classList.add("col-2");
-                        imgElement.style.width = "100%";
-                        imgElement.style.height = "150px";
+                        var $imgElement = $("<img>", {
+                            src: e.target.result,
+                            class: "col-2",
+                            css: {
+                                width: "100%",
+                                height: "150px"
+                            }
+                        });
 
-                        var deleteButton = document.createElement("button");
-                        deleteButton.innerHTML = "Delete";
-                        deleteButton.classList.add("btn", "btn-danger", "btn-sm", "mt-2");
-                        deleteButton.style.width = "50%";
+                        var $deleteButton = $("<button>", {
+                            text: "Delete",
+                            class: "btn btn-danger btn-sm mt-2",
+                            css: {
+                                width: "50%"
+                            }
+                        });
 
-                        var imageWrapper = document.createElement("div");
-                        imageWrapper.classList.add("col-2", "mb-2");
-                        imageWrapper.appendChild(imgElement);
-                        imageWrapper.appendChild(deleteButton);
+                        var $imageWrapper = $("<div>", {
+                            class: "col-2 mb-2"
+                        });
 
-                        imageContainer.appendChild(imageWrapper);
+                        $imageWrapper.append($imgElement).append($deleteButton);
+                        $imageContainer.append($imageWrapper);
 
-                        deleteButton.addEventListener("click", function() {
-                            imageContainer.removeChild(imageWrapper);
+                        $deleteButton.on("click", function() {
+                            $imageWrapper.remove();
                         });
                     };
 
                     reader.readAsDataURL(file);
-                }
+                });
             });
+
 
             $(document).ready(function() {
                 if (!"{{ $product->subcategory_id ? 'true' : 'false' }}") {
