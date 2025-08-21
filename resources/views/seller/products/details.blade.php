@@ -119,9 +119,9 @@
 
                     <!-- Product Variants Card -->
 
-                    <div class="mb-4 shadow-sm card">
-                        <div class="bg-white card-header d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0 card-title">Product Variants ({{ $product->variants->count() }})</h5>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5 class="mb-0">Product Variants ({{ $product->variants->count() }})</h5>
                             <div>
                                 <button type="button" class="btn btn-outline-success btn-sm" data-bs-toggle="modal"
                                     data-bs-target="#addOptionModal">
@@ -134,196 +134,174 @@
                             </div>
                         </div>
 
-                        <div class="card-body">
-                            @if ($product->variants->isEmpty())
-                                <div class="alert alert-info text-center">No variants available for this product.</div>
-                            @endif
+                        @if ($product->variants->isEmpty())
+                            <div class="alert alert-info text-center">No variants available for this product.</div>
+                        @endif
 
-                            <div class="row g-3">
-                                @foreach ($product->variants as $variant)
-                                    <div class="col-12 col-sm-6 col-lg-4 mb-4">
-                                        <div class="card h-100 shadow-sm">
-                                            <div class="card-body">
-                                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                                    <h6 class="card-title mb-0">SKU: {{ $variant->sku }}</h6>
-                                                    <div class="d-flex">
-                                                        <button class="btn btn-light border btn-sm me-1"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#editVariantModal{{ $variant->id }}">
-                                                            <i data-feather="edit" class="icon-xs"></i>
-                                                        </button>
-                                                        <button class="btn btn-danger border btn-sm" data-bs-toggle="modal"
-                                                            data-bs-target="#deleteVariantModal{{ $variant->id }}">
-                                                            <i data-feather="trash" class="icon-xs"></i>
-                                                        </button>
-                                                    </div>
-                                                </div>
+                        <div class="row g-3">
+                            @foreach ($product->variants as $variant)
+                                <div class="col-12 col-sm-6 col-lg-4">
+                                    <div class="card h-100 shadow-sm">
+                                        <div class="card-body">
+                                            <h6 class="card-title mb-0">SKU: {{ $variant->sku }}</h6>
+                                            <div class="small text-muted">
+                                                <p class="mb-0">{{ $variant->fullName }}</p>
+                                                <hr class="my-2">
+                                                <p class="mb-1">Stock: <strong>{{ $variant->stock }}</strong></p>
+                                                <p class="mb-1">Price: <strong>{{ money($variant->selling_price) }}</strong></p>
+                                                <p class="mb-0">Discounted Price: <strong>{{ money($variant->discounted_price) }}</strong></p>
+                                            </div>
+                                            @if ($variant->is_default)
+                                                <span class="badge bg-success">Default Variant</span>
+                                            @endif
 
-                                                @foreach ($variant->option_values as $option_value)
-                                                    <p class="mb-1 small text-muted">
-                                                        {{ $option_value->option->name }}: {{ $option_value->value }}
-                                                    </p>
-                                                @endforeach
-
-                                                <hr>
-
-                                                <div class="d-flex flex-wrap small text-muted mt-3">
-                                                    <div class="me-3">Stock: <strong>{{ $variant->stock }}</strong>
-                                                    </div>
-                                                    <div class="me-3">Price:
-                                                        <strong>{{ money($variant->selling_price) }}</strong>
-                                                    </div>
-                                                    <div class="me-3">Discount:
-                                                        <strong>{{ money($variant->discounted_price) }}</strong>
-                                                    </div>
-                                                    <div>
-                                                        Default:
-                                                        <strong>
-                                                            @if ($variant->is_default)
-                                                                <span class="badge bg-success">Yes</span>
-                                                            @else
-                                                                <span class="badge bg-secondary">No</span>
-                                                            @endif
-                                                        </strong>
-                                                    </div>
-                                                </div>
+                                            <div class="d-flex mt-2">
+                                                <button class="btn btn-light border btn-sm me-1"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#editVariantModal{{ $variant->id }}">
+                                                    <i data-feather="edit" class="icon-xs"></i> Edit
+                                                </button>
+                                                <button class="btn btn-danger border btn-sm" data-bs-toggle="modal"
+                                                    data-bs-target="#deleteVariantModal{{ $variant->id }}">
+                                                    <i data-feather="trash" class="icon-xs"></i> Delete
+                                                </button>
                                             </div>
                                         </div>
+                                    </div>
 
-                                        <!-- Edit Variant Modal -->
-                                        <div class="modal fade" id="editVariantModal{{ $variant->id }}" tabindex="-1"
-                                            aria-labelledby="editVariantModalLabel{{ $variant->id }}" aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered modal-lg">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title"
-                                                            id="editVariantModalLabel{{ $variant->id }}">
-                                                            Edit Variant
-                                                        </h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                            aria-label="Close"></button>
-                                                    </div>
-                                                    <form
-                                                        action="{{ route('seller.productVariants.update', [$product->id, $variant->id]) }}"
-                                                        method="POST" enctype="multipart/form-data">
-                                                        @csrf
-                                                        <div class="modal-body">
-                                                            <div class="row">
-                                                                <div class="mb-3 col-6">
-                                                                    <label class="form-label">Buying Price</label>
-                                                                    <div class="input-group">
-                                                                        <span
-                                                                            class="input-group-text">{{ currency() }}</span>
-                                                                        <input type="number" class="form-control"
-                                                                            name="buying_price" step="0.01"
-                                                                            value="{{ $variant->buying_price }}" required>
-                                                                    </div>
+                                    <!-- Edit Variant Modal -->
+                                    <div class="modal fade" id="editVariantModal{{ $variant->id }}" tabindex="-1"
+                                        aria-labelledby="editVariantModalLabel{{ $variant->id }}" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered modal-lg">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title"
+                                                        id="editVariantModalLabel{{ $variant->id }}">
+                                                        Edit Variant
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <form
+                                                    action="{{ route('seller.productVariants.update', [$product->id, $variant->id]) }}"
+                                                    method="POST" enctype="multipart/form-data">
+                                                    @csrf
+                                                    <div class="modal-body">
+                                                        <div class="row">
+                                                            <div class="mb-3 col-6">
+                                                                <label class="form-label">Buying Price</label>
+                                                                <div class="input-group">
+                                                                    <span
+                                                                        class="input-group-text">{{ currency() }}</span>
+                                                                    <input type="number" class="form-control"
+                                                                        name="buying_price" step="0.01"
+                                                                        value="{{ $variant->buying_price }}" required>
                                                                 </div>
-                                                                <div class="mb-3 col-6">
-                                                                    <label class="form-label">Selling Price</label>
-                                                                    <div class="input-group">
-                                                                        <span
-                                                                            class="input-group-text">{{ currency() }}</span>
-                                                                        <input type="number" class="form-control"
-                                                                            name="selling_price" step="0.01"
-                                                                            value="{{ $variant->selling_price }}"
-                                                                            required>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="mb-3 col-md-6">
-                                                                    <label class="form-label">Discount Type</label>
-                                                                    <select name="discount_type" class="form-select"
+                                                            </div>
+                                                            <div class="mb-3 col-6">
+                                                                <label class="form-label">Selling Price</label>
+                                                                <div class="input-group">
+                                                                    <span
+                                                                        class="input-group-text">{{ currency() }}</span>
+                                                                    <input type="number" class="form-control"
+                                                                        name="selling_price" step="0.01"
+                                                                        value="{{ $variant->selling_price }}"
                                                                         required>
-                                                                        <option value="" selected disabled>
-                                                                            --Choose--</option>
-                                                                        <option
-                                                                            value="{{ \App\Enums\DiscountType::FLAT->value }}"
-                                                                            {{ $variant->discount_type == \App\Enums\DiscountType::FLAT->value ? 'selected' : '' }}>
-                                                                            {{ ucfirst(\App\Enums\DiscountType::FLAT->label()) }}
-                                                                        </option>
-                                                                        <option
-                                                                            value="{{ \App\Enums\DiscountType::PERCENTAGE->value }}"
-                                                                            {{ $variant->discount_type == \App\Enums\DiscountType::PERCENTAGE->value ? 'selected' : '' }}>
-                                                                            {{ ucfirst(\App\Enums\DiscountType::PERCENTAGE->label()) }}
-                                                                        </option>
-                                                                    </select>
                                                                 </div>
-                                                                <div class="mb-3 col-md-6">
-                                                                    <label class="form-label">Discount Value</label>
-                                                                    <input name="discount_value" type="number"
-                                                                        value="{{ $variant->discount_value }}"
-                                                                        class="form-control" required>
-                                                                </div>
-                                                                <div class="mb-3 col-md-12">
-                                                                    <label class="form-label">Low Stock
-                                                                        Quantity</label>
-                                                                    <input name="low_stock_quantity" type="number"
-                                                                        value="{{ $variant->low_stock_quantity }}"
-                                                                        class="form-control">
-                                                                </div>
-                                                                <div class="mb-3 col-12">
-                                                                    <div class="form-check">
-                                                                        <input class="form-check-input" type="checkbox"
-                                                                            id="is_default_{{ $variant->id }}"
-                                                                            name="is_default" value="1"
-                                                                            {{ $variant->is_default ? 'checked' : '' }}>
-                                                                        <label class="form-check-label"
-                                                                            for="is_default_{{ $variant->id }}">
-                                                                            Set as default variant
-                                                                        </label>
-                                                                    </div>
+                                                            </div>
+
+                                                            <div class="mb-3 col-md-6">
+                                                                <label class="form-label">Discount Type</label>
+                                                                <select name="discount_type" class="form-select"
+                                                                    required>
+                                                                    <option value="" selected disabled>
+                                                                        --Choose--</option>
+                                                                    <option
+                                                                        value="{{ \App\Enums\DiscountType::FLAT->value }}"
+                                                                        {{ $variant->discount_type == \App\Enums\DiscountType::FLAT->value ? 'selected' : '' }}>
+                                                                        {{ ucfirst(\App\Enums\DiscountType::FLAT->label()) }}
+                                                                    </option>
+                                                                    <option
+                                                                        value="{{ \App\Enums\DiscountType::PERCENTAGE->value }}"
+                                                                        {{ $variant->discount_type == \App\Enums\DiscountType::PERCENTAGE->value ? 'selected' : '' }}>
+                                                                        {{ ucfirst(\App\Enums\DiscountType::PERCENTAGE->label()) }}
+                                                                    </option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="mb-3 col-md-6">
+                                                                <label class="form-label">Discount Value</label>
+                                                                <input name="discount_value" type="number"
+                                                                    value="{{ $variant->discount_value }}"
+                                                                    class="form-control" required>
+                                                            </div>
+                                                            <div class="mb-3 col-md-12">
+                                                                <label class="form-label">Low Stock
+                                                                    Quantity</label>
+                                                                <input name="low_stock_quantity" type="number"
+                                                                    value="{{ $variant->low_stock_quantity }}"
+                                                                    class="form-control">
+                                                            </div>
+                                                            <div class="mb-3 col-12">
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="checkbox"
+                                                                        id="is_default_{{ $variant->id }}"
+                                                                        name="is_default" value="1"
+                                                                        {{ $variant->is_default ? 'checked' : '' }}>
+                                                                    <label class="form-check-label"
+                                                                        for="is_default_{{ $variant->id }}">
+                                                                        Set as default variant
+                                                                    </label>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-light border"
-                                                                data-bs-dismiss="modal">Cancel</button>
-                                                            <button type="submit" class="btn btn-success">Update</button>
-                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-light border"
+                                                            data-bs-dismiss="modal">Cancel</button>
+                                                        <button type="submit" class="btn btn-success">Update</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Delete Variant Modal -->
+                                    <div class="modal fade" id="deleteVariantModal{{ $variant->id }}"
+                                        tabindex="-1" aria-labelledby="deleteModalLabel-{{ $variant->id }}"
+                                        aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Confirm Delete</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="text-center modal-body">
+                                                    <div class="alert alert-warning d-flex align-items-center justify-content-center"
+                                                        role="alert">
+                                                        <i class="bi bi-exclamation-circle-fill me-2 text-danger"
+                                                            style="font-size: 1.5rem;"></i>
+                                                        <p class="mb-0 text-secondary">
+                                                            Are you sure you want to delete this variant
+                                                            ({{ $variant->sku }})?
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer justify-content-center">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Cancel</button>
+                                                    <form
+                                                        action="{{ route('seller.productVariants.delete', $variant->id) }}"
+                                                        method="POST">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-danger">Delete</button>
                                                     </form>
                                                 </div>
                                             </div>
                                         </div>
-
-                                        <!-- Delete Variant Modal -->
-                                        <div class="modal fade" id="deleteVariantModal{{ $variant->id }}"
-                                            tabindex="-1" aria-labelledby="deleteModalLabel-{{ $variant->id }}"
-                                            aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">Confirm Delete</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                            aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="text-center modal-body">
-                                                        <div class="alert alert-warning d-flex align-items-center justify-content-center"
-                                                            role="alert">
-                                                            <i class="bi bi-exclamation-circle-fill me-2 text-danger"
-                                                                style="font-size: 1.5rem;"></i>
-                                                            <p class="mb-0 text-secondary">
-                                                                Are you sure you want to delete this variant
-                                                                ({{ $variant->sku }})?
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer justify-content-center">
-                                                        <button type="button" class="btn btn-secondary"
-                                                            data-bs-dismiss="modal">Cancel</button>
-                                                        <form
-                                                            action="{{ route('seller.productVariants.delete', $variant->id) }}"
-                                                            method="POST">
-                                                            @csrf
-                                                            <button type="submit" class="btn btn-danger">Delete</button>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
-                                @endforeach
-                            </div>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
 
@@ -403,22 +381,9 @@
                                                         </td>
                                                         <td>
                                                             @if ($history->variant)
-                                                                @php
-                                                                    $variantOptions = [];
-                                                                    foreach (
-                                                                        $history->variant->option_values
-                                                                        as $optionValue
-                                                                    ) {
-                                                                        $variantOptions[] =
-                                                                            $optionValue->option->name .
-                                                                            ': ' .
-                                                                            $optionValue->value;
-                                                                    }
-                                                                @endphp
-                                                                <span
-                                                                    class="badge bg-light text-dark text-wrap">{{ implode(', ', $variantOptions) }}</span>
+                                                                <span class="badge bg-light text-dark text-wrap">{{ $history->variant->fullName }}</span>
                                                             @else
-                                                                <span class="badge bg-secondary">Main Product</span>
+                                                                <span class="badge bg-secondary">Base Variant</span>
                                                             @endif
                                                         </td>
                                                         <td class="text-center fw-bold">
@@ -437,9 +402,6 @@
                                                                 @case(\App\Enums\StockType::SET_EXACT_STOCK)
                                                                     <span class="badge bg-warning text-dark">Set Exact</span>
                                                                 @break
-
-                                                                @default
-                                                                    <span class="badge bg-secondary">Unknown</span>
                                                             @endswitch
                                                         </td>
                                                     </tr>
@@ -508,7 +470,7 @@
                                     <select class="form-select" id="variant" name="product_variant_id">
                                         <option value="">--Select Variant--</option>
                                         @foreach ($product->variants as $variant)
-                                            <option value="{{ $variant->id }}">{{ $variant->sku }}</option>
+                                            <option value="{{ $variant->id }}">{{ $variant->fullName }}</option>
                                         @endforeach
                                     </select>
                                 </div>

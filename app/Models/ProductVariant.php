@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -34,5 +35,17 @@ class ProductVariant extends Model
     public function options()
     {
         return $this->hasMany(ProductVariantOption::class, 'product_variant_id');
+    }
+
+    public function fullName(): Attribute
+    {
+        $options = [];
+        foreach ($this->option_values as $optionValue) {
+            $options[] = $optionValue->option->name . ': ' . $optionValue->value;
+        }
+
+        return Attribute::make(
+            get: fn() => implode(', ', $options)
+        );
     }
 }
