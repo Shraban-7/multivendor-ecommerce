@@ -57,7 +57,6 @@
                                     <div
                                         class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between mb-3">
                                         <h4 class="mb-0">{{ $product->name }}</h4>
-                                        <span class="text-muted small mt-2 mt-sm-0">(ID: {{ $product->id }})</span>
                                     </div>
 
                                     <div class="mb-3">
@@ -77,7 +76,7 @@
                                                     <td>{{ $product->sku }}</td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="fw-bold pe-3">Product Collecting Price</td>
+                                                    <td class="fw-bold pe-3">Buying Price</td>
                                                     <td>{{ money($product->buying_price) }}</td>
                                                 </tr>
                                                 <tr>
@@ -87,23 +86,23 @@
                                                 <tr>
                                                     <td class="fw-bold pe-3">Profit Margin</td>
                                                     <td>
+                                                        <small class="text-muted">
+                                                            {{ money($product->profit_amount) }}
+                                                        </small>
                                                         <span
                                                             class="badge
                                                                 {{ $product->profit_percent >= 30 ? 'bg-success' : ($product->profit_percent >= 15 ? 'bg-warning' : 'bg-danger') }}">
                                                             {{ number_format($product->profit_percent, 1) }}%
                                                         </span>
-                                                        <small class="d-block text-muted">
-                                                            Profit: {{ money($product->profit_amount) }}
-                                                        </small>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td class="fw-bold pe-3">Created On</td>
-                                                    <td>{{ $product['created_at']->format('M d, Y') }}</td>
+                                                    <td>{{ $product['created_at']->format('M d, Y h:i A') }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td class="fw-bold pe-3">Last Updated</td>
-                                                    <td>{{ $product['updated_at']->format('M d, Y') }}</td>
+                                                    <td>{{ $product['updated_at']->format('M d, Y h:i A') }}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -118,23 +117,14 @@
 
                     <div class="mb-4 shadow-sm card">
                         <div class="bg-white card-header d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0 card-title">Product Variants</h5>
-                            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                            <h5 class="mb-0 card-title">Product Variants ({{ $product->variants->count() }})</h5>
+                            <button type="button" class="btn btn-sm btn-outline-success" data-bs-toggle="modal"
                                 data-bs-target="#addVariantModal">
-                                <i class="fas fa-plus-circle me-1"></i> Add Variant
+                                <i data-feather="plus"></i> Add Variant
                             </button>
                         </div>
 
                         <div class="card-body">
-                            <div class="row mb-3">
-                                <div class="col-12 d-flex justify-content-between align-items-center">
-                                    <h6 class="text-muted fw-bold small mb-0">
-                                        <i class="fas fa-cubes me-1 text-primary"></i> Variants
-                                    </h6>
-                                    <span class="badge bg-secondary">{{ $product->variants->count() }} Variants</span>
-                                </div>
-                            </div>
-
                             @if ($product->variants->isEmpty())
                                 <div class="alert alert-info text-center">No variants available for this product.</div>
                             @endif
@@ -192,8 +182,7 @@
 
                                         <!-- Edit Variant Modal -->
                                         <div class="modal fade" id="editVariantModal{{ $variant->id }}" tabindex="-1"
-                                            aria-labelledby="editVariantModalLabel{{ $variant->id }}"
-                                            aria-hidden="true">
+                                            aria-labelledby="editVariantModalLabel{{ $variant->id }}" aria-hidden="true">
                                             <div class="modal-dialog modal-dialog-centered modal-lg">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
