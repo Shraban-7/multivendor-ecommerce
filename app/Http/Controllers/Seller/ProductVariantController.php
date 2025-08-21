@@ -13,57 +13,65 @@ class ProductVariantController extends Controller
     public function store(Request $request, Product $product)
     {
         $data = $request->validate([
-            'sku' => 'nullable|string',
-            'buying_price' => 'required|string',
-            'selling_price' => 'required|string',
+            'buying_price' => 'required|numeric',
+            'selling_price' => 'required|numeric',
             'discount_type' => 'required|string',
             'discount_value' => 'required|numeric',
-            'low_stock_quantity' => 'required|numeric',
-            'image' => 'required|image|max:4000',
             'option_values' => 'nullable|array|min:1',
-            'option_values.*' => 'nullable|exists:option_values,id',
-            'is_default' => 'nullable|boolean',
+            'option_values.*' => 'nullable|array|min:1',
         ]);
 
         $data['product_id'] = $product->id;
 
-        $optionValues = collect($request->option_values)
-            ->flatten()
-            ->filter()
-            ->unique()
-            ->values()
-            ->toArray();
+        $optionValues = $request->option_values ?? [];
 
-        if (! $request->sku) {
-            $data['sku'] = strtoupper(uniqid());
+        $valuesArrays = array_values($optionValues);
+
+        if (!empty($valuesArrays)) {
+            $combinations = $this->cartesianProduct($valuesArrays);
+        } else {
+            $combinations = [[]];
         }
 
-        $data['discount_amount'] = calculate_discount_amount($data['selling_price'], $data['discount_type'], $data['discount_value']);
-        $data['discounted_price'] = calculate_discounted_price($data['selling_price'], $data['discount_type'], $data['discount_value']);
-        $data['image'] = upload_file($request->file('image'), 'images/products/variant');
+        $first = true; 
 
-        $variant = ProductVariant::create($data);
-        
-        foreach ($optionValues as $valueId) {
-            ProductVariantOption::create([
-                'product_variant_id' => $variant->id,
-                'option_value_id' => $valueId,
-            ]);
+        foreach ($combinations as $combination) {
+            $variantData = [
+                'product_id' => $product->id,
+                'sku' => strtoupper(uniqid()),
+                'buying_price' => $data['buying_price'],
+                'selling_price' => $data['selling_price'],
+                'discount_type' => $data['discount_type'],
+                'discount_value' => $data['discount_value'],
+                'discount_amount' => calculate_discount_amount($data['selling_price'], $data['discount_type'], $data['discount_value']),
+                'discounted_price' => calculate_discounted_price($data['selling_price'], $data['discount_type'], $data['discount_value']),
+                'is_default' => $first ? 1 : 0,
+            ];
+
+            $variant = ProductVariant::create($variantData);
+
+            foreach ($combination as $optionValueId) {
+                ProductVariantOption::create([
+                    'product_variant_id' => $variant->id,
+                    'option_value_id' => $optionValueId,
+                ]);
+            }
+
+            $first = false; 
         }
 
-        return response()->json(['success' => true, 'message' => 'Variant Added Successfully']);
+        return response()->json(['success' => true, 'message' => 'Variants added successfully']);
     }
 
     public function update(Request $request, Product $product, ProductVariant $variant)
     {
         $data = $request->validate([
-            'buying_price'       => 'required|string',
-            'selling_price'      => 'required|string',
-            'discount_type'      => 'required|string',
-            'discount_value'     => 'required|numeric',
+            'buying_price' => 'required|string',
+            'selling_price' => 'required|string',
+            'discount_type' => 'required|string',
+            'discount_value' => 'required|numeric',
             'low_stock_quantity' => 'required|numeric',
-            'image' => 'nullable|image|max:4000',
-            'is_default'         => 'nullable|boolean',
+            'is_default' => 'nullable|boolean',
         ]);
 
         $data['product_id'] = $product->id;
@@ -71,13 +79,6 @@ class ProductVariantController extends Controller
         $data['discount_amount']  = calculate_discount_amount($data['selling_price'], $data['discount_type'], $data['discount_value']);
         $data['discounted_price'] = calculate_discounted_price($data['selling_price'], $data['discount_type'], $data['discount_value']);
 
-        if ($request->hasFile('image')) {
-            if ($variant->image != null) {
-                delete_file($variant->image);
-            }
-
-            $data['image'] = upload_file($request->file('image'), 'images/products/variant');
-        }
 
         $data['is_default'] = $request->input('is_default', 0);
 
@@ -90,5 +91,25 @@ class ProductVariantController extends Controller
     {
         $variant->delete();
         return redirect()->back()->with('success', 'Variant Deleted Successfully!');
+    }
+
+    /**
+     * Generate cartesian product of multiple arrays
+     */
+    private function cartesianProduct($arrays)
+    {
+        $result = [[]];
+
+        foreach ($arrays as $property => $propertyValues) {
+            $tmp = [];
+            foreach ($result as $resultItem) {
+                foreach ($propertyValues as $propertyValue) {
+                    $tmp[] = array_merge($resultItem, [$propertyValue]);
+                }
+            }
+            $result = $tmp;
+        }
+
+        return $result;
     }
 }

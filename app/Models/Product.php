@@ -115,10 +115,6 @@ class Product extends Model
         $margin        = $this->selling_price - $this->buying_price;
         $marginPercent = $this->buying_price > 0 ? ($margin / $this->buying_price) * 100 : 0;
 
-      //  $images = $this->images->pluck('image')->toArray();
-        //$variantImages =  $this->variants->pluck('image')->toArray();
-        //$images = array_merge($images, $variantImages);
-
         return [
             'id'                => $this->id,
             'slug'              => $this->slug,
