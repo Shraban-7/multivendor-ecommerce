@@ -44,24 +44,30 @@
                                 <!-- Product Images -->
                                 <div class="col-12 col-md-5 mb-3">
                                     <img src="{{ storage_url($product->thumbnail) }}" alt="{{ $product->name }}"
-                                        class="border rounded shadow-sm img-fluid w-100"
-                                        style="height: 250px; object-fit: contain;">
+                                        class="img-fluid w-100" style="height: 250px; object-fit: contain;">
                                 </div>
                                 <!-- Product Details -->
                                 <div class="col-12 col-md-7">
                                     <div
-                                        class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between mb-3">
+                                        class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between mb-1">
                                         <h4 class="mb-0">{{ $product->name }}</h4>
                                     </div>
 
-                                    <div class="mb-3">
-                                        <span class="badge bg-info rounded-pill me-1">{{ $product->category->name }}</span>
-                                        @if ($product['subcategory'])
+                                    <div class="mb-1 d-flex flex-wrap gap-2">
+                                        <span
+                                            class="badge border bg-light text-dark small">{{ $product->category->name }}</span>
+
+                                        @if ($product->subcategory)
                                             <span
-                                                class="badge bg-secondary rounded-pill me-1">{{ $product->subcategory->name }}</span>
+                                                class="badge border bg-light text-dark small">{{ $product->subcategory->name }}</span>
                                         @endif
-                                        <span class="badge bg-primary rounded-pill">{{ $product->brand?->name }}</span>
+
+                                        @if ($product->brand)
+                                            <span
+                                                class="badge border bg-light text-dark small">{{ $product->brand->name }}</span>
+                                        @endif
                                     </div>
+
 
                                     <div class="table-responsive">
                                         <table class="table mb-0 table-sm product-info">
@@ -79,7 +85,7 @@
                                                     <td>{{ money($product->selling_price) }}</td>
                                                 </tr>
 
-                                                @if ($product->profit_amount>0)
+                                                @if ($product->profit_amount > 0)
                                                     <tr>
                                                         <td class="fw-bold pe-3">Profit Margin</td>
                                                         <td>
@@ -96,11 +102,11 @@
                                                 @endif
                                                 <tr>
                                                     <td class="fw-bold pe-3">Created On</td>
-                                                    <td>{{ $product['created_at']->format('M d, Y h:i A') }}</td>
+                                                    <td>{{ $product['created_at']->format('d/m/y h:i A') }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td class="fw-bold pe-3">Last Updated</td>
-                                                    <td>{{ $product['updated_at']->format('M d, Y h:i A') }}</td>
+                                                    <td>{{ $product['updated_at']->format('d/m/y h:i A') }}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -393,7 +399,7 @@
                                                 @forelse ($product->stock_history as $history)
                                                     <tr>
                                                         <td class="text-nowrap">
-                                                            {{ $history->created_at?->format('M d, Y h:i A') ?? '-' }}
+                                                            {{ $history->created_at?->format('d/m/y h:i A') ?? '-' }}
                                                         </td>
                                                         <td>
                                                             @if ($history->variant)

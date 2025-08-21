@@ -131,13 +131,6 @@
                                 </select>
                             </div>
                         </div>
-
-
-                        <div class="mb-3 col-md-3">
-                            <label class="form-label">Current stock</label>
-                            <input name="stock_in" type="text" value="{{ $product->stock_in }}" class="form-control"
-                                disabled>
-                        </div>
                         <div class="mb-3 col-md-3">
                             <label class="form-label">Low Stock Quantity</label>
                             <input name="low_stock_quantity" type="number" value="{{ $product->low_stock_quantity }}"
