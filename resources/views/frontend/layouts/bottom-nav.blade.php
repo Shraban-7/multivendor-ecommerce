@@ -1,4 +1,4 @@
-<nav class="bg-[#F2F8FD] border-b">
+<nav class="bg-white shadow-sm">
     <div class="container flex flex-wrap md:flex-nowrap items-center justify-between md:justify-start relative">
         <!-- All Departments -->
         <div class="group relative h-full py-5 flex">
@@ -57,106 +57,6 @@
                                                             {{ $subcategory->name }}
                                                         </h4>
                                                     </a>
-                                                    <!-- brand feature products -->
-                                                    {{-- <div
-                                                        class="hidden group-hover/brand:block absolute left-[10rem] top-0 w-[45vw] lg:w-[50vw] max-h-[31.2rem] p-4 bg-white border-t border-r border-b border-[#E4E7E9] rounded-tr rounded-br h-[31.2rem] xl:overflow-y-auto overflow-y-scroll">
-                                                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 h-full">
-                                                            <!-- Product Cards -->
-                                                            <div class="feature-phones p-2 order-2 lg:order-1">
-                                                                <h3
-                                                                    class="text-lg text-rangoon-green font-bold mb-4 uppercase">
-                                                                    Featured Phones
-                                                                </h3>
-
-                                                                <div class="feature-items-wrapper space-y-4">
-                                                                    <!-- item 1 -->
-                                                                    <div
-                                                                        class="group/feature feature-item-card flex border border-jet-gray/30 rounded p-2 gap-3 hover:shadow eq">
-                                                                        <div class="item-image w-1/4">
-                                                                            <a href="#" target="_blank">
-                                                                                <img src="{{ asset('assets/frontend/images/feature-product-1.png') }}"
-                                                                                    alt=" Samsung Electronics Samsung Galexy S21 5G"
-                                                                                    class="w-full h-full object-contain" />
-                                                                            </a>
-                                                                        </div>
-                                                                        <div class="item-details flex flex-col w-3/4">
-                                                                            <h4 class="line-clamp-2">
-                                                                                <a href="#" target="_self"
-                                                                                    class="text-rangoon-green group-hover/feature:text-primary eq">
-                                                                                    Samsung Electronics Samsung Galexy
-                                                                                    S21
-                                                                                    5G
-                                                                                </a>
-                                                                            </h4>
-                                                                            <p
-                                                                                class="text-butterfly-blue font-semibold">
-                                                                                $160
-                                                                            </p>
-                                                                        </div>
-                                                                    </div>
-                                                                    <!-- item 2 -->
-                                                                    <div
-                                                                        class="group/feature feature-item-card flex border border-jet-gray/30 rounded p-2 gap-3 hover:shadow eq">
-                                                                        <div class="item-image w-1/4">
-                                                                            <a href="#" target="_blank">
-                                                                                <img src="{{ asset('assets/frontend/images/feature-product-2.png') }}"
-                                                                                    alt="Simple Mobile 5G LTE Galexy 12 Mini 512GB Gaming Phone"
-                                                                                    class="w-full h-full object-contain" />
-                                                                            </a>
-                                                                        </div>
-                                                                        <div class="item-details flex flex-col w-3/4">
-                                                                            <h4 class="line-clamp-2">
-                                                                                <a href="#" target="_self"
-                                                                                    class="text-rangoon-green group-hover/feature:text-primary eq">
-                                                                                    Simple Mobile 5G LTE Galexy 12 Mini
-                                                                                    512GB Gaming Phone
-                                                                                </a>
-                                                                            </h4>
-                                                                            <p
-                                                                                class="text-butterfly-blue font-semibold">
-                                                                                $1,500
-                                                                            </p>
-                                                                        </div>
-                                                                    </div>
-                                                                    <!-- item 3 -->
-                                                                    <div
-                                                                        class="group/feature feature-item-card flex border border-jet-gray/30 rounded p-2 gap-3 hover:shadow eq">
-                                                                        <div class="item-image w-1/4">
-                                                                            <a href="#" target="_blank">
-                                                                                <img src="{{ asset('assets/frontend/images/feature-product-3.png') }}"
-                                                                                    alt="Sony DSCHX8 High Zoom Point & Shoot Camera"
-                                                                                    class="w-full h-full object-contain" />
-                                                                            </a>
-                                                                        </div>
-                                                                        <div class="item-details flex flex-col w-3/4">
-                                                                            <h4 class="line-clamp-2">
-                                                                                <a href="#" target="_self"
-                                                                                    class="text-rangoon-green group-hover/feature:text-primary eq">
-                                                                                    Sony DSCHX8 High Zoom Point & Shoot
-                                                                                    Camera
-                                                                                </a>
-                                                                            </h4>
-                                                                            <p
-                                                                                class="text-butterfly-blue font-semibold">
-                                                                                <span
-                                                                                    class="line-through font-normal text-[#929FA5]">$3200</span>
-                                                                                $2,300
-                                                                            </p>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                            <!-- Discount Feature Product Image -->
-                                                            <div class="h-full discount-image order-1">
-                                                                <a href="#" class="2xl:h-[29rem] block relative">
-                                                                    <img src="{{ asset('assets/frontend/images/feature-product-4.png') }}"
-                                                                        alt="Feature Phone"
-                                                                        class="w-full h-full mb-2 md:mb-0 object-contain" />
-                                                                </a>
-                                                            </div>
-                                                        </div>
-                                                    </div> --}}
                                                 </li>
                                             @endforeach
                                         </ul>
@@ -190,11 +90,6 @@
         <div class="nav-links hidden w-full md:block md:w-auto" id="navbar-multi-level">
             <ul
                 class="flex flex-col font-light p-3 lg:p-4 md:p-0 mt-4 border border-gray-100 rounded-lg md:space-x-3 lg:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:ms-4 md:border-0 md:text-persian-blue md:text-sm lg:text-base md:flex-wrap">
-                <!-- <li>
-                    <a href="/"
-                        class="block py-2 px-3 text-persian-blue rounded hover:bg-primary md:hover:bg-transparent md:border-0 md:hover:text-primary md:p-0 eq md:text-persian-blue nav-link"
-                        aria-current="page">Home</a>
-                </li> -->
                 @foreach (nav_categories() as $category)
                     <li>
                         <a href="{{ route('category.details', $category->slug) }}"
