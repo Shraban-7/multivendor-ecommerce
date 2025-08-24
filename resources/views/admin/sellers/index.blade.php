@@ -12,7 +12,6 @@
                 <tr>
                     <th scope="col">Shop</th>
                     <th scope="col">Seller</th>
-                    <th scope="col">Country</th>
                     <th scope="col">Phone</th>
                     <th scope="col">Email</th>
                     <th scope="col">Commission</th>
@@ -39,8 +38,7 @@
                         <td>
                             <x-seller :seller="$seller" />
                         </td>
-                        <td> {{ $seller->country->name }} </td>
-                        <td>{{ $seller->country->phone_code }} {{ $seller->phone }} </td>
+                        <td>{{ $seller->phone }} </td>
                         <td> {{ $seller->email }} </td>
                         <td>
                             <div class="d-flex gap-2 align-items-center">
