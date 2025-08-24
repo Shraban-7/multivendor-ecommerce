@@ -86,7 +86,7 @@ class ProductController extends Controller
 
         $imageFolder = "images/{$seller->username}/products";
 
-        // $validated['thumbnail'] = upload_with_watermark($request->file('thumbnail'), "$imageFolder/thumb");
+        $validated['thumbnail'] = upload_with_watermark($request->file('thumbnail'), "$imageFolder/thumb");
 
         if ($request->hasFile('video')) {
             $validated['video'] = upload_file($request->file('video'), "videos/{$seller->username}/products");
