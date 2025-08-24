@@ -94,7 +94,7 @@ class ProductController extends Controller
 
         $validated['seller_id'] = $seller->id;
         $validated['slug'] = str_slug('products', 'slug', $validated['name']);
-        $validated['sku'] = $validated['sku'] ?? strtoupper(uniqid());
+        $validated['sku'] = $validated['sku'] ?? ProductVariant::gernerate_sku();
         if (isset($validated['discount_type'], $validated['discount_value'])) {
             $validated['discount_amount']  = calculate_discount_amount($validated['selling_price'], $validated['discount_type'], $validated['discount_value']);
             $validated['discounted_price'] = calculate_discounted_price($validated['selling_price'], $validated['discount_type'], $validated['discount_value']);
@@ -230,7 +230,7 @@ class ProductController extends Controller
             $validated['slug'] = str_slug('products', 'slug', $validated['name']);
         }
 
-        $validated['sku'] = $validated['sku'] ?? strtoupper(uniqid());
+        $validated['sku'] = $validated['sku'] ?? ProductVariant::gernerate_sku();
 
         if (isset($validated['discount_type'], $validated['discount_value'])) {
             $validated['discount_amount']  = calculate_discount_amount($validated['selling_price'], $validated['discount_type'], $validated['discount_value']);
