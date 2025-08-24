@@ -6,7 +6,7 @@ $publicProduct = [
     'name' => $product['name'],
     'price' => $product['price'],
     'discounted_price' => $product['discounted_price'],
-    'sku' => $product['sku'],
+    'sku' => $product['defaultVariant']['sku'] ?? null,
     'stock' => $product['stock'],
     'slider' => $product['slider'],
     'variants' => $product['variants'],
@@ -129,9 +129,9 @@ $publicProduct = [
 
             <div class="flex flex-wrap items-center gap-3 text-sm text-gray-700">
                 <div><strong>SKU:</strong> <span
-                        class="sku-text">{{ $firstVariant['sku'] ?? $product['sku'] }}</span></div>
+                        class="sku-text">{{ $firstVariant['sku'] ?? ''}}</span></div>
                 <div><strong>Stock:</strong> <span
-                        class="stock-text">{{ $firstVariant['stock'] ?? $product['stock'] }}</span></div>
+                        class="stock-text">{{ $firstVariant['stock'] ?? '' }}</span></div>
 
                 @if (auth()->check() && auth()->user()->isAffiliate())
                 <button
