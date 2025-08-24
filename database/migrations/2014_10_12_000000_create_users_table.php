@@ -22,10 +22,6 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('password');
 
-            $table->bigInteger('country_id')->nullable();
-            $table->bigInteger('state_id')->nullable();
-            $table->string('zip')->nullable();
-
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();

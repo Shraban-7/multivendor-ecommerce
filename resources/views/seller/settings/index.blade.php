@@ -42,37 +42,6 @@
                             <input type="number" class="form-control" id="shipping_cost" name="shipping_cost"
                                 value="{{ old('shipping_cost', $seller->shipping_cost ?? 'Not provided') }}">
                         </div>
-                        <div class="col-md-3 mb-3">
-                            <label for="country_id" class="form-label">Country</label>
-                            <select name="country_id" id="country_id" class="form-select" required>
-                                <option value="">Select Country</option>
-                                @foreach ($countries as $country)
-                                    <option value="{{ $country->id }}"
-                                        {{ $seller->country_id == $country->id ? 'selected' : '' }}>
-                                        {{ ucfirst($country->name) }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="col-md-3 mb-3">
-                            <label for="state_id" class="form-label">State</label>
-                            <select name="state_id" id="state_id" class="form-select" required>
-                                <option value="">Select State</option>
-                                @foreach ($states as $state)
-                                    <option value="{{ $state->id }}"
-                                        {{ $seller->state_id == $state->id ? 'selected' : '' }}>
-                                        {{ ucfirst($state->name) }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="col-md-3 mb-3">
-                            <label for="zip" class="form-label">ZIP Code</label>
-                            <input type="text" class="form-control" id="zip" name="zip"
-                                value="{{ old('zip', $seller->zip ?? '') }}">
-                        </div>
                     </div>
                     <div class="d-flex">
                         <div class="mb-3">
@@ -129,12 +98,6 @@
     </div>
 
     @push('scripts')
-        <script>
-            const baseGetStatesUrl = "{{ url('states') }}/";
-            const initialCountryId = '{{ old('country_id', $seller->country_id) }}';
-            const initialStateId = '{{ old('state_id', $seller->state_id) }}';
-        </script>
-
         <script>
             $(document).ready(function() {
 

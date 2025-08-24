@@ -32,10 +32,6 @@ return new class extends Migration
             $table->string('shop_image')->nullable();
             $table->boolean('is_best_seller')->default(0);
 
-            $table->bigInteger('country_id')->nullable();
-            $table->bigInteger('state_id')->nullable();
-            $table->string('zip')->nullable();
-
             $table->bigInteger('total_followers')->default(0);
             $table->bigInteger('total_sold')->default(0);
             $table->bigInteger('total_items')->default(0);

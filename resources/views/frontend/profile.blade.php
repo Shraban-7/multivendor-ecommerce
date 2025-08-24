@@ -144,40 +144,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- country/region,  state & zip code -->
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-4">
-                                        <div class="from-ctrl space-y-1 sm:space-y-2">
-                                            <label class="block text-sm" for="country-region">Country/Region</label>
-                                            <select id="country-region" name="country_id"
-                                                class="eq w-full px-4 py-2 border border-gray-300 rounded focus:ring-[1] focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base text-jet-gray">
-                                                <option>Select...</option>
-                                                @foreach ($countries as $country)
-                                                    <option value="{{ $country->id }}"
-                                                        {{ $country->id == $user->country_id ? 'selected' : '' }}>
-                                                        {{ $country->name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-
-                                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-4">
-                                            <div class="from-ctrl space-y-1 sm:space-y-2">
-                                                <label class="block text-sm" for="states">States</label>
-                                                <select id="states"
-                                                    class="eq w-full px-4 py-2 border border-gray-300 rounded focus:ring-[1] focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base text-jet-gray">
-                                                    <option>Select...</option>
-                                                    <option value="DH" selected>Dhaka</option>
-                                                    <option value="WB">West Bangle</option>
-                                                    <option value="IS">Islamabad</option>
-                                                </select>
-                                            </div>
-                                            <div class="from-ctrl space-y-1 sm:space-y-2">
-                                                <label for="zip-code" class="block text-sm">Zip Code</label>
-                                                <input type="text" id="zip-code" value="1207"
-                                                    class="eq w-full px-3 py-2 border border-gray-300 rounded focus:ring-[1] focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
-                                            </div>
-                                        </div>
-                                    </div>
 
                                     <button type="submit"
                                         class="bg-primary text-white px-5 py-2 border-2 border-transparent rounded active:ring-[1] active:ring-light-yellow active:border-light-yellow text-xs md:text-sm uppercase font-bold mt-3 md:mt-5 hover:bg-theme-dark eq">

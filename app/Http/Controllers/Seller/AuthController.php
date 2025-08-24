@@ -62,7 +62,6 @@ class AuthController extends Controller
 
         $data['phone'] = $request->phone;
         $data['secondary_email'] = $request->secondary_email;
-        $data['country_id'] = $request->country_id;
 
         if ($request->hasFile('image')) {
             if (!empty($seller->image)) {
