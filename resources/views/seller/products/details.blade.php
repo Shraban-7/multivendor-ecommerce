@@ -212,8 +212,7 @@
 
                                                             <div class="mb-3 col-md-6">
                                                                 <label class="form-label">Discount Type</label>
-                                                                <select name="discount_type" class="form-select"
-                                                                    required>
+                                                                <select name="discount_type" class="form-select">
                                                                     <option value="" selected disabled>
                                                                         --Choose--</option>
                                                                     <option
@@ -232,7 +231,7 @@
                                                                 <label class="form-label">Discount Value</label>
                                                                 <input name="discount_value" type="number"
                                                                     value="{{ $variant->discount_value }}"
-                                                                    class="form-control" required>
+                                                                    class="form-control">
                                                             </div>
                                                             <div class="mb-3 col-md-12">
                                                                 <label class="form-label">Low Stock

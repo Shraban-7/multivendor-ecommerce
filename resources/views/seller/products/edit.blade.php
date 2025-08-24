@@ -99,7 +99,7 @@
                         <div class="mb-3 col-md-3">
                             <label class="form-label">Discount Type</label>
                             <select name="discount_type" class="form-select w-100" id="">
-                                <option value="" selected disabled>--Choose--</option>
+                                <option value="" selected >--Choose--</option>
                                 <option value="{{ \App\Enums\DiscountType::FLAT->value }}"
                                     {{ \App\Enums\DiscountType::FLAT->value == $product->discount_type ? 'selected' : '' }}>
                                     {{ ucfirst(\App\Enums\DiscountType::FLAT->label()) }}

@@ -15,8 +15,8 @@ class ProductVariantController extends Controller
         $data = $request->validate([
             'buying_price' => 'required|numeric',
             'selling_price' => 'required|numeric',
-            'discount_type' => 'required|string',
-            'discount_value' => 'required|numeric',
+            'discount_type' => 'nullable|string',
+            'discount_value' => 'nullable|numeric',
             'option_values' => 'nullable|array|min:1',
             'option_values.*' => 'nullable|array|min:1',
         ]);
@@ -33,7 +33,7 @@ class ProductVariantController extends Controller
             $combinations = [[]];
         }
 
-        $first = true; 
+        $first = true;
 
         foreach ($combinations as $combination) {
             $variantData = [
@@ -41,10 +41,15 @@ class ProductVariantController extends Controller
                 'sku' => strtoupper(uniqid()),
                 'buying_price' => $data['buying_price'],
                 'selling_price' => $data['selling_price'],
-                'discount_type' => $data['discount_type'],
-                'discount_value' => $data['discount_value'],
-                'discount_amount' => calculate_discount_amount($data['selling_price'], $data['discount_type'], $data['discount_value']),
-                'discounted_price' => calculate_discounted_price($data['selling_price'], $data['discount_type'], $data['discount_value']),
+                'discount_type' => $data['discount_type'] ?? null,
+                'discount_value' => $data['discount_value'] ?? null,
+                'discount_amount' => (isset($data['discount_type'], $data['discount_value']) && $data['discount_type'] && $data['discount_value'])
+                    ? calculate_discount_amount($data['selling_price'], $data['discount_type'], $data['discount_value'])
+                    : 0,
+                'discounted_price' => (isset($data['discount_type'], $data['discount_value']) && $data['discount_type'] && $data['discount_value'])
+                    ? calculate_discounted_price($data['selling_price'], $data['discount_type'], $data['discount_value'])
+                    : $data['selling_price'],
+
                 'is_default' => $first ? 1 : 0,
             ];
 
@@ -57,7 +62,7 @@ class ProductVariantController extends Controller
                 ]);
             }
 
-            $first = false; 
+            $first = false;
         }
 
         return response()->json(['success' => true, 'message' => 'Variants added successfully']);
@@ -68,24 +73,31 @@ class ProductVariantController extends Controller
         $data = $request->validate([
             'buying_price' => 'required|string',
             'selling_price' => 'required|string',
-            'discount_type' => 'required|string',
-            'discount_value' => 'required|numeric',
+            'discount_type' => 'nullable|string',
+            'discount_value' => 'nullable|numeric',
             'low_stock_quantity' => 'required|numeric',
             'is_default' => 'nullable|boolean',
         ]);
 
         $data['product_id'] = $product->id;
 
-        $data['discount_amount']  = calculate_discount_amount($data['selling_price'], $data['discount_type'], $data['discount_value']);
-        $data['discounted_price'] = calculate_discounted_price($data['selling_price'], $data['discount_type'], $data['discount_value']);
+        if (!empty($data['discount_type']) && !empty($data['discount_value'])) {
+            $data['discount_amount']  = calculate_discount_amount($data['selling_price'], $data['discount_type'], $data['discount_value']);
+            $data['discounted_price'] = calculate_discounted_price($data['selling_price'], $data['discount_type'], $data['discount_value']);
+        } else {
+            $data['discount_amount']  = 0;
+            $data['discounted_price'] = $data['selling_price'];
+            $data['discount_type']    = null; 
+            $data['discount_value']   = null;
+        }
 
-
-        $data['is_default'] = $request->input('is_default', 0);
+        $data['is_default'] = $request->has('is_default') ? 1 : 0;
 
         $variant->update($data);
 
         return redirect()->back()->with('success', 'Variant Updated Successfully');
     }
+
 
     public function destroy(ProductVariant $variant)
     {
