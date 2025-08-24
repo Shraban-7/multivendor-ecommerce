@@ -6,7 +6,7 @@
     @php
         $original = $product['price'];
         $discounted = $product['discounted_price'];
-        $discountPercent = round((($original - $discounted) / $original) * 100);
+        $discountPercent = $discounted!= null ? round((($original - $discounted) / $original) * 100): '';
     @endphp
 
     @if ($discountPercent > 0)
@@ -36,9 +36,9 @@
             </a>
         </h3>
 
-        @if ($product['almost_sold_out'])
+        {{-- @if ($product['almost_sold_out'])
             <span class="mt-1 inline-block text-xs text-leaf-green font-medium {{ $product['almost_sold_out'] ? 'hidden' : '' }}">Almost Sold Out</span>
-        @endif
+        @endif --}}
 
         <div class="flex items-center justify-between text-xs text-gray-500">
             @if ($product['rating'] > 0)
