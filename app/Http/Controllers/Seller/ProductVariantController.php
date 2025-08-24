@@ -38,7 +38,7 @@ class ProductVariantController extends Controller
         foreach ($combinations as $combination) {
             $variantData = [
                 'product_id' => $product->id,
-                'sku' => strtoupper(uniqid()),
+                'sku' => ProductVariant::gernerate_sku(),
                 'buying_price' => $data['buying_price'],
                 'selling_price' => $data['selling_price'],
                 'discount_type' => $data['discount_type'] ?? null,

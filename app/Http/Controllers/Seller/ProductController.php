@@ -86,7 +86,7 @@ class ProductController extends Controller
 
         $imageFolder = "images/{$seller->username}/products";
 
-        $validated['thumbnail'] = upload_with_watermark($request->file('thumbnail'), "$imageFolder/thumb");
+        // $validated['thumbnail'] = upload_with_watermark($request->file('thumbnail'), "$imageFolder/thumb");
 
         if ($request->hasFile('video')) {
             $validated['video'] = upload_file($request->file('video'), "videos/{$seller->username}/products");
@@ -101,6 +101,24 @@ class ProductController extends Controller
         }
 
         $product = Product::create($validated);
+
+        $variantData = [
+            'product_id' => $product->id,
+            'sku' => ProductVariant::gernerate_sku(),
+            'buying_price' => $validated['buying_price'],
+            'selling_price' => $validated['selling_price'],
+            'discount_type' => $validated['discount_type'] ?? null,
+            'discount_value' => $validated['discount_value'] ?? null,
+            'discount_amount' => (isset($validated['discount_type'], $validated['discount_value']) && $validated['discount_type'] && $validated['discount_value'])
+                ? calculate_discount_amount($validated['selling_price'], $validated['discount_type'], $validated['discount_value'])
+                : 0,
+            'discounted_price' => (isset($validated['discount_type'], $validated['discount_value']) && $validated['discount_type'] && $validated['discount_value'])
+                ? calculate_discounted_price($validated['selling_price'], $validated['discount_type'], $validated['discount_value'])
+                : $validated['selling_price'],
+            'is_default' => 1,
+        ];
+
+        $variant = ProductVariant::create($variantData);
 
         if ($request->hasFile('files')) {
             foreach ($request->file('files') as $file) {

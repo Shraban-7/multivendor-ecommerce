@@ -48,4 +48,9 @@ class ProductVariant extends Model
             get: fn() => implode(', ', $options)
         );
     }
+
+    public static function gernerate_sku()
+    {
+        return strtoupper(uniqid());
+    }
 }
