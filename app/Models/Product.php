@@ -143,14 +143,6 @@ class Product extends Model
 
             'short_description' => $this->short_description,
             'description'       => $this->description,
-            'price'             => $this->selling_price,
-            'discounted_price'  => $this->discounted_price,
-            'buying_cost'       => $this->buying_price,
-            'discount'          => [
-                'type'  => $this->discount_type,
-                'value' => $this->discount_value,
-                'price' => $this->discount_amount,
-            ],
             'stock_status'      => $this->stock_status,
             'in_stock'          => $this->stock_in,
             'sold_out'          => $this->stock_out,

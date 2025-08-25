@@ -295,6 +295,7 @@ $settings = settings();
                     success: function(data) {
                         if (data.cartCount > 0) {
                             $('#cartCount').removeClass('hidden')
+                            $('#totalPrice').removeClass('hidden')
                         }
                         $('#cartCount').text(data.cartCount);
                         $('#totalPrice').text(data.totalPrice);

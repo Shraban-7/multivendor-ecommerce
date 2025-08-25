@@ -4,10 +4,11 @@
     </button>
 
     @php
-        $original = $product['price'];
-        $discounted = $product['discounted_price'];
-        $discountPercent = $discounted!= null ? round((($original - $discounted) / $original) * 100): '';
+        $original_price = $product['defaultVariant']->selling_price ?? null;
+        $discounted_price = $product['defaultVariant']->discounted_price ?? null;
+        $discountPercent = $discounted_price ? round((($original_price - $discounted_price) / $original_price) * 100) : null;
     @endphp
+
 
     @if ($discountPercent > 0)
         <span class="absolute top-3 right-3 z-10 bg-primary text-white text-xs px-2 py-0.5 rounded-full shadow-sm">
@@ -81,16 +82,16 @@
 
         <div class="mt-4 flex items-center justify-between">
             <div class="flex items-baseline gap-2">
-                @if ($product['discounted_price'] != null || $product['discounted_price'] != 0)
+                @if ($discounted_price != null || $discounted_price != 0)
                     <span class="text-primary font-bold text-lg">
-                        {{ money($product['discounted_price']) }}
+                        {{ money($discounted_price) }}
                     </span>
                     <span class="text-sm text-gray-400 line-through">
-                        {{ money($product['price']) }}
+                        {{ money($original_price) }}
                     </span>
                 @else
                     <span class="text-primary font-bold text-lg">
-                        {{ money($product['price']) }}
+                        {{ money($original_price) }}
                     </span>
                 @endif
             </div>
