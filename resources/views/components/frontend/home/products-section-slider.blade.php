@@ -21,6 +21,11 @@
             <div class="mt-5 swiper productCommonSwiper">
                 <div class="swiper-wrapper">
                     @foreach ($products as $product)
+                        @php
+                            $defaultVariant = collect($product['variants'])->firstWhere('is_default', 1);
+                            $basePrice = $defaultVariant['selling_price'] ?? 0;
+                            $discountPrice = $defaultVariant['discounted_price'] ?? 0;
+                        @endphp
                         <div class="swiper-slide group/product-card eq h-full">
                             <div class="flex flex-col justify-between items-center w-full p-2 product-card h-full">
                                 <div
@@ -70,14 +75,11 @@
                                         <div class="flex items-end justify-between gap-2">
                                             <!-- Price -->
                                             <div class="flex gap-2 items-center mt-1 text-sm sm:text-base">
-                                                @if ($product['discounted_price'] !== null)
-                                                    <span
-                                                        class="font-semibold text-primary">{{ money($product['discounted_price']) }}</span>
-                                                    <span
-                                                        class="line-through text-gray-400 text-xs sm:text-sm">{{ money($product['price']) }}</span>
+                                                @if ($discountPrice !== null && $discountPrice < $basePrice)
+                                                    <span class="font-semibold text-primary">{{ money($discountPrice) }}</span>
+                                                    <span class="line-through text-gray-400 text-xs sm:text-sm">{{ money($basePrice) }}</span>
                                                 @else
-                                                    <span
-                                                        class="font-semibold text-primary">{{ money($product['price']) }}</span>
+                                                    <span class="font-semibold text-primary">{{ money($basePrice) }}</span>
                                                 @endif
                                             </div>
                                             <!-- Add to Cart Button -->
@@ -100,9 +102,14 @@
         @else
             <div class="mt-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">
                 @foreach ($products as $product)
+                    @php
+                        $defaultVariant = collect($product['variants'])->firstWhere('is_default', 1);
+                        $basePrice = $defaultVariant['selling_price'] ?? 0;
+                        $discountPrice = $defaultVariant['discounted_price'] ?? 0;
+                    @endphp
                     <div class="group/product-card eq h-full">
                         <div
-                            class="flex flex-col justify-between  w-full h-full bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition duration-200 overflow-hidden">
+                            class="flex flex-col justify-between w-full h-full bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition duration-200 overflow-hidden">
 
                             <!-- Image with aspect ratio -->
                             <div class="relative pt-[100%] bg-gray-50 overflow-hidden">
@@ -115,7 +122,7 @@
                             </div>
 
                             <!-- Content -->
-                            <div class="flex flex-1 flex-col justify-between  px-3 py-3 sm:px-4 sm:py-4 space-y-2">
+                            <div class="flex flex-1 flex-col justify-between px-3 py-3 sm:px-4 sm:py-4 space-y-2">
                                 @php
                                     $avgRating = $product['rating'] ?? 0;
                                     $fullStars = floor($avgRating);
@@ -149,17 +156,13 @@
                                 </p>
                                 <!-- Name + Price + Cart -->
                                 <div class="flex items-end justify-between gap-2">
-                                    <!-- Name & Price -->
                                     <!-- Price -->
                                     <div class="flex gap-2 items-center mt-1 text-sm sm:text-base">
-                                        @if ($product['discounted_price'] !== null)
-                                            <span
-                                                class="font-semibold text-primary">{{ money($product['discounted_price']) }}</span>
-                                            <span
-                                                class="line-through text-gray-400 text-xs sm:text-sm">{{ money($product['price']) }}</span>
+                                        @if ($discountPrice !== null && $discountPrice < $basePrice)
+                                            <span class="font-semibold text-primary">{{ money($discountPrice) }}</span>
+                                            <span class="line-through text-gray-400 text-xs sm:text-sm">{{ money($basePrice) }}</span>
                                         @else
-                                            <span
-                                                class="font-semibold text-primary">{{ money($product['price']) }}</span>
+                                            <span class="font-semibold text-primary">{{ money($basePrice) }}</span>
                                         @endif
                                     </div>
 
