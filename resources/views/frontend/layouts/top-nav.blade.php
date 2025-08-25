@@ -127,7 +127,7 @@ $notificationCount = notificationCount();
                         {{ $cartCount }}
                     </span>
                 </span>
-                <span class="lg:text-base text-sm font-medium" id="totalPrice">{{ money($totalPrice) }}</span>
+                <span class="lg:text-base text-sm font-medium {{ $cartCount > 0 ? '' : 'hidden' }}" id="totalPrice">{{ money($totalPrice) }}</span>
             </a>
             @endif
         </div>
