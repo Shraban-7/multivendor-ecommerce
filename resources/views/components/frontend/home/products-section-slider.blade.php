@@ -70,7 +70,7 @@
                                         <div class="flex items-end justify-between gap-2">
                                             <!-- Price -->
                                             <div class="flex gap-2 items-center mt-1 text-sm sm:text-base">
-                                                @if ($product['discounted_price'] !== null)
+                                                @if (isset($product['discounted_price']) && $product['discounted_price'] !== null)
                                                     <span
                                                         class="font-semibold text-primary">{{ money($product['discounted_price']) }}</span>
                                                     <span
