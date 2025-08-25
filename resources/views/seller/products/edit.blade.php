@@ -57,8 +57,8 @@
 
                         <div class="mb-3 col-md-3">
                             <label class="form-label">Brand</label>
-                            <select name="brand" class="form-select w-100 brand-select" required>
-                                <option value="" disabled>--Choose--</option>
+                            <select name="brand" class="form-select w-100 brand-select">
+                                <option value="" >--Choose--</option>
                                 @foreach ($brands as $brand)
                                     <option value="{{ $brand->id }}"
                                         {{ isset($product) && $product->brand_id == $brand->id ? 'selected' : '' }}>
@@ -77,43 +77,9 @@
                             <x-textarea-input name="description" :value="$product->description" />
                         </div>
                         <div class="mb-3 col-md-3">
-                            <label class="form-label">SKU</label>
-                            <input name="sku" type="text" value="{{ $product->sku }}" class="form-control">
-                        </div>
-                        <div class="mb-3 col-md-3">
-                            <label class="form-label">Buying Price</label>
-                            <input name="buying_price" type="text" value="{{ $product->buying_price }}"
-                                class="form-control" required>
-                        </div>
-                        <div class="mb-3 col-md-3">
-                            <label class="form-label">Selling Price</label>
-                            <input name="selling_price" type="text" value="{{ $product->selling_price }}"
-                                class="form-control" required>
-                        </div>
-                        <div class="mb-3 col-md-3">
                             <label class="form-label">VAT (%)</label>
                             <input name="vat_percent" type="number" value="{{ $product->vat_percent }}"
                                 class="form-control" required>
-                        </div>
-
-                        <div class="mb-3 col-md-3">
-                            <label class="form-label">Discount Type</label>
-                            <select name="discount_type" class="form-select w-100" id="">
-                                <option value="" selected >--Choose--</option>
-                                <option value="{{ \App\Enums\DiscountType::FLAT->value }}"
-                                    {{ \App\Enums\DiscountType::FLAT->value == $product->discount_type ? 'selected' : '' }}>
-                                    {{ ucfirst(\App\Enums\DiscountType::FLAT->label()) }}
-                                </option>
-                                <option value="{{ \App\Enums\DiscountType::PERCENTAGE->value }}"
-                                    {{ \App\Enums\DiscountType::PERCENTAGE->value == $product->discount_type ? 'selected' : '' }}>
-                                    {{ ucfirst(\App\Enums\DiscountType::PERCENTAGE->label()) }}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="mb-3 col-md-3">
-                            <label class="form-label">Discount Value</label>
-                            <input name="discount_value" type="number" value="{{ $product->discount_value }}"
-                                class="form-control">
                         </div>
                         <div class="mb-3 col-md-3">
                             <label class="form-label">Unit <small class="text-muted">(e.g., 2.5 kg)</small></label>
@@ -131,11 +97,6 @@
                                     @endforeach
                                 </select>
                             </div>
-                        </div>
-                        <div class="mb-3 col-md-3">
-                            <label class="form-label">Low Stock Quantity</label>
-                            <input name="low_stock_quantity" type="number" value="{{ $product->low_stock_quantity }}"
-                                class="form-control">
                         </div>
 
                         <div class="mb-3 col-md-3">

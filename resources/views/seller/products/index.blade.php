@@ -14,8 +14,6 @@
         <thead>
             <tr>
                 <th scope="col">Product</th>
-                <th scope="col">Price</th>
-                <th scope="col">Stock</th>
                 <th scope="col">Created at</th>
                 <th scope="col">Action</th>
             </tr>
@@ -34,39 +32,6 @@
                             </div>
                         </div>
                     </div>
-                </td>
-                <td>
-                    Buy: {{ money($product->buying_price) }} <br>
-                    Sell: {{ money($product->selling_price) }}
-                </td>
-                <td>
-                    <div class="mb-2">
-                        @php
-                        $current_stock = $product->stock_in - $product->stock_out;
-                        @endphp
-                        @if ($current_stock > 0)
-                        @if ($current_stock <= $product->low_stock_quantity)
-                            <span class="text-white badge text-bg-warning">Low Stock
-                                ({{ $current_stock }})</span>
-                            @else
-                            <span class="text-white badge text-bg-success">In Stock
-                                ({{ $current_stock }})</span>
-                            @endif
-                            @else
-                            <span class="text-white badge text-bg-danger">Stock Out</span>
-                            @endif
-                    </div>
-
-                    <span>
-                        @if ($product->stock_in > 0)
-                        In: {{ $product->stock_in }}
-                        @endif
-                        @if ($product->stock_out)
-                        | Out:
-                        <span class="text-danger">{{ $product->stock_out }}</span>
-                        @endif
-                    </span>
-
                 </td>
                 <td>{{ $product->created_at->format('d-m-y h:i A') }} </td>
                 <td>

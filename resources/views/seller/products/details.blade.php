@@ -67,50 +67,6 @@
                                                 class="badge border bg-light text-dark small">{{ $product->brand->name }}</span>
                                         @endif
                                     </div>
-
-
-                                    <div class="table-responsive">
-                                        <table class="table mb-0 table-sm product-info">
-                                            <tbody>
-                                                <tr>
-                                                    <td class="fw-bold pe-3" style="width: 30%;">SKU</td>
-                                                    <td>{{ $product->sku }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="fw-bold pe-3">Buying Price</td>
-                                                    <td>{{ money($product->buying_price) }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="fw-bold pe-3">Selling Price</td>
-                                                    <td>{{ money($product->selling_price) }}</td>
-                                                </tr>
-
-                                                @if ($product->profit_amount > 0)
-                                                    <tr>
-                                                        <td class="fw-bold pe-3">Profit Margin</td>
-                                                        <td>
-                                                            <small class="text-muted">
-                                                                {{ money($product->profit_amount) }}
-                                                            </small>
-                                                            <span
-                                                                class="
-                                                                {{ $product->profit_percent >= 30 ? 'text-success' : ($product->profit_percent >= 15 ? 'text-warning' : 'text-danger') }}">
-                                                                {{ number_format($product->profit_percent, 1) }}%
-                                                            </span>
-                                                        </td>
-                                                    </tr>
-                                                @endif
-                                                <tr>
-                                                    <td class="fw-bold pe-3">Created On</td>
-                                                    <td>{{ $product['created_at']->format('d/m/y h:i A') }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="fw-bold pe-3">Last Updated</td>
-                                                    <td>{{ $product['updated_at']->format('d/m/y h:i A') }}</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
                                 </div>
 
                             </div>
@@ -145,19 +101,33 @@
                                         <div class="card-body">
                                             <h6 class="card-title mb-0">SKU: {{ $variant->sku }}</h6>
                                             <div class="small text-muted">
-                                                <p class="mb-0">{{ $variant->fullName }}</p>
+                                                @if ($variant->options && count($variant->options))
+                                                    <p class="mb-1">
+                                                        @foreach ($variant->options as $key => $option)
+                                                            <strong>{{ $option->option_value->option->name }}:</strong>
+                                                            {{ $option->option_value->value }}
+                                                            @if (!$loop->last)
+                                                                ,
+                                                            @endif
+                                                        @endforeach
+                                                    </p>
+                                                @endif
                                                 <hr class="my-2">
                                                 <p class="mb-1">Stock: <strong>{{ $variant->stock }}</strong></p>
-                                                <p class="mb-1">Price: <strong>{{ money($variant->selling_price) }}</strong></p>
-                                                <p class="mb-0">Discounted Price: <strong>{{ money($variant->discounted_price) }}</strong></p>
+                                                <p class="mb-1">Price:
+                                                    <strong>{{ money($variant->selling_price) }}</strong>
+                                                </p>
+                                                <p class="mb-0">Discounted Price:
+                                                    <strong>{{ money($variant->discounted_price) }}</strong>
+                                                </p>
                                             </div>
+
                                             @if ($variant->is_default)
                                                 <span class="badge bg-success">Default Variant</span>
                                             @endif
 
                                             <div class="d-flex mt-2">
-                                                <button class="btn btn-light border btn-sm me-1"
-                                                    data-bs-toggle="modal"
+                                                <button class="btn btn-light border btn-sm me-1" data-bs-toggle="modal"
                                                     data-bs-target="#editVariantModal{{ $variant->id }}">
                                                     <i data-feather="edit" class="icon-xs"></i> Edit
                                                 </button>
@@ -168,6 +138,7 @@
                                             </div>
                                         </div>
                                     </div>
+
 
                                     <!-- Edit Variant Modal -->
                                     <div class="modal fade" id="editVariantModal{{ $variant->id }}" tabindex="-1"
@@ -205,8 +176,7 @@
                                                                         class="input-group-text">{{ currency() }}</span>
                                                                     <input type="number" class="form-control"
                                                                         name="selling_price" step="0.01"
-                                                                        value="{{ $variant->selling_price }}"
-                                                                        required>
+                                                                        value="{{ $variant->selling_price }}" required>
                                                                 </div>
                                                             </div>
 
@@ -265,9 +235,8 @@
                                     </div>
 
                                     <!-- Delete Variant Modal -->
-                                    <div class="modal fade" id="deleteVariantModal{{ $variant->id }}"
-                                        tabindex="-1" aria-labelledby="deleteModalLabel-{{ $variant->id }}"
-                                        aria-hidden="true">
+                                    <div class="modal fade" id="deleteVariantModal{{ $variant->id }}" tabindex="-1"
+                                        aria-labelledby="deleteModalLabel-{{ $variant->id }}" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
                                                 <div class="modal-header">
@@ -380,7 +349,8 @@
                                                         </td>
                                                         <td>
                                                             @if ($history->variant)
-                                                                <span class="badge bg-light text-dark text-wrap">{{ $history->variant->fullName }}</span>
+                                                                <span
+                                                                    class="badge bg-light text-dark text-wrap">{{ $history->variant->fullName }}</span>
                                                             @else
                                                                 <span class="badge bg-secondary">Base Variant</span>
                                                             @endif
@@ -469,7 +439,7 @@
                                     <select class="form-select" id="variant" name="product_variant_id">
                                         <option value="">--Select Variant--</option>
                                         @foreach ($product->variants as $variant)
-                                            <option value="{{ $variant->id }}">{{ $variant->fullName }}</option>
+                                            <option value="{{ $variant->id }}">{{ $variant->product->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>

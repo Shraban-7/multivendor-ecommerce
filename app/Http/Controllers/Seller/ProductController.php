@@ -94,17 +94,13 @@ class ProductController extends Controller
 
         $validated['seller_id'] = $seller->id;
         $validated['slug'] = str_slug('products', 'slug', $validated['name']);
-        $validated['sku'] = $validated['sku'] ?? ProductVariant::gernerate_sku();
-        if (isset($validated['discount_type'], $validated['discount_value'])) {
-            $validated['discount_amount']  = calculate_discount_amount($validated['selling_price'], $validated['discount_type'], $validated['discount_value']);
-            $validated['discounted_price'] = calculate_discounted_price($validated['selling_price'], $validated['discount_type'], $validated['discount_value']);
-        }
+      
 
         $product = Product::create($validated);
 
         $variantData = [
             'product_id' => $product->id,
-            'sku' => ProductVariant::gernerate_sku(),
+            'sku' => $validated['sku'] ?? ProductVariant::gernerate_sku(),
             'buying_price' => $validated['buying_price'],
             'selling_price' => $validated['selling_price'],
             'discount_type' => $validated['discount_type'] ?? null,
@@ -188,17 +184,12 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             'sku' => 'nullable|string|max:255',
             'vat_percent' => 'required|numeric',
-            'buying_price' => 'required|numeric',
-            'selling_price' => 'required|numeric',
-            'discount_type' => 'nullable|string',
-            'discount_value' => 'nullable|numeric',
             'payment_type' => 'required|numeric',
             'unit_id' => 'required|numeric',
             'unit_value' => 'required|string',
             'is_trending' => 'nullable|boolean',
             'best_selling' => 'nullable|boolean',
             'is_featured' => 'nullable|boolean',
-            'low_stock_quantity' => 'required|numeric',
             'thumbnail' => 'nullable|image|max:4096',
             'video' => 'nullable|file',
             'files' => 'nullable|array',
@@ -228,13 +219,6 @@ class ProductController extends Controller
 
         if ($validated['name'] && $validated['name'] !== $product->name) {
             $validated['slug'] = str_slug('products', 'slug', $validated['name']);
-        }
-
-        $validated['sku'] = $validated['sku'] ?? ProductVariant::gernerate_sku();
-
-        if (isset($validated['discount_type'], $validated['discount_value'])) {
-            $validated['discount_amount']  = calculate_discount_amount($validated['selling_price'], $validated['discount_type'], $validated['discount_value']);
-            $validated['discounted_price'] = calculate_discounted_price($validated['selling_price'], $validated['discount_type'], $validated['discount_value']);
         }
 
         if ($request->hasFile('thumbnail')) {
