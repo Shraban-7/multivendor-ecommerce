@@ -161,7 +161,7 @@ class Product extends Model
                 ];
             }),
             'options'           => $this->grouped_options,
-            'defaultVariant'    => collect($this['variants'])->firstWhere('is_default', 1),
+            'default_variant'    => collect($this['variants'])->firstWhere('is_default', 1),
 
             'total_sold'        => $sold,
             'revenue'           => $revenue,

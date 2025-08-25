@@ -84,7 +84,7 @@ $product = [
         <h1>{{ $product['name'] }}</h1>
 
         @php
-        $defaultVariant = collect($product['variants'])->firstWhere('stock', '>', 0);
+        $defaultVariant = $product['default_variant'];
         $defaultValueIds = $defaultVariant['value_ids'] ?? [];
         @endphp
 
@@ -109,7 +109,7 @@ $product = [
 
         {{-- 3. Variant Info Section (Price, Stock, SKU) --}}
         @php
-        $defaultVariant = collect($product['variants'])->firstWhere('stock', '>', 0);
+        $defaultVariant = $product['variants'];
         @endphp
 
         <div id="variant-info" style="margin-top: 20px;">

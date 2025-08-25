@@ -5,7 +5,7 @@
         {
             "id": {{ $product['id'] }},
             "product": @json($product),
-            "defaultVariant": @json(collect($product['variants'])->firstWhere('is_default', 1))
+            "defaultVariant": @json($product['default_variant'])
         }
     </script>
 @endforeach

@@ -4,9 +4,9 @@ $rating = $product['rating'];
 
 $publicProduct = [
     'name' => $product['name'],
-    'price' => $product['defaultVariant']->selling_price ?? null,
-    'discounted_price' => $product['defaultVariant']->discounted_price ?? null,
-    'sku' => $product['defaultVariant']['sku'] ?? null,
+    'price' => $product['default_variant']->selling_price ?? null,
+    'discounted_price' => $product['default_variant']->discounted_price ?? null,
+    'sku' => $product['default_variant']['sku'] ?? null,
     'stock' => $product['stock'],
     'slider' => $product['slider'],
     'variants' => $product['variants'],
@@ -94,7 +94,7 @@ $publicProduct = [
             </div>
             <div class="flex flex-wrap items-center gap-4">
                 @php
-                    $defaultVariant = $product['defaultVariant'] ?? null;
+                    $defaultVariant = $product['default_variant'] ?? null;
                     $variantDiscountedPrice = $defaultVariant
                         ? (is_array($defaultVariant)
                             ? $defaultVariant['discounted_price'] ?? null

@@ -9,7 +9,7 @@
         'variants' => $product['variants'],
     ];
 
-    $defaultVariant = $product['defaultVariant'] ?? null;
+    $defaultVariant = $product['default_variant'] ?? null;
     $variantPrice = $defaultVariant['selling_price'] ?? null;
     $variantDiscountedPrice = $defaultVariant['discounted_price'] ?? null;
     $showVariantDiscount = $variantDiscountedPrice !== null && $variantDiscountedPrice < $variantPrice;

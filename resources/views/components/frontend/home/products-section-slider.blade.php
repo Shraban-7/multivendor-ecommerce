@@ -22,7 +22,7 @@
                 <div class="swiper-wrapper">
                     @foreach ($products as $product)
                         @php
-                            $defaultVariant = collect($product['variants'])->firstWhere('is_default', 1);
+                            $defaultVariant = $product['default_variant'];
                             $basePrice = $defaultVariant['selling_price'] ?? 0;
                             $discountPrice = $defaultVariant['discounted_price'] ?? 0;
                         @endphp
@@ -103,7 +103,7 @@
             <div class="mt-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">
                 @foreach ($products as $product)
                     @php
-                        $defaultVariant = collect($product['variants'])->firstWhere('is_default', 1);
+                        $defaultVariant = $product['default_variant'];
                         $basePrice = $defaultVariant['selling_price'] ?? 0;
                         $discountPrice = $defaultVariant['discounted_price'] ?? 0;
                     @endphp
