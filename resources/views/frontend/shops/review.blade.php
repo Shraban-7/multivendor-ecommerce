@@ -49,7 +49,7 @@
                             <h1 class="text-xl md:text-2xl font-light">{{ $seller->business_name }}</h1>
                             <div class="flex items-center gap-1 flex-nowrap text-sm">
                                 <i class="fa-solid fa-circle-check text-butterfly-blue md:text-xl"></i>
-                                <span>Authorized By Tesco</span>
+                                <span>Authorized By {{ app_name() }}</span>
                             </div>
                         </div>
                     </div>

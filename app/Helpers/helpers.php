@@ -366,6 +366,13 @@ if (! function_exists('settings')) {
     }
 }
 
+if (! function_exists('app_name')) {
+    function app_name()
+    {
+        return SystemSetting::first()->app_name;
+    }
+}
+
 if (! function_exists('calculate_discounted_price')) {
     function calculate_discounted_price(float $price, ?string $type, ?float $value): float
     {

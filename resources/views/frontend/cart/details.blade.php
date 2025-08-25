@@ -260,7 +260,7 @@
                         </div>
                         <div class="mt-2 space-y-2 sm:mt-3">
                             <p class="text-sm text-leaf-green">
-                                Tesco is committed to protecting your payment information.
+                                {{ app_name() }} is committed to protecting your payment information.
                             </p>
                             <p class="text-muted-foreground">
                                 We follow PCI DSS standards, use strong encryption, and
@@ -338,7 +338,7 @@
                                     </svg>
                                 </span>
 
-                                <span>Tesco Purchase Protection </span>
+                                <span>{{ app_name() }} Purchase Protection </span>
                             </h4>
                             <p>
                                 Shop confidently on Temu knowing that if something goes
