@@ -131,14 +131,16 @@
                                                     data-bs-target="#editVariantModal{{ $variant->id }}">
                                                     <i data-feather="edit" class="icon-xs"></i> Edit
                                                 </button>
-                                                <button class="btn btn-danger border btn-sm" data-bs-toggle="modal"
-                                                    data-bs-target="#deleteVariantModal{{ $variant->id }}">
-                                                    <i data-feather="trash" class="icon-xs"></i> Delete
-                                                </button>
+
+                                                @if ($variant->stock_out <= 0)
+                                                    <button class="btn btn-danger border btn-sm " data-bs-toggle="modal"
+                                                        data-bs-target="#deleteVariantModal{{ $variant->id }}">
+                                                        <i data-feather="trash" class="icon-xs"></i> Delete
+                                                    </button>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
-
 
                                     <!-- Edit Variant Modal -->
                                     <div class="modal fade" id="editVariantModal{{ $variant->id }}" tabindex="-1"
@@ -146,8 +148,7 @@
                                         <div class="modal-dialog modal-dialog-centered modal-lg">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title"
-                                                        id="editVariantModalLabel{{ $variant->id }}">
+                                                    <h5 class="modal-title" id="editVariantModalLabel{{ $variant->id }}">
                                                         Edit Variant
                                                     </h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -439,7 +440,7 @@
                                     <select class="form-select" id="variant" name="product_variant_id">
                                         <option value="">--Select Variant--</option>
                                         @foreach ($product->variants as $variant)
-                                            <option value="{{ $variant->id }}">{{ $variant->product->name }}</option>
+                                            <option value="{{ $variant->id }}">{{ $variant->fullName }}</option>
                                         @endforeach
                                     </select>
                                 </div>

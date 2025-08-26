@@ -85,8 +85,8 @@ class ProductVariantController extends Controller
             $data['discount_amount']  = calculate_discount_amount($data['selling_price'], $data['discount_type'], $data['discount_value']);
             $data['discounted_price'] = calculate_discounted_price($data['selling_price'], $data['discount_type'], $data['discount_value']);
         } else {
-            $data['discount_amount']  = 0;
-            $data['discounted_price'] = $data['selling_price'];
+            $data['discount_amount']  = null;
+            $data['discounted_price'] = null;
             $data['discount_type']    = null; 
             $data['discount_value']   = null;
         }

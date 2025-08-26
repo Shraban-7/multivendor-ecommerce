@@ -359,7 +359,12 @@ $settings = settings();
                     $availability.text(variant.stock > 0 ? "In Stock" : "Out of Stock");
                     $variantIdInput.val(variant.id);
                     $variantError.addClass("hidden");
-                    $addToCartBtn.prop("disabled", false).removeClass("opacity-50 cursor-not-allowed");
+                    if (variant.stock <= 0) {
+                        $addToCartBtn.prop("disabled", true).addClass("opacity-50 cursor-not-allowed");
+                        
+                    } else { 
+                        $addToCartBtn.prop("disabled", false).removeClass("opacity-50 cursor-not-allowed");
+                    }
                     $qtyInput.val(quantity);
                     $qtyEl.val(quantity);
 
@@ -399,6 +404,8 @@ $settings = settings();
                     $wrapper.find('#main-product-image').attr('src', `/storage/${product.slider[0] ?? ''}`);
 
                 } else {
+
+                    console.log("else")
                     const basePrice = parseFloat(product.price) || 0;
                     const discounted = product.discounted_price !== null ? parseFloat(product.discounted_price) :
                         null;
@@ -465,7 +472,13 @@ $settings = settings();
 
                 const selectedOptions = collectSelectedOptions($wrapper);
 
+                console.log(selectedOptions);
+                
+
                 const variant = getSelectedVariant(product, selectedOptions);
+
+                console.log(variant);
+                
 
                 const quantity = parseInt($wrapper.find(".qtyInputValue").val()) || 1;
 

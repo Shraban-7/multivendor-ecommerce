@@ -106,7 +106,7 @@ class OrderController extends Controller
         $orderItems = [];
         $shipping_fee = $seller->shipping_cost;
 
-        $payment_type = PaymentType::COD_ONLY->value; 
+        $payment_type = PaymentType::COD_ONLY->value;
 
         foreach ($cart->cart_items as $cartItem) {
             $product = $cartItem->product;
@@ -114,15 +114,15 @@ class OrderController extends Controller
             $unitPrice = $cartItem->price;
             $itemTotal = $cartItem->quantity * $unitPrice;
             $itemDiscount = $cartItem->quantity * ($cartItem->original_price - $cartItem->discounted_price);
-            $vat_amount += floatval(($product->vat_percent*$unitPrice)/100) * $cartItem->quantity;
+            $vat_amount += floatval(($product->vat_percent * $unitPrice) / 100) * $cartItem->quantity;
             $sub_total += $itemTotal;
             $discount += $itemDiscount;
             $grand_total = $sub_total + $discount;
 
-            if($product->payment_type->value == PaymentType::FULL_PAYMENT->value) {
+            if ($product->payment_type->value == PaymentType::FULL_PAYMENT->value) {
                 $payment_type = PaymentType::FULL_PAYMENT->value;
-            } elseif($product->payment_type->value == PaymentType::COD_WITH_DELIVERY_CHARGE->value) {
-                $payment_type = PaymentType::COD_WITH_DELIVERY_CHARGE->value; 
+            } elseif ($product->payment_type->value == PaymentType::COD_WITH_DELIVERY_CHARGE->value) {
+                $payment_type = PaymentType::COD_WITH_DELIVERY_CHARGE->value;
             }
 
             $orderItems[] = [
@@ -134,7 +134,7 @@ class OrderController extends Controller
                 'discount' => $itemDiscount,
                 'sub_total' => $itemTotal,
                 'vat_percent' => $product->vat_percent,
-                'vat_amount' => floatval(($product->vat_percent*$unitPrice)/100) * $cartItem->quantity,
+                'vat_amount' => floatval(($product->vat_percent * $unitPrice) / 100) * $cartItem->quantity,
             ];
         }
 
@@ -187,7 +187,7 @@ class OrderController extends Controller
             'billing_information' => json_encode($billingAddressArray),
             'invoice_id' => $invoiceId,
             'sub_total' => $sub_total,
-            'total'=> $sub_total + $vat_amount + $shipping_fee,
+            'total' => $sub_total + $vat_amount + $shipping_fee,
             'discount' => $discount,
             'vat_amount' => $vat_amount,
             'shipping_fee' => $shipping_fee,
@@ -205,9 +205,10 @@ class OrderController extends Controller
         $order->items()->createMany($orderItems);
 
         foreach ($order->items as $item) {
-            $product = optional(Product::find($item['product_id']));
+            $product = Product::find($item['product_id']);
+
             if (isset($item['product_variant_id'])) {
-                $variant = optional(ProductVariant::find($item['product_variant_id']));
+                $variant = ProductVariant::find($item['product_variant_id']);
 
                 if ($variant) {
                     $variant->increment('stock_out', $item['quantity']);
@@ -232,16 +233,16 @@ class OrderController extends Controller
             'total_sold' => $sellerOrderCount,
         ]);
 
-        if($payment_type == PaymentType::COD_WITH_DELIVERY_CHARGE->value) {
+        if ($payment_type == PaymentType::COD_WITH_DELIVERY_CHARGE->value) {
             $payableAmount = $shipping_fee;
-        } 
+        }
 
-        if($payment_type == PaymentType::COD_ONLY->value) {
+        if ($payment_type == PaymentType::COD_ONLY->value) {
             $paymentGateway = [
                 'message' => 'Order placed successfully',
                 'payment_url' => route('orders.index'),
             ];
-        } else {   
+        } else {
             $paymentGateway = $this->initiatePaymentGateway($request, $invoiceId, $payableAmount, $billingAddress->id);
         }
 

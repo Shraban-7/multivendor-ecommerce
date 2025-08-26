@@ -455,7 +455,7 @@
 
         <!-- Product Card's Wrapper -->
         <div id="product-list"
-            class="grid items-start grid-cols-2 gap-3 p-2 md:grid-cols-4 xl:gap-8 lg:p-0">
+            class="grid items-start grid-cols-2 gap-3 p-2 md:grid-cols-4 lg:grid-cols-6  xl:gap-8 lg:p-0">
             @include('frontend.partials.product-card-load', ['products' => $products])
         </div>
 
