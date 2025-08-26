@@ -161,8 +161,8 @@ class Product extends Model
                 ];
             }),
             'options'           => $this->grouped_options,
-            'default_variant'    => collect($this['variants'])->firstWhere('is_default', 1),
-
+            //'default_variant'    => collect($this['variants'])->firstWhere('is_default', 1),
+            'default_variant'    => collect($this['variants'])->sortByDesc('is_default')->first(),
             'total_sold'        => $sold,
             'revenue'           => $revenue,
             'profit'            => $profit,
