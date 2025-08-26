@@ -91,7 +91,7 @@
                         </div>
 
                         @if ($product->variants->isEmpty())
-                            <div class="alert alert-info text-center">No variants available for this product.</div>
+                            <div class="alert alert-info text-center">No variants.</div>
                         @endif
 
                         <div class="row g-3">
@@ -183,7 +183,7 @@
                                                             <div class="mb-3 col-md-6">
                                                                 <label class="form-label">Discount Type</label>
                                                                 <select name="discount_type" class="form-select">
-                                                                    <option value="" selected disabled>
+                                                                    <option value="" selected>
                                                                         --Choose--</option>
                                                                     <option
                                                                         value="{{ \App\Enums\DiscountType::FLAT->value }}"
@@ -518,7 +518,7 @@
                                     <div class="mb-3 col-md-6">
                                         <label class="form-label">Discount Type</label>
                                         <select name="discount_type" class="form-select w-100" id="" required>
-                                            <option value="" selected disabled>--Choose--</option>
+                                            <option value="" selected>--Choose--</option>
                                             <option value="{{ \App\Enums\DiscountType::FLAT->value }}"
                                                 {{ $product->discount_type == \App\Enums\DiscountType::FLAT->value ? 'selected' : '' }}>
                                                 {{ ucfirst(\App\Enums\DiscountType::FLAT->label()) }}

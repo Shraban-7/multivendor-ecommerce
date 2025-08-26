@@ -48,7 +48,7 @@ class ProductVariantController extends Controller
                     : 0,
                 'discounted_price' => (isset($data['discount_type'], $data['discount_value']) && $data['discount_type'] && $data['discount_value'])
                     ? calculate_discounted_price($data['selling_price'], $data['discount_type'], $data['discount_value'])
-                    : $data['selling_price'],
+                    : null,
 
                 'is_default' => $first ? 1 : 0,
             ];
