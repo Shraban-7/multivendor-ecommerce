@@ -11,13 +11,19 @@ use App\Http\Controllers\Seller\CustomerController;
 use App\Http\Controllers\Seller\DashboardController;
 use App\Http\Controllers\Seller\SellerChatController;
 use App\Http\Controllers\Seller\NotificationController;
+use App\Http\Controllers\Seller\PosController;
 use App\Http\Controllers\Seller\ProductVariantController;
 use App\Http\Controllers\Seller\SellerCampaignController;
 
 Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () {
+
+    Route::prefix('pos')->as('pos.')->group(function () {
+        Route::get('/', [PosController::class, 'index'])->name('index');
+    });
+
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
-    Route::match(['get','post'],'/profile/{username}', [SellerController::class, 'profile'])->name('profile');
+    Route::match(['get', 'post'], '/profile/{username}', [SellerController::class, 'profile'])->name('profile');
 
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
 
@@ -83,5 +89,3 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
 
     Route::post('banner-image/{image}/delete', [SettingController::class, 'deleteImage'])->name('bannerImages.delete');
 });
-
-

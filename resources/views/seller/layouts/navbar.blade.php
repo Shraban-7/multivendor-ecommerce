@@ -1,19 +1,25 @@
 <nav class="navbar-classic navbar navbar-expand-lg">
     <a id="nav-toggle" href="#"><i data-feather="menu" class="nav-icon me-2 icon-xs"></i></a>
     <div class="ms-lg-3 d-none d-md-none d-lg-block">
-        <form class="d-flex align-items-center">
+        <!-- <form class="d-flex align-items-center">
             <input type="search" class="form-control" placeholder="Search" />
-        </form>
+        </form> -->
     </div>
     <ul class="navbar-nav navbar-right-wrap ms-auto d-flex align-items-center gap-3 nav-top-wrap">
+        <div>
+            <a href="{{ route('seller.pos.index') }}" class="btn btn-primary btn-sm">
+                <i class="bi bi-cart me-1"></i>POS
+            </a>
+        </div>
+
         <li class="dropdown stopevent position-relative">
             <a class="indicator indicator-primary text-muted position-relative" href="{{ route('seller.notifications.index') }}">
                 <i class="icon-xs" data-feather="bell"></i>
                 @if (notificationCount() > 0)
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                        style="font-size: 10px;">
-                        {{ notificationCount() }}
-                    </span>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                    style="font-size: 10px;">
+                    {{ notificationCount() }}
+                </span>
                 @endif
             </a>
         </li>
@@ -51,7 +57,5 @@
                 </ul>
             </div>
         </li>
-
     </ul>
-
 </nav>
