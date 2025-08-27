@@ -145,7 +145,19 @@
 
                         <div class="mb-3 col-12">
                             <label class="form-label">Thumbnail</label>
-                            <x-image-input name="thumbnail" :image="storage_url($product->thumbnail)" />
+                            <!-- <x-image-input name="thumbnail" :image="storage_url($product->thumbnail)" /> -->                            
+
+                            <div style="width: 250px;">
+                                <div class="form-group">
+                                    <div class="image-preview border bg-light d-flex justify-content-center text-center align-items-center position-relative"
+                                        style="width: 200px; height: 200px; cursor: pointer; overflow: hidden;">
+                                        <img src="{{ storage_url($product->thumbnail) }}" alt="image" class="img-fluid rounded" 
+                                            style="width: 100%; height: 100%; object-fit: cover;">
+                                    </div>
+                                    <input type="file" name="thumbnail" class="d-none file-input" accept="image/*">
+                                    <button type="button" class="btn btn-danger btn-sm mt-2 remove-image d-none">Remove Image</button>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="col-12">
@@ -262,7 +274,6 @@
                     reader.readAsDataURL(file);
                 });
             });
-
 
             $(document).ready(function() {
                 if (!"{{ $product->subcategory_id ? 'true' : 'false' }}") {
@@ -397,11 +408,11 @@
             const imagePreviewDiv = imageInputComponent.closest('.form-group').querySelector('.image-preview');
             const removeImageBtn = imageInputComponent.closest('.form-group').querySelector('.remove-image');
 
-            imagePreviewDiv.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                modal.show();
-            });
+            // imagePreviewDiv.addEventListener('click', function(e) {
+            //     e.preventDefault();
+            //     e.stopPropagation();
+            //     modal.show();
+            // });
 
             thumbnailInput.addEventListener('change', function() {
                 const file = this.files[0];
