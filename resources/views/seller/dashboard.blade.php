@@ -189,7 +189,7 @@
                                 @foreach ($latest_orders as $order)
                                     <tr>
                                         <td>{{ $order->id }}</td>
-                                        <td>{{ $order->user->name }}</td>
+                                        <td>{{ $order->user->name ?? '' }}</td>
                                         <td>{{ money($order->total) }}</td>
                                         <td>
                                             @if ($order->status->label() === 'pending')

@@ -101,6 +101,7 @@
                         <x-dashboard.nav-item-link :route="'seller.orders.returned'">Returned</x-dashboard.nav-item-link>
                         <x-dashboard.nav-item-link :route="'seller.orders.refunded'">Refunded</x-dashboard.nav-item-link>
                         <x-dashboard.nav-item-link :route="'seller.orders.cancelled'">Cancelled</x-dashboard.nav-item-link>
+                        <x-dashboard.nav-item-link :route="'seller.orders.pos_orders'">POS</x-dashboard.nav-item-link>
                     </ul>
                 </div>
             </li>

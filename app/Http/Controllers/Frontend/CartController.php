@@ -13,7 +13,6 @@ class CartController extends Controller
 {
     public function add(Request $request)
     {
-        // dd($request->all());
         $data = $request->validate([
             'product_id' => 'required',
             'variant_id' => 'nullable',

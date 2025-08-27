@@ -19,6 +19,11 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
 
     Route::prefix('pos')->as('pos.')->group(function () {
         Route::get('/', [PosController::class, 'index'])->name('index');
+        Route::post('/cart-add', [PosController::class, 'cart_add'])->name('cart_add');
+        Route::post('/cart/update', [PosController::class, 'cart_update'])->name('cart_update');
+        Route::post('/cart-item/remove', [PosController::class, 'remove_cart_item'])->name('remove_cart_item');
+        Route::post('/cart-clear', [PosController::class, 'cart_clear'])->name('cart_clear');
+        Route::post('/place-order', [PosController::class, 'place_order'])->name('place_order');
     });
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -57,6 +62,7 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::get('/cancelled', [OrderController::class, 'index'])->name('cancelled');
         Route::get('/refunded', [OrderController::class, 'index'])->name('refunded');
         Route::get('/returned', [OrderController::class, 'index'])->name('returned');
+        Route::get('/pos-orders', [OrderController::class, 'pos_orders'])->name('pos_orders');
         Route::get('/details/{invoice_id}', [OrderController::class, 'details'])->name('details');
         Route::Post('/update-status/{order}', [OrderController::class, 'updateStatus'])->name('updateStatus');
     });

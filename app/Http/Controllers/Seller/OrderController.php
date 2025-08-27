@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Seller;
 
 use App\Enums\OrderStatus;
@@ -15,21 +16,34 @@ class OrderController extends Controller
 
         $statusValue = OrderStatus::valueFromLabel($type);
 
-        if ($statusValue === null) {
+        if ($statusValue === null && $type != 'pos') {
             return redirect()->route('seller.dashboard');
         }
 
         $orders = Order::where('seller_id', $seller_id)
             ->where('status', $statusValue)
+            ->whereNotNull('user_id')
             ->latest('id')
             ->get();
 
         return view('seller.orders.index', compact('orders', 'type'));
     }
 
+    public function pos_orders()
+    {
+        $seller_id = seller()->id;
+
+        $orders = Order::where('seller_id', $seller_id)
+            ->whereNull('user_id')
+            ->latest('id')
+            ->get();
+
+        return view('seller.orders.pos-orders', compact('orders'));
+    }
+
     public function details($invoice_id)
     {
-        $order = Order::where('invoice_id',$invoice_id)->first();
+        $order = Order::where('invoice_id', $invoice_id)->first();
         $seller_id = seller()->id;
         if ($seller_id == $order->seller_id) {
             $order->load(['review', 'items']);
@@ -58,5 +72,4 @@ class OrderController extends Controller
         }
         return redirect()->back();
     }
-    
 }
