@@ -199,11 +199,11 @@
                             <!-- Payment Buttons -->
                             <div class="d-grid gap-2">
                                 <button id="placeOrderBtn" class="btn btn-success">
-                                    <i class="bi bi-cash me-2"></i>Cash Payment
+                                    <i class="bi bi-cart me-2"></i>Checkout
                                 </button>
-                                <button class="btn btn-primary">
+                                <!-- <button class="btn btn-primary">
                                     <i class="bi bi-credit-card me-2"></i>Card Payment
-                                </button>
+                                </button> -->
                                 <button id="clearCartBtn" class="btn btn-danger" data-bs-toggle="modal"
                                     data-bs-target="#clearCartModal">
                                     <i class="bi bi-trash me-2"></i> Clear Cart
