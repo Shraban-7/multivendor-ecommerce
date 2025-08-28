@@ -28,14 +28,14 @@
             <a class="rounded-circle d-flex align-items-center" href="#" role="button" id="dropdownUser"
                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <div class="avatar avatar-md avatar-indicators avatar-online">
-                    <img alt="avatar" src="{{ storage_url(seller()->image) }}" class="rounded-circle" />
+                    <img alt="avatar" src="{{ storage_url(seller()->image ?? '') }}" class="rounded-circle" />
                 </div>
             </a>
             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser">
                 <div class="px-4 pb-0 pt-2">
                     <div class="lh-1">
-                        <h5 class="mb-1">{{ seller()->name }}</h5>
-                        <a href="{{ route('seller.profile', seller()->username) }}"
+                        <h5 class="mb-1">{{ seller()->name ?? employee()->name }}</h5>
+                        <a href="{{ route('seller.profile', seller()->username ?? employee()->name) }}"
                             class="text-inherit fs-6">Profile</a>
                     </div>
                     <div class="dropdown-divider mt-3 mb-2"></div>

@@ -222,6 +222,13 @@ if (! function_exists('seller')) {
     }
 }
 
+if (! function_exists('employee')) {
+    function employee()
+    {
+        return Auth::guard('employee')->user();
+    }
+}
+
 if (! function_exists('apiResponse')) {
     function apiResponse(object | array $data, string | null $message = null, int $statusCode = 200)
     {

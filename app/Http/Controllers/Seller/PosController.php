@@ -12,12 +12,14 @@ use App\Models\PosCartItem;
 use Illuminate\Http\Request;
 use App\Models\ProductVariant;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class PosController extends Controller
 {
     public function index()
     {
-        $seller_id = seller()->id;
+        $employee = employee();
+        $seller_id = seller()->id ?? $employee->seller_id;
 
         $products = Product::where('seller_id', $seller_id)->with('variants.option_values')->get();
 
@@ -223,7 +225,8 @@ class PosController extends Controller
 
     public function place_order()
     {
-        $seller_id = seller()->id;
+        $employee = employee();
+        $seller_id = seller()->id ?? $employee->seller_id;
 
         $cart = PosCart::where('seller_id', $seller_id)->first();
         $cartItems = $cart->items()->with('variant.product')->get();
@@ -281,5 +284,18 @@ class PosController extends Controller
         return apiResponse([
             'message' => 'Order Placed successfully',
         ]);
+    }
+
+    public function orders()
+    {
+        $employee = employee();
+        $seller_id = seller()->id ?? $employee->seller_id;
+
+        $orders = Order::where('seller_id', $seller_id)
+            ->whereNull('user_id')
+            ->latest('id')
+            ->get();
+
+        return view('seller.orders.pos-orders', compact('orders'));
     }
 }

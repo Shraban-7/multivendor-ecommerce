@@ -14,6 +14,7 @@ use App\Http\Controllers\Seller\NotificationController;
 use App\Http\Controllers\Seller\PosController;
 use App\Http\Controllers\Seller\ProductVariantController;
 use App\Http\Controllers\Seller\SellerCampaignController;
+use App\Http\Controllers\Seller\SellerEmployeeController;
 
 Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () {
 
@@ -24,6 +25,16 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::post('/cart-item/remove', [PosController::class, 'remove_cart_item'])->name('remove_cart_item');
         Route::post('/cart-clear', [PosController::class, 'cart_clear'])->name('cart_clear');
         Route::post('/place-order', [PosController::class, 'place_order'])->name('place_order');
+        Route::get('/orders', [PosController::class, 'orders'])->name('orders');
+    });
+
+    Route::prefix('employees')->as('employees.')->group(function () {
+        Route::get('/', [SellerEmployeeController::class, 'index'])->name('index');
+        Route::get('/create', [SellerEmployeeController::class, 'create'])->name('create');
+        Route::post('/store', [SellerEmployeeController::class, 'store'])->name('store');
+        Route::get('{id}/edit', [SellerEmployeeController::class, 'edit'])->name('edit');
+        Route::post('{id}/update', [SellerEmployeeController::class, 'update'])->name('update');
+        Route::post('{id}/toggle-active', [SellerEmployeeController::class, 'toggleActive'])->name('toggle_active');
     });
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

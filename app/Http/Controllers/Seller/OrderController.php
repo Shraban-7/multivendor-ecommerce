@@ -29,18 +29,6 @@ class OrderController extends Controller
         return view('seller.orders.index', compact('orders', 'type'));
     }
 
-    public function pos_orders()
-    {
-        $seller_id = seller()->id;
-
-        $orders = Order::where('seller_id', $seller_id)
-            ->whereNull('user_id')
-            ->latest('id')
-            ->get();
-
-        return view('seller.orders.pos-orders', compact('orders'));
-    }
-
     public function details($invoice_id)
     {
         $order = Order::where('invoice_id', $invoice_id)->first();

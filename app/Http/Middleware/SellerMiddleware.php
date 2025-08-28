@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Middleware;
 
+use App\Models\SellerEmployee;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,10 +16,12 @@ class SellerMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = Auth::guard('seller')->user();
+        $seller = Auth::guard('seller')->user();
 
-        if (! $user || $user->is_active != 1) {
-            return redirect('/login');
+        $employee = Auth::guard('employee')->user();
+
+        if (($seller && $seller->is_active == 1) || ($employee && $employee->is_active == 1)) {
+            return $next($request);
         }
 
         return $next($request);

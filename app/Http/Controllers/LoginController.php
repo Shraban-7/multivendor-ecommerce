@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Models\Seller;
+use App\Models\SellerEmployee;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,8 +20,9 @@ class LoginController extends Controller
         $user   = User::where('email', $request->email)->first();
         $seller = Seller::where('email', $request->email)->first();
         $admin  = Admin::where('email', $request->email)->first();
+        $employee = SellerEmployee::where('email',$request->email)->first();
 
-        if (! $user && ! $seller && ! $admin) {
+        if (! $user && ! $seller && ! $admin && !$employee) {
             return redirect()->back()->with('error', 'Incorrect email!');
         }
 
@@ -48,6 +50,21 @@ class LoginController extends Controller
             session()->flash('success', 'Login successful');
 
             return redirect()->route('seller.dashboard')->with('success', 'You successfully login');
+        }
+
+        if ($employee) {
+            if ($employee->is_active != 1) {
+                return redirect()->back()->with('warning', 'Wait for admin approval');
+            }
+            
+            if (! Auth::guard('employee')->attempt($request->only('email', 'password'))) {
+                return redirect()->back()->with('error', 'Incorrect password!');
+            }
+            
+            $request->session()->regenerate();
+            session()->flash('success', 'Login successful');
+
+            return redirect()->route('seller.pos.index')->with('success', 'You successfully login');
         }
 
         if ($admin) {

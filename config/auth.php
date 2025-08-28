@@ -15,6 +15,10 @@ return [
             'driver' => 'session',
             'provider' => 'sellers',
         ],
+        'employee' => [
+            'driver' => 'session',
+            'provider' => 'seller_employees',
+        ],
         'admin' => [
             'driver' => 'session',
             'provider' => 'admins',
@@ -29,6 +33,10 @@ return [
         'sellers' => [
             'driver' => 'eloquent',
             'model' => App\Models\Seller::class,
+        ],
+        'seller_employees' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\SellerEmployee::class,
         ],
         'admins' => [
             'driver' => 'eloquent',
@@ -50,6 +58,12 @@ return [
         ],
         'sellers' => [
             'provider' => 'sellers',
+            'table' => 'password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'seller_employees' => [
+            'provider' => 'seller_employees',
             'table' => 'password_reset_tokens',
             'expire' => 60,
             'throttle' => 60,

@@ -32,10 +32,15 @@ class AuthController extends Controller
 
     public function logout()
     {
-        Auth::guard('seller')->logout();
+        if (Auth::guard('seller')->check()) {
+            Auth::guard('seller')->logout();
+        } elseif (Auth::guard('employee')->check()) {
+            Auth::guard('employee')->logout();
+        }
 
         return redirect()->route('login');
     }
+
 
     public function profile()
     {
