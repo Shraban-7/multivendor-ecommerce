@@ -104,16 +104,13 @@ class PosController extends Controller
 
         $html = view('components.seller.pos-cart-items', compact('cartItems'))->render();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Product added to cart',
-            'action'  => 'add_to_pos_cart',
+        return apiResponse([
             'html'    => $html,
             'subtotal'     => money($subtotal),
             'vat_amount'   => money($vat_amount),
             'discount'     => money($discount),
             'total'        => money($total),
-        ]);
+        ], "Product added to cart");
     }
 
     public function cart_update(Request $request)
@@ -146,15 +143,13 @@ class PosController extends Controller
 
         $html = view('components.seller.pos-cart-items', compact('cartItems'))->render();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Cart updated',
-            'html' => $html,
-            'subtotal' => money($subtotal),
-            'vat_amount' => money($vat_amount),
-            'discount' => money($discount),
-            'total' => money($total),
-        ]);
+        return apiResponse([
+            'html'    => $html,
+            'subtotal'     => money($subtotal),
+            'vat_amount'   => money($vat_amount),
+            'discount'     => money($discount),
+            'total'        => money($total),
+        ], "Cart Updated Successfully");
     }
 
     public function remove_cart_item(Request $request)
@@ -195,16 +190,13 @@ class PosController extends Controller
 
         $html = view('components.seller.pos-cart-items', compact('cartItems'))->render();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Item removed from cart',
-            'action'  => 'remove_from_pos_cart',
+        return apiResponse([
             'html'    => $html,
             'subtotal'     => money($subtotal),
             'vat_amount'   => money($vat_amount),
             'discount'     => money($discount),
             'total'        => money($total),
-        ]);
+        ], "Item Remove From Cart Successfully!");
     }
 
     public function cart_clear(Request $request)
@@ -215,11 +207,12 @@ class PosController extends Controller
         $cart = PosCart::where('seller_id', $seller_id)->first();
 
         if (!$cart) {
-            return errorResponse("No Cart Items Found");
+            return errorResponse("No Cart Items Found!");
         }
 
         if ($cart) {
             $cart->items()->delete();
+            $cart->delete();
         }
 
         return successResponse("Cart Clear Successfully");
@@ -233,7 +226,7 @@ class PosController extends Controller
         $cart = PosCart::where('seller_id', $seller_id)->first();
 
         if(!$cart) {
-            return errorResponse("No items in the cart!");
+            return errorResponse("No items found in the cart!");
         }
 
         $cartItems = $cart->items()->with('variant.product')->get();
@@ -289,9 +282,7 @@ class PosController extends Controller
 
         $cart->delete();
 
-        return apiResponse([
-            'message' => 'Order Placed successfully',
-        ]);
+        return successResponse("Order Placed Successfully");
     }
 
     public function orders()

@@ -160,9 +160,9 @@
                                 </button>
                             </div>
                             <!-- <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" id="taxableSwitch">
-                                                <label class="form-check-label small" for="taxableSwitch">Taxable</label>
-                                            </div> -->
+                                                            <input class="form-check-input" type="checkbox" id="taxableSwitch">
+                                                            <label class="form-check-label small" for="taxableSwitch">Taxable</label>
+                                                        </div> -->
                         </div>
 
                         <!-- Order Items -->
@@ -209,8 +209,8 @@
                                     <i class="bi bi-cart me-2"></i>Checkout
                                 </button>
                                 <!-- <button class="btn btn-primary">
-                                                    <i class="bi bi-credit-card me-2"></i>Card Payment
-                                                </button> -->
+                                                                <i class="bi bi-credit-card me-2"></i>Card Payment
+                                                            </button> -->
 
                             </div>
                         </div>
@@ -265,17 +265,18 @@
                     var quantity = $(this).data('quantity');
 
                     $.ajax({
-                        url: '{{ route('seller.pos.cart_add') }}',
+                        url: "{{ route('seller.pos.cart_add') }}",
                         method: 'POST',
                         data: {
                             variant_id: variantId,
                             quantity: quantity,
-                            _token: '{{ csrf_token() }}'
+                            _token: "{{ csrf_token() }}"
                         },
                         success: function(response) {
-                            if (response.success) {
-                                $('.order-items tbody').html(response.html);
-                                resetOrderSummery(response);
+                            if (response.status) {
+                                $('.order-items tbody').html(response.data.html);
+                                summery = response.data;
+                                resetOrderSummary(summery);
                             } else {
                                 alert(response.message)
                             }
@@ -293,17 +294,18 @@
                     var action = $(this).data('action');
 
                     $.ajax({
-                        url: '{{ route('seller.pos.cart_update') }}',
+                        url: "{{ route('seller.pos.cart_update') }}",
                         method: 'POST',
                         data: {
                             id: itemId,
                             action: action,
-                            _token: '{{ csrf_token() }}'
+                            _token: "{{ csrf_token() }}"
                         },
                         success: function(response) {
-                            if (response.success) {
-                                $('.order-items tbody').html(response.html);
-                                resetOrderSummery(response);
+                            if (response.status) {
+                                $('.order-items tbody').html(response.data.html);
+                                summery = response.data;
+                                resetOrderSummary(summery);
                             } else {
                                 alert(response.message);
                             }
@@ -327,17 +329,18 @@
                     if (!deleteCartItemId) return;
 
                     $.ajax({
-                        url: '{{ route('seller.pos.remove_cart_item') }}',
+                        url: "{{ route('seller.pos.remove_cart_item') }}",
                         method: 'POST',
                         data: {
                             id: deleteCartItemId,
-                            _token: '{{ csrf_token() }}'
+                            _token: "{{ csrf_token() }}"
                         },
                         success: function(response) {
-                            if (response.success) {
+                            if (response.status) {
 
                                 $('.cart-item-' + deleteCartItemId).remove();
-                                resetOrderSummery(response);
+                                summery = response.data;
+                                resetOrderSummary(summery);
 
                                 const deleteModalEl = document.getElementById('deleteConfirmModal');
                                 const modal = bootstrap.Modal.getInstance(deleteModalEl);
@@ -363,20 +366,24 @@
                     });
                 });
 
-
-
                 $('#confirmClearCartBtn').on('click', function() {
                     $.ajax({
-                        url: '{{ route('seller.pos.cart_clear') }}',
+                        url: "{{ route('seller.pos.cart_clear') }}",
                         method: 'POST',
                         data: {
-                            _token: '{{ csrf_token() }}'
+                            _token: "{{ csrf_token() }}"
                         },
                         success: function(response) {
-                            if (response.success) {
-                                $('.order-items tbody').html(response.html);
-                                resetOrderSummery(response);
+                            if (response.status) {
+                                alert(response.message);
+                                $('.order-items tbody').html(`
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted">No items in cart</td>
+                                    </tr>
+                                `);
 
+                                summery = response;
+                                resetOrderSummary(summery);
                                 const clearModalEl = document.getElementById('clearCartModal');
                                 const modal = bootstrap.Modal.getInstance(clearModalEl);
                                 modal.hide();
@@ -400,12 +407,15 @@
                         },
                         success: function(response) {
                             if (response.status) {
+                                alert(response.message);
                                 $('.order-items tbody').html(`
                                     <tr>
                                         <td colspan="4" class="text-center text-muted">No items in cart</td>
                                     </tr>
                                 `);
-                                resetOrderSummery(response);
+
+                                summery = response;
+                                resetOrderSummary(summery);
 
                             } else {
                                 alert(response.message);
@@ -418,11 +428,11 @@
                     });
                 });
 
-                function resetOrderSummery(response) {
-                    $('#summary-subtotal').text(response.subtotal|| "{{ money(0) }}");
-                    $('#summary-vat').text(response.vat_amount|| "{{ money(0) }}");
-                    $('#summary-discount').text(response.discount|| "{{ money(0) }}");
-                    $('#summary-total').text(response.total|| "{{ money(0) }}");
+                function resetOrderSummary(summery) {
+                    $('#summary-subtotal').text(summery.subtotal || "{{ money(0) }}");
+                    $('#summary-vat').text(summery.vat_amount || "{{ money(0) }}");
+                    $('#summary-discount').text(summery.discount || "{{ money(0) }}");
+                    $('#summary-total').text(summery.total || "{{ money(0) }}");
                 }
             });
         </script>
