@@ -49,7 +49,7 @@
 
                         <div class="row">
                             @foreach ($products as $product)
-                                {{--<div class="col-lg-3 col-md-4 col-sm-6 col-6 mb-3" role="button">
+                                {{-- <div class="col-lg-3 col-md-4 col-sm-6 col-6 mb-3" role="button">
                                     <div class="card product-card border-0 shadow-sm h-100 text-center"
                                         data-bs-toggle="modal" data-bs-target="#variantModal-{{ $product->id }}">
                                         <div class="ratio ratio-1x1">
@@ -66,15 +66,16 @@
                                             </small>
                                         </div>
                                     </div>
-                                </div>--}}
+                                </div> --}}
 
                                 <div class="col-lg-4 col-sm-6 col-12 mb-2">
-                                    <div class="card product-card h-100" role="button"
-                                        data-bs-toggle="modal" data-bs-target="#variantModal-{{ $product->id }}">
+                                    <div class="card product-card h-100" role="button" data-bs-toggle="modal"
+                                        data-bs-target="#variantModal-{{ $product->id }}">
                                         <div class="d-flex align-items-center p-2">
                                             <div style="width: 60px; height: 60px; flex-shrink: 0;">
                                                 <img src="{{ storage_url($product->thumbnail) }}" alt="{{ $product->name }}"
-                                                    class="img-fluid rounded" style="object-fit: cover; width: 100%; height: 100%;">
+                                                    class="img-fluid rounded"
+                                                    style="object-fit: cover; width: 100%; height: 100%;">
                                             </div>
                                             <div class="ms-2 flex-grow-1 overflow-hidden">
                                                 <h6 class="mb-1 text-truncate" title="{{ $product->name }}">
@@ -110,8 +111,10 @@
                                                                 <tr>
                                                                     <td class="fw-bold small">{{ $variant->fullName }}</td>
                                                                     <td class="small">{{ $variant->sku }}</td>
-                                                                    <td class="small">{{ $variant->stock_in - $variant->stock_out }}</td>
-                                                                    <td class="small">{{ money($variant->discounted_price ?? $variant->selling_price) }}
+                                                                    <td class="small">
+                                                                        {{ $variant->stock_in - $variant->stock_out }}</td>
+                                                                    <td class="small">
+                                                                        {{ money($variant->discounted_price ?? $variant->selling_price) }}
                                                                     </td>
                                                                     <td>
                                                                         <button
@@ -139,8 +142,12 @@
             <!-- Cart & Checkout Section -->
             <div class="col-md-4">
                 <div class="card sticky-top" style="top: 20px;">
-                    <div class="card-header bg-white py-3">
+                    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">Current Order</h5>
+                        <button id="clearCartBtn" class="border btn btn-sm btn-danger" data-bs-toggle="modal"
+                            data-bs-target="#clearCartModal">
+                            <i class="bi bi-trash me-1"></i> Clear Cart
+                        </button>
                     </div>
                     <div class="card-body p-0">
                         <!-- Customer Info -->
@@ -153,9 +160,9 @@
                                 </button>
                             </div>
                             <!-- <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="taxableSwitch">
-                                <label class="form-check-label small" for="taxableSwitch">Taxable</label>
-                            </div> -->
+                                        <input class="form-check-input" type="checkbox" id="taxableSwitch">
+                                        <label class="form-check-label small" for="taxableSwitch">Taxable</label>
+                                    </div> -->
                         </div>
 
                         <!-- Order Items -->
@@ -202,12 +209,9 @@
                                     <i class="bi bi-cart me-2"></i>Checkout
                                 </button>
                                 <!-- <button class="btn btn-primary">
-                                    <i class="bi bi-credit-card me-2"></i>Card Payment
-                                </button> -->
-                                <button id="clearCartBtn" class="btn btn-danger" data-bs-toggle="modal"
-                                    data-bs-target="#clearCartModal">
-                                    <i class="bi bi-trash me-2"></i> Clear Cart
-                                </button>
+                                            <i class="bi bi-credit-card me-2"></i>Card Payment
+                                        </button> -->
+
                             </div>
                         </div>
                     </div>
@@ -276,11 +280,16 @@
                                 $('#summary-discount').text(response.discount);
                                 $('#summary-total').text(response.total);
                             } else {
-                                alert("An error occurred. Please try again.")
+                                alert(response.message)
                             }
                         },
                         error: function(xhr) {
-                            alert(xhr.responseText)
+                            var message = xhr.responseText;
+                            let json = JSON.parse(xhr.responseText);
+                            if (json.message) {
+                                message = json.message;
+                            }
+                            alert(message);
                         }
                     });
                 });
@@ -310,8 +319,8 @@
                         }
                     },
                     error: function(xhr) {
-                        console.error(xhr.responseText);
-                        alert('An error occurred. Please try again.');
+                        var message = xhr.responseJSON.message;        
+                        alert(message);
                     }
                 });
             });
@@ -351,18 +360,22 @@
 
                                 if ($('.order-items tbody tr').length === 0) {
                                     $('.order-items tbody').html(`
-                            <tr>
-                                <td colspan="4" class="text-center text-muted">No items in cart</td>
-                            </tr>
-                        `);
+                                        <tr>
+                                            <td colspan="4" class="text-center text-muted">No items in cart</td>
+                                        </tr>
+                                    `);
                                 }
                             } else {
-                                alert('Failed to delete item.');
+                                alert(response.message);
                             }
                         },
                         error: function(xhr) {
-                            console.error(xhr.responseText);
-                            alert('An error occurred.');
+                            var message = xhr.responseText;
+                            let json = JSON.parse(xhr.responseText);
+                            if (json.message) {
+                                message = json.message;
+                            }
+                            alert(message);
                         }
                     });
                 });
@@ -392,8 +405,12 @@
                             }
                         },
                         error: function(xhr) {
-                            console.error(xhr.responseText);
-                            alert('An error occurred while clearing the cart.');
+                            var message = xhr.responseText;
+                            let json = JSON.parse(xhr.responseText);
+                            if (json.message) {
+                                message = json.message;
+                            }
+                            alert(message);
                         }
                     });
                 });
@@ -402,33 +419,34 @@
             $(document).ready(function() {
                 $('#placeOrderBtn').on('click', function() {
                     $.ajax({
-                        url: '{{ route('seller.pos.place_order') }}',
+                        url: "{{ route('seller.pos.place_order') }}",
                         method: 'POST',
                         data: {
-                            _token: '{{ csrf_token() }}'
+                            _token: "{{ csrf_token() }}"
                         },
                         success: function(response) {
                             if (response.status) {
-                               
-
                                 $('.order-items tbody').html(`
-                        <tr>
-                            <td colspan="4" class="text-center text-muted">No items in cart</td>
-                        </tr>
-                    `);
-
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted">No items in cart</td>
+                                    </tr>
+                                `);
                                 $('#summary-subtotal').text('0.00');
                                 $('#summary-vat').text('0.00');
                                 $('#summary-discount').text('0.00');
                                 $('#summary-total').text('0.00');
 
                             } else {
-                                alert('Failed to place order.');
+                                alert(response.message);
                             }
                         },
                         error: function(xhr) {
-                            console.error(xhr.responseText);
-                            alert('An error occurred while placing the order.');
+                            var message = xhr.responseText;
+                            let json = JSON.parse(xhr.responseText);
+                            if (json.message) {
+                                message = json.message;
+                            }
+                            alert(message);
                         }
                     });
                 });
