@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
@@ -17,10 +18,76 @@ class LoginController extends Controller
             return view('frontend.auth.login');
         }
 
+        $credentials = $request->validate([
+            'email' => 'required',
+            'password' => 'required',
+        ]);
+
+        $userTypes = [
+            'user' => [
+                'model' => \App\Models\User::class,
+                'guard' => 'web',
+                'redirect' => route('home'),
+                'check' => fn($user) => true,
+            ],
+            'seller' => [
+                'model' => \App\Models\Seller::class,
+                'guard' => 'seller',
+                'redirect' => route('seller.dashboard'),
+                'check' => fn($seller) => $seller->is_active == 1,
+                'inactiveMessage' => 'Your account is inactive, contact with admin',
+            ],
+            'employee' => [
+                'model' => \App\Models\SellerEmployee::class,
+                'guard' => 'employee',
+                'redirect' => route('seller.pos.index'),
+                'check' => fn($employee) => $employee->is_active == 1,
+                'inactiveMessage' => 'Your account is inactive, contact with seller',
+            ],
+            'admin' => [
+                'model' => \App\Models\Admin::class,
+                'guard' => 'admin',
+                'redirect' => route('admin.dashboard'),
+                'check' => fn($admin) => true,
+            ],
+        ];
+
+        foreach ($userTypes as $type => $config) {
+            $model = $config['model'];
+            $user = $model::where('email', $request->email)->first();
+
+            if (! $user) {
+                continue;
+            }
+
+            if (! ($config['check'])($user)) {
+                return redirect()->back()->with('warning', $config['inactiveMessage'] ?? 'Account inactive');
+            }
+
+            if (! Auth::guard($config['guard'])->attempt($credentials)) {
+                return redirect()->back()->with('error', 'Incorrect password!');
+            }
+
+            $request->session()->regenerate();
+
+            session()->flash('success', 'Login successful');
+
+            return redirect()->intended($config['redirect']);
+        }
+
+        return redirect()->back()->with('error', 'Incorrect email!');
+    }
+
+    public function loginOld(Request $request)
+    {
+        if ($request->isMethod('GET')) {
+            return view('frontend.auth.login');
+        }
+
         $user   = User::where('email', $request->email)->first();
         $seller = Seller::where('email', $request->email)->first();
         $admin  = Admin::where('email', $request->email)->first();
-        $employee = SellerEmployee::where('email',$request->email)->first();
+        $employee = SellerEmployee::where('email', $request->email)->first();
 
         if (! $user && ! $seller && ! $admin && !$employee) {
             return redirect()->back()->with('error', 'Incorrect email!');
@@ -56,11 +123,11 @@ class LoginController extends Controller
             if ($employee->is_active != 1) {
                 return redirect()->back()->with('warning', 'Wait for admin approval');
             }
-            
+
             if (! Auth::guard('employee')->attempt($request->only('email', 'password'))) {
                 return redirect()->back()->with('error', 'Incorrect password!');
             }
-            
+
             $request->session()->regenerate();
             session()->flash('success', 'Login successful');
 
@@ -80,5 +147,4 @@ class LoginController extends Controller
 
         return redirect()->back()->with('error', 'Something went wrong.')->with('success', 'You successfully login');
     }
-
 }
