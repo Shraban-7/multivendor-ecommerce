@@ -49,13 +49,13 @@
 
                         <div class="row">
                             @foreach ($products as $product)
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-6 mb-3" role="button">
+                                {{--<div class="col-lg-3 col-md-4 col-sm-6 col-6 mb-3" role="button">
                                     <div class="card product-card border-0 shadow-sm h-100 text-center"
                                         data-bs-toggle="modal" data-bs-target="#variantModal-{{ $product->id }}">
                                         <div class="ratio ratio-1x1">
                                             <img src="{{ storage_url($product->thumbnail) }}" alt="{{ $product->name }}"
                                                 class="w-100 h-100"
-                                                style="object-fit: cover; border-top-left-radius:.5rem; border-top-right-radius:.5rem;">
+                                               >
                                         </div>
                                         <div class="card-body p-2">
                                             <h6 class="card-title text-truncate mb-1" title="{{ $product->name }}">
@@ -64,6 +64,24 @@
                                             <small class="text-muted">
                                                 {{ $product->variants->count() }} variants
                                             </small>
+                                        </div>
+                                    </div>
+                                </div>--}}
+
+                                <div class="col-lg-4 col-sm-6 col-12 mb-2">
+                                    <div class="card product-card h-100" role="button"
+                                        data-bs-toggle="modal" data-bs-target="#variantModal-{{ $product->id }}">
+                                        <div class="d-flex align-items-center p-2">
+                                            <div style="width: 60px; height: 60px; flex-shrink: 0;">
+                                                <img src="{{ storage_url($product->thumbnail) }}" alt="{{ $product->name }}"
+                                                    class="img-fluid rounded" style="object-fit: cover; width: 100%; height: 100%;">
+                                            </div>
+                                            <div class="ms-2 flex-grow-1 overflow-hidden">
+                                                <h6 class="mb-1 text-truncate" title="{{ $product->name }}">
+                                                    {{ $product->name }}
+                                                </h6>
+                                                <small class="text-muted">{{ $product->variants->count() }} variants</small>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -121,7 +139,7 @@
             <!-- Cart & Checkout Section -->
             <div class="col-md-4">
                 <div class="card sticky-top" style="top: 20px;">
-                    <div class="card-header py-3">
+                    <div class="card-header bg-white py-3">
                         <h5 class="mb-0">Current Order</h5>
                     </div>
                     <div class="card-body p-0">
@@ -134,10 +152,10 @@
                                     <i class="bi bi-plus"></i>
                                 </button>
                             </div>
-                            <div class="form-check form-switch">
+                            <!-- <div class="form-check form-switch">
                                 <input class="form-check-input" type="checkbox" id="taxableSwitch">
                                 <label class="form-check-label small" for="taxableSwitch">Taxable</label>
-                            </div>
+                            </div> -->
                         </div>
 
                         <!-- Order Items -->
