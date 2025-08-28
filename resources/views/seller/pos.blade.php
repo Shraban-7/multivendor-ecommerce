@@ -160,9 +160,9 @@
                                 </button>
                             </div>
                             <!-- <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="taxableSwitch">
-                                        <label class="form-check-label small" for="taxableSwitch">Taxable</label>
-                                    </div> -->
+                                                <input class="form-check-input" type="checkbox" id="taxableSwitch">
+                                                <label class="form-check-label small" for="taxableSwitch">Taxable</label>
+                                            </div> -->
                         </div>
 
                         <!-- Order Items -->
@@ -209,8 +209,8 @@
                                     <i class="bi bi-cart me-2"></i>Checkout
                                 </button>
                                 <!-- <button class="btn btn-primary">
-                                            <i class="bi bi-credit-card me-2"></i>Card Payment
-                                        </button> -->
+                                                    <i class="bi bi-credit-card me-2"></i>Card Payment
+                                                </button> -->
 
                             </div>
                         </div>
@@ -275,60 +275,50 @@
                         success: function(response) {
                             if (response.success) {
                                 $('.order-items tbody').html(response.html);
-                                $('#summary-subtotal').text(response.subtotal);
-                                $('#summary-vat').text(response.vat_amount);
-                                $('#summary-discount').text(response.discount);
-                                $('#summary-total').text(response.total);
+                                resetOrderSummery(response);
                             } else {
                                 alert(response.message)
                             }
                         },
                         error: function(xhr) {
-                            var message = xhr.responseText;
-                            let json = JSON.parse(xhr.responseText);
-                            if (json.message) {
-                                message = json.message;
-                            }
+                            var message = xhr.responseJSON.message;
                             alert(message);
                         }
                     });
                 });
-            });
 
-            $(document).on('click', '.update-qty-btn', function() {
-                var itemId = $(this).data('id');
-                var action = $(this).data('action');
 
-                $.ajax({
-                    url: '{{ route('seller.pos.cart_update') }}',
-                    method: 'POST',
-                    data: {
-                        id: itemId,
-                        action: action,
-                        _token: '{{ csrf_token() }}'
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            $('.order-items tbody').html(response.html);
-                            $('#summary-subtotal').text(response.subtotal);
-                            $('#summary-vat').text(response.vat_amount);
-                            $('#summary-discount').text(response.discount);
-                            $('#summary-total').text(response.total);
-                        } else {
-                            alert(response.message);
+                $(document).on('click', '.update-qty-btn', function() {
+                    var itemId = $(this).data('id');
+                    var action = $(this).data('action');
+
+                    $.ajax({
+                        url: '{{ route('seller.pos.cart_update') }}',
+                        method: 'POST',
+                        data: {
+                            id: itemId,
+                            action: action,
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                $('.order-items tbody').html(response.html);
+                                resetOrderSummery(response);
+                            } else {
+                                alert(response.message);
+                            }
+                        },
+                        error: function(xhr) {
+                            var message = xhr.responseJSON.message;
+                            alert(message);
                         }
-                    },
-                    error: function(xhr) {
-                        var message = xhr.responseJSON.message;        
-                        alert(message);
-                    }
+                    });
                 });
-            });
 
 
-            let deleteCartItemId = null;
+                let deleteCartItemId = null;
 
-            $(document).ready(function() {
+
                 $(document).on('click', '.delete-cart-item-btn', function() {
                     deleteCartItemId = $(this).data('id');
                 });
@@ -347,10 +337,7 @@
                             if (response.success) {
 
                                 $('.cart-item-' + deleteCartItemId).remove();
-                                $('#summary-subtotal').text(response.subtotal);
-                                $('#summary-vat').text(response.vat_amount);
-                                $('#summary-discount').text(response.discount);
-                                $('#summary-total').text(response.total);
+                                resetOrderSummery(response);
 
                                 const deleteModalEl = document.getElementById('deleteConfirmModal');
                                 const modal = bootstrap.Modal.getInstance(deleteModalEl);
@@ -370,18 +357,14 @@
                             }
                         },
                         error: function(xhr) {
-                            var message = xhr.responseText;
-                            let json = JSON.parse(xhr.responseText);
-                            if (json.message) {
-                                message = json.message;
-                            }
+                            var message = xhr.responseJSON.message;
                             alert(message);
                         }
                     });
                 });
-            });
 
-            $(document).ready(function() {
+
+
                 $('#confirmClearCartBtn').on('click', function() {
                     $.ajax({
                         url: '{{ route('seller.pos.cart_clear') }}',
@@ -392,31 +375,22 @@
                         success: function(response) {
                             if (response.success) {
                                 $('.order-items tbody').html(response.html);
-                                $('#summary-subtotal').text(response.subtotal);
-                                $('#summary-vat').text(response.vat_amount);
-                                $('#summary-discount').text(response.discount);
-                                $('#summary-total').text(response.total);
+                                resetOrderSummery(response);
 
                                 const clearModalEl = document.getElementById('clearCartModal');
                                 const modal = bootstrap.Modal.getInstance(clearModalEl);
                                 modal.hide();
                             } else {
-                                alert('Failed to clear cart.');
+                                alert(response.message);
                             }
                         },
                         error: function(xhr) {
-                            var message = xhr.responseText;
-                            let json = JSON.parse(xhr.responseText);
-                            if (json.message) {
-                                message = json.message;
-                            }
+                            var message = xhr.responseJSON.message;
                             alert(message);
                         }
                     });
                 });
-            });
 
-            $(document).ready(function() {
                 $('#placeOrderBtn').on('click', function() {
                     $.ajax({
                         url: "{{ route('seller.pos.place_order') }}",
@@ -431,25 +405,25 @@
                                         <td colspan="4" class="text-center text-muted">No items in cart</td>
                                     </tr>
                                 `);
-                                $('#summary-subtotal').text('0.00');
-                                $('#summary-vat').text('0.00');
-                                $('#summary-discount').text('0.00');
-                                $('#summary-total').text('0.00');
+                                resetOrderSummery(response);
 
                             } else {
                                 alert(response.message);
                             }
                         },
                         error: function(xhr) {
-                            var message = xhr.responseText;
-                            let json = JSON.parse(xhr.responseText);
-                            if (json.message) {
-                                message = json.message;
-                            }
+                            var message = xhr.responseJSON.message;
                             alert(message);
                         }
                     });
                 });
+
+                function resetOrderSummery(response) {
+                    $('#summary-subtotal').text(response.subtotal|| "{{ money(0) }}");
+                    $('#summary-vat').text(response.vat_amount|| "{{ money(0) }}");
+                    $('#summary-discount').text(response.discount|| "{{ money(0) }}");
+                    $('#summary-total').text(response.total|| "{{ money(0) }}");
+                }
             });
         </script>
     @endpush

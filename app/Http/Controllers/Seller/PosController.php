@@ -214,19 +214,15 @@ class PosController extends Controller
 
         $cart = PosCart::where('seller_id', $seller_id)->first();
 
+        if (!$cart) {
+            return errorResponse("No Cart Items Found");
+        }
+
         if ($cart) {
             $cart->items()->delete();
         }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Cart cleared successfully',
-            'html' => '<tr><td colspan="4" class="text-center text-muted">No items in cart</td></tr>',
-            'subtotal' => money(0),
-            'vat_amount' => money(0),
-            'discount' => money(0),
-            'total' => money(0),
-        ]);
+        return successResponse("Cart Clear Successfully");
     }
 
     public function place_order()
@@ -235,6 +231,11 @@ class PosController extends Controller
         $seller_id = seller()->id ?? $employee->seller_id;
 
         $cart = PosCart::where('seller_id', $seller_id)->first();
+
+        if(!$cart) {
+            return errorResponse("No items in the cart!");
+        }
+
         $cartItems = $cart->items()->with('variant.product')->get();
 
         $vat_amount = 0;
