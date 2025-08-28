@@ -51,13 +51,16 @@ class PosController extends Controller
 
     public function cart_add(Request $request)
     {
+        $employee = employee();
+        $seller_id = seller()->id ?? $employee->seller_id;
+
         $data = $request->validate([
             'variant_id' => 'nullable',
             'quantity'   => 'required|integer|min:1',
         ]);
 
         $cart = PosCart::firstOrCreate(
-            ['seller_id' => seller()->id],
+            ['seller_id' => $seller_id],
         );
 
         $variantId = $data['variant_id'];
@@ -206,7 +209,10 @@ class PosController extends Controller
 
     public function cart_clear(Request $request)
     {
-        $cart = PosCart::where('seller_id', seller()->id)->first();
+        $employee = employee();
+        $seller_id = seller()->id ?? $employee->seller_id;
+
+        $cart = PosCart::where('seller_id', $seller_id)->first();
 
         if ($cart) {
             $cart->items()->delete();
@@ -264,6 +270,7 @@ class PosController extends Controller
 
         $order = Order::create([
             'seller_id' => $seller_id,
+            'seller_employee_id' => $employee->id ??  null,
             'invoice_id' => $invoiceId,
             'sub_total' => $sub_total,
             'total' => $sub_total + $vat_amount,

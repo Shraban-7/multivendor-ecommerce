@@ -262,7 +262,7 @@
                             }
                         },
                         error: function(xhr) {
-                            alert(xhr)
+                            alert(xhr.responseText)
                         }
                     });
                 });
