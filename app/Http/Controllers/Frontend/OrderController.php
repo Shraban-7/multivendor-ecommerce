@@ -248,6 +248,12 @@ class OrderController extends Controller
 
         $this->processAffiliateCommissions($order->items, auth()->user(), $order->id);
 
+        $affiliate = AffiliateCommission::where('order_id',$order->id)->first();
+
+        $order->affiliate_id = $affiliate->referer_id;
+
+        $order->save();
+
         notify_user(
             $user->id,
             'Order Placed Successfully',

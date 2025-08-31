@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Seller;
 
 use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
+use App\Models\AffiliateCommission;
 use App\Models\Order;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -44,8 +46,21 @@ class OrderController extends Controller
     {
         $order->update([
             'status'          => $request->status,
-            'delivery_status' => $request->delivery_status,
+            'delivery_status' => $request->delivery_status ?? $order->delivery_status,
         ]);
+
+        if ($order->status == OrderStatus::DELIVERED) {
+            $affiliate_commission = AffiliateCommission::where('order_id', $order->id)->first();
+
+            $affiliate_commission->status = AffiliateCommission::APPROVED;
+            $affiliate_commission->save();
+            if ($affiliate_commission->status == AffiliateCommission::APPROVED) {
+                $user = User::find($affiliate_commission->referer_id);
+
+                $user->balance += $affiliate_commission->commission_amount;
+                $user->save();
+            }
+        }
 
         return redirect()->back()->with('success', 'Order update successfully');
     }

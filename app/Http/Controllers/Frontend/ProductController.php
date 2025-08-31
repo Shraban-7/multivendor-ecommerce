@@ -1,12 +1,16 @@
 <?php
+
 namespace App\Http\Controllers\Frontend;
 
-use App\Http\Controllers\Controller;
-use App\Models\Product;
+use App\Models\User;
 use App\Models\Review;
 use App\Models\Seller;
+use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Models\AffiliateClick;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Cookie;
 
 class ProductController extends Controller
 {
@@ -30,6 +34,28 @@ class ProductController extends Controller
         $sellerId   = $productModel->seller->id;
 
         $product = $productModel->toDetailsArray();
+
+        if ($request->has('ref')) {
+            $refCode = $request->query('ref');
+
+            $cookieValue = Cookie::get('affiliate_refs');
+            $affiliateRefs = json_decode($cookieValue, true) ?: [];
+
+            $affiliateUser = User::where('referral_code', $refCode)->first();
+
+            $affiliateRefs[$slug][] = $refCode;
+            $affiliateRefs[$slug] = array_unique($affiliateRefs[$slug]);
+
+            Cookie::queue('affiliate_refs', json_encode($affiliateRefs), 60 * 24 * 7); 
+
+            AffiliateClick::create([
+                'affiliate_id' => $affiliateUser->id, 
+                'product_id'   => $product['id'],
+                'ip_address'   => $request->ip(),
+                'user_agent'   => $request->userAgent(),
+                'clicked_at'   => now(),
+            ]);
+        }
 
         $interest_products = Product::where('category_id', $categoryId)
             ->where('id', '!=', $product['id'])

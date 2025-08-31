@@ -7,6 +7,7 @@ use App\Models\Notification;
 use App\Models\PaymentOption;
 use App\Models\SocialLink;
 use App\Models\SystemSetting;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -559,3 +560,17 @@ if (! function_exists('notificationCount')) {
        
     }
 }
+
+if (! function_exists('affiliate')) {
+    function affiliate()
+    {
+        $user = Auth::guard('web')->user();
+        return $user && $user->role == 1; // return true if affiliator
+    }
+}
+
+
+
+
+
+
