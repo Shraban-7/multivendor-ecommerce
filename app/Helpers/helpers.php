@@ -2,6 +2,7 @@
 
 use App\Enums\AdminRole;
 use App\Enums\DiscountType;
+use App\Enums\UserRole;
 use App\Models\Category;
 use App\Models\Notification;
 use App\Models\PaymentOption;
@@ -565,7 +566,7 @@ if (! function_exists('affiliate')) {
     function affiliate()
     {
         $user = Auth::guard('web')->user();
-        return $user && $user->role == 1; // return true if affiliator
+        return $user && $user->role == UserRole::AFFILIATE->value; 
     }
 }
 

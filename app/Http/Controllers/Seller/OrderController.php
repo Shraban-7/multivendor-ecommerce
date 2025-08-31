@@ -55,7 +55,7 @@ class OrderController extends Controller
             $affiliate_commission->status = AffiliateCommission::APPROVED;
             $affiliate_commission->save();
             if ($affiliate_commission->status == AffiliateCommission::APPROVED) {
-                $user = User::find($affiliate_commission->referer_id);
+                $user = User::find($affiliate_commission->affiliate_id);
 
                 $user->balance += $affiliate_commission->commission_amount;
                 $user->save();

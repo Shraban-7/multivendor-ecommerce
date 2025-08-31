@@ -250,7 +250,7 @@ class OrderController extends Controller
 
         $affiliate = AffiliateCommission::where('order_id',$order->id)->first();
 
-        $order->affiliate_id = $affiliate->referer_id;
+        $order->affiliate_id = $affiliate->affiliate_id;
 
         $order->save();
 
@@ -307,7 +307,7 @@ class OrderController extends Controller
                         'user_id' => $user->id,
                         'order_id' => $invoiceId,
                         'product_id' => $item->product_id,
-                        'referer_id' => $affiliateUser->id,
+                        'affiliate_id' => $affiliateUser->id,
                         'commission_amount' => $commissionAmount,
                         'commission_date' => now(),
                     ]);

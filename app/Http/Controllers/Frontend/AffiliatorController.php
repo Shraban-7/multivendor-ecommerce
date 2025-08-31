@@ -17,9 +17,9 @@ class AffiliatorController extends Controller
     {
         $affiliate_id = Auth::id();
         $clicks = AffiliateClick::where('affiliate_id', $affiliate_id)->count();
-        $earnings = AffiliateCommission::where('referer_id', $affiliate_id)->sum('commission_amount');
+        $earnings = AffiliateCommission::where('affiliate_id', $affiliate_id)->sum('commission_amount');
         $total_orders = Order::where('affiliate_id', $affiliate_id)->count();
-        $pending_earnings = AffiliateCommission::where('referer_id', $affiliate_id)->where('status',AffiliateCommission::APPROVED)->sum('commission_amount');
+        $pending_earnings = AffiliateCommission::where('affiliate_id', $affiliate_id)->where('status',AffiliateCommission::APPROVED)->sum('commission_amount');
         return view('frontend.affiliator.dashboard', compact('clicks', 'earnings', 'total_orders', 'pending_earnings'));
     }
 

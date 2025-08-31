@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('order_id')->nullable();
             $table->unsignedBigInteger('product_id')->nullable();
-            $table->unsignedBigInteger('referer_id')->nullable();
+            $table->unsignedBigInteger('affiliate_id')->nullable();
             $table->decimal('commission_amount', 10, 2);
             $table->string('status')->default(0);
             $table->timestamp('commission_date')->nullable();
