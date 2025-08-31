@@ -38,6 +38,7 @@ class AffiliatorController extends Controller
         $data = $request->validate([
             'amount' => 'required|numeric|min:1|max:' . $affiliate->balance,
             'method' => 'required',
+            'account_details' => 'required'
         ]);
 
         if ($affiliate->balance < $data['amount']) {

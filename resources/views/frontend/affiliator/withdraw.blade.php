@@ -44,6 +44,14 @@
                                 </select>
                             </div>
 
+                            <div>
+                                <label for="account_details" class="block text-sm font-medium text-gray-600 mb-1">Account
+                                    Details</label>
+                                <textarea name="account_details" id="account_details" rows="4"
+                                    class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring focus:ring-blue-200"></textarea>
+                            </div>
+
+
                             <!-- Submit -->
                             <div>
                                 <button type="submit"
@@ -67,14 +75,14 @@
                                         <th class="p-3">Amount</th>
                                         <th class="p-3">Method</th>
                                         <th class="p-3">Status</th>
+                                        <th class="p-3">Account Details</th> 
                                         <th class="p-3">Requested At</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse ($withdraw_histories as $history)
                                         <tr class="border-t">
-                                            <td class="p-3 font-semibold text-gray-800">
-                                                ${{ money($history->amount) }}</td>
+                                            <td class="p-3 font-semibold text-gray-800">${{ money($history->amount) }}</td>
                                             <td class="p-3">{{ ucfirst($history->method) }}</td>
                                             <td class="p-3">
                                                 <span
@@ -82,17 +90,18 @@
                                                     {{ $history->label() }}
                                                 </span>
                                             </td>
+                                            <td class="p-3">{{ $history->account_details }}</td>
                                             <td class="p-3">{{ $history->created_at->format('Y-m-d') }}</td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="4" class="p-3 text-center text-gray-500">No withdrawal history
+                                            <td colspan="5" class="p-3 text-center text-gray-500">No withdrawal history
                                                 found.</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
-
                             </table>
+
                         </div>
                     </div>
                 </div>
