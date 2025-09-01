@@ -1,20 +1,15 @@
 @extends('seller.layouts.app')
-@section('title', 'Product Details')
+@section('title', $product->name)
 @section('content')
     <div class="content-header mb-3">
         <div class="container-fluid">
             <div class="row gy-3 align-items-start align-items-lg-center justify-content-between">
                 <div class="col-12 col-lg-6">
                     <h4 class="m-0 text-dark">{{ $product->name }}</h4>
-                    <ol class="breadcrumb mt-2">
-                        <li class="breadcrumb-item"><a href="{{ route('seller.dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('seller.products.index') }}">Products</a></li>
-                        <li class="breadcrumb-item active">Product Details</li>
-                    </ol>
                 </div>
 
                 <div class="col-12 col-lg-6 text-lg-end">
-                    <a href="{{ route('seller.products.edit', $product->slug) }}" class="btn btn-primary w-100 w-lg-auto">
+                    <a href="{{ route('seller.products.edit', $product->slug) }}" class="btn btn-primary btn-sm w-100 w-lg-auto">
                         <i data-feather="edit" class="icon-xs me-1"></i> Edit Product
                     </a>
                 </div>
