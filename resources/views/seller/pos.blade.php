@@ -17,6 +17,18 @@
     }
 </style>
 
+<?php
+    $variantSkuList = [];
+    foreach($products as $product) {
+        foreach($product->variants as $variant) {
+            $variantSkuList = [
+                'variant_id' => $variant->id,
+                'sku' => $variant->sku,
+            ];
+        }
+    }
+?>
+
 @section('content')
     <div class="container-fluid">
         <div class="row">
