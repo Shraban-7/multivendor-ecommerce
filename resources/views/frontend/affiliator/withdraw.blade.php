@@ -3,7 +3,7 @@
 @section('title', 'Withdraw')
 
 @section('content')
-    <main class="withdraw-page py-10 bg-gray-50">
+    <main class="withdraw-page py-10">
         <div class="container mx-auto px-4">
 
             <!-- Page Heading -->
@@ -82,7 +82,7 @@
                                 <tbody>
                                     @forelse ($withdraw_histories as $history)
                                         <tr class="border-t">
-                                            <td class="p-3 font-semibold text-gray-800">${{ money($history->amount) }}</td>
+                                            <td class="p-3 font-semibold text-gray-800">{{ money($history->amount) }}</td>
                                             <td class="p-3">{{ ucfirst($history->method) }}</td>
                                             <td class="p-3">
                                                 <span
