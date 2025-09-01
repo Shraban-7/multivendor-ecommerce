@@ -150,7 +150,7 @@
                     Explore Your Interest
                 </h1>
 
-                <div class="grid grid-cols-1 xsm:grid-cols-2 md:grid-cols-4 gap-5 xl:gap-8 lg:p-0 p-2 items-start">
+                <div class="grid grid-cols-1 xsm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-5 xl:gap-8 lg:p-0 p-2 items-start">
                     @include('frontend.partials.product-card-load', ['products' => $products])
                 </div>
             </div>

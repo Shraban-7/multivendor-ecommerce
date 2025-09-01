@@ -225,7 +225,7 @@ class PosController extends Controller
 
         $cart = PosCart::where('seller_id', $seller_id)->first();
 
-        if(!$cart) {
+        if (!$cart) {
             return errorResponse("No items found in the cart!");
         }
 
@@ -282,7 +282,9 @@ class PosController extends Controller
 
         $cart->delete();
 
-        return successResponse("Order Placed Successfully");
+        return apiResponse([
+            'invoice_id' => $order->invoice_id
+        ], "Order Placed Successfully");
     }
 
     public function orders()

@@ -160,9 +160,9 @@
                                 </button>
                             </div>
                             <!-- <div class="form-check form-switch">
-                                                            <input class="form-check-input" type="checkbox" id="taxableSwitch">
-                                                            <label class="form-check-label small" for="taxableSwitch">Taxable</label>
-                                                        </div> -->
+                                                                    <input class="form-check-input" type="checkbox" id="taxableSwitch">
+                                                                    <label class="form-check-label small" for="taxableSwitch">Taxable</label>
+                                                                </div> -->
                         </div>
 
                         <!-- Order Items -->
@@ -209,8 +209,8 @@
                                     <i class="bi bi-cart me-2"></i>Checkout
                                 </button>
                                 <!-- <button class="btn btn-primary">
-                                                                <i class="bi bi-credit-card me-2"></i>Card Payment
-                                                            </button> -->
+                                                                        <i class="bi bi-credit-card me-2"></i>Card Payment
+                                                                    </button> -->
 
                             </div>
                         </div>
@@ -407,7 +407,6 @@
                         },
                         success: function(response) {
                             if (response.status) {
-                                alert(response.message);
                                 $('.order-items tbody').html(`
                                     <tr>
                                         <td colspan="4" class="text-center text-muted">No items in cart</td>
@@ -416,6 +415,15 @@
 
                                 summery = response;
                                 resetOrderSummary(summery);
+
+                                if (response.data.invoice_id) {
+                                    let receiptUrl = "{{ route('receipt', ':invoice_id') }}"
+                                        .replace(':invoice_id', response.data.invoice_id);
+                                    $('<a>', {
+                                        href: receiptUrl,
+                                        target: '_blank'
+                                    })[0].click();
+                                }
 
                             } else {
                                 alert(response.message);
