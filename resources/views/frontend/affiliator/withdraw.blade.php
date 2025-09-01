@@ -3,7 +3,7 @@
 @section('title', 'Withdraw')
 
 @section('content')
-    <main class="withdraw-page py-10">
+    <main class="withdraw-page my-10">
         <div class="container mx-auto px-4">
 
             <!-- Page Heading -->
