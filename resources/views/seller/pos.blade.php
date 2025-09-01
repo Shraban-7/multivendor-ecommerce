@@ -18,15 +18,16 @@
 </style>
 
 <?php
-    $variantSkuList = [];
-    foreach($products as $product) {
-        foreach($product->variants as $variant) {
-            $variantSkuList = [
-                'variant_id' => $variant->id,
-                'sku' => $variant->sku,
-            ];
-        }
+$variantSkuList = [];
+foreach ($products as $product) {
+    foreach ($product->variants as $variant) {
+        $variantSkuList[] = [
+            'variant_id' => $variant->id,
+            'sku' => $variant->sku,
+            'product_id' => $product->id,
+        ];
     }
+}
 ?>
 
 @section('content')
@@ -42,11 +43,7 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="input-group input-group-sm">
-                                    <input type="text" class="form-control" placeholder="Search products..."
-                                        aria-label="Search products">
-                                    <button class="btn btn-outline-secondary" type="button">
-                                        <i class="bi bi-search"></i>
-                                    </button>
+                                    <input type="text" id="skuSearch" class="form-control">
                                 </div>
                             </div>
                         </div>
@@ -61,26 +58,8 @@
 
                         <div class="row">
                             @foreach ($products as $product)
-                                {{-- <div class="col-lg-3 col-md-4 col-sm-6 col-6 mb-3" role="button">
-                                    <div class="card product-card border-0 shadow-sm h-100 text-center"
-                                        data-bs-toggle="modal" data-bs-target="#variantModal-{{ $product->id }}">
-                                        <div class="ratio ratio-1x1">
-                                            <img src="{{ storage_url($product->thumbnail) }}" alt="{{ $product->name }}"
-                                                class="w-100 h-100"
-                                               >
-                                        </div>
-                                        <div class="card-body p-2">
-                                            <h6 class="card-title text-truncate mb-1" title="{{ $product->name }}">
-                                                {{ $product->name }}
-                                            </h6>
-                                            <small class="text-muted">
-                                                {{ $product->variants->count() }} variants
-                                            </small>
-                                        </div>
-                                    </div>
-                                </div> --}}
-
-                                <div class="col-lg-4 col-sm-6 col-12 mb-2">
+                                <div class="col-lg-4 col-sm-6 col-12 mb-2 product-card-wrapper"
+                                    data-product-id="{{ $product->id }}">
                                     <div class="card product-card h-100" role="button" data-bs-toggle="modal"
                                         data-bs-target="#variantModal-{{ $product->id }}">
                                         <div class="d-flex align-items-center p-2">
@@ -171,10 +150,6 @@
                                     <i class="bi bi-plus"></i>
                                 </button>
                             </div>
-                            <!-- <div class="form-check form-switch">
-                                                                    <input class="form-check-input" type="checkbox" id="taxableSwitch">
-                                                                    <label class="form-check-label small" for="taxableSwitch">Taxable</label>
-                                                                </div> -->
                         </div>
 
                         <!-- Order Items -->
@@ -220,10 +195,6 @@
                                 <button id="placeOrderBtn" class="btn btn-success">
                                     <i class="bi bi-cart me-2"></i>Checkout
                                 </button>
-                                <!-- <button class="btn btn-primary">
-                                                                        <i class="bi bi-credit-card me-2"></i>Card Payment
-                                                                    </button> -->
-
                             </div>
                         </div>
                     </div>
@@ -271,11 +242,32 @@
 
     @push('scripts')
         <script>
-            $(document).ready(function() {
-                $('.add-to-cart-btn').on('click', function() {
-                    var variantId = $(this).data('variant-id');
-                    var quantity = $(this).data('quantity');
+            var variantSkuList = @json($variantSkuList);
 
+            $(document).ready(function() {
+                $('#skuSearch').on('input', function() {
+                    var query = $(this).val().trim();
+
+                    if (query === "") {
+                        $('.product-card-wrapper').show();
+                        return;
+                    }
+
+                    var matchedVariant = variantSkuList.find(v => v.sku.toLowerCase() === query.toLowerCase());
+
+                    $('.product-card-wrapper').hide();
+
+                    if (matchedVariant) {
+                        $('[data-product-id="' + matchedVariant.product_id + '"]').show();
+
+                        addToCart(matchedVariant.variant_id, 1);
+
+                        $('#skuSearch').val('');
+                        $('.product-card-wrapper').show();
+                    }
+                });
+
+                function addToCart(variantId, quantity) {
                     $.ajax({
                         url: "{{ route('seller.pos.cart_add') }}",
                         method: 'POST',
@@ -290,15 +282,15 @@
                                 summery = response.data;
                                 resetOrderSummary(summery);
                             } else {
-                                alert(response.message)
+                                alert(response.message);
                             }
                         },
                         error: function(xhr) {
-                            var message = xhr.responseJSON.message;
+                            var message = xhr.responseJSON?.message || "Something went wrong";
                             alert(message);
                         }
                     });
-                });
+                }
 
 
                 $(document).on('click', '.update-qty-btn', function() {
