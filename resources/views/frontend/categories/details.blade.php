@@ -2,8 +2,37 @@
 @section('title', $category->name)
 
 @section('content')
+<div class="container mx-auto px-4 mt-2 mb-8">
+    <!-- promo banner -->
+    <div class="page-promotion md:w-full mb-6">
+        <div style="background-color: {{ $category->cover_bg_color }}"
+            class="promo-wrapper md:container  grid grid-cols-1 md:grid-cols-2 rounded-lg md:rounded-3xl overflow-hidden">
+            <div
+                class="flex flex-col items-start justify-center order-2 gap-3 p-5 md:order-1 promo-content sm:gap-5 md:p-10 lg:p-14 2xl:p-20">
+                <h2 style="color: {{ $category->cover_text_color }}"
+                    class="lg:text-3xl md:text-2xl text-xl  font-bold md:pr-10 lg:pr-14 2xl:pr-20 line-clamp-2">
+                    {{ $category->cover_title }}
+                </h2>
+                <p style="color: {{ $category->cover_text_color }}" class="text-xs  md:pr-7 lg:pr-14 2xl:pr-20">
+                    {!! $category->cover_description !!}
+                </p>
+                <a href="#" style="background-color: {{ $category->cover_button_color }}"
+                    class="theme-btn px-5 py-2 lg:px-7 lg:px-3 rounded-lg text-white hover:bg-theme-light hover:text-theme-dark eq text-xs lg:text-sm">Learn
+                    More</a>
+            </div>
+            <div class="order-1 promo-image">
+                <div class="w-full img-wrap">
+                    <div class="w-full h-40 overflow-hidden rounded-lg lg:h-96 md:h-80 md:rounded-3xl">
+                        <a href="#" class="block w-full h-full">
+                            <img src="{{ storage_url($category->cover_image) }}" alt="{{ $category->name }}"
+                                class="object-cover w-full h-full" />
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<div class="container mx-auto px-4 py-8">
     <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
         <!-- Filters Section (Desktop) -->
         <aside class="hidden md:block md:col-span-1">
@@ -75,7 +104,8 @@
 
         <!-- Products Section -->
         <section class="md:col-span-3">
-            <div class="flex items-center justify-between mb-6">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-6">
+                <!-- Category Title -->
                 <h2 class="text-2xl font-semibold text-gray-900">
                     {{ strtoupper($category->name) }}
                 </h2>
@@ -83,15 +113,15 @@
                 <!-- Mobile Filter Button -->
                 <button data-drawer-target="filters-drawer" data-drawer-show="filters-drawer"
                     aria-controls="filters-drawer"
-                    class="md:hidden flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-theme-dark transition">
+                    class="md:hidden flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-theme-dark transition">
                     <i class="fa-solid fa-filter"></i>
                     <span>Filters</span>
                 </button>
 
                 <!-- Sort Dropdown -->
-                <form>
+                <form class="w-full md:w-auto">
                     <select id="sort-by"
-                        class="border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
+                        class="w-full md:w-auto border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
                         <option selected>Sort By: Relevance</option>
                         <option value="best-selling">Best Selling</option>
                         <option value="trending">Trending</option>
@@ -102,7 +132,7 @@
             </div>
 
             <!-- Products Grid -->
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div id="product-list" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 @include('frontend.partials.product-card-load', ['products' => $products])
             </div>
 
@@ -199,3 +229,66 @@
 </div>
 
 @endsection
+
+@push('scripts')
+<script>
+    $('#loadMoreBtn').on('click', function() {
+        let button = $(this);
+        let page = parseInt(button.data('page')) + 1;
+        let url = button.data('url');
+
+        $.ajax({
+            url: url,
+            method: 'GET',
+            data: {
+                page: page
+            },
+            beforeSend: function() {
+                button.prop('disabled', true).html(
+                    '<i class="fa fa-spinner fa-spin"></i> Loading...');
+            },
+            success: function(response) {
+                if (response.trim() !== '') {
+                    $('#product-list').append(response);
+                    button.data('page', page);
+                    button.prop('disabled', false).html(
+                        '<span>Load More</span> <i class="fa-solid fa-chevron-down text-sm"></i>'
+                    );
+
+                    // ✅ Parse and register new quick view data from JSON script tags
+                    const scriptTags = $(response).filter('script[data-quickview]');
+                    scriptTags.each(function() {
+                        const json = $(this).html();
+                        try {
+                            const data = JSON.parse(json);
+                            window.quickViewData = window.quickViewData || {};
+                            window.quickViewData[data.id] = {
+                                product: data.product,
+                                defaultVariant: data.defaultVariant
+                            };
+                        } catch (e) {
+                            console.error('Invalid QuickView JSON for product modal', e);
+                        }
+                    });
+
+                    // ✅ Re-initialize QuickView modal JS for new elements
+                    if (typeof initQuickViewModals === 'function') {
+                        initQuickViewModals();
+                    }
+
+                    // (Optional) Re-init other components (e.g., tooltips, sliders)
+                    if (typeof initFlowbite === 'function') {
+                        initFlowbite();
+                    }
+                } else {
+                    button.hide(); // No more products
+                }
+            },
+            error: function() {
+                button.prop('disabled', false).text('Load More');
+                alert('Something went wrong. Please try again.');
+            }
+        });
+    });
+</script>
+@endpush
