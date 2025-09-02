@@ -57,7 +57,7 @@ class Product extends Model
     {
         return $this->belongsTo(Category::class, 'subcategory_id');
     }
-    
+
     public function brand()
     {
         return $this->belongsTo(Brand::class);
@@ -115,12 +115,12 @@ class Product extends Model
         //$lastOrder     = OrderItem::where('product_id', $this->id)->latest('created_at')->first();
         //$lastSale      = $lastOrder?->created_at;
         //$stockHistory  = StockHistory::where('product_id', $this->id)->latest()->get();
-        
+
         $margin = $this->selling_price - $this->buying_price;
         $marginPercent = $this->buying_price > 0 ? ($margin / $this->buying_price) * 100 : 0;
 
         $sold = $this->variants->sum('stock_out');
-        
+
         $reviews = $this->reviews;
 
         return [
@@ -218,5 +218,19 @@ class Product extends Model
         return Attribute::make(
             get: fn() => $options
         );
+    }
+
+    public function scopeWithDefaultRelations($query)
+    {
+        return $query->with([
+            'brand',
+            'images',
+            'category',
+            'subcategory',
+            'variants.option_values',
+            'seller',
+            'reviews.user',
+            'unit'
+        ]);
     }
 }

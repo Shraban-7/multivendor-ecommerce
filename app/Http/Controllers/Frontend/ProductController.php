@@ -20,18 +20,10 @@ class ProductController extends Controller
         $page  = $request->get('page', 1);
         $skip  = ($page - 1) * $limit;
 
-        $productModel = Product::where('slug', $slug)
-            ->with([
-                'category.subcategories',
-                'subcategory',
-                'images',
-                'seller',
-                'reviews',
-                'variants.option_values.option',
-            ])->firstOrFail();
+        $productModel = Product::where('slug', $slug)->withDefaultRelations()->firstOrFail();
 
         $categoryId = $productModel->category->id;
-        $sellerId   = $productModel->seller->id;
+        $sellerId = $productModel->seller->id;
 
         $product = $productModel->toDetailsArray();
 
@@ -46,10 +38,10 @@ class ProductController extends Controller
             $affiliateRefs[$slug][] = $refCode;
             $affiliateRefs[$slug] = array_unique($affiliateRefs[$slug]);
 
-            Cookie::queue('affiliate_refs', json_encode($affiliateRefs), 60 * 24 * 7); 
+            Cookie::queue('affiliate_refs', json_encode($affiliateRefs), 60 * 24 * 7);
 
             AffiliateClick::create([
-                'affiliate_id' => $affiliateUser->id, 
+                'affiliate_id' => $affiliateUser->id,
                 'product_id'   => $product['id'],
                 'ip_address'   => $request->ip(),
                 'user_agent'   => $request->userAgent(),
@@ -57,7 +49,7 @@ class ProductController extends Controller
             ]);
         }
 
-        $interest_products = Product::where('category_id', $categoryId)
+        $interest_products = Product::withDefaultRelations()->where('category_id', $categoryId)
             ->where('id', '!=', $product['id'])
             ->latest()
             ->skip($skip)

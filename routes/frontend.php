@@ -17,7 +17,7 @@ Route::get('categories/{slug}', [CategoryController::class, 'details'])->name('c
 Route::get('/contact-us', [ContactUsController::class, 'contactUs'])->name('contactUs');
 
 Route::prefix('products')->as('products.')->group(function () {
-    Route::get('{slug}/details', [ProductController::class, 'details'])->name('details');
+    Route::get('{slug}', [ProductController::class, 'details'])->name('details');
     Route::post('{slug}/get-variant', [ProductController::class, 'getVariant']);
 });
 

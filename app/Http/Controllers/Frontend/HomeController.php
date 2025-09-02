@@ -16,9 +16,7 @@ class HomeController extends Controller
 
         $data['special_category'] = Category::special()->with(['banners', 'products'])->first();
 
-        $relations = ['brand', 'images', 'category', 'subcategory', 'variants.option_values', 'seller', 'reviews.user', 'unit'];
-
-        $new_arrival_products = Product::with($relations)
+        $new_arrival_products = Product::withDefaultRelations()
             ->withAvg('reviews', 'rating')
             // ->where('is_featured', 0)
             ->withCount('reviews')
@@ -28,7 +26,7 @@ class HomeController extends Controller
 
         $data['new_arrival_products'] = $new_arrival_products->map(fn($product) => $product->toDetailsArray());
 
-        $trending_products = Product::with($relations)
+        $trending_products = Product::withDefaultRelations()
             ->withAvg('reviews', 'rating')
             ->where('is_trending', 1)
             ->withCount('reviews')
@@ -38,7 +36,7 @@ class HomeController extends Controller
 
         $data['trending_products'] = $trending_products->map(fn($product) => $product->toDetailsArray());
 
-        $bestselling_products = Product::with($relations)
+        $bestselling_products = Product::withDefaultRelations()
             ->withAvg('reviews', 'rating')
             ->where('best_selling', 1)
             ->withCount('reviews')
@@ -48,7 +46,7 @@ class HomeController extends Controller
 
         $data['bestselling_products'] = $bestselling_products->map(fn($product) => $product->toDetailsArray());
 
-        $featured_products = Product::with($relations)
+        $featured_products = Product::withDefaultRelations()
             ->withAvg('reviews', 'rating')
             ->where('is_featured', 1)
             ->withCount('reviews')
