@@ -22,7 +22,9 @@
                     <img src="{{ storage_url($settings->logo_white) }}" alt="Logo"
                         class="mx-auto h-10 sm:h-12 object-contain" />
                 </a>
-                <h1 class="text-3xl font-bold text-gray-900">Create Your Account</h1>
+                <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">
+                    Create Your Account
+                </h1>
                 <p class="text-gray-600 text-sm">Join our community and unlock exclusive features.</p>
             </div>
 
