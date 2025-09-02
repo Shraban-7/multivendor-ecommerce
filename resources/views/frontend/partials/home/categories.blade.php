@@ -1,13 +1,13 @@
-<section class="px-4 py-12">
-    <h2 class="uppercase md:text-center sm:text-xl xl:text-4xl lg:text-3xl md:text-2xl text-theme-dark mb-8">
+<section class="mt-10">
+    <h2 class="uppercase md:text-center sm:text-xl xl:text-4xl lg:text-3xl md:text-2xl text-theme-dark mb-4 md:mb-10">
         Featured Categories
     </h2>
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-6">
+    <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-6">
         @foreach ($categories as $category)
-        <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg cursor-pointer transition">
+        <div class="p-2 md:p-4 bg-white rounded-lg shadow hover:shadow-lg cursor-pointer transition">
             <a href="{{ route('category.details',$category->slug) }}" class="flex flex-col items-center">
-                <img src="{{ storage_url($category->image) }}" alt="{{ $category->name }}" class="w-16 h-16 mb-3 object-contain" />
-                <span class="text-center text-gray-700 text-sm leading-tight break-words line-clamp-2">
+                <img src="{{ storage_url($category->image) }}" alt="{{ $category->name }}" class="w-10 h-10 md:w-16 md:h-16 mb-3 object-contain" />
+                <span class="text-center text-gray-700 text-xs md:text-sm leading-tight break-words line-clamp-2">
                     {{ $category->name }}
                 </span>
             </a>

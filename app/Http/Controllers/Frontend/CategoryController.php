@@ -8,18 +8,17 @@ use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use App\Models\Option;
 use App\Models\Product;
-use App\Models\ProductAttribute;
 
 class CategoryController extends Controller
 {
     public function details($slug, Request $request)
     {
-        $limit = 8;
+        $limit = 16;
         $page = $request->get('page', 1);
         $skip = ($page - 1) * $limit;
 
         $category = Category::where('slug', $slug)
-            ->with(['products', 'subcategories',])
+            ->with(['products', 'subcategories'])
             ->first();
 
         $brands = Brand::get();
@@ -57,10 +56,12 @@ class CategoryController extends Controller
 
         $productOptions = Option::with('options')->get();
 
-        $category_products = $query->with('variants','unit', 'images')
-            ->latest()
+        $category_products = Product::withDefaultRelations()
+            ->where('category_id', $category->id)
+            ->latest('id')
             ->skip($skip)
-            ->take($limit)->get();
+            ->take($limit)
+            ->get();
 
         $products = $category_products->map(fn($product) => $product->toDetailsArray());
 

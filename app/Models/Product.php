@@ -22,6 +22,7 @@ class Product extends Model
     {
         return $query->where('is_lightdeal', true);
     }
+
     public function scopeInterest($query)
     {
         return $query->where('is_interest', true);
@@ -51,10 +52,12 @@ class Product extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
     public function subcategory()
     {
         return $this->belongsTo(Category::class, 'subcategory_id');
     }
+
     public function brand()
     {
         return $this->belongsTo(Brand::class);
@@ -104,16 +107,21 @@ class Product extends Model
 
     public function toDetailsArray()
     {
-        $this->load('images', 'category', 'subcategory', 'variants', 'seller', 'reviews.user');
+        //$this->load('images', 'category', 'subcategory', 'variants', 'seller', 'reviews.user');
 
-        $sold          = OrderItem::where('product_id', $this->id)->count();
-        $revenue       = $sold * $this->selling_price;
-        $profit        = $revenue - ($sold * $this->buying_price);
-        $lastOrder     = OrderItem::where('product_id', $this->id)->latest('created_at')->first();
-        $lastSale      = $lastOrder?->created_at;
-        $stockHistory  = StockHistory::where('product_id', $this->id)->latest()->get();
-        $margin        = $this->selling_price - $this->buying_price;
+        //$sold          = OrderItem::where('product_id', $this->id)->count();
+        //$revenue       = $sold * $this->selling_price;
+        //$profit        = $revenue - ($sold * $this->buying_price);
+        //$lastOrder     = OrderItem::where('product_id', $this->id)->latest('created_at')->first();
+        //$lastSale      = $lastOrder?->created_at;
+        //$stockHistory  = StockHistory::where('product_id', $this->id)->latest()->get();
+
+        $margin = $this->selling_price - $this->buying_price;
         $marginPercent = $this->buying_price > 0 ? ($margin / $this->buying_price) * 100 : 0;
+
+        $sold = $this->variants->sum('stock_out');
+
+        $reviews = $this->reviews;
 
         return [
             'id'                => $this->id,
@@ -164,10 +172,10 @@ class Product extends Model
             //'default_variant'    => collect($this['variants'])->firstWhere('is_default', 1),
             'default_variant'    => collect($this['variants'])->sortByDesc('is_default')->first(),
             'total_sold'        => $sold,
-            'revenue'           => $revenue,
-            'profit'            => $profit,
-            'last_sale'         => $lastSale,
-            'stock_history'     => $stockHistory,
+            // 'revenue'           => $revenue,
+            // 'profit'            => $profit,
+            // 'last_sale'         => $lastSale,
+            // 'stock_history'     => $stockHistory,
             'profit'            => [
                 'margin'  => (float) $margin,
                 'percent' => round($marginPercent, 2),
@@ -179,9 +187,9 @@ class Product extends Model
                 'business_logo' => $this->seller->business_logo,
                 'best_seller'   => $this->seller->is_best_seller,
             ],
-            'reviews'           => $this->reviews,
-            'rating'            => number_format($this->reviews->avg('rating'), 1),
-            'total_reviews'     => $this->reviews->count(),
+            'reviews'           => $reviews,
+            'rating'            => number_format($reviews->avg('rating') ?? 0, 1),
+            'total_reviews'     => $reviews->count(),
             'created_at'        => $this->created_at,
             'updated_at'        => $this->updated_at,
         ];
@@ -210,5 +218,19 @@ class Product extends Model
         return Attribute::make(
             get: fn() => $options
         );
+    }
+
+    public function scopeWithDefaultRelations($query)
+    {
+        return $query->with([
+            'brand',
+            'images',
+            'category',
+            'subcategory',
+            'variants.option_values',
+            'seller',
+            'reviews.user',
+            'unit'
+        ]);
     }
 }

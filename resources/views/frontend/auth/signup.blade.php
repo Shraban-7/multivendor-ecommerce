@@ -1,14 +1,31 @@
-@extends('frontend.layouts.app')
-@section('title', 'Sign Up')
+<!DOCTYPE html>
+<html lang="en">
 
-@section('content')
-    <!-- Registration Page -->
-    <main class="flex items-center justify-center px-4 py-10 bg-white">
-        <div class="w-full max-w-lg bg-white border border-gray-200 shadow-md rounded-2xl p-6 sm:p-8 space-y-6">
+<?php $settings = settings(); ?>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset($settings->favicon) }}">
+    @vite('resources/css/app.css')
+    <title>Sign Up | {{ $settings->app_name }}</title>
+</head>
+
+<body class="bg-gray-50">
+    <main class="min-h-screen flex items-center justify-center px-4 py-10">
+        <div
+            class="w-full max-w-lg bg-white shadow-lg rounded-2xl border border-gray-200 p-6 sm:p-8 space-y-6">
+
             <!-- Header -->
             <div class="text-center space-y-2">
-                <h1 class="text-3xl font-bold text-gray-900">Create Your Account</h1>
-                <p class="text-gray-600 text-sm">Join Our Community and unlock exclusive features.</p>
+                <a href="{{ route('home') }}">
+                    <img src="{{ storage_url($settings->logo_white) }}" alt="Logo"
+                        class="mx-auto h-10 sm:h-12 object-contain" />
+                </a>
+                <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">
+                    Create Your Account
+                </h1>
+                <p class="text-gray-600 text-sm">Join our community and unlock exclusive features.</p>
             </div>
 
             <!-- Form -->
@@ -16,86 +33,90 @@
                 @csrf
 
                 <!-- Full Name -->
-                <div class="form-ctrl space-y-1">
+                <div>
                     <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
-                    <input type="text" name="name" id="name" required placeholder="John Doe"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-light-yellow focus:border-light-yellow text-sm" />
+                    <input type="text" name="name" id="name" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 text-sm" />
                 </div>
 
                 <!-- Email -->
-                <div class="form-ctrl space-y-1">
+                <div>
                     <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                    <input type="email" name="email" id="email" required placeholder="john@example.com"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-light-yellow focus:border-light-yellow text-sm" />
+                    <input type="email" name="email" id="email" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 text-sm" />
                 </div>
+
                 <!-- Phone -->
-                <div class="form-ctrl space-y-1">
+                <div>
                     <label for="phone" class="block text-sm font-medium text-gray-700">Phone</label>
-                    <input type="text" name="phone" id="phone" required placeholder="017xxxxxxxx"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-light-yellow focus:border-light-yellow text-sm" />
+                    <input type="text" name="phone" id="phone" required placeholder="017XXXXXXXXX"
+                        class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 text-sm" />
                 </div>
 
                 <!-- Password -->
-                <div class="form-ctrl space-y-1">
+                <div>
                     <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
                     <input type="password" name="password" id="password" required placeholder="••••••••"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-light-yellow focus:border-light-yellow text-sm" />
+                        class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 text-sm" />
                 </div>
 
                 <!-- Confirm Password -->
-                <div class="form-ctrl space-y-1">
-                    <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Confirm
-                        Password</label>
+                <div>
+                    <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Confirm Password</label>
                     <input type="password" name="password_confirmation" id="password_confirmation" required
                         placeholder="••••••••"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-light-yellow focus:border-light-yellow text-sm" />
+                        class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 text-sm" />
                 </div>
 
+                <!-- Hidden Role -->
                 <input type="hidden" name="role"
                     value="{{ request('role') === App\Enums\UserRole::AFFILIATE->label()
-                        ? App\Enums\UserRole::AFFILIATE->label()
-                        : App\Enums\UserRole::CUSTOMER->label() }}">
-
+              ? App\Enums\UserRole::AFFILIATE->label()
+              : App\Enums\UserRole::CUSTOMER->label() }}">
 
                 <!-- Terms Agreement -->
                 <div class="flex items-start text-sm text-gray-700">
                     <input type="checkbox" id="terms" required
-                        class="h-4 w-4 text-light-yellow focus:ring-light-yellow border-gray-300 rounded" />
-                    <label for="terms" class="ml-2">I agree to the
-                        <a href="#" class="text-butterfly-blue hover:underline">Terms</a>
+                        class="h-4 w-4 text-yellow-500 focus:ring-yellow-400 border-gray-300 rounded" />
+                    <label for="terms" class="ml-2">
+                        I agree to the
+                        <a href="#" class="text-yellow-600 hover:underline">Terms</a>
                         and
-                        <a href="#" class="text-butterfly-blue hover:underline">Privacy Policy</a>.
+                        <a href="#" class="text-yellow-600 hover:underline">Privacy Policy</a>.
                     </label>
                 </div>
 
                 <!-- Submit Button -->
                 <button type="submit"
-                    class="text-white bg-butterfly-blue py-2 md:py-3 w-full rounded-lg hover:bg-light-yellow eq">
+                    class="w-full py-3 bg-yellow-500 text-white font-medium rounded-lg hover:bg-yellow-400 transition">
                     Register
                 </button>
             </form>
 
-            <!-- Social Login -->
-            <div class="social-login space-y-3">
-                <div class="devider-sec flex flex-nowrap items-center justify-center text-davy-gray/80">
-                    <span class="h-px bg-davy-gray/80 block flex-1"></span><span class="block px-3">OR</span><span
-                        class="h-px bg-davy-gray/80 block flex-1"></span>
-                </div>
+            <!-- Divider -->
+            <!-- <div class="flex items-center my-6">
+                <span class="flex-1 h-px bg-gray-300"></span>
+                <span class="px-3 text-gray-400 text-sm">OR</span>
+                <span class="flex-1 h-px bg-gray-300"></span>
+            </div> -->
 
-                <div class="login-options flex flex-col lg:flex-row flex-wrap gap-5 text-davy-gray/80">
-                    <button
-                        class="px-1 py-2 flex-1 inline-flex gap-1 items-center justify-center border border-jet-gray/20 rounded hover:bg-jet-gray/10 eq">
-                        <img src="{{ asset('assets/frontend/images/google-icon.png') }}" class="h-8 md:h-10 w-auto" />
-                        <span>Login with Google</span>
-                    </button>
-                </div>
-            </div>
+            <!-- Social Login (Optional) -->
+            <!--
+      <div class="flex gap-3">
+        <button
+          class="flex-1 flex items-center justify-center gap-2 border border-gray-300 rounded-lg py-2 hover:bg-gray-50 transition">
+          <img src="{{ asset('assets/frontend/images/google-icon.png') }}" class="h-5 w-5" />
+          <span class="text-sm">Sign up with Google</span>
+        </button>
+      </div>
+      -->
 
             <!-- Footer -->
-            <div class="text-center pt-4 border-t text-sm text-gray-600">
+            <div class="text-center text-sm text-gray-600">
                 Already have an account?
-                <a href="{{ route('login') }}" class="text-butterfly-blue hover:underline">Login here</a>
+                <a href="{{ route('login') }}" class="text-yellow-600 hover:underline">Login here</a>
             </div>
         </div>
     </main>
-@endsection
+    @vite('resources/js/app.js')
+</body>
+
+</html>

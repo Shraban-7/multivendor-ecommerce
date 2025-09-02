@@ -7,20 +7,11 @@ use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PaymentController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/test', function () {
-    return view('frontend.pages.test');
-})->name('test');
-
 
 Route::get('/invoice/{invoice_id}', [InvoiceController::class, 'invoice'])->name('invoice');
 Route::get('/receipt/{invoice_id}', [InvoiceController::class, 'receipt'])->name('receipt');
 
-Route::get('/product', function () {
-    return view('product-variant');
-});
-
 Route::get('/get-districts/{divisionId}', [LocationController::class, 'getDistricts'])->name('get.districts');
-
 
 Route::prefix('payment')->as('payment.')->group(function () {
     Route::get('/pay', [PaymentController::class, 'pay'])->name('pay');

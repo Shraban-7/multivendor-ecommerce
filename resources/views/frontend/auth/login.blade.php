@@ -1,162 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<?php
-$settings = settings();
-?>
+<?php $settings = settings(); ?>
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset($settings->favicon) }}">
-    <!-- Tailwind CSS -->
-    {{-- <script src="https://cdn.tailwindcss.com"></script> --}}
     @vite('resources/css/app.css')
-    <!-- Flowbite CSS -->
-    {{-- <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css" rel="stylesheet" /> --}}
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('assets/frontend/styles/style.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/frontend/styles/responsive.css') }}" />
-
     <title>Login | {{ $settings->app_name }}</title>
 </head>
 
-<body>
+<body class="bg-gray-50">
     <!-- Login Page -->
-    <main class="login-page">
-        @if (session('error') || session('success') || session('warning'))
-            <div id="alert-border"
-                class="fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 text-sm flex items-center gap-2
-            @if (session('error')) text-red-700 bg-red-100 border-red-500
-            @elseif (session('success'))
-                text-green-700 bg-green-100 border-green-500
-            @elseif (session('warning'))
-                text-yellow-700 bg-yellow-100 border-yellow-500 @endif
-            border-l-4 rounded-md max-w-md w-[95%] sm:w-auto"
-                role="alert">
-                <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-                </svg>
-                <span class="flex-1">
-                    {{ session('error') ?? (session('success') ?? session('warning')) }}
-                </span>
-                <button type="button" class="text-current hover:text-black" data-dismiss-target="#alert-border">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 14 14">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M1 1l6 6m0 0l6 6M7 7l6-6M7 7l-6 6" />
+    <main class="min-h-screen flex items-center justify-center px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 w-full max-w-6xl bg-white shadow-lg rounded-xl overflow-hidden">
+
+            <!-- Left Section (Form) -->
+            <div class="flex flex-col justify-center px-6 sm:px-12 py-10">
+                <!-- Logo -->
+                <div class="mb-6">
+                    <a href="{{ route('home') }}">
+                        <img src="{{ storage_url($settings->logo_white) }}" alt="Logo" class="h-10 sm:h-12 object-contain" />
+                    </a>
+                </div>
+
+                <h1 class="text-3xl sm:text-4xl font-bold text-gray-900">Welcome Back</h1>
+                <p class="text-gray-500 mt-2">Login to continue to {{ $settings->app_name }}</p>
+
+                @if (session('error') || session('success') || session('warning'))
+                <div id="alert-border"
+                    class="mt-4 flex items-center gap-2 px-4 py-3 rounded-lg text-sm shadow-md
+                        @if (session('error')) bg-red-100 text-red-700 border-l-4 border-red-500
+                        @elseif (session('success')) bg-green-100 text-green-700 border-l-4 border-green-500
+                        @elseif (session('warning')) bg-yellow-100 text-yellow-700 border-l-4 border-yellow-500 @endif">
+                    <svg class="w-5 h-5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                            d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
                     </svg>
-                </button>
-            </div>
-        @endif
+                    <span class="flex-1">{{ session('error') ?? (session('success') ?? session('warning')) }}</span>
+                    <button type="button" class="hover:text-black" data-dismiss-target="#alert-border">
+                        ✕
+                    </button>
+                </div>
+                @endif
 
-
-        <div class="grid grid-cols-1 md:grid-cols-2">
-            <div class="login-form-sec section-padding px-5 md:px-10 2xl:px-20 flex flex-col sm:mx-15 mx-10">
-                <div class="welcome-text space-y-2 mt-3 sm:mt-5 lg:w-9/w-12 2xl:w-4/5">
-                    <div class="w-24 h-10 sm:w-32 sm:h-12">
-                        <a href="{{ route('home') }}">
-                            <img src="{{ storage_url($settings->logo_white) }}" alt="Logo"
-                                class="object-contain w-full h-full" />
-                        </a>
+                <form action="{{ route('login') }}" method="POST" class="mt-6 space-y-5">
+                    @csrf
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                        <input required id="email" type="email" name="email" value="{{ old('email') }}"
+                            class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 text-sm" />
                     </div>
-                    <h1
-                        class="text-2xl xsm:text-3xl sm:text-4xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-black !leading-tight">
-                        Welcome Back!
-                    </h1>
-                    <p class="font-medium text-davy-gray/60">
-                        We are very happy to see you back!
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                        <input required type="password" id="password" name="password"
+                            class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 text-sm" />
+                    </div>
+                    <div class="flex items-center justify-between text-sm">
+                        <label class="flex items-center gap-2">
+                            <input id="remember" type="checkbox"
+                                class="h-4 w-4 text-yellow-500 focus:ring-yellow-400 border-gray-300 rounded" />
+                            Remember Me
+                        </label>
+                        <a href="#" class="text-yellow-600 hover:underline">Forgot Password?</a>
+                    </div>
+                    <button type="submit"
+                        class="w-full py-3 bg-yellow-500 text-white font-medium rounded-lg hover:bg-yellow-400 transition">
+                        Login
+                    </button>
+                </form>
+
+                <div class="flex items-center my-6">
+                    <span class="flex-1 h-px bg-gray-300"></span>
+                    <span class="px-3 text-gray-400 text-sm">OR</span>
+                    <span class="flex-1 h-px bg-gray-300"></span>
+                </div>
+
+                <!-- <div class="flex gap-3">
+                    <button
+                        class="flex-1 flex items-center justify-center gap-2 border border-gray-300 rounded-lg py-2 hover:bg-gray-50 transition">
+                        <img src="{{ asset('assets/frontend/images/google-icon.png') }}" class="h-5 w-5" />
+                        <span class="text-sm">Google</span>
+                    </button>
+                </div> -->
+
+                <!-- Links -->
+                <div class="text-center text-sm text-gray-600 space-y-2">
+                    <p>
+                        New to {{ $settings->app_name }}?
+                        <a href="{{ route('signup') }}" class="text-yellow-600 hover:underline">Sign Up</a>
+                    </p>
+                    <p>
+                        Want to sell products?
+                        <a href="{{ route('seller.signup') }}" class="text-yellow-600 hover:underline">Become a Seller</a>
+                    </p>
+                    <p>
+                        Earn by referring people?
+                        <a href="{{ route('signup') }}?role={{ App\Enums\UserRole::AFFILIATE->label() }}"
+                            class="text-yellow-600 hover:underline">Become an Affiliate</a>
                     </p>
                 </div>
-
-                <div class="login-form mt-3 sm:mt-5 lg:w-9/w-12 2xl:w-4/5">
-                    <form action="{{ route('login') }}" method="POST"
-                        class="w-full flex flex-col gap-4 sm:gap-5 mb-3 md:mb-4">
-                        @csrf
-                        <div class="form-ctrl space-y-1 sm:space-y-2">
-                            <label class="block text-sm" for="email">Email</label>
-                            <input required id="email" type="email" name="email" value="{{ old('email') }}"
-                                class="eq w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[1] focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
-                        </div>
-                        <div class="form-ctrl space-y-1 sm:space-y-2">
-                            <label class="block text-sm" for="password">Password</label>
-                            <input required type="password" id="password" name="password"
-                                class="eq w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[1] focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
-                        </div>
-                        <div class="flex items-start text-davy-gray/80">
-                            <input id="remember" type="checkbox"
-                                class="h-4 w-4 text-light-yellow focus:ring-light-yellow border-gray-300 rounded" />
-                            <label for="remember" class="ml-2 text-sm">Remember Me</label>
-                        </div>
-
-                        <button type="submit"
-                            class="text-white bg-butterfly-blue py-2 md:py-3 w-full rounded-lg hover:bg-light-yellow eq">
-                            Login
-                        </button>
-                    </form>
-
-                    <div class="social-login space-y-3">
-                        <div class="devider-sec flex items-center justify-center text-davy-gray/80">
-                            <span class="h-px bg-davy-gray/80 block flex-1"></span><span
-                                class="block px-3">OR</span><span class="h-px bg-davy-gray/80 block flex-1"></span>
-                        </div>
-
-                        <div class="login-options flex flex-col lg:flex-row flex-wrap gap-5 text-davy-gray/80">
-                            <button
-                                class="px-1 py-2 flex-1 inline-flex gap-1 items-center justify-center border border-jet-gray/20 rounded hover:bg-jet-gray/10 eq">
-                                <img src="{{ asset('assets/frontend/images/google-icon.png') }}"
-                                    class="h-8 md:h-10 w-auto" />
-                                <span>Login with Google</span>
-                            </button>
-                            <button
-                                class="px-1 py-2 flex-1 inline-flex gap-1 items-center justify-center border border-jet-gray/20 rounded hover:bg-jet-gray/10 eq">
-                                <img src="{{ asset('assets/frontend/images/microsoft-icon.png') }}"
-                                    class="h-8 md:h-10 w-auto" />
-                                <span>Login with Microsoft</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="text-center mt-6 space-y-2">
-                        <p class="text-jet-gray/80">
-                            New to our marketplace?
-                            <a href="{{ route('signup') }}" class="text-primary hover:underline">
-                                Sign Up Here
-                            </a>
-                        </p>
-                        <p class="text-jet-gray/80">
-                            Own a store or want to sell products?
-                            <a href="{{ route('seller.signup') }}" class="text-primary hover:underline">
-                                Become a Seller
-                            </a>
-                        </p>
-                        <p class="text-jet-gray/80">
-                            Want to earn by referring people?
-                            <a href="{{ route('signup') }}?role={{ App\Enums\UserRole::AFFILIATE->label() }}" class="text-primary hover:underline">
-                                Become an Affiliator
-                            </a>
-                        </p>
-                    </div>
-
-                </div>
             </div>
 
-            <div class="login-banner hidden md:block">
-                <div class="h-full lg:h-[48.5rem] xl:h-[50.5rem] relative bg-red-300">
-                    <div class="image-wrap h-full overflow-hidden">
-                        <img src="{{ asset('assets/frontend/images/login-banner.png') }}" alt="Login Banner"
-                            class="w-full h-full object-cover" />
-                    </div>
-                    <div class="w-2/6 h-full bg-gradient-to-r from-white from-15% to-transparent absolute top-0 left-0">
-                    </div>
-                </div>
+            <!-- Right Section (Banner) -->
+            <div class="hidden md:block relative">
+                <img src="{{ asset('assets/frontend/images/login-banner.png') }}" alt="Login Banner"
+                    class="w-full h-full object-cover" />
+                <div class="absolute inset-0 bg-gradient-to-r from-white/70 to-transparent"></div>
             </div>
         </div>
     </main>
-
-    <!-- JS -->
     @vite('resources/js/app.js')
-    {{-- <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
-    <script src="{{ asset('assets/frontend/tailwind.config.js') }}"></script> --}}
 </body>
 
 </html>
