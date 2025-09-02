@@ -51,7 +51,7 @@ $settings = settings();
         </div>
     @endif
 
-    <main class="max-w-7xl mx-auto py-4">
+    <main class="max-w-7xl mx-auto p-4">
         @yield('content')
     </main>
 

@@ -2,7 +2,7 @@
 @section('title', $category->name)
 
 @section('content')
-<div class="container mx-auto px-4 mt-2 mb-8">
+<div class="mt-2 mb-8">
     <!-- promo banner -->
     <div class="page-promotion md:w-full mb-6">
         <div style="background-color: {{ $category->cover_bg_color }}"
