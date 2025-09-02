@@ -114,6 +114,7 @@ class Product extends Model
         $stockHistory  = StockHistory::where('product_id', $this->id)->latest()->get();
         $margin        = $this->selling_price - $this->buying_price;
         $marginPercent = $this->buying_price > 0 ? ($margin / $this->buying_price) * 100 : 0;
+        $reviews = $this->reviews;
 
         return [
             'id'                => $this->id,
@@ -179,9 +180,9 @@ class Product extends Model
                 'business_logo' => $this->seller->business_logo,
                 'best_seller'   => $this->seller->is_best_seller,
             ],
-            'reviews'           => $this->reviews,
-            'rating'            => number_format($this->reviews->avg('rating'), 1),
-            'total_reviews'     => $this->reviews->count(),
+            'reviews'           => $reviews,
+            'rating'            => number_format($reviews->avg('rating') ?? 0, 1),
+            'total_reviews'     => $reviews->count(),
             'created_at'        => $this->created_at,
             'updated_at'        => $this->updated_at,
         ];
