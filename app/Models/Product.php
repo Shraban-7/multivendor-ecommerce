@@ -22,6 +22,7 @@ class Product extends Model
     {
         return $query->where('is_lightdeal', true);
     }
+
     public function scopeInterest($query)
     {
         return $query->where('is_interest', true);
@@ -51,10 +52,12 @@ class Product extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
     public function subcategory()
     {
         return $this->belongsTo(Category::class, 'subcategory_id');
     }
+    
     public function brand()
     {
         return $this->belongsTo(Brand::class);
@@ -104,16 +107,20 @@ class Product extends Model
 
     public function toDetailsArray()
     {
-        $this->load('images', 'category', 'subcategory', 'variants', 'seller', 'reviews.user');
+        //$this->load('images', 'category', 'subcategory', 'variants', 'seller', 'reviews.user');
 
-        $sold          = OrderItem::where('product_id', $this->id)->count();
-        $revenue       = $sold * $this->selling_price;
-        $profit        = $revenue - ($sold * $this->buying_price);
-        $lastOrder     = OrderItem::where('product_id', $this->id)->latest('created_at')->first();
-        $lastSale      = $lastOrder?->created_at;
-        $stockHistory  = StockHistory::where('product_id', $this->id)->latest()->get();
-        $margin        = $this->selling_price - $this->buying_price;
+        //$sold          = OrderItem::where('product_id', $this->id)->count();
+        //$revenue       = $sold * $this->selling_price;
+        //$profit        = $revenue - ($sold * $this->buying_price);
+        //$lastOrder     = OrderItem::where('product_id', $this->id)->latest('created_at')->first();
+        //$lastSale      = $lastOrder?->created_at;
+        //$stockHistory  = StockHistory::where('product_id', $this->id)->latest()->get();
+        
+        $margin = $this->selling_price - $this->buying_price;
         $marginPercent = $this->buying_price > 0 ? ($margin / $this->buying_price) * 100 : 0;
+
+        $sold = $this->variants->sum('stock_out');
+        
         $reviews = $this->reviews;
 
         return [
@@ -165,10 +172,10 @@ class Product extends Model
             //'default_variant'    => collect($this['variants'])->firstWhere('is_default', 1),
             'default_variant'    => collect($this['variants'])->sortByDesc('is_default')->first(),
             'total_sold'        => $sold,
-            'revenue'           => $revenue,
-            'profit'            => $profit,
-            'last_sale'         => $lastSale,
-            'stock_history'     => $stockHistory,
+            // 'revenue'           => $revenue,
+            // 'profit'            => $profit,
+            // 'last_sale'         => $lastSale,
+            // 'stock_history'     => $stockHistory,
             'profit'            => [
                 'margin'  => (float) $margin,
                 'percent' => round($marginPercent, 2),
