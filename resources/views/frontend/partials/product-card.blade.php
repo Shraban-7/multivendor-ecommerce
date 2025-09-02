@@ -1,5 +1,4 @@
-<div
-    class="group relative rounded-xl bg-white shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
+<div class="group relative rounded-md bg-white shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
 
     <!-- Wishlist -->
     <button type="button"
@@ -42,9 +41,9 @@
     </div>
 
     <!-- Product Info -->
-    <div class="p-3 flex flex-col gap-2">
+    <div class="p-3 flex flex-col">
         <!-- Name -->
-        <h3 class="text-sm font-medium text-gray-700 line-clamp-2 leading-snug">
+        <h3 class="text-sm font-medium text-gray-700 line-clamp-2 leading-snug mb-1">
             <a href="{{ route('products.details', $product['slug']) }}"
                 class="hover:text-primary transition-colors duration-200">
                 {{ $product['name'] }}
@@ -52,7 +51,7 @@
         </h3>
 
         <!-- Price -->
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 mb-1">
             @if ($discounted_price != null && $discounted_price > 0)
             <span class="text-primary font-semibold text-base">
                 {{ money($discounted_price) }}
@@ -68,7 +67,7 @@
         </div>
 
         <!-- Rating + Add to Cart -->
-        <div class="flex items-center justify-between mt-1">
+        <div class="flex items-center justify-between">
             @if ($product['rating'] > 0)
             <div class="flex items-center gap-0.5 text-yellow-400 text-xs">
                 @for ($i = 1; $i <= 5; $i++)
