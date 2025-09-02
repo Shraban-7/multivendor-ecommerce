@@ -13,7 +13,7 @@ class CategoryController extends Controller
 {
     public function details($slug, Request $request)
     {
-        $limit = 8;
+        $limit = 16;
         $page = $request->get('page', 1);
         $skip = ($page - 1) * $limit;
 
