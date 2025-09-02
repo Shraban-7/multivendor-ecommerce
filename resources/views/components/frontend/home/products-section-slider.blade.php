@@ -109,7 +109,7 @@
             </div>
         </div>
         @else
-        <div class="mt-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">
+        <div class="mt-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-4">
             @foreach ($products as $product)
             @php
             $defaultVariant = $product['default_variant'];
@@ -149,7 +149,7 @@
                         </div>
                         @endif
 
-                        <div class="min-h-[2.5rem] sm:min-h-[2.75rem] mb-2">
+                        <div class="mb-2">
                             <p class="text-[13px] sm:text-sm font-medium text-gray-800 group-hover/product-card:text-primary transition-colors line-clamp-2 leading-snug">
                                 <a href="{{ route('products.details', $product['slug']) }}?ref={{ auth()->user()->referral_code ?? '' }}">
                                     {{ $product['name'] }}
