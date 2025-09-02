@@ -30,12 +30,12 @@
                     <div class="flex flex-col w-full h-full p-2">
                         <div class="flex flex-col w-full h-full bg-white border border-gray-200 rounded-md hover:shadow-md transition duration-300 overflow-hidden">
 
-                            <div class="relative aspect-square bg-white overflow-hidden flex items-center justify-center">
+                            <div class="relative aspect-square bg-white overflow-hidden">
                                 <a href="{{ route('products.details', $product['slug']) }}" aria-label="View {{ $product['name'] }}">
                                     <img src="{{ storage_url($product['thumbnail']) }}"
                                         alt="{{ $product['slug'] }}"
                                         loading="lazy"
-                                        class="max-h-full max-w-full object-contain transition-transform duration-500 group-hover/product-card:scale-105" />
+                                        class="w-full h-full object-cover object-top transition-transform duration-500 group-hover/product-card:scale-105" />
                                 </a>
                             </div>
 
@@ -120,12 +120,12 @@
                 <div
                     class="flex flex-col w-full h-full bg-white border border-gray-200 rounded-md hover:shadow-md transition duration-300 overflow-hidden">
 
-                    <div class="relative aspect-square bg-white overflow-hidden flex items-center justify-center">
+                    <div class="relative aspect-square bg-white overflow-hidden">
                         <a href="{{ route('products.details', $product['slug']) }}" aria-label="View {{ $product['name'] }}">
                             <img src="{{ storage_url($product['thumbnail']) }}"
                                 alt="{{ $product['slug'] }}"
                                 loading="lazy"
-                                class="max-h-full max-w-full object-contain transition-transform duration-500 group-hover/product-card:scale-105" />
+                                class="w-full h-full object-cover object-top transition-transform duration-500 group-hover/product-card:scale-105" />
                         </a>
                     </div>
 
