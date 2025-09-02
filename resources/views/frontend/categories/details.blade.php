@@ -132,7 +132,7 @@
             </div>
 
             <!-- Products Grid -->
-            <div id="product-list" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div id="product-list" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
                 @include('frontend.partials.product-card-load', ['products' => $products])
             </div>
 
