@@ -55,57 +55,62 @@ class AuthController extends Controller
             case 1:
                 $data = $request->validate([
                     'name' => 'required|string|max:255',
-                    'image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
+
                     'email' => 'required|string|email|max:255|unique:sellers,email',
                     'phone' => 'required|string|max:200',
                     'nid_no' => 'required|string|max:50',
+                    'password' => 'required|string|min:5|confirmed',
+                    'image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
                     'nid_front_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
                     'nid_back_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
-                    'password' => 'required|string|min:5|confirmed',
                 ]);
 
-                session(['seller_step1' => $data]);
+                $sessionData = $request->except(['image', 'nid_front_image', 'nid_back_image']);
+                session(['seller_step1' => $sessionData]);
+                
                 return apiResponse(['next_step' => 2], 'Step 1 complete');
 
             case 2:
                 $data = $request->validate([
                     'business_name' => 'required|string|max:255',
-                    'business_logo' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
                     'business_email' => 'required|string|email|max:255|unique:sellers,business_email',
                     'business_address' => 'required|string|max:1000',
                     'division_id' => 'required|exists:divisions,id',
                     'district_id' => 'required|exists:districts,id',
                 ]);
 
-                session(['seller_step2' => $data]);
+                $sessionData = $request->except(['business_logo']);
+
+                session(['seller_step2' => $sessionData]);
                 return apiResponse(['next_step' => 3], 'Step 2 complete');
 
             case 3:
                 $data = $request->validate([
                     'trade_license_no' => 'required|string|max:100',
-                    'trade_license_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
-                    'shop_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
+
                 ]);
+
+                $sessionData = $request->except(['trade_license_image','shop_image']);
 
                 $step1 = session('seller_step1', []);
                 $step2 = session('seller_step2', []);
-                $allData = array_merge($step1, $step2, $data);
+                $allData = array_merge($step1, $step2,$sessionData);
 
                 $allData['username'] = str_slug('sellers', 'username', $allData['name']);
                 $username = $allData['username'];
 
                 $imageFields = [
-                    'image' => "images/{$username}/avatar",
-                    'nid_front_image' => "images/{$username}/nids",
-                    'nid_back_image' => "images/{$username}/nids",
-                    'business_logo' => "images/{$username}/logo",
+                    'image'               => "images/{$username}/avatar",
+                    'nid_front_image'     => "images/{$username}/nids",
+                    'nid_back_image'      => "images/{$username}/nids",
+                    'business_logo'       => "images/{$username}/logo",
                     'trade_license_image' => "images/{$username}/licenses",
-                    'shop_image' => "images/{$username}/shops",
+                    'shop_image'          => "images/{$username}/shops",
                 ];
 
                 foreach ($imageFields as $field => $folder) {
-                    if (isset($allData[$field]) && $allData[$field] instanceof \Illuminate\Http\UploadedFile) {
-                        $allData[$field] = upload_file($allData[$field], $folder);
+                    if ($request->hasFile($field)) {
+                        $allData[$field] = upload_file($request->file($field), $folder);
                     }
                 }
 
