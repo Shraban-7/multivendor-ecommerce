@@ -113,9 +113,6 @@
                             @endif
                         </div>
 
-
-
-
                         <!-- Payment Options -->
                         <div class="flex flex-col gap-y-4 !my-6 md:!my-10 border border-jet-gray/30 py-5">
                             <h3 class="sm:text-lg font-medium pl-5">Payment Option</h3>

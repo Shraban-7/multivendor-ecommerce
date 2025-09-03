@@ -51,8 +51,8 @@
 
                     <div class="registration-form mt-3 sm:mt-5">
                         <!-- Registration Form -->
-                        <form action="{{ route('seller.signup') }}" method="POST" enctype="multipart/form-data"
-                            class="w-full mb-3 md:mb-4" id="sellerRegistrationForm">
+                        <form method="POST" enctype="multipart/form-data" class="w-full mb-3 md:mb-4"
+                            id="sellerRegistrationForm">
                             @csrf
 
                             <!-- Step 1: Personal Information -->
@@ -417,8 +417,8 @@
                                             class="prev-step text-light-yellow border border-light-yellow hover:bg-light-yellow/10 font-medium rounded-lg text-sm px-6 py-3 focus:outline-none focus:ring-4 focus:ring-light-yellow/50 transition-all">
                                             Previous
                                         </button>
-                                        <button type="submit"
-                                            class="text-white bg-light-yellow hover:bg-light-yellow/90 focus:ring-4 focus:ring-light-yellow/50 font-medium rounded-lg text-sm px-6 py-3 focus:outline-none transition-all">
+                                        <button type="button"
+                                            class="submit-btn text-white bg-light-yellow hover:bg-light-yellow/90 focus:ring-4 focus:ring-light-yellow/50 font-medium rounded-lg text-sm px-6 py-3 focus:outline-none transition-all">
                                             Register as Seller
                                         </button>
                                     </div>
@@ -437,7 +437,6 @@
                 $('#division_id').change(function() {
                     let divisionId = $(this).val();
                     let $districtSelect = $('#district_id');
-
                     $districtSelect.html('<option value="">Loading...</option>');
 
                     if (divisionId) {
@@ -448,12 +447,11 @@
                             success: function(data) {
                                 $districtSelect.html('<option value="">Select District</option>');
                                 $.each(data, function(id, name) {
-                                    $districtSelect.append('<option value="' + id +
-                                        '">' + name + '</option>');
+                                    $districtSelect.append('<option value="' + id + '">' +
+                                        name + '</option>');
                                 });
                             },
-                            error: function(xhr, status, error) {
-                                console.log(error);
+                            error: function() {
                                 $districtSelect.html('<option value="">Select District</option>');
                             }
                         });
@@ -461,36 +459,57 @@
                         $districtSelect.html('<option value="">Select District</option>');
                     }
                 });
-            });
 
-
-            $(document).ready(function() {
                 $(document).on('click', '.next-step', function() {
                     const currentStep = parseInt($(this).data('current'));
                     const nextStep = parseInt($(this).data('next'));
-                    let isValid = true;
+                    const $currentStep = $('#step-' + currentStep);
 
-                    $('#step-' + currentStep + ' :input[required]').each(function() {
-                        if (!$(this).val()) {
-                            isValid = false;
-                            $(this).addClass('border-red-500');
-                            if (!$(this).next('.error-msg').length) {
-                                $(this).after(
-                                    '<span class="error-msg text-red-500 text-xs mt-1">This field is required</span>'
-                                    );
-                            }
+                    $currentStep.find('.error-msg').remove();
+                    $currentStep.find(':input').removeClass('border-red-500');
+
+                    let formData = new FormData();
+                    $currentStep.find(':input').each(function() {
+                        let name = $(this).attr('name');
+                        if (!name) return;
+
+                        if ($(this).attr('type') === 'file' && this.files[0]) {
+                            formData.append(name, this.files[0]);
                         } else {
-                            $(this).removeClass('border-red-500');
-                            $(this).next('.error-msg').remove();
+                            formData.append(name, $(this).val());
                         }
                     });
+                    formData.append('_token', '{{ csrf_token() }}');
+                    formData.append('step', currentStep);
 
-                    if (!isValid) return; 
-
-                    $('#step-' + currentStep).addClass('hidden').removeClass('active');
-                    $('#step-' + nextStep).removeClass('hidden').addClass('active');
-
-                    updateStepIndicators(currentStep, nextStep);
+                    $.ajax({
+                        url: "{{ route('seller.signup') }}",
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(response) {
+                            $currentStep.addClass('hidden').removeClass('active');
+                            $('#step-' + nextStep).removeClass('hidden').addClass('active');
+                            updateStepIndicators(currentStep, nextStep);
+                        },
+                        error: function(xhr) {
+                            if (xhr.status === 422) {
+                                const errors = xhr.responseJSON.errors;
+                                for (const [field, messages] of Object.entries(errors)) {
+                                    const $field = $currentStep.find(`[name="${field}"]`);
+                                    if ($field.length) {
+                                        $field.addClass('border-red-500');
+                                        if (!$field.next('.error-msg').length) {
+                                            $field.after(
+                                                '<span class="error-msg text-red-500 text-xs mt-1">' +
+                                                messages[0] + '</span>');
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
                 });
 
                 $(document).on('click', '.prev-step', function() {
@@ -500,42 +519,33 @@
                     $('#step-' + currentStep).addClass('hidden').removeClass('active');
                     $('#step-' + prevStep).removeClass('hidden').addClass('active');
 
-                    updateStepIndicatorsBackward(currentStep, prevStep);
+                    updateStepIndicators(currentStep, prevStep, 'prev');
                 });
 
-                function updateStepIndicators(currentStep, nextStep) {
-                    const $currentIndicator = $('#step-' + currentStep + '-indicator');
-                    $currentIndicator.removeClass('text-light-yellow').addClass('text-[#FD740F]');
-                    $currentIndicator.find('div').removeClass('bg-light-yellow').addClass('bg-[#FD740F]');
-                    $currentIndicator.find('i').removeClass('text-gray-500').addClass('text-white');
-                    $currentIndicator.find('span').removeClass('text-light-yellow').addClass('text-[#FD740F]');
-                    if (currentStep < 3) {
-                        $currentIndicator.removeClass('after:border-gray-200').addClass('after:border-[#FD740F]');
-                    }
-
-                    const $nextIndicator = $('#step-' + nextStep + '-indicator');
-                    $nextIndicator.addClass('text-light-yellow');
-                    $nextIndicator.find('div').removeClass('bg-gray-500').addClass('bg-light-yellow');
-                    $nextIndicator.find('i').removeClass('text-gray-500').addClass('text-white');
-                    $nextIndicator.find('span').removeClass('text-gray-500').addClass('text-light-yellow');
-                }
-
-                function updateStepIndicatorsBackward(currentStep, prevStep) {
-                    const $currentIndicator = $('#step-' + currentStep + '-indicator');
-                    $currentIndicator.removeClass('text-light-yellow');
-                    $currentIndicator.find('div').removeClass('bg-light-yellow').addClass('bg-gray-500');
-                    $currentIndicator.find('i').removeClass('text-white text-light-yellow').addClass('text-white');
-                    $currentIndicator.find('span').removeClass('text-light-yellow').addClass('text-gray-500');
-
-                    const $prevIndicator = $('#step-' + prevStep + '-indicator');
-                    $prevIndicator.removeClass('text-gray-500').addClass('text-light-yellow');
-                    $prevIndicator.find('div').removeClass('bg-gray-500').addClass('bg-light-yellow');
-                    $prevIndicator.find('i').removeClass('text-gray-500').addClass('text-white');
-                    $prevIndicator.find('span').removeClass('text-gray-500').addClass('text-light-yellow');
-
-                    if (prevStep < 3 && currentStep === 3) {
-                        $('#step-2-indicator').removeClass('after:border-[#FD740F]').addClass(
-                            'after:border-light-yellow');
+                function updateStepIndicators(fromStep, toStep) {
+                    for (let i = 1; i <= 3; i++) {
+                        const $indicator = $('#step-' + i + '-indicator');
+                        if (i < toStep) {
+                            $indicator.removeClass('text-light-yellow text-gray-500').addClass('text-[#FD740F]');
+                            $indicator.find('div').removeClass('bg-gray-500 bg-light-yellow').addClass('bg-[#FD740F]');
+                            $indicator.find('i').removeClass('text-gray-500').addClass('text-white');
+                            $indicator.find('span').removeClass('text-gray-500 text-light-yellow').addClass(
+                                'text-[#FD740F]');
+                            if (i < 3) $indicator.addClass('after:border-[#FD740F]');
+                        } else if (i === toStep) {
+                            $indicator.removeClass('text-[#FD740F] text-gray-500').addClass('text-light-yellow');
+                            $indicator.find('div').removeClass('bg-[#FD740F] bg-gray-500').addClass('bg-light-yellow');
+                            $indicator.find('i').removeClass('text-gray-500').addClass('text-white');
+                            $indicator.find('span').removeClass('text-[#FD740F] text-gray-500').addClass(
+                                'text-light-yellow');
+                        } else {
+                            $indicator.removeClass('text-[#FD740F] text-light-yellow').addClass('text-gray-500');
+                            $indicator.find('div').removeClass('bg-[#FD740F] bg-light-yellow').addClass('bg-gray-500');
+                            $indicator.find('i').removeClass('text-white').addClass('text-gray-500');
+                            $indicator.find('span').removeClass('text-[#FD740F] text-light-yellow').addClass(
+                                'text-gray-500');
+                            $indicator.removeClass('after:border-[#FD740F]').addClass('after:border-gray-200');
+                        }
                     }
                 }
 
@@ -555,12 +565,56 @@
                 });
 
                 $(document).on('click', '.remove-image-btn', function(e) {
-                    e.stopPropagation(); 
+                    e.stopPropagation();
                     const inputId = $(this).data('input');
                     $('#' + inputId).val('');
                     $('#' + inputId + 'Preview').attr('src', '');
                     $('#' + inputId + 'PreviewWrapper').addClass('hidden');
                 });
+
+                $(document).on('click', '.submit-btn', function(e) {
+                    e.preventDefault();
+                    let $btn = $(this);
+                    let form = $('#sellerRegistrationForm')[0];
+                    let formData = new FormData(form);
+                    formData.append('_token', '{{ csrf_token() }}');
+                    formData.append('step', 3); 
+
+                    let originalContent = $btn.html();
+                    $btn.attr('disabled', true).html(
+                        `<svg class="animate-spin h-5 w-5 mr-2 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg> Loading...`
+                        );
+
+                    $.ajax({
+                        url: "{{ route('seller.signup') }}",
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(response) {
+                            $btn.attr('disabled', false).html(originalContent);
+                            window.location.href = "{{ route('login') }}";
+                        },
+                        error: function(xhr) {
+                            $btn.attr('disabled', false).html(originalContent);
+                            if (xhr.status === 422) {
+                                const errors = xhr.responseJSON.errors;
+                                Object.entries(errors).forEach(([field, messages]) => {
+                                    const $field = $('#step-3').find(`[name="${field}"]`);
+                                    if ($field.length) {
+                                        $field.addClass('border-red-500');
+                                        if (!$field.next('.error-msg').length) {
+                                            $field.after(
+                                                '<span class="error-msg text-red-500 text-xs mt-1">' +
+                                                messages[0] + '</span>');
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    });
+                });
+
             });
         </script>
     @endpush
