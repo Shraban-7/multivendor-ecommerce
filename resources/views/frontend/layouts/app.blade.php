@@ -2,7 +2,10 @@
 <html lang="en">
 
 <?php
+
+use Illuminate\Support\Facades\View;
 $settings = settings();
+$isDashboard = View::hasSection('dashboard');
 ?>
 
 <head>
@@ -33,30 +36,50 @@ $settings = settings();
     </header>
 
     @if (session('error') || session('success'))
-        <div id="alert-border"
-            class="fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 text-sm flex items-center gap-2
+    <div id="alert-border"
+        class="fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 text-sm flex items-center gap-2
             {{ session('error') ? 'text-red-700 bg-red-100 border-red-500' : 'text-green-700 bg-green-100 border-green-500' }}
             border-l-4 rounded-md max-w-md w-[95%] sm:w-auto"
-            role="alert">
-            <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+        role="alert">
+        <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+            <path
+                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+        </svg>
+        <span class="flex-1">{{ session('error') ?? session('success') }}</span>
+        <button type="button" class="text-current hover:text-black" data-dismiss-target="#alert-border">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 14 14">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M1 1l6 6m0 0l6 6M7 7l6-6M7 7l-6 6" />
             </svg>
-            <span class="flex-1">{{ session('error') ?? session('success') }}</span>
-            <button type="button" class="text-current hover:text-black" data-dismiss-target="#alert-border">
-                <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 14 14">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M1 1l6 6m0 0l6 6M7 7l6-6M7 7l-6 6" />
-                </svg>
-            </button>
-        </div>
+        </button>
+    </div>
     @endif
 
+    @if(!$isDashboard)
     <main class="max-w-7xl mx-auto p-4">
         @if (affiliate())
-            @include('frontend.layouts.user-nav')
+        @include('frontend.layouts.user-nav')
         @endif
         @yield('content')
     </main>
+    @endif
+
+    @if($isDashboard)
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 items-start">
+            @include('frontend.layouts.sidebar')
+            <section class="md:col-span-3 space-y-6">
+                @yield('dashboard')
+            </section>
+        </div>
+    </main>
+    <!-- Floating Sidebar Toggle Button (Mobile Only) -->
+    <button class="fixed bottom-6 right-6 z-50 md:hidden bg-yellow-500 text-white p-4 rounded-full shadow-lg hover:bg-yellow-600 focus:outline-none"
+        id="sidebar-toggle">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+    </button>
+    @endif
 
     @include('frontend.layouts.footer')
 
@@ -67,6 +90,29 @@ $settings = settings();
     <script src="{{ asset('assets/frontend/js/multipleProductsSwiper.js') }}"></script>
     <script src="{{ asset('assets/libs/datatables/simple-datatables@9.0.3.js') }}"></script>
     <script src="{{ asset('assets/libs/toastr/js/toastr.min.js') }}"></script>
+
+    @if($isDashboard)
+    <!-- Sidebar toggle -->
+    <script>
+        const sidebarToggle = document.getElementById("sidebar-toggle");
+        const mobileSidebar = document.getElementById("mobile-sidebar");
+        const sidebarBackdrop = document.getElementById("sidebar-backdrop");
+        sidebarToggle.addEventListener("click", () => {
+            const isOpen = !mobileSidebar.classList.contains("-translate-x-full");
+            if (isOpen) {
+                mobileSidebar.classList.add("-translate-x-full");
+                sidebarBackdrop.classList.add("hidden");
+            } else {
+                mobileSidebar.classList.remove("-translate-x-full");
+                sidebarBackdrop.classList.remove("hidden");
+            }
+        });
+        sidebarBackdrop.addEventListener("click", () => {
+            mobileSidebar.classList.add("-translate-x-full");
+            sidebarBackdrop.classList.add("hidden");
+        });
+    </script>
+    @endif
 
     <script>
         $.ajaxSetup({
@@ -364,8 +410,8 @@ $settings = settings();
                     $variantError.addClass("hidden");
                     if (variant.stock <= 0) {
                         $addToCartBtn.prop("disabled", true).addClass("opacity-50 cursor-not-allowed");
-                        
-                    } else { 
+
+                    } else {
                         $addToCartBtn.prop("disabled", false).removeClass("opacity-50 cursor-not-allowed");
                     }
                     $qtyInput.val(quantity);
@@ -476,12 +522,12 @@ $settings = settings();
                 const selectedOptions = collectSelectedOptions($wrapper);
 
                 console.log(selectedOptions);
-                
+
 
                 const variant = getSelectedVariant(product, selectedOptions);
 
                 console.log(variant);
-                
+
 
                 const quantity = parseInt($wrapper.find(".qtyInputValue").val()) || 1;
 
@@ -583,23 +629,23 @@ $settings = settings();
     </script>
 
     @if (auth()->check() && auth()->user()->isAffiliate())
-        <script>
-            function copyReferralLink(button, referralCode, productUrl) {
-                // Append ?ref=referralCode to the product URL
-                const referralUrl = `${productUrl}?ref=${referralCode}`;
+    <script>
+        function copyReferralLink(button, referralCode, productUrl) {
+            // Append ?ref=referralCode to the product URL
+            const referralUrl = `${productUrl}?ref=${referralCode}`;
 
-                navigator.clipboard.writeText(referralUrl).then(() => {
-                    const tooltip = button.querySelector('.tooltip-text');
-                    tooltip.classList.remove('opacity-0');
-                    tooltip.classList.add('opacity-100');
+            navigator.clipboard.writeText(referralUrl).then(() => {
+                const tooltip = button.querySelector('.tooltip-text');
+                tooltip.classList.remove('opacity-0');
+                tooltip.classList.add('opacity-100');
 
-                    setTimeout(() => {
-                        tooltip.classList.remove('opacity-100');
-                        tooltip.classList.add('opacity-0');
-                    }, 2000);
-                });
-            }
-        </script>
+                setTimeout(() => {
+                    tooltip.classList.remove('opacity-100');
+                    tooltip.classList.add('opacity-0');
+                }, 2000);
+            });
+        }
+    </script>
     @endif
 
     @stack('scripts')

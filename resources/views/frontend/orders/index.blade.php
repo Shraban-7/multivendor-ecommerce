@@ -1,16 +1,16 @@
 @extends('frontend.layouts.app')
-
 @section('title', 'My Orders')
 
-@section('content')
+@section('dashboard')
     <?php
     use App\Enums\OrderStatus;
     use App\Models\Payment;
     ?>
-    <main class="orders-page">
+
+    <main>
         @if ($orders->isNotEmpty())
             <!-- Orders Main Section Starts -->
-            <section class="orders-section container mx-auto py-10">
+            <section class="orders-section container mx-auto">
                 <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
                     <div class="flex items-center justify-between px-6 py-4 border-b border-jet-gray/30">
                         <h1 class="text-xl font-semibold text-gray-800">My Orders</h1>
