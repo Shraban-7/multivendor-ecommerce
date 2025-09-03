@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Http\Controllers\Controller;
+use App\Models\Review;
+use App\Models\Seller;
+use App\Models\Product;
 use App\Models\Category;
 use App\Models\HeroBanner;
-use App\Models\Product;
-use App\Models\Seller;
+use App\Http\Controllers\Controller;
+use App\Models\Brand;
 
 class HomeController extends Controller
 {
@@ -64,7 +66,19 @@ class HomeController extends Controller
 
         $data['hero_banners'] = HeroBanner::active()->orderBy('position')->get();
 
-        $data['sellers'] = Seller::active()->get();
+        $data['sellers'] = Seller::active()
+            ->with(['products.reviews'])
+            ->get()
+            ->map(function ($seller) {
+                $allReviews = $seller->products->flatMap->reviews;
+
+                $seller->avg_rating = round($allReviews->avg('rating'), 1); 
+                $seller->reviews_count = $allReviews->count();
+
+                return $seller;
+            });
+
+        $data['brands'] = Brand::where('status',1)->latest()->limit(12)->get();
 
         return view('frontend.pages.home', $data);
     }

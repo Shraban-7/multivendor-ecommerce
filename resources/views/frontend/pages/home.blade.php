@@ -17,6 +17,7 @@
         <x-frontend.home.products-section-slider section="Featured Products" :products="$featured_products" :slider="false" />
 
         @include('frontend.partials.home.sellers')
+        @include('frontend.partials.home.brands')
 
         {{-- @include('frontend.partials.home.feature-gallery-section') --}}
 
