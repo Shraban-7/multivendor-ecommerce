@@ -9,7 +9,7 @@ class PaymentGatewayController extends Controller
 {
     public function index()
     {
-        $gateways = PaymentGateway::get();
+        $paymentGateways = PaymentGateway::get();
 
         return view('admin.payment-gateways.index', compact('paymentGateways'));
     }

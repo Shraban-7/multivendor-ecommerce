@@ -55,7 +55,9 @@
                     <tr>
                         <td>{{ $payment->transaction_id }}</td>
                         <td>
-                            <x-user :user="$payment->user" />
+                            @if ($payment->user)
+                                <x-user :user="$payment->user" />
+                            @endif
                         </td>
                         <td>
                             @if ($payment->customer_name)
