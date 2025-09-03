@@ -56,9 +56,6 @@ $isDashboard = View::hasSection('dashboard');
 
     @if(!$isDashboard)
     <main class="max-w-7xl mx-auto p-4">
-        @if (affiliate())
-        @include('frontend.layouts.user-nav')
-        @endif
         @yield('content')
     </main>
     @endif

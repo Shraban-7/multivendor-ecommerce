@@ -76,25 +76,6 @@ $notificationCount = notificationCount();
                                         Profile
                                     </a>
                                 </li>
-                                @if (affiliate())
-                                    <li>
-                                        <a href="{{ route('affiliator.dashboard') }}"
-                                            class="block px-4 py-2 hover:bg-gray-100">
-                                            Dashboard
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ route('affiliator.withdraw') }}"
-                                            class="block px-4 py-2 hover:bg-gray-100">
-                                            Withdraw
-                                        </a>
-                                    </li>
-                                @endif
-                                <li>
-                                    <a href="{{ route('orders.index') }}" class="block px-4 py-2 hover:bg-gray-100">
-                                        Orders
-                                    </a>
-                                </li>
                                 <li class="border-t">
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf

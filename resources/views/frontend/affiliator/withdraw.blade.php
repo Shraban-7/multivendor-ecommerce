@@ -2,8 +2,8 @@
 
 @section('title', 'Withdraw')
 
-@section('content')
-    <main class="withdraw-page my-10">
+@section('dashboard')
+    <main class="withdraw-page">
         <div class="container mx-auto px-4">
 
             <!-- Page Heading -->

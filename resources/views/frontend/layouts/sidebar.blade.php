@@ -1,33 +1,46 @@
 <?php
 $links = [
     [
-        'title' => 'Dashboard',
-        'route' => '',
-        'active' => 1,
-    ],
-    [
-        'title' => 'Orders',
-        'route' => '',
-        'active' => 0
-    ],
-    [
-        'title' => 'Withlist',
-        'route' => '',
-        'active' => 0
-    ],
-    [
-        'title' => 'Messages',
-        'route' => '',
-        'active' => 0
-    ],
-    [
         'title' => 'Profile',
-        'route' => '',
-        'active' => 0
+        'route' => route('profile'),
+        'active' => request()->route()->getName() == 'profile' ? 1 : 0,
     ],
 ];
 
-function getInitials($name) {
+if (affiliate()) {
+    $links[] = [
+        'title' => 'Dashboard',
+        'route' => route('affiliator.dashboard'),
+        'active' => request()->route()->getName() == 'affiliator.dashboard' ? 1 : 0,
+    ];
+    $links[] = [
+        'title' => 'Withdraw',
+        'route' => route('affiliator.withdraw'),
+        'active' => request()->route()->getName() == 'affiliator.withdraw' ? 1 : 0,
+    ];
+}
+
+$links = array_merge($links, [
+    [
+        'title' => 'Orders',
+        'route' => route('orders.index'),
+        'active' => request()->route()->getName() == 'orders.index' ? 1 : 0,
+    ],
+    [
+        'title' => 'Wishlist',
+        'route' => route('wishlist.index'),
+        'active' => request()->route()->getName() == 'wishlist.index' ? 1 : 0,
+    ],
+    [
+        'title' => 'Messages',
+        'route' => '#',
+        'active' => request()->route()->getName() == '#' ? 1 : 0,
+    ],
+]);
+
+
+function getInitials($name)
+{
     return strtoupper(implode('', array_map(fn($w) => $w[0], explode(' ', $name))));
 }
 
@@ -50,11 +63,20 @@ $nameInitials = getInitials($user->name);
 
     <nav class="space-y-2">
         @foreach ($links as $link)
-        <a href="{{ $link['route'] }}" class="block p-3 rounded-md {{ $link['active'] ? 'bg-yellow-500 text-white font-medium' : 'hover:bg-yellow-100' }}">
-            {{ $link['title'] }}
-        </a>
+            <a href="{{ $link['route'] }}"
+                class="block p-3 rounded-md {{ $link['active'] ? 'bg-yellow-500 text-white font-medium' : 'hover:bg-yellow-100' }}">
+                {{ $link['title'] }}
+            </a>
         @endforeach
-        <a href="#" class="block p-3 rounded-md text-red-600 hover:bg-red-50">Logout</a>
+        <a href="{{ route('logout') }}" class="block p-3 rounded-md text-red-600 hover:bg-red-50"
+            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            Logout
+        </a>
+
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
+            @csrf
+        </form>
+
     </nav>
 </aside>
 
@@ -62,7 +84,8 @@ $nameInitials = getInitials($user->name);
 <!-- Mobile Offcanvas Sidebar -->
 <div class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden" id="sidebar-backdrop"></div>
 
-<aside class="fixed inset-y-0 left-0 w-64 bg-white shadow-lg transform -translate-x-full transition-transform duration-200 ease-in-out z-50 p-4 space-y-2"
+<aside
+    class="fixed inset-y-0 left-0 w-64 bg-white shadow-lg transform -translate-x-full transition-transform duration-200 ease-in-out z-50 p-4 space-y-2"
     id="mobile-sidebar">
     <div class="flex justify-between items-center mb-4">
         <h2 class="text-lg font-semibold">My Account</h2>
@@ -70,10 +93,18 @@ $nameInitials = getInitials($user->name);
     </div>
     <nav class="space-y-2">
         @foreach ($links as $link)
-        <a href="{{ $link['route'] }}" class="block p-3 rounded-md {{ $link['active'] ? 'bg-yellow-500 text-white font-medium' : 'hover:bg-yellow-100' }}">
-            {{ $link['title'] }}
-        </a>
+            <a href="{{ $link['route'] }}"
+                class="block p-3 rounded-md {{ $link['active'] ? 'bg-yellow-500 text-white font-medium' : 'hover:bg-yellow-100' }}">
+                {{ $link['title'] }}
+            </a>
         @endforeach
-        <a href="#" class="block p-3 rounded-md text-red-600 hover:bg-red-50">Logout</a>
+        <a href="{{ route('logout') }}" class="block p-3 rounded-md text-red-600 hover:bg-red-50"
+            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            Logout
+        </a>
+
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
+            @csrf
+        </form>
     </nav>
 </aside>

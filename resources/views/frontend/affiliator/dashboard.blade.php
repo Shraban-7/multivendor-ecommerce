@@ -2,7 +2,7 @@
 
 @section('title', 'Affiliate Dashboard')
 
-@section('content')
+@section('dashboard')
     <main class="affiliate-dashboard my-10">
         <div class="container mx-auto px-4">
             
