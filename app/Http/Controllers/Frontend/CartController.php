@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
@@ -6,6 +7,7 @@ use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Product;
 use App\Models\ProductVariant;
+use App\Models\Seller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -24,7 +26,7 @@ class CartController extends Controller
         $userId    = Auth::id();
         $product   = Product::find($data['product_id']);
 
-        $defaultVariant = $product->variants->firstWhere('is_default',1);
+        $defaultVariant = $product->variants->firstWhere('is_default', 1);
 
         if (! $product) {
             return response()->json(['success' => false, 'error' => 'Product not found']);
@@ -76,8 +78,10 @@ class CartController extends Controller
 
     public function details(Request $request)
     {
-        $carts = Cart::where('user_id', Auth::user()->id)
-            ->with('cart_items.product','cart_items.variant')
+        $categoryIds = $subcategoryIds =  $brandIds = $addedItemIds = [];
+
+        $carts = Cart::where('user_id', Auth::id())
+            ->with('cart_items.product', 'cart_items.variant')
             ->get()
             ->groupBy(function ($cart) {
                 return $cart->cart_items->first()->product->seller_id ?? null;
@@ -87,25 +91,49 @@ class CartController extends Controller
         $sub_total   = 0;
 
         foreach ($carts as $seller_id => $cartGroup) {
+            $seller = Seller::find($seller_id);
             foreach ($cartGroup as $cart) {
                 foreach ($cart->cart_items as $item) {
-                    $quantity         = $item->quantity;
-                    $base_price       = $item->original_price;
+                    $quantity = $item->quantity;
+                    $base_price = $item->original_price;
                     $discounted_price = $item->discounted_price;
                     $sub_total += $base_price * $quantity;
                     $grand_total += $discounted_price * $quantity;
+
+                    $addedItemIds[] = $item->product->id;
+                    if (!is_null($item->product->category_id)) $categoryIds[] = $item->product->category_id;
+                    if (!is_null($item->product->subcategory_id)) $subcategoryIds[] = $item->product->subcategory_id;
+                    if (!is_null($item->product->brand_id)) $brandIds[] = $item->product->brand_id;
                 }
             }
         }
 
+        $similarProducts = Product::query()
+            ->withDefaultRelations()
+            ->whereNotIn('id', $addedItemIds)
+            ->where(function ($query) use ($categoryIds, $subcategoryIds, $brandIds) {
+                $query->when(!empty($categoryIds), fn($q) => $q->orWhereIn('category_id', $categoryIds))
+                    ->when(!empty($subcategoryIds), fn($q) => $q->orWhereIn('subcategory_id', $subcategoryIds))
+                    ->when(!empty($brandIds), fn($q) => $q->orWhereIn('brand_id', $brandIds));
+            })
+            ->latest('id')
+            ->limit(50)
+            ->get()
+            ->sortByDesc(function ($product) use ($categoryIds, $subcategoryIds, $brandIds) {
+                $score = 0;
+                if (in_array($product->subcategory_id, $subcategoryIds ?? [])) $score += 3;
+                if (in_array($product->category_id, $categoryIds ?? [])) $score += 2;
+                if (in_array($product->brand_id, $brandIds ?? [])) $score += 1;
+                return $score;
+            })
+            ->take(16)
+            ->values();
+
         $discount = $sub_total - $grand_total;
 
         $total_products_count = $carts->flatten()->pluck('cart_items')->flatten()->count();
-        
 
-        $interest_products = Product::latest()->limit(6)->get();
-
-        $products = $interest_products->map(fn($product) => $product->toDetailsArray());
+        $products = $similarProducts->map(fn($product) => $product->toDetailsArray());
 
         return view('frontend.cart.details', compact('carts', 'grand_total', 'total_products_count', 'sub_total', 'discount', 'products'));
     }
