@@ -5,6 +5,24 @@ use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PaymentController;
+use App\Models\Product;
+
+// Route::get('images', function () {
+//     $products = Product::with('variants')->select('id', 'thumbnail')->get();
+//     $images = [];
+//     foreach ($products as $product) {
+//         if (!is_null($product->thumbnail)) {
+//             $images[] = storage_url($product->thumbnail);
+//         }
+//         foreach ($product->variants as $variant) {
+//             if (!is_null($variant->image)) {
+//                 $images[] = storage_url($variant->image);
+//             }
+//         }
+//     }
+
+//     return $images;
+// });
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
