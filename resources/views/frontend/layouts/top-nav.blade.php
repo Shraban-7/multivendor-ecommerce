@@ -61,7 +61,7 @@ $notificationCount = notificationCount();
                 <div class="relative group inline-block">
                     <!-- Button -->
                     <a href="{{ auth('web')->check() ? route('orders.index') : (auth('seller')->check() ? route('seller.dashboard') : '#') }}"
-                        class="px-3 py-2 text-sm font-medium bg-white text-primary hover:text-light-yellow transition 
+                        class="px-2.5 py-1.5 text-xs bg-white text-black hover:text-light-yellow transition 
                             border border-gray-300 rounded-lg text-center flex items-center gap-2 focus:outline-none">
                         <span class="text-sm lg:text-base">
                             Dashboard
