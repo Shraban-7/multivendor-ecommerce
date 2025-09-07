@@ -60,21 +60,14 @@ $notificationCount = notificationCount();
             @else
                 <div class="relative group inline-block">
                     <!-- Button -->
-                    @auth('web')
-                        <a href="{{ route('orders.index') }}"
-                            class="flex items-center gap-2 hover:text-light-yellow focus:outline-none">
-                        @elseif(auth('seller')->check())
-                            <a href="{{ route('seller.dashboard') }}"
-                                class="flex items-center gap-2 hover:text-light-yellow focus:outline-none">
-                            @else
-                                <a href="#"
-                                    class="flex items-center gap-2 hover:text-light-yellow focus:outline-none">
-                                @endauth
-                                <i class="fa-regular fa-user text-lg"></i>
-                                <span class="text-sm lg:text-base">
-                                    Dashboard
-                                </span>
-                            </a>
+                    <a href="{{ auth('web')->check() ? route('orders.index') : (auth('seller')->check() ? route('seller.dashboard') : '#') }}"
+                        class="flex items-center gap-2 hover:text-light-yellow focus:outline-none">
+                        <i class="fa-regular fa-user text-lg"></i>
+                        <span class="text-sm lg:text-base">
+                            Dashboard
+                        </span>
+                    </a>
+
                 </div>
 
                 <!-- Notification -->
