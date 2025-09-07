@@ -96,9 +96,9 @@
                                     <button type="button"
                                         data-modal-target="quick-view-modal-{{ $product['id'] }}"
                                         data-modal-toggle="quick-view-modal-{{ $product['id'] }}"
-                                        class="w-8 h-8 sm:w-9 sm:h-9 rounded-md flex items-center justify-center 
+                                        class="w-6 h-6 sm:w-8 sm:h-8 rounded-md flex items-center justify-center 
                                bg-primary text-white hover:bg-orange-600 transition duration-200">
-                                        <i class="fa-solid fa-plus text-xs sm:text-sm"></i>
+                                        <i class="fa-solid fa-cart-plus text-xs sm:text-sm"></i>
                                     </button>
                                 </div>
                             </div>
@@ -179,9 +179,9 @@
                             <button type="button"
                                 data-modal-target="quick-view-modal-{{ $product['id'] }}"
                                 data-modal-toggle="quick-view-modal-{{ $product['id'] }}"
-                                class="w-8 h-8 sm:w-9 sm:h-9 rounded-md flex items-center justify-center 
+                                class="w-6 h-6 sm:w-8 sm:h-8 rounded-md flex items-center justify-center 
                            bg-primary text-white hover:bg-orange-600 transition duration-200">
-                                <i class="fa-solid fa-plus text-xs sm:text-sm"></i>
+                                <i class="fa-solid fa-cart-plus text-xs sm:text-sm"></i>
                             </button>
                         </div>
                     </div>
