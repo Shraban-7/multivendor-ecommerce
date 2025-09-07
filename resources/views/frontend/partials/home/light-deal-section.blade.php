@@ -56,7 +56,7 @@
                                 <div class="flex items-center gap-2 price-sold-amount">
                                     <h2 class="text-2xl font-bold text-primary">
                                         <span><i class="fa-solid fa-bolt text-[#ffa755]"></i></span>
-                                        <span class="align-middle text-xs text-[#ffa755]">{{ CURRENCY_SYMBOL }}</span>
+                                        <span class="align-middle text-xs text-[#ffa755]">{{ currency_symbol() }}</span>
                                         {{ number_format($light_deal->selling_price, 2) }}
                                     </h2>
                                     @if ($light_deal->stock_out > 0)

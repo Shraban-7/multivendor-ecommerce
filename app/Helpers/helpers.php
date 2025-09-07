@@ -22,10 +22,12 @@ use Illuminate\Support\Str;
 use Intervention\Image\Laravel\Facades\Image;
 
 
-if (!defined('CURRENCY_SYMBOL')) {
-    define('CURRENCY_SYMBOL', "\u{09F3}"); // ৳
+if (! function_exists('currency_symbol')) {
+    function currency_symbol()
+    {
+        return "৳";
+    }
 }
-
 
 if (! function_exists('redirect_intended')) {
     function redirect_intended($default = '/')
@@ -323,7 +325,7 @@ if (! function_exists('money')) {
     {
         $money = number_format($amount, 2);
 
-        return CURRENCY_SYMBOL . ' ' . removeZeroFromDecimal($money);
+        return currency_symbol() . ' ' . removeZeroFromDecimal($money);
     }
 }
 
