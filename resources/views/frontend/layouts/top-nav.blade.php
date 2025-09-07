@@ -18,9 +18,12 @@ $notificationCount = notificationCount();
                 </a>
             @else
                 <a href="{{ auth('web')->check() ? route('orders.index') : (auth('seller')->check() ? route('seller.dashboard') : '#') }}"
-                    class="flex items-center gap-1 text-sm hover:text-light-yellow">
-                    <i class="fa-regular fa-user"></i>
-                </a>
+                        class="px-2.5 py-1.5 text-xs bg-white text-black hover:text-light-yellow transition 
+                            border border-gray-300 rounded-lg text-center flex items-center gap-2 focus:outline-none">
+                        <span class="text-sm lg:text-base">
+                            Dashboard
+                        </span>
+                    </a>
             @endif
         </div>
 
