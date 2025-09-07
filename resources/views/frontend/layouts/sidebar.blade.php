@@ -1,11 +1,8 @@
 <?php
-$links = [
-    [
-        'title' => 'Profile',
-        'route' => route('profile'),
-        'active' => request()->route()->getName() == 'profile' ? 1 : 0,
-    ],
-];
+$links = [];
+
+
+
 
 if (affiliate()) {
     $links[] = [
@@ -13,6 +10,21 @@ if (affiliate()) {
         'route' => route('affiliator.dashboard'),
         'active' => request()->route()->getName() == 'affiliator.dashboard' ? 1 : 0,
     ];
+}
+
+$links[] = [ 
+        'title' => 'Orders',
+        'route' => route('orders.index'),
+        'active' => request()->route()->getName() == 'orders.index' ? 1 : 0,
+];
+
+$links[] = [
+    'title' => 'Profile',
+    'route' => route('profile'),
+    'active' => request()->route()->getName() == 'profile' ? 1 : 0,
+];
+
+if (affiliate()) {
     $links[] = [
         'title' => 'Withdraw',
         'route' => route('affiliator.withdraw'),
@@ -22,11 +34,6 @@ if (affiliate()) {
 
 $links = array_merge($links, [
     [
-        'title' => 'Orders',
-        'route' => route('orders.index'),
-        'active' => request()->route()->getName() == 'orders.index' ? 1 : 0,
-    ],
-    [
         'title' => 'Wishlist',
         'route' => route('wishlist.index'),
         'active' => request()->route()->getName() == 'wishlist.index' ? 1 : 0,
@@ -34,9 +41,10 @@ $links = array_merge($links, [
     [
         'title' => 'Messages',
         'route' => '#',
-        'active' => request()->route()->getName() == '#' ? 1 : 0,
+        'active' => 0,
     ],
 ]);
+
 
 
 function getInitials($name)

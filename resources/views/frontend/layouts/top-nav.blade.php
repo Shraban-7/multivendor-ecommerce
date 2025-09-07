@@ -17,7 +17,8 @@ $notificationCount = notificationCount();
                     <i class="fa-regular fa-user"></i> <span>Sign In</span>
                 </a>
             @else
-                <a href="{{ route('profile') }}" class="flex items-center gap-1 text-sm hover:text-light-yellow">
+                <a href="{{ auth('web')->check() ? route('orders.index') : (auth('seller')->check() ? route('seller.dashboard') : '#') }}"
+                    class="flex items-center gap-1 text-sm hover:text-light-yellow">
                     <i class="fa-regular fa-user"></i>
                 </a>
             @endif
@@ -59,43 +60,21 @@ $notificationCount = notificationCount();
             @else
                 <div class="relative group inline-block">
                     <!-- Button -->
-                    <button type="button" class="flex items-center gap-2 hover:text-light-yellow focus:outline-none">
-                        <i class="fa-regular fa-user text-lg"></i>
-                        <span class="text-sm lg:text-base">
-                            {{ auth('web')->user()->name ?? auth('seller')->user()->name }}
-                        </span>
-                    </button>
-
-                    <!-- Dropdown -->
-                    <div
-                        class="absolute right-0 z-50 hidden group-hover:block bg-white shadow-lg rounded-md w-40 top-full">
-                        <ul class="py-2 text-gray-700">
-                            @if (auth('web')->user())
-                                <li>
-                                    <a href="{{ route('profile') }}" class="block px-4 py-2 hover:bg-gray-100">
-                                        Profile
-                                    </a>
-                                </li>
-                                <li class="border-t">
-                                    <form method="POST" action="{{ route('logout') }}">
-                                        @csrf
-                                        <button type="submit"
-                                            class="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100">
-                                            Logout
-                                        </button>
-                                    </form>
-                                </li>
-                            @endif
-                            @if (auth('seller')->user())
-                                <li>
-                                    <a href="{{ route('seller.dashboard') }}"
-                                        class="block px-4 py-2 hover:bg-gray-100">
-                                        Dashboard
-                                    </a>
-                                </li>
-                            @endif
-                        </ul>
-                    </div>
+                    @auth('web')
+                        <a href="{{ route('orders.index') }}"
+                            class="flex items-center gap-2 hover:text-light-yellow focus:outline-none">
+                        @elseif(auth('seller')->check())
+                            <a href="{{ route('seller.dashboard') }}"
+                                class="flex items-center gap-2 hover:text-light-yellow focus:outline-none">
+                            @else
+                                <a href="#"
+                                    class="flex items-center gap-2 hover:text-light-yellow focus:outline-none">
+                                @endauth
+                                <i class="fa-regular fa-user text-lg"></i>
+                                <span class="text-sm lg:text-base">
+                                    Dashboard
+                                </span>
+                            </a>
                 </div>
 
                 <!-- Notification -->
