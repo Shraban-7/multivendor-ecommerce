@@ -68,7 +68,4 @@ class BillingAddressController extends Controller
 
         return redirect()->back()->with('success', 'Billing address updated successfully');
     }
-
-
-
 }

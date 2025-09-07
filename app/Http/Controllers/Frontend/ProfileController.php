@@ -1,0 +1,79 @@
+<?php
+
+namespace App\Http\Controllers\Frontend;
+
+use App\Models\User;
+use App\Models\Country;
+use Illuminate\Http\Request;
+use App\Models\BillingAddress;
+use App\Http\Controllers\Controller;
+use App\Models\Division;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+
+class ProfileController extends Controller
+{
+    public function profile()
+    {
+        $user = Auth::user();
+        $divisions = Division::get();
+        $billingAddresses = BillingAddress::where('user_id', $user->id)
+                ->latest()
+                ->get();
+
+        return view('frontend.profile', compact('divisions','billingAddresses','user'));
+    }
+
+    public function updateAccount(Request $request)
+    {
+        $user = User::find(Auth::id());
+
+        $data = $request->validate([
+            'name'  => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,svg|max:2048',
+        ]);
+
+        if ($user->name !== $request->name) {
+            $data['username'] = str_slug('users', 'username', $request->name);
+        } else {
+            $data['username'] = $user->username;
+        }
+
+        $data['phone'] = $request->phone;
+        $data['secondary_email'] = $request->secondary_email;
+
+        if ($request->hasFile('image')) {
+            if (! empty($user->image)) {
+                delete_file($user->image);
+            }
+
+            $filePath = 'images/user/avatar';
+            $data['image'] = upload_file($request->file('image'), $filePath);
+        } else {
+            $data['image'] = $user->image;
+        }
+
+        $user->update($data);
+
+        return redirect()->back()->with('success', 'Account update successfully');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'current_password' => 'required|string',
+            'password' => 'required|string|confirmed',
+        ]);
+
+        if (! Hash::check($request->current_password, $user->password)) {
+            return redirect()->back()->with("warning", "Incorrect old password!");
+        }
+
+        $user->update(['password' => Hash::make($request->password)]);
+
+        return redirect()->back()->with("success", "Password updated successfully");
+    }
+}

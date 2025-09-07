@@ -3,6 +3,7 @@
 use App\Http\Controllers\Frontend\AuthController;
 use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Frontend\ProfileController;
 
 Route::middleware('guest')->group(function () {
     Route::match(['get', 'post'], '/signup', [AuthController::class, 'signup'])->name('signup');
@@ -12,9 +13,9 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-    Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
-    Route::post('/update-account', [AuthController::class, 'updateAccount'])->name('accountUpdate');
-    Route::post('/update-password', [AuthController::class, 'updatePassword'])->name('updatePassword');
+    Route::get('/profile', [ProfileController::class, 'profile'])->name('profile');
+    Route::post('/update-account', [ProfileController::class, 'updateAccount'])->name('accountUpdate');
+    Route::post('/update-password', [ProfileController::class, 'updatePassword'])->name('updatePassword');
 });
 
 
