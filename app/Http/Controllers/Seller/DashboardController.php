@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Seller;
 
 use App\Enums\OrderStatus;
@@ -6,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
+use App\Models\ProductVariant;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -64,20 +66,30 @@ class DashboardController extends Controller
             ->whereDate('created_at', '<=', $endDate)
             ->sum('total_commission');
 
+        $total_stock_product_amount = ProductVariant::whereHas('product', function ($q) use ($sellerId) {
+            $q->where('seller_id', $sellerId);
+        })
+            ->get()
+            ->sum(function ($variant) {
+                $available = $variant->stock_in - $variant->stock_out;
+                return $available > 0 ? ($variant->selling_price * $available) : 0;
+            });
+
         return view('seller.dashboard', [
-            'total_products'       => Product::where('seller_id', $sellerId)->count(),
-            'total_orders'         => (clone $ordersQuery)->count(),
-            'pending_orders'       => (clone $ordersQuery)->pending()->count(),
-            'shipped_orders'       => (clone $ordersQuery)->shipped()->count(),
-            'cancelled_orders'     => (clone $ordersQuery)->cancelled()->count(),
-            'delivered_orders'     => (clone $ordersQuery)->delivered()->count(),
-            'total_sales'          => (clone $ordersQuery)->sum('seller_earnings'),
-            'profit'               => $profit,
-            'total_customers'      => (clone $ordersQuery)->distinct('user_id')->count('user_id'),
+            'total_products' => Product::where('seller_id', $sellerId)->count(),
+            'total_orders' => (clone $ordersQuery)->count(),
+            'pending_orders' => (clone $ordersQuery)->pending()->count(),
+            'shipped_orders' => (clone $ordersQuery)->shipped()->count(),
+            'cancelled_orders' => (clone $ordersQuery)->cancelled()->count(),
+            'delivered_orders' => (clone $ordersQuery)->delivered()->count(),
+            'total_sales' => (clone $ordersQuery)->sum('seller_earnings'),
+            'profit' => $profit,
+            'total_customers' => (clone $ordersQuery)->distinct('user_id')->count('user_id'),
             'top_selling_products' => $top_selling_products,
-            'latest_orders'        => (clone $ordersQuery)->latest()->limit(20)->get(),
-            'chartData'            => $chartData,
-            'total_commission'     => $total_commission,
+            'latest_orders' => (clone $ordersQuery)->latest()->limit(20)->get(),
+            'chartData' => $chartData,
+            'total_commission' => $total_commission,
+            'total_stock_product_amount' => $total_stock_product_amount
         ]);
     }
 }

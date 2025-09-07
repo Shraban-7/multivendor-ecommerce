@@ -91,17 +91,16 @@
                     <div class="card h-100 card-lift">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="fw-semi-bold">Total Earning</span>
+                                <span class="fw-semi-bold">Total Amount Stock Products</span>
                                 <span class="text-success text-xxl font-semibold">{{ currency() }}</span>
                             </div>
                             <div class="mt-2 mb-2">
-                                <h3 class="fw-bold mb-0">{{ money($total_sales) }}</h3>
+                                <h3 class="fw-bold mb-0">{{ money($total_stock_product_amount) }}</h3>
                             </div>
-                            <small>Total earnings from sales</small>
+                            <small>Total Amount Stock Products</small>
                         </div>
                     </div>
                 </div>
-
                 <div class="col">
                     <div class="card h-100 card-lift">
                         <div class="card-body">
