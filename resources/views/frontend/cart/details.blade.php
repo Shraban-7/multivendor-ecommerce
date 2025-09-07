@@ -121,8 +121,8 @@
                                                         <!-- Prices & Quantity Controls -->
                                                         <div class="flex items-center justify-between mt-4">
                                                             <!-- Price -->
-                                                            <div class="flex items-center">
-                                                                <span class="text-lg font-bold text-primary">
+                                                            <div class="flex items-center cart-item" id="cart-item-{{ $item->id }}">
+                                                                <span class="current-price text-lg font-bold text-primary">
                                                                     {{ money($item->price * $item->quantity) }}
                                                                 </span>
                                                             </div>
@@ -137,16 +137,16 @@
                                                                         value="{{ $item->variant?->sku }}">
 
                                                                     <button type="button"
-                                                                        class="flex items-center justify-center w-9 h-full text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors">
+                                                                        class="decrease-qty flex items-center justify-center w-9 h-full text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors">
                                                                         <i class="fa-solid fa-minus text-xs"></i>
                                                                     </button>
 
                                                                     <input readonly type="text"
                                                                         value="{{ $item->quantity }}" min="1"
-                                                                        class="w-12 h-full text-center border-0 quantity-input text-gray-900 focus:ring-0" />
+                                                                        class="quantity-input w-12 h-full text-center border-0 quantity-input text-gray-900 focus:ring-0" />
 
                                                                     <button type="button"
-                                                                        class="flex items-center justify-center w-9 h-full text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors">
+                                                                        class="increase-qty flex items-center justify-center w-9 h-full text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors">
                                                                         <i class="fa-solid fa-plus text-xs"></i>
                                                                     </button>
                                                                 </div>
@@ -193,12 +193,12 @@
                                 <div class="flex justify-between">
                                     <span class="text-gray-600">Item Discount:</span>
                                     <span id="itemDiscount"
-                                        class="font-medium text-green-600">-{{ money($discount) }}</span>
+                                        class="text-primary">-{{ money($discount) }}</span>
                                 </div>
                             </div>
 
                             <div class="pt-4 border-t border-dashed border-gray-300">
-                                <div class="flex justify-between text-lg font-medium">
+                                <div class="flex justify-between text-lg">
                                     <span>Estimated Total (<span
                                             id="selectedItemsCount">{{ $total_products_count }}</span> Items)</span>
                                     <span id="estimatedTotal"
@@ -215,12 +215,12 @@
                                 </button>
                             </a>
 
-                            <button type="button"
+                            {{-- <button type="button"
                                 class="flex items-center justify-center w-full gap-2 py-3 font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                                 Express checkout with
                                 <img src="{{ asset('assets/frontend/images/cart-paypal.png') }}" alt="PayPal"
                                     class="h-6" />
-                            </button>
+                            </button> --}}
                         </div>
                     </div>
 

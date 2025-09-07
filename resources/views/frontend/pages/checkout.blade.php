@@ -67,7 +67,7 @@
                         <div class="flex flex-col gap-y-4 !my-6 md:!my-10 border border-jet-gray/30 py-5">
                             <h3 class="sm:text-lg font-medium pl-5">Payment Option</h3>
                             <div
-                                class="grid grid-cols-2 xsm:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 items-center gap-2 md:gap-4 p-3 md:p-5 border-y border-jet-gray/30 md:divide-x md:divide-jet-gray/30">
+                                class="grid grid-cols-2 xsm:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 items-center gap-2 md:gap-4 p-3 md:p-5 border-t border-jet-gray/30 md:divide-x md:divide-jet-gray/30">
                                 @foreach ($payment_gateways as $gateway)
                                     <label
                                         class="relative inline-flex flex-col gap-2 items-center p-2 cursor-pointer group">
@@ -87,7 +87,7 @@
                             </div>
 
                             <!-- Card Details -->
-                            <div class="flex flex-col gap-y-4 md:p-5 p-4">
+                            {{-- <div class="flex flex-col gap-y-4 md:p-5 p-4">
                                 <div class="space-y-2">
                                     <label class="block text-sm" for="name-on-card">Name on Card</label>
                                     <input id="name-on-card" type="text"
@@ -110,11 +110,11 @@
                                             class="eq w-full px-4 py-2 border border-gray-300 rounded focus:ring-[1] focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
 
                         <!-- Additional Information -->
-                        <div class="space-y-4">
+                        {{-- <div class="space-y-4">
                             <h3 class="sm:text-lg font-medium">Additional Information</h3>
                             <div class="space-y-2">
                                 <label class="block text-sm" for="order-notes">Order Notes
@@ -122,7 +122,7 @@
                                 <textarea id="order-notes" placeholder="Notes about your order, e.g. special notes for delivery"
                                     class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-[1] focus:ring-light-yellow focus:border-light-yellow h-24 text-sm md:text-base"></textarea>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
 
@@ -143,16 +143,16 @@
                                 </p>
                                 <p class="flex justify-between">
                                     <span class="text-theme-dark">Item Discount:</span>
-                                    <span id="itemDiscount" class="font-bold text-primary">-{{ money($discount) }}</span>
+                                    <span id="itemDiscount" class="text-primary">-{{ money($discount) }}</span>
                                 </p>
                                 <p class="flex justify-between">
                                     <span class="text-theme-dark">TAX:</span>
-                                    <span id="itemDiscount" class="font-bold text-jet-gray">+{{ money($vat_amount) }}</span>
+                                    <span id="itemDiscount" class="text-jet-gray">+{{ money($vat_amount) }}</span>
                                 </p>
                                 <p class="flex justify-between">
                                     <span class="text-theme-dark">Shipping Fee:</span>
                                     <span id="itemDiscount"
-                                        class="font-bold text-jet-gray">+{{ money($shipping_fee) }}</span>
+                                        class="text-jet-gray">+{{ money($shipping_fee) }}</span>
                                 </p>
                             </div>
                             <!-- estimated total -->

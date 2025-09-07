@@ -43,16 +43,6 @@
 
                     <!-- account setting inputs -->
                     <div class="flex-1 space-y-3 sm:space-y-5">
-                        <!-- display name & username -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-4">
-                            <div class="from-ctrl space-y-1 sm:space-y-2">
-                                <label for="username" class="block text-sm">Username</label>
-                                <input required type="text" id="username" name="username"
-                                    value="{{ old('username', $user->username) }}"
-                                    class="eq w-full px-3 py-2 border border-gray-300 rounded focus:ring-[1] focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
-                            </div>
-                        </div>
-
                         <!-- full name & email -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-4">
                             <div class="from-ctrl space-y-1 sm:space-y-2">
@@ -71,12 +61,6 @@
 
                         <!-- secondary email & phone number -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-4">
-                            <div class="from-ctrl space-y-1 sm:space-y-2">
-                                <label for="secondary-email" class="block text-sm">Secondary Email</label>
-                                <input type="email" id="secondary-email" name="secondary_email"
-                                    value="{{ old('secondary_email', $user->secondary_email) }}"
-                                    class="eq w-full px-3 py-2 border border-gray-300 rounded focus:ring-[1] focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base" />
-                            </div>
                             <div class="from-ctrl space-y-1 sm:space-y-2">
                                 <label for="phone-number" class="block text-sm">Phone Number</label>
                                 <input type="tel" id="phone-number" name="phone"
