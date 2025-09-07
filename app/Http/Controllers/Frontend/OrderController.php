@@ -250,7 +250,7 @@ class OrderController extends Controller
 
         $affiliate = AffiliateCommission::where('order_id',$order->id)->first();
 
-        $order->affiliate_id = $affiliate->affiliate_id;
+        $order->affiliate_id = $affiliate->affiliate_id ?? null;
 
         $order->save();
 
