@@ -37,8 +37,8 @@ $isDashboard = View::hasSection('dashboard');
 <body>
     <header class="header-section bg-persian-red text-white font-primary sticky top-0 z-50">
         @include('frontend.layouts.top-nav')
-        @include('frontend.layouts.bottom-nav')
     </header>
+    @include('frontend.layouts.bottom-nav')
 
     @if (session('error') || session('success'))
         <div id="alert-border"
