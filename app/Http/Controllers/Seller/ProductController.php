@@ -74,7 +74,7 @@ class ProductController extends Controller
             } else {
                 $brand = Brand::firstOrCreate(
                     ['name' => trim($validated['brand'])],
-                    ['slug' => str_slug('brands','slug',$validated['brand'])]
+                    ['slug' => str_slug('brands', 'slug', $validated['brand'])]
                 );
                 $brandId = $brand->id;
             }
@@ -94,7 +94,7 @@ class ProductController extends Controller
 
         $validated['seller_id'] = $seller->id;
         $validated['slug'] = str_slug('products', 'slug', $validated['name']);
-      
+
 
         $product = Product::create($validated);
 
@@ -205,7 +205,7 @@ class ProductController extends Controller
             } else {
                 $brand = Brand::firstOrCreate(
                     ['name' => trim($validated['brand'])],
-                    ['slug' => str_slug('brands','slug',$validated['brand'])]
+                    ['slug' => str_slug('brands', 'slug', $validated['brand'])]
                 );
                 $brandId = $brand->id;
             }
@@ -291,83 +291,51 @@ class ProductController extends Controller
     public function stockUpdate(Request $request, Product $product)
     {
         $request->validate([
-            'stock_quantity' => 'required|numeric|min:0',
-            'stock_action' => 'required|numeric',
-            'stock_note' => 'nullable|string',
-            'product_variant_id' => 'nullable|numeric',
+            'stock_quantity.*' => 'nullable|numeric|min:0',
+            'stock_action.*'   => 'nullable|numeric',
+            'stock_note.*'     => 'nullable|string',
         ]);
 
-        $stockQuantity = $request->stock_quantity;
-        $stockAction   = $request->stock_action;
-        $variantId     = $request->product_variant_id;
+        $stockQuantities = $request->input('stock_quantity', []);
+        $stockActions    = $request->input('stock_action', []);
+        $stockNotes      = $request->input('stock_note', []);
 
-        $newStock = 0;
+        foreach ($stockQuantities as $variantId => $quantity) {
+            if (!$quantity) continue;
+            $action = $stockActions[$variantId] ?? null;
+            $note   = $stockNotes[$variantId] ?? null;
 
-        if ($variantId) {
             $variant = ProductVariant::find($variantId);
 
-            if (! $variant) {
-                return redirect()->back()->with('error', 'Invalid product variant.');
-            }
+            if (! $variant) continue;
 
             $currentStock = ($variant->stock_in ?? 0) - ($variant->stock_out ?? 0);
 
-            if ($stockAction == StockType::REMOVE_STOCK->value && $stockQuantity > $currentStock) {
-                return redirect()->back()->with('error', 'Not enough variant stock to remove.');
+            if ($action == StockType::REMOVE_STOCK->value && $quantity > $currentStock) {
+                continue; 
             }
 
-            $log = StockHistory::create([
+            StockHistory::create([
                 'product_id' => $product->id,
                 'product_variant_id' => $variant->id,
-                'quantity' => $stockQuantity,
-                'type' => $stockAction,
-                'note' => $request->stock_note,
+                'quantity' => $quantity,
+                'type' => $action,
+                'note' => $note,
             ]);
 
-            if ($log->type->value == StockType::SET_EXACT_STOCK->value) {
-                $newStock = $stockQuantity;
-                $variant->stock_in  = $newStock;
+            if ($action == StockType::SET_EXACT_STOCK->value) {
+                $variant->stock_in = $quantity;
                 $variant->stock_out = 0;
-            } elseif ($log->type->value == StockType::ADD_STOCK->value) {
-                $variant->stock_in += $stockQuantity;
-            } elseif ($log->type->value == StockType::REMOVE_STOCK->value) {
-                $variant->stock_in -= $stockQuantity;
-                if ($variant->stock_in < 0) {
-                    $variant->stock_in = 0;
-                }
+            } elseif ($action == StockType::ADD_STOCK->value) {
+                $variant->stock_in += $quantity;
+            } elseif ($action == StockType::REMOVE_STOCK->value) {
+                $variant->stock_in -= $quantity;
+                if ($variant->stock_in < 0) $variant->stock_in = 0;
             }
 
             $variant->save();
-        } else {
-            $currentStock = ($product->stock_in ?? 0) - ($product->stock_out ?? 0);
-
-            if ($stockAction == StockType::REMOVE_STOCK->value && $stockQuantity > $currentStock) {
-                return redirect()->back()->with('error', 'Not enough product stock to remove.');
-            }
-
-            $log = StockHistory::create([
-                'product_id' => $product->id,
-                'quantity' => $stockQuantity,
-                'type' => $stockAction,
-                'note' => $request->stock_note,
-            ]);
-
-            if ($log->type->value == StockType::SET_EXACT_STOCK->value) {
-                $newStock = $stockQuantity;
-                $product->stock_in  = $newStock;
-                $product->stock_out = 0;
-            } elseif ($log->type->value == StockType::ADD_STOCK->value) {
-                $product->stock_in += $stockQuantity;
-            } elseif ($log->type->value == StockType::REMOVE_STOCK->value) {
-                $product->stock_in -= $stockQuantity;
-                if ($product->stock_in < 0) {
-                    $product->stock_in = 0;
-                }
-            }
-
-            $product->save();
         }
 
-        return redirect()->back()->with('success', 'Quantity updated successfully!');
+        return redirect()->back()->with('success', 'Stock updated successfully for all variants!');
     }
 }
