@@ -486,6 +486,28 @@
                             </div>
 
                             <div class="modal-body">
+                                <div class="mb-3">
+                                    <button class="btn btn-outline-info btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#stockInstruction" aria-expanded="false" aria-controls="stockInstruction">
+                                        ℹ️ স্টক আপডেট নির্দেশনা দেখুন
+                                    </button>                                    
+                                    <div class="collapse mt-2" id="stockInstruction">
+                                        <div class="alert alert-info mb-0" role="alert">
+                                            <h5 class="alert-heading">📦 স্টক আপডেট করার নিয়ম</h5>
+                                            <ul class="mb-0">
+                                                <li><strong>স্টক অ্যাকশন</strong> অপশন থেকে নির্বাচন করুন:</li>
+                                                <ul>
+                                                    <li><strong>স্টক যুক্ত করুন (Add Stock)</strong> – নতুন পণ্য যোগ করতে।</li>
+                                                    <li><strong>স্টক বাদ দিন (Remove Stock)</strong> – স্টক কমাতে।</li>
+                                                    <li><strong>স্টক নির্ধারণ করুন (Set Exact Stock)</strong> – স্টক ঠিক করে দিতে।</li>
+                                                </ul>
+                                                <li><strong>Qty</strong> ঘরে সংখ্যাটি দিন (যেমন: 5, 10)।</li>
+                                                <li><strong>Note</strong> ঘরে চাইলে মন্তব্য দিন (ঐচ্ছিক)।</li>
+                                                <li>বর্তমান স্টক পরিমাণ ব্র্যাকেটের ভিতরে দেখানো হয়েছে।</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 @foreach ($product->variants as $variant)        
                                     <h5>{{ $variant->fullName == null ? 'Default' : $variant->fullName }}</h5>                            
                                     <div class="row">
