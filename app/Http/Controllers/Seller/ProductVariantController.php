@@ -35,7 +35,7 @@ class ProductVariantController extends Controller
 
         $first = true;
 
-        $default = ProductVariant::where('is_default',1)->first();
+        $default = ProductVariant::where('is_default', 1)->first();
 
         if ($default) {
             $first = false;
@@ -93,11 +93,16 @@ class ProductVariantController extends Controller
         } else {
             $data['discount_amount']  = null;
             $data['discounted_price'] = null;
-            $data['discount_type']    = null; 
+            $data['discount_type']    = null;
             $data['discount_value']   = null;
         }
 
         $data['is_default'] = $request->has('is_default') ? 1 : 0;
+
+        if ($data['is_default'] == 1) {
+            ProductVariant::where('product_id', $data['product_id'])
+                ->update(['is_default' => 0]);
+        }
 
         $variant->update($data);
 
@@ -109,7 +114,7 @@ class ProductVariantController extends Controller
     {
         $product_id = $variant->product_id;
         $variant->delete();
-        $default = ProductVariant::where('product_id',$product_id)->first();
+        $default = ProductVariant::where('product_id', $product_id)->first();
 
         $default->is_default = 1;
         $default->save();
