@@ -35,6 +35,12 @@ class ProductVariantController extends Controller
 
         $first = true;
 
+        $default = ProductVariant::where('is_default',1)->first();
+
+        if ($default) {
+            $first = false;
+        }
+
         foreach ($combinations as $combination) {
             $variantData = [
                 'product_id' => $product->id,
@@ -101,7 +107,12 @@ class ProductVariantController extends Controller
 
     public function destroy(ProductVariant $variant)
     {
+        $product_id = $variant->product_id;
         $variant->delete();
+        $default = ProductVariant::where('product_id',$product_id)->first();
+
+        $default->is_default = 1;
+        $default->save();
         return redirect()->back()->with('success', 'Variant Deleted Successfully!');
     }
 

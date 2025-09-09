@@ -435,7 +435,7 @@
                                     <select class="form-select" id="variant" name="product_variant_id">
                                         <option value="">--Select Variant--</option>
                                         @foreach ($product->variants as $variant)
-                                            <option value="{{ $variant->id }}">{{ $variant->fullName }}</option>
+                                            <option value="{{ $variant->id }}">{{ $variant->fullName == null ? 'Default':$variant->fullName  }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -499,16 +499,14 @@
                                         <label class="form-label">Buying Price</label>
                                         <div class="input-group">
                                             <span class="input-group-text">{{ currency() }}</span>
-                                            <input type="number" class="form-control" name="buying_price"
-                                                placeholder="Enter Price" value="{{ $product->buying_price }}" required>
+                                            <input type="number" class="form-control" name="buying_price" required>
                                         </div>
                                     </div>
                                     <div class="mb-3 col-6">
                                         <label class="form-label">Selling Price</label>
                                         <div class="input-group">
                                             <span class="input-group-text">{{ currency() }}</span>
-                                            <input type="number" class="form-control" name="selling_price"
-                                                value="{{ $product->selling_price }}" placeholder="Enter Price" required>
+                                            <input type="number" class="form-control" name="selling_price" required>
                                         </div>
                                     </div>
                                     <div class="mb-3 col-md-6">
@@ -527,8 +525,7 @@
                                     </div>
                                     <div class="mb-3 col-md-6">
                                         <label class="form-label">Discount Value</label>
-                                        <input name="discount_value" type="number" value="{{ $product->discount_value }}"
-                                            class="form-control" required>
+                                        <input name="discount_value" type="number" class="form-control" required>
                                     </div>
                                     {{-- <div class="mb-3 col-md-12">
                                         <label class="form-label">Low Stock Quantity</label>
