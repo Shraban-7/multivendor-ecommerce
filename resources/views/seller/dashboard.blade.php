@@ -97,7 +97,7 @@
                             <div class="mt-2 mb-2">
                                 <h3 class="fw-bold mb-0">{{ money($total_stock_product_amount) }}</h3>
                             </div>
-                            <small>Total worth of products</small>
+                            <small>Total worth of products</small>09   
                         </div>
                     </div>
                 </div>
