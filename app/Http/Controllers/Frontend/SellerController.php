@@ -67,9 +67,9 @@ class SellerController extends Controller
             $productQuery->orderBy('id', 'asc');
         }
 
-        $shop_products = $productQuery->skip($skip)->take($limit)->get();
+        $shopProducts = $productQuery->skip($skip)->take($limit)->get();
 
-        $products = $shop_products->map(fn($product) => $product->toDetailsArray());
+        $products = $shopProducts->map(fn($product) => $product->toDetailsArray());
 
         $categoryIds = Product::with('category')
             ->where('seller_id', $seller->id)->pluck('category_id')->unique()->values()->all();
@@ -94,6 +94,12 @@ class SellerController extends Controller
                 ->where('seller_id', $seller->id);
         })->avg('rating');
 
+        $totalReview = Review::whereIn('product_id', function ($query) use ($seller) {
+            $query->select('id')
+                ->from('products')
+                ->where('seller_id', $seller->id);
+        })->count();
+
         $totalItem = Product::where('seller_id', $seller->id)->count();
 
         return view('frontend.shops.details', compact(
@@ -102,7 +108,8 @@ class SellerController extends Controller
             'categories',
             'alreadyFollowed',
             'avgRating',
-            'totalItem'
+            'totalItem',
+            'totalReview'
         ));
     }
 

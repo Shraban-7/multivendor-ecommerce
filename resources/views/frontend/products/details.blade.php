@@ -237,7 +237,7 @@ $settings = settings();
         <!-- Load More Comment Button -->
         <div class="pb-10 text-center border-b-2 border-gray-400 border-dashed load-more-btn">
             <button id="loadMoreReviews" data-offset="2" data-type="reviews" data-url="{{ request()->url() }}"
-                class="inline-flex items-center gap-2 px-5 py-2 text-base text-white theme-btn bg-theme-teal hover:bg-aqua-deep xl:text-xl md:text-lg eq"
+                class="bg-yellow-500 hover:bg-yellow-600 text-white px-8 py-3 rounded-full text-base font-medium inline-flex gap-2 items-center shadow-md hover:shadow-lg transition-all"
                 type="button">
                 <span>Load More</span>
                 <i class="text-sm fa-solid fa-chevron-down"></i>
@@ -325,7 +325,7 @@ $settings = settings();
             <div class="mt-10 text-center load-more-btn">
                 <button data-page="1" data-type="products" data-url="{{ request()->url() }}"
                     id="loadMoreProducts"
-                    class="inline-flex items-center gap-2 px-5 py-2 text-base text-white theme-btn bg-theme-teal hover:bg-aqua-deep xl:text-xl md:text-lg eq"
+                    class="bg-yellow-500 hover:bg-yellow-600 text-white px-8 py-3 rounded-full text-base font-medium inline-flex gap-2 items-center shadow-md hover:shadow-lg transition-all"
                     type="button">
                     <span>Load More</span>
                     <i class="text-sm fa-solid fa-chevron-down"></i>
