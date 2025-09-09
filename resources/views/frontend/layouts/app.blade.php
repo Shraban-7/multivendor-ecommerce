@@ -25,6 +25,11 @@ $isDashboard = View::hasSection('dashboard');
     <link rel="stylesheet" href="{{ asset('assets/libs/toastr/css/toastr.min.css') }}">
 
     <title>@yield('title') | {{ $settings->app_name }}</title>
+    <style>
+        body{
+            background-color: #f9f9f9;
+        }
+    </style>
 
     @stack('header')
 </head>

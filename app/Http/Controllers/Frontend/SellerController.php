@@ -50,7 +50,7 @@ class SellerController extends Controller
     {
         $seller = Seller::with('campaigns')->where('username', $username)->firstOrFail();
 
-        $limit = 8;
+        $limit = 20;
         $page  = $request->get('page', 1);
         $skip  = ($page - 1) * $limit;
 
