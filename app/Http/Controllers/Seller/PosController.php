@@ -18,14 +18,11 @@ class PosController extends Controller
 {
     public function index()
     {
-        $employee = employee();
-        $seller_id = seller()->id ?? $employee->seller_id;
-
-        $products = Product::where('seller_id', $seller_id)->with('variants.option_values')->get();
+        $products = Product::where('seller_id', get_seller_id())->with('variants.option_values')->get();
 
         $categories = Category::limit(5)->get();
 
-        $cart = PosCart::where('seller_id', $seller_id)->first();
+        $cart = PosCart::where('seller_id', get_seller_id())->first();
 
         $cartItems = $cart ? $cart->items()->with('variant.product')->get() : collect();
 
@@ -51,16 +48,13 @@ class PosController extends Controller
 
     public function cart_add(Request $request)
     {
-        $employee = employee();
-        $seller_id = seller()->id ?? $employee->seller_id;
-
         $data = $request->validate([
             'variant_id' => 'nullable',
             'quantity'   => 'required|integer|min:1',
         ]);
 
         $cart = PosCart::firstOrCreate(
-            ['seller_id' => $seller_id],
+            ['seller_id' => get_seller_id()],
         );
 
         $variantId = $data['variant_id'];
@@ -201,10 +195,7 @@ class PosController extends Controller
 
     public function cart_clear(Request $request)
     {
-        $employee = employee();
-        $seller_id = seller()->id ?? $employee->seller_id;
-
-        $cart = PosCart::where('seller_id', $seller_id)->first();
+        $cart = PosCart::where('seller_id', get_seller_id())->first();
 
         if (!$cart) {
             return errorResponse("No Cart Items Found!");
@@ -220,10 +211,7 @@ class PosController extends Controller
 
     public function place_order()
     {
-        $employee = employee();
-        $seller_id = seller()->id ?? $employee->seller_id;
-
-        $cart = PosCart::where('seller_id', $seller_id)->first();
+        $cart = PosCart::where('seller_id', get_seller_id())->first();
 
         if (!$cart) {
             return errorResponse("No items found in the cart!");
@@ -263,7 +251,7 @@ class PosController extends Controller
         $invoiceId = Order::generateInvoiceID();
 
         $order = Order::create([
-            'seller_id' => $seller_id,
+            'seller_id' => get_seller_id(),
             'seller_employee_id' => $employee->id ??  null,
             'invoice_id' => $invoiceId,
             'sub_total' => $sub_total,
@@ -289,10 +277,7 @@ class PosController extends Controller
 
     public function orders()
     {
-        $employee = employee();
-        $seller_id = seller()->id ?? $employee->seller_id;
-
-        $orders = Order::where('seller_id', $seller_id)
+        $orders = Order::where('seller_id', get_seller_id())
             ->whereNull('user_id')
             ->latest('id')
             ->get();

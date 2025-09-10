@@ -13,7 +13,6 @@ class OrderController extends Controller
 {
     public function index(Request $request)
     {
-        $seller_id = seller()->id;
         $type      = $request->segment(3);
 
         $statusValue = OrderStatus::valueFromLabel($type);
@@ -22,7 +21,7 @@ class OrderController extends Controller
             return redirect()->route('seller.dashboard');
         }
 
-        $orders = Order::where('seller_id', $seller_id)
+        $orders = Order::where('seller_id', get_seller_id())
             ->where('status', $statusValue)
             ->whereNotNull('user_id')
             ->latest('id')
@@ -34,8 +33,7 @@ class OrderController extends Controller
     public function details($invoice_id)
     {
         $order = Order::where('invoice_id', $invoice_id)->first();
-        $seller_id = seller()->id;
-        if ($seller_id == $order->seller_id) {
+        if (get_seller_id() == $order->seller_id) {
             $order->load(['review', 'items']);
             return view('seller.orders.details', compact('order'));
         }
@@ -69,8 +67,8 @@ class OrderController extends Controller
     public function posInvoice($invoice_id)
     {
         $order = Order::where('invoice_id', $invoice_id)->first();
-        $seller_id = seller()->id;
-        if ($seller_id == $order->seller_id) {
+
+        if (get_seller_id() == $order->seller_id) {
             return view('seller.orders.pos_invoice', compact('order'));
         }
         return redirect()->back();

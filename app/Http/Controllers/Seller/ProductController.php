@@ -18,9 +18,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $seller_id = seller()->id;
-
-        $products   = Product::where('seller_id', $seller_id)->latest('id')->paginate(50);
+        $products   = Product::where('seller_id', get_seller_id())->latest('id')->paginate(50);
         $categories = Category::category()->with('subcategories')->get();
         $brands     = Brand::all();
 

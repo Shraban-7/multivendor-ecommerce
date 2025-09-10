@@ -13,7 +13,7 @@ class CustomerController extends Controller
 {
     public function index()
     {
-        $seller = Seller::where('id', Auth::guard('seller')->user()->id)->first();
+        $seller = Seller::find(get_seller_id());
         $orders = Order::where('seller_id', $seller->id)->get();
         $userIds = $orders->pluck('user_id')->unique();
 

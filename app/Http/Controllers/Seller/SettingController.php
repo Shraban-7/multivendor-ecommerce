@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
 use App\Models\Country;
+use App\Models\Seller;
 use App\Models\SellerBannerImage;
 use App\Models\State;
 use Illuminate\Http\Request;
@@ -11,7 +12,7 @@ class SettingController extends Controller
 {
     public function index()
     {
-        $seller    = seller();
+        $seller = Seller::find(get_seller_id());
         $countries = Country::orderBy('name', 'ASC')->get();
         $states    = State::orderBy('name', 'ASC')->get();
         return view('seller.settings.index', compact('seller', 'countries', 'states'));
@@ -19,7 +20,7 @@ class SettingController extends Controller
 
     public function update(Request $request)
     {
-        $seller = seller();
+        $seller = Seller::find(get_seller_id());
 
         $data = $request->validate([
             'business_name'    => 'required|string|max:255',

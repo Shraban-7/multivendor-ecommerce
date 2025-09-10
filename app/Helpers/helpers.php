@@ -606,3 +606,13 @@ if (! function_exists('get_seller_routes')) {
         return $permissions;
     }
 }
+
+if (! function_exists('get_seller_id')) {
+    function get_seller_id()
+    {
+        $employee = employee();
+        $seller_id = seller()->id ?? $employee->seller_id;
+
+        return $seller_id;
+    }
+}

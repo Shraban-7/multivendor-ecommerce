@@ -10,9 +10,7 @@ class SellerEmployeeController extends Controller
 {
     public function index()
     {
-        $seller_id = seller()->id;
-
-        $employees = SellerEmployee::where('seller_id', $seller_id)->get();
+        $employees = SellerEmployee::where('seller_id', get_seller_id())->get();
 
         $permissions = get_seller_routes();
 
