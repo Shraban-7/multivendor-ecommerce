@@ -15,5 +15,11 @@ class SellerEmployee extends Authenticatable
 
     protected $casts = [
         'password' => 'hashed',
+        'permissions' => 'array',
     ];
+
+    public function hasPermission($routeName): bool
+    {
+        return in_array($routeName, $this->permissions);
+    }
 }

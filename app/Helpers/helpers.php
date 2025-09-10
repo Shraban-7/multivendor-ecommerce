@@ -552,15 +552,13 @@ if (! function_exists('notificationCount')) {
         if (!auth('web')->check() && !auth()->guard('seller')->check()) {
             return 0;
         }
-        if(auth()->guard('seller')->check()) {
+        if (auth()->guard('seller')->check()) {
             return Notification::where('seller_id', auth('seller')->id())->where('is_read', 0)->count();
-        } 
-
-        if(auth('web')->check()) {
-            return Notification::where('user_id', auth('web')->id())->where('is_read', 0)->count();
         }
 
-       
+        if (auth('web')->check()) {
+            return Notification::where('user_id', auth('web')->id())->where('is_read', 0)->count();
+        }
     }
 }
 
@@ -568,12 +566,43 @@ if (! function_exists('affiliate')) {
     function affiliate()
     {
         $user = Auth::guard('web')->user();
-        return $user && $user->role == UserRole::AFFILIATE->value; 
+        return $user && $user->role == UserRole::AFFILIATE->value;
     }
 }
 
+if (! function_exists('get_seller_routes')) {
+    function get_seller_routes(): array
+    {
+        $prefix = "seller.";
 
+        $excludedRoutes = [
+            'seller.signup',
+            'seller.logout',
+            'seller.employees.setPermissions',
+        ];
 
+        $routes = [];
+        foreach (\Illuminate\Support\Facades\Route::getRoutes() as $route) {
+            $routeName = $route->getName();
+            if ($routeName != null && str_starts_with($routeName, $prefix) && !in_array($routeName, $excludedRoutes)) {
+                $routes[] = $routeName;
+            }
+        }
 
+        sort($routes);
 
+        $permissions = [];
 
+        foreach ($routes as $route) {
+            $title = str_replace($prefix, '', $route);
+            $title = ucwords(str_replace('.', ' > ', $title));
+
+            $permissions[] = [
+                'name'  => $route,
+                'title' => $title,
+            ];
+        }
+
+        return $permissions;
+    }
+}

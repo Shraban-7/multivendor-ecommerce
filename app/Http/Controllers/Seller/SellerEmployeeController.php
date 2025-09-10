@@ -77,4 +77,24 @@ class SellerEmployeeController extends Controller
 
         return redirect()->route('seller.employees.index')->with('success', 'Employee status updated successfully');
     }
+
+    public function setPermissions(SellerEmployee $employee, Request $request)
+    {
+        if ($request->isMethod('GET')) {
+
+            $permissions = get_seller_routes();
+
+            return view('seller.employees.permissions', compact('permissions'));
+        }
+
+        $request->validate([
+            'permissions' => 'required|array'
+        ]);
+
+        $employee->update([
+            'permissions' => $request->permissions
+        ]);
+
+        return redirect()->back()->with('success', "Permissions updated successfully");
+    }
 }

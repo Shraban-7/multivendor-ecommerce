@@ -35,6 +35,7 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::get('{id}/edit', [SellerEmployeeController::class, 'edit'])->name('edit');
         Route::post('{id}/update', [SellerEmployeeController::class, 'update'])->name('update');
         Route::post('{id}/toggle-active', [SellerEmployeeController::class, 'toggleActive'])->name('toggle_active');
+        Route::match(['get', 'post'], '{employee}/set-permissions', [SellerEmployeeController::class, 'setPermissions'])->name('setPermissions');
     });
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
