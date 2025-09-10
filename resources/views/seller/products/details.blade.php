@@ -345,7 +345,7 @@
                                                             {{ $history->created_at?->format('d/m/y h:i A') ?? '-' }}
                                                         </td>
                                                         <td class="text-nowrap small">
-                                                           {{ $history->variant->fullName == null ? 'Default' : $history->variant->fullName }}
+                                                           {{ $history->variant?->fullName === null ? 'Default' : $history->variant->fullName }}
                                                         </td>
                                                         <td class="text-center small">
                                                             {{ abs($history->quantity ?? 0) }}
@@ -433,7 +433,7 @@
                                         <option value="">--Select Variant--</option>
                                         @foreach ($product->variants as $variant)
                                             <option value="{{ $variant->id }}">
-                                                {{ $variant->fullName == null ? 'Default' : $variant->fullName }}</option>
+                                                {{ $variant?->fullName == null ? 'Default' : $variant->fullName }}</option>
                                         @endforeach
                                     </select>
                                 </div>
