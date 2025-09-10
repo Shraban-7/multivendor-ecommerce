@@ -67,7 +67,7 @@ class AuthController extends Controller
 
                 $sessionData = $request->except(['image', 'nid_front_image', 'nid_back_image']);
                 session(['seller_step1' => $sessionData]);
-                
+
                 return apiResponse(['next_step' => 2], 'Step 1 complete');
 
             case 2:
@@ -90,11 +90,11 @@ class AuthController extends Controller
 
                 ]);
 
-                $sessionData = $request->except(['trade_license_image','shop_image']);
+                $sessionData = $request->except(['trade_license_image', 'shop_image']);
 
                 $step1 = session('seller_step1', []);
                 $step2 = session('seller_step2', []);
-                $allData = array_merge($step1, $step2,$sessionData);
+                $allData = array_merge($step1, $step2, $sessionData);
 
                 $allData['username'] = str_slug('sellers', 'username', $allData['name']);
                 $username = $allData['username'];
@@ -126,11 +126,20 @@ class AuthController extends Controller
 
 
 
-    public function logout()
+    public function logout(Request $request)
     {
-        Auth::logout();
+        if (Auth::guard('seller')->check()) {
+            Auth::guard('seller')->logout();
+
+            return redirect()->route('login');
+        }
+
+        if (Auth::guard('web')->check()) {
+            Auth::guard('web')->logout();
+
+            return redirect()->route('login');
+        }
 
         return redirect()->route('login');
     }
-
 }
