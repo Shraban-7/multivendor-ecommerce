@@ -12,11 +12,14 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    // Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/profile', [ProfileController::class, 'profile'])->name('profile');
     Route::post('/update-account', [ProfileController::class, 'updateAccount'])->name('accountUpdate');
     Route::post('/update-password', [ProfileController::class, 'updatePassword'])->name('updatePassword');
 });
+
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
 
 
 

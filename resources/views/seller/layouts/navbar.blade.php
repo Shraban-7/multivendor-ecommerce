@@ -47,7 +47,7 @@
                         </a>
                     </li>
                     <li>
-                        <form action="{{ route('seller.logout') }}" method="POST">
+                        <form action="{{ route('logout') }}" method="POST">
                             @csrf
                             <button class="dropdown-item" onclick="this.form.submit();">
                                 <i class="me-2 icon-xxs dropdown-item-icon" data-feather="power"></i>Sign Out
