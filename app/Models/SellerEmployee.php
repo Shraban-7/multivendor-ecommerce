@@ -23,3 +23,4 @@ class SellerEmployee extends Authenticatable
         return in_array($routeName, $this->permissions);
     }
 }
+

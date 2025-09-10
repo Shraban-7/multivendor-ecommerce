@@ -14,7 +14,9 @@ class SellerEmployeeController extends Controller
 
         $employees = SellerEmployee::where('seller_id', $seller_id)->get();
 
-        return view('seller.employees.index', compact('employees'));
+        $permissions = get_seller_routes();
+
+        return view('seller.employees.index', compact('employees','permissions'));
     }
 
     public function create()
@@ -80,13 +82,6 @@ class SellerEmployeeController extends Controller
 
     public function setPermissions(SellerEmployee $employee, Request $request)
     {
-        if ($request->isMethod('GET')) {
-
-            $permissions = get_seller_routes();
-
-            return view('seller.employees.permissions', compact('permissions'));
-        }
-
         $request->validate([
             'permissions' => 'required|array'
         ]);
