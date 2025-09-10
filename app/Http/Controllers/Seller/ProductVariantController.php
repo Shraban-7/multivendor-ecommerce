@@ -113,8 +113,15 @@ class ProductVariantController extends Controller
     public function destroy(ProductVariant $variant)
     {
         $product_id = $variant->product_id;
+
         $variant->delete();
         $default = ProductVariant::where('product_id', $product_id)->first();
+
+        $variantCount = ProductVariant::where('product_id', $product_id)->count();
+
+        if ($variantCount == 0) {
+            return redirect()->back()->with('success', 'No variants remain for this product!');
+        }
 
         $default->is_default = 1;
         $default->save();
