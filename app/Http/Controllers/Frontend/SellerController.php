@@ -55,6 +55,7 @@ class SellerController extends Controller
         $skip  = ($page - 1) * $limit;
 
         $productQuery = Product::with('category')
+            ->active()
             ->where('seller_id', $seller->id);
 
         if ($request->sortBy == 'best-selling') {

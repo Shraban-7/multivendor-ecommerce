@@ -18,4 +18,14 @@ class ProductController extends Controller
 
         return view('admin.products.index', compact('products', 'categories', 'brands'));
     }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $product = Product::findOrFail($id);
+
+        $product->is_approved = $request->is_approved;
+        $product->save();
+
+        return back()->with('success', 'Product status updated successfully!');
+    }
 }

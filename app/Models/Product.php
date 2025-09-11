@@ -233,4 +233,9 @@ class Product extends Model
             'unit'
         ]);
     }
+
+    public function scopeActive($query)
+    {
+        return $query->where('is_approved',1);
+    }
 }

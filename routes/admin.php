@@ -44,6 +44,8 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
 
     Route::prefix('products')->as('products.')->group(function () {
         Route::get('/', [ProductController::class, 'index'])->name('index');
+        Route::post('/{id}/status', [ProductController::class, 'updateStatus'])
+            ->name('updateStatus');
     });
 
     Route::prefix('orders')->as('orders.')->group(function () {

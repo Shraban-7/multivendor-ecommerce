@@ -15,6 +15,7 @@
             <tr>
                 <th scope="col">Product</th>
                 <th scope="col">Created at</th>
+                <th scope="col">Status</th>
                 <th scope="col">Action</th>
             </tr>
         </thead>
@@ -34,6 +35,13 @@
                     </div>
                 </td>
                 <td>{{ $product->created_at->format('d-m-y h:i A') }} </td>
+                <td>
+                    @if ($product->is_approved)
+                        <span class="badge text-bg-success">Active</span>
+                    @else
+                        <span class="badge text-bg-warning">Inactive</span>
+                    @endif
+                </td>
                 <td>
                     <div class="d-flex">
                         <a href="{{ route('seller.products.show', $product->slug) }}"

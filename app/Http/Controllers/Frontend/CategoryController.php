@@ -57,6 +57,7 @@ class CategoryController extends Controller
         $productOptions = Option::with('options')->get();
 
         $category_products = Product::withDefaultRelations()
+            ->active()
             ->where('category_id', $category->id)
             ->latest('id')
             ->skip($skip)

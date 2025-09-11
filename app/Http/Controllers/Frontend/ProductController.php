@@ -50,6 +50,7 @@ class ProductController extends Controller
         }
 
         $interest_products = Product::withDefaultRelations()->where('category_id', $categoryId)
+            ->active()
             ->where('id', '!=', $product['id'])
             ->latest()
             ->skip($skip)
