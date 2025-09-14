@@ -169,9 +169,9 @@ class ProductController extends Controller
 
     public function update($slug, Request $request)
     {
-        $seller = seller();
-
         $product = Product::where('slug', $slug)->first();
+        
+        $seller = $product->seller;
 
         $validated = $request->validate([
             'category_id' => 'required|integer|exists:categories,id',
