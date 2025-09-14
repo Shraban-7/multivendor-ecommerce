@@ -11,6 +11,7 @@ use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductUnit;
 use App\Models\ProductVariant;
+use App\Models\Seller;
 use App\Models\StockHistory;
 use Illuminate\Http\Request;
 
@@ -36,7 +37,7 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        $seller = seller();
+        $seller = Seller::find(get_seller_id());
 
         $validated = $request->validate([
             'category_id' => 'required|integer|exists:categories,id',
@@ -84,7 +85,7 @@ class ProductController extends Controller
 
         $imageFolder = "images/{$seller->username}/products";
 
-        // $validated['thumbnail'] = upload_with_watermark($request->file('thumbnail'), "$imageFolder/thumb");
+        //$validated['thumbnail'] = upload_with_watermark($request->file('thumbnail'), "$imageFolder/thumb");
 
         if ($request->hasFile('video')) {
             $validated['video'] = upload_file($request->file('video'), "videos/{$seller->username}/products");
@@ -112,7 +113,7 @@ class ProductController extends Controller
             'is_default' => 1,
         ];
 
-        $variant = ProductVariant::create($variantData);
+        ProductVariant::create($variantData);
 
         if ($request->hasFile('files')) {
             foreach ($request->file('files') as $file) {
@@ -170,7 +171,7 @@ class ProductController extends Controller
     public function update($slug, Request $request)
     {
         $product = Product::where('slug', $slug)->first();
-        
+
         $seller = $product->seller;
 
         $validated = $request->validate([

@@ -610,9 +610,10 @@ if (! function_exists('get_seller_routes')) {
 if (! function_exists('get_seller_id')) {
     function get_seller_id()
     {
-        $employee = employee();
-        $seller_id = seller()->id ?? $employee->seller_id;
+        if(seller()) {
+            return seller()->id;
+        }
 
-        return $seller_id;
+        return employee()->seller_id;
     }
 }
