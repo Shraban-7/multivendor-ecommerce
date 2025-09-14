@@ -1,5 +1,5 @@
 <footer class="w-full">
-    @if (request()->route()->getName() == 'home')
+    @if (request()->is('/'))
     <!-- Newsletter Section -->
     <div class="newsletter-sec relative lg:px-16 md:px-10 -mb-20 z-[20]">
         <div class="container bg-black text-white px-8 py-5 md:p-8 lg:px-12 lg:py-8 flex flex-col md:flex-row justify-between items-center gap-6 rounded-2xl">
