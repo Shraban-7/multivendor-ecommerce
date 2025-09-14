@@ -18,9 +18,9 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products   = Product::where('seller_id', get_seller_id())->latest('id')->paginate(50);
+        $products = Product::where('seller_id', get_seller_id())->latest('id')->get();
         $categories = Category::category()->with('subcategories')->get();
-        $brands     = Brand::all();
+        $brands = Brand::all();
 
         return view('seller.products.index', compact('products', 'categories', 'brands'));
     }
@@ -28,8 +28,8 @@ class ProductController extends Controller
     public function create()
     {
         $categories = Category::category()->with('subcategories')->get();
-        $brands     = Brand::all();
-        $units      = ProductUnit::all();
+        $brands = Brand::all();
+        $units = ProductUnit::all();
 
         return view('seller.products.create', compact('categories', 'brands', 'units'));
     }
@@ -310,7 +310,7 @@ class ProductController extends Controller
             $currentStock = ($variant->stock_in ?? 0) - ($variant->stock_out ?? 0);
 
             if ($action == StockType::REMOVE_STOCK->value && $quantity > $currentStock) {
-                continue; 
+                continue;
             }
 
             StockHistory::create([
