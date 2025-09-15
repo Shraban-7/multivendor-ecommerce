@@ -11,7 +11,7 @@
             @foreach ($sellers as $seller)
                 <article class="border border-gray-100 bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
                     <div class="relative mx-auto mb-5 h-28 w-28">
-                        <div class="flex h-full w-full items-center justify-center rounded-full bg-gray-50 shadow">
+                        <div class="flex h-full w-full items-center justify-center rounded-full overflow-hidden bg-gray-50 shadow">
                             <img src="{{ storage_url($seller->image) }}" alt="{{ $seller->name }}"
                                 class="w-20 h-20 mx-auto object-cover mb-4">
                         </div>
