@@ -1,5 +1,5 @@
-<section class="py-10">
-    <div class="mx-auto max-w-7xl px-4">
+<section class="section-padding">
+    <div class="mx-auto max-w-7xl">
         <div class="mb-6 flex items-center justify-between">
             <h2 class="text-xl font-semibold text-gray-900">Top Sellers</h2>
             <a href="{{ route('sellers.index') }}" class="text-sm text-indigo-600 hover:text-indigo-800">

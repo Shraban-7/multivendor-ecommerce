@@ -1,4 +1,4 @@
-<section class="mt-10">
+<section class="section-padding">
     <h2 class="uppercase md:text-center sm:text-xl xl:text-4xl lg:text-3xl md:text-2xl text-theme-dark mb-4 md:mb-10">
         Featured Categories
     </h2>

@@ -1,5 +1,5 @@
-<section class="py-10">
-    <div class="container mx-auto px-4">
+<section class="section-padding">
+    <div class="container mx-auto">
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-xl font-semibold text-gray-800">Top Brands</h2>
             <a href="#" class="text-sm text-indigo-600 hover:text-indigo-800">
