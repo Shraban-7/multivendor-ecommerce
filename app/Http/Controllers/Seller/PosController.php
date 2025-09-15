@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Seller;
 
 use App\Models\Order;
+use App\Models\Seller;
 use App\Models\PosCart;
 use App\Models\Product;
 use App\Models\Category;
@@ -10,6 +11,7 @@ use Dotenv\Parser\Value;
 use App\Enums\OrderStatus;
 use App\Models\PosCartItem;
 use Illuminate\Http\Request;
+use App\Enums\CommissionType;
 use App\Models\ProductVariant;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -246,7 +248,20 @@ class PosController extends Controller
             ];
         }
 
+        $seller = Seller::where('id', get_seller_id())->first();
+
+        $total_commission = 0;
+
+        if ($seller->commission_amount != null && $seller->commission_type != null) {
+            if ($seller->commission_type === CommissionType::PERCENTAGE->value) {
+                $total_commission = ($sub_total + $vat_amount) * ($seller->commission_amount / 100);
+            } else if ($seller->commission_type === CommissionType::FLAT->value) {
+                $total_commission = $seller->commission_amount;
+            }
+        }
+
         $payableAmount = $sub_total + $vat_amount;
+        $sellerEarning = $payableAmount - $total_commission;
 
         $invoiceId = Order::generateInvoiceID();
 
@@ -260,6 +275,10 @@ class PosController extends Controller
             'vat_amount' => $vat_amount,
             'payable' => $payableAmount,
             'due' => $payableAmount,
+            'commission_type' => $seller->commission_type,
+            'commission_amount' => $seller->commission_amount,
+            'seller_earnings' => $sellerEarning,
+            'total_commission' => $total_commission,
             'status' => OrderStatus::PENDING->value,
             'delivery_status' => OrderStatus::ORDER_PLACED->value,
         ]);
