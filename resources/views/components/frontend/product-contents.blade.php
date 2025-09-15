@@ -21,12 +21,16 @@ $publicProduct = [
         <!-- Thumbnails -->
         <div class="order-2 w-full lg:w-1/6 lg:order-1">
             <div
-                class="single-product-thumbnails thumbnailWrapper flex flex-col space-y-3 max-h-[21rem] overflow-y-auto sm:max-h-none sm:overflow-y-visible lg:h-[41rem] lg:overflow-hidden">
+                class="single-product-thumbnails thumbnailWrapper flex md:flex-col gap-2 
+                    max-h-[21rem] overflow-y-auto sm:max-h-none sm:overflow-y-visible 
+                    lg:h-[41rem] lg:overflow-hidden">
                 @foreach ($product['slider'] as $index => $img)
                     <div
-                        class="slide-thumb w-full h-20 lg:h-28 xl:h-24 rounded-2xl cursor-pointer border-2 overflow-hidden {{ $index === 0 ? 'border-primary' : 'border-transparent' }}">
+                        class="slide-thumb aspect-square w-20 sm:w-24 lg:w-full 
+                   rounded-2xl cursor-pointer border-2 overflow-hidden 
+                   {{ $index === 0 ? 'border-primary' : 'border-transparent' }}">
                         <img src="{{ storage_url($img) }}" alt="{{ $product['name'] ?? 'Product Image' }}"
-                            class="max-w-full h-auto thumb-img" data-image="{{ storage_url($img) }}"
+                            class="w-full h-full object-contain thumb-img" data-image="{{ storage_url($img) }}"
                             data-full="{{ storage_url($img) }}" />
                     </div>
                 @endforeach
@@ -136,7 +140,7 @@ $publicProduct = [
 
 
                 <div class="flex flex-wrap items-center gap-3 text-sm text-gray-700">
-                    <div><strong>SKU:</strong> <span class="sku-text">{{ $defaultVariant->sku?? '' }}</span></div>
+                    <div><strong>SKU:</strong> <span class="sku-text">{{ $defaultVariant->sku ?? '' }}</span></div>
                     <div><strong>Stock:</strong> <span class="stock-text">{{ $defaultVariant->stock ?? '' }}</span>
                     </div>
 
