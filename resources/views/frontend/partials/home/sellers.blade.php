@@ -7,7 +7,7 @@
             </a>
         </div>
 
-        <div class="grid sm:grid-cols-2 lg:grid-cols-4">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             @foreach ($sellers as $seller)
                 <article class="border border-gray-100 bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
                     <div class="relative mx-auto mb-5 h-28 w-28">
