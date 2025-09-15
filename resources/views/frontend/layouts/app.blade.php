@@ -26,7 +26,7 @@ $isDashboard = View::hasSection('dashboard');
 
     <title>@yield('title') | {{ $settings->app_name }}</title>
     <style>
-        body{
+        body {
             background-color: #f9f9f9;
         }
     </style>
@@ -38,7 +38,15 @@ $isDashboard = View::hasSection('dashboard');
     <header class="header-section bg-persian-red text-white font-primary sticky top-0 z-50">
         @include('frontend.layouts.top-nav')
     </header>
-    @include('frontend.layouts.bottom-nav')
+
+    <div class="hidden md:block">
+        @include('frontend.layouts.bottom-nav')
+    </div>
+
+    <div
+        class="block md:hidden">
+        @include('frontend.layouts.mobile-dock')
+    </div>
 
     @if (session('error') || session('success'))
         <div id="alert-border"
@@ -76,7 +84,7 @@ $isDashboard = View::hasSection('dashboard');
         </main>
         <!-- Floating Sidebar Toggle Button (Mobile Only) -->
         <button
-            class="fixed bottom-6 right-6 z-50 md:hidden bg-yellow-500 text-white p-4 rounded-full shadow-lg hover:bg-yellow-600 focus:outline-none"
+            class="fixed bottom-16 right-6 z-50 md:hidden bg-yellow-500 text-white p-4 rounded-full shadow-lg hover:bg-yellow-600 focus:outline-none"
             id="sidebar-toggle">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg">

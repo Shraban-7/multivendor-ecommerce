@@ -84,7 +84,7 @@
                                                     <div
                                                         class="flex-shrink-0 w-20 h-20 overflow-hidden rounded-md sm:w-24 sm:h-24">
                                                         <a href="{{ route('products.details', $item->product->slug) }}">
-                                                            <img src="{{ $item->product_variant_id ? storage_url($item->variant->image) : storage_url($item->product->thumbnail) }}"
+                                                            <img src="{{ storage_url($item->product->thumbnail) }}"
                                                                 alt="Product" class="object-cover w-full h-full" />
                                                         </a>
                                                     </div>
