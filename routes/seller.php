@@ -59,6 +59,7 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::get('/{product}', [ProductController::class, 'show'])->name('show');
         Route::get('/{slug}/edit', [ProductController::class, 'edit'])->name('edit');
         Route::post('/{slug}/update', [ProductController::class, 'update'])->name('update');
+        Route::post('/{slug}/update-seo', [ProductController::class, 'updateSeo'])->name('updateSeo');
         Route::post('/{product}/stock-update', [ProductController::class, 'stockUpdate'])->name('stockUpdate');
         Route::delete('/delete-variant/{variant}', [ProductController::class, 'deleteVariant'])->name('deleteVariant');
         Route::delete('images/{image}/delete', [ProductController::class, 'deleteImage'])->name('image.delete');

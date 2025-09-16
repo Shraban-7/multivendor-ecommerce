@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Option;
 use App\Models\Product;
 use App\Models\ProductImage;
+use App\Models\ProductSeo;
 use App\Models\ProductUnit;
 use App\Models\ProductVariant;
 use App\Models\Seller;
@@ -154,7 +155,7 @@ class ProductController extends Controller
 
         $product_options = Option::with('options')->get();
 
-        return view('seller.products.details', compact('product', 'product_options'));
+        return view('seller.products.details_new', compact('product', 'product_options'));
     }
 
     public function edit($slug)
@@ -336,5 +337,40 @@ class ProductController extends Controller
         }
 
         return redirect()->back()->with('success', 'Stock updated successfully for all variants!');
+    }
+
+    public function updateSeo(Request $request, $slug)
+    {
+        $product = Product::where('slug', $slug)->first();
+        $seller = $product->seller;
+
+        $validated = $request->validate([
+            'meta_title'       => ['nullable', 'string', 'max:70'],
+            'meta_description' => ['nullable', 'string', 'max:160'],
+            'meta_keywords'    => ['nullable', 'string', 'max:255'],
+
+            'og_title'         => ['nullable', 'string', 'max:70'],
+            'og_description'   => ['nullable', 'string', 'max:200'],
+            'og_image'         => [
+                'nullable',
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:2048',
+                'dimensions:min_width=1200,min_height=630'
+            ]
+        ]);
+
+        $imageFolder = "images/{$seller->username}/products";
+
+        $validated['product_id'] = $product->id;
+
+        $validated['og_image'] = upload_file($request->file('og_image'), "$imageFolder/og_image");
+
+
+        ProductSeo::create($validated);
+
+        return apiResponse([
+            'redirect' => route('seller.products.details', $product->slug),
+        ], "Product Updated Successfully");
     }
 }
