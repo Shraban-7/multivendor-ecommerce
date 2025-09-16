@@ -19,6 +19,34 @@ class Product extends Model
         'payment_type' => PaymentType::class,
     ];
 
+    const STATUS_PENDING_APPROVAL = 0;
+    const STATUS_ACTIVE = 1;
+    const STATUS_INACTIVE = 2;
+    const STATUS_DELETED = 3;
+
+    public function statusName(): Attribute
+    {
+        $statusName = null;
+        switch ($this->status) {
+            case self::STATUS_PENDING_APPROVAL:
+                $statusName = 'Pending Approval';
+                break;
+            case self::STATUS_ACTIVE:
+                $statusName = 'Active';
+                break;
+            case self::STATUS_INACTIVE:
+                $statusName = 'Inactive';
+                break;
+            case self::STATUS_DELETED:
+                $statusName = 'Deleted';
+                break;
+        }
+
+        return Attribute::make(
+            get: fn() => $statusName
+        );
+    }
+
     public function scopeLightDeal($query)
     {
         return $query->where('is_lightdeal', true);
@@ -242,6 +270,6 @@ class Product extends Model
 
     public function scopeActive($query)
     {
-        return $query->where('is_approved',1);
+        return $query->where('is_approved', 1);
     }
 }
