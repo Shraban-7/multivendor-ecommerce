@@ -47,7 +47,6 @@ return new class extends Migration
 
             $table->decimal('tax', 5, 2)->default(0.00);
 
-            $table->boolean('is_active')->default(true);
             $table->bigInteger('views')->default(0);
             $table->decimal('avg_rating', 3, 1)->default(0.0);
             $table->integer('rating_count')->default(0);

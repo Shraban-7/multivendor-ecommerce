@@ -23,7 +23,7 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
 
-        $product->is_approved = $request->is_approved;
+        $product->status = $request->status;
         $product->save();
 
         return back()->with('success', 'Product status updated successfully!');

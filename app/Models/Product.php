@@ -259,6 +259,6 @@ class Product extends Model
 
     public function scopeActive($query)
     {
-        return $query->where('is_approved', 1);
+        return $query->where('status', self::STATUS_ACTIVE);
     }
 }
