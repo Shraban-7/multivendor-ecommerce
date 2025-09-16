@@ -50,15 +50,8 @@
                 @endforeach
             </tbody>
         </table>
+        <div class="d-flex justify-content-end">
+            {{ $stockHistories->links() }}
+        </div>
     </div>
 @endsection
-
-@push('scripts')
-    <script>
-        new DataTable('#stock-history-table', {
-            order: [
-                [0, 'desc']
-            ]
-        });
-    </script>
-@endpush

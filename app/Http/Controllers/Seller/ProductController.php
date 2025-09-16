@@ -389,7 +389,7 @@ class ProductController extends Controller
         $stockHistories = StockHistory::with(['product', 'variant']) 
             ->whereIn('product_id', $productIds)
             ->latest()
-            ->get();
+            ->paginate(45);
 
         return view('seller.products.stock_history', compact('stockHistories'));
     }
