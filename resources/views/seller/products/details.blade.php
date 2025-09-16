@@ -941,9 +941,7 @@
                     </div>
                 `);
                             setTimeout(function() {
-                                if (response.data.redirect) {
-                                    window.location.href = response.data.redirect;
-                                }
+                                location.reload();
                             }, 1500);
                         },
                         error: function(xhr) {

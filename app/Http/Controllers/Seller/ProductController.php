@@ -377,8 +377,6 @@ class ProductController extends Controller
             ProductSeo::create($validated);
         }
 
-        return apiResponse([
-            'redirect' => route('seller.products.show', $product->slug),
-        ], "Product SEO Updated Successfully");
+        return successResponse("Product SEO Updated Successfully");
     }
 }
