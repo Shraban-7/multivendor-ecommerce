@@ -155,7 +155,7 @@ class ProductController extends Controller
 
         $product_options = Option::with('options')->get();
 
-        return view('seller.products.details_new', compact('product', 'product_options'));
+        return view('seller.products.details', compact('product', 'product_options'));
     }
 
     public function edit($slug)
