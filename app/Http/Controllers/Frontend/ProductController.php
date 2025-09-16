@@ -114,12 +114,13 @@ class ProductController extends Controller
         }
 
         return view('frontend.products.details', [
-            'product'       => $product,
-            'products'      => $products,
-            'ratings'       => $ratings,
-            'totalReviews'  => $totalReviews,
+            'product' => $product,
+            'products' => $products,
+            'ratings' => $ratings,
+            'totalReviews' => $totalReviews,
             'averageRating' => round($averageRating, 1),
-            'seller'        => $seller
+            'seller' => $seller,
+            'seo' => $productModel->seo
         ]);
     }
 

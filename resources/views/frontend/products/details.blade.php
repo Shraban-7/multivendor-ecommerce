@@ -1,5 +1,37 @@
 @extends('frontend.layouts.app')
-@section('title', $product['name'])
+@section('title', $seo->meta_title ?? $product['name'])
+
+@push('meta')
+    <link rel="canonical" href="{{ url()->current() }}">
+    @if($seo)
+        @if($seo->meta_description)
+            <meta name="description" content="{{ $seo->meta_description }}">
+        @endif
+        @if($seo->meta_keywords)
+            <meta name="keywords" content="{{ $seo->meta_keywords }}">
+        @endif
+        @if($seo->og_title)
+            <meta property="og:title" content="{{ $seo->og_title }}">
+        @endif
+        @if($seo->og_description)
+            <meta property="og:description" content="{{ $seo->og_description }}">
+        @endif
+        @if($seo->og_image)
+            <meta property="og:image" content="{{ storage_url($seo->og_image) }}">
+        @endif
+        <meta property="og:type" content="product">
+        @if($seo->og_title)
+            <meta name="twitter:title" content="{{ $seo->og_title }}">
+        @endif
+        @if($seo->og_description)
+            <meta name="twitter:description" content="{{ $seo->og_description }}">
+        @endif
+        @if($seo->og_image)
+            <meta name="twitter:image" content="{{ storage_url($seo->og_image) }}">
+        @endif
+        <meta name="twitter:card" content="summary_large_image">
+    @endif
+@endpush
 
 @section('content')
     @php

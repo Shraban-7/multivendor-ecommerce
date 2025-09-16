@@ -12,6 +12,7 @@ $isDashboard = View::hasSection('dashboard');
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    @stack('meta')
     <x-favicons />
     <script src="{{ asset('assets/libs/jquery/jquery-3.7.1.min.js') }}"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -24,7 +25,7 @@ $isDashboard = View::hasSection('dashboard');
     <link rel="stylesheet" href="{{ asset('assets/libs/swiper/css/swiper-bundle.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/libs/toastr/css/toastr.min.css') }}">
 
-    <title>@yield('title') | {{ $settings->app_name }}</title>
+    <title>@yield('title')</title>
     <style>
         body {
             background-color: #f9f9f9;
