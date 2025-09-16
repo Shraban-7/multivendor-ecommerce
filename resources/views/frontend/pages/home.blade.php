@@ -5,11 +5,7 @@
     <main class="home-page">
         @include('frontend.partials.home.hero-section')
 
-        {{-- @include('frontend.partials.home.light-deal-section') --}}
-
         @include('frontend.partials.home.categories')
-        
-        {{-- @include('frontend.partials.home.new-arrival-section') --}}
         
         <x-frontend.home.products-section-slider section="New Arrival" :products="$new_arrival_products" />
         <x-frontend.home.products-section-slider section="Trending" :products="$trending_products" />
@@ -18,16 +14,6 @@
 
         @include('frontend.partials.home.sellers')
         @include('frontend.partials.home.brands')
-
-        {{-- @include('frontend.partials.home.feature-gallery-section') --}}
-
-        {{-- @include('frontend.partials.home.promotional-header-section') --}}
-
-        {{-- @include('frontend.partials.home.community-product-section') --}}
-
-        {{-- @include('frontend.partials.home.sessional-promotion-thumbnail-section') --}}
-
-        {{-- @include('frontend.partials.home.halloween-product-section') --}}
 
         {{-- @include('frontend.partials.home.feature-video-section') --}}
     </main>

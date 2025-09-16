@@ -15,7 +15,6 @@ class Product extends Model
     protected $guarded = ['id'];
 
     protected $casts = [
-        'lightdeal_expired_at' => 'datetime',
         'payment_type' => PaymentType::class,
     ];
 
@@ -52,19 +51,9 @@ class Product extends Model
         return $query->where('is_lightdeal', true);
     }
 
-    public function scopeInterest($query)
-    {
-        return $query->where('is_interest', true);
-    }
-
     public function scopeTrending($query)
     {
         return $query->where('is_trending', true);
-    }
-
-    public function scopeCommunity($query)
-    {
-        return $query->where('is_community', true);
     }
 
     public function scopeFeatured($query)

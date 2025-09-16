@@ -263,8 +263,6 @@ class ProductSeeder extends Seeder
                             'stock_out'          => rand(0, 10),
                             'low_stock_quantity' => 5,
                             'is_trending'        => rand(0, 1),
-                            'is_community'       => rand(0, 1),
-                            'is_interest'        => rand(0, 1),
                             'best_selling'       => rand(0, 1),
                             'is_featured'        => rand(0, 1),
                             'tax'                => 10,
