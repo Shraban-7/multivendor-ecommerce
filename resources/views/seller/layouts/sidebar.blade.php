@@ -48,6 +48,11 @@
                                  Products
                              </x-dashboard.nav-item-link>
                          @endif
+                         @if ($seller || $employee->hasPermission('seller.products.stockHistory'))
+                             <x-dashboard.nav-item-link :route="'seller.products.stockHistory'">
+                                 Stock History
+                             </x-dashboard.nav-item-link>
+                         @endif
                          @if ($seller || $employee->hasPermission('seller.products.create'))
                              <x-dashboard.nav-item-link :route="'seller.products.create'">
                                  Add Product

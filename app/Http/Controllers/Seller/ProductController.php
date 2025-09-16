@@ -136,7 +136,7 @@ class ProductController extends Controller
             abort(404, 'Product not found');
         }
 
-        $product->load('variants.option_values', 'stock_history','seo');
+        $product->load('variants.option_values', 'stock_history', 'seo');
 
         $seo = $product->seo;
 
@@ -157,7 +157,7 @@ class ProductController extends Controller
 
         $product_options = Option::with('options')->get();
 
-        return view('seller.products.details', compact('product', 'product_options','seo'));
+        return view('seller.products.details', compact('product', 'product_options', 'seo'));
     }
 
     public function edit($slug)
@@ -365,7 +365,7 @@ class ProductController extends Controller
 
         if ($request->hasFile('og_image')) {
             if ($product->seo && $product->seo->og_image) {
-                delete_file($product->seo->og_image); 
+                delete_file($product->seo->og_image);
             }
             $validated['og_image'] = upload_file($request->file('og_image'), "$imageFolder/og_image");
         }
@@ -378,5 +378,19 @@ class ProductController extends Controller
         }
 
         return successResponse("Product SEO Updated Successfully");
+    }
+
+    public function stockHistory()
+    {
+        $seller = Seller::find(get_seller_id());
+
+        $productIds = Product::where('seller_id', $seller->id)->pluck('id');
+
+        $stockHistories = StockHistory::with(['product', 'variant']) 
+            ->whereIn('product_id', $productIds)
+            ->latest()
+            ->get();
+
+        return view('seller.products.stock_history', compact('stockHistories'));
     }
 }

@@ -54,6 +54,7 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
 
     Route::prefix('products')->as('products.')->group(function () {
         Route::get('/', [ProductController::class, 'index'])->name('index');
+        Route::get('/stock-histories', [ProductController::class, 'stockHistory'])->name('stockHistory');
         Route::get('/create', [ProductController::class, 'create'])->name('create');
         Route::post('/store', [ProductController::class, 'store'])->name('store');
         Route::get('/{product}', [ProductController::class, 'show'])->name('show');
