@@ -6,6 +6,7 @@ use App\Enums\PaymentType;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Product extends Model
 {
@@ -103,6 +104,11 @@ class Product extends Model
     public function stock_history()
     {
         return $this->hasMany(StockHistory::class, 'product_id');
+    }
+
+    public function seo(): HasOne
+    {
+        return $this->hasOne(ProductSeo::class);
     }
 
     public function toDetailsArray()
