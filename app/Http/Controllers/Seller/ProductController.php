@@ -136,7 +136,9 @@ class ProductController extends Controller
             abort(404, 'Product not found');
         }
 
-        $product->load('variants.option_values', 'stock_history');
+        $product->load('variants.option_values', 'stock_history','seo');
+
+        $seo = $product->seo;
 
         $costPrice = $product->buying_price ?? 0;
         $sellingPrice = $product->selling_price ?? 0;
@@ -155,7 +157,7 @@ class ProductController extends Controller
 
         $product_options = Option::with('options')->get();
 
-        return view('seller.products.details', compact('product', 'product_options'));
+        return view('seller.products.details', compact('product', 'product_options','seo'));
     }
 
     public function edit($slug)
@@ -341,36 +343,42 @@ class ProductController extends Controller
 
     public function updateSeo(Request $request, $slug)
     {
-        $product = Product::where('slug', $slug)->first();
+        $product = Product::where('slug', $slug)->firstOrFail();
         $seller = $product->seller;
 
         $validated = $request->validate([
-            'meta_title'       => ['nullable', 'string', 'max:70'],
+            'meta_title' => ['nullable', 'string', 'max:70'],
             'meta_description' => ['nullable', 'string', 'max:160'],
-            'meta_keywords'    => ['nullable', 'string', 'max:255'],
-
-            'og_title'         => ['nullable', 'string', 'max:70'],
-            'og_description'   => ['nullable', 'string', 'max:200'],
-            'og_image'         => [
+            'meta_keywords' => ['nullable', 'string', 'max:255'],
+            'og_title' => ['nullable', 'string', 'max:70'],
+            'og_description' => ['nullable', 'string', 'max:200'],
+            'og_image' => [
                 'nullable',
                 'image',
                 'mimes:jpg,jpeg,png,webp',
                 'max:2048',
-                'dimensions:min_width=1200,min_height=630'
+                // 'dimensions:min_width=1200,min_height=630'
             ]
         ]);
 
         $imageFolder = "images/{$seller->username}/products";
 
-        $validated['product_id'] = $product->id;
+        if ($request->hasFile('og_image')) {
+            if ($product->seo && $product->seo->og_image) {
+                delete_file($product->seo->og_image); 
+            }
+            $validated['og_image'] = upload_file($request->file('og_image'), "$imageFolder/og_image");
+        }
 
-        $validated['og_image'] = upload_file($request->file('og_image'), "$imageFolder/og_image");
-
-
-        ProductSeo::create($validated);
+        if ($product->seo) {
+            $product->seo->update($validated);
+        } else {
+            $validated['product_id'] = $product->id;
+            ProductSeo::create($validated);
+        }
 
         return apiResponse([
-            'redirect' => route('seller.products.details', $product->slug),
-        ], "Product Updated Successfully");
+            'redirect' => route('seller.products.show', $product->slug),
+        ], "Product SEO Updated Successfully");
     }
 }
