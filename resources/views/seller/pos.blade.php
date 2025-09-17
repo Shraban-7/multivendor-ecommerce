@@ -27,6 +27,7 @@ foreach ($products as $product) {
             'product_id' => $product->id,
         ];
     }
+    $product->total_stock += $variant->availableStock;
 }
 ?>
 
@@ -72,7 +73,7 @@ foreach ($products as $product) {
                                                 <h6 class="mb-1 text-truncate" title="{{ $product->name }}">
                                                     {{ $product->name }}
                                                 </h6>
-                                                <small class="text-muted">{{ $product->variants->count() }} variants</small>
+                                                <small class="text-muted">{{ $product->variants->count() }} variants, {{ $product->total_stock }} {{ $product->unit->short_name }} available</small>
                                             </div>
                                         </div>
                                     </div>
@@ -103,17 +104,21 @@ foreach ($products as $product) {
                                                                     <td class="fw-bold small">{{ $variant->fullName }}</td>
                                                                     <td class="small">{{ $variant->sku }}</td>
                                                                     <td class="small">
-                                                                        {{ $variant->stock_in - $variant->stock_out }}</td>
+                                                                        {{ $variant->availableStock }}</td>
                                                                     <td class="small">
                                                                         {{ money($variant->discounted_price ?? $variant->selling_price) }}
                                                                     </td>
                                                                     <td>
+                                                                        @if($variant->availableStock > 0)
                                                                         <button
-                                                                            class="btn btn-sm btn-primary d-flex align-items-center add-to-cart-btn"
+                                                                            class="btn btn-sm btn-primary add-to-cart-btn"
                                                                             data-variant-id="{{ $variant->id }}"
                                                                             data-quantity="1">
                                                                             <i class="bi bi-plus"></i> Add
                                                                         </button>
+                                                                        @else
+                                                                        <button class="btn btn-sm btn-secondary disabled">Out of stock</button>
+                                                                        @endif
                                                                     </td>
                                                                 </tr>
                                                             @endforeach

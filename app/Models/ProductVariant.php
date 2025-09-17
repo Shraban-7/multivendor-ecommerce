@@ -53,4 +53,11 @@ class ProductVariant extends Model
     {
         return strtoupper(uniqid());
     }
+
+    public function availableStock(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->stock_in - $this->stock_out
+        );
+    }
 }
