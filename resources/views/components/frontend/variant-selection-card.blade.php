@@ -10,8 +10,8 @@
     <input type="hidden" id="productBasePrice" value="{{ $defaultPrice }}">
     <input type="hidden" id="productDiscountedPrice" value="{{ $defaultDiscounted }}">
 
-    <form id="variantForm{{ $product['id'] }}" class="space-y-4"
-        data-id="{{ $product['id'] }}" data-slug="{{ $product['slug'] }}">
+    <form id="variantForm{{ $product['id'] }}" class="space-y-4" data-id="{{ $product['id'] }}"
+        data-slug="{{ $product['slug'] }}">
 
         @foreach ($product['options'] as $option)
             <div class="flex items-start gap-4 flex-wrap sm:flex-nowrap" data-option-id="{{ $option['id'] }}">
@@ -32,36 +32,40 @@
             </div>
         @endforeach
 
-        <div class="flex items-center gap-4 flex-wrap sm:flex-nowrap">
-            <label class="w-20 text-sm font-medium text-gray-700">Quantity:</label>
-            <div class="flex items-center gap-3">
-                <div class="flex items-center border border-gray-300 rounded-md overflow-hidden w-max">
-                    <button type="button"
-                        class="decreaseBtn w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-100">
-                        <i class="fa-solid fa-minus text-xs"></i>
-                    </button>
-                    <input readonly type="number" min="1" value="1"
-                        class="quantity w-16 text-center text-sm font-semibold text-gray-800 border-0 focus:ring-0" />
-                    <button type="button"
-                        class="increaseBtn w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-100">
-                        <i class="fa-solid fa-plus text-xs"></i>
-                    </button>
-                </div>
+        <div class="flex items-center gap-2 text-sm text-gray-600">
+            <span>Stock: <span class="stock-text">{{ $defaultVariant['stock'] ?? '' }}</span></span>
+
+            @if (!empty($product['almost_sold_out']))
+                <span class="text-xs text-leaf-green font-medium">Almost Sold Out</span>
+            @endif
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-start">
+            <div class="flex items-center border border-gray-300 rounded-md overflow-hidden">
+                <button type="button"
+                    class="decreaseBtn w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-100">
+                    <i class="fa-solid fa-minus text-xs"></i>
+                </button>
+                <input readonly type="number" min="1" value="1"
+                    class="quantity w-16 text-center text-sm font-semibold text-gray-800 border-0 focus:ring-0" />
+                <button type="button"
+                    class="increaseBtn w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-100">
+                    <i class="fa-solid fa-plus text-xs"></i>
+                </button>
+            </div>
+
+            <div class="flex flex-1 flex-col sm:flex-row gap-2 w-full">
+                <button data-id="{{ $product['id'] }}" type="button"
+                    class="addToCartBtn flex-1 w-full bg-primary hover:bg-orange-500 text-white py-2 px-3 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-1">
+                    <i class="fas fa-shopping-cart text-xs"></i> Add to Cart
+                </button>
+
+                <button
+                    class="w-9 h-9 flex items-center justify-center border border-gray-300 rounded-md hover:bg-gray-100 transition-colors text-sm shrink-0">
+                    <i class="far fa-heart text-gray-600 text-xs"></i>
+                </button>
             </div>
         </div>
 
-        <input type="hidden" name="quantity" class="qtyInputValue" value="">
-        <input type="hidden" class="variantId" name="variant_id" value="{{ $defaultVariant['id'] ?? '' }}">
-
-        <div class="flex gap-3 pt-2">
-            <button data-id="{{ $product['id'] }}" type="button"
-                class="addToCartBtn flex-1 bg-primary hover:bg-orange-500 text-white py-3 px-4 rounded-md font-medium transition-colors">
-                <i class="fas fa-shopping-cart mr-2"></i> Add to Cart
-            </button>
-            <button
-                class="w-12 h-12 flex items-center justify-center border border-gray-300 rounded-md hover:bg-gray-100 transition-colors">
-                <i class="far fa-heart text-gray-600"></i>
-            </button>
-        </div>
     </form>
 </div>

@@ -77,28 +77,24 @@ $publicProduct = [
 
                 <div class="flex flex-wrap items-center gap-2">
                     @if ($showVariantDiscount)
-                        <h3 class="font-bold text-primary text-lg product-price">
+                        <h3 class="font-bold text-gray-900  text-lg product-price">
                             {{ money($variantDiscountedPrice) }}
                         </h3>
                         <h6 class="text-jet-gray line-through text-sm original-price">
                             {{ money($variantPrice) }}
                         </h6>
                     @elseif ($variantPrice)
-                        <h3 class="font-bold text-primary text-lg product-price">
+                        <h3 class="font-bold text-gray-900 text-lg product-price">
                             {{ money($variantPrice) }}
                         </h3>
                     @endif
 
-                    @if (!empty($product['almost_sold_out']))
-                        <span class="text-xs text-leaf-green">Almost Sold Out</span>
-                    @endif
+                    
                 </div>
 
 
                 <div class="flex flex-wrap items-center gap-3 text-sm text-gray-700">
                     <div><strong>SKU:</strong> <span class="sku-text">{{ $defaultVariant->sku ?? '' }}</span></div>
-                    <div><strong>Stock:</strong> <span class="stock-text">{{ $defaultVariant->stock ?? '' }}</span>
-                    </div>
 
                     @if (auth()->check() && auth()->user()->isAffiliate())
                         <button
