@@ -287,6 +287,12 @@
     .modal-product-thumbnails .swiper-slide-thumb-active .modal-slide-thumb {
         border-color: var(--color-primary);
     }
+
+    /* In your global CSS or @layer utilities */
+    .tab-active {
+        @apply text-primary border-primary;
+    }
+
 }
 
 /* ========================

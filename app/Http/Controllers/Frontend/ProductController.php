@@ -72,16 +72,16 @@ class ProductController extends Controller
             return [$star => $reviewStats[$star] ?? 0];
         });
 
-        $sellerModel = Seller::where('id', $sellerId)->with('followers')->first();
+        // $sellerModel = Seller::where('id', $sellerId)->with('followers')->first();
 
-        $seller = [
-            'username'        => $sellerModel->username,
-            'shop_name'       => $sellerModel->business_name,
-            'shop_logo'       => $sellerModel->business_logo,
-            'total_followers' => number_shorten_format($sellerModel->followers->count()),
-            'rating'          => round($averageRating),
-            'total_products'  => Product::where('seller_id', $sellerId)->count(),
-        ];
+        // $seller = [
+        //     'username'        => $sellerModel->username,
+        //     'business_name'       => $sellerModel->business_name,
+        //     'business_logo'       => $sellerModel->business_logo,
+        //     'total_followers' => number_shorten_format($sellerModel->followers->count()),
+        //     'rating'          => round($averageRating),
+        //     'total_products'  => Product::active()->where('seller_id', $sellerId)->count(),
+        // ];
 
         if ($request->ajax()) {
             $type = $request->get('type');
@@ -119,7 +119,7 @@ class ProductController extends Controller
             'ratings' => $ratings,
             'totalReviews' => $totalReviews,
             'averageRating' => round($averageRating, 1),
-            'seller' => $seller,
+            // 'seller' => $seller,
             'seo' => $productModel->seo
         ]);
     }

@@ -209,6 +209,8 @@ class Product extends Model
                 'business_name' => $this->seller->business_name,
                 'business_logo' => $this->seller->business_logo,
                 'best_seller'   => $this->seller->is_best_seller,
+                'total_followers' => $this->seller->followers()->count(),
+                'rating'         => round($this->rating),
             ],
             'reviews'           => $reviews,
             'rating'            => number_format($reviews->avg('rating') ?? 0, 1),

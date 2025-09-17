@@ -3,30 +3,30 @@
 
 @push('meta')
     <link rel="canonical" href="{{ url()->current() }}">
-    @if($seo)
-        @if($seo->meta_description)
+    @if ($seo)
+        @if ($seo->meta_description)
             <meta name="description" content="{{ $seo->meta_description }}">
         @endif
-        @if($seo->meta_keywords)
+        @if ($seo->meta_keywords)
             <meta name="keywords" content="{{ $seo->meta_keywords }}">
         @endif
-        @if($seo->og_title)
+        @if ($seo->og_title)
             <meta property="og:title" content="{{ $seo->og_title }}">
         @endif
-        @if($seo->og_description)
+        @if ($seo->og_description)
             <meta property="og:description" content="{{ $seo->og_description }}">
         @endif
-        @if($seo->og_image)
+        @if ($seo->og_image)
             <meta property="og:image" content="{{ storage_url($seo->og_image) }}">
         @endif
         <meta property="og:type" content="product">
-        @if($seo->og_title)
+        @if ($seo->og_title)
             <meta name="twitter:title" content="{{ $seo->og_title }}">
         @endif
-        @if($seo->og_description)
+        @if ($seo->og_description)
             <meta name="twitter:description" content="{{ $seo->og_description }}">
         @endif
-        @if($seo->og_image)
+        @if ($seo->og_image)
             <meta name="twitter:image" content="{{ storage_url($seo->og_image) }}">
         @endif
         <meta name="twitter:card" content="summary_large_image">
@@ -47,219 +47,143 @@
             <!-- Product Contents  -->
             <x-frontend.product-contents :product="$product" />
 
-            <!-- Rating Overview Section -->
-            <div class="flex flex-col items-start gap-5 py-8 md:flex-row md:py-10">
-                <!-- Left Column -->
-                <div class="order-2 md:order-1 lg:w-[55%] md:w-[50%] w-full">
-                    <!-- Overall Rating -->
-                    <div class="flex items-start gap-4">
-                        <div class="font-[arial] space-y-1">
-                            <div class="text-4xl md:text-5xl text-persian-blue">
-                                {{ $product['rating'] . '%' }}
-                            </div>
+            <!-- Flowbite Tab System for Description & Reviews -->
+            <div class="py-6 md:py-8">
+                <!-- Tabs -->
+                <div class="mb-3 border-b border-gray-200">
+                    <ul class="flex flex-wrap -mb-px text-sm font-medium" id="default-tab"
+                        data-tabs-toggle="#default-tab-content" role="tablist">
+                        <li class="me-4" role="presentation">
+                            <button
+                                class="inline-block px-3 py-2 border-b-2 border-transparent text-gray-600 hover:text-primary hover:border-primary transition"
+                                id="description-tab" data-tabs-target="#description" type="button" role="tab"
+                                aria-controls="description" aria-selected="true">
+                                Product Description
+                            </button>
+                        </li>
+                        <li class="me-4" role="presentation">
+                            <button
+                                class="inline-block px-3 py-2 border-b-2 border-transparent text-gray-600 hover:text-primary hover:border-primary transition"
+                                id="reviews-tab" data-tabs-target="#reviews" type="button" role="tab"
+                                aria-controls="reviews" aria-selected="false">
+                                Reviews ({{ $product['total_reviews'] ?? 0 }})
+                            </button>
+                        </li>
+                    </ul>
+                </div>
 
-                            @if ($product['total_reviews'] > 0)
-                                <div class="flex text-3xl text-yellow-400 md:text-4xl">
-                                    @php
-                                        $average = round($product['rating']);
-                                    @endphp
-                                    {!! str_repeat('★', $average) . str_repeat('☆', 5 - $average) !!}
+                <div id="default-tab-content">
+                    <!-- Description -->
+                    <div class="hidden" id="description" role="tabpanel" aria-labelledby="description-tab">
+                        <div class="bg-white p-5 rounded-xl shadow-sm">
+                            <div class="shop-decriptions w-full md:w-2/3 lg:w-1/2">
+                                <!-- Description -->
+                                <div class="mt-3">
+                                    <h2 class="text-lg font-semibold mb-2">Description:</h2>
+                                    <p class="text-gray-700">
+                                        {!! $product['description'] !!}
+                                    </p>
                                 </div>
-                            @else
-                                <div class="flex text-3xl text-yellow-400 md:text-4xl">
-                                    {!! str_repeat('☆', 5) !!}
-                                </div>
-                            @endif
-                            <div class="text-xs text-davy-gray sm:text-sm">
-                                (Positive reviews)
-                                <span class="font-semibold text-primary/80 lg:pl-4">Top</span>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Rating Bars -->
-                        @php
-                            $total = $totalReviews ?: 1;
-                        @endphp
 
-                        <div class="w-full space-y-1 ratings-wrap sm:w-2/4 md:w-3/4 2xl:w-1/2 lg:w-2/3 md:space-y-2">
-                            @foreach ($ratings->sortDesc() as $star => $count)
-                                @php
-                                    $percentage = round(($count / $total) * 100);
-                                @endphp
-                                <div class="flex items-center w-full gap-2 md:gap-5">
-                                    <div class="w-1/2 sm:w-5/12 md:w-7/12 lg:w-1/2 2xl:w-7/12">
-                                        <div class="w-full bg-gray-200 rounded-full h-2 lg:h-2.5">
-                                            <div class="bg-yellow-400 h-2 rounded-full lg:h-2.5"
-                                                style="width: {{ $percentage }}%"></div>
+                    <!-- Reviews -->
+                    <div class="hidden" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+                        <div class="flex flex-col md:flex-row gap-6">
+                            <!-- Reviews List -->
+                            <div class="order-2 md:order-1 lg:w-[55%] md:w-[50%] w-full">
+                                <div class="bg-white p-5 rounded-xl shadow-sm">
+                                    <h4 class="text-base font-semibold mb-3">Item Reviews</h4>
+                                    <div class="space-y-4 reviews-wrapper">
+                                        @include('frontend.partials.review-card', [
+                                            'reviews' => $product['reviews'],
+                                        ])
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Ratings Overview -->
+                            <div class="order-1 md:order-2 lg:w-[45%] md:w-[50%] w-full">
+                                <div class="bg-white p-5 rounded-xl shadow-sm">
+                                    <div class="flex items-start gap-4 mb-3">
+                                        <div class="font-[arial] space-y-1">
+                                            <div class="text-3xl md:text-4xl text-primary font-bold">
+                                                {{ $product['rating'] . '%' }}
+                                            </div>
+                                            @if ($product['total_reviews'] > 0)
+                                                <div class="flex text-xl text-yellow-400">
+                                                    @php $average = round($product['rating']); @endphp
+                                                    {!! str_repeat('★', $average) . str_repeat('☆', 5 - $average) !!}
+                                                </div>
+                                            @else
+                                                <div class="flex text-xl text-gray-400">
+                                                    {!! str_repeat('☆', 5) !!}
+                                                </div>
+                                            @endif
+                                            <div class="text-xs text-gray-500">
+                                                (Positive reviews)
+                                            </div>
                                         </div>
                                     </div>
-                                    <span class="text-xs sm:text-sm text-persian-blue">
-                                        {{ $count }} ({{ str_pad($star, 2, '0', STR_PAD_LEFT) }} star)
-                                    </span>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
 
-                    <!-- Average Rating -->
-                    <div class="flex flex-wrap items-center gap-3 my-3 md:my-5">
-                        @if ($totalReviews > 0)
-                            <div class="flex gap-1 text-xs flex-nowrap md:text-sm">
-                                @for ($i = 1; $i <= 5; $i++)
-                                    @if ($i <= floor($averageRating))
-                                        <i class="fa-solid fa-star text-yellow-400"></i>
-                                    @elseif ($i - $averageRating < 1)
-                                        <i class="fa-solid fa-star-half-stroke text-yellow-400"></i>
-                                    @else
-                                        <i class="fa-solid fa-star text-gray-400"></i>
+                                    <!-- Rating Bars -->
+                                    @php $total = $totalReviews ?: 1; @endphp
+                                    <div class="space-y-2">
+                                        @foreach ($ratings->sortDesc() as $star => $count)
+                                            @php $percentage = round(($count / $total) * 100); @endphp
+                                            <div class="flex items-center gap-3">
+                                                <span class="text-sm w-12 text-gray-600">{{ $star }}★</span>
+                                                <div class="flex-1">
+                                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                                        <div class="bg-yellow-400 h-2 rounded-full"
+                                                            style="width: {{ $percentage }}%"></div>
+                                                    </div>
+                                                </div>
+                                                <span
+                                                    class="text-sm text-gray-500 w-10 text-right">{{ $count }}</span>
+                                            </div>
+                                        @endforeach
+                                    </div>
+
+                                    <!-- Average Rating -->
+                                    @if ($totalReviews > 0)
+                                        <div class="flex flex-wrap items-center gap-2 mt-4 pt-3 border-t border-gray-200">
+                                            <div class="flex gap-1 text-sm">
+                                                @for ($i = 1; $i <= 5; $i++)
+                                                    @if ($i <= floor($averageRating))
+                                                        <i class="fa-solid fa-star text-yellow-400"></i>
+                                                    @elseif ($i - $averageRating < 1)
+                                                        <i class="fa-solid fa-star-half-stroke text-yellow-400"></i>
+                                                    @else
+                                                        <i class="fa-solid fa-star text-gray-300"></i>
+                                                    @endif
+                                                @endfor
+                                            </div>
+                                            <span class="text-sm text-gray-600">
+                                                ({{ $totalReviews }} {{ Str::plural('Review', $totalReviews) }})
+                                            </span>
+                                        </div>
                                     @endif
-                                @endfor
-                            </div>
-                            <span class="text-sm sm:text-base text-jet-gray">
-                                ({{ $totalReviews }} {{ Str::plural('Review', $totalReviews) }})
-                            </span>
-                        @endif
-                    </div>
-
-                    <!-- Review Section -->
-                    <div class="text-sm comments-tags lg:text-base text-davy-gray">
-                        <h4>Item Reviews</h4>
-                        <div class="pt-5 space-y-5 reviews-wrapper">
-                            @include('frontend.partials.review-card', [
-                                'reviews' => $product['reviews'],
-                            ])
-
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Right Column -->
-                <div class="order-1 md:order-2 lg:w-[45%] md:w-[50%] w-full md:px-2 xl:px-3">
-                    <div class="flex items-center gap-2 mb-5">
-                        <span
-                            class="bg-leaf-green inline-flex items-center gap-2 text-white text-xs px-2.5 py-1 rounded-full"><img
-                                src="{{ asset('assets/frontend/images/top-rated-icon.png') }}" alt="Top rated icon"
-                                class="object-contain w-3 h-3" />
-                            #Top Rated</span>
-                    </div>
-
-                    <!-- Commitments -->
-                    <div class="mt-5">
-                        <div class="flex items-center gap-2 mb-5">
-                            <div class="w-16 h-16 overflow-hidden slashmart-icon">
-                                <img src="{{ storage_url($settings->logo) }}" alt="{{ $settings->app_name }}"
-                                    class="object-contain w-full h-full" />
-                            </div>
-                            <span class="font-medium text-davy-gray">Our Commitments</span>
-                        </div>
-
-                        <div
-                            class="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-1 xl:grid-cols-2 xsm:w-4/5 md:w-11/12 lg:w-4/6 xl:w-11/12 2xl:w-4/5">
-                            <!-- Security & Privacy -->
-                            <div class="bg-[#F5F5F5] p-4 rounded-lg">
-                                <h3 class="mb-2 text-leaf-green">Security & Privacy</h3>
-                                <ul class="space-y-1 text-sm lg:space-y-2 text-davy-gray">
-                                    <li class="flex items-center gap-3">
-                                        <i class="fa-solid fa-check text-leaf-green"></i>
-                                        <span> Safe Payments </span>
-                                    </li>
-                                    <li class="flex items-center gap-3">
-                                        <i class="fa-solid fa-check text-leaf-green"></i>
-                                        <span> Secure Privacy </span>
-                                    </li>
-                                </ul>
-                            </div>
-                            <!-- Delivery Guarantee -->
-                            <div class="bg-[#F5F5F5] p-4 rounded-lg">
-                                <h3 class="mb-2 text-leaf-green">Delivery Guarantee</h3>
-                                <ul class="space-y-1 text-sm lg:space-y-2 text-davy-gray">
-                                    <li class="flex items-center gap-3">
-                                        <i class="fa-solid fa-check text-leaf-green"></i>
-                                        <span> Return Item If Damaged</span>
-                                    </li>
-                                    <li class="flex items-center gap-3">
-                                        <i class="fa-solid fa-check text-leaf-green"></i>
-                                        <span>15 Days No Update Refund </span>
-                                    </li>
-                                </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            @if ($product['reviews']->count() > 2)
-                <!-- Load More Comment Button -->
-                <div class="pb-10 text-center border-b-2 border-gray-400 border-dashed load-more-btn">
-                    <button id="loadMoreReviews" data-offset="2" data-type="reviews" data-url="{{ request()->url() }}"
-                        class="bg-yellow-500 hover:bg-yellow-600 text-white px-8 py-3 rounded-full text-base font-medium inline-flex gap-2 items-center shadow-md hover:shadow-lg transition-all"
-                        type="button">
-                        <span>Load More</span>
-                        <i class="text-sm fa-solid fa-chevron-down"></i>
-                    </button>
-                </div>
-            @endif
-        </section>
-
-        <!-- Product Provider Section Starts -->
-        <section class="py-5 text-sm product-provider-sec md:py-8 md:text-base xl:text-lg text-davy-gray">
-            <div class="container">
-                <!-- Header -->
-                <div class="flex flex-wrap items-center gap-2 sm:gap-4">
-                    <a href="{{ route('sellers.shop', $seller['username']) }}"
-                        class="inline-block w-10 h-10 overflow-hidden rounded-full provider-dp lg:w-14 lg:h-14">
-                        <img src="{{ storage_url($seller['shop_logo']) }}" alt="Louis Vuitton Logo"
-                            class="object-contain w-full h-full" />
-                    </a>
-                    <div class="provider-info">
-                        <h2 class="flex items-center gap-2 text-lg font-medium md:text-xl lg:text-2xl md:gap-5">
-                            <a href="{{ route('sellers.shop', $seller['username']) }}"
-                                class="hover:text-butterfly-blue eq">{{ $seller['shop_name'] }}</a>
-                            <p class="flex items-center gap-2 text-sm font-light md:text-base xl:text-lg">
-                                <button class="hover:text-primary eq">
-                                    <i class="fa-regular fa-comment-dots"></i>
-                                </button>
-                                <span>Contact With Provider</span>
-                            </p>
-                        </h2>
-
-                        <!-- Metrics -->
-                        <div class="flex flex-wrap items-center gap-2 md:gap-4">
-                            <span>{{ $seller['total_followers'] }}+ Followers .</span>
-                            {{-- <span>{{ $seller['total_sell'] }} Sold .</span> --}}
-                            <span class="flex items-center gap-1">
-                                <span>{{ $seller['rating'] }}</span>
-                                <i class="fa-solid fa-star text-theme-dark"></i>
-                            </span>
-                        </div>
+                @if ($product['reviews']->count() > 2)
+                    <!-- Load More Button -->
+                    <div class="pt-6 text-center load-more-btn" id="load-more-reviews" style="display: none;">
+                        <button id="loadMoreReviews" data-offset="2" data-type="reviews" data-url="{{ request()->url() }}"
+                            class="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-full text-sm font-medium inline-flex gap-2 items-center shadow transition">
+                            <span>Load More</span>
+                            <i class="fa-solid fa-chevron-down text-xs"></i>
+                        </button>
                     </div>
-                </div>
-                <!-- Buttons -->
-                <div class="flex flex-wrap items-center gap-2 mt-4 font-medium md:gap-4">
-                    <button
-                        class="inline-flex items-center py-1.5 px-5 xsm:px-8 lg:px-10 lg:py-2.5 border border-jet-gray theme-btn gap-2 hover:bg-leaf-green hover:text-white hover:border-transparent eq text-sm md:text-base lg:text-xl font-inherit">
-                        <i class="fa-solid fa-store"></i>
-                        Follow
-                    </button>
-                    <a href="{{ route('sellers.shop', $seller['username']) }}"
-                        class="inline-flex items-center py-1.5 px-5 xsm:px-8 lg:px-10 lg:py-2.5 border border-jet-gray theme-btn gap-2 hover:bg-primary hover:text-white hover:border-transparent eq text-sm md:text-base lg:text-xl font-inherit">
-                        <span>Shop All Items</span>
-                        ({{ count($products) }})
-                    </a>
-                </div>
-
-                <div class="w-full shop-decriptions md:w-2/3 lg:w-1/2">
-                    <!-- Description -->
-                    <div class="mt-5">
-                        <h2>Description:</h2>
-                        <p class="mt-2">
-                            {!! $product['description'] !!}
-                        </p>
-                    </div>
-                </div>
+                @endif
             </div>
         </section>
-        <!-- Product Provider Section Ended -->
 
         <!-- Explore Interest Section Start  -->
         <section class="explore-interest section-padding">
@@ -291,11 +215,43 @@
     @push('scripts')
         <script>
             $(document).ready(function() {
+                const $tabs = $('[data-tabs-target]');
+                const $loadMoreSection = $('#load-more-reviews');
+
+                const $descriptionTab = $('#description-tab');
+                const $descriptionContent = $('#description');
+
+                $descriptionTab.addClass('tab-active').removeClass('border-transparent');
+                $descriptionContent.removeClass('hidden');
+
+                $tabs.on('click', function(e) {
+                    e.preventDefault();
+
+                    $tabs.removeClass('tab-active').addClass('text-gray-500 border-transparent')
+                        .attr('aria-selected', 'false');
+
+                    $('[role="tabpanel"]').addClass('hidden');
+
+                    $(this).addClass('tab-active').removeClass('text-gray-500 border-transparent')
+                        .attr('aria-selected', 'true');
+
+                    const target = $(this).data('tabs-target');
+                    $(target).removeClass('hidden');
+
+                    if ($loadMoreSection.length) {
+                        if (target === '#reviews') {
+                            $loadMoreSection.show();
+                        } else {
+                            $loadMoreSection.hide();
+                        }
+                    }
+                });
+
                 $('#loadMoreReviews').on('click', function() {
-                    var $button = $(this);
-                    var offset = parseInt($button.data('offset'));
-                    var url = $button.data('url');
-                    var type = $button.data('type');
+                    const $button = $(this);
+                    let offset = parseInt($button.data('offset'));
+                    const url = $button.data('url');
+                    const type = $button.data('type');
 
                     $.ajax({
                         url: url,
@@ -306,7 +262,6 @@
                         },
                         success: function(response) {
                             if ($.trim(response) === '') {
-
                                 $button.hide();
                             } else {
                                 $('#reviews-wrapper').append(response);
@@ -318,73 +273,64 @@
                         }
                     });
                 });
-            });
-        </script>
 
-        <script>
-            $('#loadMoreProducts').on('click', function() {
-                let button = $(this);
-                let page = parseInt(button.data('page')) + 1;
-                let url = button.data('url');
+                $('#loadMoreProducts').on('click', function() {
+                    const button = $(this);
+                    let page = parseInt(button.data('page')) + 1;
+                    const url = button.data('url');
 
-                $.ajax({
-                    url: url,
-                    method: 'GET',
-                    data: {
-                        page: page,
-                        type: 'products'
-                    },
-                    beforeSend: function() {
-                        button.prop('disabled', true).html(
-                            '<i class="fa fa-spinner fa-spin"></i> Loading...'
-                        );
-                    },
-                    success: function(response) {
-                        if (response.trim() !== '') {
-                            $('#product-wrapper').append(response);
-
-                            button.data('page', page);
-                            button.prop('disabled', false).html(
-                                '<span>Load More</span> <i class="fa-solid fa-chevron-down text-sm"></i>'
+                    $.ajax({
+                        url: url,
+                        method: 'GET',
+                        data: {
+                            page: page,
+                            type: 'products'
+                        },
+                        beforeSend: function() {
+                            button.prop('disabled', true).html(
+                                '<i class="fa fa-spinner fa-spin"></i> Loading...'
                             );
+                        },
+                        success: function(response) {
+                            if ($.trim(response) !== '') {
+                                $('#product-wrapper').append(response);
 
-                            const scriptTags = $(response).filter('script[data-quickview]');
-                            scriptTags.each(function() {
-                                const json = $(this).html();
-                                try {
-                                    const data = JSON.parse(json);
-                                    window.quickViewData = window.quickViewData || {};
-                                    window.quickViewData[data.id] = {
-                                        product: data.product,
-                                        defaultVariant: data.defaultVariant
-                                    };
-                                } catch (e) {
-                                    console.error('Invalid quick view JSON format', e);
-                                }
-                            });
+                                button.data('page', page);
+                                button.prop('disabled', false).html(
+                                    '<span>Load More</span> <i class="fa-solid fa-chevron-down text-sm"></i>'
+                                );
 
-                            if (typeof initFlowbite === 'function') {
-                                initFlowbite();
+                                const scriptTags = $(response).filter('script[data-quickview]');
+                                scriptTags.each(function() {
+                                    const json = $(this).html();
+                                    try {
+                                        const data = JSON.parse(json);
+                                        window.quickViewData = window.quickViewData || {};
+                                        window.quickViewData[data.id] = {
+                                            product: data.product,
+                                            defaultVariant: data.defaultVariant
+                                        };
+                                    } catch (e) {
+                                        console.error('Invalid quick view JSON format', e);
+                                    }
+                                });
+
+                                if (typeof initFlowbite === 'function') initFlowbite();
+                                if (typeof initQuickViewModals === 'function')
+                                    initQuickViewModals();
+                                if (typeof initProductSwipers === 'function') initProductSwipers();
+                            } else {
+                                button.hide();
                             }
-
-                            if (typeof initQuickViewModals === 'function') {
-                                initQuickViewModals();
-                            }
-
-                            if (typeof initProductSwipers === 'function') {
-                                initProductSwipers();
-                            }
-
-                        } else {
-                            button.hide();
+                        },
+                        error: function() {
+                            button.prop('disabled', false).text('Load More');
+                            alert('Something went wrong. Please try again.');
                         }
-                    },
-                    error: function() {
-                        button.prop('disabled', false).text('Load More');
-                        alert('Something went wrong. Please try again.');
-                    }
+                    });
                 });
             });
         </script>
     @endpush
+
 @endsection

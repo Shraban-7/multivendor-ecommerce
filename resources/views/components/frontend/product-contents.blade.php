@@ -1,7 +1,8 @@
 <?php
 $reviewCount = $product['reviews']->count();
 $rating = $product['rating'];
-
+$seller = $product['seller'];
+$settings = settings();
 $publicProduct = [
     'name' => $product['name'],
     'price' => $product['default_variant']->selling_price ?? null,
@@ -17,16 +18,23 @@ $publicProduct = [
     data-id="{{ $product['id'] }}" data-product='@json($publicProduct)'>
 
     <!-- Product Images Section -->
-    <div class="lg:w-[55%] md:w-[50%] w-full flex flex-col lg:flex-row gap-3 lg:gap-5">
+    <div class="lg:w-[55%] md:w-[50%] w-full flex flex-col gap-3">
+        <!-- Main Image -->
+        <div class="relative order-1 w-full">
+            <div class="overflow-hidden w-full h-96 md:h-[37rem] xl:h-[37rem] lg:h-[41rem] rounded-2xl relative">
+                <img src="{{ storage_url($product['slider'][0] ?? '') }}" alt="{{ $product['name'] ?? 'Product Image' }}"
+                    class="max-w-full h-full rounded-2xl transition-all duration-300 main-product-image" />
+            </div>
+        </div>
+
         <!-- Thumbnails -->
-        <div class="order-2 w-full lg:w-1/6 lg:order-1">
+        <div class="order-2 w-full">
             <div
-                class="single-product-thumbnails thumbnailWrapper flex md:flex-col gap-2 
-                    max-h-[21rem] overflow-y-auto sm:max-h-none sm:overflow-y-visible 
-                    lg:h-[41rem] lg:overflow-hidden">
+                class="single-product-thumbnails thumbnailWrapper flex gap-2 
+                max-h-[21rem] overflow-x-auto overflow-y-hidden">
                 @foreach ($product['slider'] as $index => $img)
                     <div
-                        class="slide-thumb aspect-square w-20 sm:w-24 lg:w-full 
+                        class="slide-thumb aspect-square w-20 sm:w-24 
                    rounded-2xl cursor-pointer border-2 overflow-hidden 
                    {{ $index === 0 ? 'border-primary' : 'border-transparent' }}">
                         <img src="{{ storage_url($img) }}" alt="{{ $product['name'] ?? 'Product Image' }}"
@@ -34,15 +42,6 @@ $publicProduct = [
                             data-full="{{ storage_url($img) }}" />
                     </div>
                 @endforeach
-            </div>
-        </div>
-
-        <!-- Main Image -->
-        <div class="relative order-1 w-full lg:w-5/6 lg:order-2">
-            <div class="overflow-hidden w-full h-96 md:h-[37rem] xl:h-[37rem] lg:h-[41rem] rounded-2xl relative">
-                <img src="{{ storage_url($product['slider'][0] ?? '') }}"
-                    alt="{{ $product['name'] ?? 'Product Image' }}"
-                    class="max-w-full h-full  rounded-2xl transition-all duration-300 main-product-image" />
             </div>
         </div>
     </div>
@@ -53,49 +52,6 @@ $publicProduct = [
             <h1 class="text-2xl font-semibold">
                 {{ $product['name'] }}
             </h1>
-            <div class="flex flex-wrap items-center gap-2 text-sm xsm:gap-5 sm:10 md:gap-2">
-                <div class="flex items-center gap-2 text-davy-gray">
-                    <span>Seller: </span>
-                    <a href="{{ route('sellers.shop', $product['seller']['username']) }}" class="inline-block">
-                        <span class="text-blue-500 font-bold">{{ $product['seller']['business_name'] }}</span>
-                    </a>
-
-                    @if ($product['sold_out'] > 0)
-                        <span class="pl-2 text-jet-gray">
-                            {{ number_shorten_format($product['sold_out']) }} sold
-                        </span>
-                    @endif
-                </div>
-
-                @if ($reviewCount > 0)
-                    <span class="border-r border-gray-400 h-4"></span>
-                    <div class="flex items-center space-x-2 text-sm">
-                        <div class="flex items-center space-x-0.5 text-yellow-400">
-                            @for ($i = 1; $i <= 5; $i++)
-                                @if ($i <= floor($rating))
-                                    <span>★</span>
-                                @elseif ($i - $rating < 1)
-                                    <span class="relative text-gray-300">
-                                        ★
-                                        <span class="absolute inset-0 text-yellow-400 overflow-hidden"
-                                            style="width: {{ ($rating - floor($rating)) * 100 }}%">
-                                            ★
-                                        </span>
-                                    </span>
-                                @else
-                                    <span class="text-gray-300">★</span>
-                                @endif
-                            @endfor
-                        </div>
-                        <span class="text-gray-500">({{ $reviewCount }})</span>
-                    </div>
-                @endif
-            </div>
-            <div class="flex items-center gap-2">
-                @if ($product['seller']['best_seller'])
-                    <span class="bg-leaf-green text-white text-xs px-2.5 py-1 rounded-full">Best Seller</span>
-                @endif
-            </div>
             <div class="flex flex-wrap items-center gap-4">
                 @php
                     $defaultVariant = $product['default_variant'] ?? null;
@@ -169,5 +125,93 @@ $publicProduct = [
         </div>
 
         <x-frontend.variant-selection-card :product="$product" />
+
+        @isset($seller)
+            <!-- Compact Seller Section -->
+            <div class="mt-3 p-4 bg-gray-50 rounded-xl shadow-sm">
+                <!-- Seller Header -->
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                        <a href="{{ route('sellers.shop', $seller['username']) }}"
+                            class="flex-shrink-0 w-12 h-12 overflow-hidden rounded-full">
+                            <img src="{{ storage_url($seller['business_logo']) }}" alt="{{ $seller['username'] }}"
+                                class="object-cover w-full h-full" />
+                        </a>
+                        <div>
+                            <h3 class="font-semibold text-lg">
+                                <a href="{{ route('sellers.shop', $seller['username']) }}"
+                                    class="hover:text-primary transition-colors mr-2">{{ $seller['business_name'] }}</a>
+                                @if ($product['seller']['best_seller'])
+                                    <span class="bg-leaf-green text-white text-xs px-2.5 py-1 rounded-full">Best
+                                        Seller</span>
+                                @endif
+                            </h3>
+                            <div class="flex items-center gap-4 text-sm text-gray-600">
+                                <span>{{ $seller['total_followers'] }}+ followers</span>
+                                <span class="flex items-center gap-1">
+                                    <i class="fa-solid fa-star text-yellow-400"></i>
+                                    {{ $seller['rating'] }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    {{-- <button class="text-primary hover:text-primary-dark transition-colors">
+                        <i class="fa-regular fa-comment-dots text-xl"></i>
+                    </button> --}}
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex gap-2 mb-4">
+                    <button
+                        class="flex-1 py-2 px-4 border border-gray-300 rounded-lg hover:bg-primary hover:text-white hover:border-primary transition-all text-sm font-medium">
+                        <i class="fa-solid fa-store mr-2"></i>
+                        Follow
+                    </button>
+                    <a href="{{ route('sellers.shop', $seller['username']) }}"
+                        class="flex-1 py-2 px-4 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors text-center text-sm font-medium">
+                        Shop All Items
+                    </a>
+                </div>
+            </div>
+        @endisset
+
+        <!-- Top Rated Badge & Our Commitments -->
+        <div class="mt-3 p-4 bg-gray-50 rounded-xl shadow-sm">
+            <!-- Our Commitments Header -->
+            <span class="font-semibold text-gray-800">Our Commitments</span>
+            
+            <!-- Commitments Cards -->
+            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <!-- Security & Privacy -->
+                <div class="bg-gray-50 p-3 rounded-lg">
+                    <h4 class="text-leaf-green font-medium mb-2 text-sm">Security & Privacy</h4>
+                    <ul class="space-y-1 text-xs text-gray-600">
+                        <li class="flex items-center gap-2">
+                            <i class="fa-solid fa-check text-leaf-green text-xs"></i>
+                            <span>Safe Payments</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fa-solid fa-check text-leaf-green text-xs"></i>
+                            <span>Secure Privacy</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Delivery Guarantee -->
+                <div class="bg-gray-50 p-3 rounded-lg ">
+                    <h4 class="text-leaf-green font-medium mb-2 text-sm">Delivery Guarantee</h4>
+                    <ul class="space-y-1 text-xs text-gray-600">
+                        <li class="flex items-center gap-2">
+                            <i class="fa-solid fa-check text-leaf-green text-xs"></i>
+                            <span>Return Item If Damaged</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fa-solid fa-check text-leaf-green text-xs"></i>
+                            <span>15 Days No Update Refund</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
