@@ -73,7 +73,14 @@ foreach ($products as $product) {
                                                 <h6 class="mb-1 text-truncate" title="{{ $product->name }}">
                                                     {{ $product->name }}
                                                 </h6>
-                                                <small class="text-muted">{{ $product->variants->count() }} variants, {{ $product->total_stock }} {{ $product->unit->short_name }} available</small>
+                                                <div class="small">
+                                                    <span class="text-muted">{{ $product->variants->count() }} variants</span>
+                                                    @if($product->total_stock > 0)
+                                                    <span class="text-muted">{{ $product->total_stock }} {{ $product->unit->short_name }} available</span>
+                                                    @else
+                                                    <span class="text-danger">(out of stock)</span>
+                                                    @endif
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
