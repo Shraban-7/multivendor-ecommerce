@@ -38,11 +38,8 @@
         $settings = settings();
     @endphp
 
-    <?php
-    $breadCrumbs = [['label' => $product['category']], ['label' => $product['subcategory']]];
-    ?>
     <main class="product-details-page">
-        <x-frontend.breadcrumb :items="$breadCrumbs" />
+        
         <section class="product-main-sec">
             <!-- Product Contents  -->
             <x-frontend.product-contents :product="$product" />

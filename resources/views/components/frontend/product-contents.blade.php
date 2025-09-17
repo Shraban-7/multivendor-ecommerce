@@ -12,6 +12,7 @@ $publicProduct = [
     'slider' => $product['slider'],
     'variants' => $product['variants'],
 ];
+$breadCrumbs = [['label' => $product['category']], ['label' => $product['subcategory']]];
 ?>
 
 <div id="product-wrapper{{ $product['id'] }}" class="product-contents flex flex-col gap-5 md:flex-row"
@@ -48,6 +49,7 @@ $publicProduct = [
 
     <!-- Product Details Section -->
     <div class="lg:w-[45%] md:w-[50%] w-full md:px-2 xl:px-3">
+        <x-frontend.breadcrumb :items="$breadCrumbs" />
         <div class="w-full space-y-2">
             <h1 class="text-2xl font-semibold">
                 {{ $product['name'] }}

@@ -36,7 +36,7 @@
             <span>Stock: <span class="stock-text">{{ $defaultVariant['stock'] ?? '' }}</span></span>
 
             @if (!empty($product['almost_sold_out']))
-                <span class="text-xs text-leaf-green font-medium">Almost Sold Out</span>
+                <span class="text-xs text-muted font-medium">(Almost Sold Out)</span>
             @endif
         </div>
 
