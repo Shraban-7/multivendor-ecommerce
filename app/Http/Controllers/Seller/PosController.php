@@ -49,7 +49,7 @@ class PosController extends Controller
         return view('seller.pos', compact('products', 'categories', 'cart', 'cartItems', 'subtotal', 'discount', 'vat_amount', 'total'));
     }
 
-    public function cart_add(Request $request)
+    public function cartAdd(Request $request)
     {
         $data = $request->validate([
             'variant_id' => 'nullable',
@@ -110,7 +110,7 @@ class PosController extends Controller
         ], "Product added to cart");
     }
 
-    public function cart_update(Request $request)
+    public function cartUpdate(Request $request)
     {
         $request->validate([
             'id' => 'required|integer',
@@ -149,7 +149,7 @@ class PosController extends Controller
         ], "Cart Updated Successfully");
     }
 
-    public function remove_cart_item(Request $request)
+    public function removeCartItem(Request $request)
     {
         $itemId = $request->id;
         $item = PosCartItem::find($itemId);
@@ -196,7 +196,7 @@ class PosController extends Controller
         ], "Item Remove From Cart Successfully!");
     }
 
-    public function cart_clear(Request $request)
+    public function cartClear(Request $request)
     {
         $cart = PosCart::where('seller_id', get_seller_id())->first();
 
@@ -212,7 +212,7 @@ class PosController extends Controller
         return successResponse("Cart Clear Successfully");
     }
 
-    public function place_order()
+    public function placeOrder()
     {
         $cart = PosCart::where('seller_id', get_seller_id())->first();
 
@@ -326,15 +326,5 @@ class PosController extends Controller
             'invoice_id' => $order->invoice_id,
             'variants' => $updatedVariants
         ], "Order Placed Successfully");
-    }
-
-    public function orders()
-    {
-        $orders = Order::where('seller_id', get_seller_id())
-            ->whereNull('user_id')
-            ->latest('id')
-            ->get();
-
-        return view('seller.orders.pos-orders', compact('orders'));
     }
 }

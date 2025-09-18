@@ -578,7 +578,7 @@ if (! function_exists('get_seller_routes')) {
         $excludedRoutes = [
             'seller.signup',
             'seller.logout',
-            'seller.employees.setPermissions',
+            'seller.employees.set_permissions',
         ];
 
         $routes = [];

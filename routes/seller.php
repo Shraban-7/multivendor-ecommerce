@@ -13,6 +13,7 @@ use App\Http\Controllers\Seller\SellerChatController;
 use App\Http\Controllers\Seller\NotificationController;
 use App\Http\Controllers\Seller\PosController;
 use App\Http\Controllers\Seller\ProductVariantController;
+use App\Http\Controllers\Seller\SalesController;
 use App\Http\Controllers\Seller\SellerCampaignController;
 use App\Http\Controllers\Seller\SellerEmployeeController;
 
@@ -20,12 +21,16 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
 
     Route::prefix('pos')->as('pos.')->group(function () {
         Route::get('/', [PosController::class, 'index'])->name('index');
-        Route::post('/cart-add', [PosController::class, 'cart_add'])->name('cart_add');
-        Route::post('/cart/update', [PosController::class, 'cart_update'])->name('cart_update');
-        Route::post('/cart-item/remove', [PosController::class, 'remove_cart_item'])->name('remove_cart_item');
-        Route::post('/cart-clear', [PosController::class, 'cart_clear'])->name('cart_clear');
-        Route::post('/place-order', [PosController::class, 'place_order'])->name('place_order');
-        Route::get('/orders', [PosController::class, 'orders'])->name('orders');
+        Route::post('/cart-add', [PosController::class, 'cartAdd'])->name('cart_add');
+        Route::post('/cart/update', [PosController::class, 'cartUpdate'])->name('cart_update');
+        Route::post('/cart-item/remove', [PosController::class, 'removeCartItem'])->name('remove_cart_item');
+        Route::post('/cart-clear', [PosController::class, 'cartClear'])->name('cart_clear');
+        Route::post('/place-order', [PosController::class, 'placeOrder'])->name('place_order');
+        
+        Route::prefix('sales')->as('sales.')->group(function () {
+            Route::get('/', [SalesController::class, 'index'])->name('index');
+            Route::post('/{id}/delete', [SalesController::class, 'delete'])->name('delete');
+        });
     });
 
     Route::prefix('employees')->as('employees.')->group(function () {
@@ -35,7 +40,7 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::get('{id}/edit', [SellerEmployeeController::class, 'edit'])->name('edit');
         Route::post('{id}/update', [SellerEmployeeController::class, 'update'])->name('update');
         Route::post('{id}/toggle-active', [SellerEmployeeController::class, 'toggleActive'])->name('toggle_active');
-        Route::post('{employee}/set-permissions', [SellerEmployeeController::class, 'setPermissions'])->name('setPermissions');
+        Route::post('{employee}/set-permissions', [SellerEmployeeController::class, 'setPermissions'])->name('set_permissions');
     });
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -64,7 +69,6 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::post('/{product}/stock-update', [ProductController::class, 'stockUpdate'])->name('stockUpdate');
         Route::delete('/delete-variant/{variant}', [ProductController::class, 'deleteVariant'])->name('deleteVariant');
         Route::delete('images/{image}/delete', [ProductController::class, 'deleteImage'])->name('image.delete');
-
         Route::delete('/{product}/delete', [ProductController::class, 'delete'])->name('delete');
         Route::get('/get-options/{attributeId}', [ProductController::class, 'getOptions']);
     });

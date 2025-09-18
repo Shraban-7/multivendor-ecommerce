@@ -40,11 +40,33 @@
                                 class="btn btn-light border btn-sm me-1">
                                 <i data-feather="printer" class="icon-xs"></i> Receipt
                             </a>
+                            <button class="btn btn-sm text-danger border delete-cart-item-btn" data-id="{{ $order->id }}"
+                                data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">
+                                <i class="bi bi-trash"></i> Delete
+                            </button>
                         </td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
+    </div>
+
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to remove this order?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     @push('scripts')
@@ -53,6 +75,44 @@
                 order: [
                     [0, 'desc']
                 ]
+            });
+
+            let deleteOrderId = null;
+
+            $(document).on('click', '.delete-cart-item-btn', function() {
+                deleteOrderId = $(this).data('id');
+            });
+
+            $('#confirmDeleteBtn').on('click', function() {
+                if (!deleteOrderId) return;
+
+                $.ajax({
+                    url: "{{ route('seller.pos.sales.delete', ':id') }}".replace(':id', deleteOrderId),
+                    method: 'POST',
+                    data: {
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        if (response.status) {
+                            toastr.success("Order deleted successfully!");
+
+                            const deleteModalEl = document.getElementById('deleteConfirmModal');
+                            const modal = bootstrap.Modal.getInstance(deleteModalEl);
+                            modal.hide();
+
+                            setTimeout(() => {
+                                location.reload();
+                            }, 800);
+
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    },
+                    error: function(xhr) {
+                        var message = xhr.responseJSON?.message || "Something went wrong";
+                        toastr.error(message);
+                    }
+                });
             });
         </script>
     @endpush

@@ -199,9 +199,9 @@
                                  Pos
                              </x-dashboard.nav-item-link>
                          @endif
-                         @if ($seller || $employee->hasPermission('seller.pos.orders'))
-                             <x-dashboard.nav-item-link :route="'seller.pos.orders'">
-                                 Orders
+                         @if ($seller || $employee->hasPermission('seller.pos.sales.index'))
+                             <x-dashboard.nav-item-link :route="'seller.pos.sales.index'">
+                                 Sales
                              </x-dashboard.nav-item-link>
                          @endif
                      </ul>

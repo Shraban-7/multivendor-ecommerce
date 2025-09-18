@@ -49,7 +49,7 @@
                     <div class="modal fade" id="permissionModal{{ $employee->id }}" tabindex="-1"
                         aria-labelledby="permissionModalLabel{{ $employee->id }}" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered modal-lg">
-                            <form method="POST" action="{{ route('seller.employees.setPermissions', $employee->id) }}">
+                            <form method="POST" action="{{ route('seller.employees.set_permissions', $employee->id) }}">
                                 @csrf
                                 <div class="modal-content">
                                     <div class="modal-header">
