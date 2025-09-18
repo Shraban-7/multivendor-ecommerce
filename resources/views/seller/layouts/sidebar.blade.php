@@ -28,6 +28,36 @@
 
              <li class="nav-item">
                  <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center"
+                     href="#!" data-bs-toggle="collapse" data-bs-target="#navPos"
+                     aria-expanded="{{ request()->routeIs('seller.pos.*') ? 'true' : 'false' }}" aria-controls="navPos">
+
+                     <div>
+                         <i data-feather="shopping-cart" class="nav-icon icon-xs me-2"></i>
+                         Manage Pos
+                     </div>
+
+                     <i data-feather="chevron-right" class="chevron-icon transition"></i>
+                 </a>
+
+                 <div id="navPos" class="collapse {{ request()->routeIs('seller.pos.*') ? 'show' : '' }}"
+                     data-bs-parent="#sideNavbar">
+                     <ul class="nav flex-column">
+                         @if ($seller || $employee->hasPermission('seller.pos.index'))
+                             <x-dashboard.nav-item-link :route="'seller.pos.index'">
+                                 Pos
+                             </x-dashboard.nav-item-link>
+                         @endif
+                         @if ($seller || $employee->hasPermission('seller.pos.sales.index'))
+                             <x-dashboard.nav-item-link :route="'seller.pos.sales.index'">
+                                 Sales
+                             </x-dashboard.nav-item-link>
+                         @endif
+                     </ul>
+                 </div>
+             </li>
+
+             <li class="nav-item">
+                 <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center"
                      href="#!" data-bs-toggle="collapse" data-bs-target="#navProducts"
                      aria-expanded="{{ request()->routeIs('seller.products.*') ? 'true' : 'false' }}"
                      aria-controls="navProducts">
@@ -178,35 +208,7 @@
                      <i data-feather="settings" class="nav-icon icon-xs me-2"></i> Settings
                  </x-dashboard.nav-item-link>
              @endif
-             <li class="nav-item">
-                 <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center"
-                     href="#!" data-bs-toggle="collapse" data-bs-target="#navPos"
-                     aria-expanded="{{ request()->routeIs('seller.pos.*') ? 'true' : 'false' }}" aria-controls="navPos">
 
-                     <div>
-                         <i data-feather="shopping-cart" class="nav-icon icon-xs me-2"></i>
-                         Manage Pos
-                     </div>
-
-                     <i data-feather="chevron-right" class="chevron-icon transition"></i>
-                 </a>
-
-                 <div id="navPos" class="collapse {{ request()->routeIs('seller.pos.*') ? 'show' : '' }}"
-                     data-bs-parent="#sideNavbar">
-                     <ul class="nav flex-column">
-                         @if ($seller || $employee->hasPermission('seller.pos.index'))
-                             <x-dashboard.nav-item-link :route="'seller.pos.index'">
-                                 Pos
-                             </x-dashboard.nav-item-link>
-                         @endif
-                         @if ($seller || $employee->hasPermission('seller.pos.sales.index'))
-                             <x-dashboard.nav-item-link :route="'seller.pos.sales.index'">
-                                 Sales
-                             </x-dashboard.nav-item-link>
-                         @endif
-                     </ul>
-                 </div>
-             </li>
 
          </ul>
      </div>
