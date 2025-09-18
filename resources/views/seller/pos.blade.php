@@ -62,14 +62,14 @@ foreach ($products as $product) {
                             @endforeach
                         </div>
 
-                        <div class="row bg-light py-2" id="product-row">
+                        <div class="row row-cols-2 row-cols-lg-5 g-2 bg-light py-2" id="product-row">
                             @foreach ($products as $product)
-                                <div class="col-lg-4 col-sm-6 col-12 my-1 product-card-wrapper"
+                                <div class="col product-card-wrapper"
                                     data-product-id="{{ $product->id }}">
                                     <div class="card product-card h-100" role="button" data-bs-toggle="modal"
                                         data-bs-target="#variantModal-{{ $product->id }}">
-                                        <div class="d-flex align-items-center p-2">
-                                            <div style="width: 60px; height: 60px; flex-shrink: 0;">
+                                        <div class="d-flex p-2">
+                                            <div style="width: 48px; height: 48px; flex-shrink: 0;">
                                                 <img src="{{ storage_url($product->thumbnail) }}" alt="{{ $product->name }}"
                                                     class="img-fluid rounded"
                                                     style="object-fit: cover; width: 100%; height: 100%;">
@@ -82,10 +82,9 @@ foreach ($products as $product) {
                                                     <span class="text-muted">{{ $product->variants->count() }}
                                                         variants</span>
                                                     @if ($product->total_stock > 0)
-                                                        <span class="text-muted stock">{{ $product->total_stock }}
-                                                            {{ $product->unit->short_name }} available</span>
+                                                        <span class="text-muted stock">({{ $product->total_stock }} {{ $product->unit->short_name }})</span>
                                                     @else
-                                                        <span class="text-danger">(out of stock)</span>
+                                                        <span class="text-danger">(stock out)</span>
                                                     @endif
                                                 </div>
                                             </div>
