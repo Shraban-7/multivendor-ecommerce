@@ -15,6 +15,11 @@
         transform: translateY(-4px);
         box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
     }
+
+    #product-row {
+        max-height: calc(100vh - 250px);
+        overflow-y: scroll;
+    }
 </style>
 
 <?php
@@ -44,7 +49,7 @@ foreach ($products as $product) {
                             </div>
                             <div class="col-md-4">
                                 <div class="input-group input-group-sm">
-                                    <input type="text" id="skuSearch" class="form-control">
+                                    <input type="text" id="skuSearch" class="form-control" placeholder="Barcode/SKU">
                                 </div>
                             </div>
                         </div>
@@ -57,9 +62,9 @@ foreach ($products as $product) {
                             @endforeach
                         </div>
 
-                        <div class="row">
+                        <div class="row bg-light py-2" id="product-row">
                             @foreach ($products as $product)
-                                <div class="col-lg-4 col-sm-6 col-12 mb-2 product-card-wrapper"
+                                <div class="col-lg-4 col-sm-6 col-12 my-1 product-card-wrapper"
                                     data-product-id="{{ $product->id }}">
                                     <div class="card product-card h-100" role="button" data-bs-toggle="modal"
                                         data-bs-target="#variantModal-{{ $product->id }}">
