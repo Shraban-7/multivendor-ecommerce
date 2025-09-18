@@ -49,7 +49,7 @@ foreach ($products as $product) {
                             </div>
                         </div>
                     </div>
-                    <div class="card-body overflow-auto vh-75">
+                    <div class="card-body">
                         <div class="d-flex flex-wrap mb-3">
                             <button class="btn btn-outline-primary btn-sm me-2 mb-2">All</button>
                             @foreach ($categories as $category)
@@ -77,7 +77,7 @@ foreach ($products as $product) {
                                                     <span class="text-muted">{{ $product->variants->count() }}
                                                         variants</span>
                                                     @if ($product->total_stock > 0)
-                                                        <span class="text-muted">{{ $product->total_stock }}
+                                                        <span class="text-muted stock">{{ $product->total_stock }}
                                                             {{ $product->unit->short_name }} available</span>
                                                     @else
                                                         <span class="text-danger">(out of stock)</span>
@@ -180,9 +180,15 @@ foreach ($products as $product) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @include('components.seller.pos-cart-items', [
-                                        'cartItems' => $cartItems,
-                                    ])
+                                    @if (request()->has('order_id'))
+                                        @include('components.seller.pos-order-items', [
+                                            'orderItems' => $orderItems,
+                                        ])
+                                    @else
+                                        @include('components.seller.pos-cart-items', [
+                                            'cartItems' => $cartItems,
+                                        ])
+                                    @endif
                                 </tbody>
                             </table>
                         </div>
@@ -208,10 +214,17 @@ foreach ($products as $product) {
 
                             <!-- Payment Buttons -->
                             <div class="d-grid gap-2">
-                                <button id="placeOrderBtn" class="btn btn-success">
-                                    <i class="bi bi-cart me-2"></i>Checkout
-                                </button>
+                                @if (request()->has('order_id'))
+                                    <button id="updateOrderBtn" class="btn btn-success">
+                                        <i class="bi bi-arrow-repeat me-2"></i> Update Order
+                                    </button>
+                                @else
+                                    <button id="placeOrderBtn" class="btn btn-success">
+                                        <i class="bi bi-cart me-2"></i> Checkout
+                                    </button>
+                                @endif
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -237,6 +250,25 @@ foreach ($products as $product) {
         </div>
     </div>
 
+    <div class="modal fade" id="deleteOrderConfirmModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to remove this item from the order?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteOrderBtn">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <div class="modal fade" id="clearCartModal" tabindex="-1" aria-labelledby="clearCartModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -258,6 +290,8 @@ foreach ($products as $product) {
 
     @push('scripts')
         <script>
+            const orderId = "{{ request('order_id', 0) }}";
+
             var variantSkuList = @json($variantSkuList);
 
             function debounce(func, delay) {
@@ -296,31 +330,44 @@ foreach ($products as $product) {
                     let variantId = $(this).data('variant-id');
                     let quantity = $(this).data('quantity') || 1;
 
-                    addToCart(variantId, quantity);
+                    addToCart(variantId, quantity, orderId);
                 }, 1000));
 
-                function addToCart(variantId, quantity) {
+                function addToCart(variantId, quantity, orderId = 0) {
+                    let url = orderId && orderId > 0 ?
+                        "{{ route('seller.pos.sales.item_add') }}" :
+                        "{{ route('seller.pos.cart_add') }}";
+
                     $.ajax({
-                        url: "{{ route('seller.pos.cart_add') }}",
+                        url: url,
                         method: 'POST',
                         data: {
                             variant_id: variantId,
                             quantity: quantity,
+                            order_id: orderId,
                             _token: "{{ csrf_token() }}"
                         },
                         success: function(response) {
                             if (response.status) {
-                                toastr.success("Item added to cart successfully!");
-                                $('.order-items tbody').html(response.data.html);
-                                summery = response.data;
-                                resetOrderSummary(summery);
+                                toastr.success("Item added successfully!");
+
+                                if (orderId && orderId > 0) {
+                                    $('.order-items tbody').html(response.data.html);
+                                } else {
+                                    $('.order-items tbody').html(response.data.html);
+                                }
+
+                                resetOrderSummary(response.data);
+
+                                if (typeof feather !== 'undefined') {
+                                    feather.replace();
+                                }
                             } else {
                                 toastr.error(response.message);
                             }
                         },
                         error: function(xhr) {
-                            var message = xhr.responseJSON?.message || "Something went wrong";
-                            toastr.error(message);
+                            toastr.error(xhr.responseJSON?.message || "Something went wrong");
                         }
                     });
                 }
@@ -458,13 +505,13 @@ foreach ($products as $product) {
                                 response.data.variants.forEach(v => {
                                     $(`[data-variant-id="${v.id}"]`)
                                         .closest("tr")
-                                        .find("td:nth-child(3)") 
+                                        .find("td:nth-child(3)")
                                         .text(v.availableStock);
                                     if (v.availableStock <= 0) {
                                         $(`[data-variant-id="${v.id}"]`)
                                             .replaceWith(
                                                 '<button class="btn btn-sm btn-secondary disabled">Out of stock</button>'
-                                                );
+                                            );
                                     }
                                 });
 
@@ -484,6 +531,130 @@ foreach ($products as $product) {
                         error: function(xhr) {
                             var message = xhr.responseJSON.message;
                             toastr.error(message);
+                        }
+                    });
+                });
+
+
+                // Update quantity for order items
+                $(document).on('click', '.update-order-qty-btn', debounce(function() {
+                    let itemId = $(this).data('id');
+                    let action = $(this).data('action');
+
+                    $.ajax({
+                        url: "{{ route('seller.pos.sales.item_update') }}",
+                        method: 'POST',
+                        data: {
+                            id: itemId,
+                            action: action,
+                            order_id: "{{ request('order_id') }}",
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(response) {
+                            if (response.status) {
+                                toastr.success("Order item updated successfully!");
+                                $('.order-items tbody').html(response.data.html);
+                                resetOrderSummary(response.data);
+
+                                if (typeof feather !== 'undefined') {
+                                    feather.replace();
+                                }
+                            } else {
+                                toastr.error(response.message);
+                            }
+                        },
+
+                        error: function(xhr) {
+                            toastr.error(xhr.responseJSON?.message || "Something went wrong");
+                        }
+                    });
+                }, 500));
+
+                // Remove order item
+                let deleteOrderItemId = null;
+
+                $(document).on('click', '.delete-order-item-btn', function() {
+                    deleteOrderItemId = $(this).data('id');
+                });
+
+                $('#confirmDeleteOrderBtn').on('click', function() {
+                    if (!deleteOrderItemId) return;
+
+                    $.ajax({
+                        url: "{{ route('seller.pos.sales.item_remove') }}",
+                        method: 'POST',
+                        data: {
+                            id: deleteOrderItemId,
+                            order_id: "{{ request('order_id') }}",
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(response) {
+                            if (response.status) {
+                                toastr.success("Order item removed successfully!");
+                                $('.order-item-' + deleteOrderItemId).remove();
+                                summery = response.data;
+                                resetOrderSummary(summery);
+
+                                const deleteModalEl = document.getElementById(
+                                    'deleteOrderConfirmModal');
+                                const modal = bootstrap.Modal.getInstance(deleteModalEl);
+                                modal.hide();
+
+                                deleteOrderItemId = null;
+                            } else {
+                                toastr.error(response.message);
+                            }
+                        },
+                        error: function(xhr) {
+                            toastr.error(xhr.responseJSON?.message || "Something went wrong");
+                        }
+                    });
+                });
+
+                $('#updateOrderBtn').on('click', function() {
+                    $.ajax({
+                        url: "{{ route('seller.pos.sales.update') }}",
+                        method: 'POST',
+                        data: {
+                            order_id: "{{ request('order_id') }}",
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(response) {
+                            if (response.status) {
+                                toastr.success("Order updated successfully!");
+
+                                $('.order-items tbody').html(response.data.html);
+                                resetOrderSummary(response.data);
+
+                                response.data.variants.forEach(v => {
+                                    $(`[data-variant-id="${v.id}"]`).closest('tr')
+                                        .find('td:nth-child(3)').text(v.availableStock);
+                                    if (v.availableStock <= 0) {
+                                        $(`[data-variant-id="${v.id}"]`).replaceWith(
+                                            '<button class="btn btn-sm btn-secondary disabled">Out of stock</button>'
+                                        );
+                                    }
+                                });
+
+                                if (response.data.invoice_id) {
+                                    let receiptUrl = "{{ route('receipt', ':invoice_id') }}"
+                                        .replace(':invoice_id', response.data.invoice_id);
+                                    let receiptWindow = window.open(receiptUrl, "_blank",
+                                        "width=800,height=600");
+
+                                    let timer = setInterval(function() {
+                                        if (receiptWindow.closed) {
+                                            clearInterval(timer);
+                                            location.reload(); 
+                                        }
+                                    }, 500);
+                                }
+                            } else {
+                                toastr.error(response.message);
+                            }
+                        },
+                        error: function(xhr) {
+                            toastr.error(xhr.responseJSON?.message || "Something went wrong");
                         }
                     });
                 });

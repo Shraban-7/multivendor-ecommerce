@@ -29,7 +29,11 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         
         Route::prefix('sales')->as('sales.')->group(function () {
             Route::get('/', [SalesController::class, 'index'])->name('index');
+            Route::post('/update', [SalesController::class, 'update'])->name('update');
             Route::post('/{id}/delete', [SalesController::class, 'delete'])->name('delete');
+            Route::post('/item/add', [SalesController::class, 'itemAdd'])->name('item_add');
+            Route::post('/item/update', [SalesController::class, 'itemUpdate'])->name('item_update');
+            Route::post('/item/remove', [SalesController::class, 'itemRemove'])->name('item_remove');
         });
     });
 

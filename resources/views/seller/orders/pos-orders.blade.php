@@ -32,6 +32,10 @@
                                 class="btn btn-light border btn-sm me-1">
                                 <i data-feather="clipboard" class="icon-xs"></i> Details
                             </a>
+                            <a href="{{ route('seller.pos.index', ['order_id' => $order->id]) }}"
+                                class="btn btn-light border btn-sm me-1" title="Details">
+                                <i data-feather="edit" class="icon-xs"></i> Edit
+                            </a>
                             <a href="{{ route('invoice', $order->invoice_id) }}" title="Details" target="__blank"
                                 class="btn btn-light border btn-sm me-1">
                                 <i data-feather="download" class="icon-xs"></i> Invoice
@@ -42,8 +46,9 @@
                             </a>
                             <button class="btn btn-sm text-danger border delete-cart-item-btn" data-id="{{ $order->id }}"
                                 data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">
-                                <i class="bi bi-trash"></i> Delete
+                                <i data-feather="trash-2" class="icon-xs"></i> Delete
                             </button>
+
                         </td>
                     </tr>
                 @endforeach
