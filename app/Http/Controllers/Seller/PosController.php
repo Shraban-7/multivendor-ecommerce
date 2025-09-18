@@ -8,6 +8,7 @@ use App\Models\PosCart;
 use App\Models\Product;
 use App\Models\Category;
 use Dotenv\Parser\Value;
+use App\Models\OrderItem;
 use App\Enums\OrderStatus;
 use App\Models\PosCartItem;
 use Illuminate\Http\Request;
@@ -238,7 +239,7 @@ class PosController extends Controller
 
             $orderItems[] = [
                 'product_id' => $product->id,
-                'product_variant_id' => $cartItem->product_variant_id ?? null,
+                'product_variant_id' => $item->product_variant_id ?? null,
                 'buying_price' => $variant->buying_price,
                 'unit_price' => $item->price,
                 'quantity' => $item->quantity,
@@ -290,12 +291,40 @@ class PosController extends Controller
 
         $order->items()->createMany($orderItems);
 
+        $updatedVariants = [];
+
+        foreach ($order->items as $item) {
+            if (isset($item['product_variant_id'])) {
+                $variant = ProductVariant::find($item['product_variant_id']);
+
+                if ($variant) {
+                    $variant->increment('stock_out', $item['quantity']);
+
+                    $updatedVariants[] = [
+                        'id' => $variant->id,
+                        'availableStock' => $variant->availableStock, 
+                    ];
+                }
+            }
+        }
+
         $cart->items()->delete();
 
         $cart->delete();
 
+        $seller = Seller::find(get_seller_id());
+
+        $sellerOrderIds = Order::where('seller_id', $seller->id)->pluck('id');
+
+        $sellerOrderCount = OrderItem::whereIn('order_id', $sellerOrderIds)->count();
+
+        $seller->update([
+            'total_sold' => $sellerOrderCount,
+        ]);
+
         return apiResponse([
-            'invoice_id' => $order->invoice_id
+            'invoice_id' => $order->invoice_id,
+            'variants' => $updatedVariants
         ], "Order Placed Successfully");
     }
 

@@ -36,7 +36,7 @@ foreach ($products as $product) {
         <div class="row">
             <!-- Products/Search Section -->
             <div class="col-md-8">
-                <div class="card mb-4">
+                <div class="card mb-4 ">
                     <div class="card-header bg-white py-3">
                         <div class="row align-items-center">
                             <div class="col-md-8">
@@ -49,7 +49,7 @@ foreach ($products as $product) {
                             </div>
                         </div>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body overflow-auto vh-75">
                         <div class="d-flex flex-wrap mb-3">
                             <button class="btn btn-outline-primary btn-sm me-2 mb-2">All</button>
                             @foreach ($categories as $category)
@@ -260,6 +260,15 @@ foreach ($products as $product) {
         <script>
             var variantSkuList = @json($variantSkuList);
 
+            function debounce(func, delay) {
+                let timer;
+                return function(...args) {
+                    const context = this;
+                    clearTimeout(timer);
+                    timer = setTimeout(() => func.apply(context, args), delay);
+                };
+            }
+
             $(document).ready(function() {
                 $('#skuSearch').on('input', function() {
                     var query = $(this).val().trim();
@@ -283,12 +292,12 @@ foreach ($products as $product) {
                     }
                 });
 
-                $(document).on('click', '.add-to-cart-btn', function() {
+                $(document).on('click', '.add-to-cart-btn', debounce(function() {
                     let variantId = $(this).data('variant-id');
                     let quantity = $(this).data('quantity') || 1;
 
                     addToCart(variantId, quantity);
-                });
+                }, 1000));
 
                 function addToCart(variantId, quantity) {
                     $.ajax({
@@ -301,16 +310,17 @@ foreach ($products as $product) {
                         },
                         success: function(response) {
                             if (response.status) {
+                                toastr.success("Item added to cart successfully!");
                                 $('.order-items tbody').html(response.data.html);
                                 summery = response.data;
                                 resetOrderSummary(summery);
                             } else {
-                                alert(response.message);
+                                toastr.error(response.message);
                             }
                         },
                         error: function(xhr) {
                             var message = xhr.responseJSON?.message || "Something went wrong";
-                            alert(message);
+                            toastr.error(message);
                         }
                     });
                 }
@@ -330,16 +340,17 @@ foreach ($products as $product) {
                         },
                         success: function(response) {
                             if (response.status) {
+                                toastr.success("Cart update successfully!");
                                 $('.order-items tbody').html(response.data.html);
                                 summery = response.data;
                                 resetOrderSummary(summery);
                             } else {
-                                alert(response.message);
+                                toastr.error(response.message);
                             }
                         },
                         error: function(xhr) {
                             var message = xhr.responseJSON.message;
-                            alert(message);
+                            toastr.error(message);
                         }
                     });
                 });
@@ -364,7 +375,7 @@ foreach ($products as $product) {
                         },
                         success: function(response) {
                             if (response.status) {
-
+                                toastr.success("Cart item deleted successfully!");
                                 $('.cart-item-' + deleteCartItemId).remove();
                                 summery = response.data;
                                 resetOrderSummary(summery);
@@ -383,12 +394,12 @@ foreach ($products as $product) {
                                     `);
                                 }
                             } else {
-                                alert(response.message);
+                                toastr.error(response.message);
                             }
                         },
                         error: function(xhr) {
                             var message = xhr.responseJSON.message;
-                            alert(message);
+                            toastr.error(message);
                         }
                     });
                 });
@@ -402,7 +413,7 @@ foreach ($products as $product) {
                         },
                         success: function(response) {
                             if (response.status) {
-                                alert(response.message);
+                                toastr.success(response.message);
                                 $('.order-items tbody').html(`
                                     <tr>
                                         <td colspan="4" class="text-center text-muted">No items in cart</td>
@@ -415,12 +426,12 @@ foreach ($products as $product) {
                                 const modal = bootstrap.Modal.getInstance(clearModalEl);
                                 modal.hide();
                             } else {
-                                alert(response.message);
+                                toastr.error(response.message);
                             }
                         },
                         error: function(xhr) {
                             var message = xhr.responseJSON.message;
-                            alert(message);
+                            toastr.error(message);
                         }
                     });
                 });
@@ -434,6 +445,7 @@ foreach ($products as $product) {
                         },
                         success: function(response) {
                             if (response.status) {
+                                toastr.success("Order placed successfully!");
                                 $('.order-items tbody').html(`
                                     <tr>
                                         <td colspan="4" class="text-center text-muted">No items in cart</td>
@@ -442,6 +454,19 @@ foreach ($products as $product) {
 
                                 summery = response;
                                 resetOrderSummary(summery);
+
+                                response.data.variants.forEach(v => {
+                                    $(`[data-variant-id="${v.id}"]`)
+                                        .closest("tr")
+                                        .find("td:nth-child(3)") 
+                                        .text(v.availableStock);
+                                    if (v.availableStock <= 0) {
+                                        $(`[data-variant-id="${v.id}"]`)
+                                            .replaceWith(
+                                                '<button class="btn btn-sm btn-secondary disabled">Out of stock</button>'
+                                                );
+                                    }
+                                });
 
                                 if (response.data.invoice_id) {
                                     let receiptUrl = "{{ route('receipt', ':invoice_id') }}"
@@ -453,12 +478,12 @@ foreach ($products as $product) {
                                 }
 
                             } else {
-                                alert(response.message);
+                                toastr.error(response.message);
                             }
                         },
                         error: function(xhr) {
                             var message = xhr.responseJSON.message;
-                            alert(message);
+                            toastr.error(message);
                         }
                     });
                 });
