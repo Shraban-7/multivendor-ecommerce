@@ -26,8 +26,8 @@ foreach ($products as $product) {
             'sku' => $variant->sku,
             'product_id' => $product->id,
         ];
+        $product->total_stock += $variant->availableStock;
     }
-    $product->total_stock += $variant->availableStock;
 }
 ?>
 
@@ -74,11 +74,13 @@ foreach ($products as $product) {
                                                     {{ $product->name }}
                                                 </h6>
                                                 <div class="small">
-                                                    <span class="text-muted">{{ $product->variants->count() }} variants</span>
-                                                    @if($product->total_stock > 0)
-                                                    <span class="text-muted">{{ $product->total_stock }} {{ $product->unit->short_name }} available</span>
+                                                    <span class="text-muted">{{ $product->variants->count() }}
+                                                        variants</span>
+                                                    @if ($product->total_stock > 0)
+                                                        <span class="text-muted">{{ $product->total_stock }}
+                                                            {{ $product->unit->short_name }} available</span>
                                                     @else
-                                                    <span class="text-danger">(out of stock)</span>
+                                                        <span class="text-danger">(out of stock)</span>
                                                     @endif
                                                 </div>
                                             </div>
@@ -116,15 +118,17 @@ foreach ($products as $product) {
                                                                         {{ money($variant->discounted_price ?? $variant->selling_price) }}
                                                                     </td>
                                                                     <td>
-                                                                        @if($variant->availableStock > 0)
-                                                                        <button
-                                                                            class="btn btn-sm btn-primary add-to-cart-btn"
-                                                                            data-variant-id="{{ $variant->id }}"
-                                                                            data-quantity="1">
-                                                                            <i class="bi bi-plus"></i> Add
-                                                                        </button>
+                                                                        @if ($variant->availableStock > 0)
+                                                                            <button
+                                                                                class="btn btn-sm btn-primary add-to-cart-btn"
+                                                                                data-variant-id="{{ $variant->id }}"
+                                                                                data-quantity="1">
+                                                                                <i class="bi bi-plus"></i> Add
+                                                                            </button>
                                                                         @else
-                                                                        <button class="btn btn-sm btn-secondary disabled">Out of stock</button>
+                                                                            <button
+                                                                                class="btn btn-sm btn-secondary disabled">Out
+                                                                                of stock </button>
                                                                         @endif
                                                                     </td>
                                                                 </tr>
@@ -277,6 +281,13 @@ foreach ($products as $product) {
                         $('#skuSearch').val('');
                         $('.product-card-wrapper').show();
                     }
+                });
+
+                $(document).on('click', '.add-to-cart-btn', function() {
+                    let variantId = $(this).data('variant-id');
+                    let quantity = $(this).data('quantity') || 1;
+
+                    addToCart(variantId, quantity);
                 });
 
                 function addToCart(variantId, quantity) {

@@ -224,6 +224,7 @@ class PosController extends Controller
         $vat_amount = 0;
         $sub_total = 0;
         $discount = 0;
+        $orderItems = [];
 
         foreach ($cartItems as $item) {
             $product = $item->variant->product;
@@ -246,6 +247,10 @@ class PosController extends Controller
                 'vat_percent' => $product->vat_percent,
                 'vat_amount' => floatval(($product->vat_percent * $unitPrice) / 100) * $item->quantity,
             ];
+        }
+
+        if (empty($orderItems)) {
+            return errorResponse("No items found in the cart!");
         }
 
         $seller = Seller::where('id', get_seller_id())->first();
