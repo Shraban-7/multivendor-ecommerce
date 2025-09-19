@@ -11,6 +11,7 @@ use App\Http\Controllers\Frontend\WishlistController;
 use App\Http\Controllers\Frontend\ContactUsController;
 use App\Http\Controllers\Frontend\NotificationController;
 use App\Http\Controllers\Frontend\BillingAddressController;
+use App\Http\Controllers\Frontend\SearchController;
 
 Route::get('categories/{slug}', [CategoryController::class, 'details'])->name('category.details');
 
@@ -80,6 +81,8 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('affiliator')->as('affiliator.')->group(function () {
         Route::get('/dashboard', [AffiliatorController::class, 'dashboard'])->name('dashboard');
-        Route::match(['get','post'],'/withdraw',[AffiliatorController::class, 'withdraw'])->name('withdraw');
+        Route::match(['get', 'post'], '/withdraw', [AffiliatorController::class, 'withdraw'])->name('withdraw');
     });
 });
+
+Route::get('/search/suggestions', [SearchController::class, 'suggestions'])->name('search.suggestions');
