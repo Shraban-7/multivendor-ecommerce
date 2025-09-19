@@ -2,7 +2,7 @@
     <h2 class="uppercase md:text-center sm:text-xl xl:text-4xl lg:text-3xl md:text-2xl text-theme-dark mb-4 md:mb-10">
         Featured Categories
     </h2>
-    <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-6">
+    <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3">
         @foreach ($categories as $category)
         <div class="p-2 md:p-4 bg-white rounded-lg shadow hover:shadow-lg cursor-pointer transition">
             <a href="{{ route('category.details',$category->slug) }}" class="flex flex-col items-center">
