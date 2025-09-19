@@ -6,7 +6,7 @@ $searchPlaceholder = "Search for products or shops..";
 
 <nav class="container mx-auto px-4 py-3 text-white">
     <!-- Mobile Navbar -->
-    <div class="flex flex-col gap-3 md:hidden">
+    <div class="flex flex-col gap-2 md:hidden">
         <div class="flex items-center justify-between">
             <a href="/">
                 <img src="{{ storage_url($settings->logo) }}" class="h-8" alt="Logo" />
@@ -26,7 +26,7 @@ $searchPlaceholder = "Search for products or shops..";
         </div>
 
         <!-- Search (Mobile) -->
-        <div class="w-full md:hidden mt-3">
+        <div class="w-full md:hidden">
             <div class="relative">
                 <input type="text" id="searchInputMobile" placeholder="{{ $searchPlaceholder }}"
                     class="w-full py-2 pl-4 pr-28 text-sm text-black rounded-md border border-gray-200 
