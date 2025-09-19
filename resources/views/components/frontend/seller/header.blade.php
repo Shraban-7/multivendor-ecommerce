@@ -1,47 +1,71 @@
-<div class="relative h-48 md:h-64 rounded">
-    <div class="absolute inset-0 bg-black opacity-20"></div>
+{{-- Shop Header --}}
+<div class="relative h-40 md:h-64 rounded overflow-hidden">
+    <!-- Background Overlay -->
+    <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent"></div>
+
+    <!-- Content -->
     <div class="container mx-auto px-4 relative h-full flex items-end pb-6">
-        <div class="flex items-center">
-            <div class="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white bg-white shadow-lg overflow-hidden">
-                <img src="{{ storage_url($seller->business_logo) }}" alt="Shop Logo" class="w-full h-full object-cover">
+        <div class="flex items-end md:items-center gap-4 md:gap-6">
+            <!-- Logo -->
+            <div
+                class="w-20 h-20 md:w-32 md:h-32 rounded-full border-4 border-white bg-white shadow-lg overflow-hidden flex-shrink-0">
+                <img src="{{ storage_url($seller->business_logo) }}" alt="Shop Logo"
+                    class="w-full h-full object-cover">
             </div>
-            <div class="ml-4 text-white">
-                <h1 class="text-2xl md:text-3xl font-bold">{{ $seller->business_name }}</h1>
-                <p class="flex items-center mt-1">
-                    <i class="fas fa-star text-yellow-300 mr-1"></i>
-                    <span class="font-semibold">{{ number_format($avgRating, 2) }}</span>
-                    <span class="mx-2">|</span>
+
+            <!-- Shop Info -->
+            <div class="text-white">
+                <h1 class="text-xl md:text-3xl font-bold">{{ $seller->business_name }}</h1>
+                <div class="mt-2 flex flex-col md:flex-row md:items-center md:gap-3 text-sm md:text-base text-gray-100">
+                    <span class="flex items-center">
+                        <i class="fas fa-star text-yellow-300 mr-1"></i>
+                        <span class="font-semibold">{{ number_format($avgRating, 2) }}</span>
+                    </span>
+                    <span class="hidden md:inline">|</span>
                     <span>{{ number_shorten_format($seller->totalReviews) }} Reviews</span>
-                    <span class="mx-2">|</span>
+                    <span class="hidden md:inline">|</span>
                     <span>{{ number_shorten_format($seller->total_followers) }} Followers</span>
-                </p>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Shop Links -->
-<div class="shop-links mb-8">
-    <!-- Navigation -->
-    <nav class="flex flex-wrap items-center text-jet-gray gap-x-6 gap-y-3 border-b border-gray-200 py-4">
+{{-- Shop Navigation --}}
+<div class="shop-links mb-4 bg-white rounded shadow-sm mt-2">
+    <nav
+        class="container mx-auto px-4 flex flex-wrap items-center gap-x-6 gap-y-2 border-b border-gray-200 py-4 text-gray-700">
+
+        <!-- Nav Links -->
         <a href="{{ route('sellers.shop', $seller->username) }}"
-            class="pb-1 font-medium transition-colors {{ request()->routeIs('sellers.shop') ? 'text-primary border-b-2 border-primary' : 'hover:text-primary' }}">Products</a>
-        <a href="#" class="hover:text-primary transition-colors font-medium">About</a>
+            class="pb-1 font-medium transition-colors {{ request()->routeIs('sellers.shop') ? 'text-primary border-b-2 border-primary' : 'hover:text-primary' }}">
+            Products
+        </a>
+        <a href="#"
+            class="pb-1 font-medium hover:text-primary transition-colors">
+            About
+        </a>
         <a href="{{ route('sellers.reviews', $seller->username) }}"
-            class="pb-1 font-medium transition-colors {{ request()->routeIs('sellers.reviews') ? 'text-primary border-b-2 border-primary' : 'hover:text-primary' }}">
+            class="pb-1 font-medium transition-colors flex items-center gap-1 {{ request()->routeIs('sellers.reviews') ? 'text-primary border-b-2 border-primary' : 'hover:text-primary' }}">
             Reviews
-            <span class="bg-primary/10 text-primary px-2 py-1 rounded-full text-xs font-medium">
-                {{ number_format($avgRating, 2) }} <i class="fa-solid fa-star text-xs"></i>
+            <span
+                class="bg-primary/10 text-primary px-2 py-0.5 rounded-full text-xs font-medium flex items-center gap-1">
+                {{ number_format($avgRating, 2) }}
+                <i class="fa-solid fa-star text-xs text-yellow-400"></i>
             </span>
         </a>
 
-        <!-- shop product search -->
-        <div class="w-full md:w-auto mt-4 md:mt-0 ml-auto">
+        <!-- Spacer -->
+        <div class="flex-1"></div>
+
+        <!-- Shop Item Search -->
+        <div class="w-full md:w-auto mt-3 md:mt-0">
             <div class="relative">
                 <input type="text" placeholder="Search all {{ $totalItem }} items"
-                    class="text-sm w-full py-2.5 pl-4 pr-10 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-gray-700 placeholder-gray-400 transition-all" />
+                    class="w-full md:w-64 py-2 pl-4 pr-12 text-sm rounded-md border border-gray-300 focus:outline-none 
+                           focus:ring-2 focus:ring-primary focus:border-transparent text-gray-700 placeholder-gray-400 transition" />
                 <button
-                    class="absolute top-1/2 right-2 transform -translate-y-1/2 bg-primary hover:bg-primary-dark p-2 rounded-full text-white transition-colors">
+                    class="absolute top-1/2 right-2 -translate-y-1/2 flex items-center gap-1 bg-primary text-white px-3 py-1.5 rounded-md hover:bg-primary-dark transition">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round"
