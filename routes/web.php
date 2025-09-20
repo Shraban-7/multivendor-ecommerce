@@ -35,7 +35,7 @@ Route::prefix('payment')->as('payment.')->group(function () {
     Route::get('/pay', [PaymentController::class, 'pay'])->name('pay');
     Route::middleware('aamarpay')->group(function () {
         Route::post('/success', [PaymentController::class, 'confirm'])->name('success');
-        Route::post('/cancel', [PaymentController::class, 'cancel'])->name('cancel');
+        Route::match(['get', 'post'], '/cancel', [PaymentController::class, 'cancel'])->name('cancel');
         Route::post('/notify', [PaymentController::class, 'notify'])->name('notify');
     });
     Route::get('/test', function () {
