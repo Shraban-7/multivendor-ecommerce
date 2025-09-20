@@ -67,7 +67,8 @@ class OrderController extends Controller
     public function details($invoice_id)
     {
         $user = Auth::user();
-        $order = Order::where('invoice_id', $invoice_id)->first();
+
+        $order = Order::where('invoice_id', $invoice_id)->with('seller')->first();
 
         $order->load('items.product');
 
