@@ -9,7 +9,6 @@
 
     <main>
         @if ($orders->isNotEmpty())
-            <!-- Orders Main Section Starts -->
             <section class="orders-section container mx-auto">
                 <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
                     <div class="flex items-center justify-between px-6 py-4 border-b border-jet-gray/30">
@@ -116,9 +115,7 @@
                 </div>
             </section>
         @endif
-        <!-- Orders Main Section Ended -->
         @if ($orders->isEmpty())
-            <!-- No Order Section Starts -->
             <section>
                 <div class="no-order-contents flex flex-col gap-5 md:gap-8 items-center text-center section-padding">
                     <div class="no-order-img w-1/4 md:w-3/12 lg:w-2/12">
@@ -130,32 +127,21 @@
                         <h2 class="text-xl md:text-2xl font-medium text-theme-dark">
                             No Orders in this account
                         </h2>
-                        <p class="md:text-lg text-jet-gray">
-                            If you remember ordering before,
-                            <a href="#" class="text-butterfly-blue hover:text-primary eq">switch account</a>
-                            or
-                            <a href="#" class="text-butterfly-blue hover:text-primary eq">Q & A</a>
-                        </p>
                     </div>
                 </div>
             </section>
-            <!-- No Order Section Ended -->
         @endif
 
-        <!-- Explore Interest Section Start  -->
         <section class="explore-interest section-padding">
             <div class="container">
-                <!-- Section Tittle -->
-                <h1 class="text-xl sm:text-2xl lg:text-3xl font-medium text-jet-gray mb-5 md:mb-8 lg:mb-10">
+                <h2 class="text-xl sm:text-2xl lg:text-3xl font-medium text-jet-gray mb-5">
                     Explore Your Interest
-                </h1>
-
-                <div class="grid grid-cols-1 xsm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-5 xl:gap-8 lg:p-0 p-2 items-start">
+                </h2>
+                <div class="grid grid-cols-1 xsm:grid-cols-2 md:grid-cols-4 gap-5 lg:p-0 p-2 items-start">
                     @include('frontend.partials.product-card-load', ['products' => $products])
                 </div>
             </div>
         </section>
-        <!-- Explore Interest Section Ended  -->
     </main>
 
     @push('scripts')
