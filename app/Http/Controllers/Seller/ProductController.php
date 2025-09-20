@@ -198,7 +198,6 @@ class ProductController extends Controller
             'files.*' => 'mimetypes:image/*',
         ]);
 
-
         $brandId = null;
 
         if (!empty($validated['brand'])) {
@@ -242,10 +241,10 @@ class ProductController extends Controller
         $product->update($validated);
 
         if ($request->hasFile('files')) {
-            $product->images->each(function ($image) {
-                delete_file($image->image);
-                $image->delete();
-            });
+            // $product->images->each(function ($image) {
+            //     delete_file($image->image);
+            //     $image->delete();
+            // });
 
             if ($request->hasFile('files')) {
                 foreach ($request->file('files') as $file) {
