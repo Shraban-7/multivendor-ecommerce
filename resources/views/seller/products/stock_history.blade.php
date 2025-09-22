@@ -2,7 +2,7 @@
 @section('title', 'Stock History')
 
 @section('content')
-    <div class="mb-3 d-flex justify-content-between align-items-center">
+    <div class="mb-2 d-flex justify-content-between align-items-end">
         <h4 class="mb-0">Stock History</h4>
         <a href="{{ route('seller.products.index') }}" class="btn btn-secondary btn-sm">
             <i data-feather="arrow-left" class="icon-xs me-1"></i> Back to Products
@@ -13,7 +13,6 @@
         <table class="table table-bordered table-hover align-middle bg-white" id="stock-history-table">
             <thead>
                 <tr>
-                    <th>#</th>
                     <th>Product</th>
                     <th>Variant</th>
                     <th>Quantity</th>
@@ -25,10 +24,9 @@
             <tbody>
                 @foreach ($stockHistories as $history)
                     <tr>
-                        <td>{{ $history->id }}</td>
                         <td>{{ $history->product->name ?? '-' }}</td>
                         <td>{{ $history->variant->full_name ?? 'default' }}</td>
-                        <td>{{ $history->quantity }}</td>
+                        <td>{{ $history->quantity }} {{ $history->product->unit->short_name }}</td>
                         <td>
                             @switch($history->type)
                                 @case(\App\Enums\StockType::ADD_STOCK)
