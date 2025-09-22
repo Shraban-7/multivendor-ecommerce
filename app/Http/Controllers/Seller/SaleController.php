@@ -11,7 +11,7 @@ use App\Models\ProductVariant;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 
-class SalesController extends Controller
+class SaleController extends Controller
 {
     public function index()
     {

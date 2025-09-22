@@ -13,7 +13,7 @@ use App\Http\Controllers\Seller\SellerChatController;
 use App\Http\Controllers\Seller\NotificationController;
 use App\Http\Controllers\Seller\PosController;
 use App\Http\Controllers\Seller\ProductVariantController;
-use App\Http\Controllers\Seller\SalesController;
+use App\Http\Controllers\Seller\SaleController;
 use App\Http\Controllers\Seller\SellerCampaignController;
 use App\Http\Controllers\Seller\SellerEmployeeController;
 
@@ -29,12 +29,12 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::get('/customers/search', [PosController::class, 'customerSearch'])->name('customers.search');
 
         Route::prefix('sales')->as('sales.')->group(function () {
-            Route::get('/', [SalesController::class, 'index'])->name('index');
-            Route::post('/update', [SalesController::class, 'update'])->name('update');
-            Route::post('/{id}/delete', [SalesController::class, 'delete'])->name('delete');
-            Route::post('/item/add', [SalesController::class, 'itemAdd'])->name('item_add');
-            Route::post('/item/update', [SalesController::class, 'itemUpdate'])->name('item_update');
-            Route::post('/item/remove', [SalesController::class, 'itemRemove'])->name('item_remove');
+            Route::get('/', [SaleController::class, 'index'])->name('index');
+            Route::post('/update', [SaleController::class, 'update'])->name('update');
+            Route::post('/{id}/delete', [SaleController::class, 'delete'])->name('delete');
+            Route::post('/item/add', [SaleController::class, 'itemAdd'])->name('item_add');
+            Route::post('/item/update', [SaleController::class, 'itemUpdate'])->name('item_update');
+            Route::post('/item/remove', [SaleController::class, 'itemRemove'])->name('item_remove');
         });
     });
 
