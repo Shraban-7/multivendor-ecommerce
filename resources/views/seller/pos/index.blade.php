@@ -49,6 +49,7 @@ foreach ($products as $product) {
         $product->total_stock += $variant->availableStock;
     }
 }
+$products = $products->sortByDesc('total_stock');
 ?>
 
 @section('content')
