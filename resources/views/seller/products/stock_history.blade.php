@@ -42,7 +42,7 @@
                     @endswitch
                 </td>
                 <td>{{ $history->note ?? '-' }}</td>
-                <td>{{ $history->created_at->format('d M Y, h:i A') }}</td>
+                <td>{{ $history->created_at->format('d/m/y, h:i A') }}</td>
             </tr>
             @endforeach
         </tbody>
