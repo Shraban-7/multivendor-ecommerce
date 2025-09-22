@@ -15,40 +15,12 @@ use Illuminate\Http\Request;
 use App\Enums\CommissionType;
 use App\Models\ProductVariant;
 use App\Http\Controllers\Controller;
+use App\Models\Customer;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class PosController extends Controller
 {
-    // public function index()
-    // {
-    //     $products = Product::where('seller_id', get_seller_id())->with('variants.option_values')->get();
-
-    //     $categories = Category::limit(5)->get();
-
-    //     $cart = PosCart::where('seller_id', get_seller_id())->first();
-
-    //     $cartItems = $cart ? $cart->items()->with('variant.product')->get() : collect();
-
-    //     $subtotal = $cartItems->sum(function ($item) {
-    //         return $item->price * $item->quantity;
-    //     });
-
-    //     $vat_amount = $cartItems->sum(function ($item) {
-    //         $unitPrice = $item->price;
-    //         return (($item->variant->product->vat_percent * $unitPrice) / 100) * $item->quantity;
-    //     });
-
-    //     $discount = $cartItems->sum(function ($item) {
-    //         $unitPrice = $item->price;
-    //         $originalPrice = $item->variant->selling_price;
-    //         return ($originalPrice - $unitPrice) * $item->quantity;
-    //     });
-
-    //     $total = $subtotal - $discount + $vat_amount;
-
-    //     return view('seller.pos', compact('products', 'categories', 'cart', 'cartItems', 'subtotal', 'discount', 'vat_amount', 'total'));
-    // }
-
     public function index(Request $request)
     {
         $products = Product::where('seller_id', get_seller_id())
@@ -383,5 +355,21 @@ class PosController extends Controller
             'invoice_id' => $order->invoice_id,
             'variants' => $updatedVariants
         ], "Order Placed Successfully");
+    }
+
+    public function addCustomer(Request $request)
+    {
+         $data = $request->validate([
+            'name'     => 'required|string|max:255',
+            'phone'    => 'required|string|max:20|unique:users',
+        ]);
+
+        $seller = Seller::find(get_seller_id());
+
+        $data['seller_id'] = $seller->id;
+
+        Customer::create($data);
+
+        return successResponse('Customer added successfully!');
     }
 }

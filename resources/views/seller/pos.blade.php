@@ -237,30 +237,30 @@ foreach ($products as $product) {
         </div>
     </div>
 
-    <!--User Modal -->
+    <!--Customer Modal -->
     <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="userModalLabel">Add User</h5>
+                    <h5 class="modal-title" id="userModalLabel">Add Customer</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="userForm">
+                    <form id="customerForm">
+                        @csrf
                         <div class="mb-3">
                             <label for="userName" class="form-label">Name</label>
                             <input type="text" class="form-control" id="userName" name="name" required>
                         </div>
                         <div class="mb-3">
                             <label for="userMobile" class="form-label">Mobile</label>
-                            <input type="text" class="form-control" id="userMobile" name="phone"
-                                required>
+                            <input type="text" class="form-control" id="userMobile" name="phone" required>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" form="userForm" class="btn btn-primary">Save</button>
+                    <button type="submit" id="customerSubmit" class="btn btn-primary">Save</button>
                 </div>
             </div>
         </div>
@@ -699,6 +699,31 @@ foreach ($products as $product) {
                     $('#summary-discount').text(summery.discount || "{{ money(0) }}");
                     $('#summary-total').text(summery.total || "{{ money(0) }}");
                 }
+
+
+                $('#customerSubmit').on('click', function() {
+                    let formData = $('#customerForm').serialize();
+
+                    $.ajax({
+                        url: "{{ route('seller.pos.add_customer') }}",
+                        method: 'POST',
+                        data: formData,
+                        success: function(response) {
+                            if (response.status) {
+                                toastr.success(response.message);
+                                $('#customerForm')[0].reset();
+                                $('#userModal').modal('hide');
+                            } else {
+                                toastr.error(response.message);
+                            }
+                        },
+                        error: function(xhr) {
+                            let message = xhr.responseJSON?.message || "Something went wrong";
+                            toastr.error(message);
+                        }
+                    });
+                });
+
             });
         </script>
     @endpush

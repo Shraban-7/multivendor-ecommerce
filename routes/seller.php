@@ -26,7 +26,6 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::post('/cart-item/remove', [PosController::class, 'removeCartItem'])->name('remove_cart_item');
         Route::post('/cart-clear', [PosController::class, 'cartClear'])->name('cart_clear');
         Route::post('/place-order', [PosController::class, 'placeOrder'])->name('place_order');
-
         Route::prefix('sales')->as('sales.')->group(function () {
             Route::get('/', [SalesController::class, 'index'])->name('index');
             Route::post('/update', [SalesController::class, 'update'])->name('update');
