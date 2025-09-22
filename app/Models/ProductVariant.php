@@ -50,7 +50,7 @@ class ProductVariant extends Model
         );
     }
 
-    public static function generateSku(): string
+    public static function generate_sku(): string
     {
         do {
             $sku = strtoupper(Str::random(8));
