@@ -128,14 +128,8 @@ class ProductController extends Controller
         return response()->json(['success' => true, 'message' => 'Product Added Successfully']);
     }
 
-    public function show($slug)
+    public function show(Product $product)
     {
-        $product = Product::where('slug', $slug)->first();
-
-        if (! $product) {
-            abort(404, 'Product not found');
-        }
-
         $product->load('variants.option_values', 'stock_history', 'seo');
 
         $seo = $product->seo;
@@ -385,11 +379,22 @@ class ProductController extends Controller
 
         $productIds = Product::where('seller_id', $seller->id)->pluck('id');
 
-        $stockHistories = StockHistory::with(['product', 'variant']) 
+        $stockHistories = StockHistory::with(['product', 'variant'])
             ->whereIn('product_id', $productIds)
             ->latest()
             ->paginate(45);
 
         return view('seller.products.stock_history', compact('stockHistories'));
+    }
+
+    public function printBarcode(Request $request)
+    {
+        if ($request->isMethod('GET')) {
+            $products = Product::where('seller_id', get_seller_id())
+                ->with('variants.option_values')
+                ->get();
+
+            return view('seller.barcodes.index', compact('products'));
+        }
     }
 }
