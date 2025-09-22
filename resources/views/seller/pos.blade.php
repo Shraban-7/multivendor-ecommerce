@@ -166,8 +166,8 @@ foreach ($products as $product) {
                             <div class="d-flex align-items-center mb-2">
                                 <span class="me-2 fw-semibold">Customer:</span>
                                 <div class="flex-grow-1">
-                                    <span id="customerNameShow" class="me-3 text-muted">name: —</span>
-                                    <span id="customerPhoneShow" class="text-muted">phone: —</span>
+                                    <span id="customerNameShow" class="me-3 text-muted"></span>
+                                    <span id="customerPhoneShow" class="text-muted"></span>
                                 </div>
                                 <button class="btn btn-light border btn-sm ms-2 text-nowrap" type="button" data-bs-toggle="modal"
                                     data-bs-target="#customerModal">
@@ -716,8 +716,8 @@ foreach ($products as $product) {
                     let phone = $('#customerPhone').val();
 
                     if (name && phone) {
-                        $('#customerNameShow').text('name: ' + name);
-                        $('#customerPhoneShow').text('phone: ' + phone);
+                        $('#customerNameShow').text(name);
+                        $('#customerPhoneShow').text(phone);
 
                         $('#userModal').modal('hide');
                     } else {
