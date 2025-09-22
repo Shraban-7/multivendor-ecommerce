@@ -23,8 +23,8 @@
             @foreach ($stockHistories as $history)
             <tr>
                 <td>
-                    <strong>{{ $history->product->name }}</strong>
-                    {{ $history->variant->full_name ?? 'default' }}
+                    <p class="fw-bold mb-0">{{ $history->product->name }}</p>
+                    <span class="small text-muted">{{ $history->variant->full_name ?? 'default' }}</span>
                 </td>
                 <td>
                     @switch($history->type)
