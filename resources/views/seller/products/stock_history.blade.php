@@ -49,8 +49,6 @@
     </table>
 </div>
 
-<div class="mt-3">
-    {{ $stockHistories->links() }}
-</div>
+{{ $stockHistories->links() }}
 
 @endsection
