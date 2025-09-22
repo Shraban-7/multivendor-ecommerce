@@ -26,7 +26,7 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::post('/cart-item/remove', [PosController::class, 'removeCartItem'])->name('remove_cart_item');
         Route::post('/cart-clear', [PosController::class, 'cartClear'])->name('cart_clear');
         Route::post('/place-order', [PosController::class, 'placeOrder'])->name('place_order');
-        
+
         Route::prefix('sales')->as('sales.')->group(function () {
             Route::get('/', [SalesController::class, 'index'])->name('index');
             Route::post('/update', [SalesController::class, 'update'])->name('update');
@@ -66,7 +66,7 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::get('/stock-histories', [ProductController::class, 'stockHistory'])->name('stockHistory');
         Route::get('/create', [ProductController::class, 'create'])->name('create');
         Route::post('/store', [ProductController::class, 'store'])->name('store');
-        Route::get('/{product}', [ProductController::class, 'show'])->name('show');
+
         Route::get('/{slug}/edit', [ProductController::class, 'edit'])->name('edit');
         Route::post('/{slug}/update', [ProductController::class, 'update'])->name('update');
         Route::post('/{slug}/update-seo', [ProductController::class, 'updateSeo'])->name('updateSeo');
@@ -75,6 +75,10 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::delete('images/{image}/delete', [ProductController::class, 'deleteImage'])->name('image.delete');
         Route::delete('/{product}/delete', [ProductController::class, 'delete'])->name('delete');
         Route::get('/get-options/{attributeId}', [ProductController::class, 'getOptions']);
+
+        Route::match(['get', 'post'], 'print-barcode', [ProductController::class, 'printBarcode'])->name('printBarcode');
+
+        Route::get('/{product:slug}', [ProductController::class, 'show'])->name('show');
     });
 
     Route::prefix('orders')->as('orders.')->group(function () {
@@ -116,8 +120,4 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
     });
 
     Route::post('banner-image/{image}/delete', [SettingController::class, 'deleteImage'])->name('bannerImages.delete');
-    Route::get('print-barcode', function()
-    {
-        return '';
-    })->name('print_barcode');
 });
