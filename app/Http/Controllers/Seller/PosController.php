@@ -234,8 +234,17 @@ class PosController extends Controller
         return successResponse("Cart Clear Successfully");
     }
 
-    public function placeOrder()
+    public function placeOrder(Request $request)
     {
+        $data = $request->validate([
+            'name'     => 'required|string|max:255',
+            'phone'    => 'required|string|max:20|unique:users',
+        ]);
+
+        $seller = Seller::find(get_seller_id());
+
+        $data['seller_id'] = $seller->id;
+
         $cart = PosCart::where('seller_id', get_seller_id())->first();
 
         if (!$cart) {
@@ -282,8 +291,6 @@ class PosController extends Controller
         if (empty($orderItems)) {
             return errorResponse("No items found in the cart!");
         }
-
-        $seller = Seller::where('id', get_seller_id())->first();
 
         $total_commission = 0;
 
@@ -349,6 +356,12 @@ class PosController extends Controller
 
         $seller->update([
             'total_sold' => $sellerOrderCount,
+        ]);
+
+        $customer = Customer::create($data);
+
+        $order->update([
+            'customer_id' => $customer->id
         ]);
 
         return apiResponse([

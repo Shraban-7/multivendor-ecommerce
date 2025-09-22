@@ -17,9 +17,8 @@ class InvoiceController extends Controller
 
     public function receipt($invoice_id)
     {
-        $order = Order::where('invoice_id', $invoice_id)->first();
+        $order = Order::where('invoice_id', $invoice_id)->with('customer')->first();
 
-        
         if (get_seller_id() == $order->seller_id) {
             return view('seller.orders.receipt', compact('order'));
         }

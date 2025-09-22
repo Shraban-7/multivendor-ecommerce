@@ -64,7 +64,7 @@
     <p>
         Invoice No : {{ $order->invoice_id }}<br>
         Date : {{ $order->created_at->format('d-m-Y  h:i A') }}<br>
-        Customer : {{ $order->billing_address->customer_name ?? '' }}
+        Customer : {{ $order->customer->name ?? '' }}
     </p>
     <div class="line"></div>
 

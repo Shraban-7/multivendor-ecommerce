@@ -163,13 +163,15 @@ foreach ($products as $product) {
                     <div class="card-body p-0">
                         <!-- Customer Info -->
                         <div class="p-3 border-bottom">
-                            <div class="input-group input-group-sm mb-2">
-                                <span class="input-group-text">Customer</span>
-                                <input type="text" class="form-control" placeholder="Search customer...">
-                                <!-- Button trigger modal -->
-                                <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal"
-                                    data-bs-target="#userModal">
-                                    <i class="bi bi-plus"></i>
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="me-2 fw-semibold">Customer:</span>
+                                <div class="flex-grow-1">
+                                    <span id="customerNameShow" class="me-3 text-muted">name: —</span>
+                                    <span id="customerPhoneShow" class="text-muted">phone: —</span>
+                                </div>
+                                <button class="btn btn-light border btn-sm ms-2 text-nowrap" type="button" data-bs-toggle="modal"
+                                    data-bs-target="#customerModal">
+                                    Add Customer
                                 </button>
                             </div>
                         </div>
@@ -238,29 +240,28 @@ foreach ($products as $product) {
     </div>
 
     <!--Customer Modal -->
-    <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+    <div class="modal fade" id="customerModal" tabindex="-1" aria-labelledby="customerModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="userModalLabel">Add Customer</h5>
+                    <h5 class="modal-title" id="customerModalLabel">Add Customer</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="customerForm">
-                        @csrf
                         <div class="mb-3">
                             <label for="userName" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="userName" name="name" required>
+                            <input type="text" class="form-control" id="customerName" name="name" required>
                         </div>
                         <div class="mb-3">
-                            <label for="userMobile" class="form-label">Mobile</label>
-                            <input type="text" class="form-control" id="userMobile" name="phone" required>
+                            <label for="userPhone" class="form-label">Mobile</label>
+                            <input type="text" class="form-control" id="customerPhone" name="phone" required>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" id="customerSubmit" class="btn btn-primary">Save</button>
+                    <button type="button" id="setCustomerBtn" class="btn btn-secondary"
+                        data-bs-dismiss="modal">Done</button>
                 </div>
             </div>
         </div>
@@ -518,15 +519,30 @@ foreach ($products as $product) {
                 });
 
                 $('#placeOrderBtn').on('click', function() {
+                    let name = $('#customerName').val();
+                    let phone = $('#customerPhone').val();
+
+                    if (!name || !phone) {
+                        toastr.error("Please enter customer name and phone before placing order");
+                        $('#userModal').modal('show');
+                        return;
+                    }
+
                     $.ajax({
                         url: "{{ route('seller.pos.place_order') }}",
                         method: 'POST',
                         data: {
+                            name: name,
+                            phone: phone,
                             _token: "{{ csrf_token() }}"
                         },
                         success: function(response) {
                             if (response.status) {
                                 toastr.success("Order placed successfully!");
+                                $('#customerName').text('name: —');
+                                $('#customerPhone').text('phone: —');
+                                $('#customerForm')[0].reset();
+
                                 $('.order-items tbody').html(`
                                     <tr>
                                         <td colspan="4" class="text-center text-muted">No items in cart</td>
@@ -557,6 +573,8 @@ foreach ($products as $product) {
                                         target: '_blank'
                                     })[0].click();
                                 }
+
+                                $('#customerForm')[0].reset();
 
                             } else {
                                 toastr.error(response.message);
@@ -693,36 +711,26 @@ foreach ($products as $product) {
                     });
                 });
 
+                $('#setCustomerBtn').on('click', function() {
+                    let name = $('#customerName').val();
+                    let phone = $('#customerPhone').val();
+
+                    if (name && phone) {
+                        $('#customerNameShow').text('name: ' + name);
+                        $('#customerPhoneShow').text('phone: ' + phone);
+
+                        $('#userModal').modal('hide');
+                    } else {
+                        toastr.error("Please enter both name and phone");
+                    }
+                });
+
                 function resetOrderSummary(summery) {
                     $('#summary-subtotal').text(summery.subtotal || "{{ money(0) }}");
                     $('#summary-vat').text(summery.vat_amount || "{{ money(0) }}");
                     $('#summary-discount').text(summery.discount || "{{ money(0) }}");
                     $('#summary-total').text(summery.total || "{{ money(0) }}");
                 }
-
-
-                $('#customerSubmit').on('click', function() {
-                    let formData = $('#customerForm').serialize();
-
-                    $.ajax({
-                        url: "{{ route('seller.pos.add_customer') }}",
-                        method: 'POST',
-                        data: formData,
-                        success: function(response) {
-                            if (response.status) {
-                                toastr.success(response.message);
-                                $('#customerForm')[0].reset();
-                                $('#userModal').modal('hide');
-                            } else {
-                                toastr.error(response.message);
-                            }
-                        },
-                        error: function(xhr) {
-                            let message = xhr.responseJSON?.message || "Something went wrong";
-                            toastr.error(message);
-                        }
-                    });
-                });
 
             });
         </script>
