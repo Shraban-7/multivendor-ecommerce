@@ -11,6 +11,10 @@ class HeroBanner extends Model
 
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'is_slider' => 'integer'
+    ];
+
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
