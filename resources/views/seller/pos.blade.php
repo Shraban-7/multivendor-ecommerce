@@ -237,16 +237,16 @@ foreach ($products as $product) {
         </div>
     </div>
 
-    <!--User Modal -->
+    <!--Customer Modal -->
     <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="userModalLabel">Add User</h5>
+                    <h5 class="modal-title" id="userModalLabel">Add Customer</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="userForm">
+                    <form id="customerForm">
                         <div class="mb-3">
                             <label for="userName" class="form-label">Name</label>
                             <input type="text" class="form-control" id="userName" name="name" required>
@@ -260,7 +260,7 @@ foreach ($products as $product) {
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" form="userForm" class="btn btn-primary">Save</button>
+                    <button type="submit"  class="btn btn-primary">Save</button>
                 </div>
             </div>
         </div>
@@ -699,6 +699,59 @@ foreach ($products as $product) {
                     $('#summary-discount').text(summery.discount || "{{ money(0) }}");
                     $('#summary-total').text(summery.total || "{{ money(0) }}");
                 }
+
+
+                $('#placeOrderBtn').on('click', function() {
+                    $.ajax({
+                        url: "{{ route('seller.pos.place_order') }}",
+                        method: 'POST',
+                        data: {
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(response) {
+                            if (response.status) {
+                                toastr.success("Order placed successfully!");
+                                $('.order-items tbody').html(`
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted">No items in cart</td>
+                                    </tr>
+                                `);
+
+                                summery = response;
+                                resetOrderSummary(summery);
+
+                                response.data.variants.forEach(v => {
+                                    $(`[data-variant-id="${v.id}"]`)
+                                        .closest("tr")
+                                        .find("td:nth-child(3)")
+                                        .text(v.availableStock);
+                                    if (v.availableStock <= 0) {
+                                        $(`[data-variant-id="${v.id}"]`)
+                                            .replaceWith(
+                                                '<button class="btn btn-sm btn-secondary disabled">Out of stock</button>'
+                                            );
+                                    }
+                                });
+
+                                if (response.data.invoice_id) {
+                                    let receiptUrl = "{{ route('receipt', ':invoice_id') }}"
+                                        .replace(':invoice_id', response.data.invoice_id);
+                                    $('<a>', {
+                                        href: receiptUrl,
+                                        target: '_blank'
+                                    })[0].click();
+                                }
+
+                            } else {
+                                toastr.error(response.message);
+                            }
+                        },
+                        error: function(xhr) {
+                            var message = xhr.responseJSON.message;
+                            toastr.error(message);
+                        }
+                    });
+                });
             });
         </script>
     @endpush

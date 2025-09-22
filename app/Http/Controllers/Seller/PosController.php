@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use App\Enums\CommissionType;
 use App\Models\ProductVariant;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class PosController extends Controller
@@ -383,5 +384,17 @@ class PosController extends Controller
             'invoice_id' => $order->invoice_id,
             'variants' => $updatedVariants
         ], "Order Placed Successfully");
+    }
+
+    public function addCustomer(Request $request)
+    {
+         $data = $request->validate([
+            'name'     => 'required|string|max:255',
+            'phone'    => 'required|string|max:20|unique:users',
+        ]);
+
+        User::create($data);
+
+        return successResponse('User added successfully');
     }
 }
