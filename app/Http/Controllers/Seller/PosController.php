@@ -375,7 +375,8 @@ class PosController extends Controller
             if (!$exist_customer) {
                 $customer = Customer::create([
                     'name'  => $data['customer_name'] ?? null,
-                    'phone' => $data['customer_phone'] ?? null
+                    'phone' => $data['customer_phone'] ?? null,
+                    'seller_id' => $seller->id
                 ]);
             } else {
                 $customer = $exist_customer;
