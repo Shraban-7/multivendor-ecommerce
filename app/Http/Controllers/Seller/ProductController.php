@@ -100,7 +100,7 @@ class ProductController extends Controller
 
         $variantData = [
             'product_id' => $product->id,
-            'sku' => $validated['sku'] ?? ProductVariant::gernerate_sku(),
+            'sku' => $validated['sku'] ?? ProductVariant::generate_sku(),
             'buying_price' => $validated['buying_price'],
             'selling_price' => $validated['selling_price'],
             'discount_type' => $validated['discount_type'] ?? null,

@@ -66,7 +66,7 @@
                         </div>
                         <div class="mb-3 col-md-3">
                             <label class="form-label">SKU</label>
-                            <input name="sku" type="text" value="{{ \App\Models\ProductVariant::gernerate_sku() }}" class="form-control">
+                            <input name="sku" type="text" value="{{ \App\Models\ProductVariant::generate_sku() }}" class="form-control">
                         </div>
                         <div class="mb-3 col-md-3">
                             <label class="form-label">Buying Price</label>

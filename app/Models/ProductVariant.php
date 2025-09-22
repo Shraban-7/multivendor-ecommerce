@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class ProductVariant extends Model
 {
@@ -49,9 +50,13 @@ class ProductVariant extends Model
         );
     }
 
-    public static function gernerate_sku()
+    public static function generateSku(): string
     {
-        return strtoupper(uniqid());
+        do {
+            $sku = strtoupper(Str::random(8));
+        } while (self::where('sku', $sku)->exists());
+
+        return $sku;
     }
 
     public function availableStock(): Attribute
