@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Enums\CommissionType;
 use App\Models\ProductVariant;
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 
 class SalesController extends Controller
 {
@@ -61,9 +62,9 @@ class SalesController extends Controller
             $sub_total += $itemTotal;
             $discount += $itemDiscount;
 
-            $diff = $item->quantity - $item->getOriginal('quantity'); 
+            $diff = $item->quantity - $item->getOriginal('quantity');
             if ($variant && $diff != 0) {
-                $variant->increment('stock_out', $diff); 
+                $variant->increment('stock_out', $diff);
                 $updatedVariants[] = [
                     'id' => $variant->id,
                     'availableStock' => $variant->availableStock,
@@ -125,10 +126,24 @@ class SalesController extends Controller
     public function delete($id)
     {
         $order = Order::find($id);
+        if (!$order) {
+            return response()->json(['message' => 'Order not found'], 404);
+        }
+
+        $orderItems = $order->items;
+
+        foreach ($orderItems as $item) {
+            $variant = ProductVariant::find($item->product_variant_id);
+            if ($variant) {
+                $variant->decrement('stock_out', $item->quantity);
+            }
+        }
+
         $order->delete();
 
-        return successResponse("Order Delete Successfully!");
+        return successResponse("Order Deleted Successfully!");
     }
+
 
     public function itemAdd(Request $request)
     {
@@ -208,12 +223,19 @@ class SalesController extends Controller
         $item = OrderItem::find($request->id);
         if (!$item) return errorResponse("Order item not found");
 
+        $variant = $item->variant;
+        if (!$variant) return errorResponse("Product variant not found");
+
         if ($request->action === 'increase') {
             $item->quantity += 1;
+            $variant->increment('stock_out', 1);
         } elseif ($request->action === 'decrease' && $item->quantity > 1) {
             $item->quantity -= 1;
+            $variant->decrement('stock_out', 1);
         }
+
         $item->save();
+        $variant->save();
 
         $orderItems = $item->order->items()->with('variant.product')->get();
 
@@ -243,16 +265,37 @@ class SalesController extends Controller
         $item = OrderItem::find($request->id);
         if (!$item) return errorResponse("Order item not found", 404);
 
+        $variant = ProductVariant::find($item->product_variant_id);
+
+        $variant_quantity = $item->quantity;
+
         $order = $item->order;
         $item->delete();
 
+        $variant->decrement('stock_out');
+
         $orderItems = $order->items()->with('variant.product')->get();
+
         $html = view('components.seller.pos-order-items', compact('orderItems'))->render();
 
         $subtotal = $orderItems->sum(fn($i) => $i->unit_price * $i->quantity);
         $vat_amount = $orderItems->sum(fn($i) => ($i->vat_percent * $i->unit_price / 100) * $i->quantity);
         $discount = $orderItems->sum(fn($i) => $i->discount);
         $total = $subtotal - $discount + $vat_amount;
+
+
+        if ($orderItems->count() == 0) {
+            $order->delete();
+
+            return apiResponse([
+                'html' => $html,
+                'subtotal' => money($subtotal),
+                'vat_amount' => money($vat_amount),
+                'discount' => money($discount),
+                'total' => money($total),
+                'redirect' => route('seller.pos.index'),
+            ], "Order item removed successfully");
+        }
 
         return apiResponse([
             'html' => $html,

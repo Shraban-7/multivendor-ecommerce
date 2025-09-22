@@ -181,13 +181,13 @@ foreach ($products as $product) {
                             <h5>Customer</h5>
                             <div class="row">
                                 <div class="col-md-6 mb-2 position-relative">
-                                    <input type="text" autocomplete="off" class="form-control form-control-sm" name="customer_name"
-                                        id="customerName" placeholder="Name">
+                                    <input type="text" autocomplete="off" class="form-control form-control-sm"
+                                        name="customer_name" id="customerName" placeholder="Name">
                                     <div class="dropdown-menu w-100" id="customerNameDropdown"></div>
                                 </div>
                                 <div class="col-md-6 mb-2 position-relative">
-                                    <input type="text" autocomplete="off" class="form-control form-control-sm" name="customer_phone"
-                                        id="customerPhone" placeholder="Phone">
+                                    <input type="text" autocomplete="off" class="form-control form-control-sm"
+                                        name="customer_phone" id="customerPhone" placeholder="Phone">
                                     <div class="dropdown-menu w-100" id="customerPhoneDropdown"></div>
                                 </div>
                             </div>
@@ -643,6 +643,11 @@ foreach ($products as $product) {
                                 modal.hide();
 
                                 deleteOrderItemId = null;
+
+                                if (response.data && response.data.redirect) {
+                                    window.location.href = response.data.redirect;
+                                } 
+
                             } else {
                                 toastr.error(response.message);
                             }
@@ -756,7 +761,7 @@ foreach ($products as $product) {
                             }
                         });
 
-                    }, 300); 
+                    }, 300);
 
                     $input.on('input', fetchCustomers);
 
