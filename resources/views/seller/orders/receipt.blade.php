@@ -64,7 +64,7 @@
     <p>
         Invoice No : {{ $order->invoice_id }}<br>
         Date : {{ $order->created_at->format('d-m-Y  h:i A') }}<br>
-        Customer : {{ $order->customer->name ?? '' }}
+        Customer : {{ $order->customer->name ?? '' }} {{ $order->customer->phone ?? '' }}
     </p>
     <div class="line"></div>
 
@@ -144,7 +144,7 @@
     <div class="center">
         <p>
             Thank you for shopping!<br>
-            Visit Again ★ {{ $order->seller->business_name }} ★
+            Visit: www.slash-mart.com
         </p>
     </div>
 
