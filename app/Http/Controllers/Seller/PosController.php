@@ -369,20 +369,4 @@ class PosController extends Controller
             'variants' => $updatedVariants
         ], "Order Placed Successfully");
     }
-
-    public function addCustomer(Request $request)
-    {
-         $data = $request->validate([
-            'name'     => 'required|string|max:255',
-            'phone'    => 'required|string|max:20|unique:users',
-        ]);
-
-        $seller = Seller::find(get_seller_id());
-
-        $data['seller_id'] = $seller->id;
-
-        Customer::create($data);
-
-        return successResponse('Customer added successfully!');
-    }
 }
