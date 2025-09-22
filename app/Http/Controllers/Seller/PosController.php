@@ -60,6 +60,12 @@ class PosController extends Controller
             $total = $subtotal - $discount + $vat_amount;
         }
 
+        $orders = Order::where('seller_id', get_seller_id())
+            ->whereDate('created_at', Carbon::today())
+            ->with('items.variant.product')
+            ->latest('id')
+            ->get();
+
         return view('seller.pos.index', compact(
             'products',
             'categories',
@@ -68,7 +74,8 @@ class PosController extends Controller
             'subtotal',
             'discount',
             'vat_amount',
-            'total'
+            'total',
+            'orders'
         ));
     }
 

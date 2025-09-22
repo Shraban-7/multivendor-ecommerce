@@ -1,7 +1,7 @@
 @forelse ($orderItems as $item)
     <tr class="order-item-{{ $item->id }}">
         <td class="small">
-            <p><strong>{{ $item->variant->product->name }}</strong></p>
+            <p class="fw-bold mb-0">{{ $item->variant->product->name }}</p>
             <small class="text-muted">{{ $item->variant->fullName }}</small>
         </td>
         <td class="text-center">

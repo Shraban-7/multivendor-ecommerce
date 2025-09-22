@@ -24,17 +24,6 @@ class SaleController extends Controller
         return view('seller.pos.orders', compact('orders'));
     }
 
-    public function todaySales()
-    {
-        $orders = Order::where('seller_id', get_seller_id())
-            ->whereDate('created_at', Carbon::today())
-            ->with('items.variant.product')
-            ->latest('id')
-            ->get();
-
-        return view('components.seller.sales-today', compact('orders'));
-    }
-
     public function update(Request $request)
     {
         $orderId = $request->input('order_id', $request->query('order_id'));

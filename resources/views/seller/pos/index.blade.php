@@ -75,14 +75,65 @@ foreach ($products as $product) {
 
                         <div class="modal fade" id="salesModal" tabindex="-1" aria-labelledby="salesModalLabel"
                             aria-hidden="true">
-                            <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered"> 
+                            <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="salesModalLabel">Today's Sales</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
                                     <div class="modal-body" id="salesContent">
-                                        <p class="text-muted">Loading...</p>
+                                        @if ($orders->isEmpty())
+                                            <p class="text-center text-muted">No sales today.</p>
+                                        @else
+                                            <table class="table table-sm table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Invoice Id</th>
+                                                        <th>Customer</th>
+                                                        <th>Total</th>
+                                                        <th>Time</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($orders as $index => $order)
+                                                        <tr>
+                                                            <td>{{ $order->invoice_id }}</td>
+                                                            <td>{{ $order->customer->name ?? '' }}</td>
+                                                            <td>{{ money($order->total) }}</td>
+                                                            <td>{{ $order->created_at->format('h:i A') }}</td>
+                                                            <td>
+                                                                <div class="d-flex gap-1 overflow-auto">
+                                                                    <a href="{{ route('seller.orders.details', $order->invoice_id) }}"
+                                                                        class="btn btn-light border btn-sm d-flex align-items-center">
+                                                                        <i data-feather="clipboard"
+                                                                            class="icon-xs me-1"></i> Details
+                                                                    </a>
+                                                                    <a href="{{ route('seller.pos.index', ['order_id' => $order->id]) }}"
+                                                                        class="btn btn-light border btn-sm d-flex align-items-center">
+                                                                        <i data-feather="edit" class="icon-xs me-1"></i>
+                                                                        Edit
+                                                                    </a>
+                                                                    <a href="{{ route('invoice', $order->invoice_id) }}"
+                                                                        target="_blank"
+                                                                        class="btn btn-light border btn-sm d-flex align-items-center">
+                                                                        <i data-feather="download" class="icon-xs me-1"></i>
+                                                                        Invoice
+                                                                    </a>
+                                                                    <a href="{{ route('receipt', $order->invoice_id) }}"
+                                                                        target="_blank"
+                                                                        class="btn btn-light border btn-sm d-flex align-items-center">
+                                                                        <i data-feather="printer" class="icon-xs me-1"></i>
+                                                                        Receipt
+                                                                    </a>
+                                                                </div>
+                                                            </td>
+
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        @endif
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary btn-sm"
@@ -107,8 +158,8 @@ foreach ($products as $product) {
                                         data-bs-target="#variantModal-{{ $product->id }}">
                                         <div class="d-flex p-2">
                                             <div style="width: 48px; height: 48px; flex-shrink: 0;">
-                                                <img src="{{ storage_url($product->thumbnail) }}" alt="{{ $product->name }}"
-                                                    class="img-fluid rounded"
+                                                <img src="{{ storage_url($product->thumbnail) }}"
+                                                    alt="{{ $product->name }}" class="img-fluid rounded"
                                                     style="object-fit: cover; width: 100%; height: 100%;">
                                             </div>
                                             <div class="ms-2 flex-grow-1 overflow-hidden">
@@ -804,15 +855,6 @@ foreach ($products as $product) {
                     $('#summary-discount').text(summery.discount || "{{ money(0) }}");
                     $('#summary-total').text(summery.total || "{{ money(0) }}");
                 }
-
-                $('#sales').on('click', function() {
-                    $('#salesContent').html('<p class="text-muted">Loading...</p>');
-                    $.get("{{ route('seller.pos.sales.today') }}", function(response) {
-                        $('#salesContent').html(response);
-                    });
-                });
-
-
             });
         </script>
     @endpush
