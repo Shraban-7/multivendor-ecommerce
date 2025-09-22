@@ -163,16 +163,14 @@ foreach ($products as $product) {
                     <div class="card-body p-0">
                         <!-- Customer Info -->
                         <div class="p-3 border-bottom">
-                            <div class="d-flex align-items-center mb-2">
-                                <span class="me-2 fw-semibold">Customer:</span>
-                                <div class="flex-grow-1">
-                                    <span id="customerNameShow" class="me-3 text-muted"></span>
-                                    <span id="customerPhoneShow" class="text-muted"></span>
+                            <h5>Customer</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <input type="text" class="form-control form-control-sm" id="customerName" name="name" placeholder="Name">
                                 </div>
-                                <button class="btn btn-light border btn-sm ms-2 text-nowrap" type="button" data-bs-toggle="modal"
-                                    data-bs-target="#customerModal">
-                                    Add Customer
-                                </button>
+                                <div class="col-md-6 mb-2">
+                                    <input type="text" class="form-control form-control-sm" id="customerPhone" name="phone" placeholder="Phone">
+                                </div>
                             </div>
                         </div>
                         <!-- Order Items -->
