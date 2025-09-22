@@ -251,11 +251,11 @@ foreach ($products as $product) {
                     <form id="customerForm">
                         <div class="mb-3">
                             <label for="userName" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="customerName" name="name" required>
+                            <input type="text" class="form-control" id="customerName" name="name">
                         </div>
                         <div class="mb-3">
                             <label for="userPhone" class="form-label">Mobile</label>
-                            <input type="text" class="form-control" id="customerPhone" name="phone" required>
+                            <input type="text" class="form-control" id="customerPhone" name="phone">
                         </div>
                     </form>
                 </div>

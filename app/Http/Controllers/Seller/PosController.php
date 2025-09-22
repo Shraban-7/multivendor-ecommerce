@@ -237,8 +237,8 @@ class PosController extends Controller
     public function placeOrder(Request $request)
     {
         $data = $request->validate([
-            'name'     => 'required|string|max:255',
-            'phone'    => 'required|string|max:20|unique:users',
+            'name'     => 'nullable|string|max:255',
+            'phone'    => 'nullable|string|max:20',
         ]);
 
         $seller = Seller::find(get_seller_id());
@@ -358,7 +358,13 @@ class PosController extends Controller
             'total_sold' => $sellerOrderCount,
         ]);
 
-        $customer = Customer::create($data);
+        $exist_customer = Customer::where('name',$data['name'])->where('phone',$data['phone'])->first();
+
+        if (!$exist_customer) {
+            $customer = Customer::create($data);
+        }else{
+            $customer = $exist_customer;
+        }
 
         $order->update([
             'customer_id' => $customer->id
