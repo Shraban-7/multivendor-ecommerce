@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Seller;
 
+use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Order;
 use App\Models\Seller;
 use App\Models\PosCart;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Customer;
 use Dotenv\Parser\Value;
 use App\Models\OrderItem;
 use App\Enums\OrderStatus;
@@ -15,8 +18,6 @@ use Illuminate\Http\Request;
 use App\Enums\CommissionType;
 use App\Models\ProductVariant;
 use App\Http\Controllers\Controller;
-use App\Models\Customer;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class PosController extends Controller
@@ -59,7 +60,7 @@ class PosController extends Controller
             $total = $subtotal - $discount + $vat_amount;
         }
 
-        return view('seller.pos', compact(
+        return view('seller.pos.index', compact(
             'products',
             'categories',
             'cartItems',

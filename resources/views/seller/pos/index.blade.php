@@ -62,9 +62,32 @@ foreach ($products as $product) {
                             <div class="col-md-8">
                                 <h4 class="mb-0">Products</h4>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-4 d-flex justify-content-end gap-2">
                                 <div class="input-group input-group-sm">
                                     <input type="text" id="skuSearch" class="form-control" placeholder="Barcode/SKU">
+                                </div>
+                                <button id="sales" class="border btn btn-sm btn-dark" data-bs-toggle="modal"
+                                    data-bs-target="#salesModal">
+                                    Sales
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="modal fade" id="salesModal" tabindex="-1" aria-labelledby="salesModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered"> 
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="salesModalLabel">Today's Sales</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body" id="salesContent">
+                                        <p class="text-muted">Loading...</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary btn-sm"
+                                            data-bs-dismiss="modal">Close</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -646,7 +669,7 @@ foreach ($products as $product) {
 
                                 if (response.data && response.data.redirect) {
                                     window.location.href = response.data.redirect;
-                                } 
+                                }
 
                             } else {
                                 toastr.error(response.message);
@@ -781,6 +804,14 @@ foreach ($products as $product) {
                     $('#summary-discount').text(summery.discount || "{{ money(0) }}");
                     $('#summary-total').text(summery.total || "{{ money(0) }}");
                 }
+
+                $('#sales').on('click', function() {
+                    $('#salesContent').html('<p class="text-muted">Loading...</p>');
+                    $.get("{{ route('seller.pos.sales.today') }}", function(response) {
+                        $('#salesContent').html(response);
+                    });
+                });
+
 
             });
         </script>

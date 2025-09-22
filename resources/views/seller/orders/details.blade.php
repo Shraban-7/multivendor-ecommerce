@@ -153,14 +153,28 @@
                             <h5 class="mb-0">Customer Information</h5>
                         </div>
                         <div class="card-body">
-                            <h6 class="fw-bold">{{ $order->user->name }}</h6>
-                            <p class="mb-1"><i data-feather="mail" class="icon-xs me-1"></i> {{ $order->user->email }}
+                            <h6 class="fw-bold">{{ $order->user->name ?? ($order->customer->name ?? '') }}</h6>
+                            <p class="mb-1"><i data-feather="mail" class="icon-xs me-1"></i>
+                                {{ $order->user->email ?? '' }}
                             </p>
-                            <p class="mb-1"><i data-feather="phone" class="icon-xs me-1"></i> {{ $order->user->phone }}
+                            <p class="mb-1"><i data-feather="phone" class="icon-xs me-1"></i>
+                                {{ $order->user->phone ?? ($order->customer->phone ?? '') }}
                             </p>
-                            <p class="mb-0"><i data-feather="user" class="icon-xs me-1"></i> Customer since
-                                {{ \Carbon\Carbon::parse($order->user->created_at)->format('M Y') }}
+                            @php
+                                $createdAt = null;
+
+                                if ($order->user) {
+                                    $createdAt = \Carbon\Carbon::parse($order->user->created_at)->format('M Y');
+                                } elseif ($order->customer) {
+                                    $createdAt = \Carbon\Carbon::parse($order->customer->created_at)->format('M Y');
+                                }
+                            @endphp
+
+                            <p class="mb-0">
+                                <i data-feather="user" class="icon-xs me-1"></i>
+                                Customer since {{ $createdAt ?? '—' }}
                             </p>
+
                         </div>
                     </div>
                 </div>

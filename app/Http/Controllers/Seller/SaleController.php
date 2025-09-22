@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Seller;
 
+use Carbon\Carbon;
 use App\Models\Order;
 use App\Models\Seller;
+use App\Models\Product;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use App\Enums\CommissionType;
 use App\Models\ProductVariant;
 use App\Http\Controllers\Controller;
-use App\Models\Product;
 
 class SaleController extends Controller
 {
@@ -20,7 +21,18 @@ class SaleController extends Controller
             ->latest('id')
             ->get();
 
-        return view('seller.orders.pos-orders', compact('orders'));
+        return view('seller.pos.orders', compact('orders'));
+    }
+
+    public function todaySales()
+    {
+        $orders = Order::where('seller_id', get_seller_id())
+            ->whereDate('created_at', Carbon::today())
+            ->with('items.variant.product')
+            ->latest('id')
+            ->get();
+
+        return view('components.seller.sales-today', compact('orders'));
     }
 
     public function update(Request $request)
