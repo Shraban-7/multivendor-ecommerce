@@ -116,4 +116,8 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
     });
 
     Route::post('banner-image/{image}/delete', [SettingController::class, 'deleteImage'])->name('bannerImages.delete');
+    Route::get('print-barcode', function()
+    {
+        return '';
+    })->name('print_barcode');
 });

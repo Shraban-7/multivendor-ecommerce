@@ -64,8 +64,7 @@ foreach ($products as $product) {
 
                         <div class="row row-cols-2 row-cols-lg-5 g-2 bg-light py-2" id="product-row">
                             @foreach ($products as $product)
-                                <div class="col product-card-wrapper"
-                                    data-product-id="{{ $product->id }}">
+                                <div class="col product-card-wrapper" data-product-id="{{ $product->id }}">
                                     <div class="card product-card h-100" role="button" data-bs-toggle="modal"
                                         data-bs-target="#variantModal-{{ $product->id }}">
                                         <div class="d-flex p-2">
@@ -82,7 +81,8 @@ foreach ($products as $product) {
                                                     <span class="text-muted">{{ $product->variants->count() }}
                                                         variants</span>
                                                     @if ($product->total_stock > 0)
-                                                        <span class="text-muted stock">({{ $product->total_stock }} {{ $product->unit->short_name }})</span>
+                                                        <span class="text-muted stock">({{ $product->total_stock }}
+                                                            {{ $product->unit->short_name }})</span>
                                                     @else
                                                         <span class="text-danger">(stock out)</span>
                                                     @endif
@@ -166,12 +166,13 @@ foreach ($products as $product) {
                             <div class="input-group input-group-sm mb-2">
                                 <span class="input-group-text">Customer</span>
                                 <input type="text" class="form-control" placeholder="Search customer...">
-                                <button class="btn btn-outline-secondary" type="button">
+                                <!-- Button trigger modal -->
+                                <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal"
+                                    data-bs-target="#userModal">
                                     <i class="bi bi-plus"></i>
                                 </button>
                             </div>
                         </div>
-
                         <!-- Order Items -->
                         <div class="order-items" style="max-height: 450px; overflow-y: auto;">
                             <table class="table table-hover mb-0">
@@ -231,6 +232,35 @@ foreach ($products as $product) {
 
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--User Modal -->
+    <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userModalLabel">Add User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="userForm">
+                        <div class="mb-3">
+                            <label for="userName" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="userName" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="userMobile" class="form-label">Mobile</label>
+                            <input type="text" class="form-control" id="userMobile" name="phone"
+                                required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" form="userForm" class="btn btn-primary">Save</button>
                 </div>
             </div>
         </div>
@@ -649,7 +679,7 @@ foreach ($products as $product) {
                                     let timer = setInterval(function() {
                                         if (receiptWindow.closed) {
                                             clearInterval(timer);
-                                            location.reload(); 
+                                            location.reload();
                                         }
                                     }, 500);
                                 }

@@ -92,6 +92,10 @@
                  </div>
              </li>
 
+             <x-dashboard.nav-item-link :route="'seller.print_barcode'">
+                 <i data-feather="printer" class="nav-icon icon-xs me-2"></i> Print Barcode
+             </x-dashboard.nav-item-link>
+
              <li class="nav-item">
                  <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center"
                      href="#!" data-bs-toggle="collapse" data-bs-target="#navCampaigns"
