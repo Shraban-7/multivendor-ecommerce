@@ -47,8 +47,10 @@
             @endforeach
         </tbody>
     </table>
-    <div class="d-flex justify-content-end">
-        {{ $stockHistories->links() }}
-    </div>
 </div>
+
+<div class="mt-3">
+    {{ $stockHistories->links() }}
+</div>
+
 @endsection
