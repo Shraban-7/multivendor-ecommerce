@@ -26,8 +26,19 @@ class DashboardController extends Controller
         $data['brands'] = BrandResource::collection(Brand::get());
         $data['categories'] = CategoryResource::collection(Category::category()->get());
 
-        $newProducts = Product::latest('id')->take(16)->get();
-        $trendingProducts = Product::trending()->whereHas('variants')->take(24)->get();
+        $newProducts = Product::withDefaultRelations()
+            ->active()
+            ->withAvg('reviews', 'rating')
+            ->withCount('reviews')
+            ->orderByDesc('id')
+            ->limit(16)
+            ->get();
+
+        $trendingProducts = Product::withDefaultRelations()
+            ->active()
+            ->trending()
+            ->limit(16)
+            ->get();
 
         $data['products'] = array(
             'trending' => ProductListResource::collection($trendingProducts),
