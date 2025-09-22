@@ -247,20 +247,20 @@ foreach ($products as $product) {
                 </div>
                 <div class="modal-body">
                     <form id="customerForm">
+                        @csrf
                         <div class="mb-3">
                             <label for="userName" class="form-label">Name</label>
                             <input type="text" class="form-control" id="userName" name="name" required>
                         </div>
                         <div class="mb-3">
                             <label for="userMobile" class="form-label">Mobile</label>
-                            <input type="text" class="form-control" id="userMobile" name="phone"
-                                required>
+                            <input type="text" class="form-control" id="userMobile" name="phone" required>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit"  class="btn btn-primary">Save</button>
+                    <button type="submit" id="customerSubmit" class="btn btn-primary">Save</button>
                 </div>
             </div>
         </div>
@@ -701,57 +701,29 @@ foreach ($products as $product) {
                 }
 
 
-                $('#placeOrderBtn').on('click', function() {
+                $('#customerSubmit').on('click', function() {
+                    let formData = $('#customerForm').serialize();
+
                     $.ajax({
-                        url: "{{ route('seller.pos.place_order') }}",
+                        url: "{{ route('seller.pos.add_customer') }}",
                         method: 'POST',
-                        data: {
-                            _token: "{{ csrf_token() }}"
-                        },
+                        data: formData,
                         success: function(response) {
                             if (response.status) {
-                                toastr.success("Order placed successfully!");
-                                $('.order-items tbody').html(`
-                                    <tr>
-                                        <td colspan="4" class="text-center text-muted">No items in cart</td>
-                                    </tr>
-                                `);
-
-                                summery = response;
-                                resetOrderSummary(summery);
-
-                                response.data.variants.forEach(v => {
-                                    $(`[data-variant-id="${v.id}"]`)
-                                        .closest("tr")
-                                        .find("td:nth-child(3)")
-                                        .text(v.availableStock);
-                                    if (v.availableStock <= 0) {
-                                        $(`[data-variant-id="${v.id}"]`)
-                                            .replaceWith(
-                                                '<button class="btn btn-sm btn-secondary disabled">Out of stock</button>'
-                                            );
-                                    }
-                                });
-
-                                if (response.data.invoice_id) {
-                                    let receiptUrl = "{{ route('receipt', ':invoice_id') }}"
-                                        .replace(':invoice_id', response.data.invoice_id);
-                                    $('<a>', {
-                                        href: receiptUrl,
-                                        target: '_blank'
-                                    })[0].click();
-                                }
-
+                                toastr.success(response.message);
+                                $('#customerForm')[0].reset();
+                                $('#userModal').modal('hide');
                             } else {
                                 toastr.error(response.message);
                             }
                         },
                         error: function(xhr) {
-                            var message = xhr.responseJSON.message;
+                            let message = xhr.responseJSON?.message || "Something went wrong";
                             toastr.error(message);
                         }
                     });
                 });
+
             });
         </script>
     @endpush
