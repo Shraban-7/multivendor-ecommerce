@@ -46,7 +46,7 @@ class PosController extends Controller
                 $orderItems = $order->items;
                 $subtotal = $orderItems->sum(fn($item) => $item->unit_price * $item->quantity);
                 $vat_amount = $orderItems->sum(fn($item) => ($item->variant->product->vat_percent * $item->price / 100) * $item->quantity);
-                $discount = $orderItems->sum(fn($item) => ($item->variant->discounted_price ? $item->variant->selling_price - $item->variant->discounted_price :0) * $item->quantity);
+                $discount = $orderItems->sum(fn($item) => ($item->variant->discounted_price ? $item->variant->selling_price - $item->variant->discounted_price : 0) * $item->quantity);
                 $total = $subtotal + $vat_amount - $discount;
             }
         } else {
@@ -55,7 +55,7 @@ class PosController extends Controller
 
             $subtotal = $cartItems->sum(fn($item) => $item->price * $item->quantity);
             $vat_amount = $cartItems->sum(fn($item) => ($item->variant->product->vat_percent * $item->price / 100) * $item->quantity);
-            $discount = $cartItems->sum(fn($item) => ($item->variant->discounted_price ? $item->variant->selling_price - $item->variant->discounted_price :0) * $item->quantity);
+            $discount = $cartItems->sum(fn($item) => ($item->variant->discounted_price ? $item->variant->selling_price - $item->variant->discounted_price : 0) * $item->quantity);
             $total = $subtotal - $discount + $vat_amount;
         }
 
@@ -237,8 +237,8 @@ class PosController extends Controller
     public function placeOrder(Request $request)
     {
         $data = $request->validate([
-            'name'     => 'nullable|string|max:255',
-            'phone'    => 'nullable|string|max:20',
+            'customer_name'  => 'nullable|string|max:255|required_with:customer_phone',
+            'customer_phone' => 'nullable|string|max:20|required_with:customer_name',
         ]);
 
         $seller = Seller::find(get_seller_id());
@@ -358,21 +358,53 @@ class PosController extends Controller
             'total_sold' => $sellerOrderCount,
         ]);
 
-        $exist_customer = Customer::where('name',$data['name'])->where('phone',$data['phone'])->first();
+        if (!empty($data['customer_name']) || !empty($data['customer_phone'])) {
 
-        if (!$exist_customer) {
-            $customer = Customer::create($data);
-        }else{
-            $customer = $exist_customer;
+            $exist_customer = Customer::where('name', $data['customer_name'] ?? null)
+                ->where('phone', $data['customer_phone'] ?? null)
+                ->first();
+
+            if (!$exist_customer) {
+                $customer = Customer::create([
+                    'name'  => $data['customer_name'] ?? null,
+                    'phone' => $data['customer_phone'] ?? null
+                ]);
+            } else {
+                $customer = $exist_customer;
+            }
+
+            $order->update([
+                'customer_id' => $customer->id
+            ]);
+        } else {
+            $order->update([
+                'customer_id' => null
+            ]);
         }
-
-        $order->update([
-            'customer_id' => $customer->id
-        ]);
 
         return apiResponse([
             'invoice_id' => $order->invoice_id,
             'variants' => $updatedVariants
         ], "Order Placed Successfully");
+    }
+
+    public function customerSearch(Request $request)
+    {
+        $term = $request->get('term', '');
+        $customers = Customer::where('name', 'LIKE', "%{$term}%")
+            ->orWhere('phone', 'LIKE', "%{$term}%")
+            ->take(10)
+            ->get();
+
+        $results = [];
+        foreach ($customers as $c) {
+            $results[] = [
+                'label' => $c->name . ' (' . $c->phone . ')',
+                'value' => $c->name,
+                'phone' => $c->phone
+            ];
+        }
+
+        return response()->json($results);
     }
 }

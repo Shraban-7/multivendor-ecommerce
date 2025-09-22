@@ -20,6 +20,21 @@
         max-height: calc(100vh - 250px);
         overflow-y: scroll;
     }
+
+    .dropdown-menu {
+        display: none;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    .dropdown-menu.show {
+        display: block;
+    }
+
+    .dropdown-item {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+    }
 </style>
 
 <?php
@@ -165,11 +180,15 @@ foreach ($products as $product) {
                         <div class="p-3 border-bottom">
                             <h5>Customer</h5>
                             <div class="row">
-                                <div class="col-md-6 mb-2">
-                                    <input type="text" class="form-control form-control-sm" id="customerName" name="name" placeholder="Name">
+                                <div class="col-md-6 mb-2 position-relative">
+                                    <input type="text" autocomplete="off" class="form-control form-control-sm" name="customer_name"
+                                        id="customerName" placeholder="Name">
+                                    <div class="dropdown-menu w-100" id="customerNameDropdown"></div>
                                 </div>
-                                <div class="col-md-6 mb-2">
-                                    <input type="text" class="form-control form-control-sm" id="customerPhone" name="phone" placeholder="Phone">
+                                <div class="col-md-6 mb-2 position-relative">
+                                    <input type="text" autocomplete="off" class="form-control form-control-sm" name="customer_phone"
+                                        id="customerPhone" placeholder="Phone">
+                                    <div class="dropdown-menu w-100" id="customerPhoneDropdown"></div>
                                 </div>
                             </div>
                         </div>
@@ -232,34 +251,6 @@ foreach ($products as $product) {
 
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!--Customer Modal -->
-    <div class="modal fade" id="customerModal" tabindex="-1" aria-labelledby="customerModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="customerModalLabel">Add Customer</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="customerForm">
-                        <div class="mb-3">
-                            <label for="userName" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="customerName" name="name">
-                        </div>
-                        <div class="mb-3">
-                            <label for="userPhone" class="form-label">Mobile</label>
-                            <input type="text" class="form-control" id="customerPhone" name="phone">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" id="setCustomerBtn" class="btn btn-secondary"
-                        data-bs-dismiss="modal">Done</button>
                 </div>
             </div>
         </div>
@@ -517,12 +508,15 @@ foreach ($products as $product) {
                 });
 
                 $('#placeOrderBtn').on('click', function() {
-                    let name = $('#customerName').val();
-                    let phone = $('#customerPhone').val();
+                    let name = $('#customerName').val().trim();
+                    let phone = $('#customerPhone').val().trim();
 
-                    if (!name || !phone) {
-                        toastr.error("Please enter customer name and phone before placing order");
-                        $('#userModal').modal('show');
+                    if (name && !phone) {
+                        toastr.error("Phone is required when Name is provided.");
+                        return;
+                    }
+                    if (phone && !name) {
+                        toastr.error("Name is required when Phone is provided.");
                         return;
                     }
 
@@ -530,16 +524,17 @@ foreach ($products as $product) {
                         url: "{{ route('seller.pos.place_order') }}",
                         method: 'POST',
                         data: {
-                            name: name,
-                            phone: phone,
+                            customer_name: name,
+                            customer_phone: phone,
+                            new_customer: !customerExists,
                             _token: "{{ csrf_token() }}"
                         },
                         success: function(response) {
                             if (response.status) {
                                 toastr.success("Order placed successfully!");
-                                $('#customerName').text('name: —');
-                                $('#customerPhone').text('phone: —');
-                                $('#customerForm')[0].reset();
+                                $('#customerName').val('');
+                                $('#customerPhone').val('');
+                                customerExists = false
 
                                 $('.order-items tbody').html(`
                                     <tr>
@@ -585,8 +580,6 @@ foreach ($products as $product) {
                     });
                 });
 
-
-                // Update quantity for order items
                 $(document).on('click', '.update-order-qty-btn', debounce(function() {
                     let itemId = $(this).data('id');
                     let action = $(this).data('action');
@@ -620,7 +613,6 @@ foreach ($products as $product) {
                     });
                 }, 500));
 
-                // Remove order item
                 let deleteOrderItemId = null;
 
                 $(document).on('click', '.delete-order-item-btn', function() {
@@ -709,19 +701,74 @@ foreach ($products as $product) {
                     });
                 });
 
-                $('#setCustomerBtn').on('click', function() {
-                    let name = $('#customerName').val();
-                    let phone = $('#customerPhone').val();
+                var customerExists = false;
 
-                    if (name && phone) {
-                        $('#customerNameShow').text(name);
-                        $('#customerPhoneShow').text(phone);
+                function setupDropdown($input, $dropdown, type) {
+                    var fetchCustomers = debounce(function() {
+                        var val = $input.val().trim();
+                        $dropdown.empty().removeClass('show');
 
-                        $('#userModal').modal('hide');
-                    } else {
-                        toastr.error("Please enter both name and phone");
-                    }
-                });
+                        if (val.length < 2) {
+                            customerExists = false;
+                            return;
+                        }
+
+                        $.ajax({
+                            url: "{{ route('seller.pos.customers.search') }}",
+                            data: {
+                                term: val
+                            },
+                            dataType: 'json',
+                            success: function(data) {
+                                if (!data.length) return;
+
+                                $.each(data, function(i, c) {
+                                    var displayText = type === 'name' ?
+                                        c.value + ' (' + c.phone + ')' :
+                                        c.phone + ' (' + c.value + ')';
+
+                                    var $item = $(
+                                            '<button class="dropdown-item py-1 px-2" type="button">'
+                                        )
+                                        .text(displayText)
+                                        .data('name', c.value)
+                                        .data('phone', c.phone)
+                                        .on('click', function() {
+                                            if (type === 'name') {
+                                                $('#customerName').val($(this).data(
+                                                    'name'));
+                                                $('#customerPhone').val($(this).data(
+                                                    'phone'));
+                                            } else {
+                                                $('#customerPhone').val($(this).data(
+                                                    'phone'));
+                                                $('#customerName').val($(this).data(
+                                                    'name'));
+                                            }
+                                            customerExists = true;
+                                            $dropdown.removeClass('show');
+                                        });
+
+                                    $dropdown.append($item);
+                                });
+
+                                $dropdown.addClass('show');
+                            }
+                        });
+
+                    }, 300); 
+
+                    $input.on('input', fetchCustomers);
+
+                    $(document).on('click', function(e) {
+                        if (!$(e.target).closest($input).length && !$(e.target).closest($dropdown).length) {
+                            $dropdown.removeClass('show');
+                        }
+                    });
+                }
+
+                setupDropdown($('#customerName'), $('#customerNameDropdown'), 'name');
+                setupDropdown($('#customerPhone'), $('#customerPhoneDropdown'), 'phone');
 
                 function resetOrderSummary(summery) {
                     $('#summary-subtotal').text(summery.subtotal || "{{ money(0) }}");

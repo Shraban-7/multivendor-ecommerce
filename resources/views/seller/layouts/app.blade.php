@@ -19,6 +19,7 @@
 
     <!-- Datatable -->
     <link rel="stylesheet" href="{{ asset('assets/dashboard/libs/data-table/datatables.min.css') }}">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <!-- <link href="assets/dashboard/libs/@mdi/font/css/materialdesignicons.min.css" rel="stylesheet" />
         <link href="assets/dashboard/libs/prismjs/themes/okaidia.css" rel="stylesheet"> -->
     @stack('styles')
@@ -67,6 +68,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Toastr JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 
     @stack('scripts')
     <script>
