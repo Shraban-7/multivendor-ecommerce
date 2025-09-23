@@ -27,6 +27,10 @@ class SaleController extends Controller
     public function update(Request $request)
     {
         $orderId = $request->input('order_id', $request->query('order_id'));
+        $data = $request->validate([
+            'paid' => 'nullable|numeric',
+            'due' => 'nullable|numeric',
+        ]);
 
         $order = Order::where('id', $orderId)
             ->where('seller_id', get_seller_id())
@@ -101,7 +105,8 @@ class SaleController extends Controller
             'discount' => $discount,
             'vat_amount' => $vat_amount,
             'payable' => $payableAmount,
-            'due' => $payableAmount,
+            'paid' => $data['paid'],
+            'due' => $data['due'],
             'commission_type' => $seller->commission_type,
             'commission_amount' => $seller->commission_amount,
             'seller_earnings' => $sellerEarning,

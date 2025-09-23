@@ -323,6 +323,30 @@ $products = $products->sortByDesc('total_stock');
                                 <span>Total:</span>
                                 <span id="summary-total">{{ money($total) }}</span>
                             </div>
+                            <div class="d-flex justify-content-between mb-2 fw-bold">
+                                <span>Due:</span>
+                                <span id="due-amount" data-total="{{ $total }}">{{ money($total) }}</span>
+                            </div>
+
+                            <div class="row g-2 mb-2">
+                                <div class="col-12">
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-text">Paid</span>
+                                        <input type="number" min="0" step="0.01" class="form-control"
+                                            id="paid-amount">
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-text">Payment Type</span>
+                                        <select class="form-select" id="payment-type">
+                                            <option value="cash" selected>Cash</option>
+                                            <option value="card">Card</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
 
                             <!-- Payment Buttons -->
                             <div class="d-grid gap-2">
@@ -442,6 +466,10 @@ $products = $products->sortByDesc('total_stock');
                     let button = $(this);
                     let variantId = $(this).data('variant-id');
                     let quantity = $(this).data('quantity') || 1;
+                    let btnText = button.find('.btn-text');
+                    let spinner = button.find('.spinner-border');
+                    btnText.addClass('d-none');
+                    spinner.removeClass('d-none');
 
                     addToCart(variantId, quantity, orderId, button);
                 }, 1000));
@@ -453,8 +481,6 @@ $products = $products->sortByDesc('total_stock');
 
                     let btnText = button.find('.btn-text');
                     let spinner = button.find('.spinner-border');
-                    btnText.addClass('d-none');
-                    spinner.removeClass('d-none');
 
                     $.ajax({
                         url: url,
@@ -510,6 +536,9 @@ $products = $products->sortByDesc('total_stock');
                             if (response.status) {
                                 toastr.success("Cart update successfully!");
                                 $('.order-items tbody').html(response.data.html);
+                                if (typeof feather !== 'undefined') {
+                                    feather.replace();
+                                }
                                 summery = response.data;
                                 resetOrderSummary(summery);
                             } else {
@@ -609,6 +638,8 @@ $products = $products->sortByDesc('total_stock');
                     let originalText = button.text();
                     let name = $('#customerName').val().trim();
                     let phone = $('#customerPhone').val().trim();
+                    let paid = parseFloat($('#paid-amount').val()) || 0;
+                    let due = parseFloat($('#due-amount').text().replace(/[^0-9.-]+/g, "")) || 0;
 
                     if (name && !phone) {
                         toastr.error("Phone is required when Name is provided.");
@@ -628,6 +659,8 @@ $products = $products->sortByDesc('total_stock');
                             customer_name: name,
                             customer_phone: phone,
                             new_customer: !customerExists,
+                            paid: paid,
+                            due: due,
                             _token: "{{ csrf_token() }}"
                         },
                         success: function(response) {
@@ -636,6 +669,7 @@ $products = $products->sortByDesc('total_stock');
                                 toastr.success("Order placed successfully!");
                                 $('#customerName').val('');
                                 $('#customerPhone').val('');
+                                $('#paid-amount').val('');
                                 customerExists = false
 
                                 $('.order-items tbody').html(`
@@ -765,16 +799,21 @@ $products = $products->sortByDesc('total_stock');
                 $('#updateOrderBtn').on('click', function() {
                     let button = $(this);
                     let originalText = button.text();
+                    let paid = parseFloat($('#paid-amount').val()) || 0;
+                    let due = parseFloat($('#due-amount').text().replace(/[^0-9.-]+/g, "")) || 0;
                     button.prop('disabled', true).text('Processing...');
                     $.ajax({
                         url: "{{ route('seller.pos.sales.update') }}",
                         method: 'POST',
                         data: {
                             order_id: "{{ request('order_id') }}",
+                            paid: paid,
+                            due: due,
                             _token: "{{ csrf_token() }}"
                         },
                         success: function(response) {
                             if (response.status) {
+                                $('#paid-amount').val('');
                                 button.prop('disabled', false).text(originalText);
                                 toastr.success("Order updated successfully!");
 
@@ -888,6 +927,7 @@ $products = $products->sortByDesc('total_stock');
                     $('#summary-vat').text(summery.vat_amount || "{{ money(0) }}");
                     $('#summary-discount').text(summery.discount || "{{ money(0) }}");
                     $('#summary-total').text(summery.total || "{{ money(0) }}");
+                    $('#due-amount').text(summery.total || "{{ money(0) }}");
                 }
 
                 $(document).on('click', '.filter-btn', function() {
@@ -905,6 +945,15 @@ $products = $products->sortByDesc('total_stock');
                         $('.product-card-wrapper').hide();
                         $(`.product-card-wrapper[data-category="${category}"]`).show();
                     }
+                });
+
+                let total = parseFloat($("#due-amount").data("total")) || 0;
+
+                $("#paid-amount").on("input", function() {
+                    let paid = parseFloat($(this).val()) || 0;
+                    let due = total - paid;
+                    if (due < 0) due = 0;
+                    $("#due-amount").text(due.toFixed(2));
                 });
 
             });

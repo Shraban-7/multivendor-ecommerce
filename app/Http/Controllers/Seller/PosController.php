@@ -247,6 +247,8 @@ class PosController extends Controller
         $data = $request->validate([
             'customer_name'  => 'nullable|string|max:255|required_with:customer_phone',
             'customer_phone' => 'nullable|string|max:20|required_with:customer_name',
+            'paid' => 'nullable|numeric',
+            'due' => 'nullable|numeric',
         ]);
 
         $seller = Seller::find(get_seller_id());
@@ -324,7 +326,8 @@ class PosController extends Controller
             'discount' => $discount,
             'vat_amount' => $vat_amount,
             'payable' => $payableAmount,
-            'due' => $payableAmount,
+            'paid' => $data['paid'],
+            'due' => $data['due'],
             'commission_type' => $seller->commission_type,
             'commission_amount' => $seller->commission_amount,
             'seller_earnings' => $sellerEarning,
