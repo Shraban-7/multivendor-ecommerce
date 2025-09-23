@@ -15,6 +15,7 @@ class BillingAddress extends Model
 
     protected $casts = [
         'type' => AddressType::class,
+        'is_default' => 'integer',
     ];
 
     public function division(): BelongsTo
