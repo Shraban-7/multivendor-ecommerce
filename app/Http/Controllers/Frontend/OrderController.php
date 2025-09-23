@@ -170,16 +170,15 @@ class OrderController extends Controller
 
         if ($seller->commission_amount != null && $seller->commission_type != null) {
             if ($seller->commission_type === CommissionType::PERCENTAGE->value) {
-                $total_commission = ($sub_total + $vat_amount + $shipping_fee) * ($seller->commission_amount / 100);
+                $total_commission = ($sub_total + $vat_amount) * ($seller->commission_amount / 100);
             } else if ($seller->commission_type === CommissionType::FLAT->value) {
                 $total_commission = $seller->commission_amount;
             }
         }
 
-        $payableAmount = $sub_total + $shipping_fee + $vat_amount;
-
-        $sellerEarning = $payableAmount - $total_commission;
         $invoiceId = Order::generateInvoiceID();
+        $payableAmount = $sub_total + $shipping_fee + $vat_amount;
+        $sellerEarning = $sub_total + $vat_amount - $total_commission;
 
         $order = Order::create([
             'user_id' => $user->id,

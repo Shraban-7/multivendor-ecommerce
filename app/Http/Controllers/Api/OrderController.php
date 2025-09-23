@@ -2,28 +2,30 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Enums\AddressType;
-use App\Enums\CommissionType;
-use App\Enums\OrderStatus;
-use App\Http\Controllers\Controller;
-use App\Http\Resources\InvoiceResource;
-use App\Http\Resources\OrderResource;
-use App\Models\BillingAddress;
+use Exception;
 use App\Models\Cart;
-use App\Models\Notification;
 use App\Models\Order;
-use App\Models\OrderItem;
+use App\Models\Review;
+use App\Models\Seller;
 use App\Models\Payment;
 use App\Models\Product;
-use App\Models\Review;
+use App\Models\OrderItem;
+use App\Enums\AddressType;
+use App\Enums\OrderStatus;
+use App\Enums\PaymentType;
 use App\Models\ReviewImage;
-use App\Models\Seller;
-use App\Services\AamarpayService;
-use Exception;
+use App\Models\Notification;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Enums\CommissionType;
+use App\Models\BillingAddress;
+use App\Models\ProductVariant;
+use App\Services\AamarpayService;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
+use App\Http\Resources\OrderResource;
+use App\Http\Resources\InvoiceResource;
 use function PHPUnit\Framework\returnSelf;
 
 class OrderController extends Controller
@@ -72,39 +74,42 @@ class OrderController extends Controller
             return errorResponse('Cart is empty or not found for the selected seller.');
         }
 
-        $sub_total    = 0;
-        $discount     = 0;
-        $tax          = 0;
-        $shipping_fee = $seller->shipping_cost ?? 0;
-        $orderItems   = [];
+        $sub_total = 0;
+        $discount = 0;
+        $vat_amount = 0;
+        $orderItems = [];
+        $shipping_fee = $seller->shipping_cost;
+
+        $payment_type = PaymentType::COD_ONLY->value;
 
         foreach ($cart->cart_items as $cartItem) {
-            $product      = $cartItem->product;
-            $variant      = $cartItem->variant;
-            $unitPrice    = $cartItem->price;
-            $itemTotal    = $cartItem->quantity * $unitPrice;
+            $product = $cartItem->product;
+            $variant = $cartItem->variant;
+            $unitPrice = $cartItem->price;
+            $itemTotal = $cartItem->quantity * $unitPrice;
             $itemDiscount = $cartItem->quantity * ($cartItem->original_price - $cartItem->discounted_price);
-            $tax += floatval($product->tax) * $cartItem->quantity;
+            $vat_amount += floatval(($product->vat_percent * $unitPrice) / 100) * $cartItem->quantity;
             $sub_total += $itemTotal;
             $discount += $itemDiscount;
+            $grand_total = $sub_total + $discount;
+
+            if ($product->payment_type->value == PaymentType::FULL_PAYMENT->value) {
+                $payment_type = PaymentType::FULL_PAYMENT->value;
+            } elseif ($product->payment_type->value == PaymentType::COD_WITH_DELIVERY_CHARGE->value) {
+                $payment_type = PaymentType::COD_WITH_DELIVERY_CHARGE->value;
+            }
 
             $orderItems[] = [
-                'product_id'         => $product->id,
+                'product_id' => $product->id,
                 'product_variant_id' => $cartItem->product_variant_id ?? null,
-                'buying_price'       => $variant ? $variant->buying_price : $product->buying_price,
-                'unit_price'         => $cartItem->price,
-                'quantity'           => $cartItem->quantity,
-                'discount'           => $itemDiscount,
-                'sub_total'          => $itemTotal,
+                'buying_price' => $variant ? $variant->buying_price : 0,
+                'unit_price' => $cartItem->price,
+                'quantity' => $cartItem->quantity,
+                'discount' => $itemDiscount,
+                'sub_total' => $itemTotal,
+                'vat_percent' => $product->vat_percent,
+                'vat_amount' => floatval(($product->vat_percent * $unitPrice) / 100) * $cartItem->quantity,
             ];
-
-            if ($variant) {
-                $variant->decrement('stock_in', $cartItem->quantity);
-                $variant->increment('stock_out', $cartItem->quantity);
-            } else {
-                $product->decrement('stock_in', $cartItem->quantity);
-                $product->increment('stock_out', $cartItem->quantity);
-            }
         }
 
         $seller = Seller::where('id', $selectedSellerId)->first();
@@ -113,14 +118,15 @@ class OrderController extends Controller
 
         if ($seller->commission_amount != null && $seller->commission_type != null) {
             if ($seller->commission_type === CommissionType::PERCENTAGE->value) {
-                $total_commission = ($sub_total + $tax + $shipping_fee) * ($seller->commission_amount / 100);
+                $total_commission = ($sub_total + $vat_amount) * ($seller->commission_amount / 100);
             } else if ($seller->commission_type === CommissionType::FLAT->value) {
                 $total_commission = $seller->commission_amount;
             }
         }
 
         $invoiceId = Order::generateInvoiceID();
-        $payableAmount = $sub_total + $shipping_fee + $tax;
+        $payableAmount = $sub_total + $shipping_fee + $vat_amount;
+        $sellerEarning = $sub_total+$vat_amount - $total_commission;
 
         $billingAddress = BillingAddress::find($request->billing_address_id);
 
@@ -138,26 +144,38 @@ class OrderController extends Controller
             DB::beginTransaction();
 
             $order = Order::create([
-                'user_id'           => $user->id,
-                'seller_id'         => $selectedSellerId,
-                'billing_address_id' => $request->billing_address_id,
-                'billing_information' => $billingAddressArray,
-                'invoice_id'        => $invoiceId,
-                'sub_total'         => $sub_total,
-                'total'             => $sub_total + $tax + $shipping_fee,
-                'discount'          => $discount,
-                'tax'               => $tax,
-                'shipping_fee'      => $shipping_fee,
-                'payable'           => $payableAmount,
-                'due'               => $payableAmount,
-                'commission_type'   => $seller->commission_type,
+                'user_id' => $user->id,
+                'seller_id' => $selectedSellerId,
+                'billing_address_id' => $billingAddress->id,
+                'billing_information' => json_encode($billingAddressArray),
+                'invoice_id' => $invoiceId,
+                'sub_total' => $sub_total,
+                'total' => $sub_total + $vat_amount + $shipping_fee,
+                'discount' => $discount,
+                'vat_amount' => $vat_amount,
+                'shipping_fee' => $shipping_fee,
+                'payable' => $payableAmount,
+                'due' => $payableAmount,
+                'commission_type' => $seller->commission_type,
                 'commission_amount' => $seller->commission_amount,
-                'total_commission'  => $total_commission,
-                'status'            => OrderStatus::PENDING->value,
-                'delivery_status'   => OrderStatus::ORDER_PLACED->value,
+                'seller_earnings' => $sellerEarning,
+                'total_commission' => $total_commission,
+                'status' => OrderStatus::PENDING->value,
+                'delivery_status' => OrderStatus::ORDER_PLACED->value,
+                'payment_type' => $payment_type,
             ]);
 
             $order->items()->createMany($orderItems);
+
+            foreach ($order->items as $item) {
+                if (isset($item['product_variant_id'])) {
+                    $variant = ProductVariant::find($item['product_variant_id']);
+
+                    if ($variant) {
+                        $variant->increment('stock_out', $item['quantity']);
+                    }
+                }
+            }
 
             $cart->cart_items()->delete();
             $cart->delete();

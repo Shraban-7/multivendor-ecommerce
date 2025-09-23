@@ -22,3 +22,10 @@ ALTER TABLE `order_items` ADD `is_reviewed` TINYINT(1) NOT NULL DEFAULT '0' AFTE
 [8/24/2025]
 
 delete columns form users and sellers country_id, state_id, zip
+
+
+[09/23/2045]
+
+button reload
+details page new tab 
+product filter
