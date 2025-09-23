@@ -311,4 +311,21 @@ class SaleController extends Controller
             'total' => money($total),
         ], "Order item removed successfully");
     }
+
+    public function pay(Request $request,Order $order)
+    {
+        $validated = $request->validate([
+            'amount' => 'required|numeric|min:0'
+        ]);
+
+        if ($validated['amount'] > $order->due) {
+            return successResponse('Payment amount cannot be greater than remaining due.');
+        }
+
+        $order->paid+=$validated['amount'];
+        $order->due-=$validated['amount'];
+        $order->save();
+
+        return successResponse('Payment submitted successfully');
+    }
 }

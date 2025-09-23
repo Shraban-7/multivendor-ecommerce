@@ -35,6 +35,7 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
             Route::post('/item/add', [SaleController::class, 'itemAdd'])->name('item_add');
             Route::post('/item/update', [SaleController::class, 'itemUpdate'])->name('item_update');
             Route::post('/item/remove', [SaleController::class, 'itemRemove'])->name('item_remove');
+            Route::post('/{order}/pay', [SaleController::class, 'pay'])->name('pay');   
         });
     });
 
