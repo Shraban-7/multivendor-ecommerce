@@ -106,11 +106,13 @@ $products = $products->sortByDesc('total_stock');
                                                             <td>
                                                                 <div class="d-flex gap-1 overflow-auto">
                                                                     <a href="{{ route('seller.orders.details', $order->invoice_id) }}"
+                                                                        target="__blank"
                                                                         class="btn btn-light border btn-sm d-flex align-items-center">
                                                                         <i data-feather="clipboard"
                                                                             class="icon-xs me-1"></i> Details
                                                                     </a>
                                                                     <a href="{{ route('seller.pos.index', ['order_id' => $order->id]) }}"
+                                                                        target="__blank"
                                                                         class="btn btn-light border btn-sm d-flex align-items-center">
                                                                         <i data-feather="edit" class="icon-xs me-1"></i>
                                                                         Edit
@@ -129,7 +131,6 @@ $products = $products->sortByDesc('total_stock');
                                                                     </a>
                                                                 </div>
                                                             </td>
-
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
@@ -145,16 +146,22 @@ $products = $products->sortByDesc('total_stock');
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="d-flex flex-wrap mb-3">
-                            <button class="btn btn-outline-primary btn-sm me-2 mb-2">All</button>
+                        <div class="d-flex flex-wrap mb-3 category-filters">
+                            <button class="btn btn-outline-primary btn-sm me-2 mb-2 filter-btn active" data-category="all">
+                                All
+                            </button>
                             @foreach ($categories as $category)
-                                <button class="btn btn-outline-secondary btn-sm me-2 mb-2">{{ $category->name }}</button>
+                                <button class="btn btn-outline-secondary btn-sm me-2 mb-2 filter-btn"
+                                    data-category="{{ $category->id }}">
+                                    {{ $category->name }}
+                                </button>
                             @endforeach
                         </div>
 
-                        <div class="row row-cols-2 row-cols-lg-5 g-2 bg-light py-2" id="product-row">
+                        <div class="row row-cols-2 row-cols-lg-5 g-2 bg-light py-2 product-list" id="product-row">
                             @foreach ($products as $product)
-                                <div class="col product-card-wrapper" data-product-id="{{ $product->id }}">
+                                <div class="col product-card-wrapper" data-product-id="{{ $product->id }}"
+                                    data-category="{{ $product->category_id }}">
                                     <div class="card product-card h-100" role="button" data-bs-toggle="modal"
                                         data-bs-target="#variantModal-{{ $product->id }}">
                                         <div class="d-flex p-2">
@@ -204,7 +211,8 @@ $products = $products->sortByDesc('total_stock');
                                                         <tbody>
                                                             @foreach ($product->variants as $variant)
                                                                 <tr>
-                                                                    <td class="fw-bold small">{{ $variant->fullName }}</td>
+                                                                    <td class="fw-bold small">{{ $variant->fullName }}
+                                                                    </td>
                                                                     <td class="small">{{ $variant->sku }}</td>
                                                                     <td class="small">
                                                                         {{ $variant->availableStock }}</td>
@@ -217,7 +225,12 @@ $products = $products->sortByDesc('total_stock');
                                                                                 class="btn btn-sm btn-primary add-to-cart-btn"
                                                                                 data-variant-id="{{ $variant->id }}"
                                                                                 data-quantity="1">
-                                                                                <i class="bi bi-plus"></i> Add
+                                                                                <span class="btn-text"><i
+                                                                                        class="bi bi-plus"></i> Add</span>
+                                                                                <span
+                                                                                    class="spinner-border spinner-border-sm d-none"
+                                                                                    role="status"
+                                                                                    aria-hidden="true"></span>
                                                                             </button>
                                                                         @else
                                                                             <button
@@ -426,16 +439,22 @@ $products = $products->sortByDesc('total_stock');
                 });
 
                 $(document).on('click', '.add-to-cart-btn', debounce(function() {
+                    let button = $(this);
                     let variantId = $(this).data('variant-id');
                     let quantity = $(this).data('quantity') || 1;
 
-                    addToCart(variantId, quantity, orderId);
+                    addToCart(variantId, quantity, orderId, button);
                 }, 1000));
 
-                function addToCart(variantId, quantity, orderId = 0) {
+                function addToCart(variantId, quantity, orderId = 0, button) {
                     let url = orderId && orderId > 0 ?
                         "{{ route('seller.pos.sales.item_add') }}" :
                         "{{ route('seller.pos.cart_add') }}";
+
+                    let btnText = button.find('.btn-text');
+                    let spinner = button.find('.spinner-border');
+                    btnText.addClass('d-none');
+                    spinner.removeClass('d-none');
 
                     $.ajax({
                         url: url,
@@ -467,10 +486,13 @@ $products = $products->sortByDesc('total_stock');
                         },
                         error: function(xhr) {
                             toastr.error(xhr.responseJSON?.message || "Something went wrong");
+                        },
+                        complete: function() {
+                            btnText.removeClass('d-none');
+                            spinner.addClass('d-none');
                         }
                     });
                 }
-
 
                 $(document).on('click', '.update-qty-btn', function() {
                     var itemId = $(this).data('id');
@@ -583,6 +605,8 @@ $products = $products->sortByDesc('total_stock');
                 });
 
                 $('#placeOrderBtn').on('click', function() {
+                    let button = $(this);
+                    let originalText = button.text();
                     let name = $('#customerName').val().trim();
                     let phone = $('#customerPhone').val().trim();
 
@@ -595,6 +619,8 @@ $products = $products->sortByDesc('total_stock');
                         return;
                     }
 
+                    button.prop('disabled', true).text('Processing...');
+
                     $.ajax({
                         url: "{{ route('seller.pos.place_order') }}",
                         method: 'POST',
@@ -606,6 +632,7 @@ $products = $products->sortByDesc('total_stock');
                         },
                         success: function(response) {
                             if (response.status) {
+                                button.prop('disabled', false).text(originalText);
                                 toastr.success("Order placed successfully!");
                                 $('#customerName').val('');
                                 $('#customerPhone').val('');
@@ -643,6 +670,8 @@ $products = $products->sortByDesc('total_stock');
                                 }
 
                                 $('#customerForm')[0].reset();
+
+
 
                             } else {
                                 toastr.error(response.message);
@@ -734,6 +763,9 @@ $products = $products->sortByDesc('total_stock');
                 });
 
                 $('#updateOrderBtn').on('click', function() {
+                    let button = $(this);
+                    let originalText = button.text();
+                    button.prop('disabled', true).text('Processing...');
                     $.ajax({
                         url: "{{ route('seller.pos.sales.update') }}",
                         method: 'POST',
@@ -743,6 +775,7 @@ $products = $products->sortByDesc('total_stock');
                         },
                         success: function(response) {
                             if (response.status) {
+                                button.prop('disabled', false).text(originalText);
                                 toastr.success("Order updated successfully!");
 
                                 $('.order-items tbody').html(response.data.html);
@@ -856,6 +889,24 @@ $products = $products->sortByDesc('total_stock');
                     $('#summary-discount').text(summery.discount || "{{ money(0) }}");
                     $('#summary-total').text(summery.total || "{{ money(0) }}");
                 }
+
+                $(document).on('click', '.filter-btn', function() {
+                    let category = $(this).data('category');
+                    $('.filter-btn')
+                        .removeClass('btn-primary active')
+                        .addClass('btn-outline-secondary');
+                    $(this)
+                        .removeClass('btn-outline-secondary')
+                        .addClass('btn-primary active');
+
+                    if (category === 'all') {
+                        $('.product-card-wrapper').show();
+                    } else {
+                        $('.product-card-wrapper').hide();
+                        $(`.product-card-wrapper[data-category="${category}"]`).show();
+                    }
+                });
+
             });
         </script>
     @endpush
