@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\DataController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\SellerChatController;
 
 Route::middleware('guest')->group(function () {
@@ -24,6 +25,7 @@ Route::middleware('guest')->group(function () {
 Route::get('settings', [SettingController::class, 'index']);
 Route::get('categories', [CategoryController::class, 'index']);
 Route::get('dashboard', [DashboardController::class, 'index']);
+Route::post('search', [SearchController::class, 'search']);
 
 Route::get('products', [ProductController::class, 'index']);
 Route::get('products/{product}', [ProductController::class, 'show']);

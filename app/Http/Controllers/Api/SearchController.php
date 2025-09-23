@@ -1,0 +1,65 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Models\Product;
+use App\Models\Seller;
+use Illuminate\Http\Request;
+
+class SearchController extends Controller
+{
+    public function search(Request $request)
+    {
+        $query = $request->get('keyword', '');
+
+        $data = [];
+
+        if (strlen($query) < 2) {
+            return apiResponse($data);
+        }
+
+        $products = Product::where('name', 'like', '%' . $query . '%')
+            ->take(5)
+            ->get();
+
+        $sellers = Seller::where('business_name', 'like', '%' . $query . '%')
+            ->take(5)
+            ->get();
+
+        $data['products'] = $this->formatProducts($products);
+        $data['sellers'] = $this->formatSellers($sellers);
+
+        return apiResponse($data);
+    }
+
+    private function formatProducts($products): array
+    {
+        $data = [];
+        foreach ($products as $product) {
+            $data[] = [
+                'id' => $product->id,
+                'name' => $product->name,
+                'thumbnail' => storage_url($product->thumbnail),
+                'selling_price' => is_null($product->selling_price) ? null : money($product->selling_price),
+                'discounted_price' => is_null($product->discounted_price) ? null : money($product->discounted_price)
+            ];
+        }
+
+        return $data;
+    }
+
+    private function formatSellers($sellers): array
+    {
+        $data = [];
+        foreach ($sellers as $seller) {
+            $data[] = [
+                'id' => $seller->id,
+                'name' => $seller->business_name,
+                'image' => storage_url($seller->business_logo),
+            ];
+        }
+
+        return $data;
+    }
+}
