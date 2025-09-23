@@ -60,6 +60,9 @@
                 @endforeach
             </tbody>
         </table>
+        <div class="d-flex justify-content-end">
+            {{ $orders->links() }}
+        </div>
     </div>
 
     <div class="modal fade" id="deleteConfirmModal" tabindex="-1">
@@ -104,11 +107,7 @@
 
     @push('scripts')
         <script>
-            new DataTable('#order-table', {
-                order: [
-                    [0, 'desc']
-                ]
-            });
+      
 
             let deleteOrderId = null;
 

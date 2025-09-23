@@ -19,7 +19,7 @@ class SaleController extends Controller
         $orders = Order::where('seller_id', get_seller_id())
             ->whereNull('user_id')
             ->latest('id')
-            ->get();
+            ->paginate(25);
 
         return view('seller.pos.orders', compact('orders'));
     }
