@@ -123,8 +123,6 @@
                 payOrderId = $(this).data('id');
                 let dueAmount = $(this).data('due');
 
-                $('#pay-amount').val(dueAmount);
-
                 const modalEl = document.getElementById('payNowModal');
                 const modal = new bootstrap.Modal(modalEl);
                 modal.show();
