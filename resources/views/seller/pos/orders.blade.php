@@ -15,13 +15,13 @@
                     <th scope="col">Customer</th>
                     <th scope="col">Subtotal</th>
                     <th scope="col">Due</th>
-                    <th scope="col">Action</th>
+                    {{-- <th scope="col">Action</th> --}}
                 </tr>
             </thead>
             <tbody>
                 @foreach ($orders as $order)
                     <tr>
-                        <td> {{ $order->invoice_id }}</td>
+                        <td><a href="{{ route('seller.orders.details',$order->invoice_id) }}">{{ $order->invoice_id }}</a></td>
                         <td>{{ \Carbon\Carbon::parse($order->created_at)->format('d-m-Y h:i A') }}</td>
                         <td> {{ $order->user->name ?? '' }} </td>
                         <td> <span class="text-dark">{{ money($order->payable) }}</span> </td>
@@ -34,52 +34,18 @@
                             </button>
                         </td>
 
-                        <td>
+                        {{-- <td>
                             <a href="{{ route('seller.orders.details', $order->invoice_id) }}" title="Details"
                                 class="btn btn-light border btn-sm me-1">
                                 <i data-feather="clipboard" class="icon-xs"></i> Details
                             </a>
-                            <a href="{{ route('seller.pos.index', ['order_id' => $order->id]) }}"
-                                class="btn btn-light border btn-sm me-1" title="Details">
-                                <i data-feather="edit" class="icon-xs"></i> Edit
-                            </a>
-                            <a href="{{ route('invoice', $order->invoice_id) }}" title="Details" target="__blank"
-                                class="btn btn-light border btn-sm me-1">
-                                <i data-feather="download" class="icon-xs"></i> Invoice
-                            </a>
-                            <a href="{{ route('receipt', $order->invoice_id) }}" title="Details" target="__blank"
-                                class="btn btn-light border btn-sm me-1">
-                                <i data-feather="printer" class="icon-xs"></i> Receipt
-                            </a>
-                            <button class="btn btn-sm text-danger border delete-cart-item-btn"
-                                data-id="{{ $order->id }}" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">
-                                <i data-feather="trash-2" class="icon-xs"></i> Delete
-                            </button>
-                        </td>
+                        </td> --}}
                     </tr>
                 @endforeach
             </tbody>
         </table>
         <div class="d-flex justify-content-end">
             {{ $orders->links() }}
-        </div>
-    </div>
-
-    <div class="modal fade" id="deleteConfirmModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Confirm Delete</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    Are you sure you want to remove this order?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -107,14 +73,6 @@
 
     @push('scripts')
         <script>
-      
-
-            let deleteOrderId = null;
-
-            $(document).on('click', '.delete-cart-item-btn', function() {
-                deleteOrderId = $(this).data('id');
-            });
-
             let payOrderId = null;
 
             $(document).on('click', '.pay-now-btn', function() {

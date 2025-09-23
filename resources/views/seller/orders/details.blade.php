@@ -5,9 +5,12 @@
     <div class="mb-3">
         <div class="d-flex justify-content-between align-items-center">
             <h4 class="mb-0">Order Details</h4>
-            <a href="{{ route('seller.orders.' . $order->status->label()) }}" class="btn btn-outline-secondary btn-sm">
-                <i data-feather="arrow-left" class="icon-xs me-1"></i> Back to {{ ucfirst($order->status->label()) }} Orders
-            </a>
+            @if ($order->user_id == null)
+                <a href="{{ route('seller.pos.index', ['order_id' => $order->id]) }}"
+                    class="btn btn-primary border btn-sm me-1" title="Details">
+                    <i data-feather="edit" class="icon-xs"></i> Edit
+                </a>
+            @endif
         </div>
     </div>
 
@@ -17,10 +20,18 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Order Summary</h5>
-                    <a href="{{ route('invoice', $order->invoice_id) }}" title="Details" target="__blank"
-                        class="btn btn-light border btn-sm me-1">
-                        <i data-feather="download" class="icon-xs"></i>Invoice
-                    </a>
+                    <div class="d-flex">
+                        @if ($order->user_id == null)
+                            <a href="{{ route('receipt', $order->invoice_id) }}" title="Details" target="__blank"
+                                class="btn btn-light border btn-sm me-1">
+                                <i data-feather="printer" class="icon-xs"></i> Receipt
+                            </a>
+                        @endif
+                        <a href="{{ route('invoice', $order->invoice_id) }}" title="Details" target="__blank"
+                            class="btn btn-light border btn-sm me-1">
+                            <i data-feather="download" class="icon-xs"></i>Invoice
+                        </a>
+                    </div>
                 </div>
                 <div class="card-body">
                     <ul class="list-group list-group-flush">
@@ -84,7 +95,7 @@
             </div>
 
             <!-- Update Order Status -->
-            <form action="{{ route('seller.orders.updateStatus', $order->id) }}" method="POST">
+            <form action="{{ route('seller.orders.updateStatus', $order->id) }}" class="mb-3" method="POST">
                 @csrf
                 <div class="card border-0 shadow-sm mt-4">
                     <div class="card-header bg-white">
@@ -141,6 +152,32 @@
                     </div>
                 </div> --}}
             </form>
+
+            <div class="card-body">
+                <button class="btn btn-sm btn-danger w-100 delete-cart-item-btn" data-id="{{ $order->id }}"
+                    data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">
+                    <i data-feather="trash-2" class="icon-xs"></i> Delete
+                </button>
+            </div>
+
+            <div class="modal fade" id="deleteConfirmModal" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Confirm Delete</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to remove this order?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <!-- Customer and Order Details -->
@@ -366,4 +403,42 @@
             @endif
         </div>
 
+        @push('scripts')
+            <script>
+                let deleteOrderId = null;
+
+                $(document).on('click', '.delete-cart-item-btn', function() {
+                    deleteOrderId = $(this).data('id');
+                });
+
+                $('#confirmDeleteBtn').on('click', function() {
+                    if (!deleteOrderId) return;
+
+                    $.ajax({
+                        url: "{{ route('seller.pos.sales.delete', ':id') }}".replace(':id', deleteOrderId),
+                        type: "POST",
+                        data: {
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(response) {
+                            if (response.status) {
+                                toastr.success(response.message || "Order deleted successfully!");
+                                $('#deleteConfirmModal').modal('hide');
+
+                                setTimeout(() => {
+                                    window.location.href = "{{ route('seller.dashboard') }}";
+                                }, 800);
+
+                                deleteOrderId = null;
+                            } else {
+                                toastr.error(response.message || "Failed to delete order!");
+                            }
+                        },
+                        error: function(xhr) {
+                            toastr.error("Something went wrong!");
+                        }
+                    });
+                });
+            </script>
+        @endpush
     @endsection

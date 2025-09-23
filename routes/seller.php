@@ -91,8 +91,8 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::get('/refunded', [OrderController::class, 'index'])->name('refunded');
         Route::get('/returned', [OrderController::class, 'index'])->name('returned');
         Route::get('/pos-orders', [OrderController::class, 'pos_orders'])->name('pos_orders');
-        Route::get('/details/{invoice_id}', [OrderController::class, 'details'])->name('details');
-        Route::Post('/update-status/{order}', [OrderController::class, 'updateStatus'])->name('updateStatus');
+        Route::get('/{invoice_id}/details', [OrderController::class, 'details'])->name('details');
+        Route::post('/{order}/update-status', [OrderController::class, 'updateStatus'])->name('updateStatus');
     });
 
     Route::prefix('options')->as('options.')->group(function () {
