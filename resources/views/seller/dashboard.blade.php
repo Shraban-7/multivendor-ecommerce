@@ -187,7 +187,7 @@
                             <tbody>
                                 @foreach ($latest_orders as $order)
                                     <tr>
-                                        <td>{{ $order->id }}</td>
+                                        <td>{{ $order->invoice_id }}</td>
                                         <td>{{ $order->user->name ?? '' }}</td>
                                         <td>{{ money($order->total) }}</td>
                                         <td>
@@ -203,7 +203,7 @@
                                         </td>
                                         <td>{{ optional($order->created_at)->format('Y-m-d H:i') ?? 'N/A' }}</td>
                                         <td>
-                                            <a href="{{ route('seller.orders.details', $order->id) }}"
+                                            <a href="{{ route('seller.orders.details', $order->invoice_id) }}"
                                                 class="btn btn-info btn-sm">View</a>
                                         </td>
                                     </tr>
