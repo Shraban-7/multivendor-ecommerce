@@ -41,7 +41,7 @@ class SearchController extends Controller
                 'id' => $product->id,
                 'name' => $product->name,
                 'thumbnail' => storage_url($product->thumbnail),
-                'selling_price' => is_null($product->selling_price) ? null : money($product->selling_price),
+                'price' => is_null($product->selling_price) ? null : money($product->selling_price),
                 'discounted_price' => is_null($product->discounted_price) ? null : money($product->discounted_price)
             ];
         }
