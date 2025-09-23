@@ -11,6 +11,11 @@ class OrderItem extends Model
 
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'quantity' => 'integer',
+        'is_reviewed' => 'integer',
+    ];
+
     public function order()
     {
         return $this->belongsTo(Order::class);

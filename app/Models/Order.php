@@ -19,7 +19,8 @@ class Order extends Model
         'status' => OrderStatus::class,
         'payment_type' => PaymentType::class,
         'created_at' => 'datetime',
-        'billing_information' => 'json'
+        'billing_information' => 'array',
+        'delivery_status' => 'integer',
     ];
 
     public function billing_address()
