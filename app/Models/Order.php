@@ -20,6 +20,7 @@ class Order extends Model
         'payment_type' => PaymentType::class,
         'created_at' => 'datetime',
         'billing_information' => 'json'
+        'delivery_status' => 'intger',
     ];
 
     public function billing_address()
