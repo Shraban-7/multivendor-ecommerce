@@ -263,7 +263,7 @@
                                 <tr>
                                     <th scope="col">Product</th>
                                     <th scope="col" class="text-center">Price</th>
-                                    <th scope="col" class="text-center">Discounted Price</th>
+                                    <th scope="col" class="text-center">Discount</th>
                                     <th scope="col" class="text-center">Quantity</th>
                                     <th scope="col" class="text-end">Total</th>
                                 </tr>
@@ -307,23 +307,15 @@
 
                                                     @if (isset($item->variant))
                                                         <small class="text-muted d-block">
-                                                            Variant SKU: {{ $item->variant->sku }}
-                                                        </small>
-                                                        <small class="text-muted d-block">
-                                                            Stock:
-                                                            {{ $item->variant->stock_in - $item->variant->stock_out }}
-                                                        </small>
-                                                        <small class="text-muted d-block">
-                                                            Price: {{ money($item->variant->selling_price) }}
-                                                            (Without Discount)
+                                                             SKU: {{ $item->variant->sku }}
                                                         </small>
                                                     @endif
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="text-center">{{ money($item->unit_price + $item->product->discount) }}
+                                        <td class="text-center">{{ money($item->unit_price) }}
                                         </td>
-                                        <td class="text-center">{{ money($item->unit_price) }}</td>
+                                        <td class="text-center">{{ money($item->product->discount) }}</td>
                                         <td class="text-center">{{ $item->quantity }}</td>
                                         <td class="text-end">
                                             {{ money(($item->unit_price + $item->product->discount) * $item->quantity) }}
