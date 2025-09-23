@@ -328,17 +328,11 @@ $products = $products->sortByDesc('total_stock');
                                 <span id="due-amount" data-total="{{ $total }}">{{ money($total) }}</span>
                             </div>
 
-                            <div class="row g-2 mb-2">
+                            <div class="row g-2 mb-3">
                                 <div class="col-12">
-                                    <div class="input-group input-group-sm">
-                                        <span class="input-group-text">Paid</span>
+                                    <div class="input-group">
                                         <input type="number" min="0" step="0.01" class="form-control"
-                                            id="paid-amount">
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="input-group input-group-sm">
-                                        <span class="input-group-text">Payment Type</span>
+                                            id="paid-amount" placeholder="Enter Paid Amount" style="width: 60%;">
                                         <select class="form-select" id="payment-type">
                                             <option value="cash" selected>Cash</option>
                                             <option value="card">Card</option>
@@ -346,7 +340,6 @@ $products = $products->sortByDesc('total_stock');
                                     </div>
                                 </div>
                             </div>
-
 
                             <!-- Payment Buttons -->
                             <div class="d-grid gap-2">
