@@ -30,7 +30,7 @@
 
                             <button class="btn btn-sm btn-light border pay-now-btn" data-id="{{ $order->id }}"
                                 data-due="{{ $order->due }}">
-                                Pay Now
+                                Pay Due
                             </button>
                         </td>
 
@@ -84,14 +84,13 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Pay Now</h5>
+                    <h5 class="modal-title">Pay Due</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-2">
                         <label for="pay-amount" class="form-label">Enter Amount</label>
-                        <input type="number" min="0" step="0.01" class="form-control" id="pay-amount"
-                            placeholder="Enter amount">
+                        <input type="number" min="0" step="0.01" class="form-control" id="pay-amount">
                     </div>
                 </div>
                 <div class="modal-footer">
