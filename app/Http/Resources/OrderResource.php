@@ -32,7 +32,7 @@ class OrderResource extends JsonResource
             'created_at' => $this->created_at->format('d m Y h:i A'),
             'seller' => SellerResource::make($this->whenLoaded('seller')),
             'items' => OrderItemResource::collection($this->whenLoaded('items')),
-            'billing_information' => $this->billing_information,
+            'billing_information' => $this->billing_information?json_decode($this->billing_information, true):null,
         ];
     }
 }
