@@ -49,7 +49,7 @@
 
 <body>
     @php
-        $settings = settings();
+    $settings = settings();
     @endphp
 
     <div class="center">
@@ -64,14 +64,16 @@
     <p>
         Invoice No : {{ $order->invoice_id }}<br>
         Date : {{ $order->created_at->format('d-m-Y  h:i A') }}<br>
-        Customer : {{ $order->customer->name ?? '' }} {{ $order->customer->phone ?? '' }}
+        @if(!is_null($order->customer_id))
+        Customer : {{ $order->customer->name }} ({{ $order->customer->phone }})
+        @endif
     </p>
     <div class="line"></div>
 
     <table>
         <tr>
             <td class="left" style="width: 60%">Item</td>
-            <td class="right" style="width: 20%">Price</td>
+            <td class="center" style="width: 20%">QTY</td>
             <td class="right" style="width: 20%">Total</td>
         </tr>
         <tr>
@@ -81,13 +83,11 @@
         </tr>
 
         @foreach ($order->items as $item)
-            <tr>
-                <td class="left">
-                    {{ $item->product->name }} {{ $item->variant->fullName }}  x{{ $item->quantity }}
-                </td>
-                <td class="right"> {{ removeZeroFromDecimal($item->original_price) }}</td>
-                <td class="right">{{ removeZeroFromDecimal($item->original_price * $item->quantity) }}</td>
-            </tr>
+        <tr>
+            <td class="left">{{ $item->product->name }} ({{ $item->variant->fullName }})</td>
+            <td class="center"> {{ $item->quantity }}</td>
+            <td class="right">{{ money($item->original_price * $item->quantity) }}</td>
+        </tr>
         @endforeach
     </table>
 
@@ -96,35 +96,40 @@
     <table>
         <tr>
             <td class="left">Subtotal</td>
-            <td class="right">{{ removeZeroFromDecimal($order->sub_total + $order->discount) }}</td>
+            <td class="right">{{ money($order->sub_total + $order->discount) }}</td>
         </tr>
         @if ($order->discount > 0)
-            <tr>
-                <td class="left">Discount ({{ $order->discount_percentage }}%)</td>
-                <td class="right">-{{ removeZeroFromDecimal($order->discount) }}</td>
-            </tr>
+        <tr>
+            <td class="left">Discount ({{ $order->discount_percentage }}%)</td>
+            <td class="right">-{{ money($order->discount) }}</td>
+        </tr>
         @endif
         <tr class="totals">
             <td class="left">Net Total</td>
-            <td class="right">{{ removeZeroFromDecimal($order->total) }}</td>
+            <td class="right">{{ money($order->total) }}</td>
         </tr>
         @if ($order->vat > 0)
-            <tr>
-                <td class="left">VAT ({{ $order->tax }}%)</td>
-                <td class="right">{{ removeZeroFromDecimal($order->tax) }}</td>
-            </tr>
+        <tr>
+            <td class="left">VAT ({{ $order->tax }}%)</td>
+            <td class="right">{{ money($order->tax) }}</td>
+        </tr>
         @endif
     </table>
 
     <div class="line"></div>
 
-    <p>
-        {{-- Payment Mode : {{ ucfirst($order->payment_mode) }}<br> --}}
-        Amount Paid : {{ removeZeroFromDecimal($order->payable - $order->due) }}<br>
-        @if ($order->due > 0)
-            Change Due : {{ removeZeroFromDecimal($order->due) }}
-        @endif
-    </p>
+    @if ($order->due > 0)
+    <table>
+        <tr>
+            <td class="left">Amount Paid</td>
+            <td class="right">{{ money($order->paid) }}</td>
+        </tr>
+        <tr>
+            <td class="left">Due</td>
+            <td class="right">{{ money($order->due) }}</td>
+        </tr>
+    </table>
+    @endif
 
     <div class="line"></div>
 
