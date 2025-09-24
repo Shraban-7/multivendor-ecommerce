@@ -1,5 +1,5 @@
 @extends('seller.layouts.app')
-@section('title', 'Orders')
+@section('title', 'Sales')
 @section('content')
 
     <div class="mb-2 rounded d-flex justify-content-between align-items-center">
@@ -24,7 +24,7 @@
             <tbody>
                 @foreach ($orders as $order)
                     <tr>
-                        <td><a href="{{ route('seller.orders.details', $order->invoice_id) }}">{{ $order->invoice_id }}</a>
+                        <td><a href="{{ route('seller.orders.details', $order->invoice_id) }}" target="__blank">{{ $order->invoice_id }}</a>
                         </td>
                         <td>{{ \Carbon\Carbon::parse($order->created_at)->format('d-m-Y h:i A') }}</td>
                         <td>

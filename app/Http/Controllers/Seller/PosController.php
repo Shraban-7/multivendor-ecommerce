@@ -45,7 +45,7 @@ class PosController extends Controller
 
             if ($order) {
                 $orderItems = $order->items;
-                $subtotal = $orderItems->sum(fn($item) => $item->unit_price * $item->quantity);
+                $subtotal = $orderItems->sum(fn($item) => $item->variant->selling_price * $item->quantity);
                 $vat_amount = $orderItems->sum(fn($item) => ($item->variant->product->vat_percent * $item->price / 100) * $item->quantity);
                 $discount = $orderItems->sum(fn($item) => ($item->variant->discounted_price ? $item->variant->selling_price - $item->variant->discounted_price : 0) * $item->quantity);
                 $total = $subtotal + $vat_amount - $discount;
@@ -54,10 +54,10 @@ class PosController extends Controller
             $cart = PosCart::where('seller_id', get_seller_id())->first();
             $cartItems = $cart ? $cart->items()->with('variant.product')->get() : collect();
 
-            $subtotal = $cartItems->sum(fn($item) => $item->price * $item->quantity);
+            $subtotal = $cartItems->sum(fn($item) => $item->variant->selling_price * $item->quantity);
             $vat_amount = $cartItems->sum(fn($item) => ($item->variant->product->vat_percent * $item->price / 100) * $item->quantity);
             $discount = $cartItems->sum(fn($item) => ($item->variant->discounted_price ? $item->variant->selling_price - $item->variant->discounted_price : 0) * $item->quantity);
-            $total = $subtotal - $discount + $vat_amount;
+            $total = $subtotal + $vat_amount - $discount;
         }
 
         $orders = Order::where('seller_id', get_seller_id())
@@ -113,7 +113,7 @@ class PosController extends Controller
         $cartItems = $cart->items()->with('variant.product')->get();
 
         $subtotal = $cartItems->sum(function ($item) {
-            return $item->price * $item->quantity;
+            return $item->variant->selling_price * $item->quantity;
         });
 
         $vat_amount = $cartItems->sum(function ($item) {
@@ -127,7 +127,7 @@ class PosController extends Controller
             return ($originalPrice - $unitPrice) * $item->quantity;
         });
 
-        $total = $subtotal - $discount + $vat_amount;
+        $total = $subtotal + $vat_amount - $discount;
 
         $html = view('components.seller.pos-cart-items', compact('cartItems'))->render();
 
@@ -163,7 +163,7 @@ class PosController extends Controller
         $cart = $item->pos_cart;
         $cartItems = $cart->items()->with('variant.product')->get();
 
-        $subtotal = $cartItems->sum(fn($i) => $i->price * $i->quantity);
+        $subtotal = $cartItems->sum(fn($i) => $i->variant->selling_price * $i->quantity);
         $vat_amount = $cartItems->sum(fn($i) => ($i->variant->product->vat_percent * $i->price / 100) * $i->quantity);
         $discount = $cartItems->sum(fn($i) => ($i->variant->selling_price - $i->price) * $i->quantity);
         $total = $subtotal - $discount + $vat_amount;
@@ -247,7 +247,7 @@ class PosController extends Controller
         $data = $request->validate([
             'customer_name'  => 'nullable|string|max:255|required_with:customer_phone',
             'customer_phone' => 'nullable|string|max:20|required_with:customer_name',
-            'paid' => 'nullable|numeric',
+            'paid' => 'required|numeric',
             'due' => 'nullable|numeric',
         ]);
 

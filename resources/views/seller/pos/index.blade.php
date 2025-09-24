@@ -327,19 +327,16 @@ $products = $products->sortByDesc('total_stock');
                                 <span>Due:</span>
                                 <span id="due-amount" data-total="{{ $total }}">{{ money($total) }}</span>
                             </div>
-
-                            <div class="row g-2 mb-3">
-                                <div class="col-12">
-                                    <div class="input-group">
-                                        <input type="number" min="0" step="0.01" class="form-control"
-                                            id="paid-amount" placeholder="Enter Paid Amount" style="width: 60%;">
-                                        <select class="form-select" id="payment-type">
-                                            <option value="cash" selected>Cash</option>
-                                            <option value="card">Card</option>
-                                        </select>
+                            @if (request()->has('order_id')==null)
+                                <div class="row g-2 mb-3">
+                                    <div class="col-12">
+                                        <div class="input-group">
+                                            <input type="number" min="0" step="0.01" class="form-control"
+                                                id="paid-amount" placeholder="Enter Paid Amount" >
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            @endif
 
                             <!-- Payment Buttons -->
                             <div class="d-grid gap-2">
@@ -633,6 +630,11 @@ $products = $products->sortByDesc('total_stock');
                     let phone = $('#customerPhone').val().trim();
                     let paid = parseFloat($('#paid-amount').val()) || 0;
                     let due = parseFloat($('#due-amount').text().replace(/[^0-9.-]+/g, "")) || 0;
+
+                    if (paid == null || paid == 0) {
+                        toastr.error("Payment not done yet!");
+                        return;
+                    }
 
                     if (name && !phone) {
                         toastr.error("Phone is required when Name is provided.");

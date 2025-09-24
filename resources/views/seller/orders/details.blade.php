@@ -1,5 +1,5 @@
 @extends('seller.layouts.app')
-@section('title', 'Order Details')
+@section('title', 'Order Details |' . $order->invoice_id)
 @section('content')
 
     <div class="mb-3">
@@ -8,7 +8,7 @@
             @if ($order->user_id == null)
                 <a href="{{ route('seller.pos.index', ['order_id' => $order->id]) }}"
                     class="btn btn-primary border btn-sm me-1" title="Details">
-                    <i data-feather="edit" class="icon-xs"></i> Edit
+                    <i data-feather="edit" class="icon-xs"></i> Edit Order
                 </a>
             @endif
         </div>
@@ -17,7 +17,7 @@
     <div class="row">
         <!-- Order Summary -->
         <div class="col-lg-4 mb-4">
-            <div class="card border-0 shadow-sm">
+            <div class="card border-0 shadow-sm mb-3">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Order Summary</h5>
                     <div class="d-flex">
@@ -43,7 +43,7 @@
                             <span>Date:</span>
                             <span class="fw-medium">{{ $order->created_at->format('d-m-Y h:i A') }}</span>
                         </li>
-                        <li class="list-group-item d-flex justify-content-between px-0">
+                        <li class="list-group-item d-flex align-items-center justify-content-between px-0">
                             <span>Status:</span>
                             <span>
                                 @if ($order->status->label() === 'pending')
@@ -80,56 +80,59 @@
                             <span>Payment Method:</span>
                             <span class="fw-medium">{{ $order->payment_method ?? 'N/A' }}</span>
                         </li>
-                        <li class="list-group-item d-flex justify-content-between px-0">
+                        <li class="list-group-item d-flex align-items-center justify-content-between px-0">
                             <span>Payment Status:</span>
                             @if ($order->due == $order->payable)
-                                <span class="badge bg-warning">Unpaid</span>
-                            @elseif ($order->due != $order->payable && $order->due > 0)
-                                <span class="badge bg-danger">Partially Paid</span>
+                                <span class="badge bg-danger">Unpaid</span>
+                            @elseif ($order->due > 0)
+                                <span class="badge bg-warning">Partially Paid</span>
                             @else
                                 <span class="badge bg-success">Paid</span>
                             @endif
                         </li>
+
                     </ul>
                 </div>
             </div>
 
             <!-- Update Order Status -->
-            <form action="{{ route('seller.orders.updateStatus', $order->id) }}" class="mb-3" method="POST">
-                @csrf
-                <div class="card border-0 shadow-sm mt-4">
-                    <div class="card-header bg-white">
-                        <h5 class="mb-0">Status</h5>
-                    </div>
-                    <div class="card-body">
 
-                        <div class="mb-3">
-                            <select class="form-select" id="status" name="status">
-                                <option value="{{ \App\Enums\OrderStatus::PENDING->value }}"
-                                    {{ $order->status->label() === 'pending' ? 'selected' : '' }}>Pending</option>
-
-                                <option value="{{ \App\Enums\OrderStatus::SHIPPED->value }}"
-                                    {{ $order->status->label() === 'shipped' ? 'selected' : '' }}>Shipped</option>
-
-                                <option value="{{ \App\Enums\OrderStatus::DELIVERED->value }}"
-                                    {{ $order->status->label() === 'delivered' ? 'selected' : '' }}>Delivered</option>
-
-                                <option value="{{ \App\Enums\OrderStatus::CANCELLED->value }}"
-                                    {{ $order->status->label() === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
-
-                                <option value="{{ \App\Enums\OrderStatus::RETURNED->value }}"
-                                    {{ $order->status->label() === 'returned' ? 'selected' : '' }}>Returned</option>
-
-                                <option value="{{ \App\Enums\OrderStatus::REFUNDED->value }}"
-                                    {{ $order->status->label() === 'refunded' ? 'selected' : '' }}>Refunded</option>
-                            </select>
+            @if ($order->user_id != null)
+                <form action="{{ route('seller.orders.updateStatus', $order->id) }}" class="mb-3" method="POST">
+                    @csrf
+                    <div class="card border-0 shadow-sm mt-4">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0">Status</h5>
                         </div>
-                        <button type="submit" class="btn btn-primary">Update</button>
-                    </div>
-                </div>
+                        <div class="card-body">
 
-                <!-- Update Order Delivery Status -->
-                {{-- <div class="card border-0 shadow-sm mt-4">
+                            <div class="mb-3">
+                                <select class="form-select" id="status" name="status">
+                                    <option value="{{ \App\Enums\OrderStatus::PENDING->value }}"
+                                        {{ $order->status->label() === 'pending' ? 'selected' : '' }}>Pending</option>
+
+                                    <option value="{{ \App\Enums\OrderStatus::SHIPPED->value }}"
+                                        {{ $order->status->label() === 'shipped' ? 'selected' : '' }}>Shipped</option>
+
+                                    <option value="{{ \App\Enums\OrderStatus::DELIVERED->value }}"
+                                        {{ $order->status->label() === 'delivered' ? 'selected' : '' }}>Delivered</option>
+
+                                    <option value="{{ \App\Enums\OrderStatus::CANCELLED->value }}"
+                                        {{ $order->status->label() === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+
+                                    <option value="{{ \App\Enums\OrderStatus::RETURNED->value }}"
+                                        {{ $order->status->label() === 'returned' ? 'selected' : '' }}>Returned</option>
+
+                                    <option value="{{ \App\Enums\OrderStatus::REFUNDED->value }}"
+                                        {{ $order->status->label() === 'refunded' ? 'selected' : '' }}>Refunded</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Update</button>
+                        </div>
+                    </div>
+
+                    <!-- Update Order Delivery Status -->
+                    {{-- <div class="card border-0 shadow-sm mt-4">
                     <div class="card-header bg-white">
                         <h5 class="mb-0">Delivery Status</h5>
                     </div>
@@ -150,14 +153,15 @@
                         </div>
                         <button type="submit" class="btn btn-primary">Update</button>
                     </div>
-                </div> --}}
-            </form>
+                    </div> --}}
+                </form>
+            @endif
 
             @if ($order->user_id == null)
                 <div class="card-body">
                     <button class="btn btn-danger w-100 delete-cart-item-btn" data-id="{{ $order->id }}"
                         data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">
-                         Delete This Order
+                        Delete This Order
                     </button>
                 </div>
 
@@ -264,7 +268,6 @@
                                     <th scope="col">Product</th>
                                     <th scope="col" class="text-center">Price</th>
                                     <th scope="col" class="text-center">Discount</th>
-                                    <th scope="col" class="text-center">Quantity</th>
                                     <th scope="col" class="text-end">Total</th>
                                 </tr>
                             </thead>
@@ -285,14 +288,21 @@
 
                                                 @if ($imageUrl)
                                                     <img src="{{ $imageUrl }}" alt="{{ $item->product->name }}"
-                                                        class="rounded me-3" width="50">
+                                                        class="rounded me-3" width="100" height="100">
                                                 @else
                                                     <div class="bg-white rounded me-3" style="width: 50px; height: 50px;">
                                                     </div>
                                                 @endif
 
                                                 <div>
-                                                    <h6 class="mb-0">{{ $item->product->name }}</h6>
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <h6 class="mb-0 me-2">
+                                                            {{ $item->product->name }}
+                                                        </h6>
+                                                        <span class="badge bg-primary rounded-pill">x
+                                                            {{ $item->quantity }}</span>
+                                                    </div>
+
                                                     @if ($item->product_variant_id && $item->variant && $item->variant->option_values)
                                                         <div class="mt-1 small text-muted">
                                                             @foreach ($item->variant->option_values as $value)
@@ -307,55 +317,71 @@
 
                                                     @if (isset($item->variant))
                                                         <small class="text-muted d-block">
-                                                             SKU: {{ $item->variant->sku }}
+                                                            SKU: {{ $item->variant->sku }}
                                                         </small>
                                                     @endif
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="text-center">{{ money($item->unit_price) }}
+                                        <td class="text-center">{{ money($item->variant->selling_price) }}
                                         </td>
-                                        <td class="text-center">{{ money($item->product->discount) }}</td>
-                                        <td class="text-center">{{ $item->quantity }}</td>
+                                        {{-- @php
+                                            dd($item->variant);
+                                        @endphp --}}
+                                        <td class="text-center">{{ money($item->variant->discount_amount) }}</td>
                                         <td class="text-end">
-                                            {{ money(($item->unit_price + $item->product->discount) * $item->quantity) }}
+                                            <span>
+                                                {{ money($item->unit_price * $item->quantity) }}
+                                            </span>
                                         </td>
                                     </tr>
                                 @endforeach
                             </tbody>
                             <tfoot class="table-white">
                                 <tr>
-                                    <th colspan="4" class="text-end">Subtotal:</th>
-                                    <td class="text-end">{{ $order->sub_total }}</td>
+                                    <th colspan="3" class="text-end">Subtotal:</th>
+                                    <td class="text-end">
+                                        @if ($order->discount > 0)
+                                            <span class="fw-bold">
+                                                {{ money($order->sub_total + $order->discount) }}
+                                            </span>
+                                        @else
+                                            <span class="fw-bold">
+                                                {{ money($order->sub_total) }}
+                                            </span>
+                                        @endif
+                                    </td>
                                 </tr>
                                 @if (isset($order->discount) && $order->discount > 0)
                                     <tr>
-                                        <th colspan="4" class="text-end">Discount:</th>
-                                        <td class="text-end">-{{ $order->discount }}</td>
+                                        <th colspan="3" class="text-end">Discount:</th>
+                                        <td class="text-end">-{{ money($order->discount) }}</td>
                                     </tr>
                                 @endif
-                                <tr>
-                                    <th colspan="4" class="text-end">Shipping:</th>
-                                    <td class="text-end">{{ $order->shipping_fee }}</td>
-                                </tr>
-                                @if (isset($order->tax) && $order->tax > 0)
+                                @if ($order->shipping_fee)
                                     <tr>
-                                        <th colspan="4" class="text-end">Tax:</th>
-                                        <td class="text-end">{{ $order->tax }}</td>
+                                        <th colspan="3" class="text-end">Shipping:</th>
+                                        <td class="text-end">{{ money($order->shipping_fee) }}</td>
+                                    </tr>
+                                @endif
+                                @if (isset($order->vat_amount) && $order->vat_amount > 0)
+                                    <tr>
+                                        <th colspan="3" class="text-end">Tax:</th>
+                                        <td class="text-end">{{ money($order->vat_amount) }}</td>
                                     </tr>
                                 @endif
                                 <tr>
-                                    <th colspan="4" class="text-end">Total:</th>
-                                    <td class="text-end fw-bold">{{ $order->total }}</td>
+                                    <th colspan="3" class="text-end">Total:</th>
+                                    <td class="text-end fw-bold">{{ money($order->total) }}</td>
                                 </tr>
                                 @if ($order->due > 0)
                                     <tr>
-                                        <th colspan="4" class="text-end">Paid:</th>
-                                        <td class="text-end">{{ $order->payable - $order->due }}</td>
+                                        <th colspan="3" class="text-end">Paid:</th>
+                                        <td class="text-end">{{ money($order->paid) }}</td>
                                     </tr>
                                     <tr>
-                                        <th colspan="4" class="text-end">Due:</th>
-                                        <td class="text-end text-danger fw-bold">{{ $order->due }}</td>
+                                        <th colspan="3" class="text-end">Due:</th>
+                                        <td class="text-end text-danger fw-bold">{{ money($order->due) }}</td>
                                     </tr>
                                 @endif
                             </tfoot>

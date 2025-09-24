@@ -14,8 +14,16 @@
             </div>
         </td>
         <td class="text-end">
-            {{ money($item->unit_price * $item->quantity) }}
+            @if ($item->variant->discounted_price)
+                <span class="text-muted text-decoration-line-through me-1 small">
+                    {{ money($item->variant->selling_price * $item->quantity) }}
+                </span>
+            @endif
+            <span class="small">
+                {{ money($item->unit_price * $item->quantity) }}
+            </span>
         </td>
+
         <td class="text-end">
             <button class="btn btn-sm btn-link text-danger p-0 delete-order-item-btn" data-id="{{ $item->id }}"
                 data-bs-toggle="modal" data-bs-target="#deleteOrderConfirmModal">
