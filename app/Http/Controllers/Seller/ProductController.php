@@ -87,7 +87,7 @@ class ProductController extends Controller
         $imageFolder = "images/{$seller->username}/products";
 
         //$validated['thumbnail'] = upload_with_watermark($request->file('thumbnail'), "$imageFolder/thumb");
-        
+
         $validated['thumbnail'] = upload_file($request->file('thumbnail'), "$imageFolder/thumb");
 
         if ($request->hasFile('video')) {
@@ -391,12 +391,38 @@ class ProductController extends Controller
 
     public function printBarcode(Request $request)
     {
-        if ($request->isMethod('GET')) {
-            $products = Product::where('seller_id', get_seller_id())
-                ->with('variants.option_values')
-                ->get();
+        $products = Product::where('seller_id', get_seller_id())
+            ->with('variants.option_values')
+            ->get();
 
-            return view('seller.barcodes.index', compact('products'));
+        $seller = Seller::find(get_seller_id());
+
+        return view('seller.barcodes.index', compact('products', 'seller'));
+    }
+
+    public function printBarcodeLabels(Request $request)
+    {
+        $request->validate([
+            'sku' => 'required',
+            'quantity' => 'required|numeric'
+        ]);
+
+        $variant = ProductVariant::with('product.seller')->where('sku', $request->sku)->first();
+
+        if (!$variant) {
+            return redirect()->route('seller.products.printBarcode')->with('error', 'Product not found!');
         }
+
+        $price = is_null($variant->discounted_price) ? $variant->selling_price : $variant->discounted_price;
+
+        $data = [
+            'sellerName' => $variant->product->seller->business_name,
+            'productName' => $variant->product->name,
+            'sku' => $variant->sku,
+            'price' => money($price),
+            'quantity' => $request->quantity,
+        ];
+
+        return view('seller.barcodes.print', compact('data'));
     }
 }

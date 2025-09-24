@@ -78,7 +78,8 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::delete('/{product}/delete', [ProductController::class, 'delete'])->name('delete');
         Route::get('/get-options/{attributeId}', [ProductController::class, 'getOptions']);
 
-        Route::match(['get', 'post'], 'print-barcode', [ProductController::class, 'printBarcode'])->name('printBarcode');
+        Route::get('print-barcode', [ProductController::class, 'printBarcode'])->name('printBarcode');
+        Route::get('print-labels', [ProductController::class, 'printBarcodeLabels'])->name('printBarcodeLabels');
 
         Route::get('/{product:slug}', [ProductController::class, 'show'])->name('show');
     });
