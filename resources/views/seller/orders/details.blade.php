@@ -323,7 +323,7 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="text-center">{{ money($item->variant->selling_price) }}
+                                        <td class="text-center">{{ money($item->original_price) }}
                                         </td>
                                         {{-- @php
                                             dd($item->variant);
@@ -331,7 +331,7 @@
                                         <td class="text-center">{{ money($item->variant->discount_amount) }}</td>
                                         <td class="text-end">
                                             <span>
-                                                {{ money($item->unit_price * $item->quantity) }}
+                                                {{ money($item->original_price * $item->quantity) }}
                                             </span>
                                         </td>
                                     </tr>

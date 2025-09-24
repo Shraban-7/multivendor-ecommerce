@@ -27,7 +27,7 @@
             border-collapse: collapse;
         }
 
-        
+
 
         table td {
             padding: 2px 0;
@@ -94,8 +94,8 @@
                     @endif
                 </td>
                 <td class="center">{{ $item->quantity }}</td>
-                <td class="right">{{ removeZeroFromDecimal($item->unit_price) }}</td>
-                <td class="right">{{ removeZeroFromDecimal($item->unit_price * $item->quantity) }}</td>
+                <td class="right"> {{ removeZeroFromDecimal($item->original_price) }}</td>
+                <td class="right">{{ removeZeroFromDecimal($item->original_price * $item->quantity) }}</td>
             </tr>
         @endforeach
 
@@ -107,7 +107,7 @@
     <table>
         <tr>
             <td class="left">Subtotal</td>
-            <td class="right">{{ removeZeroFromDecimal($order->sub_total) }}</td>
+            <td class="right">{{ removeZeroFromDecimal($order->sub_total + $order->discount) }}</td>
         </tr>
         @if ($order->discount > 0)
             <tr>
@@ -125,10 +125,6 @@
                 <td class="right">{{ removeZeroFromDecimal($order->tax) }}</td>
             </tr>
         @endif
-        <tr class="totals">
-            <td class="left">Grand Total</td>
-            <td class="right">{{ removeZeroFromDecimal($order->total) }}</td>
-        </tr>
     </table>
 
     <div class="line"></div>
@@ -136,7 +132,9 @@
     <p>
         {{-- Payment Mode : {{ ucfirst($order->payment_mode) }}<br> --}}
         Amount Paid : {{ removeZeroFromDecimal($order->payable - $order->due) }}<br>
-        Change Due : {{ removeZeroFromDecimal($order->due) }}
+        @if ($order->due > 0)
+            Change Due : {{ removeZeroFromDecimal($order->due) }}
+        @endif
     </p>
 
     <div class="line"></div>
@@ -149,10 +147,10 @@
     </div>
 
     <script>
-      window.print();
-      window.onafterprint = function() {
-          window.close();
-      };
+        window.print();
+        window.onafterprint = function() {
+            window.close();
+        };
     </script>
 </body>
 

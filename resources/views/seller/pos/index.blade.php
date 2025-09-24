@@ -323,16 +323,16 @@ $products = $products->sortByDesc('total_stock');
                                 <span>Total:</span>
                                 <span id="summary-total">{{ money($total) }}</span>
                             </div>
-                            <div class="d-flex justify-content-between mb-2 fw-bold">
-                                <span>Due:</span>
-                                <span id="due-amount" data-total="{{ $total }}">{{ money($total) }}</span>
-                            </div>
-                            @if (request()->has('order_id')==null)
+                            @if (request()->has('order_id') == null)
+                                <div class="d-flex justify-content-between mb-2 fw-bold">
+                                    <span>Due:</span>
+                                    <span id="due-amount" data-total="{{ $total }}">{{ money($total) }}</span>
+                                </div>
                                 <div class="row g-2 mb-3">
                                     <div class="col-12">
                                         <div class="input-group">
                                             <input type="number" min="0" step="0.01" class="form-control"
-                                                id="paid-amount" placeholder="Enter Paid Amount" >
+                                                id="paid-amount" placeholder="Enter Paid Amount">
                                         </div>
                                     </div>
                                 </div>

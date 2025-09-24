@@ -31,4 +31,12 @@ class OrderItem extends Model
         return $this->belongsTo(ProductVariant::class, 'product_variant_id')
             ->with('option_values.option');
     }
+
+    public function getOriginalPriceAttribute()
+    {
+        if ($this->quantity > 0) {
+            return $this->unit_price + ($this->discount / $this->quantity);
+        }
+        return $this->unit_price;
+    }
 }

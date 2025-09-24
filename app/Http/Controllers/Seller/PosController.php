@@ -45,7 +45,7 @@ class PosController extends Controller
 
             if ($order) {
                 $orderItems = $order->items;
-                $subtotal = $orderItems->sum(fn($item) => $item->variant->selling_price * $item->quantity);
+                $subtotal = $orderItems->sum(fn($item) => $item->original_price * $item->quantity);
                 $vat_amount = $orderItems->sum(fn($item) => ($item->variant->product->vat_percent * $item->price / 100) * $item->quantity);
                 $discount = $orderItems->sum(fn($item) => ($item->variant->discounted_price ? $item->variant->selling_price - $item->variant->discounted_price : 0) * $item->quantity);
                 $total = $subtotal + $vat_amount - $discount;

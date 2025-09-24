@@ -270,7 +270,7 @@ class SaleController extends Controller
 
         $html = view('components.seller.pos-order-items', compact('orderItems'))->render();
 
-        $subtotal = $orderItems->sum(fn($i) => $i->variant->selling_price * $i->quantity);
+        $subtotal = $orderItems->sum(fn($i) => $i->original_price * $i->quantity);
         $vat_amount = $orderItems->sum(fn($i) => ($i->vat_percent * $i->unit_price / 100) * $i->quantity);
         $discount = $orderItems->sum(fn($i) => $i->discount);
         $total = $subtotal - $discount + $vat_amount;
