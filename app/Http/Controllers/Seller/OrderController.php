@@ -13,7 +13,7 @@ class OrderController extends Controller
 {
     public function index(Request $request)
     {
-        $type      = $request->segment(3);
+        $type = $request->segment(3);
 
         $statusValue = OrderStatus::valueFromLabel($type);
 
@@ -24,8 +24,33 @@ class OrderController extends Controller
         $orders = Order::where('seller_id', get_seller_id())
             ->where('status', $statusValue)
             ->whereNotNull('user_id')
-            ->latest('id')
-            ->get();
+            ->latest('id');
+
+        if ($request->filled('invoice_id')) {
+            $orders->where('invoice_id', 'like', '%' . $request->invoice_id . '%');
+        }
+        if ($request->filled('customer_name')) {
+            $orders->whereHas(
+                'user',
+                fn($q) =>
+                $q->where('name', 'like', '%' . $request->customer_name . '%')
+            );
+        }
+        if ($request->filled('customer_phone')) {
+            $orders->whereHas(
+                'user',
+                fn($q) =>
+                $q->where('phone', 'like', '%' . $request->customer_phone . '%')
+            );
+        }
+        if ($request->filled('date_from')) {
+            $orders->whereDate('created_at', '>=', $request->date_from);
+        }
+        if ($request->filled('date_to')) {
+            $orders->whereDate('created_at', '<=', $request->date_to);
+        }
+
+        $orders = $orders->paginate(25);
 
         return view('seller.orders.index', compact('orders', 'type'));
     }
