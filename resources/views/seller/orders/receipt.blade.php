@@ -27,8 +27,6 @@
             border-collapse: collapse;
         }
 
-
-
         table td {
             padding: 2px 0;
         }
@@ -116,9 +114,10 @@
         @endif
     </table>
 
+    @if ($order->due > 0)
+
     <div class="line"></div>
 
-    @if ($order->due > 0)
     <table>
         <tr>
             <td class="left">Amount Paid</td>
