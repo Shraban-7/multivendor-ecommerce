@@ -70,10 +70,9 @@
 
     <table>
         <tr>
-            <td class="left">Item</td>
-            <td class="center">Qty</td>
-            <td class="right">Price</td>
-            <td class="right">Total</td>
+            <td class="left" style="width: 60%">Item</td>
+            <td class="right" style="width: 20%">Price</td>
+            <td class="right" style="width: 20%">Total</td>
         </tr>
         <tr>
             <td colspan="4">
@@ -84,22 +83,12 @@
         @foreach ($order->items as $item)
             <tr>
                 <td class="left">
-                    {{ $item->product->name }}{{ $item->variant ? ' - ' . $item->variant->name : '' }}
-                    @if ($item->variant && $item->variant->option_values)
-                        <div class="text-muted small mt-1">
-                            @foreach ($item->variant->option_values as $value)
-                                <span class="me-2">{{ $value->value }}</span>
-                            @endforeach
-                        </div>
-                    @endif
+                    {{ $item->product->name }} {{ $item->variant->fullName }}  x{{ $item->quantity }}
                 </td>
-                <td class="center">{{ $item->quantity }}</td>
                 <td class="right"> {{ removeZeroFromDecimal($item->original_price) }}</td>
                 <td class="right">{{ removeZeroFromDecimal($item->original_price * $item->quantity) }}</td>
             </tr>
         @endforeach
-
-
     </table>
 
     <div class="line"></div>
@@ -147,10 +136,10 @@
     </div>
 
     <script>
-        window.print();
-        window.onafterprint = function() {
-            window.close();
-        };
+        // window.print();
+        // window.onafterprint = function() {
+        //     window.close();
+        // };
     </script>
 </body>
 
