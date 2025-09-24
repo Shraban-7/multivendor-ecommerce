@@ -173,9 +173,9 @@
                                         </div>
                                     @endif
                                 </td>
-                                <td class="text-center">{{ money($item->unit_price) }}</td>
+                                <td class="text-center">{{ money($item->original_price) }}</td>
                                 <td class="text-center">{{ $item->quantity }}</td>
-                                <td class="text-end">{{ money($item->sub_total) }}</td>
+                                <td class="text-end">{{ money($item->sub_total+$item->discount) }}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -200,7 +200,7 @@
                     <table class="table table-bordered table-sm mb-0">
                         <tr>
                             <td class="text-end text-uppercase"><strong>SUB TOTAL:</strong></td>
-                            <td class="text-end text-uppercase">{{ strtoupper(money($order->sub_total)) }}</td>
+                            <td class="text-end text-uppercase">{{ strtoupper(money($order->sub_total+$order->discount)) }}</td>
                         </tr>
                         @if ($order->discount > 0)
                             <tr>
