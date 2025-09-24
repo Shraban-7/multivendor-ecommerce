@@ -14,12 +14,35 @@ use App\Http\Controllers\Controller;
 
 class SaleController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $orders = Order::where('seller_id', get_seller_id())
-            ->whereNull('user_id')
-            ->latest('id')
-            ->paginate(25);
+            ->whereNull('user_id');
+
+        if ($request->filled('invoice_id')) {
+            $orders->where('invoice_id', 'like', '%' . $request->invoice_id . '%');
+        }
+
+        if ($request->filled('customer_name')) {
+            $orders->whereHas('customer', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->customer_name . '%');
+            });
+        }
+
+        if ($request->filled('customer_phone')) {
+            $orders->whereHas('customer', function ($q) use ($request) {
+                $q->where('phone', 'like', '%' . $request->customer_phone . '%');
+            });
+        }
+
+        if ($request->filled('date_from')) {
+            $orders->whereDate('created_at', '>=', $request->date_from);
+        }
+        if ($request->filled('date_to')) {
+            $orders->whereDate('created_at', '<=', $request->date_to);
+        }
+
+        $orders = $orders->latest()->paginate(25);
 
         return view('seller.pos.orders', compact('orders'));
     }
@@ -312,7 +335,7 @@ class SaleController extends Controller
         ], "Order item removed successfully");
     }
 
-    public function pay(Request $request,Order $order)
+    public function pay(Request $request, Order $order)
     {
         $validated = $request->validate([
             'amount' => 'required|numeric|min:0'
@@ -322,8 +345,8 @@ class SaleController extends Controller
             return successResponse('Payment amount cannot be greater than remaining due.');
         }
 
-        $order->paid+=$validated['amount'];
-        $order->due-=$validated['amount'];
+        $order->paid += $validated['amount'];
+        $order->due -= $validated['amount'];
         $order->save();
 
         return successResponse('Payment submitted successfully');
