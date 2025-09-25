@@ -13,7 +13,7 @@
         <table id="order-table" class="table table-bordered bg-white mb-3 text-nowrap">
             <thead>
                 <tr>
-                    <th scope="col">OrderId</th>
+                    <th scope="col">#ID</th>
                     <th scope="col">Date</th>
                     <th scope="col">Customer</th>
                     <th scope="col">Subtotal</th>
