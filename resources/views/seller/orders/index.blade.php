@@ -25,12 +25,17 @@
             <tbody>
                 @foreach ($orders as $order)
                     <tr>
-                        <td> 
+                        <td>
                             <a href="{{ route('seller.orders.details', $order->invoice_id) }}" target="__blank">#
                                 {{ $order->invoice_id }}
                             </a>
                         </td>
-                        <td>{{ \Carbon\Carbon::parse($order->created_at)->format('d/m/Y h:i A') }}</td>
+                        <td>
+                            {{ $order->created_at->format('d/m/Y h:i A') }}
+                            @if ($order->created_at != $order->updated_at)
+                                <p class="small text-muted mb-0">Updated: {{ $order->updated_at->format('d/m/Y h:i A') }}</p>
+                            @endif
+                        </td>
                         <td> {{ $order->user->name }} </td>
                         <td> <span class="text-dark">{{ money($order->payable) }}</span> </td>
                         <td> <span class="text-danger"> {{ money($order->due) }}</span> </td>
