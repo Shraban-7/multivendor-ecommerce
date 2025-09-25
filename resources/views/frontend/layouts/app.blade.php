@@ -73,7 +73,7 @@ $isDashboard = View::hasSection('dashboard');
         </main>
     @endif
 
-    @if (auth()->guard('web')->check() || auth()->guard('seller')->check())
+    @if (auth()->guard('web')->check() || auth()->guard('seller')->check()|| auth()->guard('admin')->check())
         <div class="block md:hidden">
             @include('frontend.layouts.sidebar')
         </div>
