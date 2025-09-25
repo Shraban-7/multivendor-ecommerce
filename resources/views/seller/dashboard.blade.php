@@ -1,21 +1,23 @@
 @extends('seller.layouts.app')
 @section('title', 'Seller Dashboard')
 @section('content')
-    <div class="d-flex justify-content-end mb-3">
+    <div class="d-flex justify-content-end mb-2">
         <form id="dateRangeForm" method="GET" action="{{ route('seller.dashboard') }}" class="w-100 w-md-auto">
             <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-md-end gap-2">
                 <input type="date" name="start_date" value="{{ request('start_date') }}"
-                    class="form-control w-100 w-md-auto">
+                    class="form-control form-control-sm w-100 w-md-auto">
                 <input type="date" name="end_date" value="{{ request('end_date') }}"
-                    class="form-control w-100 w-md-auto">
-                <button type="submit" class="btn btn-primary w-100 w-md-auto">Filter</button>
+                    class="form-control form-control-sm w-100 w-md-auto">
+                <button type="submit" class="btn btn-white border btn-sm w-100 w-md-auto">
+                    <i class="bi bi-funnel me-1"></i>Filter
+                </button>
             </div>
         </form>
     </div>
 
     <div class="row">
-        <div class="col-12 mb-5">
-            <div class="row row-cols-lg-4 row-cols-2 g-lg-5 g-2">
+        <div class="col-12 mb-3">
+            <div class="row row-cols-lg-4 row-cols-2 g-lg-3 g-2">
                 <div class="col">
                     <div class="card h-100 card-lift">
                         <div class="card-body">
@@ -149,7 +151,7 @@
             <div class="card flex-fill">
                 <div class="card-body">
                     <h5 class="fw-semi-bold">Top Selling Products</h5>
-                    <ul class="list-group">
+                    <ul class="list-group list-group-flush">
                         @foreach ($top_selling_products as $product)
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <div class="d-flex align-items-center">
@@ -166,7 +168,7 @@
         </div>
     </div>
 
-    <div class="row mt-5">
+    <div class="row">
         <!-- Latest Orders Section -->
         <div class="col-12">
             <div class="card">
