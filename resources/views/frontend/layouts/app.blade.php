@@ -93,6 +93,11 @@ $isDashboard = View::hasSection('dashboard');
 
     @include('frontend.layouts.footer')
 
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script>
+        feather.replace();
+    </script>
+
     @vite('resources/js/app.js')
 
     <script src="{{ asset('assets/libs/swiper/js/swiper-bundle.min.js') }}"></script>
