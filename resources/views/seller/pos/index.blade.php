@@ -342,7 +342,7 @@ $products = $products->sortByDesc('total_stock');
                                 <button id="updateOrderBtn" class="btn btn-success">
                                     <i class="bi bi-arrow-repeat me-2"></i> Update Order
                                 </button>
-                                <a href="{{ route('seller.pos.index') }}" class="btn btn-secondary">Cancel Order</a>
+                                <a href="{{ route('seller.pos.index') }}" class="btn btn-secondary">Cancel</a>
                             @else
                                 <button id="placeOrderBtn" class="btn btn-success">
                                     <i class="bi bi-cart me-2"></i> Checkout
