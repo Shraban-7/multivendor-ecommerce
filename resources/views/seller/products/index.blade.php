@@ -15,7 +15,6 @@
                 <tr>
                     <th>Product</th>
                     <th>Price Range</th>
-                    <th>Total Stock</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
@@ -35,18 +34,18 @@
                                 <img src="{{ storage_url($product->thumbnail) }}" class="rounded me-2"
                                     style="width:50px;height:50px;object-fit:cover">
                                 <div>
-                                    <strong>{{ $product->name }}</strong><br>
-                                    <a href="#" class="small text-muted text-decoration-underline"
-                                        data-bs-toggle="modal" data-bs-target="#variantsModal-{{ $product->id }}">
-                                        View variants ({{ $product->variants->count() }})
-                                    </a>
+                                    <a href="{{ route('seller.products.show', $product->slug) }}" target="__blank" class="fw-bold">{{ $product->name }}</a><br>
+                                    @if ($product->variants->count() > 0)
+                                        <a href="#" class="small text-muted text-decoration-underline"
+                                            data-bs-toggle="modal" data-bs-target="#variantsModal-{{ $product->id }}">
+                                            View variants ({{ $totalStock }} {{ $product->unit->short_name }})
+                                        </a>
+                                    @endif
                                 </div>
                             </div>
                         </td>
 
                         <td>{{ money($minPrice) }} – {{ money($maxPrice) }}</td>
-
-                        <td>{{ $totalStock }} {{ $product->unit->short_name }}</td>
 
                         <td>
                             @if ($product->status == $product::STATUS_ACTIVE)
@@ -63,12 +62,8 @@
 
                         <td>
                             <div class="d-flex">
-                                <a href="{{ route('seller.products.show', $product->slug) }}"
-                                    class="btn btn-light btn-sm border me-1">
-                                    <i data-feather="eye" class="icon-xs"></i> Details
-                                </a>
                                 <a href="{{ route('seller.products.edit', $product->slug) }}"
-                                    class="btn btn-light btn-sm border">
+                                    class="btn btn-light btn-sm border" target="__blank">
                                     <i data-feather="edit" class="icon-xs me-1"></i> Edit
                                 </a>
                             </div>
