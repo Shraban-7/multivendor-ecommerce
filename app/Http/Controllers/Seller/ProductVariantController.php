@@ -50,11 +50,13 @@ class ProductVariantController extends Controller
                 'discount_type' => $data['discount_type'] ?? null,
                 'discount_value' => $data['discount_value'] ?? null,
                 'discount_amount' => (isset($data['discount_type'], $data['discount_value']) && $data['discount_type'] && $data['discount_value'])
-                    ? calculate_discount_amount($data['selling_price'], $data['discount_type'], $data['discount_value'])
+                    ? round(calculate_discount_amount($data['selling_price'], $data['discount_type'], $data['discount_value']))
                     : 0,
+
                 'discounted_price' => (isset($data['discount_type'], $data['discount_value']) && $data['discount_type'] && $data['discount_value'])
-                    ? calculate_discounted_price($data['selling_price'], $data['discount_type'], $data['discount_value'])
+                    ? round(calculate_discounted_price($data['selling_price'], $data['discount_type'], $data['discount_value']))
                     : null,
+
 
                 'is_default' => $first ? 1 : 0,
             ];
@@ -88,8 +90,8 @@ class ProductVariantController extends Controller
         $data['product_id'] = $product->id;
 
         if (!empty($data['discount_type']) && !empty($data['discount_value'])) {
-            $data['discount_amount']  = calculate_discount_amount($data['selling_price'], $data['discount_type'], $data['discount_value']);
-            $data['discounted_price'] = calculate_discounted_price($data['selling_price'], $data['discount_type'], $data['discount_value']);
+            $data['discount_amount']  = round(calculate_discount_amount($data['selling_price'], $data['discount_type'], $data['discount_value']));
+            $data['discounted_price'] = round(calculate_discounted_price($data['selling_price'], $data['discount_type'], $data['discount_value']));
         } else {
             $data['discount_amount']  = null;
             $data['discounted_price'] = null;
