@@ -10,7 +10,7 @@ $isPos = is_null($order->user_id) ? true : false;
     <div class="d-flex justify-content-between align-items-center">
         <h4 class="mb-0">Order Details</h4>
         @if ($isPos)
-        <a href="{{ route('seller.pos.index', ['order_id' => $order->id]) }}"
+        <a href="{{ route('seller.pos.index', ['order_id' => $order->invoice_id]) }}"
             class="btn btn-primary border btn-sm me-1" title="Details">
             <i data-feather="edit" class="icon-xs"></i> Edit Order
         </a>

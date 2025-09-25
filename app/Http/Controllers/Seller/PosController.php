@@ -38,7 +38,7 @@ class PosController extends Controller
         $total = 0;
 
         if ($request->has('order_id')) {
-            $order = Order::where('id', $request->order_id)
+            $order = Order::where('invoice_id', $request->order_id)
                 ->where('seller_id', get_seller_id())
                 ->with('items.variant.product')
                 ->first();

@@ -13,7 +13,7 @@
         <table id="order-table" class="table table-bordered bg-white mb-3 text-nowrap">
             <thead>
                 <tr>
-                    <th scope="col">#ID</th>
+                    <th scope="col"># Order ID</th>
                     <th scope="col">Date</th>
                     <th scope="col">Customer</th>
                     <th scope="col">Subtotal</th>
@@ -25,8 +25,12 @@
             <tbody>
                 @foreach ($orders as $order)
                     <tr>
-                        <td> {{ $order->invoice_id }}</td>
-                        <td>{{ \Carbon\Carbon::parse($order->created_at)->format('d-m-Y h:i A') }}</td>
+                        <td> 
+                            <a href="{{ route('seller.orders.details', $order->invoice_id) }}" target="__blank">#
+                                {{ $order->invoice_id }}
+                            </a>
+                        </td>
+                        <td>{{ \Carbon\Carbon::parse($order->created_at)->format('d/m/Y h:i A') }}</td>
                         <td> {{ $order->user->name }} </td>
                         <td> <span class="text-dark">{{ money($order->payable) }}</span> </td>
                         <td> <span class="text-danger"> {{ money($order->due) }}</span> </td>
