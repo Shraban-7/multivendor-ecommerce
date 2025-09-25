@@ -42,11 +42,11 @@ $links = array_merge($links, [
     ],
 ]);
 
-
-
-function getInitials($name)
-{
-    return strtoupper(implode('', array_map(fn($w) => $w[0], explode(' ', $name))));
+if (!function_exists('getInitials')) {
+    function getInitials($name)
+    {
+        return strtoupper(implode('', array_map(fn($w) => $w[0], explode(' ', $name))));
+    }
 }
 
 $user = auth()->user();
@@ -68,10 +68,10 @@ $nameInitials = getInitials($user->name);
 
     <nav class="space-y-2">
         @foreach ($links as $link)
-        <a href="{{ $link['route'] }}"
-            class="block p-3 rounded-md {{ $link['active'] ? 'bg-yellow-500 text-white font-medium' : 'hover:bg-yellow-100' }}">
-            {{ $link['title'] }}
-        </a>
+            <a href="{{ $link['route'] }}"
+                class="block p-3 rounded-md {{ $link['active'] ? 'bg-yellow-500 text-white font-medium' : 'hover:bg-yellow-100' }}">
+                {{ $link['title'] }}
+            </a>
         @endforeach
         <a href="{{ route('logout') }}" class="block p-3 rounded-md text-red-600 hover:bg-red-50"
             onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
@@ -98,10 +98,10 @@ $nameInitials = getInitials($user->name);
     </div>
     <nav class="space-y-2">
         @foreach ($links as $link)
-        <a href="{{ $link['route'] }}"
-            class="block p-3 rounded-md {{ $link['active'] ? 'bg-yellow-500 text-white font-medium' : 'hover:bg-yellow-100' }}">
-            {{ $link['title'] }}
-        </a>
+            <a href="{{ $link['route'] }}"
+                class="block p-3 rounded-md {{ $link['active'] ? 'bg-yellow-500 text-white font-medium' : 'hover:bg-yellow-100' }}">
+                {{ $link['title'] }}
+            </a>
         @endforeach
         <a href="{{ route('logout') }}" class="block p-3 rounded-md text-red-600 hover:bg-red-50"
             onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

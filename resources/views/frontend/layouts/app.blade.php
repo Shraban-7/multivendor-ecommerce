@@ -44,8 +44,7 @@ $isDashboard = View::hasSection('dashboard');
         @include('frontend.layouts.bottom-nav')
     </div>
 
-    <div
-        class="block md:hidden">
+    <div class="block md:hidden">
         @include('frontend.layouts.mobile-dock')
     </div>
 
@@ -74,6 +73,13 @@ $isDashboard = View::hasSection('dashboard');
         </main>
     @endif
 
+    @if (auth()->guard('web')->check() || auth()->guard('seller')->check())
+        <div class="block md:hidden">
+            @include('frontend.layouts.sidebar')
+        </div>
+    @endif
+
+
     @if ($isDashboard)
         <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mb-10">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 items-start">
@@ -84,11 +90,11 @@ $isDashboard = View::hasSection('dashboard');
             </div>
         </main>
         <!-- Floating Sidebar Toggle Button (Mobile Only) -->
-        <button
+        {{-- <button
             class="fixed bottom-16 right-6 z-50 md:hidden bg-yellow-500 text-white p-4 rounded-full shadow-lg hover:bg-yellow-600 focus:outline-none"
             id="sidebar-toggle">
             <i class="fa-solid fa-bars"></i>
-        </button>
+        </button> --}}
     @endif
 
     <div class="hidden md:block">
@@ -108,28 +114,26 @@ $isDashboard = View::hasSection('dashboard');
     <script src="{{ asset('assets/libs/datatables/simple-datatables@9.0.3.js') }}"></script>
     <script src="{{ asset('assets/libs/toastr/js/toastr.min.js') }}"></script>
 
-    @if ($isDashboard)
-        <!-- Sidebar toggle -->
-        <script>
-            const sidebarToggle = document.getElementById("sidebar-toggle");
-            const mobileSidebar = document.getElementById("mobile-sidebar");
-            const sidebarBackdrop = document.getElementById("sidebar-backdrop");
-            sidebarToggle.addEventListener("click", () => {
-                const isOpen = !mobileSidebar.classList.contains("-translate-x-full");
-                if (isOpen) {
-                    mobileSidebar.classList.add("-translate-x-full");
-                    sidebarBackdrop.classList.add("hidden");
-                } else {
-                    mobileSidebar.classList.remove("-translate-x-full");
-                    sidebarBackdrop.classList.remove("hidden");
-                }
-            });
-            sidebarBackdrop.addEventListener("click", () => {
+    <!-- Sidebar toggle -->
+    <script>
+        const sidebarToggle = document.getElementById("sidebar-toggle");
+        const mobileSidebar = document.getElementById("mobile-sidebar");
+        const sidebarBackdrop = document.getElementById("sidebar-backdrop");
+        sidebarToggle.addEventListener("click", () => {
+            const isOpen = !mobileSidebar.classList.contains("-translate-x-full");
+            if (isOpen) {
                 mobileSidebar.classList.add("-translate-x-full");
                 sidebarBackdrop.classList.add("hidden");
-            });
-        </script>
-    @endif
+            } else {
+                mobileSidebar.classList.remove("-translate-x-full");
+                sidebarBackdrop.classList.remove("hidden");
+            }
+        });
+        sidebarBackdrop.addEventListener("click", () => {
+            mobileSidebar.classList.add("-translate-x-full");
+            sidebarBackdrop.classList.add("hidden");
+        });
+    </script>
 
     <script>
         $.ajaxSetup({
