@@ -29,7 +29,12 @@
 
                     </a>
                 </td>
-                <td>{{ \Carbon\Carbon::parse($order->created_at)->format('d-m-Y h:i A') }}</td>
+                <td>
+                    {{ $order->created_at->format('d/m/Y h:i A') }}
+                    @if($order->created_at != $order->updated_at)
+                    <p class="small text-muted mb-0">Updated: {{ $order->updated_at->format('d/m/Y h:i A') }}</p>
+                    @endif
+                </td>
                 <td>
                     @if ($order->customer)
                     {{ $order->customer->name ?? '' }} ({{ $order->customer->phone ?? '' }})
@@ -37,20 +42,21 @@
                 </td>
                 <td> <span class="text-dark">{{ money($order->payable) }}</span> </td>
                 <td>
+                    @if($order->due > 0)
                     <span class="text-danger"> {{ money($order->due) }}</span>
-
-                    <button class="btn btn-sm btn-light border pay-now-btn" data-id="{{ $order->id }}"
+                    <button class="btn btn-sm btn-light border pay-now-btn ms-1" data-id="{{ $order->id }}"
                         data-due="{{ $order->due }}">
                         Pay Due
                     </button>
+                    @endif
                 </td>
 
-                {{-- <td>
-                            <a href="{{ route('seller.orders.details', $order->invoice_id) }}" title="Details"
-                class="btn btn-light border btn-sm me-1">
-                <i data-feather="clipboard" class="icon-xs"></i> Details
-                </a>
-                </td> --}}
+                <!-- <td>
+                    <a href="{{ route('seller.orders.details', $order->invoice_id) }}" title="Details"
+                        class="btn btn-light border btn-sm me-1">
+                        <i data-feather="clipboard" class="icon-xs"></i> Details
+                    </a>
+                </td> -->
             </tr>
             @endforeach
         </tbody>
