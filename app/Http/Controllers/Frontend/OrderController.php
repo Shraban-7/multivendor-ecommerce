@@ -176,7 +176,7 @@ class OrderController extends Controller
             }
         }
 
-        $invoiceId = Order::generateInvoiceID();
+        $invoiceId = Order::generateInvoiceID($selectedSellerId);
         $payableAmount = $sub_total + $shipping_fee + $vat_amount;
         $sellerEarning = $sub_total + $vat_amount - $total_commission;
 

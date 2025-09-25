@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\OrderStatus;
 use App\Enums\PaymentType;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -22,6 +23,9 @@ class Order extends Model
         'billing_information' => 'array',
         'delivery_status' => 'integer',
     ];
+
+    public const ORDER_TYPE_CUSTOMER = 'C';
+    public const ORDER_TYPE_POS = 'P';
 
     public function billing_address()
     {
@@ -95,8 +99,19 @@ class Order extends Model
         return $this->hasMany(OrderTracking::class);
     }
 
-    public static function generateInvoiceID()
+    public function generateInvoiceID($sellerId, $orderType = self::ORDER_TYPE_CUSTOMER)
     {
-        return uniqid('SM');
+        $date = Carbon::now()->format('ymd');
+        $vendorCode = 'V' . str_pad($sellerId, 2, '0', STR_PAD_LEFT);
+
+        $latestOrder = Order::where('seller_id', $sellerId)
+            ->whereDate('created_at', Carbon::today())
+            ->latest()
+            ->first();
+
+        $sequenceNumber = $latestOrder ? str_pad(($latestOrder->id + 1), 3, '0', STR_PAD_LEFT) : '001';
+        $invoiceId = "{$orderType}-{$vendorCode}-{$date}-{$sequenceNumber}";
+
+        return $invoiceId;
     }
 }

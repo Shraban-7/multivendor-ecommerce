@@ -314,8 +314,9 @@ class PosController extends Controller
 
         $payableAmount = $sub_total + $vat_amount;
         $sellerEarning = $payableAmount - $total_commission;
+        $sellerId = get_seller_id();
 
-        $invoiceId = Order::generateInvoiceID();
+        $invoiceId = Order::generateInvoiceID($sellerId, Order::ORDER_TYPE_POS);
 
         $order = Order::create([
             'seller_id' => get_seller_id(),
