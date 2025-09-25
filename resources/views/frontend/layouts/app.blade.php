@@ -69,13 +69,13 @@ $isDashboard = View::hasSection('dashboard');
     @endif
 
     @if (!$isDashboard)
-        <main class="max-w-7xl mx-auto p-4">
+        <main class="max-w-7xl mx-auto p-4 mb-10">
             @yield('content')
         </main>
     @endif
 
     @if ($isDashboard)
-        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mb-10">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 items-start">
                 @include('frontend.layouts.sidebar')
                 <section class="md:col-span-3 space-y-6">
