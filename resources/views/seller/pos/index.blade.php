@@ -59,10 +59,10 @@ $products = $products->sortByDesc('total_stock');
             <div class="card mb-4 ">
                 <div class="card-header bg-white py-3">
                     <div class="row align-items-center">
-                        <div class="col-md-8">
+                        <div class="col-md-6">
                             <h4 class="mb-0">Products</h4>
                         </div>
-                        <div class="col-md-4 d-flex justify-content-end gap-2">
+                        <div class="col-md-6 d-flex justify-content-end gap-2">
                             <div class="input-group input-group-sm">
                                 <input type="text" id="skuSearch" class="form-control" placeholder="Barcode/SKU">
                             </div>
