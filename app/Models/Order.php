@@ -99,7 +99,7 @@ class Order extends Model
         return $this->hasMany(OrderTracking::class);
     }
 
-    public function generateInvoiceID($sellerId, $orderType = self::ORDER_TYPE_CUSTOMER)
+    public static function generateInvoiceID($sellerId, $orderType = self::ORDER_TYPE_CUSTOMER)
     {
         $date = Carbon::now()->format('ymd');
         $vendorCode = 'V' . str_pad($sellerId, 2, '0', STR_PAD_LEFT);
