@@ -452,7 +452,7 @@ $products = $products->sortByDesc('total_stock');
                     }
                 });
 
-                $(document).on('click', '.add-to-cart-btn', debounce(function() {
+                $(document).on('click', '.add-to-cart-btn', function() {
                     let button = $(this);
                     let variantId = $(this).data('variant-id');
                     let quantity = $(this).data('quantity') || 1;
@@ -462,7 +462,7 @@ $products = $products->sortByDesc('total_stock');
                     spinner.removeClass('d-none');
 
                     addToCart(variantId, quantity, orderId, button);
-                }, 1000));
+                });
 
                 function addToCart(variantId, quantity, orderId = 0, button) {
                     let url = orderId && orderId > 0 ?
@@ -471,6 +471,8 @@ $products = $products->sortByDesc('total_stock');
 
                     let btnText = button.find('.btn-text');
                     let spinner = button.find('.spinner-border');
+
+                    button.prop('disabled', true);
 
                     $.ajax({
                         url: url,
@@ -483,6 +485,7 @@ $products = $products->sortByDesc('total_stock');
                         },
                         success: function(response) {
                             if (response.status) {
+                                button.prop('disabled', false)
                                 toastr.success("Item added successfully!");
 
                                 if (orderId && orderId > 0) {
@@ -504,6 +507,7 @@ $products = $products->sortByDesc('total_stock');
                             toastr.error(xhr.responseJSON?.message || "Something went wrong");
                         },
                         complete: function() {
+                            button.prop('disabled', false)
                             btnText.removeClass('d-none');
                             spinner.addClass('d-none');
                         }
