@@ -68,7 +68,7 @@ $products = $products->sortByDesc('total_stock');
                             </div>
                             <button id="sales" class="border btn btn-sm btn-dark" data-bs-toggle="modal"
                                 data-bs-target="#salesModal">
-                                Sales
+                                <i class="bi bi-receipt me-1"></i> Recent Sales
                             </button>
                         </div>
                     </div>
