@@ -65,11 +65,11 @@ $products = $products->sortByDesc('total_stock');
                         <div class="col-md-6 d-flex justify-content-end gap-2">
                             <div class="input-group input-group-sm">
                                 <input type="text" id="skuSearch" class="form-control" placeholder="Barcode/SKU">
-                            </div>
-                            <button id="sales" class="border btn btn-sm btn-dark" data-bs-toggle="modal"
-                                data-bs-target="#salesModal">
-                                <i class="bi bi-receipt me-1"></i> Recent Sales
-                            </button>
+                                <button id="sales" class="btn btn-dark" data-bs-toggle="modal"
+                                    data-bs-target="#salesModal">
+                                    <i class="bi bi-receipt me-1"></i> Recent Sales
+                                </button>
+                            </div>                           
                         </div>
                     </div>
 
