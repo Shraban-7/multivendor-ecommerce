@@ -1,7 +1,4 @@
-<div
-    class="fixed bottom-0 left-1/2 -translate-x-1/2 z-50 
-            bg-white border border-gray-200 shadow-lg 
-            w-full px-4 py-3">
+<div class="fixed bottom-0 left-1/2 -translate-x-1/2 z-50 bg-white border border-gray-200 shadow-lg w-full" style="padding: 10px;">
     <div class="grid grid-cols-4 gap-4">
         <a href="{{ route('home') }}"
             class="flex flex-col items-center justify-center 
