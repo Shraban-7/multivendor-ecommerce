@@ -35,6 +35,13 @@
         padding: 0.25rem 0.5rem;
         font-size: 0.875rem;
     }
+
+    .small-table > tbody {
+        font-size: 14px;
+    }
+    .small-table tbody > tr > td {
+        padding: 4px 8px;
+    }
 </style>
 
 <?php
@@ -197,7 +204,7 @@ foreach ($categories as $cat) {
                     </div>
 
                     <div class="modal fade" id="variantModal-{{ $product->id }}" tabindex="-1">
-                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
                             <div class="modal-content border-0 shadow">
                                 <div class="modal-header">
                                     <h5 class="modal-title">{{ $product->name }} – Variants</h5>
@@ -205,44 +212,39 @@ foreach ($categories as $cat) {
                                 </div>
                                 <div class="modal-body">
                                     <div class="table-responsive">
-                                        <table class="table align-middle table-bordered">
+                                        <table class="table align-middle table-bordered small-table">
                                             <thead class="table-light">
                                                 <tr>
-                                                    <th>Variant</th>
+                                                   
                                                     <th>SKU</th>
+                                                     <th>Variant</th>
                                                     <th>Stock</th>
                                                     <th>Price</th>
-                                                    <th></th>
+                                                    <th>Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @foreach ($product->variants as $variant)
                                                 <tr>
-                                                    <td class="fw-bold small">{{ $variant->fullName }}
-                                                    </td>
-                                                    <td class="small">{{ $variant->sku }}</td>
-                                                    <td class="small">
-                                                        {{ $variant->availableStock }}
-                                                    </td>
-                                                    <td class="small">
-                                                        {{ money($variant->discounted_price ?? $variant->selling_price) }}
-                                                    </td>
+                                                    <td>{{ $variant->sku }}</td>
+                                                    <td class="fw-bold">{{ $variant->fullName }}</td>
+                                                    <td>{{ $variant->availableStock }} {{ $product->unit->short_name }}</td>
+                                                    <td>{{ money($variant->discounted_price ?? $variant->selling_price) }}</td>
                                                     <td>
                                                         @if ($variant->availableStock > 0)
                                                         <button
                                                             class="btn btn-sm btn-primary add-to-cart-btn"
                                                             data-variant-id="{{ $variant->id }}"
                                                             data-quantity="1">
-                                                            <span class="btn-text"><i
-                                                                    class="bi bi-plus"></i> Add</span>
-                                                            <span
-                                                                class="spinner-border spinner-border-sm d-none"
+                                                            <span class="btn-text">
+                                                                <i class="bi bi-plus"></i> Add to Cart</span>
+                                                            <span class="spinner-border spinner-border-sm d-none"
                                                                 role="status" aria-hidden="true"></span>
                                                         </button>
                                                         @else
-                                                        <button
-                                                            class="btn btn-sm btn-secondary disabled">Out
-                                                            of stock </button>
+                                                        <button class="btn btn-sm btn-secondary disabled">
+                                                            <i class="bi bi-exclamation-circle"></i> Stock Out
+                                                        </button>
                                                         @endif
                                                     </td>
                                                 </tr>
