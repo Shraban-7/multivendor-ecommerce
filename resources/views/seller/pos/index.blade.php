@@ -50,7 +50,6 @@ foreach ($products as $product) {
     }
 }
 $products = $products->sortByDesc('total_stock');
-
 $productCounts = $products->groupBy('category_id')->map(function ($categoryProducts) {
     return $categoryProducts->count();
 });
@@ -114,8 +113,8 @@ foreach ($categories as $cat) {
                                                     <a href="{{ route('seller.orders.details', $order->invoice_id) }}"
                                                         target="__blank"
                                                         class="btn btn-light border btn-sm d-flex align-items-center">
-                                                        <i data-feather="clipboard"
-                                                            class="icon-xs me-1"></i> Details
+                                                        <i data-feather="clipboard" class="icon-xs me-1"></i>
+                                                        Details
                                                     </a>
                                                     <a href="{{ route('seller.pos.index', ['order_id' => $order->id]) }}"
                                                         target="__blank"
@@ -160,7 +159,7 @@ foreach ($categories as $cat) {
                     @if($category->product_count > 0)
                     <button class="btn btn-outline-secondary btn-sm me-2 mb-2 filter-btn"
                         data-category="{{ $category->id }}">
-                        {{ $category->name }} ({{ $category->product_count }})
+                        {{ $category->name }} ({{ $category->product_count}})
                     </button>
                     @endif
                     @endforeach
@@ -174,8 +173,8 @@ foreach ($categories as $cat) {
                             data-bs-target="#variantModal-{{ $product->id }}">
                             <div class="d-flex p-2">
                                 <div style="width: 48px; height: 48px; flex-shrink: 0;">
-                                    <img src="{{ storage_url($product->thumbnail) }}"
-                                        alt="{{ $product->name }}" class="img-fluid rounded"
+                                    <img src="{{ storage_url($product->thumbnail) }}" alt="{{ $product->name }}"
+                                        class="img-fluid rounded"
                                         style="object-fit: cover; width: 100%; height: 100%;">
                                 </div>
                                 <div class="ms-2 flex-grow-1 overflow-hidden">
@@ -238,8 +237,7 @@ foreach ($categories as $cat) {
                                                                     class="bi bi-plus"></i> Add</span>
                                                             <span
                                                                 class="spinner-border spinner-border-sm d-none"
-                                                                role="status"
-                                                                aria-hidden="true"></span>
+                                                                role="status" aria-hidden="true"></span>
                                                         </button>
                                                         @else
                                                         <button
@@ -353,6 +351,7 @@ foreach ($categories as $cat) {
                         <button id="updateOrderBtn" class="btn btn-success">
                             <i class="bi bi-arrow-repeat me-2"></i> Update Order
                         </button>
+                        <a href="{{ route('seller.pos.index') }}" class="btn btn-secondary">Cancel</a>
                         @else
                         <button id="placeOrderBtn" class="btn btn-success">
                             <i class="bi bi-cart me-2"></i> Checkout
@@ -704,14 +703,16 @@ foreach ($categories as $cat) {
                         if (response.data.invoice_id) {
                             let receiptUrl = "{{ route('receipt', ':invoice_id') }}"
                                 .replace(':invoice_id', response.data.invoice_id);
-                            $('<a>', {
-                                href: receiptUrl,
-                                target: '_blank'
-                            })[0].click();
+                            let receiptWindow = window.open(receiptUrl, "_blank",
+                                "width=800,height=600");
+
+                            let timer = setInterval(function() {
+                                if (receiptWindow.closed) {
+                                    clearInterval(timer);
+                                    location.reload();
+                                }
+                            }, 500);
                         }
-
-                        $('#customerForm')[0].reset();
-
 
 
                     } else {

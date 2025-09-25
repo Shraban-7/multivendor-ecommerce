@@ -37,7 +37,7 @@
                 </td>
                 <td>
                     @if ($order->customer)
-                    {{ $order->customer->name ?? '' }} ({{ $order->customer->phone ?? '' }})
+                    {{ $order->customer->name }} ({{ $order->customer->phone }})
                     @endif
                 </td>
                 <td> <span class="text-dark">{{ money($order->payable) }}</span> </td>

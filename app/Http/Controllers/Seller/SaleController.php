@@ -55,7 +55,7 @@ class SaleController extends Controller
             'due' => 'nullable|numeric',
         ]);
 
-        $order = Order::where('id', $orderId)
+        $order = Order::where('invoice_id', $orderId)
             ->where('seller_id', get_seller_id())
             ->with('items.variant.product')
             ->first();
