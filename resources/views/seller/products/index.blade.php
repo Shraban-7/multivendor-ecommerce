@@ -96,8 +96,8 @@
                             <table class="table table-sm table-hover table-bordered mb-0">
                                 <thead class="table-light">
                                     <tr>
-                                        <th>Name</th>
                                         <th>SKU</th>
+                                        <th>Name</th>
                                         <th class="text-center">Price</th>
                                         <th class="text-center">Stock</th>
                                     </tr>
@@ -105,10 +105,12 @@
                                 <tbody>
                                     @foreach ($product->variants as $variant)
                                         <tr>
-                                            <td>{{ $variant->full_name }}</td>
                                             <td>{{ $variant->sku }}</td>
-                                            <td class="text-center">{{ money($variant->selling_price) }}</td>
-                                            <td class="text-center">{{ $variant->stock_in - $variant->stock_out }}</td>
+                                            <td class="fw-bold">{{ $variant->fullName }}</td>
+                                            <td class="text-center">
+                                                {{ money($variant->discounted_price ?? $variant->selling_price) }}</td>
+                                            <td class="text-center">{{ $variant->availableStock }}
+                                                {{ $product->unit->short_name }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>

@@ -99,7 +99,7 @@ foreach ($categories as $cat) {
                                 <p class="text-center text-muted">No sales today.</p>
                                 @else
                                 <table class="table table-sm table-bordered">
-                                    <thead>
+                                    <thead class="table-light">
                                         <tr>
                                             <th>Invoice Id</th>
                                             <th>Customer</th>
