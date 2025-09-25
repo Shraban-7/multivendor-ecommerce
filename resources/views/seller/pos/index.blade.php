@@ -214,10 +214,9 @@ foreach ($categories as $cat) {
                                     <div class="table-responsive">
                                         <table class="table align-middle table-bordered small-table">
                                             <thead class="table-light">
-                                                <tr>
-                                                   
+                                                <tr>                                                   
                                                     <th>SKU</th>
-                                                     <th>Variant</th>
+                                                    <th>Variant</th>
                                                     <th>Stock</th>
                                                     <th>Price</th>
                                                     <th>Action</th>
@@ -228,9 +227,9 @@ foreach ($categories as $cat) {
                                                 <tr>
                                                     <td>{{ $variant->sku }}</td>
                                                     <td class="fw-bold">{{ $variant->fullName }}</td>
-                                                    <td>{{ $variant->availableStock }} {{ $product->unit->short_name }}</td>
-                                                    <td>{{ money($variant->discounted_price ?? $variant->selling_price) }}</td>
-                                                    <td>
+                                                    <td class="text-center">{{ $variant->availableStock }} {{ $product->unit->short_name }}</td>
+                                                    <td class="text-center">{{ money($variant->discounted_price ?? $variant->selling_price) }}</td>
+                                                    <td class="text-center">
                                                         @if ($variant->availableStock > 0)
                                                         <button
                                                             class="btn btn-sm btn-primary add-to-cart-btn"
