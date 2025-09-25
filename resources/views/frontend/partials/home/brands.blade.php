@@ -1,4 +1,4 @@
-<section class="section-padding">
+<section class="section-padding mb-12">
     <div class="container mx-auto">
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-xl font-semibold text-gray-800">Top Brands</h2>

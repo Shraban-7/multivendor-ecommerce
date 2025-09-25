@@ -91,7 +91,9 @@ $isDashboard = View::hasSection('dashboard');
         </button>
     @endif
 
-    @include('frontend.layouts.footer')
+    <div class="hidden md:block">
+        @include('frontend.layouts.footer')
+    </div>
 
     <script src="https://unpkg.com/feather-icons"></script>
     <script>
