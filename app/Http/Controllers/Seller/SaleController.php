@@ -177,12 +177,12 @@ class SaleController extends Controller
     public function itemAdd(Request $request)
     {
         $data = $request->validate([
-            'order_id'   => 'required|integer',
+            'order_id'   => 'required',
             'variant_id' => 'required|integer',
             'quantity'   => 'required|integer|min:1',
         ]);
 
-        $order = Order::where('id', $data['order_id'])
+        $order = Order::where('invoice_id', $data['order_id'])
             ->where('seller_id', get_seller_id())
             ->with('items.variant.product')
             ->first();
@@ -244,9 +244,9 @@ class SaleController extends Controller
     public function itemUpdate(Request $request)
     {
         $request->validate([
-            'id' => 'required|integer',
+            'id' => 'required',
             'action' => 'required|string|in:increase,decrease',
-            'order_id' => 'required|integer'
+            'order_id' => 'required'
         ]);
 
         $item = OrderItem::find($request->id);
@@ -288,7 +288,7 @@ class SaleController extends Controller
     {
         $request->validate([
             'id' => 'required|integer',
-            'order_id' => 'required|integer'
+            'order_id' => 'required'
         ]);
 
         $item = OrderItem::find($request->id);
