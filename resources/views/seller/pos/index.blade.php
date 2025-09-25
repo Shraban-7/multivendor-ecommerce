@@ -148,8 +148,7 @@ foreach ($categories as $cat) {
                                     @endif
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary btn-sm"
-                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                 </div>
                             </div>
                         </div>
@@ -269,7 +268,10 @@ foreach ($categories as $cat) {
         <div class="col-md-4">
             <div class="card sticky-top" style="top: 20px;">
                 <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Current Order</h5>
+                    <h5 class="mb-0">Order Summery @if (request()->has('order_id'))
+                            ({{ request('order_id') }})
+                        @endif
+                    </h5>
                     <button id="clearCartBtn" class="border btn btn-sm btn-danger" data-bs-toggle="modal"
                         data-bs-target="#clearCartModal">
                         <i class="bi bi-trash me-1"></i> Clear Cart
@@ -282,12 +284,14 @@ foreach ($categories as $cat) {
                         <div class="row">
                             <div class="col-md-6 mb-2 position-relative">
                                 <input type="text" autocomplete="off" class="form-control form-control-sm"
-                                    name="customer_name" id="customerName" placeholder="Name">
+                                    name="customer_name" id="customerName" value="{{ $customer_name }}"
+                                    placeholder="Name">
                                 <div class="dropdown-menu w-100" id="customerNameDropdown"></div>
                             </div>
                             <div class="col-md-6 mb-2 position-relative">
                                 <input type="text" autocomplete="off" class="form-control form-control-sm"
-                                    name="customer_phone" id="customerPhone" placeholder="Phone">
+                                    name="customer_phone" id="customerPhone" value="{{ $customer_phone }}"
+                                    placeholder="Phone">
                                 <div class="dropdown-menu w-100" id="customerPhoneDropdown"></div>
                             </div>
                         </div>
@@ -335,20 +339,22 @@ foreach ($categories as $cat) {
                             <span>Total:</span>
                             <span id="summary-total">{{ money($total) }}</span>
                         </div>
-                        @if (request()->has('order_id') == null)
-                            <div class="d-flex justify-content-between mb-2 fw-bold">
-                                <span>Due:</span>
-                                <span id="due-amount" data-total="{{ $total }}">{{ money($total) }}</span>
-                            </div>
-                            <div class="row g-2 mb-3">
-                                <div class="col-12">
-                                    <div class="input-group">
-                                        <input type="number" min="0" step="0.01" class="form-control"
-                                            id="paid-amount" placeholder="Enter Paid Amount">
-                                    </div>
+
+                        <div class="d-flex justify-content-between mb-2 fw-bold">
+                            <span>Due:</span>
+                            <span id="due-amount" data-total="{{ request()->has('order_id') ? $due : $total }}">
+                                {{ request()->has('order_id') ? money($due) : money($total) }}
+                            </span>
+                        </div>
+
+                        <div class="row g-2 mb-3">
+                            <div class="col-12">
+                                <div class="input-group">
+                                    <input type="number" min="0" step="0.01" class="form-control"
+                                        id="paid-amount" value="{{ $paid }}" placeholder="Enter Paid Amount">
                                 </div>
                             </div>
-                        @endif
+                        </div>
 
                         <!-- Payment Buttons -->
                         <div class="d-grid gap-2">
@@ -476,8 +482,8 @@ foreach ($categories as $cat) {
                 addToCart(variantId, quantity, orderId, button);
             });
 
-            function addToCart(variantId, quantity, orderId = 0, button) {
-                let url = orderId && orderId > 0 ?
+            function addToCart(variantId, quantity, orderId = null, button) {
+                let url = orderId ?
                     "{{ route('seller.pos.sales.item_add') }}" :
                     "{{ route('seller.pos.cart_add') }}";
 
@@ -647,6 +653,16 @@ foreach ($categories as $cat) {
                 let paid = parseFloat($('#paid-amount').val()) || 0;
                 let due = parseFloat($('#due-amount').text().replace(/[^0-9.-]+/g, "")) || 0;
 
+                if (paid < 0) {
+                    toastr.error("Paid amount cannot be negative.");
+                    return;
+                }
+
+                if (0> due) {
+                    toastr.error("Paid amount cannot be greater than Due.");
+                    return;
+                }
+
                 if (paid == null || paid == 0) {
                     toastr.error("Payment not done yet!");
                     return;
@@ -812,14 +828,27 @@ foreach ($categories as $cat) {
             $('#updateOrderBtn').on('click', function() {
                 let button = $(this);
                 let originalText = button.text();
+                let name = $('#customerName').val().trim();
+                let phone = $('#customerPhone').val().trim();
                 let paid = parseFloat($('#paid-amount').val()) || 0;
                 let due = parseFloat($('#due-amount').text().replace(/[^0-9.-]+/g, "")) || 0;
+                if (paid < 0) {
+                    toastr.error("Paid amount cannot be negative.");
+                    return;
+                }
+
+                if (0> due) {
+                    toastr.error("Paid amount cannot be greater than Due.");
+                    return;
+                }
                 button.prop('disabled', true).text('Processing...');
                 $.ajax({
                     url: "{{ route('seller.pos.sales.update') }}",
                     method: 'POST',
                     data: {
                         order_id: "{{ request('order_id') }}",
+                        customer_name: name,
+                        customer_phone: phone,
                         paid: paid,
                         due: due,
                         _token: "{{ csrf_token() }}"
@@ -940,7 +969,7 @@ foreach ($categories as $cat) {
                 $('#summary-vat').text(summery.vat_amount || "{{ money(0) }}");
                 $('#summary-discount').text(summery.discount || "{{ money(0) }}");
                 $('#summary-total').text(summery.total || "{{ money(0) }}");
-                $('#due-amount').text(summery.total || "{{ money(0) }}");
+                $('#due-amount').text(summery.due || "{{ money(0) }}");
             }
 
             $(document).on('click', '.filter-btn', function() {
@@ -964,12 +993,22 @@ foreach ($categories as $cat) {
 
             $("#paid-amount").on("input", function() {
                 let paid = parseFloat($(this).val()) || 0;
-                if (paid > total) return;
+
+                if (paid < 0) {
+                    $(this).val(0);
+                    paid = 0;
+                }
+
+                if (paid > total) {
+                    $(this).val(total.toFixed(2));
+                    paid = total;
+                }
+
                 let due = total - paid;
                 if (due < 0) due = 0;
+
                 $("#due-amount").text(due.toFixed(2));
             });
-
         });
     </script>
 @endpush

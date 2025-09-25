@@ -36,6 +36,8 @@ class PosController extends Controller
         $vat_amount = 0;
         $discount = 0;
         $total = 0;
+        $customer_name = null;
+        $customer_phone = null;
 
         if ($request->has('order_id')) {
             $order = Order::where('invoice_id', $request->order_id)
@@ -49,6 +51,14 @@ class PosController extends Controller
                 $vat_amount = $orderItems->sum(fn($item) => ($item->variant->product->vat_percent * $item->price / 100) * $item->quantity);
                 $discount = $orderItems->sum(fn($item) => ($item->variant->discounted_price ? $item->variant->selling_price - $item->variant->discounted_price : 0) * $item->quantity);
                 $total = $subtotal + $vat_amount - $discount;
+                $paid = $order->paid;
+                $due = $order->due;
+
+                if($order->customer_id)
+                {
+                    $customer_name = $order->customer->name; 
+                    $customer_phone = $order->customer->phone; 
+                }
             }
         } else {
             $cart = PosCart::where('seller_id', get_seller_id())->first();
@@ -75,7 +85,11 @@ class PosController extends Controller
             'discount',
             'vat_amount',
             'total',
-            'orders'
+            'orders',
+            'due',
+            'paid',
+            'customer_name',
+            'customer_phone'
         ));
     }
 

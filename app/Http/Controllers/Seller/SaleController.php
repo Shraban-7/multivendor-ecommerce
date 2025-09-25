@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\Order;
 use App\Models\Seller;
 use App\Models\Product;
+use App\Models\Customer;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use App\Enums\CommissionType;
@@ -51,6 +52,8 @@ class SaleController extends Controller
     {
         $orderId = $request->input('order_id', $request->query('order_id'));
         $data = $request->validate([
+            'customer_name' => 'nullable|string|max:255|required_with:customer_phone',
+            'customer_phone' => 'nullable|string|max:20|required_with:customer_name',
             'paid' => 'nullable|numeric',
             'due' => 'nullable|numeric',
         ]);
@@ -120,6 +123,8 @@ class SaleController extends Controller
         }
 
         $payableAmount = $sub_total + $vat_amount;
+        $paid = $order->paid + $data['paid'];
+        $due = $payableAmount - $paid;
         $sellerEarning = $payableAmount - $total_commission;
 
         $order->update([
@@ -128,13 +133,23 @@ class SaleController extends Controller
             'discount' => $discount,
             'vat_amount' => $vat_amount,
             'payable' => $payableAmount,
-            'paid' => $data['paid'],
-            'due' => $data['due'],
+            'paid' => $paid,
+            'due' => $due,
             'commission_type' => $seller->commission_type,
             'commission_amount' => $seller->commission_amount,
             'seller_earnings' => $sellerEarning,
             'total_commission' => $total_commission,
         ]);
+
+        if (!empty($data['customer_name']) || !empty($data['customer_phone'])) {
+            $customer = Customer::where('name',$data['customer_name'])->where('phone',$data['customer_phone'])->first();
+
+            if ($customer) {
+                $order->update([
+                    'customer_id' => $customer->id
+                ]);
+            } 
+        }
 
         $html = view('components.seller.pos-order-items', [
             'orderItems' => $order->items()->with('variant.product')->get(),
@@ -148,6 +163,7 @@ class SaleController extends Controller
             'vat_amount' => money($vat_amount),
             'discount' => money($discount),
             'total' => money($payableAmount),
+            'due' => money($due)
         ], "Order Updated Successfully");
     }
 
@@ -200,15 +216,25 @@ class SaleController extends Controller
 
         $orderItem = $order->items()->where('product_variant_id', $data['variant_id'])->first();
 
-        if ($orderItem) {
-            $orderItem->quantity += $data['quantity'];
-            $orderItem->unit_price = $unitPrice;
-            $orderItem->sub_total = $orderItem->quantity * $unitPrice;
-            $orderItem->discount = ($variant->selling_price - $unitPrice) * $orderItem->quantity;
-            $orderItem->vat_amount = ($variant->product->vat_percent * $unitPrice / 100) * $orderItem->quantity;
-            $orderItem->save();
-        } else {
+        if ($orderItem && request()->has('order_id')) {
             $order->items()->create([
+                'product_id' => $variant->product_id,
+                'product_variant_id' => $variant->id,
+                'quantity' => $data['quantity'],
+                'unit_price' => $unitPrice,
+                'sub_total' => $data['quantity'] * $unitPrice,
+                'discount' => ($variant->selling_price - $unitPrice) * $data['quantity'],
+                'vat_amount' => ($variant->product->vat_percent * $unitPrice / 100) * $data['quantity'],
+                'buying_price' => $variant->buying_price,
+            ]);
+        } else {
+            $orderItem?->update([
+                'quantity' => $orderItem->quantity + $data['quantity'],
+                'unit_price' => $unitPrice,
+                'sub_total' => ($orderItem->quantity + $data['quantity']) * $unitPrice,
+                'discount' => ($variant->selling_price - $unitPrice) * ($orderItem->quantity + $data['quantity']),
+                'vat_amount' => ($variant->product->vat_percent * $unitPrice / 100) * ($orderItem->quantity + $data['quantity']),
+            ]) ?? $order->items()->create([
                 'product_id' => $variant->product_id,
                 'product_variant_id' => $variant->id,
                 'quantity' => $data['quantity'],
@@ -220,12 +246,14 @@ class SaleController extends Controller
             ]);
         }
 
+
         $orderItems = $order->items()->with('variant.product')->get();
 
         $subtotal = $orderItems->sum(fn($item) => $item->unit_price * $item->quantity);
         $vat_amount = $orderItems->sum(fn($item) => $item->vat_amount);
         $discount = $orderItems->sum(fn($item) => $item->discount);
         $total = $subtotal + $vat_amount - $discount;
+        $due = $total - $order->paid;
 
         $variant->stock_out += $data['quantity'];
         $variant->save();
@@ -238,6 +266,7 @@ class SaleController extends Controller
             'vat_amount' => money($vat_amount),
             'discount'   => money($discount),
             'total'      => money($total),
+            'due' => money($due),
         ], "Product added to order");
     }
 
@@ -274,6 +303,7 @@ class SaleController extends Controller
         $vat_amount = $orderItems->sum(fn($i) => ($i->vat_percent * $i->unit_price / 100) * $i->quantity);
         $discount = $orderItems->sum(fn($i) => $i->discount);
         $total = $subtotal - $discount + $vat_amount;
+        $due = $total - $item->order->paid;
 
         return apiResponse([
             'html' => $html,
@@ -281,6 +311,7 @@ class SaleController extends Controller
             'vat_amount' => money($vat_amount),
             'discount' => money($discount),
             'total' => money($total),
+            'due' => money($due),
         ], "Order item updated successfully");
     }
 
@@ -311,7 +342,7 @@ class SaleController extends Controller
         $vat_amount = $orderItems->sum(fn($i) => ($i->vat_percent * $i->unit_price / 100) * $i->quantity);
         $discount = $orderItems->sum(fn($i) => $i->discount);
         $total = $subtotal - $discount + $vat_amount;
-
+        $due = $total - $item->order->paid;
 
         if ($orderItems->count() == 0) {
             $order->delete();
@@ -322,6 +353,7 @@ class SaleController extends Controller
                 'vat_amount' => money($vat_amount),
                 'discount' => money($discount),
                 'total' => money($total),
+                'due' => money($due),
                 'redirect' => route('seller.pos.index'),
             ], "Order item removed successfully");
         }
