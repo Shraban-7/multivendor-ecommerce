@@ -38,6 +38,8 @@ class PosController extends Controller
         $total = 0;
         $customer_name = null;
         $customer_phone = null;
+        $paid = null;
+        $due = null;
 
         if ($request->has('order_id')) {
             $order = Order::where('invoice_id', $request->order_id)
