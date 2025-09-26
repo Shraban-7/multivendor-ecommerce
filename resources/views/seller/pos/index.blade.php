@@ -479,14 +479,11 @@ foreach ($categories as $cat) {
                 btnText.addClass('d-none');
                 spinner.removeClass('d-none');
 
-                addToCart(variantId, quantity, orderId, button);
+                addToCart(variantId, quantity, button);
             });
 
-            function addToCart(variantId, quantity, orderId = null, button) {
-                let url = orderId ?
-                    "{{ route('seller.pos.sales.item_add') }}" :
-                    "{{ route('seller.pos.cart_add') }}";
-
+            function addToCart(variantId, quantity, button) {
+                let url = orderId == 0 ?  "{{ route('seller.pos.cart_add') }}" :"{{ route('seller.pos.sales.item_add') }}" ;
                 let btnText = button.find('.btn-text');
                 let spinner = button.find('.spinner-border');
 
