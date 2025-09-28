@@ -354,7 +354,7 @@ foreach ($categories as $cat) {
                                         id="paid-amount" value="{{ $paid }}" placeholder="Enter Paid Amount">
 
                                     <button class="btn btn-light border" type="button" id="set-full-paid">
-                                        Full Paid
+                                     <i class="bi bi-hand-index-thumb"></i>  Full Paid
                                     </button>
                                 </div>
                             </div>
