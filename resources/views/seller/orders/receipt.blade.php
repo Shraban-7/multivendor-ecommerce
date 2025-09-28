@@ -16,6 +16,10 @@
             print-color-adjust: exact;
         }
 
+        .right {
+            text-align: end;
+        }
+
         .center {
             text-align: center;
         }
@@ -51,7 +55,7 @@
 
 <body>
     @php
-    $settings = settings();
+        $settings = settings();
     @endphp
 
     <div class="center">
@@ -66,8 +70,8 @@
     <p>
         Invoice No : {{ $order->invoice_id }}<br>
         Date : {{ $order->created_at->format('d-m-Y  h:i A') }}<br>
-        @if(!is_null($order->customer_id))
-        Customer : {{ $order->customer->name }} ({{ $order->customer->phone }})
+        @if (!is_null($order->customer_id))
+            Customer : {{ $order->customer->name }} ({{ $order->customer->phone }})
         @endif
     </p>
     <div class="line"></div>
@@ -85,11 +89,11 @@
         </tr>
 
         @foreach ($order->items as $item)
-        <tr>
-            <td class="left">{{ $item->product->name }} ({{ $item->variant->fullName }})</td>
-            <td class="center"> {{ $item->quantity }}</td>
-            <td class="right">{{ money($item->original_price * $item->quantity) }}</td>
-        </tr>
+            <tr>
+                <td class="left">{{ $item->product->name }} ({{ $item->variant->fullName }})</td>
+                <td class="center"> {{ $item->quantity }}</td>
+                <td class="right">{{ money($item->original_price * $item->quantity) }}</td>
+            </tr>
         @endforeach
     </table>
 
@@ -97,41 +101,40 @@
 
     <table>
         <tr>
-            <td class="left">Subtotal</td>
+            <td>Subtotal</td>
             <td class="right">{{ money($order->sub_total + $order->discount) }}</td>
         </tr>
         @if ($order->discount > 0)
-        <tr>
-            <td class="left">Discount ({{ $order->discount_percentage }}%)</td>
-            <td class="right">-{{ money($order->discount) }}</td>
-        </tr>
+            <tr>
+                <td class="left">Discount ({{ $order->discount_percentage }}%)</td>
+                <td class="right">-{{ money($order->discount) }}</td>
+            </tr>
         @endif
         <tr class="totals">
             <td class="left">Net Total</td>
             <td class="right">{{ money($order->total) }}</td>
         </tr>
         @if ($order->vat > 0)
-        <tr>
-            <td class="left">VAT ({{ $order->tax }}%)</td>
-            <td class="right">{{ money($order->tax) }}</td>
-        </tr>
+            <tr>
+                <td class="left">VAT ({{ $order->tax }}%)</td>
+                <td class="right">{{ money($order->tax) }}</td>
+            </tr>
         @endif
     </table>
 
     @if ($order->due > 0)
+        <div class="line"></div>
 
-    <div class="line"></div>
-
-    <table>
-        <tr>
-            <td class="left">Amount Paid</td>
-            <td class="right">{{ money($order->paid) }}</td>
-        </tr>
-        <tr>
-            <td class="left">Due</td>
-            <td class="right">{{ money($order->due) }}</td>
-        </tr>
-    </table>
+        <table>
+            <tr>
+                <td class="left">Amount Paid</td>
+                <td class="right">{{ money($order->paid) }}</td>
+            </tr>
+            <tr>
+                <td class="left">Due</td>
+                <td class="right">{{ money($order->due) }}</td>
+            </tr>
+        </table>
     @endif
 
     <div class="line"></div>
@@ -142,13 +145,6 @@
             Visit: www.slash-mart.com
         </p>
     </div>
-
-    <script>
-        window.print();
-        window.onafterprint = function() {
-            window.close();
-        };
-    </script>
 </body>
 
 </html>

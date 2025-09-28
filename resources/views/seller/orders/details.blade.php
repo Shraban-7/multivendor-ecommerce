@@ -25,10 +25,10 @@
                     <h5 class="mb-0">Summary</h5>
                     <div class="d-flex">
                         @if ($isPos)
-                            <a href="{{ route('receipt', $order->invoice_id) }}" title="Details" target="__blank"
-                                class="btn btn-light border btn-sm me-1">
+                            <button type="button" class="btn btn-light border btn-sm me-1"
+                                onclick="printReceipt('{{ route('receipt', $order->invoice_id) }}')">
                                 <i data-feather="printer" class="icon-xs"></i> Receipt
-                            </a>
+                            </button>
                         @endif
                         <a href="{{ route('invoice', $order->invoice_id) }}" title="Details" target="__blank"
                             class="btn btn-light border btn-sm me-1">
@@ -406,6 +406,18 @@
 
     @push('scripts')
         <script>
+            function printReceipt(url) {
+                let printWindow = window.open(url, '_blank', 'width=800,height=600');
+
+                printWindow.onload = function() {
+                    printWindow.focus();
+                    printWindow.print();
+                    printWindow.onafterprint = function() {
+                        printWindow.close();
+                    };
+                };
+            }
+
             let deleteOrderId = null;
 
             $(document).on('click', '.delete-cart-item-btn', function() {
