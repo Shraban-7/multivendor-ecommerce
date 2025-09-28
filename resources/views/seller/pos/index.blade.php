@@ -352,6 +352,10 @@ foreach ($categories as $cat) {
                                 <div class="input-group">
                                     <input type="number" min="0" step="0.01" class="form-control"
                                         id="paid-amount" value="{{ $paid }}" placeholder="Enter Paid Amount">
+
+                                    <button class="btn btn-primary" type="button" id="set-full-paid">
+                                        Full Paid
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -483,7 +487,8 @@ foreach ($categories as $cat) {
             });
 
             function addToCart(variantId, quantity, button) {
-                let url = orderId == 0 ?  "{{ route('seller.pos.cart_add') }}" :"{{ route('seller.pos.sales.item_add') }}" ;
+                let url = orderId == 0 ? "{{ route('seller.pos.cart_add') }}" :
+                    "{{ route('seller.pos.sales.item_add') }}";
                 let btnText = button.find('.btn-text');
                 let spinner = button.find('.spinner-border');
 
@@ -561,9 +566,7 @@ foreach ($categories as $cat) {
                 });
             });
 
-
             let deleteCartItemId = null;
-
 
             $(document).on('click', '.delete-cart-item-btn', function() {
                 deleteCartItemId = $(this).data('id');
@@ -655,7 +658,7 @@ foreach ($categories as $cat) {
                     return;
                 }
 
-                if (0> due) {
+                if (0 > due) {
                     toastr.error("Paid amount cannot be greater than Due.");
                     return;
                 }
@@ -834,7 +837,7 @@ foreach ($categories as $cat) {
                     return;
                 }
 
-                if (0> due) {
+                if (0 > due) {
                     toastr.error("Paid amount cannot be greater than Due.");
                     return;
                 }
@@ -1005,6 +1008,10 @@ foreach ($categories as $cat) {
                 if (due < 0) due = 0;
 
                 $("#due-amount").text(due.toFixed(2));
+            });
+
+            $(document).on("click", "#set-full-paid", function() {
+                $("#paid-amount").val(total).trigger("input");
             });
         });
     </script>
