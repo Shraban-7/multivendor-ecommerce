@@ -30,10 +30,10 @@
                                 <i data-feather="printer" class="icon-xs"></i> Receipt
                             </button>
                         @endif
-                        <a href="{{ route('invoice', $order->invoice_id) }}" title="Details" target="__blank"
-                            class="btn btn-light border btn-sm me-1">
+                        <button type="button" class="btn btn-light border btn-sm me-1"
+                            onclick="printReceipt('{{ route('invoice', $order->invoice_id) }}')">
                             <i data-feather="download" class="icon-xs"></i>Invoice
-                        </a>
+                        </button>
                     </div>
                 </div>
                 <div class="card-body">
