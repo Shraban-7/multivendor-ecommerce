@@ -18,7 +18,6 @@ use Illuminate\Http\Request;
 use App\Enums\CommissionType;
 use App\Models\ProductVariant;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 
 class PosController extends Controller
 {
@@ -56,10 +55,9 @@ class PosController extends Controller
                 $paid = $order->paid;
                 $due = $order->due;
 
-                if($order->customer_id)
-                {
-                    $customer_name = $order->customer->name; 
-                    $customer_phone = $order->customer->phone; 
+                if ($order->customer_id) {
+                    $customer_name = $order->customer->name;
+                    $customer_phone = $order->customer->phone;
                 }
             }
         } else {
@@ -128,31 +126,20 @@ class PosController extends Controller
 
         $cartItems = $cart->items()->with('variant.product')->get();
 
-        $subtotal = $cartItems->sum(function ($item) {
-            return $item->variant->selling_price * $item->quantity;
-        });
-
-        $vat_amount = $cartItems->sum(function ($item) {
-            $unitPrice = $item->price;
-            return (($item->variant->product->vat_percent * $unitPrice) / 100) * $item->quantity;
-        });
-
-        $discount = $cartItems->sum(function ($item) {
-            $unitPrice = $item->price;
-            $originalPrice = $item->variant->selling_price;
-            return ($originalPrice - $unitPrice) * $item->quantity;
-        });
-
+        $subtotal = $cartItems->sum(fn($item) => $item->variant->selling_price * $item->quantity);
+        $vat_amount = $cartItems->sum(fn($item) => ($item->variant->product->vat_percent * $item->price / 100) * $item->quantity);
+        $discount = $cartItems->sum(fn($item) => ($item->variant->discounted_price ? $item->variant->selling_price - $item->variant->discounted_price : 0) * $item->quantity);
         $total = $subtotal + $vat_amount - $discount;
 
         $html = view('components.seller.pos-cart-items', compact('cartItems'))->render();
 
         return apiResponse([
-            'html'    => $html,
-            'subtotal'     => money($subtotal),
-            'vat_amount'   => money($vat_amount),
-            'discount'     => money($discount),
-            'total'        => money($total),
+            'html' => $html,
+            'subtotal' => money($subtotal),
+            'vat_amount' => money($vat_amount),
+            'discount' => money($discount),
+            'total' => money($total),
+            'due' => money($total),
         ], "Product added to cart");
     }
 
@@ -187,11 +174,12 @@ class PosController extends Controller
         $html = view('components.seller.pos-cart-items', compact('cartItems'))->render();
 
         return apiResponse([
-            'html'    => $html,
-            'subtotal'     => money($subtotal),
-            'vat_amount'   => money($vat_amount),
-            'discount'     => money($discount),
-            'total'        => money($total),
+            'html' => $html,
+            'subtotal' => money($subtotal),
+            'vat_amount' => money($vat_amount),
+            'discount' => money($discount),
+            'total' => money($total),
+            'due' => money($total),
         ], "Cart Updated Successfully");
     }
 
@@ -214,31 +202,20 @@ class PosController extends Controller
 
         $cartItems = $cart->items()->with('variant.product')->get();
 
-        $subtotal = $cartItems->sum(function ($item) {
-            return $item->price * $item->quantity;
-        });
-
-        $vat_amount = $cartItems->sum(function ($item) {
-            $unitPrice = $item->price;
-            return (($item->variant->product->vat_percent * $unitPrice) / 100) * $item->quantity;
-        });
-
-        $discount = $cartItems->sum(function ($item) {
-            $unitPrice = $item->price;
-            $originalPrice = $item->variant->selling_price;
-            return ($originalPrice - $unitPrice) * $item->quantity;
-        });
-
-        $total = $subtotal - $discount + $vat_amount;
+        $subtotal = $cartItems->sum(fn($item) => $item->variant->selling_price * $item->quantity);
+        $vat_amount = $cartItems->sum(fn($item) => ($item->variant->product->vat_percent * $item->price / 100) * $item->quantity);
+        $discount = $cartItems->sum(fn($item) => ($item->variant->discounted_price ? $item->variant->selling_price - $item->variant->discounted_price : 0) * $item->quantity);
+        $total = $subtotal + $vat_amount - $discount;
 
         $html = view('components.seller.pos-cart-items', compact('cartItems'))->render();
 
         return apiResponse([
-            'html'    => $html,
-            'subtotal'     => money($subtotal),
-            'vat_amount'   => money($vat_amount),
-            'discount'     => money($discount),
-            'total'        => money($total),
+            'html' => $html,
+            'subtotal' => money($subtotal),
+            'vat_amount' => money($vat_amount),
+            'discount' => money($discount),
+            'total' => money($total),
+            'due' => money($total),
         ], "Item Remove From Cart Successfully!");
     }
 
