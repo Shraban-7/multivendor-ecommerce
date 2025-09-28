@@ -16,6 +16,7 @@ use App\Http\Controllers\Seller\ProductVariantController;
 use App\Http\Controllers\Seller\SaleController;
 use App\Http\Controllers\Seller\SellerCampaignController;
 use App\Http\Controllers\Seller\SellerEmployeeController;
+use App\Http\Controllers\Seller\SellerExpenseController;
 
 Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () {
 
@@ -35,7 +36,7 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
             Route::post('/item/add', [SaleController::class, 'itemAdd'])->name('item_add');
             Route::post('/item/update', [SaleController::class, 'itemUpdate'])->name('item_update');
             Route::post('/item/remove', [SaleController::class, 'itemRemove'])->name('item_remove');
-            Route::post('/{order}/pay', [SaleController::class, 'pay'])->name('pay');   
+            Route::post('/{order}/pay', [SaleController::class, 'pay'])->name('pay');
         });
     });
 
@@ -120,6 +121,13 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
     Route::prefix('settings')->as('settings.')->group(function () {
         Route::get('/', [SettingController::class, 'index'])->name('index');
         Route::post('/update', [SettingController::class, 'update'])->name('update');
+    });
+
+    Route::prefix('expenses')->as('expenses.')->group(function () {
+        Route::get('/', [SellerExpenseController::class, 'index'])->name('index');
+        Route::post('/store', [SellerExpenseController::class, 'store'])->name('store');
+        Route::post('{expense}/update', [SellerExpenseController::class, 'update'])->name('update');
+        Route::post('{expense}/destroy', [SellerExpenseController::class, 'destroy'])->name('destroy');
     });
 
     Route::post('banner-image/{image}/delete', [SettingController::class, 'deleteImage'])->name('bannerImages.delete');
