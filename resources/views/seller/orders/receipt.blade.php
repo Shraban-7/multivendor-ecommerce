@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>POS Receipt</title>
+    <title>Order #{{ $order->invoice_id }} Receipt</title>
     <style>
         body {
             font-family: "Courier Prime", "Courier New", monospace;
