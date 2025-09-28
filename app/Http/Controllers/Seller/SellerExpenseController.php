@@ -11,12 +11,23 @@ class SellerExpenseController extends Controller
 {
     public function index()
     {
-        $expenses = SellerExpense::latest()->paginate(25);
+        $expenses = SellerExpense::where('seller_id', get_seller_id())
+            ->orWhereNull('seller_id')
+            ->latest()
+            ->paginate(25);
 
         $categories = SellerExpenseCategory::get();
 
-        return view('seller.expenses.index', compact('expenses', 'categories'));
+        $descriptions = SellerExpense::where('seller_id', get_seller_id())
+            ->orWhereNull('seller_id')
+            ->pluck('description')
+            ->filter()
+            ->unique()
+            ->values();
+
+        return view('seller.expenses.index', compact('expenses', 'categories', 'descriptions'));
     }
+
 
     public function store(Request $request)
     {

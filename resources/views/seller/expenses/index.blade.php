@@ -25,18 +25,18 @@
                     <tr>
                         <td>{{ $expense->category->name ?? '' }}</td>
                         <td><span class="text-dark">{{ money($expense->amount) }}</span></td>
-                        <td>{{ $expense->description ?? '-' }}</td>
+                        <td>{{ $expense->description ?? '' }}</td>
                         <td>{{ $expense->expense_date->format('d/m/Y') }}</td>
                         <td>
                             <button class="btn btn-light border btn-sm me-1 edit-expense-btn" data-id="{{ $expense->id }}"
                                 data-category="{{ $expense->seller_expense_category_id }}"
                                 data-category-name="{{ $expense->category->name ?? '' }}"
                                 data-amount="{{ $expense->amount }}" data-description="{{ $expense->description }}"
-                                data-date="{{ $expense->expense_date }}" data-bs-toggle="modal"
+                                data-date="{{ date('Y-m-d') }}" data-bs-toggle="modal"
                                 data-bs-target="#editExpenseModal">
                                 <i data-feather="edit" class="icon-xs"></i> Edit
                             </button>
-
+                            
                             <button type="button" class="btn btn-danger border btn-sm delete-expense-btn"
                                 data-id="{{ $expense->id }}" data-bs-toggle="modal" data-bs-target="#deleteExpenseModal">
                                 <i data-feather="trash" class="icon-xs"></i> Delete
@@ -85,11 +85,17 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Description</label>
-                            <textarea name="description" class="form-control"></textarea>
+                            <select name="description" id="create-description" class="form-select w-100 description-select">
+                                <option value="" selected disabled>--Choose--</option>
+                                @foreach ($descriptions as $desc)
+                                    <option value="{{ $desc }}">{{ $desc }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Date</label>
-                            <input type="date" name="expense_date" class="form-control" required>
+                            <input type="date" name="expense_date" class="form-control"
+                                value="{{ old('expense_date', date('Y-m-d')) }}" required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -115,7 +121,7 @@
                             <label class="form-label">Category</label>
                             <select name="seller_expense_category_id" id="edit-category"
                                 class="form-control select2-category" required>
-                                <option value="">Select or Create Category</option>
+                                <option value="" selected disabled>Select or Create Category</option>
                                 @foreach ($categories as $category)
                                     <option value="{{ $category->id }}">{{ $category->name }}</option>
                                 @endforeach
@@ -128,7 +134,13 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Description</label>
-                            <textarea name="description" id="edit-description" class="form-control"></textarea>
+                            <option value="" selected disabled>Select or Create Description</option>
+                            <select name="description" id="edit-description"
+                                class="form-select w-100 description-select">
+                                @foreach ($descriptions as $desc)
+                                    <option value="{{ $desc }}">{{ $desc }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Date</label>
@@ -184,6 +196,18 @@
                 dropdownParent: $("#editExpenseModal")
             });
 
+            $("#create-description").select2({
+                tags: true,
+                theme: "bootstrap-5",
+                dropdownParent: $("#createExpenseModal")
+            });
+
+            $("#edit-description").select2({
+                tags: true,
+                theme: "bootstrap-5",
+                dropdownParent: $("#editExpenseModal")
+            });
+
             $(document).on("click", ".edit-expense-btn", function() {
                 let id = $(this).data("id");
                 let category = $(this).data("category");
@@ -192,22 +216,34 @@
                 let description = $(this).data("description");
                 let date = $(this).data("date");
 
-                let action = "{{ route('seller.expenses.update', ':id') }}";
-                action = action.replace(':id', id);
+                let action = "{{ route('seller.expenses.update', ':id') }}".replace(':id', id);
                 $("#editExpenseForm").attr("action", action);
-
 
                 let $editCategory = $("#edit-category");
                 if (category && $editCategory.find("option[value='" + category + "']").length === 0) {
-                    let newOption = new Option(categoryName, category, true, true);
-                    $editCategory.append(newOption).trigger('change');
+                    $editCategory.append(new Option(categoryName, category, true, true)).trigger('change');
                 } else {
                     $editCategory.val(category).trigger('change');
                 }
 
                 $("#edit-amount").val(amount);
-                $("#edit-description").val(description);
                 $("#edit-date").val(date);
+
+                let $editDescription = $("#edit-description");
+                $editDescription.val(null).trigger('change');
+
+                if (description) {
+                    let descriptions = description.split(',').map(d => d.trim());
+                    descriptions.forEach(function(desc) {
+                        if ($editDescription.find("option[value='" + desc + "']").length === 0) {
+                            $editDescription.append(new Option(desc, desc, true, true));
+                        } else {
+                            $editDescription.find("option[value='" + desc + "']").prop("selected",
+                                true);
+                        }
+                    });
+                    $editDescription.trigger('change');
+                }
             });
 
             $(document).on("click", ".delete-expense-btn", function() {
