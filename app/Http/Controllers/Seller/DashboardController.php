@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Seller;
 
-use App\Enums\OrderStatus;
-use App\Http\Controllers\Controller;
 use App\Models\Order;
-use App\Models\OrderItem;
-use App\Models\Product;
-use App\Models\ProductVariant;
 use App\Models\Seller;
+use App\Models\Product;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
+use App\Models\SellerExpense;
+use App\Models\ProductVariant;
+use App\Http\Controllers\Controller;
 
 class DashboardController extends Controller
 {
@@ -67,6 +67,12 @@ class DashboardController extends Controller
             ->whereDate('created_at', '<=', $endDate)
             ->sum('total_commission');
 
+        $total_expense = SellerExpense::where('seller_id', $seller->id)
+            ->whereDate('expense_date', '>=', $startDate)
+            ->whereDate('expense_date', '<=', $endDate)
+            ->sum('amount');
+
+
         $total_stock_product_amount = ProductVariant::whereHas('product', function ($q) use ($seller) {
             $q->where('seller_id', $seller->id);
         })
@@ -92,7 +98,8 @@ class DashboardController extends Controller
             'chartData' => $chartData,
             'total_commission' => $total_commission,
             'total_stock_product_amount' => $total_stock_product_amount,
-            'seller' => $seller
+            'seller' => $seller,
+            'total_expense' => $total_expense
         ]);
     }
 }
