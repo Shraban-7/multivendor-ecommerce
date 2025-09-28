@@ -3,14 +3,17 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>POS Receipt</title>
+    <title>Order #{{ $order->invoice_id }} Receipt</title>
     <style>
         body {
-            font-family: "Courier New", monospace;
-            width: 302px;
-            /* ~80mm */
-            margin: 0 auto;
+            font-family: "Courier Prime", "Courier New", monospace;
             font-size: 13px;
+            width: 302px;
+            margin: 0 auto;
+            font-weight: 700;
+            color: #000;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
 
         .center {
@@ -29,20 +32,21 @@
 
         table td {
             padding: 2px 0;
+            font-weight: 700;
         }
 
-        .totals td {
-            font-weight: bold;
-        }
+        @media print {
 
-        .right {
-            text-align: right;
-        }
-
-        .left {
-            text-align: left;
+            body,
+            td,
+            p,
+            h3 {
+                color: #000 !important;
+                font-weight: 700 !important;
+            }
         }
     </style>
+
 </head>
 
 <body>
