@@ -104,13 +104,13 @@ $pageTitle = "Seller Dashboard | {$seller->business_name}";
                     <div class="card h-100 card-lift">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="fw-semi-bold">Total Expenses</span>
+                                <span class="fw-semi-bold">Expenses</span>
                                 <span class="text-success text-xxl font-semibold">{{ currency() }}</span>
                             </div>
                             <div class="mt-2 mb-2">
                                 <h3 class="fw-bold mb-0">{{ money($total_expense) }}</h3>
                             </div>
-                            <a href="{{ route('seller.expenses.index') }}"><small>All recorded expenses</small></a>
+                            <small class="text-muted">Total expenses</small>
                         </div>
                     </div>
                 </div>
