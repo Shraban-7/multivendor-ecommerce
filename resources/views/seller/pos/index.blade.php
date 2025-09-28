@@ -353,7 +353,7 @@ foreach ($categories as $cat) {
                                     <input type="number" min="0" step="0.01" class="form-control"
                                         id="paid-amount" value="{{ $paid }}" placeholder="Enter Paid Amount">
 
-                                    <button class="btn btn-primary" type="button" id="set-full-paid">
+                                    <button class="btn btn-light border" type="button" id="set-full-paid">
                                         Full Paid
                                     </button>
                                 </div>
