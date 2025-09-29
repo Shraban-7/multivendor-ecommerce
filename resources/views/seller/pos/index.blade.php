@@ -325,25 +325,25 @@ foreach ($categories as $cat) {
                     <div class="p-3 border-top">
                         <div class="d-flex justify-content-between mb-1 small">
                             <span>Subtotal:</span>
-                            <span id="summary-subtotal">{{ money($subtotal) }}</span>
+                            <span id="summary-subtotal">{{ $subtotal }}</span>
                         </div>
                         <div class="d-flex justify-content-between mb-1 small">
                             <span>Vat:</span>
-                            <span id="summary-vat">{{ money($vat_amount) }}</span>
+                            <span id="summary-vat">{{ $vat_amount }}</span>
                         </div>
                         <div class="d-flex justify-content-between mb-1 small">
                             <span>Discount:</span>
-                            <span id="summary-discount" data-base="{{ $discount }}">{{ money($discount) }}</span>
+                            <span id="summary-discount" data-base="{{ $discount }}">{{ $discount }}</span>
                         </div>
                         <div class="d-flex justify-content-between mb-2 fw-bold">
                             <span>Total:</span>
-                            <span id="summary-total" data-total="{{ $total }}">{{ money($total) }}</span>
+                            <span id="summary-total" data-total="{{ $total }}">{{ $total }}</span>
                         </div>
 
                         <div class="d-flex justify-content-between mb-2 fw-bold">
                             <span>Due:</span>
                             <span id="due-amount" data-due="{{ request()->has('order_id') ? $due : $total }}">
-                                {{ request()->has('order_id') ? money($due) : money($total) }}
+                                {{ request()->has('order_id') ? $due : $total }}
                             </span>
                         </div>
 
@@ -1080,8 +1080,9 @@ foreach ($categories as $cat) {
             });
 
             $(document).on("click", "#set-full-paid", function() {
-                let total = parseFloat($("#summary-total").data("total"));
-                $("#paid-amount").val(total).trigger("input");
+                const subtotal = parseFloat($('#summary-subtotal').text());
+                const totalDiscount = parseFloat($('#summary-discount').text());
+                $("#paid-amount").val(subtotal - totalDiscount);
             });
 
 
