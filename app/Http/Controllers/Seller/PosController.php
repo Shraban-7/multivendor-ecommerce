@@ -321,7 +321,7 @@ class PosController extends Controller
             'seller_employee_id' => $employee->id ??  null,
             'invoice_id' => $invoiceId,
             'sub_total' => $sub_total,
-            'total' => $sub_total + $vat_amount,
+            'total' => $payableAmount,
             'discount' => $data['discount'],
             'vat_amount' => $vat_amount,
             'payable' => $payableAmount,

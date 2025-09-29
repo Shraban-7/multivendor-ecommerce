@@ -997,23 +997,26 @@ foreach ($categories as $cat) {
                 let totalDiscount = 0;
                 let subtotal = 0;
 
-                summary.cart_items.forEach(item => {
-                    let sellingPrice = parseFloat(item.variant.selling_price) || 0;
-                    let discountedPrice = parseFloat(item.variant.discounted_price) || 0;
-                    let quantity = parseInt(item.quantity) || 1;
-                    let itemDiscount = (discountedPrice ? sellingPrice - discountedPrice : 0) * quantity;
-                    totalDiscount += itemDiscount;
+                if (summary && Array.isArray(summary.cart_items)) {
+                    summary.cart_items.forEach(item => {
+                        let sellingPrice = parseFloat(item.variant?.selling_price) || 0;
+                        let discountedPrice = parseFloat(item.variant?.discounted_price) || 0;
+                        let quantity = parseInt(item.quantity) || 1;
 
-                    subtotal += item.price * quantity;
-                });
+                        let itemDiscount = (discountedPrice ? sellingPrice - discountedPrice : 0) *
+                        quantity;
+                        totalDiscount += itemDiscount;
+
+                        subtotal += (parseFloat(item.price) || 0) * quantity;
+                    });
+                }
 
                 let total = summary.total || subtotal;
                 let due = summary.due || total;
 
-
                 let vat = parseMoney(summary.vat_amount);
 
-                $('#summary-subtotal').text(subtotal);
+                $('#summary-subtotal').text(summary.subtotal);
                 $('#summary-vat').text(vat);
 
                 $('#summary-discount')
@@ -1083,8 +1086,10 @@ foreach ($categories as $cat) {
                 const subtotal = parseFloat($('#summary-subtotal').text());
                 const total = parseFloat($('#summary-total').text());
                 const totalDiscount = parseFloat($('#summary-discount').text());
+                console.log(subtotal,totalDiscount);
                 $("#paid-amount").val(subtotal - totalDiscount);
                 const paid = $("#paid-amount").val();
+                console.log(paid);
                 $('#due-amount').text(total - paid);
             });
 
@@ -1103,11 +1108,14 @@ foreach ($categories as $cat) {
                 } else if (type === 'percentage') {
                     if (discount > 100) discount = 100;
                     calculatedDiscount = (total * discount) / 100;
+                    console.log(calculatedDiscount);
                 }
 
                 totalDiscount = productDiscount + calculatedDiscount;
 
-                let newTotal = total - discount;
+                console.log(totalDiscount);
+
+                let newTotal = total - calculatedDiscount;
                 if (newTotal < 0) newTotal = 0;
 
                 let paid = total - due;
@@ -1130,9 +1138,10 @@ foreach ($categories as $cat) {
 
             function getTotalDiscount() {
                 let type = $('#discount-type').val();
-                let discount = parseFloat($('#discount-amount').val()) || 0;
+                let discount = parseFloat($('#discount-amount').val());
                 let calculatedDiscount = 0;
-                let productDiscount = parseFloat($('#summary-discount').data('base')) || 0;
+                let productDiscount = parseFloat($('#summary-discount').data('base'));
+                let total = parseFloat($('#summary-total').data('total'));
 
                 if (type === 'flat') {
                     calculatedDiscount = discount;
