@@ -10,7 +10,6 @@ use App\Models\PosCart;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Customer;
-use Dotenv\Parser\Value;
 use App\Models\OrderItem;
 use App\Enums\OrderStatus;
 use App\Models\PosCartItem;
@@ -135,11 +134,12 @@ class PosController extends Controller
 
         return apiResponse([
             'html' => $html,
-            'subtotal' => money($subtotal),
-            'vat_amount' => money($vat_amount),
-            'discount' => money($discount),
-            'total' => money($total),
-            'due' => money($total),
+            'subtotal' => $subtotal,
+            'vat_amount' => $vat_amount,
+            'discount' => $discount,
+            'total' => $total,
+            'due' => $total,
+            'cart_items' => $cartItems
         ], "Product added to cart");
     }
 
@@ -175,11 +175,12 @@ class PosController extends Controller
 
         return apiResponse([
             'html' => $html,
-            'subtotal' => money($subtotal),
-            'vat_amount' => money($vat_amount),
-            'discount' => money($discount),
-            'total' => money($total),
-            'due' => money($total),
+            'subtotal' => $subtotal,
+            'vat_amount' => $vat_amount,
+            'discount' => $discount,
+            'total' => $total,
+            'due' => $total,
+            'cart_items' => $cartItems
         ], "Cart Updated Successfully");
     }
 
@@ -211,11 +212,12 @@ class PosController extends Controller
 
         return apiResponse([
             'html' => $html,
-            'subtotal' => money($subtotal),
-            'vat_amount' => money($vat_amount),
-            'discount' => money($discount),
-            'total' => money($total),
-            'due' => money($total),
+            'subtotal' => $subtotal,
+            'vat_amount' => $vat_amount,
+            'discount' => $discount,
+            'total' => $total,
+            'due' => $total,
+            'cart_items' => $cartItems
         ], "Item Remove From Cart Successfully!");
     }
 
@@ -242,6 +244,7 @@ class PosController extends Controller
             'customer_phone' => 'nullable|string|max:20|required_with:customer_name',
             'paid' => 'required|numeric',
             'due' => 'nullable|numeric',
+            'discount' => 'nullable'
         ]);
 
         $seller = Seller::find(get_seller_id());
@@ -277,6 +280,8 @@ class PosController extends Controller
             $vat_amount += floatval(($product->vat_percent * $unitPrice) / 100) * $variant->quantity;
             $sub_total += $itemTotal;
             $discount += $itemDiscount;
+
+            $sub_total = $sub_total + $discount - $data['discount'];
 
             $orderItems[] = [
                 'product_id' => $product->id,
@@ -317,7 +322,7 @@ class PosController extends Controller
             'invoice_id' => $invoiceId,
             'sub_total' => $sub_total,
             'total' => $sub_total + $vat_amount,
-            'discount' => $discount,
+            'discount' => $data['discount'],
             'vat_amount' => $vat_amount,
             'payable' => $payableAmount,
             'paid' => $data['paid'],

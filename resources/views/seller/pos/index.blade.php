@@ -333,18 +333,31 @@ foreach ($categories as $cat) {
                         </div>
                         <div class="d-flex justify-content-between mb-1 small">
                             <span>Discount:</span>
-                            <span id="summary-discount">{{ money($discount) }}</span>
+                            <span id="summary-discount" data-base="{{ $discount }}">{{ money($discount) }}</span>
                         </div>
                         <div class="d-flex justify-content-between mb-2 fw-bold">
                             <span>Total:</span>
-                            <span id="summary-total">{{ money($total) }}</span>
+                            <span id="summary-total" data-total="{{ $total }}">{{ money($total) }}</span>
                         </div>
 
                         <div class="d-flex justify-content-between mb-2 fw-bold">
                             <span>Due:</span>
-                            <span id="due-amount" data-total="{{ request()->has('order_id') ? $due : $total }}">
+                            <span id="due-amount" data-due="{{ request()->has('order_id') ? $due : $total }}">
                                 {{ request()->has('order_id') ? money($due) : money($total) }}
                             </span>
+                        </div>
+
+                        <div class="row g-2 mb-3">
+                            <div class="col-12">
+                                <div class="input-group">
+                                    <input type="number" min="0" step="0.01" class="form-control"
+                                        id="discount-amount" style="width: 70%;" placeholder="Enter Discount">
+                                    <select class="form-select" id="discount-type">
+                                        <option value="flat">Flat</option>
+                                        <option value="percentage">Percentage</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="row g-2 mb-3">
@@ -354,7 +367,7 @@ foreach ($categories as $cat) {
                                         id="paid-amount" value="{{ $paid }}" placeholder="Enter Paid Amount">
 
                                     <button class="btn btn-light border" type="button" id="set-full-paid">
-                                     <i class="bi bi-hand-index-thumb"></i>  Full Paid
+                                        <i class="bi bi-hand-index-thumb"></i> Full Paid
                                     </button>
                                 </div>
                             </div>
@@ -629,6 +642,14 @@ foreach ($categories as $cat) {
                                 </tr>
                             `);
 
+                            $('#summary-discount')
+                                .data('base', 0)
+                                .attr('data-base', 0)
+                                .text('0.00');
+
+                            $('#discount-amount').val('');
+                            $('#discount-type').val('flat');
+
                             summery = response;
                             resetOrderSummary(summery);
                             const clearModalEl = document.getElementById('clearCartModal');
@@ -688,6 +709,7 @@ foreach ($categories as $cat) {
                         new_customer: !customerExists,
                         paid: paid,
                         due: due,
+                        discount: getTotalDiscount(),
                         _token: "{{ csrf_token() }}"
                     },
                     success: function(response) {
@@ -697,6 +719,13 @@ foreach ($categories as $cat) {
                             $('#customerName').val('');
                             $('#customerPhone').val('');
                             $('#paid-amount').val('');
+                            $('#summary-discount')
+                                .data('base', 0)
+                                .attr('data-base', 0)
+                                .text('0.00');
+
+                            $('#discount-amount').val('');
+                            $('#discount-type').val('flat');
                             customerExists = false
 
                             $('.order-items tbody').html(`
@@ -730,12 +759,11 @@ foreach ($categories as $cat) {
                                 let timer = setInterval(function() {
                                     if (receiptWindow.closed) {
                                         clearInterval(timer);
-                                        location.reload();
+                                        window.location.href =
+                                            "{{ route('seller.pos.index') }}";
                                     }
                                 }, 500);
                             }
-
-
                         } else {
                             toastr.error(response.message);
                         }
@@ -775,7 +803,7 @@ foreach ($categories as $cat) {
                     },
 
                     error: function(xhr) {
-                        toastr.error(xhr.responseJSON?.message || "Something went wrong");
+                        toastr.error(xhr.responseJSON?.message);
                     }
                 });
             }, 500));
@@ -851,6 +879,7 @@ foreach ($categories as $cat) {
                         customer_phone: phone,
                         paid: paid,
                         due: due,
+                        discount: getTotalDiscount(),
                         _token: "{{ csrf_token() }}"
                     },
                     success: function(response) {
@@ -964,12 +993,46 @@ foreach ($categories as $cat) {
             setupDropdown($('#customerName'), $('#customerNameDropdown'), 'name');
             setupDropdown($('#customerPhone'), $('#customerPhoneDropdown'), 'phone');
 
-            function resetOrderSummary(summery) {
-                $('#summary-subtotal').text(summery.subtotal || "{{ money(0) }}");
-                $('#summary-vat').text(summery.vat_amount || "{{ money(0) }}");
-                $('#summary-discount').text(summery.discount || "{{ money(0) }}");
-                $('#summary-total').text(summery.total || "{{ money(0) }}");
-                $('#due-amount').text(summery.due || "{{ money(0) }}");
+            function resetOrderSummary(summary) {
+                let totalDiscount = 0;
+                let subtotal = 0;
+
+                summary.cart_items.forEach(item => {
+                    let sellingPrice = parseFloat(item.variant.selling_price) || 0;
+                    let discountedPrice = parseFloat(item.variant.discounted_price) || 0;
+                    let quantity = parseInt(item.quantity) || 1;
+                    let itemDiscount = (discountedPrice ? sellingPrice - discountedPrice : 0) * quantity;
+                    totalDiscount += itemDiscount;
+
+                    subtotal += item.price * quantity;
+                });
+
+                let total = summary.total || subtotal;
+                let due = summary.due || total;
+                total = parseMoney(total);
+                due = parseMoney(due);
+
+                let vat = parseMoney(summary.vat_amount);
+
+                $('#summary-subtotal').text(subtotal);
+                $('#summary-vat').text(vat);
+
+                $('#summary-discount')
+                    .data('base', totalDiscount)
+                    .attr('data-base', totalDiscount)
+                    .text(totalDiscount);
+
+                $('#summary-total')
+                    .data('total', total)
+                    .attr('data-total', total)
+                    .text(total);
+
+                $('#due-amount')
+                    .data('due', due)
+                    .attr('data-due', due)
+                    .text(due);
+
+                // calculateDiscount();
             }
 
             $(document).on('click', '.filter-btn', function() {
@@ -989,30 +1052,119 @@ foreach ($categories as $cat) {
                 }
             });
 
-            let total = parseFloat($("#due-amount").data("total")) || 0;
+            let total_due = parseFloat($("#due-amount").data("due"));
 
             $("#paid-amount").on("input", function() {
-                let paid = parseFloat($(this).val()) || 0;
+                let paid = parseFloat($(this).val());
 
                 if (paid < 0) {
                     $(this).val(0);
                     paid = 0;
                 }
 
-                if (paid > total) {
+                if (paid > total_due) {
                     $(this).val(total.toFixed(2));
                     paid = total;
                 }
 
-                let due = total - paid;
+                let due = total_due - paid;
                 if (due < 0) due = 0;
 
                 $("#due-amount").text(due.toFixed(2));
             });
 
             $(document).on("click", "#set-full-paid", function() {
-                $("#paid-amount").val(total).trigger("input");
+                $("#paid-amount").val(total_due).trigger("input");
             });
+
+            $("#discount-amount").on("input")
+            function calculateDiscount() {
+                let type = $('#discount-type').val();
+                let discount = parseInt($('#discount-amount').val() || 0);
+
+                // Parse numbers safely from data attributes or fallback to 0
+                let productDiscount = parseInt($('#summary-discount').data('base'));
+                let total = parseMoney($('#summary-total').data('total'));
+                let due = parseMoney($('#due-amount').data('due')) || total;
+
+                console.log('')
+
+                console.log('Product: ' + productDiscount);
+                console.log('flat: ' + discount);
+                let tttt = productDiscount;
+                if(discount && discount > 0) {
+                    tttt = productDiscount + discount;
+                }
+
+                console.log('total: ' + tttt);
+
+                let calculatedDiscount = 0;
+
+                if (type === 'flat') {
+                    calculatedDiscount = discount;
+                } else if (type === 'percentage') {
+                    if (discount > 100) discount = 100;
+                    calculatedDiscount = (total * discount) / 100;
+                }
+
+                let totalDiscount = tttt;
+
+                //console.log(totalDiscount);
+                //console.log(total);
+
+                // New total and due
+                let newTotal = total - calculatedDiscount;
+                if (newTotal < 0) newTotal = 0;
+
+                let paid = total - due;
+                let newDue = newTotal - paid;
+                if (newDue < 0) newDue = 0;
+
+                //console.log('New Total:', newTotal);
+                //console.log('New Due:', newDue);
+
+                // Update DOM
+
+                $('#summary-total')
+                .data('total', newTotal)
+                .attr('data-total', newTotal)
+                .text(newTotal);
+
+                $('#due-amount')
+                .data('due', newDue)
+                .attr('data-due', newDue)
+                .text(newDue);
+                $('#summary-discount').text(totalDiscount);
+            }
+
+            $('#discount-type, #discount-amount').on('input change', function() {
+                calculateDiscount();
+            });
+
+            function getTotalDiscount() {
+                let type = $('#discount-type').val();
+                let discount = parseFloat($('#discount-amount').val()) || 0;
+                let calculatedDiscount = 0;
+                let productDiscount = parseFloat($('#summary-discount').data('base')) || 0;
+
+                if (type === 'flat') {
+                    calculatedDiscount = discount;
+                } else if (type === 'percentage') {
+                    if (discount > 100) discount = 100;
+                    calculatedDiscount = (total * discount) / 100;
+                }
+
+                return productDiscount + calculatedDiscount;
+            }
+
+            function formatMoney(amount) {
+                return '৳ ' + parseFloat(amount || 0).toFixed(0);
+            }
+
+            function parseMoney(str) {
+                if (!str) return 0;
+                return parseFloat(str.toString().replace(/[^\d.-]/g, ''));
+            }
         });
     </script>
 @endpush
