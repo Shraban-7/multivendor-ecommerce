@@ -1054,7 +1054,7 @@ foreach ($categories as $cat) {
             // let total_due = parseFloat($("#due-amount").data("due"));
 
             $("#paid-amount").on("input", function() {
-                let total = parseFloat($("#summary-total").data("total"));
+                let total = parseFloat($('#summary-total').text());
                 console.log(total);
                 let paid = parseFloat($(this).val());
 
@@ -1081,10 +1081,12 @@ foreach ($categories as $cat) {
 
             $(document).on("click", "#set-full-paid", function() {
                 const subtotal = parseFloat($('#summary-subtotal').text());
+                const total = parseFloat($('#summary-total').text());
                 const totalDiscount = parseFloat($('#summary-discount').text());
                 $("#paid-amount").val(subtotal - totalDiscount);
+                const paid = $("#paid-amount").val();
+                $('#due-amount').text(total - paid);
             });
-
 
             function calculateDiscount() {
                 let type = $('#discount-type').val();
