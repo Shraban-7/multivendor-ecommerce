@@ -1009,8 +1009,7 @@ foreach ($categories as $cat) {
 
                 let total = summary.total || subtotal;
                 let due = summary.due || total;
-                total = parseMoney(total);
-                due = parseMoney(due);
+
 
                 let vat = parseMoney(summary.vat_amount);
 
@@ -1032,7 +1031,7 @@ foreach ($categories as $cat) {
                     .attr('data-due', due)
                     .text(due);
 
-                // calculateDiscount();
+                calculateDiscount();
             }
 
             $(document).on('click', '.filter-btn', function() {
@@ -1052,9 +1051,11 @@ foreach ($categories as $cat) {
                 }
             });
 
-            let total_due = parseFloat($("#due-amount").data("due"));
+            // let total_due = parseFloat($("#due-amount").data("due"));
 
             $("#paid-amount").on("input", function() {
+                let total = parseFloat($("#summary-total").data("total"));
+                console.log(total);
                 let paid = parseFloat($(this).val());
 
                 if (paid < 0) {
@@ -1062,41 +1063,35 @@ foreach ($categories as $cat) {
                     paid = 0;
                 }
 
-                if (paid > total_due) {
+                if (paid > total) {
                     $(this).val(total.toFixed(2));
                     paid = total;
                 }
 
-                let due = total_due - paid;
+                let due = total - paid;
                 if (due < 0) due = 0;
 
-                $("#due-amount").text(due.toFixed(2));
+                $("#due-amount")
+                    .data("due", due)
+                    .attr("data-due", due)
+                    .text(formatMoney(due));
+
+                console.log("Due:", due);
             });
 
             $(document).on("click", "#set-full-paid", function() {
-                $("#paid-amount").val(total_due).trigger("input");
+                let total = parseFloat($("#summary-total").data("total"));
+                $("#paid-amount").val(total).trigger("input");
             });
 
-            $("#discount-amount").on("input")
+
             function calculateDiscount() {
                 let type = $('#discount-type').val();
-                let discount = parseInt($('#discount-amount').val() || 0);
+                let discount = parseFloat($('#discount-amount').val() || 0);
 
-                // Parse numbers safely from data attributes or fallback to 0
-                let productDiscount = parseInt($('#summary-discount').data('base'));
-                let total = parseMoney($('#summary-total').data('total'));
-                let due = parseMoney($('#due-amount').data('due')) || total;
-
-                console.log('')
-
-                console.log('Product: ' + productDiscount);
-                console.log('flat: ' + discount);
-                let tttt = productDiscount;
-                if(discount && discount > 0) {
-                    tttt = productDiscount + discount;
-                }
-
-                console.log('total: ' + tttt);
+                let productDiscount = parseFloat($('#summary-discount').data('base'));
+                let total = parseFloat($('#summary-total').data('total'));
+                let due = parseFloat($('#due-amount').data('due')) || total;
 
                 let calculatedDiscount = 0;
 
@@ -1107,33 +1102,22 @@ foreach ($categories as $cat) {
                     calculatedDiscount = (total * discount) / 100;
                 }
 
-                let totalDiscount = tttt;
+                totalDiscount = productDiscount + calculatedDiscount;
 
-                //console.log(totalDiscount);
-                //console.log(total);
-
-                // New total and due
-                let newTotal = total - calculatedDiscount;
+                let newTotal = total - discount;
                 if (newTotal < 0) newTotal = 0;
 
                 let paid = total - due;
                 let newDue = newTotal - paid;
                 if (newDue < 0) newDue = 0;
 
-                //console.log('New Total:', newTotal);
-                //console.log('New Due:', newDue);
-
-                // Update DOM
-
                 $('#summary-total')
-                .data('total', newTotal)
-                .attr('data-total', newTotal)
-                .text(newTotal);
+                    .attr('data-total', newTotal)
+                    .text(newTotal);
 
                 $('#due-amount')
-                .data('due', newDue)
-                .attr('data-due', newDue)
-                .text(newDue);
+                    .attr('data-due', newDue)
+                    .text(newDue);
                 $('#summary-discount').text(totalDiscount);
             }
 
