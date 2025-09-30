@@ -1004,7 +1004,7 @@ foreach ($categories as $cat) {
                         let quantity = parseInt(item.quantity) || 1;
 
                         let itemDiscount = (discountedPrice ? sellingPrice - discountedPrice : 0) *
-                        quantity;
+                            quantity;
                         totalDiscount += itemDiscount;
 
                         subtotal += (parseFloat(item.price) || 0) * quantity;
@@ -1058,8 +1058,11 @@ foreach ($categories as $cat) {
 
             $("#paid-amount").on("input", function() {
                 let total = parseFloat($('#summary-total').text());
-                console.log(total);
                 let paid = parseFloat($(this).val());
+
+                if (isNaN(paid)) {
+                    paid = 0;
+                }
 
                 if (paid < 0) {
                     $(this).val(0);
@@ -1071,22 +1074,25 @@ foreach ($categories as $cat) {
                     paid = total;
                 }
 
-                let due = total - paid;
+                let due = 0
+                if (paid == 0) {
+                    due = total
+                } else {
+                    due = total - paid;
+                }
+
                 if (due < 0) due = 0;
 
                 $("#due-amount")
-                    .data("due", due)
-                    .attr("data-due", due)
-                    .text(formatMoney(due));
-
-                console.log("Due:", due);
+                    .attr("data-due", parseFloat(due))
+                    .text(parseFloat(due));
             });
 
             $(document).on("click", "#set-full-paid", function() {
                 const subtotal = parseFloat($('#summary-subtotal').text());
                 const total = parseFloat($('#summary-total').text());
                 const totalDiscount = parseFloat($('#summary-discount').text());
-                console.log(subtotal,totalDiscount);
+                console.log(subtotal, totalDiscount);
                 $("#paid-amount").val(subtotal - totalDiscount);
                 const paid = $("#paid-amount").val();
                 console.log(paid);
