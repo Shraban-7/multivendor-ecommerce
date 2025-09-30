@@ -56,6 +56,7 @@ class SaleController extends Controller
             'customer_phone' => 'nullable|string|max:20|required_with:customer_name',
             'paid' => 'nullable|numeric',
             'due' => 'nullable|numeric',
+            'discount' => 'nullable'
         ]);
 
         $order = Order::where('invoice_id', $orderId)
@@ -111,6 +112,8 @@ class SaleController extends Controller
             ]);
         }
 
+        // $discount = $data['disccount']
+
         $seller = Seller::find(get_seller_id());
         $total_commission = 0;
 
@@ -122,15 +125,18 @@ class SaleController extends Controller
             }
         }
 
-        $payableAmount = $sub_total + $vat_amount;
-        $paid = $order->paid + $data['paid'];
+        $total_discount = (float) $data['discount'];
+        $payableAmount = $sub_total + $vat_amount - $total_discount+$discount;
+
+        dd($payableAmount,$total_discount);
+        $paid = $data['paid'];
         $due = $payableAmount - $paid;
         $sellerEarning = $payableAmount - $total_commission;
 
         $order->update([
-            'sub_total' => $sub_total,
-            'total' => $sub_total + $vat_amount,
-            'discount' => $discount,
+            'sub_total' => $payableAmount,
+            'total' => $payableAmount,
+            'discount' => $total_discount,
             'vat_amount' => $vat_amount,
             'payable' => $payableAmount,
             'paid' => $paid,
@@ -142,13 +148,13 @@ class SaleController extends Controller
         ]);
 
         if (!empty($data['customer_name']) || !empty($data['customer_phone'])) {
-            $customer = Customer::where('name',$data['customer_name'])->where('phone',$data['customer_phone'])->first();
+            $customer = Customer::where('name', $data['customer_name'])->where('phone', $data['customer_phone'])->first();
 
             if ($customer) {
                 $order->update([
                     'customer_id' => $customer->id
                 ]);
-            } 
+            }
         }
 
         $html = view('components.seller.pos-order-items', [
@@ -159,14 +165,13 @@ class SaleController extends Controller
             'invoice_id' => $order->invoice_id,
             'variants' => $updatedVariants,
             'html' => $html,
-            'subtotal' => money($sub_total),
-            'vat_amount' => money($vat_amount),
-            'discount' => money($discount),
-            'total' => money($payableAmount),
-            'due' => money($due)
+            'subtotal' => $sub_total,
+            'vat_amount' => $vat_amount,
+            'discount' => $discount,
+            'total' => $payableAmount,
+            'due' => $due
         ], "Order Updated Successfully");
     }
-
 
     public function delete($id)
     {
@@ -217,6 +222,14 @@ class SaleController extends Controller
         $orderItem = $order->items()->where('product_variant_id', $data['variant_id'])->first();
 
         if ($orderItem && request()->has('order_id')) {
+            $orderItem->update([
+                'quantity' => $orderItem->quantity + $data['quantity'],
+                'unit_price' => $unitPrice,
+                'sub_total' => ($orderItem->quantity + $data['quantity']) * $unitPrice,
+                'discount' => ($variant->selling_price - $unitPrice) * ($orderItem->quantity + $data['quantity']),
+                'vat_amount' => ($variant->product->vat_percent * $unitPrice / 100) * ($orderItem->quantity + $data['quantity']),
+            ]);
+        } else {
             $order->items()->create([
                 'product_id' => $variant->product_id,
                 'product_variant_id' => $variant->id,
@@ -227,25 +240,7 @@ class SaleController extends Controller
                 'vat_amount' => ($variant->product->vat_percent * $unitPrice / 100) * $data['quantity'],
                 'buying_price' => $variant->buying_price,
             ]);
-        } else {
-            $orderItem?->update([
-                'quantity' => $orderItem->quantity + $data['quantity'],
-                'unit_price' => $unitPrice,
-                'sub_total' => ($orderItem->quantity + $data['quantity']) * $unitPrice,
-                'discount' => ($variant->selling_price - $unitPrice) * ($orderItem->quantity + $data['quantity']),
-                'vat_amount' => ($variant->product->vat_percent * $unitPrice / 100) * ($orderItem->quantity + $data['quantity']),
-            ]) ?? $order->items()->create([
-                'product_id' => $variant->product_id,
-                'product_variant_id' => $variant->id,
-                'quantity' => $data['quantity'],
-                'unit_price' => $unitPrice,
-                'sub_total' => $data['quantity'] * $unitPrice,
-                'discount' => ($variant->selling_price - $unitPrice) * $data['quantity'],
-                'vat_amount' => ($variant->product->vat_percent * $unitPrice / 100) * $data['quantity'],
-                'buying_price' => $variant->buying_price,
-            ]);
         }
-
 
         $orderItems = $order->items()->with('variant.product')->get();
 
@@ -261,12 +256,12 @@ class SaleController extends Controller
         $html = view('components.seller.pos-order-items', compact('orderItems'))->render();
 
         return apiResponse([
-            'html'       => $html,
-            'subtotal'   => money($subtotal),
-            'vat_amount' => money($vat_amount),
-            'discount'   => money($discount),
-            'total'      => money($total),
-            'due' => money($due),
+            'html' => $html,
+            'subtotal' => $subtotal,
+            'vat_amount' => $vat_amount,
+            'discount' => $discount,
+            'total' => $total,
+            'due' => $due,
         ], "Product added to order");
     }
 
@@ -287,13 +282,21 @@ class SaleController extends Controller
         if ($request->action === 'increase') {
             $item->quantity += 1;
             $variant->increment('stock_out', 1);
+            $item->sub_total = $item->unit_price * $item->quantity;
+            $item->discount = $item->variant->discount_amount * $item->quantity;
+            $item->save();
+            $variant->save();
         } elseif ($request->action === 'decrease' && $item->quantity > 1) {
             $item->quantity -= 1;
             $variant->decrement('stock_out', 1);
+            $item->sub_total = $item->unit_price * $item->quantity;
+            $item->discount = $item->variant->discount_amount * $item->quantity;
+            $item->save();
+            $variant->save();
         }
 
-        $item->save();
-        $variant->save();
+        // $item->save();
+        // $variant->save();
 
         $orderItems = $item->order->items()->with('variant.product')->get();
 
@@ -302,16 +305,20 @@ class SaleController extends Controller
         $subtotal = $orderItems->sum(fn($i) => $i->original_price * $i->quantity);
         $vat_amount = $orderItems->sum(fn($i) => ($i->vat_percent * $i->unit_price / 100) * $i->quantity);
         $discount = $orderItems->sum(fn($i) => $i->discount);
-        $total = $subtotal - $discount + $vat_amount;
-        $due = $total - $item->order->paid;
+        $total = $subtotal-$discount + $vat_amount;
+        $due = $total;
+
+        $item->order->due = $due;
+        $item->order->paid =$total - $due;
+        $item->order->save();
 
         return apiResponse([
             'html' => $html,
-            'subtotal' => money($subtotal),
-            'vat_amount' => money($vat_amount),
-            'discount' => money($discount),
-            'total' => money($total),
-            'due' => money($due),
+            'subtotal' => $subtotal,
+            'vat_amount' => $vat_amount,
+            'discount' => $discount,
+            'total' => $total,
+            'due' => $due,
         ], "Order item updated successfully");
     }
 
@@ -349,21 +356,21 @@ class SaleController extends Controller
 
             return apiResponse([
                 'html' => $html,
-                'subtotal' => money($subtotal),
-                'vat_amount' => money($vat_amount),
-                'discount' => money($discount),
-                'total' => money($total),
-                'due' => money($due),
+                'subtotal' => $subtotal,
+                'vat_amount' => $vat_amount,
+                'discount' => $discount,
+                'total' => $total,
+                'due' => $due,
                 'redirect' => route('seller.pos.index'),
             ], "Order item removed successfully");
         }
 
         return apiResponse([
             'html' => $html,
-            'subtotal' => money($subtotal),
-            'vat_amount' => money($vat_amount),
-            'discount' => money($discount),
-            'total' => money($total),
+            'subtotal' => $subtotal,
+            'vat_amount' => $vat_amount,
+            'discount' => $discount,
+            'total' => $total,
         ], "Order item removed successfully");
     }
 

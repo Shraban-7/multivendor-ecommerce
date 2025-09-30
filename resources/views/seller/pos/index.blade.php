@@ -792,6 +792,7 @@ foreach ($categories as $cat) {
                         if (response.status) {
                             toastr.success("Order item updated successfully!");
                             $('.order-items tbody').html(response.data.html);
+                            $("paid-amount").val(0);
                             resetOrderSummary(response.data);
 
                             if (typeof feather !== 'undefined') {
@@ -1009,6 +1010,8 @@ foreach ($categories as $cat) {
 
                         subtotal += (parseFloat(item.price) || 0) * quantity;
                     });
+                }else{
+                    totalDiscount = summary.discount;
                 }
 
                 let total = summary.total || subtotal;

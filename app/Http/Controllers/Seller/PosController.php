@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Seller;
 
 use Carbon\Carbon;
-use App\Models\User;
 use App\Models\Order;
 use App\Models\Seller;
 use App\Models\PosCart;
@@ -49,7 +48,8 @@ class PosController extends Controller
                 $orderItems = $order->items;
                 $subtotal = $orderItems->sum(fn($item) => $item->original_price * $item->quantity);
                 $vat_amount = $orderItems->sum(fn($item) => ($item->variant->product->vat_percent * $item->price / 100) * $item->quantity);
-                $discount = $orderItems->sum(fn($item) => ($item->variant->discounted_price ? $item->variant->selling_price - $item->variant->discounted_price : 0) * $item->quantity);
+                // $discount = $orderItems->sum(fn($item) => ($item->variant->discounted_price ? $item->variant->selling_price - $item->variant->discounted_price : 0) * $item->quantity);
+                $discount = $orderItems->sum(fn($item) => $item->discount);
                 $total = $subtotal + $vat_amount - $discount;
                 $paid = $order->paid;
                 $due = $order->due;
