@@ -685,7 +685,8 @@ foreach ($categories as $cat) {
                 }
 
                 if (paid == null || paid == 0) {
-                    toastr.error("Payment not done yet!");
+                    toastr.error("Enter paid amount!");
+                    $('#paid-amount').focus();
                     return;
                 }
 
