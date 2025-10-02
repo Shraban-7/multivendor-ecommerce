@@ -21,11 +21,13 @@ class PosController extends Controller
 {
     public function index(Request $request)
     {
-        $products = Product::where('seller_id', get_seller_id())
-            ->with('variants.option_values')
+        $seller = Seller::find(get_seller_id());
+
+        $products = Product::where('seller_id', $seller->id)
+            ->with('variants.option_values', 'unit')
             ->get();
 
-        $categories = Category::limit(5)->get();
+        $categories = Category::category()->get();
 
         $cartItems = collect();
         $orderItems = collect();
@@ -40,7 +42,7 @@ class PosController extends Controller
 
         if ($request->has('order_id')) {
             $order = Order::where('invoice_id', $request->order_id)
-                ->where('seller_id', get_seller_id())
+                ->where('seller_id', $seller->id)
                 ->with('items.variant.product')
                 ->first();
 
@@ -60,7 +62,7 @@ class PosController extends Controller
                 }
             }
         } else {
-            $cart = PosCart::where('seller_id', get_seller_id())->first();
+            $cart = PosCart::where('seller_id', $seller->id)->first();
             $cartItems = $cart ? $cart->items()->with('variant.product')->get() : collect();
 
             $subtotal = $cartItems->sum(fn($item) => $item->variant->selling_price * $item->quantity);
@@ -69,7 +71,7 @@ class PosController extends Controller
             $total = $subtotal + $vat_amount - $discount;
         }
 
-        $orders = Order::where('seller_id', get_seller_id())
+        $orders = Order::where('seller_id', $seller->id)
             ->whereDate('created_at', Carbon::today())
             ->with('items.variant.product')
             ->latest('id')
@@ -312,12 +314,10 @@ class PosController extends Controller
 
         $payableAmount = $sub_total + $vat_amount;
         $sellerEarning = $payableAmount - $total_commission;
-        $sellerId = get_seller_id();
+        $invoiceId = Order::generateInvoiceID($seller->id, Order::ORDER_TYPE_POS);
 
-        $invoiceId = Order::generateInvoiceID($sellerId, Order::ORDER_TYPE_POS);
-
-        $order = Order::create([
-            'seller_id' => get_seller_id(),
+        $orderData = [
+            'seller_id' => $seller->id,
             'seller_employee_id' => $employee->id ??  null,
             'invoice_id' => $invoiceId,
             'sub_total' => $sub_total,
@@ -333,7 +333,9 @@ class PosController extends Controller
             'total_commission' => $total_commission,
             'status' => OrderStatus::PENDING->value,
             'delivery_status' => OrderStatus::ORDER_PLACED->value,
-        ]);
+        ];
+
+        $order = Order::create($orderData);
 
         $order->items()->createMany($orderItems);
 
@@ -355,18 +357,12 @@ class PosController extends Controller
         }
 
         $cart->items()->delete();
-
         $cart->delete();
 
-        $seller = Seller::find(get_seller_id());
-
         $sellerOrderIds = Order::where('seller_id', $seller->id)->pluck('id');
-
         $sellerOrderCount = OrderItem::whereIn('order_id', $sellerOrderIds)->count();
 
-        $seller->update([
-            'total_sold' => $sellerOrderCount,
-        ]);
+        $seller->update(['total_sold' => $sellerOrderCount]);
 
         if (!empty($data['customer_name']) || !empty($data['customer_phone'])) {
 
