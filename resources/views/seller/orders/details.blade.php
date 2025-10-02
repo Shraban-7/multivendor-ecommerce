@@ -264,20 +264,15 @@
                                                 @endphp
 
                                                 @if ($imageUrl)
-                                                    <img src="{{ $imageUrl }}" alt="{{ $item->product->name }}"
-                                                        class="rounded me-3" width="60" height="60">
+                                                    <img src="{{ $imageUrl }}" alt="{{ $item->product->name }}" class="rounded me-3" width="60" height="60">
                                                 @else
-                                                    <div class="bg-white rounded me-3" style="width: 50px; height: 50px;">
-                                                    </div>
+                                                    <div class="bg-white rounded me-3" style="width: 50px; height: 50px;"></div>
                                                 @endif
 
                                                 <div>
                                                     <div class="d-flex align-items-center mb-2">
-                                                        <h6 class="mb-0 me-2">
-                                                            {{ $item->product->name }}
-                                                        </h6>
-                                                        <span class="badge bg-primary rounded-pill">x
-                                                            {{ $item->quantity }}</span>
+                                                        <h6 class="mb-0 me-2">{{ $item->product->name }}</h6>
+                                                        <span class="badge bg-primary rounded-pill">x {{ $item->quantity }}</span>
                                                     </div>
 
                                                     @if ($item->product_variant_id && $item->variant && $item->variant->option_values)
@@ -291,43 +286,22 @@
                                                         </div>
                                                     @endif
 
-
                                                     @if (isset($item->variant))
-                                                        <small class="text-muted d-block">
-                                                            SKU: {{ $item->variant->sku }}
-                                                        </small>
+                                                        <small class="text-muted d-block">SKU: {{ $item->variant->sku }}</small>
                                                     @endif
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="text-center">{{ money($item->original_price) }}
-                                        </td>
-                                        {{-- @php
-                                            dd($item->variant);
-                                        @endphp --}}
+                                        <td class="text-center">{{ money($item->original_price) }}</td>
                                         <td class="text-center">{{ money($item->variant->discount_amount) }}</td>
-                                        <td class="text-end">
-                                            <span>
-                                                {{ money($item->original_price * $item->quantity) }}
-                                            </span>
-                                        </td>
+                                        <td class="text-end">{{ money($item->sub_total) }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
                             <tfoot class="table-white">
                                 <tr>
                                     <th colspan="3" class="text-end">Subtotal:</th>
-                                    <td class="text-end">
-                                        @if ($order->discount > 0)
-                                            <span class="fw-bold">
-                                                {{ money($order->sub_total + $order->discount) }}
-                                            </span>
-                                        @else
-                                            <span class="fw-bold">
-                                                {{ money($order->sub_total) }}
-                                            </span>
-                                        @endif
-                                    </td>
+                                    <td class="text-end"><span class="fw-bold">{{ money($order->sub_total) }}</span></td>
                                 </tr>
                                 @if (isset($order->discount) && $order->discount > 0)
                                     <tr>
