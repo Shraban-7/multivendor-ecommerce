@@ -270,20 +270,15 @@ class PosController extends Controller
             $product = $item->variant->product;
             $variant = $item->variant;
 
-            if ($variant->discounted_price != null || $variant->discounted_price != 0) {
-                $discount_amount = $variant->selling_price - $variant->discounted_price;
-            } else {
-                $discount_amount = 0;
-            }
-
-            $unitPrice = $item->price;
+            $unitPrice = $variant->selling_price;
             $itemTotal = $item->quantity * $unitPrice;
-            $itemDiscount = $item->quantity * ($discount_amount);
+
+            $discountAmount = $variant->discount_amount ? $variant->discount_amount : 0;
+            $itemDiscount = $item->quantity * ($discountAmount);
             $vat_amount += floatval(($product->vat_percent * $unitPrice) / 100) * $variant->quantity;
+
             $sub_total += $itemTotal;
             $discount += $itemDiscount;
-
-            $sub_total = $sub_total + $discount - $data['discount'];
 
             $orderItems[] = [
                 'product_id' => $product->id,
@@ -312,8 +307,9 @@ class PosController extends Controller
             }
         }
 
-        $payableAmount = $sub_total + $vat_amount;
+        $payableAmount = $sub_total + $vat_amount - $discount;
         $sellerEarning = $payableAmount - $total_commission;
+
         $invoiceId = Order::generateInvoiceID($seller->id, Order::ORDER_TYPE_POS);
 
         $orderData = [
