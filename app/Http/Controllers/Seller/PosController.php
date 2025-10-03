@@ -283,6 +283,9 @@ class PosController extends Controller
             $orderItems[] = [
                 'product_id' => $product->id,
                 'product_variant_id' => $item->product_variant_id ?? null,
+                'sku' => $product->sku,
+                'product_name' => $product->name,
+                'variant_name' => $variant->fullName,
                 'buying_price' => $variant->buying_price,
                 'unit_price' => $item->price,
                 'quantity' => $item->quantity,
