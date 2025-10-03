@@ -321,9 +321,13 @@ if (! function_exists('removeZeroFromDecimal')) {
 }
 
 if (! function_exists('money')) {
-    function money($amount)
+    function money($amount, $showCurrency = true)
     {
         $money = number_format($amount, 2);
+
+        if(!$showCurrency) {
+            return removeZeroFromDecimal($money);
+        }
 
         return currency_symbol() . ' ' . removeZeroFromDecimal($money);
     }
@@ -615,5 +619,19 @@ if (! function_exists('get_seller_id')) {
         }
 
         return employee()->seller_id;
+    }
+}
+
+if (!function_exists('calculate_vat')) {
+    /**
+     * Calculate VAT amount based on percentage and price.
+     *
+     * @param float $vatPercentage  VAT percentage (e.g., 15 for 15%)
+     * @param float $price          Product price (excluding VAT)
+     * @return float                VAT amount
+     */
+    function calculate_vat(float $vatPercentage, float $price): float
+    {
+        return round(($vatPercentage / 100) * $price, 2);
     }
 }
