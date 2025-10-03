@@ -18,10 +18,14 @@
                 <span class="text-muted text-decoration-line-through me-1 small">
                     {{ money($item->variant->selling_price * $item->quantity) }}
                 </span>
-            @endif
+                <span class="small">
+                    {{ money($item->variant->discounted_price * $item->quantity) }}
+                </span>
+            @else
             <span class="small">
-                {{ money($item->price * $item->quantity) }}
+                {{ money($item->variant->selling_price * $item->quantity) }}
             </span>
+            @endif
         </td>
         <td class="text-end">
             <button class="btn btn-sm btn-link text-danger p-0 delete-cart-item-btn" data-id="{{ $item->id }}"
@@ -32,6 +36,6 @@
     </tr>
 @empty
     <tr>
-        <td colspan="4" class="text-center text-muted">No items in order items</td>
+        <td colspan="4" class="text-center text-muted">No items added</td>
     </tr>
 @endforelse

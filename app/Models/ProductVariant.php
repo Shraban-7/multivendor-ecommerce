@@ -65,4 +65,20 @@ class ProductVariant extends Model
             get: fn() => $this->stock_in - $this->stock_out
         );
     }
+
+    public function calculatedPrice(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->discounted_price ? $this->discounted_price : $this->selling_price
+        );
+    }
+
+    public function calculatedDiscount(): Attribute
+    {
+        $discountedPrice = $this->discounted_price ? $this->discounted_price : 0;
+
+        return Attribute::make(
+            get: fn() => $this->selling_price - $discountedPrice
+        );
+    }
 }

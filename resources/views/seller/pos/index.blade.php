@@ -1147,10 +1147,16 @@ foreach ($categories as $cat) {
             });
 
             function getTotalDiscount() {
-                let type = $('#discount-type').val();
                 let discount = parseFloat($('#discount-amount').val());
-                let calculatedDiscount = 0;
                 let productDiscount = parseFloat($('#summary-discount').data('base'));
+                
+                if(!discount) {
+                    return 0;
+                }
+
+                let type = $('#discount-type').val();                
+                let calculatedDiscount = 0;
+                
                 let total = parseFloat($('#summary-total').data('total'));
 
                 if (type === 'flat') {
@@ -1160,7 +1166,9 @@ foreach ($categories as $cat) {
                     calculatedDiscount = (total * discount) / 100;
                 }
 
-                return productDiscount + calculatedDiscount;
+                return calculatedDiscount;
+                
+                //return productDiscount + calculatedDiscount;
             }
 
             function formatMoney(amount) {
