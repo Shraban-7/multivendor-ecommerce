@@ -46,22 +46,49 @@ class PosController extends Controller
                 ->with('items.variant.product')
                 ->first();
 
+            // dd($order);
+
             if ($order) {
-                $subtotal = $order->sub_total;
-                $discount = $order->discount;
-                $vat_amount = $order->vat_amount;
-                $discount = $order->discount;
-                $total = $order->total;
+                $orderItems = $order ? $order->items()->with('variant.product')->get() : collect();
+                $cart = PosCart::where('order_id', $order->id)->first();
+                $cartItems = $cart ? $cart->items()->with('variant.product')->get() : collect();
+                $orderItems = $orderItems->merge($cartItems);
+
+                // dd($orderItems);
+                $cartSubtotal = $cartItems->sum(fn($item) => $item->variant->selling_price * $item->quantity);
+                $cart_vat_amount = $cartItems->sum(fn($item) => ($item->variant->product->vat_percent * $item->price / 100) * $item->quantity);
+                $cartDiscount = $cartItems->sum(fn($item) => ($item->variant->discounted_price ? $item->variant->selling_price - $item->variant->discounted_price : 0) * $item->quantity);
+                $cartTotal = $cartSubtotal + $cart_vat_amount - $cartDiscount;
+
+                // $subtotal   = $orderItems->sum(fn($item) => (float) $item->sub_total);
+                // $vat_amount = $orderItems->sum(fn($item) => (float) $item->vat_amount);
+                // $discount   = $orderItems->sum(fn($item) => (float) $item->discount);
+                // $total      = $orderItems->sum(fn($item) => (float) $item->total);
+                // $subtotal   = $order->sub_total;
+                // $vat_amount = $order->vat_amount;
+                // $discount   = $order->discount;
+                // $total      = $order->total;
+
+                $subtotal = $order->sub_total + $cartSubtotal;
+                $vat_amount = $order->vat_amount + $cart_vat_amount;
+                $discount = $order->discount + $cartDiscount;
+                $total = $order->total + $cartTotal;
                 $paid = $order->paid;
-                $due = $order->due;
+
+                if ($total > $paid) {
+                    $due = $total - $order->paid;
+                } else {
+                    $due = $order->due;
+                }
 
                 if ($order->customer_id) {
                     $customer_name = $order->customer->name;
                     $customer_phone = $order->customer->phone;
                 }
+
             }
         } else {
-            $cart = PosCart::where('seller_id', $seller->id)->first();
+            $cart = PosCart::where('seller_id', $seller->id)->whereNull('order_id')->first();
             $cartItems = $cart ? $cart->items()->with('variant.product')->get() : collect();
             foreach ($cartItems as $item) {
                 $unitPrice = $item->variant->calculatedPrice;
@@ -274,6 +301,7 @@ class PosController extends Controller
 
             $unitPrice = $variant->calculatedPrice;
             $itemTotal = $item->quantity * $unitPrice;
+            $itemSubtotal = $item->quantity * $variant->selling_price;
 
             $discountAmount = $variant->calculatedDiscount;
             $itemDiscount = $item->quantity * ($discountAmount);
@@ -286,14 +314,16 @@ class PosController extends Controller
             $orderItems[] = [
                 'product_id' => $product->id,
                 'product_variant_id' => $item->product_variant_id ?? null,
-                'sku' => $product->sku,
+                'sku' => $variant->sku,
                 'product_name' => $product->name,
                 'variant_name' => $variant->fullName,
                 'buying_price' => $variant->buying_price,
+                'selling_price' => $variant->selling_price,
                 'unit_price' => $unitPrice,
                 'quantity' => $item->quantity,
                 'discount' => $itemDiscount,
-                'sub_total' => $itemTotal,
+                'sub_total' => $itemSubtotal,
+                'total' => $itemTotal,
                 'vat_percent' => $product->vat_percent,
                 'vat_amount' => $vatAmount
             ];

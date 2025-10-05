@@ -14,6 +14,10 @@ class OrderItem extends Model
     protected $casts = [
         'quantity' => 'integer',
         'is_reviewed' => 'integer',
+        'subtotal' => 'float',
+        'unit_price' => 'float',
+        'discount' => 'float',
+        'vat_amount' => 'float',
     ];
 
     public function order()

@@ -89,6 +89,8 @@ class ProductVariantController extends Controller
 
         $data['product_id'] = $product->id;
 
+        $product = Product::find($data['product_id']);
+
         if (!empty($data['discount_type']) && !empty($data['discount_value'])) {
             $data['discount_amount']  = round(calculate_discount_amount($data['selling_price'], $data['discount_type'], $data['discount_value']));
             $data['discounted_price'] = round(calculate_discounted_price($data['selling_price'], $data['discount_type'], $data['discount_value']));
@@ -104,6 +106,10 @@ class ProductVariantController extends Controller
         if ($data['is_default'] == 1) {
             ProductVariant::where('product_id', $data['product_id'])
                 ->update(['is_default' => 0]);
+        }
+
+        if ($product->variants->count()==1) {
+            $data['is_default'] = 1;
         }
 
         $variant->update($data);

@@ -14,13 +14,20 @@
             </div>
         </td>
         <td class="text-end">
-            @if ($item->variant->discounted_price)
+            @php
+                $sellingPrice = $item->selling_price ?? $item->variant->selling_price;
+                $unitPrice = $item->unit_price ?? ($item->variant->discounted_price ?? ($item->price ?? $sellingPrice));
+                $quantity = $item->quantity ?? 1;
+            @endphp
+
+            @if (!empty($item->variant->discounted_price) && $item->variant->discounted_price < $sellingPrice)
                 <span class="text-muted text-decoration-line-through me-1 small">
-                    {{ money($item->variant->selling_price * $item->quantity) }}
+                    {{ money($sellingPrice * $quantity) }}
                 </span>
             @endif
+
             <span class="small">
-                {{ money($item->unit_price * $item->quantity) }}
+                {{ money($unitPrice * $quantity) }}
             </span>
         </td>
 

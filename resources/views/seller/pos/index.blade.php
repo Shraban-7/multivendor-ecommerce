@@ -893,15 +893,15 @@ foreach ($categories as $cat) {
                             $('.order-items tbody').html(response.data.html);
                             resetOrderSummary(response.data);
 
-                            response.data.variants.forEach(v => {
-                                $(`[data-variant-id="${v.id}"]`).closest('tr')
-                                    .find('td:nth-child(3)').text(v.availableStock);
-                                if (v.availableStock <= 0) {
-                                    $(`[data-variant-id="${v.id}"]`).replaceWith(
-                                        '<button class="btn btn-sm btn-secondary disabled">Out of stock</button>'
-                                    );
-                                }
-                            });
+                            // response.data.variants.forEach(v => {
+                            //     $(`[data-variant-id="${v.id}"]`).closest('tr')
+                            //         .find('td:nth-child(3)').text(v.availableStock);
+                            //     if (v.availableStock <= 0) {
+                            //         $(`[data-variant-id="${v.id}"]`).replaceWith(
+                            //             '<button class="btn btn-sm btn-secondary disabled">Out of stock</button>'
+                            //         );
+                            //     }
+                            // });
 
                             if (response.data.invoice_id) {
                                 let receiptUrl = "{{ route('receipt', ':invoice_id') }}"
@@ -1011,7 +1011,7 @@ foreach ($categories as $cat) {
 
                         subtotal += (parseFloat(item.price) || 0) * quantity;
                     });
-                }else{
+                } else {
                     totalDiscount = summary.discount;
                 }
 
@@ -1058,49 +1058,94 @@ foreach ($categories as $cat) {
                 }
             });
 
-            // let total_due = parseFloat($("#due-amount").data("due"));
+            // On page load, store the initial total and due
+            let initialTotal = parseInt($('#summary-total').text().replace(/,/g, '')) || 0;
+            let initialPaid = parseInt($('#paid-amount').val()?.replace(/,/g, '')) || 0;
+            let initialDue = initialTotal - initialPaid;
+
+            if (isNaN(initialDue)) initialDue = 0;
+
+            $("#due-amount")
+                .attr("data-due", initialDue)
+                .text(initialDue);
 
             $("#paid-amount").on("input", function() {
-                let total = parseFloat($('#summary-total').text());
-                let paid = parseFloat($(this).val());
+                let paid = parseInt($(this).val()?.replace(/,/g, '')) || 0;
+                let total = parseInt($('#summary-total').text().replace(/,/g, '')) || 0;
+                let additionalDiscount = parseInt($('#discount-amount').val()?.replace(/,/g, '')) || 0;
 
-                if (isNaN(paid)) {
-                    paid = 0;
-                }
-
-                if (paid < 0) {
-                    $(this).val(0);
-                    paid = 0;
-                }
-
+                // Clamp paid value
+                if (paid < 0) paid = 0;
                 if (paid > total) {
-                    $(this).val(total.toFixed(2));
                     paid = total;
+                    $(this).val(total);
                 }
 
-                let due = 0
-                if (paid == 0) {
-                    due = total
-                } else {
-                    due = total - paid;
-                }
+                let due = initialDue - paid - additionalDiscount;
 
-                if (due < 0) due = 0;
+                if (isNaN(due) || due < 0) due = 0;
 
                 $("#due-amount")
-                    .attr("data-due", parseFloat(due))
-                    .text(parseFloat(due));
+                    .attr("data-due", due)
+                    .text(due);
             });
+
+
+
+            // let total_due = parseFloat($("#due-amount").data("due"));
+
+            // $("#paid-amount").on("input", function() {
+            //     let total = parseFloat($('#summary-total').text());
+            //     let paid = parseFloat($(this).val());
+            //     const dueText = $("#due-amount").text();
+            //     const dueValue = parseFloat(dueText);
+            //     const oldPaid = paid;
+
+            //     if (isNaN(paid)) {
+            //         paid = 0;
+            //     }
+
+            //     if (paid < 0) {
+            //         $(this).val(0);
+            //         paid = 0;
+            //     }
+
+            //     if (paid > total) {
+            //         $(this).val(total.toFixed(2));
+            //         paid = total;
+            //     }
+
+            //     let due = 0;
+            //     const oldDue = total - oldPaid;
+            //     if (paid == 0) {
+            //         due = total - paid;
+            //     } else {
+            //         due = dueValue - paid;
+            //     }
+
+            //     console.log('oldDue :>> ', oldDue);
+            //     console.log('oldPaid :>> ', oldPaid);
+
+            //     if (due < 0) due = 0;
+
+            //     $("#due-amount")
+            //         .attr("data-due", parseFloat(due))
+            //         .text(parseFloat(due));
+            // });
 
             $(document).on("click", "#set-full-paid", function() {
                 const subtotal = parseFloat($('#summary-subtotal').text());
                 const total = parseFloat($('#summary-total').text());
                 const totalDiscount = parseFloat($('#summary-discount').text());
-                console.log(subtotal, totalDiscount);
-                $("#paid-amount").val(subtotal - totalDiscount);
+                const additionalDiscount = parseFloat($('#discount-amount').val()) || 0;
+                console.log("discount", totalDiscount);
+                const dueText = $("#due-amount").text();
+                const paidValue = $("#paid-amount").val();
+                const due = parseFloat(dueText);
+                $("#paid-amount").val(initialDue - additionalDiscount);
                 const paid = $("#paid-amount").val();
-                console.log(paid);
-                $('#due-amount').text(total - paid);
+                $('#due-amount').attr("data-due", parseFloat(initialDue - paid - additionalDiscount)).text(
+                    initialDue - paid - additionalDiscount);
             });
 
             function calculateDiscount() {
@@ -1110,6 +1155,7 @@ foreach ($categories as $cat) {
                 let productDiscount = parseFloat($('#summary-discount').data('base'));
                 let total = parseFloat($('#summary-total').data('total'));
                 let due = parseFloat($('#due-amount').data('due')) || total;
+                console.log(due);
 
                 let calculatedDiscount = 0;
 
@@ -1149,14 +1195,14 @@ foreach ($categories as $cat) {
             function getTotalDiscount() {
                 let discount = parseFloat($('#discount-amount').val());
                 let productDiscount = parseFloat($('#summary-discount').data('base'));
-                
-                if(!discount) {
+
+                if (!discount) {
                     return 0;
                 }
 
-                let type = $('#discount-type').val();                
+                let type = $('#discount-type').val();
                 let calculatedDiscount = 0;
-                
+
                 let total = parseFloat($('#summary-total').data('total'));
 
                 if (type === 'flat') {
@@ -1167,7 +1213,7 @@ foreach ($categories as $cat) {
                 }
 
                 return calculatedDiscount;
-                
+
                 //return productDiscount + calculatedDiscount;
             }
 
