@@ -146,6 +146,18 @@ class Product extends Model
 
         $reviews = $this->reviews;
 
+        $images = [];
+        $images[] = $this->thumbnail;
+        foreach($this->images as $img) {
+            $images[] = $img->image;
+        }
+
+        foreach($this->variants as $variant) {
+            if(!is_null($variant->image)) {
+                $images[] = $variant->image;
+            }
+        }
+
         return [
             'id'                => $this->id,
             'slug'              => $this->slug,
@@ -156,21 +168,21 @@ class Product extends Model
             'brand'             => $this->brand?->name,
             'name'              => $this->name,
             'thumbnail'         => $this->thumbnail,
-            'images'            => $this->images->pluck('image'),
-            //'slider' => $images,
-            'slider'            => $this->variants->pluck('image')->filter()->isNotEmpty()
-                ? collect([
-                    optional($this->variants->firstWhere('is_default', true))->image,
-                ])
-                ->filter()
-                ->concat($this->variants->pluck('image')->filter())
-                ->unique()
-                ->values()
-                : collect([$this->thumbnail])
-                ->filter()
-                ->concat($this->images->pluck('image')->filter())
-                ->unique()
-                ->values(),
+            'images'            => $images,
+            'slider' => $images,
+            // 'slider'            => $this->variants->pluck('image')->filter()->isNotEmpty()
+            //     ? collect([
+            //         optional($this->variants->firstWhere('is_default', true))->image,
+            //     ])
+            //     ->filter()
+            //     ->concat($this->variants->pluck('image')->filter())
+            //     ->unique()
+            //     ->values()
+            //     : collect([$this->thumbnail])
+            //     ->filter()
+            //     ->concat($this->images->pluck('image')->filter())
+            //     ->unique()
+            //     ->values(),
 
             'short_description' => $this->short_description,
             'description'       => $this->description,
