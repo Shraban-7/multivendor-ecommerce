@@ -21,11 +21,16 @@ $breadCrumbs = [['label' => $product['category']], ['label' => $product['subcate
     <!-- Product Images Section -->
     <div class="lg:w-[55%] md:w-[50%] w-full flex flex-col gap-3">
         <!-- Main Image -->
-        <div class="relative order-1 w-full">
+        <!-- <div class="relative order-1 w-full">
             <div class="overflow-hidden w-full h-96 md:h-[37rem] xl:h-[37rem] lg:h-[41rem] rounded-2xl relative">
                 <img src="{{ storage_url($product['slider'][0] ?? '') }}" alt="{{ $product['name'] ?? 'Product Image' }}"
                     class="max-w-full h-full rounded-2xl transition-all duration-300 main-product-image" />
             </div>
+        </div> -->
+
+        {{--<div class="w-full mx-auto rounded-xl overflow-hidden" style="max-width: 600px; max-height:700px;">
+            <img src="{{ storage_url($product['slider'][0] ?? '') }}" alt="Product Image"
+                class="w-full h-full object-contain rounded-xl transition-all duration-300 main-product-image" />
         </div>
 
         <!-- Thumbnails -->
@@ -40,6 +45,31 @@ $breadCrumbs = [['label' => $product['category']], ['label' => $product['subcate
                    {{ $index === 0 ? 'border-primary' : 'border-transparent' }}">
                         <img src="{{ storage_url($img) }}" alt="{{ $product['name'] ?? 'Product Image' }}"
                             class="w-full h-full object-contain thumb-img" data-image="{{ storage_url($img) }}"
+                            data-full="{{ storage_url($img) }}" />
+                    </div>
+                @endforeach
+            </div>
+        </div>--}}
+
+        <!-- Main Image -->
+        <div class="w-full flex justify-center">
+            <div class="w-full mx-auto rounded-xl overflow-hidden" 
+                style="max-width: 600px; max-height: 700px;">
+                <img src="{{ storage_url($product['thumbnail']) }}" alt="Thumbnail"
+                    class="w-full h-full object-contain rounded-xl transition-all duration-300 main-product-image" />
+            </div>
+        </div>
+
+        <!-- Thumbnails -->
+        <div class="order-2 w-full flex justify-center mt-4">
+            <div class="single-product-thumbnails thumbnailWrapper flex gap-2 overflow-x-auto overflow-y-hidden px-2">
+                @foreach ($product['slider'] as $index => $img)
+                    <div class="slide-thumb aspect-square w-20 sm:w-24 
+                                rounded-2xl cursor-pointer border-2 overflow-hidden 
+                                {{ $index === 0 ? 'border-primary' : 'border-transparent' }}">
+                        <img src="{{ storage_url($img) }}" alt="{{ $product['name'] ?? 'Product Image' }}"
+                            class="w-full h-full object-contain thumb-img"
+                            data-image="{{ storage_url($img) }}"
                             data-full="{{ storage_url($img) }}" />
                     </div>
                 @endforeach
