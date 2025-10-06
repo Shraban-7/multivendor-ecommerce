@@ -20,7 +20,7 @@
                 $quantity = $item->quantity ?? 1;
             @endphp
 
-            @if (!empty($item->variant->discounted_price) && $item->variant->discounted_price < $sellingPrice)
+            @if (!empty($item->variant->discounted_price))
                 <span class="text-muted text-decoration-line-through me-1 small">
                     {{ money($sellingPrice * $quantity) }}
                 </span>

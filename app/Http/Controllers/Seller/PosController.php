@@ -40,6 +40,7 @@ class PosController extends Controller
         $paid = null;
         $due = null;
         $previousPaid = 0;
+        $additionalDiscount = 0;
 
         if ($request->has('order_id')) {
             $order = Order::where('invoice_id', $request->order_id)
@@ -47,28 +48,16 @@ class PosController extends Controller
                 ->with('items.variant.product')
                 ->first();
 
-            // dd($order);
-
             if ($order) {
                 $orderItems = $order ? $order->items()->with('variant.product')->get() : collect();
                 $cart = PosCart::where('order_id', $order->id)->first();
                 $cartItems = $cart ? $cart->items()->with('variant.product')->get() : collect();
                 $orderItems = $orderItems->merge($cartItems);
 
-                // dd($orderItems);
                 $cartSubtotal = $cartItems->sum(fn($item) => $item->variant->selling_price * $item->quantity);
                 $cart_vat_amount = $cartItems->sum(fn($item) => ($item->variant->product->vat_percent * $item->price / 100) * $item->quantity);
                 $cartDiscount = $cartItems->sum(fn($item) => ($item->variant->discounted_price ? $item->variant->selling_price - $item->variant->discounted_price : 0) * $item->quantity);
                 $cartTotal = $cartSubtotal + $cart_vat_amount - $cartDiscount;
-
-                // $subtotal   = $orderItems->sum(fn($item) => (float) $item->sub_total);
-                // $vat_amount = $orderItems->sum(fn($item) => (float) $item->vat_amount);
-                // $discount   = $orderItems->sum(fn($item) => (float) $item->discount);
-                // $total      = $orderItems->sum(fn($item) => (float) $item->total);
-                // $subtotal   = $order->sub_total;
-                // $vat_amount = $order->vat_amount;
-                // $discount   = $order->discount;
-                // $total      = $order->total;
 
                 $subtotal = $order->sub_total + $cartSubtotal;
                 $vat_amount = $order->vat_amount + $cart_vat_amount;
@@ -77,6 +66,7 @@ class PosController extends Controller
                 $total = $order->total + $cartTotal;
                 $paid = $order->paid;
                 $previousPaid = $order->paid;
+                $additionalDiscount = $order->additional_discount;
 
                 if ($total > $paid) {
                     $due = $total - $order->paid;
@@ -122,7 +112,8 @@ class PosController extends Controller
             'paid',
             'customer_name',
             'customer_phone',
-            'previousPaid'
+            'previousPaid',
+            'additionalDiscount'
         ));
     }
 

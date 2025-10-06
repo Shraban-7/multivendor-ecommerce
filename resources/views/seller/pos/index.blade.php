@@ -351,7 +351,7 @@ foreach ($categories as $cat) {
                             <div class="col-12">
                                 <div class="input-group">
                                     <input type="number" min="0" step="0.01" class="form-control"
-                                        id="discount-amount" style="width: 70%;" placeholder="Enter Discount">
+                                        id="discount-amount" style="width: 70%;" placeholder="Enter Discount" value="{{ $additionalDiscount }}">
                                     <select class="form-select" id="discount-type">
                                         <option value="flat">Flat</option>
                                         <option value="percentage">Percentage</option>

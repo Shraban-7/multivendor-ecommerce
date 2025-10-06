@@ -139,7 +139,7 @@ class SaleController extends Controller
         $combinedSubTotal = $newSubTotal;
         $combinedVat = $order->vat_amount + $newVat;
 
-        $additionalDiscount = (float) ($data['additional_discount'] ?? 0) + (float) ($order->additional_discount ?? 0);
+        $additionalDiscount = (float) ($data['additional_discount'] ?? 0) ?? (float) ($order->additional_discount ?? 0);
         $order->additional_discount = $additionalDiscount;
 
         $combinedDiscount = $productDiscount + $additionalDiscount;
