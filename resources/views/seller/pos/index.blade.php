@@ -79,15 +79,13 @@ foreach ($categories as $cat) {
                         <div class="col-md-6 d-flex justify-content-end gap-2">
                             <div class="input-group input-group-sm">
                                 <input type="text" id="skuSearch" class="form-control" placeholder="Barcode/SKU">
-
-                                <button id="draftCartsBtn" class="btn btn-warning" data-bs-toggle="modal"
-                                    data-bs-target="#draftCartsModal">
-                                    <i class="bi bi-archive me-1"></i> Draft Carts
-                                </button>
-
                                 <button id="sales" class="btn btn-dark" data-bs-toggle="modal"
                                     data-bs-target="#salesModal">
                                     <i class="bi bi-receipt me-1"></i> Recent Sales
+                                </button>
+                                <button id="draftCartsBtn" class="btn btn-warning" data-bs-toggle="modal"
+                                    data-bs-target="#draftCartsModal">
+                                    <i class="bi bi-archive me-1"></i> Drafts
                                 </button>
                             </div>
                         </div>
@@ -468,7 +466,7 @@ foreach ($categories as $cat) {
                                     <i class="bi bi-cart me-2"></i> Checkout
                                 </button>
                                 <button id="saveDraftBtn" class="btn btn-info">
-                                    <i class="bi bi-save me-2"></i> Save Draft
+                                    <i class="bi bi-save me-2"></i> Save As Draft
                                 </button>
                             @endif
                         </div>
