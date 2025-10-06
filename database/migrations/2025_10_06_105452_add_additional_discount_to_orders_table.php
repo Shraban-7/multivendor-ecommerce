@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('order_items', function (Blueprint $table) {
-            $table->decimal('selling_price',10,2)->nullable()->after('buying_price');
-            $table->decimal('total',10,2)->nullable()->after('sub_total');
+        Schema::table('orders', function (Blueprint $table) {
+            $table->decimal('additional_discount',6,2)->nullable()->after('discount');
         });
     }
 
@@ -22,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('order_items', function (Blueprint $table) {
+        Schema::table('orders', function (Blueprint $table) {
             //
         });
     }

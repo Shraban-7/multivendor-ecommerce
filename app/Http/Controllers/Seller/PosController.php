@@ -39,6 +39,7 @@ class PosController extends Controller
         $customer_phone = null;
         $paid = null;
         $due = null;
+        $previousPaid = 0;
 
         if ($request->has('order_id')) {
             $order = Order::where('invoice_id', $request->order_id)
@@ -72,8 +73,10 @@ class PosController extends Controller
                 $subtotal = $order->sub_total + $cartSubtotal;
                 $vat_amount = $order->vat_amount + $cart_vat_amount;
                 $discount = $order->discount + $cartDiscount;
+
                 $total = $order->total + $cartTotal;
                 $paid = $order->paid;
+                $previousPaid = $order->paid;
 
                 if ($total > $paid) {
                     $due = $total - $order->paid;
@@ -118,7 +121,8 @@ class PosController extends Controller
             'due',
             'paid',
             'customer_name',
-            'customer_phone'
+            'customer_phone',
+            'previousPaid'
         ));
     }
 
@@ -356,6 +360,7 @@ class PosController extends Controller
             'sub_total' => $sub_total,
             'vat_amount' => $totalVat,
             'discount' => $data['discount'] + $discount,
+            'additional_discount' => $data['discount'],
             'total' => $total,
             'payable' => $payableAmount,
             'paid' => $data['paid'],
