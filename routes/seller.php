@@ -27,6 +27,7 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::post('/cart-item/remove', [PosController::class, 'removeCartItem'])->name('remove_cart_item');
         Route::post('/cart-clear', [PosController::class, 'cartClear'])->name('cart_clear');
         Route::post('/place-order', [PosController::class, 'placeOrder'])->name('place_order');
+        Route::post('/save-draft', [PosController::class, 'saveDraft'])->name('save_draft');
         Route::get('/customers/search', [PosController::class, 'customerSearch'])->name('customers.search');
 
         Route::prefix('sales')->as('sales.')->group(function () {

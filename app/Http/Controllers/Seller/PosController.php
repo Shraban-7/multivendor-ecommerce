@@ -78,10 +78,27 @@ class PosController extends Controller
                     $customer_name = $order->customer->name;
                     $customer_phone = $order->customer->phone;
                 }
-
             }
+        }
+        if (request()->has('draft_cart_id')) {
+            $cart = PosCart::where('seller_id', $seller->id)
+                ->where('id', request('draft_cart_id'))
+                ->where('is_draft', 1)
+                ->with('items.variant.product')
+                ->first();
+
+            $cartItems = $cart ? $cart->items : collect();
+
+            foreach ($cartItems as $item) {
+                $unitPrice = $item->variant->calculatedPrice;
+                $subtotal += $item->variant->selling_price * $item->quantity;
+                $vat_amount += calculate_vat($item->variant->product->vat_percent, $unitPrice) * $item->quantity;
+                $discount += ($item->variant->calculatedDiscount * $item->quantity);
+            }
+
+            $total = $subtotal + $vat_amount - $discount;
         } else {
-            $cart = PosCart::where('seller_id', $seller->id)->whereNull('order_id')->first();
+            $cart = PosCart::where('seller_id', $seller->id)->where('is_draft', 0)->whereNull('order_id')->first();
             $cartItems = $cart ? $cart->items()->with('variant.product')->get() : collect();
             foreach ($cartItems as $item) {
                 $unitPrice = $item->variant->calculatedPrice;
@@ -96,6 +113,12 @@ class PosController extends Controller
             ->whereDate('created_at', Carbon::today())
             ->with('items.variant.product')
             ->latest('id')
+            ->get();
+
+        $draftCarts = PosCart::where('seller_id', $seller->id)
+            ->where('is_draft', true)
+            ->with(['items.variant.product'])
+            ->latest()
             ->get();
 
         return view('seller.pos.index', compact(
@@ -113,7 +136,8 @@ class PosController extends Controller
             'customer_name',
             'customer_phone',
             'previousPaid',
-            'additionalDiscount'
+            'additionalDiscount',
+            'draftCarts'
         ));
     }
 
@@ -125,7 +149,11 @@ class PosController extends Controller
         ]);
 
         $cart = PosCart::firstOrCreate(
-            ['seller_id' => get_seller_id()],
+            [
+                'seller_id' => get_seller_id(),
+                'order_id' => null,
+                'is_draft' => 0
+            ],
         );
 
         $variantId = $data['variant_id'];
@@ -422,6 +450,34 @@ class PosController extends Controller
             'invoice_id' => $order->invoice_id,
             'variants' => $updatedVariants
         ], "Order Placed Successfully");
+    }
+
+    public function saveDraft(Request $request)
+    {
+        $sellerId = get_seller_id();
+
+        $cart = PosCart::with('items.variant.product')
+            ->where('seller_id', $sellerId)
+            ->whereNull('order_id')
+            ->where('is_draft', 0)
+            ->first();
+
+        if (!$cart || $cart->items->isEmpty()) {
+            return errorResponse("Cart is empty!");
+        }
+
+        $cart->update([
+            'is_draft' => true,
+        ]);
+
+        $cartItems = $cart->items;
+        $html = view('components.seller.pos-cart-items', compact('cartItems'))->render();
+
+        return apiResponse([
+            'html' => $html,
+            'cart_items' => $cartItems,
+            'is_draft' => $cart->is_draft,
+        ], "Draft saved successfully");
     }
 
     public function customerSearch(Request $request)

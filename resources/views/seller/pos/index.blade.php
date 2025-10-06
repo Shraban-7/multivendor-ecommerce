@@ -79,6 +79,12 @@ foreach ($categories as $cat) {
                         <div class="col-md-6 d-flex justify-content-end gap-2">
                             <div class="input-group input-group-sm">
                                 <input type="text" id="skuSearch" class="form-control" placeholder="Barcode/SKU">
+
+                                <button id="draftCartsBtn" class="btn btn-warning" data-bs-toggle="modal"
+                                    data-bs-target="#draftCartsModal">
+                                    <i class="bi bi-archive me-1"></i> Draft Carts
+                                </button>
+
                                 <button id="sales" class="btn btn-dark" data-bs-toggle="modal"
                                     data-bs-target="#salesModal">
                                     <i class="bi bi-receipt me-1"></i> Recent Sales
@@ -86,6 +92,76 @@ foreach ($categories as $cat) {
                             </div>
                         </div>
                     </div>
+
+                    <!-- Draft Carts Modal -->
+                    <div class="modal fade" id="draftCartsModal" tabindex="-1" aria-labelledby="draftCartsModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
+                            <div class="modal-content">
+
+                                <!-- Modal Header -->
+                                <div class="modal-header text-dark">
+                                    <h5 class="modal-title" id="draftCartsModalLabel">
+                                        Draft Carts</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+
+                                <!-- Modal Body -->
+                                <div class="modal-body" id="draftCartsContent">
+                                    @if ($draftCarts->isEmpty())
+                                        <p class="text-center text-muted">No draft carts found.</p>
+                                    @else
+                                        <table class="table table-sm table-bordered align-middle">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Created At</th>
+                                                    <th>Items</th>
+                                                    <th>Total Qty</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($draftCarts as $cart)
+                                                    <tr>
+                                                        <td>{{ $cart->created_at->format('d M Y h:i A') }}</td>
+                                                        <td>
+                                                            <ul class="mb-0 ps-3">
+                                                                @foreach ($cart->items as $item)
+                                                                    <li>
+                                                                        {{ $item->variant->product->name ?? '' }}
+                                                                        ({{ $item->variant->sku }})
+                                                                        – Qty: {{ $item->quantity }}
+                                                                    </li>
+                                                                @endforeach
+                                                            </ul>
+                                                        </td>
+                                                        <td>{{ $cart->items->sum('quantity') }}</td>
+                                                        <td>
+                                                            <div class="d-flex gap-1 overflow-auto">
+                                                                <a href="{{ route('seller.pos.index', ['draft_cart_id' => $cart->id]) }}"
+                                                                    target="__blank"
+                                                                    class="btn btn-light border btn-sm d-flex align-items-center">
+                                                                    <i data-feather="edit" class="icon-xs me-1"></i>
+                                                                    Edit
+                                                                </a>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    @endif
+                                </div>
+
+                                <!-- Modal Footer -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
 
                     <div class="modal fade" id="salesModal" tabindex="-1" aria-labelledby="salesModalLabel"
                         aria-hidden="true">
@@ -351,7 +427,8 @@ foreach ($categories as $cat) {
                             <div class="col-12">
                                 <div class="input-group">
                                     <input type="number" min="0" step="0.01" class="form-control"
-                                        id="discount-amount" style="width: 70%;" placeholder="Enter Discount" value="{{ $additionalDiscount }}">
+                                        id="discount-amount" style="width: 70%;" placeholder="Enter Discount"
+                                        value="{{ $additionalDiscount }}">
                                     <select class="form-select" id="discount-type">
                                         <option value="flat">Flat</option>
                                         <option value="percentage">Percentage</option>
@@ -363,8 +440,8 @@ foreach ($categories as $cat) {
                         <div class="row g-2 mb-3">
                             <div class="col-12">
                                 <div class="input-group">
-                                    <input type="number" class="form-control"
-                                        id="paid-amount" value="{{ $paid }}" placeholder="Enter Paid Amount">
+                                    <input type="number" class="form-control" id="paid-amount"
+                                        value="{{ $paid }}" placeholder="Enter Paid Amount">
                                     <input type="hidden" class="form-control" id="previous-paid"
                                         value="{{ $previousPaid }}">
 
@@ -382,9 +459,16 @@ foreach ($categories as $cat) {
                                     <i class="bi bi-arrow-repeat me-2"></i> Update Order
                                 </button>
                                 <a href="{{ route('seller.pos.index') }}" class="btn btn-secondary">Cancel</a>
+                            @elseif(request()->has('draft_cart_id'))
+                                <button id="placeOrderBtn" class="btn btn-success">
+                                    <i class="bi bi-cart me-2"></i> Checkout
+                                </button>
                             @else
                                 <button id="placeOrderBtn" class="btn btn-success">
                                     <i class="bi bi-cart me-2"></i> Checkout
+                                </button>
+                                <button id="saveDraftBtn" class="btn btn-info">
+                                    <i class="bi bi-save me-2"></i> Save Draft
                                 </button>
                             @endif
                         </div>
@@ -777,6 +861,40 @@ foreach ($categories as $cat) {
                     }
                 });
             });
+
+            $(document).on("click", "#saveDraftBtn", function(e) {
+                e.preventDefault();
+
+                $.ajax({
+                    url: "{{ route('seller.pos.save_draft') }}",
+                    method: "POST",
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                    },
+                    beforeSend: function() {
+                        $("#saveDraftBtn").prop('disabled', true).text('Saving...');
+                    },
+                    success: function(res) {
+                        if (res.status) {
+                            toastr.success(res.message);
+
+                            setTimeout(() => {
+                                location.reload();
+                            }, 1000);
+                        } else {
+                            toastr.error(res.message);
+                        }
+                    },
+                    error: function() {
+                        toastr.error("Failed to save draft!");
+                    },
+                    complete: function() {
+                        $("#saveDraftBtn").prop('disabled', false)
+                            .html('<i class="bi bi-save me-2"></i> Save Draft');
+                    }
+                });
+            });
+
 
             $(document).on('click', '.update-order-qty-btn', debounce(function() {
                 let itemId = $(this).data('id');
