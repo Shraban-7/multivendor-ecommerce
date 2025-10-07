@@ -139,12 +139,11 @@
                                                 </select>
 
                                                 <!-- Commission Amount Input -->
-                                                <input type="number" name="commission_amount" id="commission_amount"
+                                                <input type="number" min="0" max="100" name="commission_amount" id="commission_amount"
                                                     class="form-control" placeholder="Amount"
-                                                    value="{{ $seller->commission_amount }}">
+                                                    value="{{ $seller->commission_amount  }}">
                                             </div>
                                         </div>
-
 
                                         <div class="mb-3">
                                             <label for="edit-name" class="form-label">Status</label>
