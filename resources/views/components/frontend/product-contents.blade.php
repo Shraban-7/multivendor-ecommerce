@@ -25,6 +25,7 @@ $breadCrumbs = [['label' => $product['category']], ['label' => $product['subcate
                     class="absolute inset-0 w-full h-full object-contain transition-all duration-300 main-product-image" />
             </div>
         </div>
+        @if(count($product['slider']) > 1)
         <div class="order-2 w-full flex justify-center  mt-4">
             <div class="single-product-thumbnails thumbnailWrapper flex gap-2 overflow-x-auto overflow-y-hidden">
                 @foreach ($product['slider'] as $index => $img)
@@ -34,7 +35,8 @@ $breadCrumbs = [['label' => $product['category']], ['label' => $product['subcate
                 </div>
                 @endforeach
             </div>
-        </div>        
+        </div>
+        @endif
     </div>
 
     <!-- Product Details Section -->
