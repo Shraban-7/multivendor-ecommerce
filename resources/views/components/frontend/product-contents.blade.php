@@ -82,10 +82,7 @@ $breadCrumbs = [['label' => $product['category']], ['label' => $product['subcate
                             {{ money($variantPrice) }}
                         </h3>
                     @endif
-
-
                 </div>
-
 
                 <div class="flex flex-wrap items-center gap-3 text-sm text-gray-700">
                     <div><strong>SKU:</strong> <span class="sku-text">{{ $defaultVariant->sku ?? '' }}</span></div>

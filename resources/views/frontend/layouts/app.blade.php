@@ -553,8 +553,8 @@ $isDashboard = View::hasSection('dashboard');
 
                 $mainImage.attr("src", full);
                 $thumbWrapper.find(".slide-thumb").removeClass("border-primary").addClass(
-                    "border-transparent");
-                $img.closest(".slide-thumb").addClass("border-primary").removeClass("border-transparent");
+                    "border-gray-200");
+                $img.closest(".slide-thumb").addClass("border-primary").removeClass("border-gray-200");
             });
 
             $(document).on("click", ".increaseBtn, .decreaseBtn", function() {
