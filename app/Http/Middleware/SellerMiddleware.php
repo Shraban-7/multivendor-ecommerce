@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Middleware;
 
+use App\Models\Seller;
 use App\Models\SellerEmployee;
 use Closure;
 use Illuminate\Http\Request;
@@ -20,7 +21,7 @@ class SellerMiddleware
 
         $employee = Auth::guard('employee')->user();
 
-        if (($seller && $seller->is_active == 1) || ($employee && $employee->is_active == 1)) {
+        if (($seller && $seller->status == Seller::ACTIVE) || ($employee && $employee->is_active == 1)) {
             return $next($request);
         }
 

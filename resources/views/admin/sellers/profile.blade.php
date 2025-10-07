@@ -1,8 +1,10 @@
 @extends('admin.layouts.app')
-@section('title', $seller->business_name  .' | Seller Profile')
+@section('title', $seller->business_name . ' | Seller Profile')
 
 @section('content')
-
+    @php
+        $deleted = \App\Models\Seller::DELETED;
+    @endphp
     <div class="container-fluid">
         <div class="d-flex justify-content-between align-items-center mb-2">
             <h4 class="mb-0">Seller Profile</h4>
@@ -24,8 +26,7 @@
 
                     <!-- Seller Info -->
                     <div class="d-flex align-items-start mb-3">
-                        <img src="{{ storage_url($seller->image) }}" alt="{{ $seller->name }}"
-                            class="img-thumbnail me-3"
+                        <img src="{{ storage_url($seller->image) }}" alt="{{ $seller->name }}" class="img-thumbnail me-3"
                             style="width: 100px; height: 100px; object-fit: cover; border-radius: .5rem;">
                         <div>
                             <h5 class="fw-bold mb-1">{{ $seller->name }}</h5>
@@ -44,7 +45,7 @@
                     <hr class="my-3">
 
                     <!-- Business Info -->
-                    <div class="d-flex align-items-start">
+                    <div class="d-flex align-items-start {{ $seller->status == $deleted ? '':'mb-3' }} ">
                         <img src="{{ storage_url($seller->business_logo) }}" alt="{{ $seller->business_name }}"
                             class="img-thumbnail me-3"
                             style="width: 100px; height: 100px; object-fit: cover; border-radius: .5rem;">
@@ -62,6 +63,40 @@
                                 <i data-feather="file-text" class="icon-xs me-1"></i>
                                 Trade License: {{ $seller->trade_license_no ?? '' }}
                             </p>
+                        </div>
+                    </div>
+
+                    <!-- Block/Delete Button triggers modal -->
+                    @if ($seller->status != $deleted)
+                        <button type="button" class="btn btn-danger w-100" data-bs-toggle="modal"
+                            data-bs-target="#blockSellerModal{{ $seller->id }}">
+                            <i data-feather="trash" class="icon-xs me-1"></i> Delete
+                        </button>
+                    @endif
+
+                    <!-- Confirmation Modal -->
+                    <div class="modal fade" id="blockSellerModal{{ $seller->id }}" tabindex="-1"
+                        aria-labelledby="blockSellerModalLabel{{ $seller->id }}" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="blockSellerModalLabel{{ $seller->id }}">Confirm Action
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure you want to delete this seller? This action cannot be undone.
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <form action="{{ route('admin.sellers.delete', $seller->id) }}" method="POST"
+                                        class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -175,9 +210,11 @@
         <div class="row mb-5">
             @forelse ($products as $product)
                 <div class="col-md-2 mb-4">
-                    <a href="{{ route('products.details', $product->slug) }}" target="__blank" class="text-decoration-none text-dark">
+                    <a href="{{ route('products.details', $product->slug) }}" target="__blank"
+                        class="text-decoration-none text-dark">
                         <div class="card h-100 shadow-sm border-0">
-                            <img src="{{ storage_url($product->thumbnail) }}" class="card-img-top" alt="{{ $product->name }}" style="height: 150px; object-fit: cover;">
+                            <img src="{{ storage_url($product->thumbnail) }}" class="card-img-top"
+                                alt="{{ $product->name }}" style="height: 150px; object-fit: cover;">
                             <div class="card-body p-2">
                                 <h6 class="fw-semibold mb-1 text-truncate">{{ $product->name }}</h6>
                                 <p class="text-muted small mb-0">{{ money($product->discounted_price) }}</p>

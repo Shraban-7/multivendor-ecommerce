@@ -42,6 +42,27 @@ class SellerController extends Controller
         return redirect()->back()->with('success','Best seller updated successfully');
     }
 
+    public function toggleBlock(Seller $seller, Request $request)
+    {
+        $status = $request->input('status') == Seller::BLOCKED ? Seller::BLOCKED : Seller::ACTIVE;
+
+        $seller->status = $status;
+        $seller->save();
+
+        $message = $status == Seller::ACTIVE ? 'Seller activated successfully' : 'Seller blocked successfully';
+
+        return redirect()->back()->with('success', $message);
+    }
+
+    public function delete(Seller $seller)
+    {
+        $seller->status = Seller::DELETED;
+        $seller->save();
+
+        return redirect()->back()->with('success', 'Seller deleted successfully');
+    }
+
+
     public function update(Seller $seller, Request $request)
     {
         $data = $request->validate([

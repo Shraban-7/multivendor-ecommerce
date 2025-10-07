@@ -34,8 +34,8 @@ class LoginController extends Controller
                 'model' => \App\Models\Seller::class,
                 'guard' => 'seller',
                 'redirect' => route('seller.dashboard'),
-                'check' => fn($seller) => $seller->is_active == 1,
-                'inactiveMessage' => 'Your account is inactive, contact with admin',
+                'check' => fn($seller) => $seller->status == Seller::ACTIVE,
+                'inactiveMessage' => "Your account is inactive, contact with admin",
             ],
             'employee' => [
                 'model' => \App\Models\SellerEmployee::class,
@@ -60,9 +60,21 @@ class LoginController extends Controller
                 continue;
             }
 
-            if (! ($config['check'])($user)) {
+            if ($type === 'seller') {
+                if ($user->status == Seller::BLOCKED) {
+                    return redirect()->back()->with('warning', 'Your account has been blocked. Contact admin.');
+                }
+
+                if ($user->status != Seller::ACTIVE) {
+                    return redirect()->back()->with('warning', 'Your account is pending approval. Please wait for admin review.');
+                }
+            } elseif (! ($config['check'])($user)) {
                 return redirect()->back()->with('warning', $config['inactiveMessage'] ?? 'Account inactive');
             }
+
+            // if (! ($config['check'])($user)) {
+            //     return redirect()->back()->with('warning', $config['inactiveMessage'] ?? 'Account inactive');
+            // }
 
             if (! Auth::guard($config['guard'])->attempt($credentials)) {
                 return redirect()->back()->with('error', 'Incorrect password!');
@@ -105,7 +117,10 @@ class LoginController extends Controller
         }
 
         if ($seller) {
-            if ($seller->is_active != 1) {
+            if ($seller->status == Seller::BLOCKED) {
+                return redirect()->back()->with('error', 'Your account has been blocked by admin');
+            }
+            if ($seller->status == Seller::PENDING) {
                 return redirect()->back()->with('warning', 'Wait for admin approval');
             }
 

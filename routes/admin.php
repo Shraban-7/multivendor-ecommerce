@@ -39,6 +39,8 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
         Route::get('/', [SellerController::class, 'index'])->name('index');
         Route::post('{seller}/update', [SellerController::class, 'update'])->name('update');
         Route::post('{seller}/best-seller', [SellerController::class, 'best_seller'])->name('best_seller');
+        Route::post('{seller}/toggle-block', [SellerController::class, 'toggleBlock'])->name('toggleBlock');
+        Route::post('{seller}/delete', [SellerController::class, 'delete'])->name('delete');
         Route::get('{seller:username}/profile', [SellerController::class, 'profile'])->name('profile');
     });
 
