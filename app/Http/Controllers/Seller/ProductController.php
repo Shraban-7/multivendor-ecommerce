@@ -413,7 +413,8 @@ class ProductController extends Controller
             return redirect()->route('seller.products.printBarcode')->with('error', 'Product not found!');
         }
 
-        $price = is_null($variant->discounted_price) ? $variant->selling_price : $variant->discounted_price;
+        //$price = is_null($variant->discounted_price) ? $variant->selling_price : $variant->discounted_price;
+        $price = $variant->selling_price;
 
         $data = [
             'sellerName' => $variant->product->seller->business_name,
