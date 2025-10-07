@@ -24,9 +24,14 @@ class Seller extends Authenticatable
         'password'          => 'hashed',
     ];
 
+    const PENDING = 0;
+    const ACTIVE = 1;
+    const BLOCKED = 2;
+    const DELETED = 4;
+
     public function scopeActive($query)
     {
-        return $query->where('is_active', 1);
+        return $query->where('status', self::ACTIVE);
     }
 
     public function orders()
