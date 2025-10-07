@@ -23,7 +23,7 @@
                     <tr>
                         <td>
                             <div class="d-flex">
-                                <x-avatar :src="$seller->businessAvatar" />
+                                <x-avatar :src="$seller->businessAvatar" :size="'medium'" />
                                 <div class="ms-2">
                                     {{ $seller->business_name }} <br>
                                     <small class="small">{{ $seller->business_email }}</small>
@@ -34,7 +34,7 @@
                         </td>
                         <td>
                             <div class="d-flex ">
-                                <x-avatar :src="$seller->avatar" />
+                                <x-avatar :src="$seller->avatar" :size="'medium'" />
                                 <div class="ms-2">
                                     {{ $seller->name }} <br>
                                     <small class="text-muted">{{ $seller->phone }}</small>
