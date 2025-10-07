@@ -73,7 +73,7 @@ $isDashboard = View::hasSection('dashboard');
         </main>
     @endif
 
-    @if (auth()->guard('web')->check() || auth()->guard('seller')->check()|| auth()->guard('admin')->check())
+    @if (auth()->guard('web')->check() || auth()->guard('seller')->check() || auth()->guard('admin')->check())
         <div class="block md:hidden">
             @include('frontend.layouts.sidebar')
         </div>
@@ -393,7 +393,7 @@ $isDashboard = View::hasSection('dashboard');
                 });
             }
 
-            function updateProductUI($wrapper, variant, quantity) {
+            function updateProductUI($wrapper, variant, quantity, isInitialLoad = false) {
                 const $mainImage = $wrapper.find(".main-product-image");
                 const $thumbWrapper = $wrapper.find(".thumbnailWrapper");
                 const $priceEl = $wrapper.find(".product-price");
@@ -408,7 +408,6 @@ $isDashboard = View::hasSection('dashboard');
                 const $qtyEl = $wrapper.find("input.quantity");
                 const product = $wrapper.data("product");
 
-
                 if (variant) {
                     const basePrice = parseFloat(variant.price) || 0;
                     const discounted = variant.discounted_price !== null ? parseFloat(variant.discounted_price) :
@@ -421,7 +420,7 @@ $isDashboard = View::hasSection('dashboard');
                         $originalPriceEl.addClass('hidden');
                     } else {
                         $originalPriceEl.removeClass('hidden');
-                        $originalPriceEl.text(`৳ ${formatPrice(basePrice, quantity)}`)
+                        $originalPriceEl.text(`৳ ${formatPrice(basePrice, quantity)}`);
                     }
 
                     $skuEl.text(variant.sku);
@@ -429,24 +428,24 @@ $isDashboard = View::hasSection('dashboard');
                     $availability.text(variant.stock > 0 ? "In Stock" : "Out of Stock");
                     $variantIdInput.val(variant.id);
                     $variantError.addClass("hidden");
+
                     if (variant.stock <= 0) {
                         $addToCartBtn.prop("disabled", true).addClass("opacity-50 cursor-not-allowed");
-
                     } else {
                         $addToCartBtn.prop("disabled", false).removeClass("opacity-50 cursor-not-allowed");
                     }
+
                     $qtyInput.val(quantity);
                     $qtyEl.val(quantity);
 
-                    if (variant.image) {
+                    // console.log(variant.image,isInitialLoad);
+
+                    if (!isInitialLoad && variant.image) {
                         const imageUrl = storageURL(variant.image);
-                        $wrapper.find('.main-product-image').attr('src', imageUrl);
+                        $mainImage.attr('src', imageUrl);
                         $wrapper.find('.slide-thumb').removeClass('border-primary').addClass('border-transparent');
-                        const $thumbEl = $wrapper.find(`.thumb-img[data-full="${imageUrl}"]`)
-
-                        const currentMainImage = $wrapper.find('.main-product-image').attr('src');
-
-                        if (currentMainImage == imageUrl) {
+                        const $thumbEl = $wrapper.find(`.thumb-img[data-full="${imageUrl}"]`);
+                        if ($thumbEl.length) {
                             $thumbEl.closest('.slide-thumb').addClass('border-primary').removeClass(
                                 'border-transparent');
                         }
@@ -458,24 +457,22 @@ $isDashboard = View::hasSection('dashboard');
                     $availability.text("Not Available");
                     $priceEl.text("৳ 0.00");
                     $originalPriceEl.addClass('hidden');
-
                     $variantIdInput.val("");
                     $variantError.removeClass("hidden");
                     $addToCartBtn.prop("disabled", true).addClass("opacity-50 cursor-not-allowed");
+
                     let allThumbs = '';
                     product.slider.forEach((img, i) => {
                         const full = `/storage/${img}`;
                         const border = i === 0 ? 'border-primary' : 'border-transparent';
                         allThumbs += `<div class="slide-thumb w-full xl:h-24 md:h-22 lg:h-28 h-20 rounded-2xl cursor-pointer border-2 ${border} overflow-hidden">
-                        <img src="${full}" class="w-full h-full object-cover thumb-img" data-full="${full}" />
+                            <img src="${full}" class="w-full h-full object-cover thumb-img" data-full="${full}" />
                     </div>`;
                     });
                     $wrapper.find('#thumbnailWrapper').html(allThumbs);
-                    $wrapper.find('#main-product-image').attr('src', `/storage/${product.slider[0] ?? ''}`);
+                    $mainImage.attr('src', `/storage/${product.slider[0] ?? ''}`);
 
                 } else {
-
-                    console.log("else")
                     const basePrice = parseFloat(product.price) || 0;
                     const discounted = product.discounted_price !== null ? parseFloat(product.discounted_price) :
                         null;
@@ -489,18 +486,18 @@ $isDashboard = View::hasSection('dashboard');
                     $variantError.addClass("hidden");
                     $addToCartBtn.prop("disabled", false).removeClass("opacity-50 cursor-not-allowed");
                     $qtyInput.val(quantity);
-                    $qtyEl.val(quantity)
+                    $qtyEl.val(quantity);
+
                     let allThumbs = '';
                     product.slider.forEach((img, i) => {
                         const full = `/storage/${img}`;
                         const border = i === 0 ? 'border-primary' : 'border-transparent';
                         allThumbs += `<div class="slide-thumb w-full xl:h-24 md:h-22 lg:h-28 h-20 rounded-2xl cursor-pointer border-2 ${border} overflow-hidden">
-                        <img src="${full}" class="w-full h-full object-cover thumb-img" data-full="${full}" />
-                    </div>`;
+                                        <img src="${full}" class="w-full h-full object-cover thumb-img" data-full="${full}" />
+                                      </div>`;
                     });
                     $wrapper.find('#thumbnailWrapper').html(allThumbs);
-                    $wrapper.find('#main-product-image').attr('src',
-                        `/storage/${product.slider[0] ?? ''}`);
+                    $mainImage.attr('src', `/storage/${product.slider[0] ?? ''}`);
                 }
             }
 
@@ -620,7 +617,7 @@ $isDashboard = View::hasSection('dashboard');
                 });
 
                 const quantity = parseInt($wrapper.find(".qtyInputValue").val()) || 1;
-                updateProductUI($wrapper, defaultVariant, quantity);
+                updateProductUI($wrapper, defaultVariant, quantity,true);
 
                 $wrapper.data('variant-initialized', true);
             }

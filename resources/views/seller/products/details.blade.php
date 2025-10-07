@@ -227,6 +227,9 @@
                                                             value="{{ $variant->low_stock_quantity }}"
                                                             class="form-control">
                                                     </div>
+                                                    <div class="col-12 mb-3">
+                                                        <x-image-input name="image" :image="storage_url($variant?->image)" />
+                                                    </div>
                                                     <div class="mb-3 col-12">
                                                         <div class="form-check">
                                                             <input class="form-check-input" type="checkbox"

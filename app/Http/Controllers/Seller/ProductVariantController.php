@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\ProductVariantOption;
+use App\Models\Seller;
 use Illuminate\Http\Request;
 
 class ProductVariantController extends Controller
@@ -85,11 +86,13 @@ class ProductVariantController extends Controller
             'discount_value' => 'nullable|numeric',
             'low_stock_quantity' => 'required|numeric',
             'is_default' => 'nullable|boolean',
+            'image' => 'nullable|image|max:5120',
         ]);
 
         $data['product_id'] = $product->id;
 
         $product = Product::find($data['product_id']);
+        $seller = Seller::find(get_seller_id());
 
         if (!empty($data['discount_type']) && !empty($data['discount_value'])) {
             $data['discount_amount']  = round(calculate_discount_amount($data['selling_price'], $data['discount_type'], $data['discount_value']));
@@ -108,8 +111,15 @@ class ProductVariantController extends Controller
                 ->update(['is_default' => 0]);
         }
 
-        if ($product->variants->count()==1) {
-            $data['is_default'] = 1;
+        $imageFolder = "images/{$seller->username}/products";
+
+
+        if ($request->hasFile('image')) {
+            if ($variant->image != null) {
+                delete_file($variant->image);
+            }
+
+            $data['image'] = upload_file($request->file('image'), "$imageFolder/variant-image");
         }
 
         $variant->update($data);
