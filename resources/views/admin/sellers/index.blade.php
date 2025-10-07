@@ -26,22 +26,23 @@
                                 <x-avatar :src="$seller->businessAvatar" />
                                 <div class="ms-2">
                                     {{ $seller->business_name }} <br>
-                                    <a href="" class="fw-bold link-primary small">{{ $seller->business_email }}</a>
+                                    <small class="small">{{ $seller->business_email }}</small>
                                     <br>
                                     <small>Address: {{ $seller->business_address }}</small>
                                 </div>
                             </div>
                         </td>
                         <td>
-                            <div class="d-flex flex-column">
-                                <div class="fw-semibold mb-1">
-                                    <x-seller :seller="$seller" />
+                            <div class="d-flex ">
+                                <x-avatar :src="$seller->avatar" />
+                                <div class="ms-2">
+                                    {{ $seller->name }} <br>
+                                    <small class="text-muted">{{ $seller->phone }}</small>
+                                    <br>
+                                    <small class="text-muted">{{ $seller->email }}</small>
                                 </div>
-                                <small class="text-muted">{{ $seller->phone }}</small>
-                                <small class="text-muted">{{ $seller->email }}</small>
                             </div>
                         </td>
-
                         <td>
                             <div class="d-flex gap-2 align-items-center">
                                 {{ $seller->commission_amount }}
