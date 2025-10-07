@@ -18,7 +18,7 @@ class DashboardController extends Controller
             'total_revenue' => Order::where('status', 'completed')
                 ->sum('payable'),
             'total_orders' => Order::count(),
-            'total_vendors' => Seller::where('is_active', 1)->count(),
+            'total_vendors' => Seller::where('status', Seller::ACTIVE)->count(),
             'total_customers' => User::count(),
             'total_products' => Product::count(),
             'pending_orders' => Order::where('status', 'pending')->count(),
@@ -64,7 +64,7 @@ class DashboardController extends Controller
             'data'
         ));
 
-        
+
 
         return view('admin.dashboard', $data);
     }
