@@ -438,8 +438,6 @@ $isDashboard = View::hasSection('dashboard');
                     $qtyInput.val(quantity);
                     $qtyEl.val(quantity);
 
-                    // console.log(variant.image,isInitialLoad);
-
                     if (!isInitialLoad && variant.image) {
                         const imageUrl = storageURL(variant.image);
                         $mainImage.attr('src', imageUrl);
@@ -539,13 +537,7 @@ $isDashboard = View::hasSection('dashboard');
 
                 const selectedOptions = collectSelectedOptions($wrapper);
 
-                console.log(selectedOptions);
-
-
                 const variant = getSelectedVariant(product, selectedOptions);
-
-                console.log(variant);
-
 
                 const quantity = parseInt($wrapper.find(".qtyInputValue").val()) || 1;
 
