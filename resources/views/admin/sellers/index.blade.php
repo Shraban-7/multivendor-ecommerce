@@ -210,7 +210,7 @@
 
                                         <div class="mb-3">
                                             <label for="edit-name" class="form-label">Status</label>
-                                            <select name="is_active" id="is_active" class="form-select">
+                                            <select name="status" id="is_active" class="form-select">
                                                 <option value="0"
                                                     {{ $seller->status == $pending ? 'selected' : '' }}>In
                                                     Active</option>

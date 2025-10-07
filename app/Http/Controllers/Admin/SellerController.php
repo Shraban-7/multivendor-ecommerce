@@ -68,7 +68,7 @@ class SellerController extends Controller
         $data = $request->validate([
             'commission_type' => 'required|string|in:flat,percentage',
             'commission_amount' => 'required|numeric',
-            'is_active'=>'required'
+            'status'=>'required'
         ]);
 
         $seller->update($data);
