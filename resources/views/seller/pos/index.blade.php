@@ -583,13 +583,14 @@ foreach ($categories as $cat) {
                 addToCart(variantId, quantity, button);
             });
 
-            function addToCart(variantId, quantity, button) {
-                let url = orderId == 0 ? "{{ route('seller.pos.cart_add') }}" :
-                    "{{ route('seller.pos.sales.item_add') }}";
-                let btnText = button.find('.btn-text');
-                let spinner = button.find('.spinner-border');
+            function addToCart(variantId, quantity, button=null) {
+                let url = orderId == 0 ? "{{ route('seller.pos.cart_add') }}" : "{{ route('seller.pos.sales.item_add') }}";
 
-                button.prop('disabled', true);
+                if(button != null) {
+                    let btnText = button.find('.btn-text');
+                    let spinner = button.find('.spinner-border');
+                    button.prop('disabled', true);
+                }
 
                 $.ajax({
                     url: url,
@@ -602,7 +603,10 @@ foreach ($categories as $cat) {
                     },
                     success: function(response) {
                         if (response.status) {
-                            button.prop('disabled', false)
+                            if(button != null) {
+                                button.prop('disabled', false)
+                            }
+
                             toastr.success("Item added successfully!");
 
                             if (orderId && orderId > 0) {
@@ -624,7 +628,9 @@ foreach ($categories as $cat) {
                         toastr.error(xhr.responseJSON?.message || "Something went wrong");
                     },
                     complete: function() {
-                        button.prop('disabled', false)
+                        if(button != null) {
+                            button.prop('disabled', false)
+                        }
                         btnText.removeClass('d-none');
                         spinner.addClass('d-none');
                     }
