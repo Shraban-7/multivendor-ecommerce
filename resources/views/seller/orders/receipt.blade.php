@@ -6,11 +6,11 @@
     <title>Order #{{ $order->invoice_id }} Receipt</title>
     <style>
         body {
-            font-family: "Courier Prime", "Courier New", monospace;
+            font-family: "Courier New", "OCR A Std", monospace;
             font-size: 13px;
             width: 302px;
             margin: 0 auto;
-            font-weight: 700;
+            font-weight: 500;
             color: #000;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
@@ -20,10 +20,15 @@
         .center {text-align: center;}
         .line {border-top: 1px dashed #000; margin: 5px 0;}
         table {width: 100%; border-collapse: collapse;}
-        table td {padding: 2px 0; font-weight: 700;}
+        table td {padding: 2px 0; font-weight: 500;}
+        h3 {margin-bottom: 5px;}
+        p {margin-top: 5px; margin-bottom: 8px;}
         @media print {
             body, td, p, h3 {
                 color: #000 !important;
+                font-weight: 500 !important;
+            }
+            .bold {
                 font-weight: 700 !important;
             }
         }
@@ -38,18 +43,19 @@
 
 <body>
     <div class="center">
-        <h3>★ {{ $order->seller->business_name }} ★</h3>
-        <p>
-            {{ $order->seller->business_address }} <br>
-            Phone: {{ $order->seller->phone }} <br>
-        </p>
+        <h3 class="bold">{{ $order->seller->business_name }}</h3>
+        <p>{{ $order->seller->business_address }}</p>
+        <p> Phone: {{ $order->seller->phone }}</p>
     </div>
 
-    <div class="line"></div>
+    <div class="line" style="margin-top: 20px;"></div>
 
     <p>
-        <strong>Invoice: #{{ $order->invoice_id }}</strong><br>
-        Date: {{ $order->created_at->format('d-m-Y  h:i A') }}<br>
+        <div style="display: flex; justify-content: space-between; margin-bottom:10px;">
+            <span>#{{ $order->invoice_id }}</span>
+            <span>{{ $order->created_at->format('d/m/y h:ia') }}</span>
+        </div>
+
         @if (!is_null($order->customer_id))
         Customer: {{ $order->customer->name }}<br>
         Phone: {{ $order->customer->phone }}
@@ -129,10 +135,8 @@
     <div class="line"></div>
 
     <div class="center">
-        <p>
-            Thank you for shopping!<br> <br>
-            www.slash-mart.com
-        </p>
+        <p style="margin-top: 20px;">Thank you for shopping with us!</p>
+        <p>www.slash-mart.com</p>
     </div>
 </body>
 
