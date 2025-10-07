@@ -296,8 +296,13 @@ class SaleController extends Controller
         $item = OrderItem::find($request->id);
         if (!$item) return errorResponse("Order item not found");
 
-        if ($request->action === 'increase') $item->quantity += 1;
-        elseif ($request->action === 'decrease' && $item->quantity > 1) $item->quantity -= 1;
+        if ($request->action === 'increase') {
+            $item->quantity += 1;
+            $item->variant->decrement('stock_out');
+        } elseif ($request->action === 'decrease' && $item->quantity > 1) {
+            $item->quantity -= 1;
+            $item->variant->increment('stock_out');
+        }
 
         $item->sub_total = $item->selling_price * $item->quantity;
         $item->discount = ($item->selling_price - $item->unit_price) * $item->quantity;
