@@ -18,17 +18,15 @@ $breadCrumbs = [['label' => $product['category']], ['label' => $product['subcate
 <div id="product-wrapper{{ $product['id'] }}" class="product-contents flex flex-col gap-5 md:flex-row"
     data-id="{{ $product['id'] }}" data-product='@json($publicProduct)'>
 
-    <!-- Product Images Section -->
-    <div class="lg:w-[50%] md:w-[50%] w-full flex flex-col gap-3">
-        <div class="w-full flex justify-center">
-            <div class="relative w-full md:w-[360px] xl:w-[460px] aspect-[3/4] border-1 border-gray-200 rounded-md">
+    <div class="md:w-[50%] w-full flex flex-col gap-3 bg-white rounded border-1 border-gray-200 py-5">        
+        <div class="w-full flex justify-center ">
+            <div class="relative w-full md:w-[360px] xl:w-[460px] aspect-[3/4] rounded-md">
                 <img src="{{ storage_url($product['thumbnail']) }}" alt="Thumbnail"
                     class="absolute inset-0 w-full h-full object-contain transition-all duration-300 main-product-image" />
             </div>
         </div>
-
-        <div class="order-2 w-full flex justify-center mt-4">
-            <div class="single-product-thumbnails thumbnailWrapper flex gap-2 overflow-x-auto overflow-y-hidden px-2">
+        <div class="order-2 w-full flex justify-center  mt-4">
+            <div class="single-product-thumbnails thumbnailWrapper flex gap-2 overflow-x-auto overflow-y-hidden">
                 @foreach ($product['slider'] as $index => $img)
                 <div class="slide-thumb aspect-square w-20 sm:w-24 rounded-md cursor-pointer border-1 overflow-hidden
                     {{ $index === 0 ? 'border-primary' : 'border-gray-200' }}">
@@ -36,11 +34,11 @@ $breadCrumbs = [['label' => $product['category']], ['label' => $product['subcate
                 </div>
                 @endforeach
             </div>
-        </div>
+        </div>        
     </div>
 
     <!-- Product Details Section -->
-    <div class="lg:w-[50%] md:w-[50%] w-full md:px-2 xl:px-3">
+    <div class="lg:w-[50%] md:w-[50%] w-full bg-white rounded border-1 border-gray-200 py-5 px-3 sm:px-8">
         <x-frontend.breadcrumb :items="$breadCrumbs" />
         <div class="w-full space-y-2">
             <h1 class="text-2xl font-semibold">
