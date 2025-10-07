@@ -91,7 +91,8 @@
             if (opt) {
                 nameInput.value = opt.data('name');
                 skuInput.value = opt.data('sku');
-                const price = opt.data('discountedprice') && opt.data('discountedprice') !== '0' ? opt.data('discountedprice') : opt.data('sellingprice');
+                //const price = opt.data('discountedprice') && opt.data('discountedprice') !== '0' ? opt.data('discountedprice') : opt.data('sellingprice');
+                const price = opt.data('sellingprice');
                 priceInput.value = price;
                 qtyInput.value = opt.data('stock');
             }
