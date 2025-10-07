@@ -12,8 +12,6 @@
                 <tr>
                     <th scope="col">Shop</th>
                     <th scope="col">Seller</th>
-                    <th scope="col">Phone</th>
-                    <th scope="col">Email</th>
                     <th scope="col">Commission</th>
                     <th scope="col">Status</th>
                     <th scope="col">Action</th>
@@ -33,18 +31,23 @@
                                     <small>Address: {{ $seller->business_address }}</small>
                                 </div>
                             </div>
-
                         </td>
                         <td>
-                            <x-seller :seller="$seller" />
+                            <div class="d-flex flex-column">
+                                <div class="fw-semibold mb-1">
+                                    <x-seller :seller="$seller" />
+                                </div>
+                                <small class="text-muted">{{ $seller->phone }}</small>
+                                <small class="text-muted">{{ $seller->email }}</small>
+                            </div>
                         </td>
-                        <td>{{ $seller->phone }} </td>
-                        <td> {{ $seller->email }} </td>
+
                         <td>
                             <div class="d-flex gap-2 align-items-center">
                                 {{ $seller->commission_amount }}
                                 <button class="btn btn-light border  btn-sm mb-1" data-bs-toggle="modal"
-                                    data-bs-target="#editModal-{{ $seller->id }}"><i data-feather="edit" class="icon-xs"></i>
+                                    data-bs-target="#editModal-{{ $seller->id }}"><i data-feather="edit"
+                                        class="icon-xs"></i>
                                     Edit
                                 </button>
                             </div>
@@ -139,9 +142,9 @@
                                                 </select>
 
                                                 <!-- Commission Amount Input -->
-                                                <input type="number" min="0" max="100" name="commission_amount" id="commission_amount"
-                                                    class="form-control" placeholder="Amount"
-                                                    value="{{ $seller->commission_amount  }}">
+                                                <input type="number" min="0" max="100" name="commission_amount"
+                                                    id="commission_amount" class="form-control" placeholder="Amount"
+                                                    value="{{ $seller->commission_amount }}">
                                             </div>
                                         </div>
 
