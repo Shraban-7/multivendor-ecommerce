@@ -356,19 +356,14 @@ class PosController extends Controller
             return errorResponse("No items found in the cart!");
         }
 
-        $total_commission = 0;
-
-        if ($seller->commission_amount != null && $seller->commission_type != null) {
-            if ($seller->commission_type === CommissionType::PERCENTAGE->value) {
-                $total_commission = ($sub_total + $totalVat) * ($seller->commission_amount / 100);
-            } else if ($seller->commission_type === CommissionType::FLAT->value) {
-                $total_commission = $seller->commission_amount;
-            }
-        }
 
         $total = ($sub_total + $totalVat) - ($discount + $data['discount']);
         $payableAmount = $total;
-        $sellerEarning = $payableAmount - $total_commission;
+
+        $commissionData = $seller->calculateEarning($payableAmount, $totalVat);
+
+        $total_commission = $commissionData['total_commission'];
+        $sellerEarning = $commissionData['seller_earning'];
 
         $invoiceId = Order::generateInvoiceID($seller->id, Order::ORDER_TYPE_POS);
 

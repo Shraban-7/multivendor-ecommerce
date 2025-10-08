@@ -180,7 +180,7 @@ class SaleController extends Controller
 
         $cart?->items()->delete();
         $cart?->delete();
-        // dd($commission);
+
         $order->addSellerEarningToBalance($commission);
 
         $html = view('components.seller.pos-order-items', [
