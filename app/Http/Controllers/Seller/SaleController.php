@@ -177,7 +177,6 @@ class SaleController extends Controller
 
         $commission = $newCommission - $oldCommission;
 
-
         $cart?->items()->delete();
         $cart?->delete();
 

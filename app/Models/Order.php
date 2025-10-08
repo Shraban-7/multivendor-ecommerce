@@ -156,7 +156,7 @@ class Order extends Model
             return;
         }
 
-        if (empty($this->seller_id) || empty($this->seller_earnings)) {
+        if (is_null($this->seller_id) || $this->seller_earnings == 0) {
             return false;
         }
 
