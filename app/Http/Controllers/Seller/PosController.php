@@ -102,10 +102,11 @@ class PosController extends Controller
             $cart = PosCart::where('seller_id', $seller->id)->where('is_draft', 0)->whereNull('order_id')->first();
             $cartItems = $cart ? $cart->items()->with('variant.product')->get() : collect();
             foreach ($cartItems as $item) {
-                $unitPrice = $item->variant->calculatedPrice;
-                $subtotal += $item->variant->selling_price * $item->quantity;
-                $vat_amount += calculate_vat($item->variant->product->vat_percent, $unitPrice);
-                $discount += ($item->variant->calculatedDiscount * $item->quantity);
+                $variant = $item->variant;
+                $unitPrice = $variant->calculatedPrice;
+                $subtotal += $variant->selling_price * $item->quantity;
+                $vat_amount += calculate_vat($variant->product->vat_percent, $unitPrice);
+                $discount += ($variant->calculatedDiscount * $item->quantity);
             }
             $total = $subtotal + $vat_amount - $discount;
         }
@@ -324,7 +325,6 @@ class PosController extends Controller
         foreach ($cartItems as $item) {
             $product = $item->variant->product;
             $variant = $item->variant;
-
             $unitPrice = $variant->calculatedPrice;
             $itemTotal = $item->quantity * $unitPrice;
             $itemSubtotal = $item->quantity * $variant->selling_price;

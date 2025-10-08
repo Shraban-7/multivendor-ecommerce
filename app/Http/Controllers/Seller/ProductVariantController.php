@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Seller;
 
-use App\Http\Controllers\Controller;
-use App\Models\Product;
-use App\Models\ProductVariant;
-use App\Models\ProductVariantOption;
 use App\Models\Seller;
+use App\Models\Product;
+use App\Models\CartItem;
+use App\Models\PosCartItem;
 use Illuminate\Http\Request;
+use App\Models\ProductVariant;
+use App\Http\Controllers\Controller;
+use App\Models\ProductVariantOption;
 
 class ProductVariantController extends Controller
 {
@@ -132,9 +134,12 @@ class ProductVariantController extends Controller
     {
         $product_id = $variant->product_id;
 
-        $variant->delete();
-        $default = ProductVariant::where('product_id', $product_id)->first();
+        CartItem::where('product_variant_id', $variant->id)->delete();
+        PosCartItem::where('product_variant_id', $variant->id)->delete();
 
+        $variant->delete();
+
+        $default = ProductVariant::where('product_id', $product_id)->first();
         $variantCount = ProductVariant::where('product_id', $product_id)->count();
 
         if ($variantCount == 0) {
@@ -143,6 +148,7 @@ class ProductVariantController extends Controller
 
         $default->is_default = 1;
         $default->save();
+        
         return redirect()->back()->with('success', 'Variant Deleted Successfully!');
     }
 

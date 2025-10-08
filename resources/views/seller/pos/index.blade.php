@@ -583,10 +583,11 @@ foreach ($categories as $cat) {
                 addToCart(variantId, quantity, button);
             });
 
-            function addToCart(variantId, quantity, button=null) {
-                let url = orderId == 0 ? "{{ route('seller.pos.cart_add') }}" : "{{ route('seller.pos.sales.item_add') }}";
+            function addToCart(variantId, quantity, button = null) {
+                let url = orderId == 0 ? "{{ route('seller.pos.cart_add') }}" :
+                    "{{ route('seller.pos.sales.item_add') }}";
 
-                if(button != null) {
+                if (button != null) {
                     let btnText = button.find('.btn-text');
                     let spinner = button.find('.spinner-border');
                     button.prop('disabled', true);
@@ -603,7 +604,7 @@ foreach ($categories as $cat) {
                     },
                     success: function(response) {
                         if (response.status) {
-                            if(button != null) {
+                            if (button != null) {
                                 button.prop('disabled', false)
                             }
 
@@ -628,7 +629,7 @@ foreach ($categories as $cat) {
                         toastr.error(xhr.responseJSON?.message || "Something went wrong");
                     },
                     complete: function() {
-                        if(button != null) {
+                        if (button != null) {
                             button.prop('disabled', false)
                         }
                         btnText.removeClass('d-none');
@@ -857,6 +858,11 @@ foreach ($categories as $cat) {
                             }
                         } else {
                             toastr.error(response.message);
+                            if (response.status == false) {
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 1000);
+                            }
                         }
                     },
                     error: function(xhr) {

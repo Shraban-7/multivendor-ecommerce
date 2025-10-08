@@ -68,8 +68,6 @@ class SaleController extends Controller
 
         $oldCommission = $order->total_commission;
 
-        // dd(($order));
-
         if (!$order) return errorResponse("Order not found!");
 
         if (!empty($data['customer_name']) && !empty($data['customer_phone'])) {
@@ -94,8 +92,8 @@ class SaleController extends Controller
             $quantity = $cartItem->quantity;
             $product = $cartItem->variant->product;
             $variant = $cartItem->variant;
-            $sellingPrice = $variant->selling_price;
 
+            $sellingPrice = $variant->selling_price;
             $unitPrice = $variant->calculatedPrice;
             $itemTotal = $cartItem->quantity * $unitPrice;
             $itemSubtotal = $cartItem->quantity * $variant->selling_price;
