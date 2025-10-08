@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Seller;
 use App\Http\Controllers\Controller;
 use App\Models\SellerEmployee;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class SellerEmployeeController extends Controller
 {
@@ -56,7 +57,7 @@ class SellerEmployeeController extends Controller
         ]);
 
         if (!empty($data['password'])) {
-            $employee->password = bcrypt($data['password']);
+            $employee->password = Hash::make($data['password']);
         }
 
         $employee->name  = $data['name'];
@@ -114,7 +115,7 @@ class SellerEmployeeController extends Controller
         $employee->is_active = $data['is_active'];
 
         if (!empty($data['password'])) {
-            $employee->password = bcrypt($data['password']);
+            $employee->password = Hash::make($data['password']);
         }
 
         $employee->save();
