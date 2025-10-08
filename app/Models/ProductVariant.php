@@ -17,15 +17,6 @@ class ProductVariant extends Model
         'option_ids' => 'array',
     ];
 
-    protected static function booted()
-    {
-        static::deleted(function ($variant) {
-            CartItem::where('product_variant_id', $variant->id)->delete();
-            PosCartItem::where('product_variant_id', $variant->id)->delete();
-        });
-    }
-
-
     public function scopeWhereProduct($query, Product $product)
     {
         return $query->where('product_id', $product->id);
