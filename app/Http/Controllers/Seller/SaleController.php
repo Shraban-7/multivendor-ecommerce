@@ -10,6 +10,7 @@ use App\Models\OrderItem;
 use App\Enums\OrderStatus;
 use Illuminate\Http\Request;
 use App\Models\ProductVariant;
+use App\Models\SellerEmployee;
 use App\Http\Controllers\Controller;
 
 class SaleController extends Controller
@@ -51,6 +52,7 @@ class SaleController extends Controller
     {
         $orderId = $request->input('order_id', $request->query('order_id'));
         $seller = Seller::find(get_seller_id());
+        $employee = SellerEmployee::find(auth()->guard('employee')->id());
 
         $data = $request->validate([
             'customer_name' => 'nullable|string|max:255|required_with:customer_phone',
@@ -160,6 +162,7 @@ class SaleController extends Controller
         $due = max(0, $payable - $paid);
 
         $order->update([
+            'seller_employee_id' => $employee->id ?? $order->seller_employee_id,
             'sub_total' => $combinedSubTotal,
             'vat_amount' => $combinedVat,
             'discount' => $combinedDiscount,

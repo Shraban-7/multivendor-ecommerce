@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use App\Enums\CommissionType;
 use App\Models\ProductVariant;
 use App\Http\Controllers\Controller;
+use App\Models\SellerEmployee;
 
 class PosController extends Controller
 {
@@ -302,6 +303,8 @@ class PosController extends Controller
 
         $seller = Seller::find(get_seller_id());
 
+        $employee = SellerEmployee::find(auth()->guard('employee')->id());
+
         $data['seller_id'] = $seller->id;
 
         $cart = PosCart::where('seller_id', get_seller_id())->first();
@@ -355,7 +358,6 @@ class PosController extends Controller
         if (empty($orderItems)) {
             return errorResponse("No items found in the cart!");
         }
-
 
         $total = ($sub_total + $totalVat) - ($discount + $data['discount']);
         $payableAmount = $total;
