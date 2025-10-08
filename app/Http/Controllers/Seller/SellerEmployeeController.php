@@ -39,14 +39,14 @@ class SellerEmployeeController extends Controller
 
     public function edit($id)
     {
-        $employee = SellerEmployee::where('seller_id', seller()->id)->findOrFail($id);
+        $employee = SellerEmployee::where('seller_id', get_seller_id())->findOrFail($id);
 
         return view('seller.employees.edit', compact('employee'));
     }
 
     public function update(Request $request, $id)
     {
-        $employee = SellerEmployee::where('seller_id', seller()->id)->findOrFail($id);
+        $employee = SellerEmployee::where('seller_id', get_seller_id())->findOrFail($id);
 
         $data = $request->validate([
             'name'     => 'required|string|max:255',
@@ -62,7 +62,7 @@ class SellerEmployeeController extends Controller
         $employee->name  = $data['name'];
         $employee->email = $data['email'];
         $employee->is_active = $data['is_active'];
-        $employee->seller_id = seller()->id;
+        $employee->seller_id = get_seller_id();
         $employee->save();
 
         return redirect()->route('seller.employees.index')->with('success', 'Employee Updated Successfully');
@@ -89,5 +89,36 @@ class SellerEmployeeController extends Controller
         ]);
 
         return redirect()->back()->with('success', "Permissions updated successfully");
+    }
+
+    public function profile()
+    {
+        $employee = auth('employee')->user();
+
+        return view('seller.employees.profile', compact('employee'));
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $employee = auth('employee')->user();
+
+        $data = $request->validate([
+            'name'      => 'required|string|max:255',
+            'email'     => 'required|string|email|max:255|unique:seller_employees,email,' . $employee->id,
+            'password'  => 'nullable|string|min:5|confirmed',
+            'is_active' => 'required'
+        ]);
+
+        $employee->name  = $data['name'];
+        $employee->email = $data['email'];
+        $employee->is_active = $data['is_active'];
+
+        if (!empty($data['password'])) {
+            $employee->password = bcrypt($data['password']);
+        }
+
+        $employee->save();
+
+        return redirect()->back()->with('success', 'Profile updated successfully!');
     }
 }

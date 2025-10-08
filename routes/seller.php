@@ -46,7 +46,9 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::get('/create', [SellerEmployeeController::class, 'create'])->name('create');
         Route::post('/store', [SellerEmployeeController::class, 'store'])->name('store');
         Route::get('{id}/edit', [SellerEmployeeController::class, 'edit'])->name('edit');
+        Route::get('/profile', [SellerEmployeeController::class, 'profile'])->name('profile');
         Route::post('{id}/update', [SellerEmployeeController::class, 'update'])->name('update');
+        Route::post('/update-profile', [SellerEmployeeController::class, 'updateProfile'])->name('updateProfile');
         Route::post('{id}/toggle-active', [SellerEmployeeController::class, 'toggleActive'])->name('toggle_active');
         Route::post('{employee}/set-permissions', [SellerEmployeeController::class, 'setPermissions'])->name('set_permissions');
     });

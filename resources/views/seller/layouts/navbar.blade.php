@@ -13,13 +13,14 @@
         </div>
 
         <li class="dropdown stopevent position-relative">
-            <a class="indicator indicator-primary text-muted position-relative" href="{{ route('seller.notifications.index') }}">
+            <a class="indicator indicator-primary text-muted position-relative"
+                href="{{ route('seller.notifications.index') }}">
                 <i class="icon-xs" data-feather="bell"></i>
                 @if (notificationCount() > 0)
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                    style="font-size: 10px;">
-                    {{ notificationCount() }}
-                </span>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                        style="font-size: 10px;">
+                        {{ notificationCount() }}
+                    </span>
                 @endif
             </a>
         </li>
@@ -35,16 +36,30 @@
                 <div class="px-4 pb-0 pt-2">
                     <div class="lh-1">
                         <h5 class="mb-1">{{ seller()->name ?? employee()->name }}</h5>
-                        <a href="{{ route('seller.profile', seller()->username ?? employee()->name) }}"
-                            class="text-inherit fs-6">Profile</a>
+                        @if (auth('seller')->check())
+                            <a href="{{ route('seller.profile', seller()->username) }}"
+                                class="text-inherit fs-6">Profile</a>
+                        @elseif (auth('employee')->check())
+                            <a href="{{ route('seller.employees.profile') }}" class="text-inherit fs-6">Profile</a>
+                        @endif
+
                     </div>
                     <div class="dropdown-divider mt-3 mb-2"></div>
                 </div>
                 <ul class="list-unstyled">
                     <li>
-                        <a class="dropdown-item" href="#">
-                            <i class="me-2 icon-xxs dropdown-item-icon" data-feather="settings"></i>Account Settings
-                        </a>
+                        @if (auth('seller')->check())
+                            <a class="dropdown-item" href="{{ route('seller.profile', seller()->username) }}">
+                                <i class="me-2 icon-xxs dropdown-item-icon" data-feather="settings"></i>
+                                Account Settings
+                            </a>
+                        @elseif (auth('employee')->check())
+                            <a class="dropdown-item" href="{{ route('seller.employees.profile') }}">
+                                <i class="me-2 icon-xxs dropdown-item-icon" data-feather="settings"></i>
+                                Account Settings
+                            </a>
+                        @endif
+
                     </li>
                     <li>
                         <form action="{{ route('logout') }}" method="POST">
