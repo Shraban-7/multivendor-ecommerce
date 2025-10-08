@@ -102,38 +102,49 @@ class OrderController extends Controller
         }
 
         $sub_total = 0;
+        $total = 0;
         $discount = 0;
         $vat_amount = 0;
         $orderItems = [];
         $shipping_fee = $seller->shipping_cost;
 
-        $payment_type = PaymentType::COD_ONLY->value;
+        // $payment_type = PaymentType::COD_ONLY->value;
 
         foreach ($cart->cart_items as $cartItem) {
             $product = $cartItem->product;
             $variant = $cartItem->variant;
             $unitPrice = $cartItem->price;
+            $itemSubtotal = $cartItem->quantity * $variant->selling_price;
             $itemTotal = $cartItem->quantity * $unitPrice;
             $itemDiscount = $cartItem->quantity * ($cartItem->original_price - $cartItem->discounted_price);
             $vat_amount += floatval(($product->vat_percent * $unitPrice) / 100) * $cartItem->quantity;
-            $sub_total += $itemTotal;
+            $sub_total += $itemSubtotal;
+            $total += $itemTotal;
             $discount += $itemDiscount;
             $grand_total = $sub_total + $discount;
 
-            if ($product->payment_type->value == PaymentType::FULL_PAYMENT->value) {
-                $payment_type = PaymentType::FULL_PAYMENT->value;
-            } elseif ($product->payment_type->value == PaymentType::COD_WITH_DELIVERY_CHARGE->value) {
-                $payment_type = PaymentType::COD_WITH_DELIVERY_CHARGE->value;
-            }
+            // if ($product->payment_type->value == PaymentType::FULL_PAYMENT->value) {
+            //     $payment_type = PaymentType::FULL_PAYMENT->value;
+            // } elseif ($product->payment_type->value == PaymentType::COD_WITH_DELIVERY_CHARGE->value) {
+            //     $payment_type = PaymentType::COD_WITH_DELIVERY_CHARGE->value;
+            // }
+
+            $payment_type = Order::getPaymentType($product);
+
 
             $orderItems[] = [
                 'product_id' => $product->id,
                 'product_variant_id' => $cartItem->product_variant_id ?? null,
+                'sku' => $variant->sku,
+                'product_name' => $product->name,
+                'variant_name' => $variant->fullName,
                 'buying_price' => $variant ? $variant->buying_price : $product->buying_price,
+                'selling_price' => $variant->selling_price,
                 'unit_price' => $cartItem->price,
                 'quantity' => $cartItem->quantity,
                 'discount' => $itemDiscount,
-                'sub_total' => $itemTotal,
+                'sub_total' => $itemSubtotal+$itemDiscount,
+                'total' => $itemTotal,
                 'vat_percent' => $product->vat_percent,
                 'vat_amount' => floatval(($product->vat_percent * $unitPrice) / 100) * $cartItem->quantity,
             ];
@@ -147,7 +158,7 @@ class OrderController extends Controller
                 ->latest()
                 ->get();
 
-            return view('frontend.pages.checkout', compact('user', 'selectedSellerId', 'sub_total', 'discount', 'vat_amount', 'shipping_fee', 'payment_gateways', 'grand_total', 'divisions', 'districts', 'billingAddresses'));
+            return view('frontend.pages.checkout', compact('user', 'selectedSellerId', 'sub_total', 'discount', 'vat_amount', 'shipping_fee', 'payment_gateways', 'grand_total', 'divisions', 'districts', 'billingAddresses','total'));
         }
 
         $billingData = collect($validated)->except('seller_id')->toArray();
@@ -166,19 +177,18 @@ class OrderController extends Controller
 
         $seller = Seller::where('id', $selectedSellerId)->first();
 
-        $total_commission = 0;
+        $commissionData = $seller->calculateEarning($total, $vat_amount);
 
-        if ($seller->commission_amount != null && $seller->commission_type != null) {
-            if ($seller->commission_type === CommissionType::PERCENTAGE->value) {
-                $total_commission = ($sub_total + $vat_amount) * ($seller->commission_amount / 100);
-            } else if ($seller->commission_type === CommissionType::FLAT->value) {
-                $total_commission = $seller->commission_amount;
-            }
-        }
+        $total_commission = $commissionData['total_commission'];
+        $sellerEarning = $commissionData['seller_earning'];
 
         $invoiceId = Order::generateInvoiceID($selectedSellerId);
-        $payableAmount = $sub_total + $shipping_fee + $vat_amount;
-        $sellerEarning = $sub_total + $vat_amount - $total_commission;
+        $payableAmount = $total + $shipping_fee + $vat_amount;
+
+        $payment = Order::calculatePaymentAmounts($product, $payableAmount, $shipping_fee);
+
+        $paid_amount = $payment['paid'];
+        $due_amount  = $payment['due'];
 
         $order = Order::create([
             'user_id' => $user->id,
@@ -187,12 +197,13 @@ class OrderController extends Controller
             'billing_information' => json_encode($billingAddressArray),
             'invoice_id' => $invoiceId,
             'sub_total' => $sub_total,
-            'total' => $sub_total + $vat_amount + $shipping_fee,
+            'total' => $total,
             'discount' => $discount,
             'vat_amount' => $vat_amount,
             'shipping_fee' => $shipping_fee,
             'payable' => $payableAmount,
-            'due' => $payableAmount,
+            'paid' => $paid_amount,
+            'due' => $due_amount,
             'commission_type' => $seller->commission_type,
             'commission_amount' => $seller->commission_amount,
             'seller_earnings' => $sellerEarning,
@@ -321,7 +332,6 @@ class OrderController extends Controller
 
     private function initiatePaymentGateway(Request $request, $invoiceId, $amount, $billingAddressId)
     {
-
         $user = Auth::user();
         $billingInformation = BillingAddress::find($billingAddressId);
         $customerName  = $billingInformation->customer_name;

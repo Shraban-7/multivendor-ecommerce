@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Enums\CommissionType;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Seller extends Authenticatable
 {
@@ -82,5 +83,25 @@ class Seller extends Authenticatable
     public function categories()
     {
         return $this->belongsToMany(Category::class);
+    }
+
+    public function calculateEarning($total, $vat_amount)
+    {
+        $total_commission = 0;
+
+        if ($this->commission_amount !== null && $this->commission_type !== null) {
+            if ($this->commission_type === CommissionType::PERCENTAGE->value) {
+                $total_commission = ($total + $vat_amount) * ($this->commission_amount / 100);
+            } elseif ($this->commission_type === CommissionType::FLAT->value) {
+                $total_commission = $this->commission_amount;
+            }
+        }
+
+        $sellerEarning = ($total + $vat_amount) - $total_commission;
+
+        return [
+            'total_commission' => $total_commission,
+            'seller_earning' => $sellerEarning,
+        ];
     }
 }

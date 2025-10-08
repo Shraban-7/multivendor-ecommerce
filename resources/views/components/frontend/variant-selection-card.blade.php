@@ -34,10 +34,7 @@
 
         <div class="flex items-center gap-2 text-sm text-gray-600">
             <span>Stock: <span class="stock-text">{{ $defaultVariant['stock'] ?? '' }}</span></span>
-
-            @if (!empty($product['almost_sold_out']))
-                <span class="text-xs text-muted font-medium">(Almost Sold Out)</span>
-            @endif
+            {{-- <span class="text-xs text-muted font-medium almost-sold-out hidden">(Almost Sold Out)</span> --}}
         </div>
 
         <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-start">

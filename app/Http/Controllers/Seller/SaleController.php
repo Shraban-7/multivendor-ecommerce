@@ -7,6 +7,7 @@ use App\Models\Seller;
 use App\Models\PosCart;
 use App\Models\Customer;
 use App\Models\OrderItem;
+use App\Enums\OrderStatus;
 use Illuminate\Http\Request;
 use App\Models\ProductVariant;
 use App\Http\Controllers\Controller;
@@ -62,6 +63,10 @@ class SaleController extends Controller
             ->where('seller_id', $seller->id)
             ->with('items.variant.product')
             ->first();
+
+        $oldCommission = $order->total_commission;
+
+        // dd(($order));
 
         if (!$order) return errorResponse("Order not found!");
 
@@ -146,6 +151,11 @@ class SaleController extends Controller
 
         $payable = ($combinedSubTotal + $combinedVat) - $combinedDiscount;
 
+        $commissionData = $seller->calculateEarning($payable, $combinedVat);
+
+        $total_commission = $commissionData['total_commission'];
+        $sellerEarning = $commissionData['seller_earning'];
+
         $paid = ($data['paid'] ?? 0);
         $due = max(0, $payable - $paid);
 
@@ -157,10 +167,21 @@ class SaleController extends Controller
             'total' => $payable,
             'paid' => $paid,
             'due' => $due,
+            'total_commission' => $total_commission,
+            'seller_earnings' => $sellerEarning,
+            'status' => OrderStatus::DELIVERED->value,
+            'seller_earning_added' => 0
         ]);
+
+        $newCommission = $order->total_commission;
+
+        $commission = $newCommission - $oldCommission;
+
 
         $cart?->items()->delete();
         $cart?->delete();
+        // dd($commission);
+        $order->addSellerEarningToBalance($commission);
 
         $html = view('components.seller.pos-order-items', [
             'orderItems' => $order->items()->with('variant.product')->get(),

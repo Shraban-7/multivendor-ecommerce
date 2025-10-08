@@ -114,4 +114,70 @@ class Order extends Model
 
         return $invoiceId;
     }
+
+    public static function getPaymentType($product)
+    {
+        if (!$product || !$product->payment_type) {
+            return PaymentType::COD_ONLY->value;
+        }
+
+        return match ($product->payment_type->value) {
+            PaymentType::FULL_PAYMENT->value => PaymentType::FULL_PAYMENT->value,
+            PaymentType::COD_WITH_DELIVERY_CHARGE->value => PaymentType::COD_WITH_DELIVERY_CHARGE->value,
+            default => PaymentType::COD_ONLY->value,
+        };
+    }
+
+    public static function calculatePaymentAmounts($product, $payable, $shipping_fee = 0)
+    {
+        $payment_type = self::getPaymentType($product);
+
+        if ($payment_type === PaymentType::FULL_PAYMENT->value) {
+            return [
+                'paid' => $payable,
+                'due'  => 0,
+            ];
+        } elseif ($payment_type === PaymentType::COD_WITH_DELIVERY_CHARGE->value) {
+            return [
+                'paid' => $shipping_fee,
+                'due'  => $payable - $shipping_fee,
+            ];
+        } else {
+            return [
+                'paid' => 0,
+                'due'  => $payable,
+            ];
+        }
+    }
+
+    public  function addSellerEarningToBalance($commission = 0)
+    {
+        if ($this->status->value != OrderStatus::DELIVERED->value || $this->seller_earning_added ?? false) {
+            return;
+        }
+
+        if (empty($this->seller_id) || empty($this->seller_earnings)) {
+            return false;
+        }
+
+        $seller = Seller::find($this->seller_id);
+        if (!$seller) {
+            return false;
+        }
+
+        if($this->user_id != null)
+        {
+            $seller->balance = $seller->balance + $this->seller_earnings;
+        }
+        else{
+            $seller->balance = $seller->balance - $commission;
+        }
+
+        $seller->save();
+
+        $this->seller_earning_added = true;
+        $this->save();
+
+        return true;
+    }
 }

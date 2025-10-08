@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Seller;
 
-use App\Enums\OrderStatus;
-use App\Http\Controllers\Controller;
-use App\Models\AffiliateCommission;
-use App\Models\Order;
 use App\Models\User;
+use App\Models\Order;
+use App\Models\Seller;
+use App\Enums\OrderStatus;
 use Illuminate\Http\Request;
+use App\Models\AffiliateCommission;
+use App\Http\Controllers\Controller;
 
 class OrderController extends Controller
 {
@@ -67,25 +68,32 @@ class OrderController extends Controller
 
     public function updateStatus(Order $order, Request $request)
     {
+        if ($order->status->value == OrderStatus::DELIVERED->value) {
+            return redirect()->back()->with('error', 'Delivered orders cannot be updated.');
+        }
+
         $order->update([
             'status'          => $request->status,
             'delivery_status' => $request->delivery_status ?? $order->delivery_status,
         ]);
 
-        if ($order->status == OrderStatus::DELIVERED) {
+        $order->addSellerEarningToBalance();
+        if ($order->status->value == OrderStatus::DELIVERED->value) {
+
             $affiliate_commission = AffiliateCommission::where('order_id', $order->id)->first();
+            if ($affiliate_commission && $affiliate_commission->status != AffiliateCommission::APPROVED) {
+                $affiliate_commission->status = AffiliateCommission::APPROVED;
+                $affiliate_commission->save();
 
-            $affiliate_commission->status = AffiliateCommission::APPROVED;
-            $affiliate_commission->save();
-            if ($affiliate_commission->status == AffiliateCommission::APPROVED) {
                 $user = User::find($affiliate_commission->affiliate_id);
-
-                $user->balance += $affiliate_commission->commission_amount;
-                $user->save();
+                if ($user) {
+                    $user->balance += $affiliate_commission->commission_amount;
+                    $user->save();
+                }
             }
         }
 
-        return redirect()->back()->with('success', 'Order update successfully');
+        return redirect()->back()->with('success', 'Order updated successfully');
     }
 
 

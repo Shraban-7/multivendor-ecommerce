@@ -421,6 +421,9 @@ class PosController extends Controller
 
         $seller->update(['total_sold' => $sellerOrderCount]);
 
+        $order->update(['status' => OrderStatus::DELIVERED->value]);
+        $order->addSellerEarningToBalance();
+
         if (!empty($data['customer_name']) || !empty($data['customer_phone'])) {
 
             $exist_customer = Customer::where('name', $data['customer_name'] ?? null)
