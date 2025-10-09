@@ -27,7 +27,7 @@
                 </div>
                 
                 <div class="mb-6">
-                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+                    <h1 class="text-xl sm:text-3xl font-bold text-gray-900 mb-2">
                         Welcome back
                     </h1>
                     <p class="text-sm sm:text-base text-gray-600">
@@ -114,7 +114,7 @@
                     </button>
                 </form>
 
-                <div class="flex items-center my-6">
+                <div class="flex items-center my-5">
                     <div class="flex-1 border-t border-gray-300"></div>
                     <span class="px-4 text-xs text-gray-500 font-medium">OR</span>
                     <div class="flex-1 border-t border-gray-300"></div>
