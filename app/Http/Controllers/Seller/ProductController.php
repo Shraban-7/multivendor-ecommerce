@@ -419,6 +419,7 @@ class ProductController extends Controller
         $data = [
             'sellerName' => $variant->product->seller->business_name,
             'productName' => $variant->product->name,
+            'variantName' => $variant->fullName,
             'sku' => $variant->sku,
             'price' => money($price),
             'quantity' => $request->quantity,
