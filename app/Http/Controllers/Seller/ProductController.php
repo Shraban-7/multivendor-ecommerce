@@ -20,9 +20,11 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::where('seller_id', get_seller_id())->latest('id')->get();
         $categories = Category::category()->with('subcategories')->get();
+        
         $brands = Brand::all();
+
+        $products = Product::with('variants.option_values', 'unit')->where('seller_id', get_seller_id())->latest('id')->get();
 
         return view('seller.products.index', compact('products', 'categories', 'brands'));
     }
