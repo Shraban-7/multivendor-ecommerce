@@ -12,6 +12,7 @@ Route::middleware('guest')->group(function () {
     Route::match(['get', 'post'], '/verify', [AuthController::class, 'verify'])->name('verify');
     Route::match(['get', 'post'], '/forgot-password', [AuthController::class, 'forgotPassword'])->name('password.forgot');
     Route::match(['get', 'post'], '/reset-password', [AuthController::class, 'resetPassword'])->name('password.reset');
+    Route::post('/verify/resend', [AuthController::class, 'resendVerification'])->name('verify.resend');
 });
 
 Route::middleware('auth')->group(function () {

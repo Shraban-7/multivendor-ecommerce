@@ -238,6 +238,7 @@ class AuthController extends Controller
 
     public function verify(Request $request)
     {
+        $settings = settings();
         $email = $request->session()->get('verify_email');
 
         if (!$email) {
@@ -246,6 +247,18 @@ class AuthController extends Controller
 
         $user = User::where('email', $email)->first();
 
+        $recent = VerificationCode::where('email', $email)
+            ->where('type', 'email_verification')
+            ->latest()
+            ->first();
+
+        $resendSeconds = 0;
+        if ($recent) {
+            $expiresAt = $recent->created_at->addMinutes(2);
+            $diff = $expiresAt->diffInSeconds(now(), false);
+            $resendSeconds = $diff > 0 ? $diff : 0;
+        }
+
         if ($user && $user->email_verified_at) {
             $request->session()->forget('verify_email');
 
@@ -253,8 +266,7 @@ class AuthController extends Controller
         }
 
         if ($request->isMethod('GET')) {
-            $settings = settings();
-            return view('frontend.auth.verify', compact('settings', 'email'));
+            return view('frontend.auth.verify', compact('settings', 'email', 'resendSeconds'));
         }
 
         $request->validate([
@@ -278,5 +290,45 @@ class AuthController extends Controller
         $request->session()->forget('verify_email');
 
         return redirect()->route('login')->with('success', 'Your account has been verified successfully!');
+    }
+
+    public function resendVerification(Request $request)
+    {
+        $email = $request->session()->get('verify_email') ?? $request->email;
+
+        if (!$email) {
+            return errorResponse('Email not found. Please sign up first.');
+        }
+
+        $user = User::where('email', $email)->first();
+        if (!$user) {
+            return errorResponse('No account found with this email.');
+        }
+
+        $lastSent = $request->session()->get('last_resend_time', null);
+        $secondsPassed = $lastSent ? now()->diffInSeconds($lastSent) : 999;
+
+        if ($secondsPassed < 120) {
+            return apiResponse(['resend_seconds' => 120 - $secondsPassed], 'Please wait before requesting a new code.', 429);
+        }
+
+        VerificationCode::where('user_id', $user->id)
+            ->where('type', 'email_verification')
+            ->whereNull('used_at')
+            ->delete();
+
+        $code = VerificationCode::generateCode();
+
+        VerificationCode::create([
+            'user_id' => $user->id,
+            'email' => $email,
+            'code' => $code,
+            'type' => 'email_verification',
+            'expires_at' => Carbon::now()->addMinutes(10),
+        ]);
+
+        $request->session()->put('last_resend_time', now());
+
+        return apiResponse(["resend_seconds" => 120], 'A new verification code has been sent to your email.');
     }
 }
