@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Models\VerificationCode;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -45,7 +46,7 @@ class AuthController extends Controller
             'email'      => $user->email,
             'phone'      => $user->phone,
             'code'       => $code,
-            'type'       => 'email_verification',
+            'type'       => VerificationCode::EMAIL_VERIFICATION,
             'expires_at' => Carbon::now()->addMinutes(10),
         ]);
 
@@ -153,6 +154,86 @@ class AuthController extends Controller
         }
 
         return redirect()->route('login');
+    }
+
+    public function forgotPassword(Request $request)
+    {
+        $settings = settings();
+
+        if ($request->isMethod('GET')) {
+            return view('frontend.auth.forgot-password', compact('settings'));
+        }
+
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        $email = $request->email;
+
+        $user = User::where('email', $email)->first();;
+
+        if (is_null($user)) {
+            return back()->with('error', 'No account found with this email.')->withInput();
+        }
+
+        $code = VerificationCode::generateCode();
+
+        VerificationCode::create([
+            'user_id' => $user->id,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'code' => $code,
+            'type' => VerificationCode::PASSWORD_RESET,
+            'expires_at' => Carbon::now()->addMinutes(10),
+        ]);
+
+        $request->session()->put('reset_email', $email);
+
+        return redirect()->route('password.reset')->with('success', 'Verification code sent to your email.');
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $settings = settings();
+        $email = $request->session()->get('reset_email');
+
+        if (!$email) {
+            return redirect()->route('password.forgot')->with('info', 'Please enter your email first.');
+        }
+
+        $user = User::where('email', $email)->first();
+
+        if ($request->isMethod('GET')) {
+            return view('frontend.auth.reset-password', compact('email', 'settings'));
+        }
+
+        $request->validate([
+            'code' => 'required|string|max:6',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+
+        $verification = VerificationCode::where('email', $email)
+            ->where('user_id', $user->id)
+            ->where('code', strtoupper($request->code))
+            ->where('type', 'password_reset')
+            ->whereNull('used_at')
+            ->where('expires_at', '>', Carbon::now())
+            ->first();
+
+        if (!$verification) {
+            return back()->withErrors(['code' => 'Invalid or expired verification code.']);
+        }
+
+        $verification->update(['used_at' => now()]);
+
+
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        $request->session()->forget('reset_email');
+
+        return redirect()->route('login')->with('success', 'Password reset successfully!');
     }
 
     public function verify(Request $request)

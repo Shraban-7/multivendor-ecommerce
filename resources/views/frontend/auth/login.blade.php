@@ -75,7 +75,7 @@
                                 class="h-3 w-3 sm:h-4 sm:w-4 md:h-4 md:w-4 text-yellow-500 focus:ring-yellow-400 border-gray-300 rounded" />
                             <span class="text-xs sm:text-sm md:text-sm">Remember Me</span>
                         </label>
-                        <a href="#" class="text-yellow-600 hover:underline text-xs sm:text-sm md:text-sm">Forgot
+                        <a href="{{ route('password.forgot') }}" class="text-yellow-600 hover:underline text-xs sm:text-sm md:text-sm">Forgot
                             Password?</a>
                     </div>
                     <button type="submit"
