@@ -16,6 +16,7 @@
                             @foreach ($product->variants as $variant)
                             <option value="{{ $variant->id }}"
                                 data-name="{{ $product->name }}"
+                                data-variant="{{ $variant->fullName }}"
                                 data-sellingprice="{{ $variant->selling_price }}"
                                 data-discountedprice="{{ $variant->discounted_price }}"
                                 data-stock="{{ $variant->availableStock }}"
@@ -30,6 +31,7 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">Name</label>
                         <input type="text" id="name" class="form-control" readonly>
+                        <input type="text" id="variant" class="form-control" readonly>
                     </div>
 
                     <div class="row">
@@ -79,6 +81,7 @@
     document.addEventListener('DOMContentLoaded', () => {
         const productSelect = document.getElementById('product');
         const nameInput = document.getElementById('name');
+        const variantInput = document.getElementById('variant');
         const skuInput = document.getElementById('sku');
         const priceInput = document.getElementById('price');
         const qtyInput = document.getElementById('qty');
@@ -90,6 +93,7 @@
             const opt = selectedOption ? $(selectedOption) : null;
             if (opt) {
                 nameInput.value = opt.data('name');
+                variantInput.value = opt.data('variant');
                 skuInput.value = opt.data('sku');
                 //const price = opt.data('discountedprice') && opt.data('discountedprice') !== '0' ? opt.data('discountedprice') : opt.data('sellingprice');
                 const price = opt.data('sellingprice');
@@ -104,6 +108,7 @@
             const sku = skuInput.value;
             const name = nameInput.value;
             const price = priceInput.value;
+            const variant = variantInput.value;
 
             if (!qty || qty === 0) qty = 5;
 
@@ -113,7 +118,8 @@
                 wrap.style.width = '200px';
                 wrap.innerHTML = `
                     <div class="small fw-bold">${sellerName}</div>
-                    <div style="font-size:12px;">${name}</div>
+                    <div style="font-size:7pt;">${name}</div>
+                    <div style="font-size:6pt;">${variant}</div>
                     <svg class="barcode"
                         jsbarcode-value="${sku}"
                         jsbarcode-width="1.2"

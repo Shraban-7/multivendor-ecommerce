@@ -14,14 +14,12 @@
         .label-container {
             width: 50mm;
             height: 25mm;
-            /* Adjust padding for better alignment */
             padding: 1.5mm 3mm;
             border: 1px dashed #aaa;
             box-sizing: border-box;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            /* This is the key for vertical alignment */
             justify-content: space-between;
             align-items: center;
             margin: 0 auto 10px auto;
@@ -41,6 +39,10 @@
 
         .text-sm {
             font-size: 7pt;
+        }
+
+        .text-xs {
+            font-size: 5pt;
         }
 
         .fw-bold {
@@ -113,13 +115,12 @@
             printBarcodes();
         });
 
-        //window.addEventListener('afterprint', () => window.close());
-
         function printBarcodes() {
             const sellerName = "{{ $data['sellerName'] }}";
             const productName = "{{ $data['productName'] }}";
             const price = "{{ $data['price'] }}";
             const barcodeData = "{{ $data['sku'] }}";
+            const variantName = "{{ $data['variantName'] }}"; // New variant name data
             const labelCount = parseInt("{{ $data['quantity'] }}");
             const printArea = document.getElementById("print-area");
 
@@ -137,6 +138,12 @@
                 nameElement.className = "label-text fw-normal text-sm";
                 nameElement.textContent = productName;
 
+                const variantElement = document.createElement("div");
+                variantElement.className = "label-text fw-normal text-xs";
+                if (variantName) {
+                    variantElement.textContent = variantName;
+                }
+
                 const priceElement = document.createElement("div");
                 priceElement.className = "label-text fw-bold text-lg";
                 priceElement.textContent = 'Price: ' + price;
@@ -147,6 +154,11 @@
 
                 labelContainer.appendChild(sellerNameElement);
                 labelContainer.appendChild(nameElement);
+
+                if (variantName) {
+                    labelContainer.appendChild(variantElement);
+                }
+
                 labelContainer.appendChild(barcodeElement);
                 labelContainer.appendChild(priceElement);
                 printArea.appendChild(labelContainer);
