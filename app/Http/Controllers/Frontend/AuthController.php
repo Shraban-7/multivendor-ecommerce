@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Enums\UserRole;
-use App\Http\Controllers\Controller;
-use App\Models\Country;
-use App\Models\District;
-use App\Models\Division;
-use App\Models\Seller;
+use Carbon\Carbon;
 use App\Models\User;
+use App\Models\Seller;
+use App\Enums\UserRole;
+use App\Models\Division;
 use Illuminate\Http\Request;
+use App\Models\VerificationCode;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -30,15 +29,30 @@ class AuthController extends Controller
 
         $data['username'] = str_slug('users', 'username', $data['name']);
 
+
         if ($request->has('role') && $request->role === UserRole::AFFILIATE->label()) {
             $data['role'] = UserRole::AFFILIATE->value;
         } else {
-            $data['role'] = UserRole::CUSTOMER;
+            $data['role'] = UserRole::CUSTOMER->value;
         }
 
-        User::create($data);
+        $user = User::create($data);
 
-        return redirect()->route('login')->with('success', 'Signup successful! Please log in.');
+        $code = VerificationCode::generateCode();
+
+        VerificationCode::create([
+            'user_id'    => $user->id,
+            'email'      => $user->email,
+            'phone'      => $user->phone,
+            'code'       => $code,
+            'type'       => 'email_verification',
+            'expires_at' => Carbon::now()->addMinutes(10),
+        ]);
+
+        $request->session()->put('verify_email', $user->email);
+
+        return redirect()->route('verify')
+            ->with('success', 'Signup successful! Please check your email for a verification code.');
     }
 
     public function sellerSignup(Request $request)
@@ -124,8 +138,6 @@ class AuthController extends Controller
         return errorResponse('Invalid step');
     }
 
-
-
     public function logout(Request $request)
     {
         if (Auth::guard('seller')->check()) {
@@ -141,5 +153,49 @@ class AuthController extends Controller
         }
 
         return redirect()->route('login');
+    }
+
+    public function verify(Request $request)
+    {
+        $email = $request->session()->get('verify_email');
+
+        if (!$email) {
+            return redirect()->route('login')->with('info', 'Please register first.');
+        }
+
+        $user = User::where('email', $email)->first();
+
+        if ($user && $user->email_verified_at) {
+            $request->session()->forget('verify_email');
+
+            return redirect()->route('login')->with('success', 'Your account is already verified. Please login.');
+        }
+
+        if ($request->isMethod('GET')) {
+            $settings = settings();
+            return view('frontend.auth.verify', compact('settings', 'email'));
+        }
+
+        $request->validate([
+            'code' => 'required|string|max:6',
+        ]);
+
+        $verification = VerificationCode::where('email', $email)
+            ->where('code', strtoupper($request->code))
+            ->whereNull('used_at')
+            ->where('expires_at', '>', Carbon::now())
+            ->first();
+
+        if (!$verification) {
+            return back()->withErrors(['code' => 'Invalid or expired verification code.']);
+        }
+
+        $verification->update(['used_at' => now()]);
+
+        $user->update(['email_verified_at' => now()]);
+
+        $request->session()->forget('verify_email');
+
+        return redirect()->route('login')->with('success', 'Your account has been verified successfully!');
     }
 }

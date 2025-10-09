@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('verification_codes', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('user_id')->nullable();
             $table->string('email')->nullable();
             $table->string('phone')->nullable();

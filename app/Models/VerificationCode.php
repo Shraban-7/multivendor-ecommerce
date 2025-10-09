@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class VerificationCode extends Model
 {
@@ -13,4 +14,14 @@ class VerificationCode extends Model
 
     const EMAIL_VERIFICATION = 'email_verification';
     const PASSWORD_RESET = 'password_reset';
+
+    public static function generateCode()
+    {
+        return strtoupper(Str::random(6));
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

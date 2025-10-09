@@ -28,7 +28,7 @@ class LoginController extends Controller
                 'model' => \App\Models\User::class,
                 'guard' => 'web',
                 'redirect' => route('home'),
-                'check' => fn($user) => true,
+                'check' => fn($user) => !is_null($user->email_verified_at),
             ],
             'seller' => [
                 'model' => \App\Models\Seller::class,
@@ -72,10 +72,6 @@ class LoginController extends Controller
                 return redirect()->back()->with('warning', $config['inactiveMessage'] ?? 'Account inactive');
             }
 
-            // if (! ($config['check'])($user)) {
-            //     return redirect()->back()->with('warning', $config['inactiveMessage'] ?? 'Account inactive');
-            // }
-
             if (! Auth::guard($config['guard'])->attempt($credentials)) {
                 return redirect()->back()->with('error', 'Incorrect password!');
             }
@@ -90,76 +86,76 @@ class LoginController extends Controller
         return redirect()->back()->with('error', 'Incorrect email!');
     }
 
-    public function loginOld(Request $request)
-    {
-        if ($request->isMethod('GET')) {
-            return view('frontend.auth.login');
-        }
+    // public function loginOld(Request $request)
+    // {
+    //     if ($request->isMethod('GET')) {
+    //         return view('frontend.auth.login');
+    //     }
 
-        $user   = User::where('email', $request->email)->first();
-        $seller = Seller::where('email', $request->email)->first();
-        $admin  = Admin::where('email', $request->email)->first();
-        $employee = SellerEmployee::where('email', $request->email)->first();
+    //     $user   = User::where('email', $request->email)->first();
+    //     $seller = Seller::where('email', $request->email)->first();
+    //     $admin  = Admin::where('email', $request->email)->first();
+    //     $employee = SellerEmployee::where('email', $request->email)->first();
 
-        if (! $user && ! $seller && ! $admin && !$employee) {
-            return redirect()->back()->with('error', 'Incorrect email!');
-        }
+    //     if (! $user && ! $seller && ! $admin && !$employee) {
+    //         return redirect()->back()->with('error', 'Incorrect email!');
+    //     }
 
-        if ($user) {
-            session(['url.intended' => url()->previous()]);
-            if (! Auth::attempt($request->only('email', 'password'))) {
-                return redirect()->back()->with('error', 'Incorrect password!');
-            }
+    //     if ($user) {
+    //         session(['url.intended' => url()->previous()]);
+    //         if (! Auth::attempt($request->only('email', 'password'))) {
+    //             return redirect()->back()->with('error', 'Incorrect password!');
+    //         }
 
-            $request->session()->regenerate();
+    //         $request->session()->regenerate();
 
-            return redirect()->intended(route('home'));
-        }
+    //         return redirect()->intended(route('home'));
+    //     }
 
-        if ($seller) {
-            if ($seller->status == Seller::BLOCKED) {
-                return redirect()->back()->with('error', 'Your account has been blocked by admin');
-            }
-            if ($seller->status == Seller::PENDING) {
-                return redirect()->back()->with('warning', 'Wait for admin approval');
-            }
+    //     if ($seller) {
+    //         if ($seller->status == Seller::BLOCKED) {
+    //             return redirect()->back()->with('error', 'Your account has been blocked by admin');
+    //         }
+    //         if ($seller->status == Seller::PENDING) {
+    //             return redirect()->back()->with('warning', 'Wait for admin approval');
+    //         }
 
-            if (! Auth::guard('seller')->attempt($request->only('email', 'password'))) {
-                return redirect()->back()->with('error', 'Incorrect password!');
-            }
+    //         if (! Auth::guard('seller')->attempt($request->only('email', 'password'))) {
+    //             return redirect()->back()->with('error', 'Incorrect password!');
+    //         }
 
-            $request->session()->regenerate();
-            session()->flash('success', 'Login successful');
+    //         $request->session()->regenerate();
+    //         session()->flash('success', 'Login successful');
 
-            return redirect()->route('seller.dashboard')->with('success', 'You successfully login');
-        }
+    //         return redirect()->route('seller.dashboard')->with('success', 'You successfully login');
+    //     }
 
-        if ($employee) {
-            if ($employee->is_active != 1) {
-                return redirect()->back()->with('warning', 'Wait for admin approval');
-            }
+    //     if ($employee) {
+    //         if ($employee->is_active != 1) {
+    //             return redirect()->back()->with('warning', 'Wait for admin approval');
+    //         }
 
-            if (! Auth::guard('employee')->attempt($request->only('email', 'password'))) {
-                return redirect()->back()->with('error', 'Incorrect password!');
-            }
+    //         if (! Auth::guard('employee')->attempt($request->only('email', 'password'))) {
+    //             return redirect()->back()->with('error', 'Incorrect password!');
+    //         }
 
-            $request->session()->regenerate();
-            session()->flash('success', 'Login successful');
+    //         $request->session()->regenerate();
+    //         session()->flash('success', 'Login successful');
 
-            return redirect()->route('seller.pos.index')->with('success', 'You successfully login');
-        }
+    //         return redirect()->route('seller.pos.index')->with('success', 'You successfully login');
+    //     }
 
-        if ($admin) {
-            if (! Auth::guard('admin')->attempt($request->only('email', 'password'))) {
-                return redirect()->back()->with('error', 'Incorrect password!');
-            }
+    //     if ($admin) {
+    //         if (! Auth::guard('admin')->attempt($request->only('email', 'password'))) {
+    //             return redirect()->back()->with('error', 'Incorrect password!');
+    //         }
 
-            $request->session()->regenerate();
-            session()->flash('success', 'Login successful');
+    //         $request->session()->regenerate();
+    //         session()->flash('success', 'Login successful');
 
-            return redirect()->route('admin.dashboard');
-        }
+    //         return redirect()->route('admin.dashboard');
+    //     }
 
-        return redirect()->back()->with('error', 'Something went wrong.')->with('success', 'You successfully login');
-    }
+    //     return redirect()->back()->with('error', 'Something went wrong.')->with('success', 'You successfully login');
+    // }
 }
