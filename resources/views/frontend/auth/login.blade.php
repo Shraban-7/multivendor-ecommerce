@@ -22,7 +22,7 @@
                     <a href="{{ route('home') }}" class="inline-block">
                         <img src="{{ storage_url($settings->logo_white) }}"
                             alt="{{ $settings->app_name }}"
-                            class="h-20 sm:h-16 object-contain" />
+                            class="h-16 sm:h-16 object-contain" />
                     </a>
                 </div>
                 
