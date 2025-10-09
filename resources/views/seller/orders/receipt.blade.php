@@ -10,7 +10,7 @@
             font-size: 13px;
             width: 302px;
             margin: 0 auto;
-            font-weight: 500;
+            font-weight: 600;
             color: #000;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
@@ -20,13 +20,16 @@
         .center {text-align: center;}
         .line {border-top: 1px dashed #000; margin: 5px 0;}
         table {width: 100%; border-collapse: collapse;}
-        table td {padding: 2px 0; font-weight: 500;}
+        table td {
+            padding: 2px 0;
+            /* font-weight: 600; */
+        }
         h3 {margin-bottom: 5px;}
         p {margin-top: 5px; margin-bottom: 8px;}
         @media print {
             body, td, p, h3 {
                 color: #000 !important;
-                font-weight: 500 !important;
+                font-weight: 600 !important;
             }
             .bold {
                 font-weight: 700 !important;
