@@ -584,12 +584,11 @@ foreach ($categories as $cat) {
             });
 
             function addToCart(variantId, quantity, button = null) {
-                let url = orderId == 0 ? "{{ route('seller.pos.cart_add') }}" :
-                    "{{ route('seller.pos.sales.item_add') }}";
-
+                let url = orderId == 0 ? "{{ route('seller.pos.cart_add') }}" : "{{ route('seller.pos.sales.item_add') }}";
+                let btnText, spinner;
                 if (button != null) {
-                    let btnText = button.find('.btn-text');
-                    let spinner = button.find('.spinner-border');
+                    btnText = button.find('.btn-text');
+                    spinner = button.find('.spinner-border');
                     button.prop('disabled', true);
                 }
 
@@ -630,10 +629,10 @@ foreach ($categories as $cat) {
                     },
                     complete: function() {
                         if (button != null) {
-                            button.prop('disabled', false)
+                            button.prop('disabled', false);
+                            btnText.removeClass('d-none');
+                            spinner.addClass('d-none');
                         }
-                        btnText.removeClass('d-none');
-                        spinner.addClass('d-none');
                     }
                 });
             }
