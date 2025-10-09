@@ -104,13 +104,15 @@ class Order extends Model
         $date = Carbon::now()->format('ymd');
         $vendorCode = 'V' . str_pad($sellerId, 2, '0', STR_PAD_LEFT);
 
-        $latestOrder = Order::where('seller_id', $sellerId)
-            ->whereDate('created_at', Carbon::today())
-            ->latest()
-            ->first();
+        $todayOrderCount = Order::where('seller_id', $sellerId)->whereDate('created_at', Carbon::today())->count();
 
-        $sequenceNumber = $latestOrder ? str_pad(($latestOrder->id + 1), 3, '0', STR_PAD_LEFT) : '001';
-        $invoiceId = "{$orderType}-{$vendorCode}-{$date}-{$sequenceNumber}";
+        $sequenceNumber = str_pad($todayOrderCount + 1, 3, '0', STR_PAD_LEFT);
+
+        if ($orderType == self::ORDER_TYPE_CUSTOMER) {
+            $invoiceId = "{$orderType}-{$vendorCode}-{$date}-{$sequenceNumber}";
+        } else {
+            $invoiceId = "{$orderType}{$date}-{$sequenceNumber}";
+        }
 
         return $invoiceId;
     }
@@ -165,11 +167,9 @@ class Order extends Model
             return false;
         }
 
-        if($this->user_id != null)
-        {
+        if ($this->user_id != null) {
             $seller->balance = $seller->balance + $this->seller_earnings;
-        }
-        else{
+        } else {
             $seller->balance = $seller->balance - $commission;
         }
 
