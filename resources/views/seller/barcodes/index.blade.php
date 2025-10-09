@@ -28,13 +28,16 @@
                         </select>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Name</label>
-                        <input type="text" id="name" class="form-control" readonly>
-                        <input type="text" id="variant" class="form-control" readonly>
-                    </div>
-
                     <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Name</label>
+                            <input type="text" id="name" class="form-control" readonly>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Variant</label>
+                            <input type="text" id="variant" class="form-control" readonly>
+                        </div>
+
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">SKU</label>
                             <input type="text" id="sku" class="form-control" readonly>
