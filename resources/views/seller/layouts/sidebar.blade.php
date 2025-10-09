@@ -1,5 +1,4 @@
 <?php
-$settings = settings();
 $seller = seller();
 $employee = employee();
 $route = request()->route()->getName();

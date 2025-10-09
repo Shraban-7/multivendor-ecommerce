@@ -1,3 +1,5 @@
+<?php $notificationCount = notificationCount(); ?>
+
 <nav class="navbar-classic navbar navbar-expand-lg">
     <a id="nav-toggle" href="#"><i data-feather="menu" class="nav-icon me-2 icon-xs"></i></a>
     <div class="ms-lg-3 d-none d-md-none d-lg-block">
@@ -16,10 +18,10 @@
             <a class="indicator indicator-primary text-muted position-relative"
                 href="{{ route('seller.notifications.index') }}">
                 <i class="icon-xs" data-feather="bell"></i>
-                @if (notificationCount() > 0)
+                @if ($notificationCount > 0)
                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
                         style="font-size: 10px;">
-                        {{ notificationCount() }}
+                        {{$notificationCount }}
                     </span>
                 @endif
             </a>
