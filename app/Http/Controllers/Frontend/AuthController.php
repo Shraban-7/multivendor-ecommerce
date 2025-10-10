@@ -189,7 +189,7 @@ class AuthController extends Controller
 
         $request->session()->put('reset_email', $email);
 
-        return redirect()->route('password.reset')->with('success', 'Verification code sent to your email.');
+        return redirect()->route('password.reset');
     }
 
     public function resetPassword(Request $request)
@@ -201,31 +201,29 @@ class AuthController extends Controller
             return redirect()->route('password.forgot')->with('info', 'Please enter your email first.');
         }
 
-        $user = User::where('email', $email)->first();
-
         if ($request->isMethod('GET')) {
             return view('frontend.auth.reset-password', compact('email', 'settings'));
         }
 
         $request->validate([
-            'code' => 'required|string|max:6',
+            'verification_code' => 'required|string|max:6',
             'password' => 'required|string|min:6|confirmed',
         ]);
 
         $verification = VerificationCode::where('email', $email)
-            ->where('user_id', $user->id)
-            ->where('code', strtoupper($request->code))
+            ->where('code', $request->verification_code)
             ->where('type', 'password_reset')
             ->whereNull('used_at')
             ->where('expires_at', '>', Carbon::now())
             ->first();
 
         if (!$verification) {
-            return back()->withErrors(['code' => 'Invalid or expired verification code.']);
+            return redirect()->back()->with('error', 'Invalid or expired verification code.');
         }
 
         $verification->update(['used_at' => now()]);
 
+        $user = User::where('email', $email)->first();
 
         $user->update([
             'password' => Hash::make($request->password),
@@ -274,7 +272,7 @@ class AuthController extends Controller
         ]);
 
         $verification = VerificationCode::where('email', $email)
-            ->where('code', strtoupper($request->code))
+            ->where('code', $request->code)
             ->whereNull('used_at')
             ->where('expires_at', '>', Carbon::now())
             ->first();

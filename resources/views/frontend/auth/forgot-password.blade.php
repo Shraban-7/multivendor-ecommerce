@@ -1,43 +1,26 @@
 @extends('frontend.layouts.app')
 @section('title', 'Verify Account | ' . $settings->app_name)
 @section('content')
-    <main class="min-h-full bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div class="w-full max-w-md space-y-8">
-            <!-- Card Container -->
-            <div class="bg-white shadow-xl rounded-2xl border border-gray-200 p-8 sm:p-10">
-                <!-- Header -->
-                <div class="text-center space-y-3 mb-6">
-                    <a href="{{ route('home') }}">
-                        <img src="{{ storage_url($settings->logo_white) }}" alt="Logo"
-                            class="mx-auto h-12 sm:h-16 object-contain" />
-                    </a>
-                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">
-                        Verify Your Account
-                    </h1>
-                    <p class="text-gray-500 text-sm sm:text-base">
-                        Enter the 6-character verification code sent to your email.
-                    </p>
-                </div>
 
-                <!-- Verification Form -->
-                <form action="{{ route('password.forgot') }}" method="POST" class="space-y-4">
-                    @csrf
-                    <div>
-                        <label>Email</label>
-                        <input type="email" name="email" required class="w-full px-4 py-2 border rounded">
-                    </div>
-                    <button type="submit" class="w-full py-2 bg-yellow-500 text-white rounded hover:bg-yellow-400">
-                        Send Verification Code
-                    </button>
-                </form>
+<div class="max-w-md mx-auto mt-10 bg-white rounded-lg shadow-lg p-6">
+    <h2 class="text-2xl font-bold text-orange-600 mb-4">Forgot your password?</h2>
+    <p class="text-sm text-gray-600 mb-6">Enter your email address and we'll send you a link to reset your password.</p>
 
-                <!-- Footer -->
-                <div class="text-center text-sm text-gray-500 mt-6">
-                    <a href="{{ route('login') }}" class="text-yellow-600 font-medium hover:underline">
-                        Back to Login
-                    </a>
-                </div>
-            </div>
+    <form action="{{ route('password.forgot') }}" method="POST">
+        @CSRF
+        <div class="mb-4">
+            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email address</label>
+            <input type="email" id="email" name="email" required
+                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent">
         </div>
-    </main>
+
+        <button type="submit"
+            class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-2 px-4 rounded-md transition">
+            Send Verification Code
+        </button>
+
+        <x-frontend.flash-message/>
+    </form>
+</div>
+
 @endsection

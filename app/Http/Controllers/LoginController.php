@@ -28,7 +28,8 @@ class LoginController extends Controller
                 'model' => \App\Models\User::class,
                 'guard' => 'web',
                 'redirect' => route('home'),
-                'check' => fn($user) => !is_null($user->email_verified_at),
+                //'check' => fn($user) => !is_null($user->email_verified_at),
+                'check' => fn($user) => true
             ],
             'seller' => [
                 'model' => \App\Models\Seller::class,

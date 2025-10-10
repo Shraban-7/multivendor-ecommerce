@@ -1,54 +1,45 @@
 @extends('frontend.layouts.app')
 @section('title', 'Verify Account | ' . $settings->app_name)
 @section('content')
-    <main class="min-h-full bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div class="w-full max-w-md space-y-8">
-            <!-- Card Container -->
-            <div class="bg-white shadow-xl rounded-2xl border border-gray-200 p-8 sm:p-10">
-                <!-- Header -->
-                <div class="text-center space-y-3 mb-6">
-                    <a href="{{ route('home') }}">
-                        <img src="{{ storage_url($settings->logo_white) }}" alt="Logo"
-                            class="mx-auto h-12 sm:h-16 object-contain" />
-                    </a>
-                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">
-                        Verify Your Account
-                    </h1>
-                    <p class="text-gray-500 text-sm sm:text-base">
-                        Enter the 6-character verification code sent to your email.
-                    </p>
-                </div>
 
-                <!-- Verification Form -->
-                <form action="{{ route('password.reset') }}" method="POST" class="space-y-4">
-                    @csrf
-                    <input type="hidden" name="email" value="{{ $email }}">
-                    <div>
-                        <label>Verification Code</label>
-                        <input type="text" name="code" maxlength="6" required
-                            class="w-full px-4 py-2 border rounded uppercase text-center tracking-widest">
-                    </div>
-                    <div>
-                        <label>New Password</label>
-                        <input type="password" name="password" required class="w-full px-4 py-2 border rounded">
-                    </div>
-                    <div>
-                        <label>Confirm Password</label>
-                        <input type="password" name="password_confirmation" required
-                            class="w-full px-4 py-2 border rounded">
-                    </div>
-                    <button type="submit" class="w-full py-2 bg-yellow-500 text-white rounded hover:bg-yellow-400">Reset
-                        Password</button>
-                </form>
+<div class="max-w-md mx-auto mt-10 bg-white rounded-lg shadow-lg p-6">
+    <h2 class="text-2xl font-bold text-orange-600 mb-4">Reset Password</h2>
+    
+    <div class="mb-4 px-4 py-3 bg-yellow-100 border border-yellow-300 text-yellow-800 text-sm rounded-md">
+        A verification code was sent to: <strong>{{ $email }}</strong>
+    </div>
 
+    <p class="text-sm text-gray-600 mb-6">
+        Enter your verification code and new password below to reset your password.
+    </p>
 
-                <!-- Footer -->
-                <div class="text-center text-sm text-gray-500 mt-6">
-                    <a href="{{ route('login') }}" class="text-yellow-600 font-medium hover:underline">
-                        Back to Login
-                    </a>
-                </div>
-            </div>
+    <form action="{{ route('password.reset') }}" method="POST">
+        @csrf
+        <div class="mb-4">
+            <label for="verification_code" class="block text-sm font-medium text-gray-700 mb-1">Verification Code</label>
+            <input type="text" id="verification_code" name="verification_code" required autocomplete="one-time-code"
+                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent">
         </div>
-    </main>
+
+        <div class="mb-4">
+            <label for="password" class="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+            <input type="password" id="password" name="password" required autocomplete="new-password"
+                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent">
+        </div>
+
+        <div class="mb-6">
+            <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+            <input type="password" id="password_confirmation" name="password_confirmation" required autocomplete="new-password"
+                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent">
+        </div>
+
+        <button type="submit"
+            class="w-full bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded-md transition">
+            Reset Password
+        </button>
+
+        <x-frontend.flash-message />
+    </form>
+</div>
+
 @endsection
