@@ -221,7 +221,7 @@
                                                 Business Name <span class="text-persian-red">*</span>
                                             </label>
                                             <input required id="business_name" type="text" name="business_name"
-                                                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 
+                                                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2
                                                  focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base bg-white" />
                                         </div>
 
@@ -231,7 +231,7 @@
                                                 Business Email
                                             </label>
                                             <input id="business_email" type="email" name="business_email"
-                                                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 
+                                                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2
                                                  focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base bg-white" />
                                         </div>
                                     </div>
@@ -244,7 +244,7 @@
                                                 Division <span class="text-persian-red">*</span>
                                             </label>
                                             <select required id="division_id" name="division_id"
-                                                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 
+                                                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2
                                                      focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base bg-white">
                                                 <option value="">Select Division</option>
                                                 @foreach ($divisions as $division)
@@ -259,7 +259,7 @@
                                                 District <span class="text-persian-red">*</span>
                                             </label>
                                             <select required id="district_id" name="district_id"
-                                                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 
+                                                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2
                                                      focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base bg-white">
                                                 <option value="">Select District</option>
                                             </select>
@@ -578,7 +578,7 @@
                     let form = $('#sellerRegistrationForm')[0];
                     let formData = new FormData(form);
                     formData.append('_token', '{{ csrf_token() }}');
-                    formData.append('step', 3); 
+                    formData.append('step', 3);
 
                     let originalContent = $btn.html();
                     $btn.attr('disabled', true).html(
@@ -593,7 +593,7 @@
                         contentType: false,
                         success: function(response) {
                             $btn.attr('disabled', false).html(originalContent);
-                            window.location.href = "{{ route('login') }}";
+                            window.location.href = "{{ route('verify') }}";
                         },
                         error: function(xhr) {
                             $btn.attr('disabled', false).html(originalContent);
@@ -614,7 +614,6 @@
                         }
                     });
                 });
-
             });
         </script>
     @endpush

@@ -129,9 +129,21 @@ class AuthController extends Controller
                     }
                 }
 
-                Seller::create($allData);
+                $seller = Seller::create($allData);
 
                 session()->forget(['seller_step1', 'seller_step2']);
+
+                $code = VerificationCode::generateCode();
+
+                VerificationCode::create([
+                    'email'      => $seller->email,
+                    'phone'      => $seller->phone,
+                    'code'       => $code,
+                    'type'       => VerificationCode::EMAIL_VERIFICATION,
+                    'expires_at' => Carbon::now()->addMinutes(10),
+                ]);
+
+                $request->session()->put('verify_email', $seller->email);
 
                 return successResponse('Your registration is complete');
         }
@@ -170,27 +182,32 @@ class AuthController extends Controller
 
         $email = $request->email;
 
-        $user = User::where('email', $email)->first();;
+        $account = User::where('email', $email)->first() ?? Seller::where('email', $email)->first();
 
-        if (is_null($user)) {
+        if (!$account) {
             return back()->with('error', 'No account found with this email.')->withInput();
         }
 
         $code = VerificationCode::generateCode();
 
+        VerificationCode::where('email', $email)
+            ->where('type', VerificationCode::PASSWORD_RESET)
+            ->whereNull('used_at')
+            ->delete();
+
         VerificationCode::create([
-            'user_id' => $user->id,
-            'email' => $user->email,
-            'phone' => $user->phone,
-            'code' => $code,
-            'type' => VerificationCode::PASSWORD_RESET,
-            'expires_at' => Carbon::now()->addMinutes(10),
+            'email'      => $email,
+            'phone'      => $account->phone ?? null,
+            'code'       => $code,
+            'type'       => VerificationCode::PASSWORD_RESET,
+            'expires_at' => now()->addMinutes(10),
         ]);
 
         $request->session()->put('reset_email', $email);
 
         return redirect()->route('password.reset');
     }
+
 
     public function resetPassword(Request $request)
     {
@@ -212,20 +229,24 @@ class AuthController extends Controller
 
         $verification = VerificationCode::where('email', $email)
             ->where('code', $request->verification_code)
-            ->where('type', 'password_reset')
+            ->where('type', VerificationCode::PASSWORD_RESET)
             ->whereNull('used_at')
-            ->where('expires_at', '>', Carbon::now())
+            ->where('expires_at', '>', now())
             ->first();
 
         if (!$verification) {
-            return redirect()->back()->with('error', 'Invalid or expired verification code.');
+            return back()->with('error', 'Invalid or expired verification code.');
         }
 
         $verification->update(['used_at' => now()]);
 
-        $user = User::where('email', $email)->first();
+        $account = User::where('email', $email)->first() ?? Seller::where('email', $email)->first();
 
-        $user->update([
+        if (!$account) {
+            return redirect()->route('password.forgot')->with('error', 'Account not found.');
+        }
+
+        $account->update([
             'password' => Hash::make($request->password),
         ]);
 
@@ -233,6 +254,7 @@ class AuthController extends Controller
 
         return redirect()->route('login')->with('success', 'Password reset successfully!');
     }
+
 
     public function verify(Request $request)
     {
@@ -243,7 +265,12 @@ class AuthController extends Controller
             return redirect()->route('login')->with('info', 'Please register first.');
         }
 
-        $user = User::where('email', $email)->first();
+        $account = User::where('email', $email)->first() ?? Seller::where('email', $email)->first();
+
+        if ($account && $account->email_verified_at) {
+            $request->session()->forget('verify_email');
+            return redirect()->route('login')->with('success', 'Your account is already verified. Please login.');
+        }
 
         $recent = VerificationCode::where('email', $email)
             ->where('type', 'email_verification')
@@ -257,12 +284,6 @@ class AuthController extends Controller
             $resendSeconds = $diff > 0 ? $diff : 0;
         }
 
-        if ($user && $user->email_verified_at) {
-            $request->session()->forget('verify_email');
-
-            return redirect()->route('login')->with('success', 'Your account is already verified. Please login.');
-        }
-
         if ($request->isMethod('GET')) {
             return view('frontend.auth.verify', compact('settings', 'email', 'resendSeconds'));
         }
@@ -274,7 +295,7 @@ class AuthController extends Controller
         $verification = VerificationCode::where('email', $email)
             ->where('code', $request->code)
             ->whereNull('used_at')
-            ->where('expires_at', '>', Carbon::now())
+            ->where('expires_at', '>', now())
             ->first();
 
         if (!$verification) {
@@ -283,12 +304,15 @@ class AuthController extends Controller
 
         $verification->update(['used_at' => now()]);
 
-        $user->update(['email_verified_at' => now()]);
+        if ($account) {
+            $account->update(['email_verified_at' => now()]);
+        }
 
         $request->session()->forget('verify_email');
 
         return redirect()->route('login')->with('success', 'Your account has been verified successfully!');
     }
+
 
     public function resendVerification(Request $request)
     {
@@ -298,8 +322,9 @@ class AuthController extends Controller
             return errorResponse('Email not found. Please sign up first.');
         }
 
-        $user = User::where('email', $email)->first();
-        if (!$user) {
+        $account = User::where('email', $email)->first() ?? Seller::where('email', $email)->first();
+
+        if (!$account) {
             return errorResponse('No account found with this email.');
         }
 
@@ -310,7 +335,7 @@ class AuthController extends Controller
             return apiResponse(['resend_seconds' => 120 - $secondsPassed], 'Please wait before requesting a new code.', 429);
         }
 
-        VerificationCode::where('user_id', $user->id)
+        VerificationCode::where('email', $email)
             ->where('type', 'email_verification')
             ->whereNull('used_at')
             ->delete();
@@ -318,11 +343,10 @@ class AuthController extends Controller
         $code = VerificationCode::generateCode();
 
         VerificationCode::create([
-            'user_id' => $user->id,
-            'email' => $email,
-            'code' => $code,
-            'type' => 'email_verification',
-            'expires_at' => Carbon::now()->addMinutes(10),
+            'email'     => $email,
+            'code'      => $code,
+            'type'      => 'email_verification',
+            'expires_at' => now()->addMinutes(10),
         ]);
 
         $request->session()->put('last_resend_time', now());
