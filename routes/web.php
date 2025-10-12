@@ -6,8 +6,15 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PaymentController;
 
-Route::get('mail', function () {
-    return view('emails.welcome');
+Route::get('mails/test', function () {
+    $data['customerName'] = 'John Doe';
+    $data['orderId'] = '223';
+    $data['orderDate'] = '223';
+    $data['totalAmount'] = '223';
+    $data['items'] = [];
+    $data['trackOrderUrl'] = '';
+
+    return view('emails.test', $data);
 });
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
