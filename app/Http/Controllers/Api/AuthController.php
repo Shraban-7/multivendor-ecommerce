@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Enums\UserRole;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use App\Models\VerificationCode;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -94,13 +95,35 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 422);
+            return sendValidationError($validator->error());
         }
 
-        // Send reset code
+        $email = $request->email;
+
+        $account = User::where('email', $email)->first();
+
+        if (!$account) {
+            return errorResponse('No account found with this email.');
+        }
+
+        $code = VerificationCode::generateCode();
+
+        VerificationCode::where('email', $email)
+            ->where('type', VerificationCode::PASSWORD_RESET)
+            ->whereNull('used_at')
+            ->delete();
+
+        VerificationCode::create([
+            'email'      => $email,
+            'phone'      => $account->phone ?? null,
+            'code'       => $code,
+            'type'       => VerificationCode::PASSWORD_RESET,
+            'expires_at' => now()->addMinutes(10),
+        ]);
+
+        return successResponse('Password Reset Code Send Successfully');
     }
 
-    // Step 2: Verify Password Reset Code
     public function verifyResetCode(Request $request)
     {
         $validator = validateRequest($request, [
@@ -109,21 +132,64 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 422);
+            return sendValidationError($validator->errors());
         }
+
+        $email = $request->email;
+        $code = $request->reset_code;
+
+        $verification_code = VerificationCode::where('email', $email)
+            ->where('type', VerificationCode::PASSWORD_RESET)
+            ->whereNull('used_at')
+            ->latest()
+            ->first();
+
+        if (!$verification_code) {
+            return errorResponse('No reset code found or it has already been used.');
+        }
+
+        if ($verification_code->code !== $code) {
+            return errorResponse('Invalid reset code.');
+        }
+
+        if (now()->greaterThan($verification_code->expires_at)) {
+            return errorResponse('Reset code has expired.');
+        }
+
+        $verification_code->update(['used_at' => now()]);
+
+        return successResponse('Reset code verified successfully.');
     }
 
-    // Step 3: Reset Password
     public function resetPassword(Request $request)
     {
         $validator = validateRequest($request, [
             'email' => 'required|email|exists:users,email',
-            'reset_code' => 'required|string',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 422);
-        }      
+            return sendValidationError($validator->errors());
+        }
+
+        $email = $request->email;
+        $password = $request->password;
+
+        $user = User::where('email', $email)->first();
+
+        if (!$user) {
+            return errorResponse('No account found with this email.');
+        }
+
+        $user->update([
+            'password' => Hash::make($password),
+        ]);
+
+        VerificationCode::where('email', $email)
+            ->where('type', VerificationCode::PASSWORD_RESET)
+            ->whereNull('used_at')
+            ->update(['used_at' => now()]);
+
+        return successResponse('Password reset successfully. Please login with your new password.');
     }
 }
