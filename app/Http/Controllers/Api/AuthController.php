@@ -147,7 +147,7 @@ class AuthController extends Controller
         return successResponse('Reset code verified successfully.');
     }
 
-    public function resetPassword(Request $request)
+    public function setPassword(Request $request)
     {
         $validator = validateRequest($request, [
             'email' => 'required|email|exists:users,email',
