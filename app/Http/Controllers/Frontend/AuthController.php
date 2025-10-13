@@ -47,7 +47,7 @@ class AuthController extends Controller
             'phone'      => $user->phone,
             'code'       => $code,
             'type'       => VerificationCode::EMAIL_VERIFICATION,
-            'expires_at' => Carbon::now()->addMinutes(10),
+            'expires_at' => Carbon::now()->addMinutes(VerificationCode::EXPIRY_MINUTES),
         ]);
 
         $request->session()->put('verify_email', $user->email);
@@ -140,7 +140,7 @@ class AuthController extends Controller
                     'phone'      => $seller->phone,
                     'code'       => $code,
                     'type'       => VerificationCode::EMAIL_VERIFICATION,
-                    'expires_at' => Carbon::now()->addMinutes(10),
+                    'expires_at' => Carbon::now()->addMinutes(VerificationCode::EXPIRY_MINUTES),
                 ]);
 
                 $request->session()->put('verify_email', $seller->email);
@@ -200,7 +200,7 @@ class AuthController extends Controller
             'phone'      => $account->phone ?? null,
             'code'       => $code,
             'type'       => VerificationCode::PASSWORD_RESET,
-            'expires_at' => now()->addMinutes(10),
+            'expires_at' => now()->addMinutes(VerificationCode::EXPIRY_MINUTES),
         ]);
 
         $request->session()->put('reset_email', $email);
@@ -232,6 +232,7 @@ class AuthController extends Controller
             ->where('type', VerificationCode::PASSWORD_RESET)
             ->whereNull('used_at')
             ->where('expires_at', '>', now())
+            ->latest()
             ->first();
 
         if (!$verification) {
@@ -254,7 +255,6 @@ class AuthController extends Controller
 
         return redirect()->route('login')->with('success', 'Password reset successfully!');
     }
-
 
     public function verify(Request $request)
     {
@@ -335,18 +335,13 @@ class AuthController extends Controller
             return apiResponse(['resend_seconds' => 120 - $secondsPassed], 'Please wait before requesting a new code.', 429);
         }
 
-        VerificationCode::where('email', $email)
-            ->where('type', 'email_verification')
-            ->whereNull('used_at')
-            ->delete();
-
         $code = VerificationCode::generateCode();
 
         VerificationCode::create([
             'email'     => $email,
             'code'      => $code,
             'type'      => 'email_verification',
-            'expires_at' => now()->addMinutes(10),
+            'expires_at' => now()->addMinutes(VerificationCode::EXPIRY_MINUTES),
         ]);
 
         $request->session()->put('last_resend_time', now());
