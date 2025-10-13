@@ -29,7 +29,7 @@ class AuthController extends Controller
             return sendValidationError($validator->errors());
         }
 
-        $data = $request->only(['name', 'email','phone', 'password','role']);
+        $data = $request->only(['name', 'email', 'phone', 'password', 'role']);
         $data['password'] = Hash::make($data['password']);
         $data['username'] = str_slug('users', 'username', $data['name']);
         $data['username'] = str_slug('users', 'username', $data['name']);
@@ -85,5 +85,45 @@ class AuthController extends Controller
         Auth::user()->tokens()->delete();
 
         return successResponse('Logged out successfully.');
+    }
+
+    public function sendResetCode(Request $request)
+    {
+        $validator = validateRequest($request, [
+            'email' => 'required|email|exists:users,email',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 422);
+        }
+
+        // Send reset code
+    }
+
+    // Step 2: Verify Password Reset Code
+    public function verifyResetCode(Request $request)
+    {
+        $validator = validateRequest($request, [
+            'email' => 'required|email|exists:users,email',
+            'reset_code' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 422);
+        }
+    }
+
+    // Step 3: Reset Password
+    public function resetPassword(Request $request)
+    {
+        $validator = validateRequest($request, [
+            'email' => 'required|email|exists:users,email',
+            'reset_code' => 'required|string',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 422);
+        }      
     }
 }

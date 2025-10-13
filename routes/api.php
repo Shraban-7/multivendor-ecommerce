@@ -17,6 +17,14 @@ use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\SellerChatController;
 
+Route::prefix('auth')->group(function () {
+    Route::prefix('password-reset')->group(function () {
+        Route::post('send-code', [AuthController::class, 'sendResetCode']);
+        Route::post('verify-code', [AuthController::class, 'verifyResetCode']);
+        Route::post('reset-password', [AuthController::class, 'resetPassword']);
+    });
+});
+
 Route::middleware('guest')->group(function () {
     Route::post('login', [AuthController::class, 'login']);
     Route::post('signup', [AuthController::class, 'signup']);
