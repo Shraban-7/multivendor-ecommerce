@@ -102,11 +102,6 @@ class AuthController extends Controller
 
         $code = VerificationCode::generateCode();
 
-        VerificationCode::where('email', $email)
-            ->where('type', VerificationCode::PASSWORD_RESET)
-            ->whereNull('used_at')
-            ->delete();
-
         VerificationCode::create([
             'email' => $email,
             'code' => $code,
