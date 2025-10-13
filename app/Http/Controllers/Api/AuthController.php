@@ -100,12 +100,6 @@ class AuthController extends Controller
 
         $email = $request->email;
 
-        $account = User::where('email', $email)->first();
-
-        if (!$account) {
-            return errorResponse('No account found with this email.');
-        }
-
         $code = VerificationCode::generateCode();
 
         VerificationCode::where('email', $email)
@@ -114,11 +108,10 @@ class AuthController extends Controller
             ->delete();
 
         VerificationCode::create([
-            'email'      => $email,
-            'phone'      => $account->phone ?? null,
-            'code'       => $code,
-            'type'       => VerificationCode::PASSWORD_RESET,
-            'expires_at' => now()->addMinutes(10),
+            'email' => $email,
+            'code' => $code,
+            'type' => VerificationCode::PASSWORD_RESET,
+            'expires_at' => now()->addMinutes(VerificationCode::EXPIRY_MINUTES),
         ]);
 
         return successResponse('Password Reset Code Send Successfully');
@@ -156,8 +149,6 @@ class AuthController extends Controller
             return errorResponse('Reset code has expired.');
         }
 
-        $verification_code->update(['used_at' => now()]);
-
         return successResponse('Reset code verified successfully.');
     }
 
@@ -166,30 +157,24 @@ class AuthController extends Controller
         $validator = validateRequest($request, [
             'email' => 'required|email|exists:users,email',
             'password' => 'required|string|min:8|confirmed',
+            'reset_code' => 'required',
         ]);
 
         if ($validator->fails()) {
             return sendValidationError($validator->errors());
         }
 
-        $email = $request->email;
-        $password = $request->password;
+        User::where('email', $request->email)
+            ->update([
+                'password' => Hash::make($request->password)
+            ]);
 
-        $user = User::where('email', $email)->first();
+        VerificationCode::where('code', $request->reset_code)
+            ->where('email', $request->email)
+            ->update([
+                'used_at' => now()
+            ]);
 
-        if (!$user) {
-            return errorResponse('No account found with this email.');
-        }
-
-        $user->update([
-            'password' => Hash::make($password),
-        ]);
-
-        VerificationCode::where('email', $email)
-            ->where('type', VerificationCode::PASSWORD_RESET)
-            ->whereNull('used_at')
-            ->update(['used_at' => now()]);
-
-        return successResponse('Password reset successfully. Please login with your new password.');
+        return successResponse('Password reset successfully.');
     }
 }
