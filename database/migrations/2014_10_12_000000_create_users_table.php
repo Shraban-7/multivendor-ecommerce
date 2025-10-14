@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('image')->nullable();
 
             $table->string('email')->unique();
-            $table->string('secondary_email')->nullable()->unique();
             $table->string('phone')->nullable();
             $table->string('password');
 

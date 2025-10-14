@@ -1,9 +1,9 @@
 <?php
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -11,14 +11,12 @@ class ProfileController extends Controller
 {
     public function profile()
     {
-        $user = Auth::user();
-
-        return apiResponse(UserResource::make($user));
+        return apiResponse(UserResource::make(Auth::user()));
     }
 
     public function update(Request $request)
     {
-        $user = User::find(Auth::id());
+        $user = Auth::user();
 
         $validator = validateRequest($request, [
             'name'  => 'required|string|max:255',
@@ -38,15 +36,14 @@ class ProfileController extends Controller
             $data['username'] = $user->username;
         }
 
-        $data['phone']           = $request->phone;
-        $data['secondary_email'] = $request->secondary_email;
+        $data['phone'] = $request->phone;
 
         if ($request->hasFile('image')) {
             if (! empty($user->image)) {
                 delete_file($user->image);
             }
 
-            $filePath      = 'images/user/avatar';
+            $filePath = 'images/user/avatar';
             $data['image'] = upload_file($request->file('image'), $filePath);
         } else {
             $data['image'] = $user->image;

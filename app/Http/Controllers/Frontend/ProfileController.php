@@ -41,7 +41,6 @@ class ProfileController extends Controller
         }
 
         $data['phone'] = $request->phone;
-        $data['secondary_email'] = $request->secondary_email;
 
         if ($request->hasFile('image')) {
             if (! empty($user->image)) {
