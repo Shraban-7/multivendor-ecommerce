@@ -490,10 +490,6 @@
                             });
                     });
                 });
-
-                // Current Year In the Footer Section
-                const currentYear = new Date().getFullYear();
-                document.getElementById("current-year").textContent = currentYear;
             });
         </script>
     @endpush

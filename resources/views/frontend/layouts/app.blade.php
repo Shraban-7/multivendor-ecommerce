@@ -2,7 +2,6 @@
 <html lang="en">
 
 <?php
-
 use Illuminate\Support\Facades\View;
 $settings = settings();
 $isDashboard = View::hasSection('dashboard');
@@ -79,7 +78,6 @@ $isDashboard = View::hasSection('dashboard');
         </div>
     @endif
 
-
     @if ($isDashboard)
         <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mb-10">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 items-start">
@@ -114,87 +112,49 @@ $isDashboard = View::hasSection('dashboard');
     <script src="{{ asset('assets/libs/datatables/simple-datatables@9.0.3.js') }}"></script>
     <script src="{{ asset('assets/libs/toastr/js/toastr.min.js') }}"></script>
 
-    <!-- Sidebar toggle -->
     <script>
-        const sidebarToggle = document.getElementById("sidebar-toggle");
-        const mobileSidebar = document.getElementById("mobile-sidebar");
-        const sidebarBackdrop = document.getElementById("sidebar-backdrop");
-        sidebarToggle.addEventListener("click", () => {
-            const isOpen = !mobileSidebar.classList.contains("-translate-x-full");
-            if (isOpen) {
+        $(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            const sidebarToggle = document.getElementById("sidebar-toggle");
+            const mobileSidebar = document.getElementById("mobile-sidebar");
+            const sidebarBackdrop = document.getElementById("sidebar-backdrop");
+            
+            sidebarToggle.addEventListener("click", () => {
+                const isOpen = !mobileSidebar.classList.contains("-translate-x-full");
+                if (isOpen) {
+                    mobileSidebar.classList.add("-translate-x-full");
+                    sidebarBackdrop.classList.add("hidden");
+                } else {
+                    mobileSidebar.classList.remove("-translate-x-full");
+                    sidebarBackdrop.classList.remove("hidden");
+                }
+            });
+
+            sidebarBackdrop.addEventListener("click", () => {
                 mobileSidebar.classList.add("-translate-x-full");
                 sidebarBackdrop.classList.add("hidden");
-            } else {
-                mobileSidebar.classList.remove("-translate-x-full");
-                sidebarBackdrop.classList.remove("hidden");
+            });
+
+            function togglePassword(inputId, button) {
+                const input = document.getElementById(inputId);
+                const eye = button.querySelector('.fa-eye');
+                const eyeSlash = button.querySelector('.fa-eye-slash');
+
+                if (input.type === "password") {
+                    input.type = "text";
+                    eye.style.display = "none";
+                    eyeSlash.style.display = "inline";
+                } else {
+                    input.type = "password";
+                    eye.style.display = "inline";
+                    eyeSlash.style.display = "none";
+                }
             }
-        });
-        sidebarBackdrop.addEventListener("click", () => {
-            mobileSidebar.classList.add("-translate-x-full");
-            sidebarBackdrop.classList.add("hidden");
-        });
-    </script>
-
-    <script>
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-        // document.querySelectorAll("video").forEach((video) => {
-        //     const playBtn = video.parentElement.querySelector(".play-btn");
-        //     const muteBtn = video.parentElement.querySelector(".mute-btn");
-
-        //     playBtn.addEventListener("click", () => {
-        //         if (video.paused) {
-        //             video.play();
-        //             playBtn.innerHTML = `<i class="fa-solid fa-pause text-light-yellow"></i>`;
-        //         } else {
-        //             video.pause();
-        //             playBtn.innerHTML = `<i class="fa-solid fa-play"></i>`;
-        //         }
-        //     });
-
-        //     video.muted = false;
-
-        //     function updateMuteButton(muteBtn) {
-        //         muteBtn.innerHTML = video.muted ?
-        //             `<i class="fa-solid fa-volume-xmark text-persian-red"></i>` :
-        //             `<i class="fa-solid fa-volume-high"></i>`;
-        //     }
-
-        //     muteBtn.addEventListener("click", () => {
-        //         video.muted = !video.muted;
-        //         updateMuteButton(muteBtn);
-        //     });
-        //     updateMuteButton(muteBtn);
-        // });
-
-        const currentYear = new Date().getFullYear();
-        document.getElementById("current-year").textContent = currentYear;
-    </script>
-
-    <script>
-        function togglePassword(inputId, button) {
-            const input = document.getElementById(inputId);
-            const eye = button.querySelector('.fa-eye');
-            const eyeSlash = button.querySelector('.fa-eye-slash');
-
-            if (input.type === "password") {
-                input.type = "text";
-                eye.style.display = "none";
-                eyeSlash.style.display = "inline";
-            } else {
-                input.type = "password";
-                eye.style.display = "inline";
-                eyeSlash.style.display = "none";
-            }
-        }
-    </script>
-
-    <script>
-        $(document).ready(function() {
 
             $('body').on('click', '.addToCartBtn', function() {
                 var $btn = $(this);
@@ -264,7 +224,6 @@ $isDashboard = View::hasSection('dashboard');
                     }
                 });
             });
-
 
             $('.buyNowBtn').click(function() {
                 var product_id = $(this).data('id');
@@ -375,11 +334,10 @@ $isDashboard = View::hasSection('dashboard');
                     }
                 });
             }
-        });
-    </script>
 
-    <script>
-        $(function() {
+            $("[id^='product-wrapper']").each(function() {
+                initDefaultVariant($(this));
+            });
 
             function storageURL(fileName) {
                 return "{{ url('/') }}" + '/storage/' + fileName;
@@ -614,12 +572,6 @@ $isDashboard = View::hasSection('dashboard');
                 $wrapper.data('variant-initialized', true);
             }
 
-            $(document).ready(function() {
-                $("[id^='product-wrapper']").each(function() {
-                    initDefaultVariant($(this));
-                });
-            });
-
             document.addEventListener('modal:open', function(event) {
                 const modalEl = event.detail;
                 const $modal = $(modalEl);
@@ -634,7 +586,6 @@ $isDashboard = View::hasSection('dashboard');
                     initDefaultVariant($(this));
                 });
             }
-
         });
     </script>
 

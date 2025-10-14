@@ -170,6 +170,14 @@ Route::prefix('mails')->as('mails.')->group(function () {
         return view('emails.shipping-update', $data);
     })->name('shipping_update');
 
+    Route::get('/email-verification', function () {
+
+        $data['code'] = 112233;
+        $data['customer_name'] = 'John Doe';
+
+        return view('emails.email-verification', $data);
+    });
+
     Route::get('/refund-processed', function () {
         $data['customer_name'] = 'John Doe';
         $data['order_id'] = '223';
