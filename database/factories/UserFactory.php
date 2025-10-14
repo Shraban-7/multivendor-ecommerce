@@ -29,7 +29,6 @@ class UserFactory extends Factory
             'image' => $this->faker->optional()->imageUrl(200, 200, 'people'),
 
             'email' => $this->faker->unique()->safeEmail(),
-            'secondary_email' => $this->faker->unique()->optional()->safeEmail(),
             'phone' => $this->faker->optional()->phoneNumber(),
             'password' => $password ??= Hash::make('password'),
 
