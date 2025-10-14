@@ -31,6 +31,11 @@ enum OrderStatus: int
         };
     }
 
+    public function title(): string
+    {
+        return ucwords(str_replace('_', ' ', $this->label()));
+    }
+
     public static function labels(): array
     {
         return [
