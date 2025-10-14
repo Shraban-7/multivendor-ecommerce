@@ -19,7 +19,7 @@
                             Your Verification Code
                         </p>
                         <p style="margin: 0; color: #FF6B35; font-size: 40px; font-weight: 700; letter-spacing: 4px; font-family: 'Courier New', monospace;">
-                            {{ $code }}
+                            {{ $verification_code->code }}
                         </p>
                     </div>
                 </td>
@@ -27,7 +27,7 @@
         </table>
 
         <p style="margin: 0 0 12px; color: #4a5568; font-size: 15px; line-height: 1.5; text-align: center;">
-            This code will expire in <strong style="color: #FF6B35;">15 minutes</strong>.
+            This code will expire in <strong style="color: #FF6B35;">{{ $expiry_minutes }} minutes</strong>.
         </p>
     </td>
 </tr>
