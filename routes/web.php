@@ -181,11 +181,7 @@ Route::prefix('mails')->as('mails.')->group(function () {
         $data['customer_name' ]= "Jhon Doe";
 
         $data['expiry_minutes'] = VerificationCode::EXPIRY_MINUTES;
-
-        // $data['code'] = 112233;
-        // $data['customer_name'] = 'John Doe';
-
-
+        
         return view('emails.email-verification', $data);
     });
 
