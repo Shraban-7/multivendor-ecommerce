@@ -279,7 +279,7 @@ class AuthController extends Controller
 
         $resendSeconds = 0;
         if ($recent) {
-            $expiresAt = $recent->created_at->addMinutes(VerificationCode::RESEND_MINUTES);
+            $expiresAt = $recent->created_at->addMinutes(VerificationCode::EXPIRY_MINUTES);
             $diff = $expiresAt->diffInSeconds(now(), false);
             $resendSeconds = $diff > 0 ? $diff : 0;
         }
