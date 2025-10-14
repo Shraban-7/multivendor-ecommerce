@@ -46,7 +46,6 @@ class AuthController extends Controller
 
         return apiResponse([
             'token' => $user->createToken("API TOKEN")->plainTextToken,
-            'user' => (new UserResource($user))
         ], 'Signup successful');
     }
 
@@ -76,6 +75,7 @@ class AuthController extends Controller
         }
 
         return apiResponse([
+            'user' => (new UserResource($user)),
             'token' => $user->createToken("API TOKEN")->plainTextToken,
         ], 'Login Successful');
     }
