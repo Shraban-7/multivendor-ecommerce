@@ -94,6 +94,11 @@ class Order extends Model
         return $this->belongsTo(Payment::class);
     }
 
+    public function status_logs(): HasMany
+    {
+        return $this->hasMany(OrderStatusLog::class);
+    }
+
     public function trackings(): HasMany
     {
         return $this->hasMany(OrderTracking::class);

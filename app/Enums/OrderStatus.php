@@ -2,27 +2,30 @@
 
 namespace App\Enums;
 
-enum OrderStatus : int
+enum OrderStatus: int
 {
     case PENDING = 0;
-    case SHIPPED = 1;
-    case DELIVERED = 2;
-    case CANCELLED = 3;
-    case ORDER_PLACED = 4;
-    case PACKAGING = 5;
-    case ON_THE_ROAD = 6;
-    case RETURNED = 7;
-    case REFUNDED = 8;
+    case ACCEPTED = 1;
+    case SHIPPED = 2;
+    case DELIVERED = 3;
+    case COMPLETED = 4;
+    case CANCELLED = 5;
+    case RETURN_REQUESTED = 6;
+    case RETURN_APPROVED = 7;
+    case RETURNED = 8;
+    case REFUNDED = 9;
 
-    public function label(): string {
-        return match($this) {
+    public function label(): string
+    {
+        return match ($this) {
             $this::PENDING => 'pending',
+            $this::ACCEPTED => 'accepted',
             $this::SHIPPED => 'shipped',
             $this::DELIVERED => 'delivered',
+            $this::COMPLETED => 'completed',
             $this::CANCELLED => 'cancelled',
-            $this::ORDER_PLACED => 'order_placed',
-            $this::PACKAGING => 'packaging',
-            $this::ON_THE_ROAD => 'on_the_road',
+            $this::RETURN_REQUESTED => 'return_requested',
+            $this::RETURN_APPROVED => 'return_approved',
             $this::RETURNED => 'returned',
             $this::REFUNDED => 'refunded',
         };
@@ -32,12 +35,13 @@ enum OrderStatus : int
     {
         return [
             static::PENDING->label(),
+            static::ACCEPTED->label(),
             static::SHIPPED->label(),
             static::DELIVERED->label(),
+            static::COMPLETED->label(),
             static::CANCELLED->label(),
-            static::ORDER_PLACED->label(),
-            static::PACKAGING->label(),
-            static::ON_THE_ROAD->label(),
+            static::RETURN_REQUESTED->label(),
+            static::RETURN_APPROVED->label(),
             static::RETURNED->label(),
             static::REFUNDED->label(),
         ];
