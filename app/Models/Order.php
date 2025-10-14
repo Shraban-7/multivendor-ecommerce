@@ -32,6 +32,11 @@ class Order extends Model
         return $this->belongsTo(BillingAddress::class);
     }
 
+    public function statusLogs()
+    {
+        return $this->hasMany(OrderStatusLog::class);
+    }
+
     public function scopePending($query)
     {
         return $query->where('status', OrderStatus::PENDING->value);

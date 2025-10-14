@@ -100,7 +100,7 @@
                                                     <i class="fa-solid fa-download mr-1"></i> Invoice
                                                 </a>
                                                 @if (in_array($order->status->label(), [OrderStatus::SHIPPED->label(), OrderStatus::SHIPPED->label()]))
-                                                    <a href="{{ route('orders.tracking', $order->id) }}"
+                                                    <a href="{{ route('orders.tracking', $order->invoice_id) }}"
                                                         class="bg-orange-500 text-white px-3 py-2 rounded text-xs hover:opacity-90 transition">
                                                         <i class="fa-solid fa-truck-fast mr-1"></i> Track
                                                     </a>
