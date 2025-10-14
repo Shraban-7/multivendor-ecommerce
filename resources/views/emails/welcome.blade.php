@@ -4,47 +4,6 @@ $supportEmail = config('mail.from.address');
 $customerName = 'User';
 ?>
 
-{{-- <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to {{ $platformName }}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-</head>
-
-<body style="margin:0;padding:0;font-family:'Inter','Segoe UI',Roboto,sans-serif;background-color:#F7F9FC;-webkit-font-smoothing:antialiased;">
-    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#F7F9FC;">
-        <tr>
-            <td style="padding:20px 0;">
-                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" style="margin:0 auto;background-color:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.05);">
-                    <!-- Header -->
-                    <tr>
-                        <td style="background:linear-gradient(135deg,#FF6B35 0%,#E85A2A 100%);padding:32px 40px;text-align:center;">
-                            <h1 style="margin:0;color:#ffffff;font-size:28px;font-weight:700;letter-spacing:-0.5px;">{{ $platformName }}</h1>
-                        </td>
-                    </tr>
-
-                    <!-- Content -->
-                   
-
-                    <!-- Footer -->
-                    <tr>
-                        <td style="padding:24px 40px;background-color:#F7F9FC;border-top:1px solid #E0E6ED;">
-                            <p style="margin:0 0 12px;color:#5A6C7D;font-size:13px;line-height:1.5;text-align:center;">Need help? Contact us at <a href="mailto:" style="color:#FF6B35;text-decoration:none;">{{ $supportEmail }}</a></p>
-                            <p style="margin:0;color:#8A9BA8;font-size:12px;text-align:center;">© {{ date('Y') }} {{ $platformName }}. All rights reserved.</p>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
-</body>
-
-</html> --}}
-
-
 @extends('emails.layouts.base')
 
 @section('content')
@@ -63,10 +22,16 @@ $customerName = 'User';
                     </td>
                 </tr>
                 <tr>
+                    <td style="height:12px;line-height:12px;">&nbsp;</td>
+                </tr>
+                <tr>
                     <td style="padding:16px;background-color:#FFF4F0;border-radius:6px;margin-bottom:12px;">
                         <p style="margin:0;color:#2C3E50;font-size:15px;font-weight:500;">✓ Secure checkout & payment
                             options</p>
                     </td>
+                </tr>
+                <tr>
+                    <td style="height:12px;line-height:12px;">&nbsp;</td>
                 </tr>
                 <tr>
                     <td style="padding:16px;background-color:#FFF4F0;border-radius:6px;">
