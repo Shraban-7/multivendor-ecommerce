@@ -27,7 +27,7 @@ Route::get('/no-order', function () {
 })->name('no_order');
 
 Route::get('/tracking', function () {
-    return view('frontend.pages.tracking');
+    return view('frontend.orders.status_logs');
 })->name('tracking');
 
 Route::prefix('sellers')->as('sellers.')->group(function () {

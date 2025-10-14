@@ -38,10 +38,10 @@
                                                     class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
                                                     {{ OrderStatus::PENDING->label() }}
                                                 </span>
-                                            @elseif ($order->status->label() == OrderStatus::PACKAGING->label())
+                                            @elseif ($order->status->label() == OrderStatus::ACCEPTED->label())
                                                 <span
                                                     class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
-                                                    {{ OrderStatus::PACKAGING->label() }}
+                                                    {{ OrderStatus::ACCEPTED->label() }}
                                                 </span>
                                             @elseif ($order->status->label() == OrderStatus::SHIPPED->label())
                                                 <span
@@ -99,7 +99,7 @@
                                                     class="bg-theme-light text-black px-3 py-2 rounded text-xs hover:opacity-90 transition">
                                                     <i class="fa-solid fa-download mr-1"></i> Invoice
                                                 </a>
-                                                @if (in_array($order->status->label(), [OrderStatus::PACKAGING->label(), OrderStatus::SHIPPED->label()]))
+                                                @if (in_array($order->status->label(), [OrderStatus::SHIPPED->label(), OrderStatus::SHIPPED->label()]))
                                                     <a href="{{ route('orders.tracking', $order->id) }}"
                                                         class="bg-orange-500 text-white px-3 py-2 rounded text-xs hover:opacity-90 transition">
                                                         <i class="fa-solid fa-truck-fast mr-1"></i> Track
