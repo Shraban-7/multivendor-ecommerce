@@ -56,9 +56,11 @@
                         </li>
                         <li class="list-group-item d-flex align-items-center justify-content-between px-0">
                             <span>Status:</span>
-                            <span>
+                            <div class="d-flex align-items-center gap-2">
                                 @if ($order->status->label() === 'pending')
                                     <span class="badge bg-warning">Pending</span>
+                                @elseif ($order->status->label() === 'accepted')
+                                    <span class="badge bg-secondary">Accepted</span>
                                 @elseif ($order->status->label() === 'shipped')
                                     <span class="badge bg-primary">Shipped</span>
                                 @elseif ($order->status->label() === 'cancelled')
@@ -71,22 +73,15 @@
                                     <span class="badge bg-info text-dark">Refunded</span>
                                 @endif
 
-                            </span>
-                        </li>
-                        {{-- <li class="list-group-item d-flex justify-content-between px-0">
-                            <span>Delivery Status:</span>
-                            <span>
-                                @if ($order->delivery_status === \App\Enums\OrderStatus::ORDER_PLACED->value)
-                                    <span class="badge bg-warning">Order Placed</span>
-                                @elseif ($order->delivery_status === \App\Enums\OrderStatus::PACKAGING->value)
-                                    <span class="badge bg-primary">Packaging</span>
-                                @elseif ($order->delivery_status === \App\Enums\OrderStatus::ON_THE_ROAD->value)
-                                    <span class="badge bg-dark">On The Road</span>
-                                @elseif ($order->delivery_status === \App\Enums\OrderStatus::DELIVERED->value)
-                                    <span class="badge bg-success">Delivered</span>
+                                @if ($order->user_id != null)
+                                    <button class="btn btn-sm btn-light border" data-bs-toggle="modal"
+                                        data-bs-target="#changeStatusModal">
+                                        Update Status
+                                    </button>
                                 @endif
-                            </span>
-                        </li> --}}
+                            </div>
+                        </li>
+
                         <li class="list-group-item d-flex justify-content-between px-0">
                             <span>Payment Method:</span>
                             <span class="fw-medium">{{ $order->payment_method ?? 'N/A' }}</span>
@@ -167,7 +162,7 @@
                 </div>
             @endif
 
-            @if ($order->user_id != null)
+            {{-- @if ($order->user_id != null)
                 <form action="{{ route('seller.orders.updateStatus', $order->id) }}" class="mb-3" method="POST">
                     @csrf
                     <div class="card border-0 shadow-sm mt-4">
@@ -201,7 +196,7 @@
                         </div>
                     </div>
                 </form>
-            @endif
+            @endif --}}
 
             @if ($isPos)
                 <div class="card-body">
@@ -264,15 +259,18 @@
                                                 @endphp
 
                                                 @if ($imageUrl)
-                                                    <img src="{{ $imageUrl }}" alt="{{ $item->product->name }}" class="rounded me-3" width="60" height="60">
+                                                    <img src="{{ $imageUrl }}" alt="{{ $item->product->name }}"
+                                                        class="rounded me-3" width="60" height="60">
                                                 @else
-                                                    <div class="bg-white rounded me-3" style="width: 50px; height: 50px;"></div>
+                                                    <div class="bg-white rounded me-3" style="width: 50px; height: 50px;">
+                                                    </div>
                                                 @endif
 
                                                 <div>
                                                     <div class="d-flex align-items-center mb-2">
                                                         <h6 class="mb-0 me-2">{{ $item->product->name }}</h6>
-                                                        <span class="badge bg-primary rounded-pill">x {{ $item->quantity }}</span>
+                                                        <span class="badge bg-primary rounded-pill">x
+                                                            {{ $item->quantity }}</span>
                                                     </div>
 
                                                     @if ($item->product_variant_id && $item->variant && $item->variant->option_values)
@@ -287,7 +285,8 @@
                                                     @endif
 
                                                     @if (isset($item->variant))
-                                                        <small class="text-muted d-block">SKU: {{ $item->variant->sku }}</small>
+                                                        <small class="text-muted d-block">SKU:
+                                                            {{ $item->variant->sku }}</small>
                                                     @endif
                                                 </div>
                                             </div>
@@ -374,6 +373,66 @@
                 @endif
             @endif
         </div>
+
+        <!-- Change Status Modal -->
+        <div class="modal fade" id="changeStatusModal" tabindex="-1" aria-labelledby="changeStatusModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <form action="{{ route('seller.orders.updateStatus', $order->id) }}" method="POST">
+                        @csrf
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="changeStatusModalLabel">Update Order Status</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <!-- Status Change -->
+                            <div class="mb-3">
+                                <label class="form-label">Change Order Status</label>
+                                <div class="input-group">
+                                    <!-- Old Status -->
+                                    <span class="input-group-text bg-light">
+                                        <i class="bi bi-clock-history"></i>
+                                    </span>
+                                    <input type="text" class="form-control"
+                                        value="{{ ucfirst($order->status->label()) }}" readonly>
+                                    <input type="hidden" name="old_status" value="{{ $order->status->value }}">
+
+                                    <!-- New Status -->
+                                    <span class="input-group-text bg-light">
+                                        <i class="bi bi-arrow-repeat"></i>
+                                    </span>
+                                    <select name="new_status" class="form-select" required>
+                                        <option value="">-- Select Status --</option>
+                                        @foreach (\App\Enums\OrderStatus::cases() as $status)
+                                            <option value="{{ $status->value }}">
+                                                {{ ucfirst($status->label()) }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Remarks -->
+                            <div class="mb-3">
+                                <label class="form-label">Remarks (optional)</label>
+                                <textarea name="remarks" class="form-control" rows="3"></textarea>
+                            </div>
+
+                            <input type="hidden" name="changed_by" value="{{ auth()->user()->role ?? 'admin' }}">
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Update</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
 
 
     @endsection

@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\Seller;
 use App\Enums\OrderStatus;
 use Illuminate\Http\Request;
+use App\Models\OrderStatusLog;
 use App\Models\AffiliateCommission;
 use App\Http\Controllers\Controller;
 
@@ -72,9 +73,22 @@ class OrderController extends Controller
             return redirect()->back()->with('error', 'Delivered orders cannot be updated.');
         }
 
-        $order->update([
-            'status'          => $request->status,
-            'delivery_status' => $request->delivery_status ?? $order->delivery_status,
+        $request->validate([
+            'old_status' => 'required|integer',
+            'new_status' => 'required|integer|different:old_status',
+            'changed_by' => 'required|in:admin,customer,seller',
+            'remarks' => 'nullable|string',
+        ]);
+
+        $order->status = $request->new_status;
+        $order->save();
+
+        OrderStatusLog::create([
+            'order_id' => $order->id,
+            'old_status' => $request->old_status,
+            'new_status' => $request->new_status,
+            'changed_by' => 'seller',
+            'remarks' => $request->remarks,
         ]);
 
         $order->addSellerEarningToBalance();
