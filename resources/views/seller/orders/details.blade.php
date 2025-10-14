@@ -74,9 +74,10 @@
                                 @endif
 
                                 @if ($order->user_id != null)
-                                    <button class="btn btn-sm btn-light border" data-bs-toggle="modal"
-                                        data-bs-target="#changeStatusModal">
-                                        Update Status
+                                    <button class="btn btn-sm btn-light border d-flex align-items-center gap-1"
+                                        data-bs-toggle="modal" data-bs-target="#changeStatusModal">
+                                        <i class="bi bi-arrow-repeat text-secondary"></i>
+                                        Update
                                     </button>
                                 @endif
                             </div>
@@ -84,7 +85,7 @@
 
                         <li class="list-group-item d-flex justify-content-between px-0">
                             <span>Payment Method:</span>
-                            <span class="fw-medium">{{ $order->payment_method ?? 'N/A' }}</span>
+                            <span class="fw-medium">{{ $order?->payment_method }}</span>
                         </li>
                         <li class="list-group-item d-flex align-items-center justify-content-between px-0">
                             <span>Payment Status:</span>
@@ -161,42 +162,6 @@
                     </div>
                 </div>
             @endif
-
-            {{-- @if ($order->user_id != null)
-                <form action="{{ route('seller.orders.updateStatus', $order->id) }}" class="mb-3" method="POST">
-                    @csrf
-                    <div class="card border-0 shadow-sm mt-4">
-                        <div class="card-header bg-white">
-                            <h5 class="mb-0">Status</h5>
-                        </div>
-                        <div class="card-body">
-
-                            <div class="mb-3">
-                                <select class="form-select" id="status" name="status">
-                                    <option value="{{ \App\Enums\OrderStatus::PENDING->value }}"
-                                        {{ $order->status->label() === 'pending' ? 'selected' : '' }}>Pending</option>
-
-                                    <option value="{{ \App\Enums\OrderStatus::SHIPPED->value }}"
-                                        {{ $order->status->label() === 'shipped' ? 'selected' : '' }}>Shipped</option>
-
-                                    <option value="{{ \App\Enums\OrderStatus::DELIVERED->value }}"
-                                        {{ $order->status->label() === 'delivered' ? 'selected' : '' }}>Delivered</option>
-
-                                    <option value="{{ \App\Enums\OrderStatus::CANCELLED->value }}"
-                                        {{ $order->status->label() === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
-
-                                    <option value="{{ \App\Enums\OrderStatus::RETURNED->value }}"
-                                        {{ $order->status->label() === 'returned' ? 'selected' : '' }}>Returned</option>
-
-                                    <option value="{{ \App\Enums\OrderStatus::REFUNDED->value }}"
-                                        {{ $order->status->label() === 'refunded' ? 'selected' : '' }}>Refunded</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Update</button>
-                        </div>
-                    </div>
-                </form>
-            @endif --}}
 
             @if ($isPos)
                 <div class="card-body">
@@ -394,21 +359,14 @@
                                 <div class="input-group">
                                     <!-- Old Status -->
                                     <span class="input-group-text bg-light">
-                                        <i class="bi bi-clock-history"></i>
-                                    </span>
-                                    <input type="text" class="form-control"
-                                        value="{{ ucfirst($order->status->label()) }}" readonly>
-                                    <input type="hidden" name="old_status" value="{{ $order->status->value }}">
-
-                                    <!-- New Status -->
-                                    <span class="input-group-text bg-light">
-                                        <i class="bi bi-arrow-repeat"></i>
+                                        {{ ucfirst($order->status->title()) }}
                                     </span>
                                     <select name="new_status" class="form-select" required>
                                         <option value="">-- Select Status --</option>
                                         @foreach (\App\Enums\OrderStatus::cases() as $status)
-                                            <option value="{{ $status->value }}">
-                                                {{ ucfirst($status->label()) }}
+                                            <option value="{{ $status->value }}"
+                                                {{ $order->status->value === $status->value ? 'selected' : '' }}>
+                                                {{ ucfirst($status->title()) }}
                                             </option>
                                         @endforeach
                                     </select>

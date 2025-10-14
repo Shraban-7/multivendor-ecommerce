@@ -74,18 +74,19 @@ class OrderController extends Controller
         }
 
         $request->validate([
-            'old_status' => 'required|integer',
             'new_status' => 'required|integer|different:old_status',
             'changed_by' => 'required|in:admin,customer,seller',
             'remarks' => 'nullable|string',
         ]);
+
+        $old_status = $order->status;
 
         $order->status = $request->new_status;
         $order->save();
 
         OrderStatusLog::create([
             'order_id' => $order->id,
-            'old_status' => $request->old_status,
+            'old_status' => $old_status,
             'new_status' => $request->new_status,
             'changed_by' => 'seller',
             'remarks' => $request->remarks,
