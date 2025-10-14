@@ -23,6 +23,11 @@ Route::prefix('auth')->group(function () {
         Route::post('verify-code', [AuthController::class, 'verifyResetCode']);
         Route::post('set-password', [AuthController::class, 'setPassword']);
     });
+
+    Route::prefix('email-verification')->group(function () {
+        Route::post('resend-code', [AuthController::class, 'resendCode']);
+        Route::post('verify-code', [AuthController::class, 'verifyEmailCode']);
+    });
 });
 
 Route::middleware('guest')->group(function () {

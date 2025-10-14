@@ -109,7 +109,7 @@ class AuthController extends Controller
             'expires_at' => now()->addMinutes(VerificationCode::EXPIRY_MINUTES),
         ]);
 
-        return successResponse('Password Reset Code Send Successfully');
+        return successResponse('Password reset code sent successfully');
     }
 
     public function verifyResetCode(Request $request)
@@ -172,4 +172,39 @@ class AuthController extends Controller
 
         return successResponse('Password reset successfully.');
     }
+
+    public function resendCode(Request $request)
+    {
+        $validator = validateRequest($request, [
+            'email' => 'required|email|exists:users,email',
+        ]);
+
+        if ($validator->fails()) {
+            return sendValidationError($validator->error());
+        }
+
+        $email = $request->email;
+
+        $alreadySent = VerificationCode::where('email', $email)
+            ->where('type', VerificationCode::EMAIL_VERIFICATION)
+            ->whereNull('used_at')
+            ->latest('id')
+            ->first();
+
+        if ($alreadySent && $alreadySent->expiry_at && $alreadySent->expiry_at > now()) {
+            $timeLeft = now()->diffForHumans($alreadySent->expiry_at, false, true);
+            return errorResponse("Please wait for {$timeLeft} to request another code.");
+        }
+
+        VerificationCode::create([
+            'email' => $email,
+            'code' => VerificationCode::generateCode(),
+            'type' => VerificationCode::EMAIL_VERIFICATION,
+            'expires_at' => now()->addMinutes(VerificationCode::EXPIRY_MINUTES),
+        ]);
+
+        return successResponse('Verification code sent successfully');
+    }
+
+    public function verifyEmailCode(Request $request) {}
 }
