@@ -15,7 +15,7 @@ class VerificationCode extends Model
     const EMAIL_VERIFICATION = 'email_verification';
     const PASSWORD_RESET = 'password_reset';
     const EXPIRY_MINUTES = 15;
-    const RESEND_MINUTES = 2;
+    const RESEND_MINUTES = 5;
 
     public static function generateCode()
     {
