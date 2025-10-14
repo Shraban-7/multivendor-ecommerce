@@ -5,6 +5,7 @@ use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PaymentController;
+use App\Models\VerificationCode;
 
 Route::get('mails/test', function () {
     $data['customerName'] = 'John Doe';
@@ -172,8 +173,14 @@ Route::prefix('mails')->as('mails.')->group(function () {
 
     Route::get('/email-verification', function () {
 
-        $data['code'] = 112233;
-        $data['customer_name'] = 'John Doe';
+        $data['verification_code'] = VerificationCode::where('type', VerificationCode::PASSWORD_RESET)
+            ->whereNull('used_at')
+            ->latest()
+            ->first();
+
+        $data['customer_name' ]= "Jhon Doe";
+
+        $data['expired_at'] = VerificationCode::EXPIRY_MINUTES;
 
         return view('emails.email-verification', $data);
     });
