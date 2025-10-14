@@ -69,24 +69,27 @@ class OrderController extends Controller
 
     public function updateStatus(Order $order, Request $request)
     {
-        if ($order->status->value == OrderStatus::DELIVERED->value) {
-            return redirect()->back()->with('error', 'Delivered orders cannot be updated.');
+        if ($order->status->value == OrderStatus::COMPLETED->value) {
+            return redirect()->back()->with('error', 'Completed orders cannot be updated.');
         }
 
         $request->validate([
-            'new_status' => 'required|integer|different:old_status',
-            'changed_by' => 'required|in:admin,customer,seller',
+            'new_status' => 'required|integer',
             'remarks' => 'nullable|string',
         ]);
 
         $old_status = $order->status;
+
+        if ($old_status->value==$request->new_status) {
+          return  redirect()->back()->with('success', 'Order status already '.$old_status->title());
+        }
 
         $order->status = $request->new_status;
         $order->save();
 
         OrderStatusLog::create([
             'order_id' => $order->id,
-            'old_status' => $old_status,
+            'old_status' => $old_status->value,
             'new_status' => $request->new_status,
             'changed_by' => 'seller',
             'remarks' => $request->remarks,
