@@ -206,5 +206,42 @@ class AuthController extends Controller
         return successResponse('Verification code sent successfully');
     }
 
-    public function verifyEmailCode(Request $request) {}
+    public function verifyEmailCode(Request $request)
+    {
+        $validator = validateRequest($request, [
+            'email' => 'required|email|exists:users,email',
+            'code' => 'required|max:6',
+        ]);
+
+        if ($validator->fails()) {
+            return sendValidationError($validator->errors());
+        }
+
+        $email = $request->email;
+        $account = User::where('email', $email)->first();
+
+        if ($account && $account->email_verified_at) {
+            return successResponse('Your account is already verified. Please login.');
+        }
+
+        $verification = VerificationCode::where('email', $email)
+            ->where('code', $request->code)
+            ->where('type', VerificationCode::EMAIL_VERIFICATION)
+            ->whereNull('used_at')
+            ->where('expires_at', '>', now())
+            ->latest()
+            ->first();
+
+        if (!$verification) {
+            return errorResponse('Invalid or expired verification code.');
+        }
+
+        $verification->update(['used_at' => now()]);
+
+        if ($account) {
+            $account->update(['email_verified_at' => now()]);
+        }
+
+        return successResponse('Your account has been verified successfully!');
+    }
 }

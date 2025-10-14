@@ -273,13 +273,13 @@ class AuthController extends Controller
         }
 
         $recent = VerificationCode::where('email', $email)
-            ->where('type', 'email_verification')
+            ->where('type', VerificationCode::EMAIL_VERIFICATION)
             ->latest()
             ->first();
 
         $resendSeconds = 0;
         if ($recent) {
-            $expiresAt = $recent->created_at->addMinutes(2);
+            $expiresAt = $recent->created_at->addMinutes(VerificationCode::RESEND_MINUTES);
             $diff = $expiresAt->diffInSeconds(now(), false);
             $resendSeconds = $diff > 0 ? $diff : 0;
         }
@@ -340,7 +340,7 @@ class AuthController extends Controller
         VerificationCode::create([
             'email'     => $email,
             'code'      => $code,
-            'type'      => 'email_verification',
+            'type'      => VerificationCode::EMAIL_VERIFICATION,
             'expires_at' => now()->addMinutes(VerificationCode::EXPIRY_MINUTES),
         ]);
 
