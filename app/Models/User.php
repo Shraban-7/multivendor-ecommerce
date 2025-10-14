@@ -4,12 +4,14 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\UserRole;
+use App\Mail\EmailVerificationMail;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Mail;
 
 class User extends Authenticatable
 {
@@ -63,5 +65,23 @@ class User extends Authenticatable
     public function isAffiliate()
     {
         return $this->role === UserRole::AFFILIATE->value;
+    }
+
+    public function sendEmailVerificationMail()
+    {
+        $code = VerificationCode::generateCode();
+
+        VerificationCode::create([
+            'email' => $this->email,
+            'code' => VerificationCode::generateCode(),
+            'type' => VerificationCode::EMAIL_VERIFICATION,
+            'expires_at' => now()->addMinutes(VerificationCode::EXPIRY_MINUTES),
+        ]);
+
+        Mail::to($this->email)->queue(new EmailVerificationMail(
+            $this->name,
+            $code,
+            VerificationCode::EXPIRY_MINUTES
+        ));
     }
 }

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\VerificationCode;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -32,10 +33,6 @@ class AuthController extends Controller
 
         $data = $request->only(['name', 'email', 'phone', 'password', 'role']);
         $data['password'] = Hash::make($data['password']);
-        $data['username'] = str_slug('users', 'username', $data['name']);
-        $data['username'] = str_slug('users', 'username', $data['name']);
-
-        $data['username'] = str_slug('users', 'username', $data['name']);
 
         if ($request->has('role') && $request->role === UserRole::AFFILIATE->label()) {
             $data['role'] = UserRole::AFFILIATE->value;
@@ -45,11 +42,13 @@ class AuthController extends Controller
 
         $user = User::create($data);
 
+        $user->sendEmailVerificationMail();
+
         return apiResponse([
             'token' => $user->createToken("API TOKEN")->plainTextToken,
+            'user' => (new UserResource($user))
         ], 'Signup successful');
     }
-
 
     public function login(Request $request)
     {
@@ -196,12 +195,7 @@ class AuthController extends Controller
             return errorResponse("Please wait for {$timeLeft} to request another code.");
         }
 
-        VerificationCode::create([
-            'email' => $email,
-            'code' => VerificationCode::generateCode(),
-            'type' => VerificationCode::EMAIL_VERIFICATION,
-            'expires_at' => now()->addMinutes(VerificationCode::EXPIRY_MINUTES),
-        ]);
+        User::where('email', $email)->first()->sendEmailVerificationMail();
 
         return successResponse('Verification code sent successfully');
     }
@@ -218,9 +212,9 @@ class AuthController extends Controller
         }
 
         $email = $request->email;
-        $account = User::where('email', $email)->first();
+        $user = User::where('email', $email)->first();
 
-        if ($account && $account->email_verified_at) {
+        if ($user && $user->email_verified_at) {
             return successResponse('Your account is already verified. Please login.');
         }
 
@@ -238,10 +232,8 @@ class AuthController extends Controller
 
         $verification->update(['used_at' => now()]);
 
-        if ($account) {
-            $account->update(['email_verified_at' => now()]);
-        }
+        $user->update(['email_verified_at' => now()]);
 
-        return successResponse('Your account has been verified successfully!');
+        return successResponse('verification successful.');
     }
 }
