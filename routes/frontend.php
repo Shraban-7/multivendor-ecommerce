@@ -86,3 +86,12 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/search/suggestions', [SearchController::class, 'suggestions'])->name('search.suggestions');
+
+
+Route::get('/message', function () {
+    if (!session()->has('message_data')) {
+        return redirect()->route('home');
+    }
+
+    return view('frontend.pages.message', session('message_data'));
+})->name('frontend.message');

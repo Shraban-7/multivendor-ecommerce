@@ -612,7 +612,7 @@
                         contentType: false,
                         success: function(response) {
                             $btn.attr('disabled', false).html(originalContent);
-                            window.location.href = "{{ route('thank_you') }}";
+                            window.location.href = "{{ route('frontend.message') }}";
                         },
                         error: function(xhr) {
                             $btn.attr('disabled', false).html(originalContent);

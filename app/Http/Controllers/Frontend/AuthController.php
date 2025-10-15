@@ -140,6 +140,14 @@ class AuthController extends Controller
 
                     $request->session()->put('verify_email', $seller->email);
 
+                    session()->flash('message_data', [
+                        'title' => 'Thank You for Registering!',
+                        'message' => 'Your seller account is under review. We’ve sent a confirmation email.',
+                        'buttonText' => 'Go to Home',
+                        'buttonUrl' => route('home'),
+                        'type' => 'success',
+                    ]);
+
                     //Mail::to($seller->email)->queue(new RegistrationPendingMail($seller->business_name));
 
                     return successResponse('Registration is complete, check your email.');
