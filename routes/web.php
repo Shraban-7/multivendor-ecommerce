@@ -544,6 +544,10 @@ Route::prefix('mails')->as('mails.')->group(function () {
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+Route::get('thank-you/',function(){
+    return view('frontend.auth.thank-you-register');
+})->name('thank_you');
+
 Route::get('/invoice/{invoice_id}', [InvoiceController::class, 'invoice'])->name('invoice');
 Route::get('/receipt/{invoice_id}', [InvoiceController::class, 'receipt'])->name('receipt');
 

@@ -470,12 +470,21 @@
                 });
 
                 $(document).on('click', '.next-step', function() {
+                    const $btn = $(this);
                     const currentStep = parseInt($(this).data('current'));
                     const nextStep = parseInt($(this).data('next'));
                     const $currentStep = $('#step-' + currentStep);
 
                     $currentStep.find('.error-msg').remove();
                     $currentStep.find(':input').removeClass('border-red-500');
+
+                    const originalContent = $btn.html();
+                    $btn.attr('disabled', true).html(`
+                            <svg class="animate-spin h-5 w-5 mr-2 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                            </svg> Loading...
+                    `);
 
                     let formData = new FormData();
                     $currentStep.find(':input').each(function() {
@@ -517,7 +526,11 @@
                                     }
                                 }
                             }
+                        },
+                        complete: function() {
+                            $btn.prop('disabled', false).html(originalContent);
                         }
+
                     });
                 });
 
@@ -599,7 +612,7 @@
                         contentType: false,
                         success: function(response) {
                             $btn.attr('disabled', false).html(originalContent);
-                            window.location.href = "{{ route('verify') }}";
+                            window.location.href = "{{ route('thank_you') }}";
                         },
                         error: function(xhr) {
                             $btn.attr('disabled', false).html(originalContent);
