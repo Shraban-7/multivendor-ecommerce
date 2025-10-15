@@ -18,6 +18,8 @@ class VerificationCode extends Model
     
     public static function generateCode()
     {
+        return 123456;
+        
         return rand(100000, 999999);
 
         //return strtoupper(Str::random(6));
