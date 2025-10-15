@@ -146,7 +146,7 @@ class AuthController extends Controller
 
                     $request->session()->put('verify_email', $seller->email);
 
-                    Mail::to($seller->email)->queue(new RegistrationPendingMail($seller->business_name));
+                    //Mail::to($seller->email)->queue(new RegistrationPendingMail($seller->business_name));
 
                     $this->logMemoryUsage("Step 3");
 
