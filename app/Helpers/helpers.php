@@ -76,9 +76,13 @@ if (! function_exists('upload_file')) {
             Storage::disk($disk)->makeDirectory($directory);
         }
 
+        // $fileName = time() . rand(1, 9999) . '.' . $file->getClientOriginalExtension();
+        // $path     = $directory . '/' . $fileName;
+        // Storage::disk($disk)->put($path, File::get($file));
+
         $fileName = time() . rand(1, 9999) . '.' . $file->getClientOriginalExtension();
-        $path     = $directory . '/' . $fileName;
-        Storage::disk($disk)->put($path, File::get($file));
+        $path = $directory . '/' . $fileName;
+        $file->storeAs($directory, $fileName, $disk);
 
         return $path;
     }
