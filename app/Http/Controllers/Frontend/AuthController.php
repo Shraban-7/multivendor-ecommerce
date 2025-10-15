@@ -128,8 +128,11 @@ class AuthController extends Controller
 
                 try {
                     foreach ($imageFields as $field => $folder) {
+
                         if ($request->hasFile($field)) {
+                            \Log::info("Attempting to upload: $field");
                             $allData[$field] = upload_file($request->file($field), $folder);
+                            \Log::info("Uploaded $field to: $allData[$field]");
                         }
                     }
 
@@ -142,7 +145,7 @@ class AuthController extends Controller
                     Mail::to($seller->email)->queue(new RegistrationPendingMail($seller->business_name));
 
                     return successResponse('Registration is complete, check your email.');
-                } catch (Exception $e) {
+                } catch (\Throwable $e) {
 
                     return errorResponse($e->getMessage());
                 }
