@@ -106,10 +106,13 @@ class ProductVariantController extends Controller
             $data['discount_value']   = null;
         }
 
+
+
         $data['is_default'] = $request->has('is_default') ? 1 : 0;
 
         if ($data['is_default'] == 1) {
             ProductVariant::where('product_id', $data['product_id'])
+                ->where('id', '!=', $variant->id)
                 ->update(['is_default' => 0]);
         }
 
@@ -148,7 +151,7 @@ class ProductVariantController extends Controller
 
         $default->is_default = 1;
         $default->save();
-        
+
         return redirect()->back()->with('success', 'Variant Deleted Successfully!');
     }
 

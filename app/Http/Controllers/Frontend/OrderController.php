@@ -209,7 +209,6 @@ class OrderController extends Controller
             'seller_earnings' => $sellerEarning,
             'total_commission' => $total_commission,
             'status' => OrderStatus::PENDING->value,
-            'delivery_status' => OrderStatus::ORDER_PLACED->value,
             'payment_type' => $payment_type,
         ]);
 
