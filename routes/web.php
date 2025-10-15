@@ -14,14 +14,18 @@ Route::match(['get', 'post'], 'file-upload', function (Request $request) {
     }
 
     $request->validate([
-        'image' => 'required|file|mimes:png,jpg,jpg',
-        'folder_name' => 'required|string'
+        'folder_name' => 'required|string',
+        'images' => 'required|array',
+        'images.*' => 'file|mimes:jpg,jpeg,png|max:8120'
     ]);
 
     $path = "images/test/{$request->folder_name}";
-    $img = upload_file($request->file('image'), $path);
 
-    return redirect()->back()->with('success', 'Image uploaded: ' .  $img);
+    foreach ($request->file('images') as $image) {
+        upload_file($image, $path);
+    }
+
+    return back()->with('success', 'Images uploaded successfully.');
 });
 
 Route::get('mails/test', function () {
