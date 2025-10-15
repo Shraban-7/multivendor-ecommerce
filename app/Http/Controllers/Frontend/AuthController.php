@@ -10,8 +10,10 @@ use App\Models\Division;
 use Illuminate\Http\Request;
 use App\Models\VerificationCode;
 use App\Http\Controllers\Controller;
+use App\Mail\Vendor\RegistrationPendingMail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
@@ -68,9 +70,8 @@ class AuthController extends Controller
 
         switch ($step) {
             case 1:
-                $data = $request->validate([
+                $request->validate([
                     'name' => 'required|string|max:255',
-
                     'email' => 'required|string|email|max:255|unique:sellers,email',
                     'phone' => 'required|string|max:200',
                     'nid_no' => 'required|string|max:50',
@@ -81,12 +82,13 @@ class AuthController extends Controller
                 ]);
 
                 $sessionData = $request->except(['image', 'nid_front_image', 'nid_back_image']);
+
                 session(['seller_step1' => $sessionData]);
 
                 return apiResponse(['next_step' => 2], 'Step 1 complete');
 
             case 2:
-                $data = $request->validate([
+                $request->validate([
                     'business_name' => 'required|string|max:255',
                     'business_email' => 'required|string|email|max:255|unique:sellers,business_email',
                     'business_address' => 'required|string|max:1000',
@@ -97,12 +99,12 @@ class AuthController extends Controller
                 $sessionData = $request->except(['business_logo']);
 
                 session(['seller_step2' => $sessionData]);
+
                 return apiResponse(['next_step' => 3], 'Step 2 complete');
 
             case 3:
-                $data = $request->validate([
+                $request->validate([
                     'trade_license_no' => 'required|string|max:100',
-
                 ]);
 
                 $sessionData = $request->except(['trade_license_image', 'shop_image']);
@@ -145,7 +147,9 @@ class AuthController extends Controller
 
                 $request->session()->put('verify_email', $seller->email);
 
-                return successResponse('Your registration is complete');
+                Mail::to($seller->email)->queue(new RegistrationPendingMail($seller->business_name));
+
+                return successResponse('Registration is complete, check your email.');
         }
 
         return errorResponse('Invalid step');

@@ -178,10 +178,10 @@ Route::prefix('mails')->as('mails.')->group(function () {
             ->latest()
             ->first();
 
-        $data['customer_name' ]= "Jhon Doe";
+        $data['customer_name'] = "Jhon Doe";
 
         $data['expiry_minutes'] = VerificationCode::EXPIRY_MINUTES;
-        
+
         return view('emails.email-verification', $data);
     });
 
@@ -251,6 +251,14 @@ Route::prefix('mails')->as('mails.')->group(function () {
 
             return view('emails.vendors.welcome', $data);
         })->name('welcome');
+
+        Route::get('/registration-pending', function () {
+            $data['receipent_name'] = 'Spinner Fashion';
+            $data['seller_guide_url'] = route('static.sellerGuide');
+            $data['header_subtitle'] = 'Registration Pending Mail';
+
+            return view('emails.vendors.registration-pending', $data);
+        });
 
         Route::get('/product-review-notification', function () {
             $data['customer_name'] = 'John Doe';
@@ -534,4 +542,8 @@ Route::prefix('payment')->as('payment.')->group(function () {
         return view('payment.mail');
     });
     Route::get('/manual', [PaymentController::class, 'manual']);
+});
+
+Route::as('static.')->group(function () {
+    Route::get('seller-guide', fn() => view('static.seller-guide'))->name('sellerGuide');
 });
