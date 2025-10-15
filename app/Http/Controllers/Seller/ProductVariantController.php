@@ -105,9 +105,7 @@ class ProductVariantController extends Controller
             $data['discount_type']    = null;
             $data['discount_value']   = null;
         }
-
-
-
+        
         $data['is_default'] = $request->has('is_default') ? 1 : 0;
 
         if ($data['is_default'] == 1) {
