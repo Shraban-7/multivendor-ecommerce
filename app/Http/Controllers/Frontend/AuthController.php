@@ -166,7 +166,7 @@ class AuthController extends Controller
         $peak  = memory_get_peak_usage(true);
 
         \Log::info("Current memory usage from {$source}: " . $this->formatBytes($usage));
-        \Log::info("Peak memory usage from {$source}" . $this->formatBytes($peak));
+        \Log::info("Peak memory usage from {$source}: " . $this->formatBytes($peak));
     }
 
     private function formatBytes($bytes, $precision = 2)
