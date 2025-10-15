@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Models\VerificationCode;
 use App\Http\Controllers\Controller;
 use App\Mail\Vendor\RegistrationPendingMail;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -76,9 +77,9 @@ class AuthController extends Controller
                     'phone' => 'required|string|max:200',
                     'nid_no' => 'required|string|max:50',
                     'password' => 'required|string|min:5|confirmed',
-                    'image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
-                    'nid_front_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
-                    'nid_back_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
+                    'image' => 'nullable|image|mimes:jpeg,png,jpg|max:12288',
+                    'nid_front_image' => 'nullable|image|mimes:jpeg,png,jpg|max:12288',
+                    'nid_back_image' => 'nullable|image|mimes:jpeg,png,jpg|max:12288',
                 ]);
 
                 $sessionData = $request->except(['image', 'nid_front_image', 'nid_back_image']);
@@ -125,31 +126,26 @@ class AuthController extends Controller
                     'shop_image'          => "images/{$username}/shops",
                 ];
 
-                foreach ($imageFields as $field => $folder) {
-                    if ($request->hasFile($field)) {
-                        $allData[$field] = upload_file($request->file($field), $folder);
+                try {
+                    foreach ($imageFields as $field => $folder) {
+                        if ($request->hasFile($field)) {
+                            $allData[$field] = upload_file($request->file($field), $folder);
+                        }
                     }
+
+                    $seller = Seller::create($allData);
+
+                    session()->forget(['seller_step1', 'seller_step2']);
+
+                    $request->session()->put('verify_email', $seller->email);
+
+                    Mail::to($seller->email)->queue(new RegistrationPendingMail($seller->business_name));
+
+                    return successResponse('Registration is complete, check your email.');
+                } catch (Exception $e) {
+
+                    return errorResponse($e->getMessage());
                 }
-
-                $seller = Seller::create($allData);
-
-                session()->forget(['seller_step1', 'seller_step2']);
-
-                $code = VerificationCode::generateCode();
-
-                VerificationCode::create([
-                    'email'      => $seller->email,
-                    'phone'      => $seller->phone,
-                    'code'       => $code,
-                    'type'       => VerificationCode::EMAIL_VERIFICATION,
-                    'expires_at' => Carbon::now()->addMinutes(VerificationCode::EXPIRY_MINUTES),
-                ]);
-
-                $request->session()->put('verify_email', $seller->email);
-
-                Mail::to($seller->email)->queue(new RegistrationPendingMail($seller->business_name));
-
-                return successResponse('Registration is complete, check your email.');
         }
 
         return errorResponse('Invalid step');
