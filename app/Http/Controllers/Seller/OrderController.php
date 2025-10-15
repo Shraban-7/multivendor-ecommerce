@@ -17,14 +17,14 @@ class OrderController extends Controller
     {
         $type = $request->segment(3);
 
-        $statusValue = OrderStatus::valueFromLabel($type);
+        $statusValue = $type ? OrderStatus::valueFromLabel($type) : null;
 
-        if ($statusValue === null && $type != 'pos') {
+        if ($type && $statusValue === null && $type != 'pos') {
             return redirect()->route('seller.dashboard');
         }
 
         $orders = Order::where('seller_id', get_seller_id())
-            ->where('status', $statusValue)
+            ->when($statusValue !== null, fn($q) => $q->where('status', $statusValue))
             ->whereNotNull('user_id')
             ->latest('id');
 
@@ -32,18 +32,10 @@ class OrderController extends Controller
             $orders->where('invoice_id', 'like', '%' . $request->invoice_id . '%');
         }
         if ($request->filled('customer_name')) {
-            $orders->whereHas(
-                'user',
-                fn($q) =>
-                $q->where('name', 'like', '%' . $request->customer_name . '%')
-            );
+            $orders->whereHas('user', fn($q) => $q->where('name', 'like', '%' . $request->customer_name . '%'));
         }
         if ($request->filled('customer_phone')) {
-            $orders->whereHas(
-                'user',
-                fn($q) =>
-                $q->where('phone', 'like', '%' . $request->customer_phone . '%')
-            );
+            $orders->whereHas('user', fn($q) => $q->where('phone', 'like', '%' . $request->customer_phone . '%'));
         }
         if ($request->filled('date_from')) {
             $orders->whereDate('created_at', '>=', $request->date_from);
@@ -80,8 +72,8 @@ class OrderController extends Controller
 
         $old_status = $order->status;
 
-        if ($old_status->value==$request->new_status) {
-          return  redirect()->back()->with('success', 'Order status already '.$old_status->title());
+        if ($old_status->value == $request->new_status) {
+            return  redirect()->back()->with('success', 'Order status already ' . $old_status->title());
         }
 
         $order->status = $request->new_status;
@@ -96,7 +88,7 @@ class OrderController extends Controller
         ]);
 
         $order->addSellerEarningToBalance();
-        if ($order->status->value == OrderStatus::DELIVERED->value) {
+        if ($order->status->value == OrderStatus::COMPLETED->value) {
 
             $affiliate_commission = AffiliateCommission::where('order_id', $order->id)->first();
             if ($affiliate_commission && $affiliate_commission->status != AffiliateCommission::APPROVED) {

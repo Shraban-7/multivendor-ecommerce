@@ -386,7 +386,6 @@ class PosController extends Controller
             'seller_earnings' => $sellerEarning,
             'total_commission' => $total_commission,
             'status' => OrderStatus::PENDING->value,
-            'delivery_status' => OrderStatus::ORDER_PLACED->value,
         ];
 
         $order = Order::create($orderData);
@@ -418,7 +417,7 @@ class PosController extends Controller
 
         $seller->update(['total_sold' => $sellerOrderCount]);
 
-        $order->update(['status' => OrderStatus::DELIVERED->value]);
+        $order->update(['status' => OrderStatus::COMPLETED->value]);
         $order->addSellerEarningToBalance();
 
         if (!empty($data['customer_name']) || !empty($data['customer_phone'])) {

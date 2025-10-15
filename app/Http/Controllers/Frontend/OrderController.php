@@ -123,15 +123,8 @@ class OrderController extends Controller
             $discount += $itemDiscount;
             $grand_total = $sub_total + $discount;
 
-            // if ($product->payment_type->value == PaymentType::FULL_PAYMENT->value) {
-            //     $payment_type = PaymentType::FULL_PAYMENT->value;
-            // } elseif ($product->payment_type->value == PaymentType::COD_WITH_DELIVERY_CHARGE->value) {
-            //     $payment_type = PaymentType::COD_WITH_DELIVERY_CHARGE->value;
-            // }
-
             $payment_type = Order::getPaymentType($product);
-
-
+            
             $orderItems[] = [
                 'product_id' => $product->id,
                 'product_variant_id' => $cartItem->product_variant_id ?? null,
