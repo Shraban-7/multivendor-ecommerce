@@ -30,7 +30,7 @@ class RegistrationPendingMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.registration-pending',
+            view: 'emails.vendors.registration-pending',
             with: [
                 'receipent_name' => $this->receipentName,
                 'header_subtitle' => 'Registration Pending Mail',
