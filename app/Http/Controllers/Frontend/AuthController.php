@@ -86,6 +86,8 @@ class AuthController extends Controller
 
                 session(['seller_step1' => $sessionData]);
 
+                $this->logMemoryUsage("Step 1");
+
                 return apiResponse(['next_step' => 2], 'Step 1 complete');
 
             case 2:
@@ -100,6 +102,8 @@ class AuthController extends Controller
                 $sessionData = $request->except(['business_logo']);
 
                 session(['seller_step2' => $sessionData]);
+
+                $this->logMemoryUsage("Step 1");
 
                 return apiResponse(['next_step' => 3], 'Step 2 complete');
 
@@ -144,6 +148,8 @@ class AuthController extends Controller
 
                     Mail::to($seller->email)->queue(new RegistrationPendingMail($seller->business_name));
 
+                    $this->logMemoryUsage("Step 3");
+
                     return successResponse('Registration is complete, check your email.');
                 } catch (\Throwable $e) {
 
@@ -152,6 +158,26 @@ class AuthController extends Controller
         }
 
         return errorResponse('Invalid step');
+    }
+
+    private function logMemoryUsage($source)
+    {
+        $usage = memory_get_usage(true);
+        $peak  = memory_get_peak_usage(true);
+
+        \Log::info("Current memory usage from {$source}: " . $this->formatBytes($usage));
+        \Log::info("Peak memory usage from {$source}" . $this->formatBytes($peak));
+    }
+
+    private function formatBytes($bytes, $precision = 2)
+    {
+        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        $bytes = max($bytes, 0);
+        $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+        $pow = min($pow, count($units) - 1);
+
+        $bytes /= (1 << (10 * $pow));
+        return round($bytes, $precision) . ' ' . $units[$pow];
     }
 
     public function logout(Request $request)
