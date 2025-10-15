@@ -120,41 +120,42 @@ $isDashboard = View::hasSection('dashboard');
                 }
             });
 
-            const sidebarToggle = document.getElementById("sidebar-toggle");
-            const mobileSidebar = document.getElementById("mobile-sidebar");
-            const sidebarBackdrop = document.getElementById("sidebar-backdrop");
-            
-            sidebarToggle.addEventListener("click", () => {
-                const isOpen = !mobileSidebar.classList.contains("-translate-x-full");
+            const $sidebarToggle = $("#sidebar-toggle");
+            const $mobileSidebar = $("#mobile-sidebar");
+            const $sidebarBackdrop = $("#sidebar-backdrop");
+
+            $sidebarToggle.on("click", function() {
+                const isOpen = !$mobileSidebar.hasClass("-translate-x-full");
                 if (isOpen) {
-                    mobileSidebar.classList.add("-translate-x-full");
-                    sidebarBackdrop.classList.add("hidden");
+                    $mobileSidebar.addClass("-translate-x-full");
+                    $sidebarBackdrop.addClass("hidden");
                 } else {
-                    mobileSidebar.classList.remove("-translate-x-full");
-                    sidebarBackdrop.classList.remove("hidden");
+                    $mobileSidebar.removeClass("-translate-x-full");
+                    $sidebarBackdrop.removeClass("hidden");
                 }
             });
 
-            sidebarBackdrop.addEventListener("click", () => {
-                mobileSidebar.classList.add("-translate-x-full");
-                sidebarBackdrop.classList.add("hidden");
+            $sidebarBackdrop.on("click", function() {
+                $mobileSidebar.addClass("-translate-x-full");
+                $sidebarBackdrop.addClass("hidden");
             });
 
-            function togglePassword(inputId, button) {
-                const input = document.getElementById(inputId);
-                const eye = button.querySelector('.fa-eye');
-                const eyeSlash = button.querySelector('.fa-eye-slash');
+            window.togglePassword = function(inputId, button) {
+                const $input = $("#" + inputId);
+                const $button = $(button);
+                const $eye = $button.find(".fa-eye");
+                const $eyeSlash = $button.find(".fa-eye-slash");
 
-                if (input.type === "password") {
-                    input.type = "text";
-                    eye.style.display = "none";
-                    eyeSlash.style.display = "inline";
+                if ($input.attr("type") === "password") {
+                    $input.attr("type", "text");
+                    $eye.hide();
+                    $eyeSlash.show();
                 } else {
-                    input.type = "password";
-                    eye.style.display = "inline";
-                    eyeSlash.style.display = "none";
+                    $input.attr("type", "password");
+                    $eye.show();
+                    $eyeSlash.hide();
                 }
-            }
+            };
 
             $('body').on('click', '.addToCartBtn', function() {
                 var $btn = $(this);
@@ -429,6 +430,7 @@ $isDashboard = View::hasSection('dashboard');
                     $mainImage.attr('src', `/storage/${product.slider[0] ?? ''}`);
 
                 } else {
+                    // console.log("variant not found");
                     const basePrice = parseFloat(product.price) || 0;
                     const discounted = product.discounted_price !== null ? parseFloat(product.discounted_price) :
                         null;
@@ -567,7 +569,7 @@ $isDashboard = View::hasSection('dashboard');
                 });
 
                 const quantity = parseInt($wrapper.find(".qtyInputValue").val()) || 1;
-                updateProductUI($wrapper, defaultVariant, quantity,true);
+                updateProductUI($wrapper, defaultVariant, quantity, true);
 
                 $wrapper.data('variant-initialized', true);
             }
