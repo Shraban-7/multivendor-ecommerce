@@ -86,8 +86,6 @@ class AuthController extends Controller
 
                 session(['seller_step1' => $sessionData]);
 
-                $this->logMemoryUsage("Step 1");
-
                 return apiResponse(['next_step' => 2], 'Step 1 complete');
 
             case 2:
@@ -102,8 +100,6 @@ class AuthController extends Controller
                 $sessionData = $request->except(['business_logo']);
 
                 session(['seller_step2' => $sessionData]);
-
-                $this->logMemoryUsage("Step 1");
 
                 return apiResponse(['next_step' => 3], 'Step 2 complete');
 
@@ -134,9 +130,7 @@ class AuthController extends Controller
                     foreach ($imageFields as $field => $folder) {
 
                         if ($request->hasFile($field)) {
-                            \Log::info("Attempting to upload: $field");
                             $allData[$field] = upload_file($request->file($field), $folder);
-                            \Log::info("Uploaded $field to: $allData[$field]");
                         }
                     }
 
@@ -147,8 +141,6 @@ class AuthController extends Controller
                     $request->session()->put('verify_email', $seller->email);
 
                     //Mail::to($seller->email)->queue(new RegistrationPendingMail($seller->business_name));
-
-                    $this->logMemoryUsage("Step 3");
 
                     return successResponse('Registration is complete, check your email.');
                 } catch (\Throwable $e) {
