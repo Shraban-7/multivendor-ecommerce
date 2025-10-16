@@ -15,6 +15,7 @@ use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
@@ -77,12 +78,13 @@ class AuthController extends Controller
                     'phone' => 'required|string|max:200',
                     'nid_no' => 'required|string|max:50',
                     'password' => 'required|string|min:5|confirmed',
-                    'image' => 'nullable|image|mimes:jpeg,png,jpg|max:12288',
-                    'nid_front_image' => 'nullable|image|mimes:jpeg,png,jpg|max:12288',
-                    'nid_back_image' => 'nullable|image|mimes:jpeg,png,jpg|max:12288',
                 ]);
 
                 $sessionData = $request->except(['image', 'nid_front_image', 'nid_back_image']);
+
+                if (!session()->has('image')) return errorResponse('The image field is required!');
+                if (!session()->has('nid_front_image')) return errorResponse('NID front image is required!');
+                if (!session()->has('nid_back_image')) return errorResponse('NID back image is required!');
 
                 session(['seller_step1' => $sessionData]);
 
@@ -101,12 +103,17 @@ class AuthController extends Controller
 
                 session(['seller_step2' => $sessionData]);
 
+                if (!session()->has('business_logo')) return errorResponse('Business logo is required!');
+
                 return apiResponse(['next_step' => 3], 'Step 2 complete');
 
             case 3:
                 $request->validate([
                     'trade_license_no' => 'required|string|max:100',
                 ]);
+
+                if (!session()->has('trade_license_image')) return errorResponse('Trade license image is required!');
+                if (!session()->has('shop_image')) return errorResponse('Shop image is required!');
 
                 $sessionData = $request->except(['trade_license_image', 'shop_image']);
 
@@ -117,26 +124,35 @@ class AuthController extends Controller
                 $allData['username'] = str_slug('sellers', 'username', $allData['name']);
                 $username = $allData['username'];
 
-                $imageFields = [
-                    'image'               => "images/{$username}/avatar",
-                    'nid_front_image'     => "images/{$username}/nids",
-                    'nid_back_image'      => "images/{$username}/nids",
-                    'business_logo'       => "images/{$username}/logo",
-                    'trade_license_image' => "images/{$username}/licenses",
-                    'shop_image'          => "images/{$username}/shops",
+                $destinationDir = "images/".$username;
+                if (!Storage::disk('public')->exists($destinationDir)) {
+                    Storage::disk('public')->makeDirectory($destinationDir);
+                }
+
+                $imageData = [
+                    'image' => $this->moveTempImage(session('image'), $destinationDir),
+                    'nid_front_image' => $this->moveTempImage(session('nid_front_image'), $destinationDir),
+                    'nid_back_image' => $this->moveTempImage(session('nid_back_image'), $destinationDir),
+                    'business_logo' => $this->moveTempImage(session('business_logo'), $destinationDir),
+                    'trade_license_image' => $this->moveTempImage(session('trade_license_image'), $destinationDir),
+                    'shop_image' => $this->moveTempImage(session('shop_image'), $destinationDir),
                 ];
 
+                $allData = array_merge($allData, $imageData);
+
                 try {
-                    foreach ($imageFields as $field => $folder) {
-
-                        if ($request->hasFile($field)) {
-                            $allData[$field] = upload_file($request->file($field), $folder);
-                        }
-                    }
-
                     $seller = Seller::create($allData);
 
-                    session()->forget(['seller_step1', 'seller_step2']);
+                    session()->forget([
+                        'seller_step1',
+                        'seller_step2',
+                        'image',
+                        'nid_front_image',
+                        'nid_back_image',
+                        'business_logo',
+                        'trade_license_image',
+                        'shop_image',
+                    ]);
 
                     $request->session()->put('verify_email', $seller->email);
 
@@ -160,9 +176,23 @@ class AuthController extends Controller
         return errorResponse('Invalid step');
     }
 
+    private function moveTempImage($imagePath, $destinationDir)
+    {
+        if (!Storage::disk('public')->exists($imagePath)) {
+            return null;
+        }
+
+        $filename = basename($imagePath);
+        $newPath = $destinationDir . '/' . $filename;
+
+        Storage::disk('public')->move($imagePath, $newPath);
+
+        return $newPath;
+    }
+
     public function uploadTempImage(Request $request)
     {
-        $allowedNames = ['image', 'nid_front_image', 'nid_back_image', 'trade_license_image', 'shop_image'];
+        $allowedNames = ['image', 'nid_front_image', 'nid_back_image', 'trade_license_image', 'business_logo', 'shop_image'];
 
         $request->validate([
             'name' => 'required|string|in:' . implode(',', $allowedNames),

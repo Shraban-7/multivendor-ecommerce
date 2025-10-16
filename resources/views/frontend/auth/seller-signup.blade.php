@@ -114,10 +114,8 @@
                             </div>
                             <div class="form-ctrl space-y-2">
                                 <label class="block text-sm font-medium text-gray-700">Profile Image</label>
-                                <div id="profile_imageUpload"auto
-                                    class="relative border-2 border-dashed border-gray-300 rounded-lg text-center cursor-pointer hover:border-light-yellow transition w-[120px] h-[120px]">
-                                    <input type="file" id="profile_image" name="image" accept="image/*"
-                                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                                <div id="profile_imageUpload" auto class="relative border-2 border-dashed border-gray-300 rounded-lg text-center cursor-pointer hover:border-light-yellow transition w-[120px] h-[120px]">
+                                    <input type="file" id="profile_image" name="image" accept="image/*" class="tempImageInput absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
 
                                     <!-- Upload Placeholder -->
                                     <div
@@ -158,7 +156,7 @@
                                         <!-- File input overlay -->
                                         <input type="file" id="nid_front_image" name="nid_front_image"
                                             accept="image/*"
-                                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-0" />
+                                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-0 tempImageInput" />
 
                                         <!-- Placeholder UI -->
                                         <div
@@ -189,7 +187,7 @@
                                         class="relative border-2 border-dashed border-gray-300 rounded-lg text-center cursor-pointer hover:border-light-yellow transition w-full h-[180px]">
 
                                         <input type="file" id="nid_back_image" name="nid_back_image" accept="image/*"
-                                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-0" />
+                                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-0 tempImageInput" />
 
                                         <div
                                             class="flex flex-col items-center justify-center h-full text-gray-500 pointer-events-none">
@@ -292,7 +290,7 @@
                                     class="relative border-2 border-dashed border-gray-300 rounded-lg text-center cursor-pointer hover:border-light-yellow transition w-[120px] h-[120px]">
 
                                     <input type="file" id="business_logo" name="business_logo" accept="image/*"
-                                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-0" />
+                                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-0 tempImageInput" />
 
                                     <!-- Placeholder -->
                                     <div
@@ -355,7 +353,7 @@
 
                                         <input type="file" id="trade_license_image" name="trade_license_image"
                                             accept="image/*"
-                                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-0" />
+                                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-0 tempImageInput" />
 
                                         <!-- Placeholder -->
                                         <div
@@ -385,7 +383,7 @@
                                         class="relative border-2 border-dashed border-gray-300 rounded-lg text-center cursor-pointer hover:border-indigo-500 transition w-[140px] h-[140px]">
 
                                         <input type="file" id="shop_image" name="shop_image" accept="image/*"
-                                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-0" />
+                                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-0 tempImageInput" />
 
                                         <!-- Placeholder -->
                                         <div
@@ -443,6 +441,42 @@
     @push('scripts')
         <script>
             $(document).ready(function() {
+                $('.tempImageInput').change(function () {
+                    let input = this;
+                    let file = input.files[0];
+
+                    if (!file) return;
+
+                    let inputName = $(input).attr('name'); 
+
+                    let formData = new FormData();
+                    formData.append('image', file);
+                    formData.append('name', inputName);
+
+                    $.ajax({
+                        url: "{{ route('seller.signup.uploadTempImage') }}",
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function (response) {
+                        },
+                        error: function (xhr) {
+                            if (xhr.status === 422) {
+                                let errors = xhr.responseJSON.errors;
+                                if (errors.image) {
+                                    alert(errors.image[0]);
+                                }
+                            } else {
+                                console.error('Upload failed:', xhr);
+                            }
+                        }
+                    });
+                });
+
                 $('#division_id').change(function() {
                     let divisionId = $(this).val();
                     let $districtSelect = $('#district_id');
@@ -492,7 +526,7 @@
                         if (!name) return;
 
                         if ($(this).attr('type') === 'file' && this.files[0]) {
-                            formData.append(name, this.files[0]);
+                            //formData.append(name, this.files[0]);
                         } else {
                             formData.append(name, $(this).val());
                         }
