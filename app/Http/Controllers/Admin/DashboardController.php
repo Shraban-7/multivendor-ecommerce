@@ -56,15 +56,18 @@ class DashboardController extends Controller
         $data['total_customers'] = Order::distinct('user_id')->count('user_id');
         $data['total_commission'] = Order::sum('total_commission');
 
+        $pending_sellers = Seller::where('status', Seller::PENDING)->get();
+        $pending_sellers_count = $pending_sellers->count();
+
         return view('admin.dashboard', compact(
             'stats',
             'recent_orders',
             'top_vendors',
             'monthly_revenue',
+            'pending_sellers',
+            'pending_sellers_count',
             'data'
         ));
-
-
 
         return view('admin.dashboard', $data);
     }

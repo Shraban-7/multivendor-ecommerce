@@ -2,13 +2,46 @@
 @section('title', 'Dashboard')
 @section('content')
 
-<div class="container-fluid py-4">
-    <div class="row mb-3">
-        <div class="col">
-            <h2 class="fw-bold mb-0">Dashboard</h2>
+@if($pending_sellers_count)
+<div class="alert alert-warning alert-dismissible fade show shadow-sm" role="alert">
+    <div class="d-flex align-items-center mb-2">
+        <i class="fas fa-exclamation-triangle fs-4 me-2 text-warning"></i>
+        <h5 class="mb-0 text-dark">Pending Vendor Applications</h5>
+    </div>
+    <p class="mb-1 text-dark">
+        You have <strong>{{ $pending_sellers_count }}</strong> new vendor{{ $pending_sellers_count !== 1 ? 's' : '' }} waiting for approval.
+        Review them to activate their shops.
+    </p>
+
+    <div class="mt-2">
+        <a href="" class="btn btn-sm btn-warning me-2">
+            <i class="fas fa-eye me-1"></i> View Applications
+        </a>
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="alert">
+            <i class="fas fa-times"></i> Dismiss
+        </button>
+    </div>
+
+    @if($pending_sellers->isNotEmpty())
+    <hr class="my-2">
+    <small class="d-block text-muted">
+        <strong>New:</strong>
+        @foreach($pending_sellers->take(3) as $shop)
+        {{ $shop->name }}@if(!$loop->last), @endif
+        @endforeach
+        @if($pending_sellers_count > 3){{ '...' }}@endif
+    </small>
+    @endif
+</div>
+@endif
+
+<div class="container-fluid mt-2">
+    <div class="row mb-2">
+        <div class="col d-flex align-items-end">
+            <h3 class="fw-bold mb-0">Dashboard</h3>
         </div>
         <div class="col-auto">
-            <button class="btn btn-primary" data-bs-toggle="modal" 
+            <button class="btn btn-primary" data-bs-toggle="modal"
                 data-bs-target="#quickActionsModal">
                 <i class="bi bi-lightning-fill me-2"></i>Quick Actions
             </button>
@@ -152,7 +185,7 @@
                                 <div class="flex-shrink-0">
                                     <div class="bg-light rounded-circle 
                                         d-flex align-items-center 
-                                        justify-content-center" 
+                                        justify-content-center"
                                         style="width: 40px; height: 40px;">
                                         <span class="fw-bold text-primary">
                                             {{ $index + 1 }}
@@ -190,7 +223,7 @@
                             <h5 class="mb-0 fw-bold">Recent Orders</h5>
                         </div>
                         <div class="col-auto">
-                            <a href="{{ route('admin.orders.index') }}" 
+                            <a href="{{ route('admin.orders.index') }}"
                                 class="btn btn-sm btn-outline-primary">
                                 View All
                             </a>
@@ -234,12 +267,12 @@
                                     </td>
                                     <td>
                                         @php
-                                            $statusClass = match($order->status) {
-                                                'completed' => 'success',
-                                                'pending' => 'warning',
-                                                'cancelled' => 'danger',
-                                                default => 'secondary'
-                                            };
+                                        $statusClass = match($order->status) {
+                                        'completed' => 'success',
+                                        'pending' => 'warning',
+                                        'cancelled' => 'danger',
+                                        default => 'secondary'
+                                        };
                                         @endphp
                                         <span class="badge bg-{{ $statusClass }}">
                                             {{ ucfirst($order->status->value) }}
@@ -250,11 +283,11 @@
                                     </td>
                                     <td>
                                         <div class="btn-group btn-group-sm">
-                                            <a href="#" 
+                                            <a href="#"
                                                 class="btn btn-outline-primary">
                                                 <i class="bi bi-eye"></i>
                                             </a>
-                                            <button class="btn btn-outline-secondary" 
+                                            <button class="btn btn-outline-secondary"
                                                 data-bs-toggle="dropdown">
                                                 <i class="bi bi-three-dots-vertical"></i>
                                             </button>
@@ -289,27 +322,27 @@
         <div class="modal-content">
             <div class="modal-header border-0">
                 <h5 class="modal-title fw-bold">Quick Actions</h5>
-                <button type="button" class="btn-close" 
+                <button type="button" class="btn-close"
                     data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <div class="list-group list-group-flush">
-                    <a href="" 
+                    <a href=""
                         class="list-group-item list-group-item-action border-0">
                         <i class="bi bi-plus-circle text-primary me-3"></i>
                         Add New Vendor
                     </a>
-                    <a href="" 
+                    <a href=""
                         class="list-group-item list-group-item-action border-0">
                         <i class="bi bi-box text-success me-3"></i>
                         Add New Product
                     </a>
-                    <a href="" 
+                    <a href=""
                         class="list-group-item list-group-item-action border-0">
                         <i class="bi bi-hourglass text-warning me-3"></i>
                         View Pending Orders
                     </a>
-                    <a href="" 
+                    <a href=""
                         class="list-group-item list-group-item-action border-0">
                         <i class="bi bi-graph-up text-info me-3"></i>
                         Generate Report
@@ -326,7 +359,7 @@
     // Revenue Chart
     const ctx = document.getElementById('revenueChart').getContext('2d');
     const revenueData = @json($monthly_revenue);
-    
+
     new Chart(ctx, {
         type: 'line',
         data: {
