@@ -12,7 +12,7 @@ class SellerController extends Controller
 {
     public function index()
     {
-        $sellers = Seller::get();
+        $sellers = Seller::latest('id')->paginate(30);
 
         return view('admin.sellers.index', compact('sellers'));
     }
