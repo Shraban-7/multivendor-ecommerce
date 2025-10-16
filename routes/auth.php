@@ -15,6 +15,8 @@ Route::middleware('guest')->group(function () {
     Route::post('/verify/resend', [AuthController::class, 'resendVerification'])->name('verify.resend');
 });
 
+Route::post('/seller-signup/upload-img', [AuthController::class, 'uploadTempImage'])->name('seller.signup.uploadTempImage');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'profile'])->name('profile');
     Route::post('/update-account', [ProfileController::class, 'updateAccount'])->name('accountUpdate');
@@ -22,7 +24,3 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
-
-
-

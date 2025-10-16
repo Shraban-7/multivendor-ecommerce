@@ -160,6 +160,26 @@ class AuthController extends Controller
         return errorResponse('Invalid step');
     }
 
+    public function uploadTempImage(Request $request)
+    {
+        $allowedNames = ['image', 'nid_front_image', 'nid_back_image', 'trade_license_image', 'shop_image'];
+
+        $request->validate([
+            'name' => 'required|string|in:' . implode(',', $allowedNames),
+            'image' => 'required|image|mimes:jpeg,png,jpg|max:8000',
+        ]);
+
+        if ($alreadyUploaded = session()->get($request->name)) {
+            delete_file($alreadyUploaded);
+        }
+
+        $image = upload_file($request->file('image'), 'images/temp');
+
+        session()->put($request->name, $image);
+
+        return successResponse('Image uploaded successfully');
+    }
+
     private function logMemoryUsage($source)
     {
         $usage = memory_get_usage(true);
