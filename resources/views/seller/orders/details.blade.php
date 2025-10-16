@@ -71,6 +71,8 @@
                                     <span class="badge bg-dark">Returned</span>
                                 @elseif ($order->status->label() === 'refunded')
                                     <span class="badge bg-info text-dark">Refunded</span>
+                                @elseif ($order->status->label() === 'completed')
+                                    <span class="badge bg-success">Completed</span>
                                 @endif
 
                                 @if ($order->user_id != null)

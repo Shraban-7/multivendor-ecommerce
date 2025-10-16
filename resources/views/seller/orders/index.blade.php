@@ -3,7 +3,7 @@
 @section('content')
 
     <div class="mb-2 rounded d-flex justify-content-between align-items-center">
-        <h4 class="mb-0">{{ ucfirst($type) }} Orders </h4>
+        <h4 class="mb-0">{{ $type ? ucfirst($type) : 'All' }} Orders </h4>
         <button class="btn btn-sm btn-primary" data-bs-toggle="offcanvas" data-bs-target="#filterOffcanvas">
             <i data-feather="filter" class="icon-xs"></i> Filter
         </button>
@@ -19,6 +19,7 @@
                     <th scope="col">Subtotal</th>
                     <th scope="col">Due</th>
                     <th scope="col">Commission</th>
+                    <th scope="col">Status</th> {{-- New column --}}
                     <th scope="col">Action</th>
                 </tr>
             </thead>
@@ -33,7 +34,8 @@
                         <td>
                             {{ $order->created_at->format('d/m/Y h:i A') }}
                             @if ($order->created_at != $order->updated_at)
-                                <p class="small text-muted mb-0">Updated: {{ $order->updated_at->format('d/m/Y h:i A') }}</p>
+                                <p class="small text-muted mb-0">Updated: {{ $order->updated_at->format('d/m/Y h:i A') }}
+                                </p>
                             @endif
                         </td>
                         <td> {{ $order->user->name }} </td>
@@ -48,18 +50,33 @@
                             @endif
                         </td>
                         <td>
+                            @if ($order->status->label() === 'pending')
+                                <span class="badge bg-warning">Pending</span>
+                            @elseif ($order->status->label() === 'accepted')
+                                <span class="badge bg-secondary">Accepted</span>
+                            @elseif ($order->status->label() === 'shipped')
+                                <span class="badge bg-primary">Shipped</span>
+                            @elseif ($order->status->label() === 'cancelled')
+                                <span class="badge bg-danger">Cancelled</span>
+                            @elseif ($order->status->label() === 'delivered')
+                                <span class="badge bg-success">Delivered</span>
+                            @elseif ($order->status->label() === 'returned')
+                                <span class="badge bg-dark">Returned</span>
+                            @elseif ($order->status->label() === 'refunded')
+                                <span class="badge bg-info text-dark">Refunded</span>
+                            @elseif ($order->status->label() === 'completed')
+                                <span class="badge bg-success">Completed</span>
+                            @endif
+                        </td>
+                        <td>
                             <a href="{{ route('seller.orders.details', $order->invoice_id) }}" title="Details"
                                 class="btn btn-light border btn-sm me-1">
                                 <i data-feather="clipboard" class="icon-xs"></i> Details
                             </a>
-                            <a href="{{ route('invoice', $order->invoice_id) }}" title="Details" target="__blank"
+                            <a href="{{ route('invoice', $order->invoice_id) }}" title="Invoice" target="__blank"
                                 class="btn btn-light border btn-sm me-1">
                                 <i data-feather="download" class="icon-xs"></i> Invoice
                             </a>
-                            {{-- <a href="{{ route('receipt', $order->invoice_id) }}" title="Details" target="__blank"
-                                class="btn btn-light border btn-sm me-1">
-                                <i data-feather="download" class="icon-xs"></i> Receipt
-                            </a> --}}
                         </td>
                     </tr>
                 @endforeach
@@ -77,8 +94,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
         </div>
         <div class="offcanvas-body">
-            {{-- Dynamically pick the route based on $type --}}
-            <form action="{{ route('seller.orders.' . $type) }}" method="GET">
+            <form action="{{ $type ? route('seller.orders.' . $type) : route('seller.orders.index') }}" method="GET">
                 <div class="mb-3">
                     <label for="invoice_id" class="form-label">Invoice ID</label>
                     <input type="text" class="form-control" id="invoice_id" name="invoice_id"
@@ -106,12 +122,12 @@
                 </div>
 
                 <div class="d-flex gap-2">
-                    <a href="{{ route('seller.orders.' . $type) }}" class="btn btn-outline-secondary w-100">Reset</a>
+                    <a href="{{ $type ? route('seller.orders.' . $type) : route('seller.orders.index') }}"
+                        class="btn btn-outline-secondary w-100">Reset</a>
                     <button type="submit" class="btn btn-primary w-100">Apply Filter</button>
                 </div>
             </form>
         </div>
     </div>
-
 
 @endsection

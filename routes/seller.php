@@ -89,6 +89,7 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
     });
 
     Route::prefix('orders')->as('orders.')->group(function () {
+        Route::get('/', [OrderController::class, 'index'])->name('index');
         Route::get('/pending', [OrderController::class, 'index'])->name('pending');
         Route::get('/shipped', [OrderController::class, 'index'])->name('shipped');
         Route::get('/delivered', [OrderController::class, 'index'])->name('delivered');

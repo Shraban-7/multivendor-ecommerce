@@ -145,6 +145,9 @@ $route = request()->route()->getName();
                 <div id="navOrders" class="collapse {{ request()->routeIs('seller.orders.*') ? 'show' : '' }}"
                     data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
+                        @if ($seller || $employee->hasPermission('seller.orders.index'))
+                            <x-dashboard.nav-item-link :route="'seller.orders.index'">All</x-dashboard.nav-item-link>
+                        @endif
                         @if ($seller || $employee->hasPermission('seller.orders.pending'))
                             <x-dashboard.nav-item-link :route="'seller.orders.pending'">Pending</x-dashboard.nav-item-link>
                         @endif

@@ -33,13 +33,30 @@
     @endif
 @endpush
 
+@push('styles')
+    <style>
+        .thumbnailWrapper::-webkit-scrollbar {
+            height: 3px;
+        }
+
+        .thumbnailWrapper::-webkit-scrollbar-thumb {
+            background-color: #d1d5db;
+            border-radius: 10px;
+        }
+
+        .thumbnailWrapper::-webkit-scrollbar-track {
+            background: transparent;
+        }
+    </style>
+@endpush
+
 @section('content')
     @php
         $settings = settings();
     @endphp
 
     <main class="product-details-page">
-        
+
         <section class="product-main-sec">
             <!-- Product Contents  -->
             <x-frontend.product-contents :product="$product" />

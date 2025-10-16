@@ -18,24 +18,27 @@ $breadCrumbs = [['label' => $product['category']], ['label' => $product['subcate
 <div id="product-wrapper{{ $product['id'] }}" class="product-contents flex flex-col gap-5 md:flex-row"
     data-id="{{ $product['id'] }}" data-product='@json($publicProduct)'>
 
-    <div class="md:w-[50%] w-full flex flex-col gap-3 bg-white rounded border-1 border-gray-200 py-5">        
+    <div class="md:w-[50%] w-full flex flex-col gap-3 bg-white rounded border-1 border-gray-200 py-5">
         <div class="w-full flex justify-center ">
             <div class="relative w-full md:w-[360px] xl:w-[460px] aspect-[3/4] rounded-md">
                 <img src="{{ storage_url($product['thumbnail']) }}" alt="Thumbnail"
                     class="absolute inset-0 w-full h-full object-contain transition-all duration-300 main-product-image" />
             </div>
         </div>
-        @if(count($product['slider']) > 1)
-        <div class="order-2 w-full flex justify-center  mt-4">
-            <div class="single-product-thumbnails thumbnailWrapper flex gap-2 overflow-x-auto overflow-y-hidden">
-                @foreach ($product['slider'] as $index => $img)
-                <div class="slide-thumb aspect-square w-20 sm:w-24 rounded-md cursor-pointer border-1 overflow-hidden
-                    {{ $index === 0 ? 'border-primary' : 'border-gray-200' }}">
-                    <img src="{{ storage_url($img) }}" class="w-full h-full object-contain thumb-img" data-image="{{ storage_url($img) }}" data-full="{{ storage_url($img) }}" />
+        @if (count($product['slider']) > 1)
+            <div class="order-2 w-full flex justify-center mt-4 px-5">
+                <div class="single-product-thumbnails thumbnailWrapper flex gap-2 overflow-x-auto overflow-y-hidden scroll-smooth px-2"
+                    style="scrollbar-width: thin; scrollbar-color: #d1d5db transparent; ">
+                    @foreach ($product['slider'] as $index => $img)
+                        <div
+                            class="slide-thumb aspect-square w-16 sm:w-20 rounded-md cursor-pointer border overflow-hidden shrink-0 
+                        {{ $index === 0 ? 'border-primary' : 'border-gray-200' }}">
+                            <img src="{{ storage_url($img) }}" class="w-full h-full object-contain thumb-img"
+                                data-image="{{ storage_url($img) }}" data-full="{{ storage_url($img) }}" />
+                        </div>
+                    @endforeach
                 </div>
-                @endforeach
             </div>
-        </div>
         @endif
     </div>
 
