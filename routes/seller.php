@@ -85,6 +85,8 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::get('print-barcode', [ProductController::class, 'printBarcode'])->name('printBarcode');
         Route::get('print-labels', [ProductController::class, 'printBarcodeLabels'])->name('printBarcodeLabels');
 
+        Route::get('inventory', [ProductController::class, 'inventory'])->name('inventory');
+
         Route::get('/{product:slug}', [ProductController::class, 'show'])->name('show');
     });
 

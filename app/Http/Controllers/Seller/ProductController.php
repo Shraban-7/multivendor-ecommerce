@@ -21,7 +21,7 @@ class ProductController extends Controller
     public function index()
     {
         $categories = Category::category()->with('subcategories')->get();
-        
+
         $brands = Brand::all();
 
         $products = Product::with('variants.option_values', 'unit')->where('seller_id', get_seller_id())->latest('id')->get();
@@ -428,5 +428,32 @@ class ProductController extends Controller
         ];
 
         return view('seller.barcodes.print', compact('data'));
+    }
+
+    public function inventory()
+    {
+        $products = Product::whereHas('variants')
+            ->with('variants.option_values')
+            ->orderBy('name', 'ASC')
+            ->get()
+            ->map(function ($product) {
+                return [
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'image' => is_null($product->thumbnail) ? asset('assets/frontend/images/placeholder-img.jpg') : storage_url($product->thumbnail),
+                    'variants' => $product->variants->map(function ($variant) {
+                        return [
+                            'id' => $variant->id,
+                            'sku' => $variant->sku,
+                            'fullName' => $variant->fullName,
+                            'quantity' => $variant->stock_in = $variant->stock_out,
+                            'price' => removeZeroFromDecimal($variant->selling_price),
+                            'image' => is_null($variant->image) ? null : storage_url($variant->image)
+                        ];
+                    })
+                ];
+            });
+
+        return view('seller.products.inventory', compact('products'));
     }
 }
