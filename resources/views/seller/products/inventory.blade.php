@@ -200,7 +200,7 @@
 <body>
     <div class="container-fluid p-0">
         <div class="row">
-            <div class="col-lg-8 col-xl-6" id="resizeable">
+            <div class="col-lg-8" id="resizeable">
                 <div id="handle">
                     <span></span>
                     <span></span>
@@ -213,7 +213,7 @@
                         id="searchInput">
 
                     <div class="toggle-group d-flex gap-2">
-                        <span class="toggle-btn" id="toggleImages" data-active="false">
+                        <span class="toggle-btn" id="toggleImages" data-active="false" style="display: none;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
                                 <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z" />
@@ -230,6 +230,10 @@
                             </span>
 
                             <div class="dropdown-menu" aria-labelledby="toggleContextMenu">
+                                <div class="dropdown-item">
+                                    <input type="checkbox" id="toggleId" class="column-toggle" data-column="id">
+                                    <label for="toggleId">ID</label>
+                                </div>
                                 <div class="dropdown-item">
                                     <input type="checkbox" id="toggleVariant" checked class="column-toggle" data-column="variant">
                                     <label for="toggleVariant">Variant/SKU</label>
@@ -255,11 +259,12 @@
                     <table class="compact-table">
                         <thead>
                             <tr>
-                                <th style="width: 40px;">#</th>
-                                <th class="sortable" data-sort="name">Product Name</th>
-                                <th class="sortable col-variant" data-sort="variant">Variant / SKU</th>
-                                <th class="sortable qty-cell col-quantity" data-sort="quantity">Stock</th>
-                                <th class="sortable price-cell col-price" data-sort="price">Price</th>
+                                <th class="col-id hidden-column">ID</th>
+                                <th class="sortable" data-sort="name">Product</th>
+                                <th class="sortable qty-cell col-quantity text-end" data-sort="quantity">Stock</th>
+                                <th class="sortable price-cell col-price text-end" data-sort="price">Price</th>
+                                <th class="sortable price-cell col-discounted_price text-start" data-sort="discounted_price">Discounted Price</th>
+                                <th class="text-end">SKU</th>
                                 <th class="col-image hidden-column">Img</th>
                             </tr>
                         </thead>
@@ -297,6 +302,7 @@
                         name: product.name,
                         quantity: parseInt(variant.quantity),
                         price: variant.price,
+                        discounted_price: variant.discounted_price || 0,
                         image: variant.image || product.image,
                         productImage: product.image,
                         fullName: `${variant.fullName}`.trim()
@@ -313,11 +319,12 @@
             filteredVariants.forEach((variant) => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${variant.id}</td>
-                    <td>${variant.name}</td>
-                    <td class="col-variant">${variant.fullName} / ${variant.sku}</td>
-                    <td class="qty-cell col-quantity">${variant.quantity}</td>
-                    <td class="price-cell col-price">${variant.price}</td>
+                    <td class="col-id hidden-column">${variant.id}</td>
+                    <td><b>${variant.name}</b> <br> <i>${variant.fullName}</i></td>
+                    <td class="qty-cell col-quantity text-end">${variant.quantity}</td>
+                    <td class="price-cell col-price text-end">${variant.price}</td>
+                    <td class="price-cell col-discounted_price text-start">${variant.discounted_price}</td>
+                    <td class="text-end">${variant.sku}</td>
                     <td class="col-image hidden-column">
                         <img src="${variant.image}" class="thumbnail" alt="${variant.name}" onerror="handleImageError(this)">
                     </td>
@@ -360,7 +367,7 @@
                 let aVal = a[key];
                 let bVal = b[key];
 
-                if (key === 'quantity' || key === 'price') {
+                if (key === 'quantity' || key === 'price' || key == 'discounted_price') {
                     aVal = parseFloat(aVal);
                     bVal = parseFloat(bVal);
                 } else {

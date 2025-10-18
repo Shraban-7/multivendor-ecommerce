@@ -447,7 +447,8 @@ class ProductController extends Controller
                             'sku' => $variant->sku,
                             'fullName' => $variant->fullName,
                             'quantity' => $variant->stock_in = $variant->stock_out,
-                            'price' => removeZeroFromDecimal($variant->selling_price),
+                            'price' => removeZeroFromDecimal($variant->selling_price, 'int'),
+                            'discounted_price' => removeZeroFromDecimal($variant->discounted_price, 'int'),
                             'image' => is_null($variant->image) ? null : storage_url($variant->image)
                         ];
                     })

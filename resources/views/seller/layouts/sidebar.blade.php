@@ -82,6 +82,11 @@ $route = request()->route()->getName();
                                 <i data-feather="clock" class="nav-icon icon-xs me-2"></i> Stock History
                             </x-dashboard.nav-item-link>
                         @endif
+                        @if ($seller || $employee->hasPermission('seller.products.inventory'))
+                            <x-dashboard.nav-item-link :route="'seller.products.inventory'">
+                                <i data-feather="database" class="nav-icon icon-xs me-2"></i> Inventory
+                            </x-dashboard.nav-item-link>
+                        @endif
                         @if ($seller || $employee->hasPermission('seller.products.create'))
                             <x-dashboard.nav-item-link :route="'seller.products.create'">
                                 <i data-feather="plus" class="nav-icon icon-xs me-2"></i> Add Product
