@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Intervention\Image\Laravel\Facades\Image;
-
+use Spatie\LaravelImageOptimizer\Facades\ImageOptimizer;
 
 if (! function_exists('currency_symbol')) {
     function currency_symbol()
@@ -637,5 +637,11 @@ if (!function_exists('calculate_vat')) {
     function calculate_vat(float $vatPercentage, float $price): float
     {
         return round(($vatPercentage / 100) * $price, 2);
+    }
+}
+
+if(!function_exists('optimize_image')) {
+    function optimize_image($path) {
+        ImageOptimizer::optimize(storage_path('app/public/' . $path));
     }
 }
