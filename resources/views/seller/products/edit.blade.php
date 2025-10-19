@@ -144,7 +144,7 @@
 
 
                         <div class="mb-3 col-12">
-                            <label class="form-label">Thumbnail</label>
+                            <label class="form-label">Thumbnail <span class="text-muted small">(Ratio 1:1)</span></label>
                             <!-- <x-image-input name="thumbnail" :image="storage_url($product->thumbnail)" /> -->                            
 
                             <div style="width: 250px;">
