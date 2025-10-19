@@ -469,20 +469,17 @@
 
             function collectStepData(stepForm) {
                 let formData = new FormData();
+
                 stepForm.find(':input').each(function() {
                     const $input = $(this);
                     const name = $input.attr('name');
                     if (!name) return;
 
                     if ($input.attr('type') === 'file') {
-                        if (this.files.length > 0) {
-                            for (let i = 0; i < this.files.length; i++) {
-                                formData.append(name + (this.files.length > 1 ? `[]` : ''), this.files[i]);
-                            }
-                        }
-                    } else {
-                        formData.append(name, $input.val());
+                        return;
                     }
+
+                    formData.append(name, $input.val());
                 });
 
                 formData.append('step', currentStep);
