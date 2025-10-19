@@ -66,7 +66,8 @@
                         </div>
                         <div class="mb-3 col-md-3">
                             <label class="form-label">SKU</label>
-                            <input name="sku" type="text" value="{{ \App\Models\ProductVariant::generate_sku() }}" class="form-control">
+                            <input name="sku" type="text" value="{{ \App\Models\ProductVariant::generate_sku() }}"
+                                class="form-control">
                         </div>
                         <div class="mb-3 col-md-3">
                             <label class="form-label">Buying Price</label>
@@ -164,10 +165,12 @@
                                 <div class="form-group">
                                     <div class="image-preview border bg-light d-flex justify-content-center text-center align-items-center position-relative"
                                         style="width: 200px; height: 200px; cursor: pointer; overflow: hidden;">
-                                        <img src="" alt="image" class="img-fluid rounded" style="width: 100%; height: 100%; object-fit: cover;">
+                                        <img src="" alt="image" class="img-fluid rounded"
+                                            style="width: 100%; height: 100%; object-fit: cover;">
                                     </div>
                                     <input type="file" name="thumbnail" class="d-none file-input" accept="image/*">
-                                    <button type="button" class="btn btn-danger btn-sm mt-2 remove-image d-none">Remove Image</button>
+                                    <button type="button" class="btn btn-danger btn-sm mt-2 remove-image d-none">Remove
+                                        Image</button>
                                 </div>
                             </div>
                         </div>
@@ -291,7 +294,7 @@
                 let form = $('#form')[0];
                 let formData = new FormData(form);
 
-                $('#alertBox').html('');
+                $('#alertBox').html(''); // optional, if you want to keep this div for fallback
 
                 $.ajax({
                     url: "{{ route('seller.products.store') }}",
@@ -303,12 +306,7 @@
                         $('#submitBtn').attr('disabled', true).text('Saving...');
                     },
                     success: function(response) {
-                        $('#alertBox').html(`
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        Product added successfully!
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                `);
+                        toastr.success('Product added successfully!');
 
                         setTimeout(function() {
                             window.location.href = "{{ route('seller.products.index') }}";
@@ -319,21 +317,10 @@
 
                         if (xhr.status === 422) {
                             let errors = xhr.responseJSON.errors;
-                            let messages = Object.values(errors).map(item => `<div>${item[0]}</div>`).join(
-                                '');
-                            $('#alertBox').html(`
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            ${messages}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    `);
+                            let messages = Object.values(errors).map(item => item[0]).join('<br>');
+                            toastr.error(messages);
                         } else {
-                            $('#alertBox').html(`
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            Something went wrong. Please try again.
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    `);
+                            toastr.error('Something went wrong. Please try again.');
                         }
                     }
                 });

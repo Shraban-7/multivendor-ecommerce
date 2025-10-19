@@ -58,7 +58,7 @@
                         <div class="mb-3 col-md-3">
                             <label class="form-label">Brand</label>
                             <select name="brand" class="form-select w-100 brand-select">
-                                <option value="" >--Choose--</option>
+                                <option value="">--Choose--</option>
                                 @foreach ($brands as $brand)
                                     <option value="{{ $brand->id }}"
                                         {{ isset($product) && $product->brand_id == $brand->id ? 'selected' : '' }}>
@@ -145,17 +145,19 @@
 
                         <div class="mb-3 col-12">
                             <label class="form-label">Thumbnail <span class="text-muted small">(Ratio 1:1)</span></label>
-                            <!-- <x-image-input name="thumbnail" :image="storage_url($product->thumbnail)" /> -->                            
+                            <!-- <x-image-input name="thumbnail" :image="storage_url($product->thumbnail)" /> -->
 
                             <div style="width: 250px;">
                                 <div class="form-group">
                                     <div class="image-preview border bg-light d-flex justify-content-center text-center align-items-center position-relative"
                                         style="width: 200px; height: 200px; cursor: pointer; overflow: hidden;">
-                                        <img src="{{ storage_url($product->thumbnail) }}" alt="image" class="img-fluid rounded" 
+                                        <img src="{{ storage_url($product->thumbnail) }}" alt="image"
+                                            class="img-fluid rounded"
                                             style="width: 100%; height: 100%; object-fit: cover;">
                                     </div>
                                     <input type="file" name="thumbnail" class="d-none file-input" accept="image/*">
-                                    <button type="button" class="btn btn-danger btn-sm mt-2 remove-image d-none">Remove Image</button>
+                                    <button type="button" class="btn btn-danger btn-sm mt-2 remove-image d-none">Remove
+                                        Image</button>
                                 </div>
                             </div>
                         </div>
@@ -338,8 +340,6 @@
                 let form = $('#productUpdateForm')[0];
                 let formData = new FormData(form);
 
-                $('#alertBox').html('');
-
                 $.ajax({
                     url: "{{ route('seller.products.update', $product->slug) }}",
                     type: 'POST',
@@ -351,12 +351,8 @@
                     },
                     success: function(response) {
                         $('#updateBtn').attr('disabled', false).text('Update');
-                        $('#alertBox').html(`
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                Product updated successfully!
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        `);
+                        toastr.success('Product updated successfully!');
+
                         setTimeout(function() {
                             window.location.href = response.redirect;
                         }, 1500);
@@ -366,14 +362,8 @@
 
                         if (xhr.status === 422) {
                             let errors = xhr.responseJSON.errors;
-                            let messages = Object.values(errors).map(item => `<div>${item[0]}</div>`).join(
-                                '');
-                            $('#alertBox').html(`
-                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                    ${messages}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
-                            `);
+                            let messages = Object.values(errors).map(item => item[0]).join('<br>');
+                            toastr.error(messages);
                         } else {
                             let errorMessage = "Something went wrong. Please try again.";
                             if (xhr.responseJSON && xhr.responseJSON.message) {
@@ -381,16 +371,9 @@
                             } else if (xhr.responseText) {
                                 errorMessage = xhr.responseText;
                             }
-
-                            $('#alertBox').html(`
-                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                    ${errorMessage}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
-                            `);
+                            toastr.error(errorMessage);
                         }
                     }
-
                 });
             });
         </script>
