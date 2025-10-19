@@ -1,673 +1,441 @@
-@extends('frontend.auth.layout')
-@section('title', 'Sign Up')
+@extends('frontend.layouts.app')
+@section('title', 'Seller Registration')
+
+@push('header')
+<style>
+    .form-step {
+        display: none;
+        opacity: 0;
+        transform: translateX(20px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .form-step.active {
+        display: block;
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .file-upload {
+        border: 2px dashed #d1d5db;
+        transition: all 0.3s ease;
+    }
+
+    .file-upload:hover {
+        border-color: #f59e0b;
+        background-color: #fffbeb;
+    }
+
+    .file-upload.dragover {
+        border-color: #f59e0b;
+        background-color: #fef3c7;
+    }
+
+    .password-toggle {
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+
+    .password-toggle:hover {
+        color: #f59e0b;
+    }
+</style>
+@endpush
+
 @section('content')
-    @php
-        $settings = settings();
-    @endphp
-    <!-- Registration Page -->
-    <div class="w-full max-w-2xl ">
-        <div class="p-5 sm:p-8 lg:p-10 xl:p-12 bg-white border border-gray-200 rounded-lg shadow-sm">
-            <div class="flex flex-col justify-center">
-                <div class="mb-6">
-                    <a href="{{ route('home') }}" class="inline-block">
-                        <img src="{{ storage_url($settings->logo_white) }}" alt="{{ $settings->app_name }}"
-                            class="h-16 sm:h-16 object-contain" />
-                    </a>
+
+<div class="flex items-center justify-center mb-8">
+    <div class="max-w-2xl w-full bg-white rounded-xl shadow-lg overflow-hidden">
+        <!-- Progress Indicator -->
+        <div class="bg-white p-6 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2 md:space-x-4">
+                    <div class="flex flex-col items-center">
+                        <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-orange-500 text-white flex items-center justify-center font-bold text-sm md:text-base">
+                            1
+                        </div>
+                        <span class="text-xs md:text-sm mt-1 font-medium text-orange-500">Personal</span>
+                    </div>
+                    <div class="h-1 w-8 md:w-16 bg-orange-500"></div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center font-bold text-sm md:text-base">
+                            2
+                        </div>
+                        <span class="text-xs md:text-sm mt-1 font-medium text-gray-500">Business</span>
+                    </div>
+                    <div class="h-1 w-8 md:w-16 bg-gray-300"></div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center font-bold text-sm md:text-base">
+                            3
+                        </div>
+                        <span class="text-xs md:text-sm mt-1 font-medium text-gray-500">Shop</span>
+                    </div>
                 </div>
-                <div class="welcome-text mb-6">
-                    <h1 class="text-xl sm:text-2xl font-bold text-rangoon-green !leading-tight">
-                        Join Our <span class="text-light-yellow">Seller Community!</span>
-                    </h1>
-                    <p class="text-davy-gray">
-                        Create your seller account in a few simple steps
-                    </p>
-                </div>
-            </div>
-
-            <!-- Stepper -->
-            <div class="w-full py-6">
-                <ol class="flex items-center w-full justify-between">
-                    <!-- Step 1 -->
-                    <li id="step-1-indicator" class="relative flex flex-col items-center text-light-yellow w-full">
-                        <!-- Connector line -->
-                        <div class="absolute left-1/2 top-1/3 w-full h-1 bg-light-yellow -translate-y-1/2 z-0">
-                        </div>
-
-                        <!-- Circle -->
-                        <div
-                            class="relative z-10 flex items-center justify-center w-10 h-10 bg-light-yellow rounded-full lg:h-12 lg:w-12">
-                            <i class="fas fa-user text-white text-base lg:text-lg"></i>
-                        </div>
-                        <!-- Label -->
-                        <span class="mt-2 text-sm font-medium text-light-yellow">Personal</span>
-                    </li>
-
-                    <!-- Step 2 -->
-                    <li id="step-2-indicator" class="relative flex flex-col items-center text-gray-500 w-full">
-                        <div class="absolute top-1/3 left-1/2 w-full h-1 bg-gray-200 -translate-y-1/2 z-0">
-                        </div>
-                        <div
-                            class="relative z-10 flex items-center justify-center w-10 h-10 bg-gray-500 rounded-full lg:h-12 lg:w-12">
-                            <i class="fas fa-briefcase text-white text-base lg:text-lg"></i>
-                        </div>
-                        <span class="mt-2 text-sm font-medium text-gray-500">Business</span>
-                    </li>
-
-                    <!-- Step 3 -->
-                    <li id="step-3-indicator" class="relative flex flex-col items-center text-gray-500 w-full">
-                        <div
-                            class="relative z-10 flex items-center justify-center w-10 h-10 bg-gray-500 rounded-full lg:h-12 lg:w-12">
-                            <i class="fas fa-file-alt text-white text-base lg:text-lg"></i>
-                        </div>
-                        <span class="mt-2 text-sm font-medium text-gray-500">Documents</span>
-                    </li>
-                </ol>
-
-            </div>
-
-            <div class="registration-form mt-3 sm:mt-5">
-                <!-- Registration Form -->
-                <form method="POST" enctype="multipart/form-data" class="w-full mb-3 md:mb-4" id="sellerRegistrationForm">
-                    @csrf
-
-                    <!-- Step 1: Personal Information -->
-                    <div id="step-1" class="registration-step active">
-                        <div class="flex flex-col gap-4 gap-4 sm:gap-5">
-                            <div class="grid grid-cols-1 gap-4">
-                                <div class="form-ctrl space-y-2">
-                                    <label class="block text-sm font-medium text-davy-gray" for="name">Full Name
-                                        <span class="text-persian-red">*</span></label>
-                                    <input required id="name" type="text" name="name"
-                                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base bg-white" />
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div class="form-ctrl space-y-2">
-                                    <label class="block text-sm font-medium text-davy-gray" for="email">Email
-                                        <span class="text-persian-red">*</span></label>
-                                    <input required id="email" type="email" name="email"
-                                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base bg-white" />
-                                </div>
-                                <div class="form-ctrl space-y-2">
-                                    <label class="block text-sm font-medium text-davy-gray" for="phone">Phone
-                                        Number</label>
-                                    <input id="phone" type="text" name="phone"
-                                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base bg-white" />
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div class="form-ctrl space-y-2">
-                                    <label class="block text-sm font-medium text-davy-gray" for="password">Password
-                                        <span class="text-persian-red">*</span></label>
-                                    <input required type="password" id="password" name="password"
-                                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base bg-white" />
-                                </div>
-
-                                <div class="form-ctrl space-y-2">
-                                    <label class="block text-sm font-medium text-davy-gray"
-                                        for="password_confirmation">Confirm Password <span
-                                            class="text-persian-red">*</span></label>
-                                    <input required type="password" id="password_confirmation" name="password_confirmation"
-                                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base bg-white" />
-                                </div>
-                            </div>
-                            <div class="form-ctrl space-y-2">
-                                <label class="block text-sm font-medium text-gray-700">Profile Image</label>
-                                <div id="profile_imageUpload" auto class="relative border-2 border-dashed border-gray-300 rounded-lg text-center cursor-pointer hover:border-light-yellow transition w-[120px] h-[120px]">
-                                    <input type="file" id="profile_image" name="image" accept="image/*" class="tempImageInput absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
-
-                                    <!-- Upload Placeholder -->
-                                    <div
-                                        class="upload-placeholder flex flex-col items-center justify-center h-full text-gray-500 pointer-events-none">
-                                        <i class="fas fa-cloud-upload-alt text-xl mb-1"></i>
-                                        <p class="text-xs font-medium">Upload</p>
-                                    </div>
-
-                                    <!-- Image Preview -->
-                                    <div id="profile_imagePreviewWrapper"
-                                        class="hidden absolute inset-0 flex items-center justify-center z-10">
-                                        <img id="profile_imagePreview"
-                                            class="w-[100px] h-[100px] object-cover rounded-full shadow" />
-                                        <button type="button"
-                                            class="absolute -top-2 -right-2 bg-white rounded-full p-1 shadow remove-image-btn"
-                                            data-input="profile_image">
-                                            <i class="fas fa-times text-red-600 text-xs"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-1  gap-4">
-                                <div class="form-ctrl space-y-2">
-                                    <label class="block text-sm font-medium text-davy-gray" for="nid_no">NID
-                                        Number</label>
-                                    <input id="nid_no" type="text" name="nid_no"
-                                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base bg-white" />
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <!-- NID Front Image Upload -->
-                                <div class="form-ctrl space-y-2">
-                                    <label class="block text-sm font-medium text-gray-700">NID Front Image</label>
-                                    <div id="nidFrontUpload"
-                                        class="relative border-2 border-dashed border-gray-300 rounded-lg text-center cursor-pointer hover:border-light-yellow transition w-full h-[180px]">
-
-                                        <!-- File input overlay -->
-                                        <input type="file" id="nid_front_image" name="nid_front_image"
-                                            accept="image/*"
-                                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-0 tempImageInput" />
-
-                                        <!-- Placeholder UI -->
-                                        <div
-                                            class="flex flex-col items-center justify-center h-full text-gray-500 pointer-events-none">
-                                            <i class="fas fa-id-card text-3xl mb-2"></i>
-                                            <p class="text-sm font-medium">Click to upload or drag and drop</p>
-                                            <p class="text-xs text-gray-400">PNG, JPG, JPEG (Max. 5MB)</p>
-                                        </div>
-
-                                        <!-- Preview Section -->
-                                        <div id="nid_front_imagePreviewWrapper"
-                                            class="hidden absolute inset-0 flex items-center justify-center z-10">
-                                            <img id="nid_front_imagePreview"
-                                                class="w-[300px] h-[180px] object-cover rounded-md shadow" />
-                                            <button type="button"
-                                                class="absolute -top-2 -right-2 bg-white rounded-full p-1 shadow remove-image-btn"
-                                                data-input="nid_front_image">
-                                                <i class="fas fa-times text-red-600 text-sm"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- NID Back Image Upload -->
-                                <div class="form-ctrl space-y-2">
-                                    <label class="block text-sm font-medium text-gray-700">NID Back Image</label>
-                                    <div id="nidBackUpload"
-                                        class="relative border-2 border-dashed border-gray-300 rounded-lg text-center cursor-pointer hover:border-light-yellow transition w-full h-[180px]">
-
-                                        <input type="file" id="nid_back_image" name="nid_back_image" accept="image/*"
-                                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-0 tempImageInput" />
-
-                                        <div
-                                            class="flex flex-col items-center justify-center h-full text-gray-500 pointer-events-none">
-                                            <i class="fas fa-id-card-clip text-3xl mb-2"></i>
-                                            <p class="text-sm font-medium">Click to upload or drag and drop</p>
-                                            <p class="text-xs text-gray-400">PNG, JPG, JPEG (Max. 5MB)</p>
-                                        </div>
-
-                                        <div id="nid_back_imagePreviewWrapper"
-                                            class="hidden absolute inset-0 flex items-center justify-center z-10">
-                                            <img id="nid_back_imagePreview"
-                                                class="w-[300px] h-[180px] object-cover rounded-md shadow" />
-                                            <button type="button"
-                                                class="absolute -top-2 -right-2 bg-white rounded-full p-1 shadow remove-image-btn"
-                                                data-input="nid_back_image">
-                                                <i class="fas fa-times text-red-600 text-sm"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-
-                            <div class="flex justify-end mt-2">
-                                <button type="button" data-current="1" data-next="2"
-                                    class="next-step text-white bg-light-yellow hover:bg-light-yellow/90 focus:ring-4 focus:ring-light-yellow/50 font-medium rounded-lg text-sm px-6 py-3 focus:outline-none transition-all">
-                                    Next: Business Information
-                                </button>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <!-- Step 2: Business Information -->
-                    <div id="step-2" class="registration-step hidden">
-                        <div class="flex flex-col gap-4 sm:gap-5">
-                            <!-- Business information fields -->
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <!-- Business Name -->
-                                <div class="form-ctrl space-y-2">
-                                    <label class="block text-sm font-medium text-davy-gray" for="business_name">
-                                        Business Name <span class="text-persian-red">*</span>
-                                    </label>
-                                    <input required id="business_name" type="text" name="business_name"
-                                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2
-                                                    focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base bg-white" />
-                                </div>
-
-                                <!-- Business Email -->
-                                <div class="form-ctrl space-y-2">
-                                    <label class="block text-sm font-medium text-davy-gray" for="business_email">
-                                        Business Email
-                                    </label>
-                                    <input id="business_email" type="email" name="business_email"
-                                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2
-                                                    focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base bg-white" />
-                                </div>
-                            </div>
-
-                            <!-- Division & District -->
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <!-- Division -->
-                                <div class="form-ctrl space-y-2">
-                                    <label class="block text-sm font-medium text-davy-gray" for="division_id">
-                                        Division <span class="text-persian-red">*</span>
-                                    </label>
-                                    <select required id="division_id" name="division_id"
-                                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2
-                                                        focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base bg-white">
-                                        <option value="">Select Division</option>
-                                        @foreach ($divisions as $division)
-                                            <option value="{{ $division->id }}">{{ $division->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-
-                                <!-- District -->
-                                <div class="form-ctrl space-y-2">
-                                    <label class="block text-sm font-medium text-davy-gray" for="district_id">
-                                        District <span class="text-persian-red">*</span>
-                                    </label>
-                                    <select required id="district_id" name="district_id"
-                                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2
-                                                        focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base bg-white">
-                                        <option value="">Select District</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="form-ctrl space-y-2">
-                                <label class="block text-sm font-medium text-davy-gray" for="business_address">Business
-                                    Address <span class="text-persian-red">*</span></label>
-                                <textarea id="business_address" name="business_address" rows="3"
-                                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base bg-white resize-none"></textarea>
-                            </div>
-
-                            <div class="form-ctrl space-y-2">
-                                <label class="block text-sm font-medium text-gray-700">Business Logo</label>
-                                <div id="businessLogoUpload"
-                                    class="relative border-2 border-dashed border-gray-300 rounded-lg text-center cursor-pointer hover:border-light-yellow transition w-[120px] h-[120px]">
-
-                                    <input type="file" id="business_logo" name="business_logo" accept="image/*"
-                                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-0 tempImageInput" />
-
-                                    <!-- Placeholder -->
-                                    <div
-                                        class="flex flex-col items-center justify-center h-full text-gray-500 pointer-events-none">
-                                        <i class="fas fa-building text-2xl mb-1"></i>
-                                        <p class="text-xs font-medium">Upload</p>
-                                    </div>
-
-                                    <!-- Preview -->
-                                    <div id="business_logoPreviewWrapper"
-                                        class="hidden absolute inset-0 flex items-center justify-center z-10">
-                                        <img id="business_logoPreview"
-                                            class="w-[90px] h-[90px] object-cover rounded-md shadow" />
-                                        <button type="button"
-                                            class="absolute -top-2 -right-2 bg-white rounded-full p-1 shadow remove-image-btn"
-                                            data-input="business_logo">
-                                            <i class="fas fa-times text-red-600 text-xs"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-
-                            <div class="flex justify-between mt-2">
-                                <!-- Previous Button -->
-                                <button type="button" data-current="2" data-prev="1"
-                                    class="prev-step text-light-yellow border border-light-yellow hover:bg-light-yellow/10 font-medium rounded-lg text-sm px-6 py-3 focus:outline-none focus:ring-4 focus:ring-light-yellow/50 transition-all">
-                                    Previous
-                                </button>
-
-                                <!-- Next Button -->
-                                <button type="button" data-current="2" data-next="3"
-                                    class="next-step text-white bg-light-yellow hover:bg-light-yellow/90 focus:ring-4 focus:ring-light-yellow/50 font-medium rounded-lg text-sm px-6 py-3 focus:outline-none transition-all">
-                                    Next: Documents
-                                </button>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <!-- Step 3: Documents Information -->
-                    <div id="step-3" class="registration-step hidden">
-                        <div class="flex flex-col gap-4 sm:gap-5">
-                            <!-- Document fields -->
-                            <div class="grid grid-cols-1 gap-4">
-                                <div class="form-ctrl space-y-2">
-                                    <label class="block text-sm font-medium text-davy-gray" for="trade_license_no">Trade
-                                        License Number</label>
-                                    <input id="trade_license_no" type="text" name="trade_license_no"
-                                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base bg-white" />
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <!-- Trade License Image Upload -->
-                                <div class="form-ctrl space-y-2">
-                                    <label class="block text-sm font-medium text-gray-700">Trade License
-                                        Image</label>
-                                    <div id="tradeLicenseUpload"
-                                        class="relative border-2 border-dashed border-gray-300 rounded-lg text-center cursor-pointer hover:border-indigo-500 transition w-[140px] h-[140px]">
-
-                                        <input type="file" id="trade_license_image" name="trade_license_image"
-                                            accept="image/*"
-                                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-0 tempImageInput" />
-
-                                        <!-- Placeholder -->
-                                        <div
-                                            class="flex flex-col items-center justify-center h-full text-gray-500 pointer-events-none">
-                                            <i class="fas fa-file-alt text-2xl mb-1"></i>
-                                            <p class="text-xs font-medium">Upload</p>
-                                        </div>
-
-                                        <!-- Preview -->
-                                        <div id="trade_license_imagePreviewWrapper"
-                                            class="hidden absolute inset-0 flex items-center justify-center z-10">
-                                            <img id="trade_license_imagePreview"
-                                                class="w-[100px] h-[100px] object-cover rounded-md shadow" />
-                                            <button type="button"
-                                                class="absolute -top-2 -right-2 bg-white rounded-full p-1 shadow remove-image-btn"
-                                                data-input="trade_license_image">
-                                                <i class="fas fa-times text-red-600 text-xs"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Shop Image Upload -->
-                                <div class="form-ctrl space-y-2">
-                                    <label class="block text-sm font-medium text-gray-700">Shop Image</label>
-                                    <div id="shopImageUpload"
-                                        class="relative border-2 border-dashed border-gray-300 rounded-lg text-center cursor-pointer hover:border-indigo-500 transition w-[140px] h-[140px]">
-
-                                        <input type="file" id="shop_image" name="shop_image" accept="image/*"
-                                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-0 tempImageInput" />
-
-                                        <!-- Placeholder -->
-                                        <div
-                                            class="flex flex-col items-center justify-center h-full text-gray-500 pointer-events-none">
-                                            <i class="fas fa-store text-2xl mb-1"></i>
-                                            <p class="text-xs font-medium">Upload</p>
-                                        </div>
-
-                                        <!-- Preview -->
-                                        <div id="shop_imagePreviewWrapper"
-                                            class="hidden absolute inset-0 flex items-center justify-center z-10">
-                                            <img id="shop_imagePreview"
-                                                class="w-[100px] h-[100px] object-cover rounded-md shadow" />
-                                            <button type="button"
-                                                class="absolute -top-2 -right-2 bg-white rounded-full p-1 shadow remove-image-btn"
-                                                data-input="shop_image">
-                                                <i class="fas fa-times text-red-600 text-xs"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="flex items-start text-davy-gray/80 mt-4">
-                                <div class="flex items-center h-5">
-                                    <input required id="terms" type="checkbox"
-                                        class="w-4 h-4 text-light-yellow focus:ring-light-yellow border-gray-300 rounded" />
-                                </div>
-                                <label for="terms" class="ml-2 text-sm">By signing up, you are creating
-                                    a SlashMart seller account, and you
-                                    agree to SlashMart's
-                                    <a href="#" class="text-light-yellow hover:underline eq">Term
-                                        of Use</a>
-                                    and
-                                    <a href="#" class="text-light-yellow hover:underline eq">Privacy
-                                        Policy</a>.</label>
-                            </div>
-                            <div class="flex justify-between mt-2">
-                                <button type="button" data-current="3" data-prev="2"
-                                    class="prev-step text-light-yellow border border-light-yellow hover:bg-light-yellow/10 font-medium rounded-lg text-sm px-6 py-3 focus:outline-none focus:ring-4 focus:ring-light-yellow/50 transition-all">
-                                    Previous
-                                </button>
-                                <button type="button"
-                                    class="submit-btn text-white bg-light-yellow hover:bg-light-yellow/90 focus:ring-4 focus:ring-light-yellow/50 font-medium rounded-lg text-sm px-6 py-3 focus:outline-none transition-all">
-                                    Register as Seller
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
             </div>
         </div>
+
+        <!-- Form Container -->
+        <div class="p-6 md:p-8">
+            <!-- Step 1: Personal Information -->
+            <form id="step1" class="form-step active">
+                <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-2">Personal Information</h2>
+                <p class="text-gray-600 mb-6">Please provide your personal details for verification.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                    <div>
+                        <label for="fullName" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                        <input type="text" id="fullName" name="fullName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition" placeholder="Enter your full name" required>
+                    </div>
+
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <input type="email" id="email" name="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition" placeholder="Enter your email" required>
+                    </div>
+
+                    <div>
+                        <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition" placeholder="Enter your phone number" required>
+                    </div>
+
+                    <div>
+                        <label for="nid" class="block text-sm font-medium text-gray-700 mb-1">NID Number</label>
+                        <input type="text" id="nid" name="nid" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition" placeholder="Enter your NID number" required>
+                    </div>
+
+                    <div class="relative">
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <input type="password" id="password" name="password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition pr-10" placeholder="Create a password" required>
+                        <span class="password-toggle absolute right-3 top-9 text-gray-500">
+                            <i class="far fa-eye"></i>
+                        </span>
+                    </div>
+
+                    <div class="relative">
+                        <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition pr-10" placeholder="Confirm your password" required>
+                        <span class="password-toggle absolute right-3 top-9 text-gray-500">
+                            <i class="far fa-eye"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <h3 class="text-lg font-medium text-gray-800 mb-4">Upload Required Images</h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="file-upload-container">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Personal Image</label>
+                            <div class="file-upload border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer transition">
+                                <i class="fas fa-cloud-upload-alt text-3xl text-gray-400 mb-2"></i>
+                                <p class="text-sm text-gray-600">Click or drag to upload</p>
+                                <input type="file" class="hidden" accept="image/*" required>
+                            </div>
+                        </div>
+
+                        <div class="file-upload-container">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">NID Front Image</label>
+                            <div class="file-upload border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer transition">
+                                <i class="fas fa-cloud-upload-alt text-3xl text-gray-400 mb-2"></i>
+                                <p class="text-sm text-gray-600">Click or drag to upload</p>
+                                <input type="file" class="hidden" accept="image/*" required>
+                            </div>
+                        </div>
+
+                        <div class="file-upload-container">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">NID Back Image</label>
+                            <div class="file-upload border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer transition">
+                                <i class="fas fa-cloud-upload-alt text-3xl text-gray-400 mb-2"></i>
+                                <p class="text-sm text-gray-600">Click or drag to upload</p>
+                                <input type="file" class="hidden" accept="image/*" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end mt-8">
+                    <button type="button" class="next-step px-6 py-2 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50">
+                        Next <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Step 2: Business Information -->
+            <form id="step2" class="form-step">
+                <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-2">Business Information</h2>
+                <p class="text-gray-600 mb-6">Please provide your business details.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                    <div>
+                        <label for="businessName" class="block text-sm font-medium text-gray-700 mb-1">Business Name</label>
+                        <input type="text" id="businessName" name="businessName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition" placeholder="Enter your business name" required>
+                    </div>
+
+                    <div>
+                        <label for="businessEmail" class="block text-sm font-medium text-gray-700 mb-1">Business Email</label>
+                        <input type="email" id="businessEmail" name="businessEmail" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition" placeholder="Enter business email" required>
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label for="businessAddress" class="block text-sm font-medium text-gray-700 mb-1">Business Address</label>
+                        <textarea id="businessAddress" name="businessAddress" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition" placeholder="Enter your business address" required></textarea>
+                    </div>
+
+                    <div>
+                        <label for="division" class="block text-sm font-medium text-gray-700 mb-1">Division</label>
+                        <select id="division" name="division" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition" required>
+                            <option value="" disabled selected>Select Division</option>
+                            <option value="dhaka">Dhaka</option>
+                            <option value="chattogram">Chattogram</option>
+                            <option value="rajshahi">Rajshahi</option>
+                            <option value="khulna">Khulna</option>
+                            <option value="barishal">Barishal</option>
+                            <option value="sylhet">Sylhet</option>
+                            <option value="rangpur">Rangpur</option>
+                            <option value="mymensingh">Mymensingh</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="district" class="block text-sm font-medium text-gray-700 mb-1">District</label>
+                        <select id="district" name="district" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition" required>
+                            <option value="" disabled selected>Select District</option>
+                            <!-- Districts will be populated based on division selection -->
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <h3 class="text-lg font-medium text-gray-800 mb-4">Upload Business Logo</h3>
+
+                    <div class="file-upload-container max-w-xs">
+                        <div class="file-upload border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer transition">
+                            <i class="fas fa-cloud-upload-alt text-3xl text-gray-400 mb-2"></i>
+                            <p class="text-sm text-gray-600">Click or drag to upload business logo</p>
+                            <input type="file" class="hidden" accept="image/*" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between mt-8">
+                    <button type="button" class="prev-step px-6 py-2 bg-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-400 transition focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50">
+                        <i class="fas fa-arrow-left mr-2"></i> Back
+                    </button>
+                    <button type="button" class="next-step px-6 py-2 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50">
+                        Next <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Step 3: Shop Information -->
+            <form id="step3" class="form-step">
+                <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-2">Shop Information</h2>
+                <p class="text-gray-600 mb-6">Please provide your shop details.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                    <div>
+                        <label for="tradeLicense" class="block text-sm font-medium text-gray-700 mb-1">Trade License Number</label>
+                        <input type="text" id="tradeLicense" name="tradeLicense" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition" placeholder="Enter trade license number" required>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <h3 class="text-lg font-medium text-gray-800 mb-4">Upload Required Images</h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="file-upload-container">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Trade License Image</label>
+                            <div class="file-upload border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer transition">
+                                <i class="fas fa-cloud-upload-alt text-3xl text-gray-400 mb-2"></i>
+                                <p class="text-sm text-gray-600">Click or drag to upload trade license</p>
+                                <input type="file" class="hidden" accept="image/*" required>
+                            </div>
+                        </div>
+
+                        <div class="file-upload-container">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Shop Image</label>
+                            <div class="file-upload border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer transition">
+                                <i class="fas fa-cloud-upload-alt text-3xl text-gray-400 mb-2"></i>
+                                <p class="text-sm text-gray-600">Click or drag to upload shop image</p>
+                                <input type="file" class="hidden" accept="image/*" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between mt-8">
+                    <button type="button" class="prev-step px-6 py-2 bg-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-400 transition focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50">
+                        <i class="fas fa-arrow-left mr-2"></i> Back
+                    </button>
+                    <button type="submit" class="px-6 py-2 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50">
+                        Submit Registration
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
+</div>
 
-    @push('scripts')
-        <script>
-            $(document).ready(function() {
-                $('.tempImageInput').change(function () {
-                    let input = this;
-                    let file = input.files[0];
-
-                    if (!file) return;
-
-                    let inputName = $(input).attr('name'); 
-
-                    let formData = new FormData();
-                    formData.append('image', file);
-                    formData.append('name', inputName);
-
-                    $.ajax({
-                        url: "{{ route('seller.signup.uploadTempImage') }}",
-                        type: 'POST',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        success: function (response) {
-                        },
-                        error: function (xhr) {
-                            if (xhr.status === 422) {
-                                let errors = xhr.responseJSON.errors;
-                                if (errors.image) {
-                                    alert(errors.image[0]);
-                                }
-                            } else {
-                                console.error('Upload failed:', xhr);
-                            }
-                        }
-                    });
-                });
-
-                $('#division_id').change(function() {
-                    let divisionId = $(this).val();
-                    let $districtSelect = $('#district_id');
-                    $districtSelect.html('<option value="">Loading...</option>');
-
-                    if (divisionId) {
-                        $.ajax({
-                            url: '/get-districts/' + divisionId,
-                            type: 'GET',
-                            dataType: 'json',
-                            success: function(data) {
-                                $districtSelect.html('<option value="">Select District</option>');
-                                $.each(data, function(id, name) {
-                                    $districtSelect.append('<option value="' + id + '">' +
-                                        name + '</option>');
-                                });
-                            },
-                            error: function() {
-                                $districtSelect.html('<option value="">Select District</option>');
-                            }
-                        });
-                    } else {
-                        $districtSelect.html('<option value="">Select District</option>');
-                    }
-                });
-
-                $(document).on('click', '.next-step', function() {
-                    const $btn = $(this);
-                    const currentStep = parseInt($(this).data('current'));
-                    const nextStep = parseInt($(this).data('next'));
-                    const $currentStep = $('#step-' + currentStep);
-
-                    $currentStep.find('.error-msg').remove();
-                    $currentStep.find(':input').removeClass('border-red-500');
-
-                    const originalContent = $btn.html();
-                    $btn.attr('disabled', true).html(`
-                            <svg class="animate-spin h-5 w-5 mr-2 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
-                            </svg> Loading...
-                    `);
-
-                    let formData = new FormData();
-                    $currentStep.find(':input').each(function() {
-                        let name = $(this).attr('name');
-                        if (!name) return;
-
-                        if ($(this).attr('type') === 'file' && this.files[0]) {
-                            //formData.append(name, this.files[0]);
-                        } else {
-                            formData.append(name, $(this).val());
-                        }
-                    });
-                    formData.append('_token', '{{ csrf_token() }}');
-                    formData.append('step', currentStep);
-
-                    $.ajax({
-                        url: "{{ route('seller.signup') }}",
-                        type: 'POST',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function(response) {
-                            $currentStep.addClass('hidden').removeClass('active');
-                            $('#step-' + nextStep).removeClass('hidden').addClass('active');
-                            updateStepIndicators(currentStep, nextStep);
-                        },
-                        error: function(xhr) {
-                            if (xhr.status === 422) {
-                                const errors = xhr.responseJSON.errors;
-                                for (const [field, messages] of Object.entries(errors)) {
-                                    const $field = $currentStep.find(`[name="${field}"]`);
-                                    if ($field.length) {
-                                        $field.addClass('border-red-500');
-                                        if (!$field.next('.error-msg').length) {
-                                            $field.after(
-                                                '<span class="error-msg text-red-500 text-xs mt-1">' +
-                                                messages[0] + '</span>');
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        complete: function() {
-                            $btn.prop('disabled', false).html(originalContent);
-                        }
-
-                    });
-                });
-
-                $(document).on('click', '.prev-step', function() {
-                    const currentStep = parseInt($(this).data('current'));
-                    const prevStep = parseInt($(this).data('prev'));
-
-                    $('#step-' + currentStep).addClass('hidden').removeClass('active');
-                    $('#step-' + prevStep).removeClass('hidden').addClass('active');
-
-                    updateStepIndicators(currentStep, prevStep, 'prev');
-                });
-
-                function updateStepIndicators(fromStep, toStep) {
-                    for (let i = 1; i <= 3; i++) {
-                        const $indicator = $('#step-' + i + '-indicator');
-                        if (i < toStep) {
-                            $indicator.removeClass('text-light-yellow text-gray-500').addClass('text-[#FD740F]');
-                            $indicator.find('div').removeClass('bg-gray-500 bg-light-yellow').addClass('bg-[#FD740F]');
-                            $indicator.find('span').removeClass('text-gray-500 text-light-yellow').addClass(
-                                'text-[#FD740F]');
-                            if (i < 3) $indicator.addClass('after:border-[#FD740F]');
-                        } else if (i === toStep) {
-                            $indicator.removeClass('text-[#FD740F] text-gray-500').addClass('text-light-yellow');
-                            $indicator.find('div').removeClass('bg-[#FD740F] bg-gray-500').addClass('bg-light-yellow');
-                            $indicator.find('span').removeClass('text-[#FD740F] text-gray-500').addClass(
-                                'text-light-yellow');
-                        } else {
-                            $indicator.removeClass('text-[#FD740F] text-light-yellow').addClass('text-gray-500');
-                            $indicator.find('div').removeClass('bg-[#FD740F] bg-light-yellow').addClass('bg-gray-500');
-                            $indicator.find('span').removeClass('text-[#FD740F] text-light-yellow').addClass(
-                                'text-gray-500');
-                            $indicator.removeClass('after:border-[#FD740F]').addClass('after:border-gray-200');
-                        }
-                    }
-                }
-
-                $(document).on('change', 'input[type="file"]', function() {
-                    const inputId = $(this).attr('id');
-                    const previewWrapperId = inputId + 'PreviewWrapper';
-                    const previewId = inputId + 'Preview';
-
-                    if (this.files && this.files[0]) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            $('#' + previewId).attr('src', e.target.result);
-                            $('#' + previewWrapperId).removeClass('hidden');
-                        };
-                        reader.readAsDataURL(this.files[0]);
-                    }
-                });
-
-                $(document).on('click', '.remove-image-btn', function(e) {
-                    e.stopPropagation();
-                    const inputId = $(this).data('input');
-                    $('#' + inputId).val('');
-                    $('#' + inputId + 'Preview').attr('src', '');
-                    $('#' + inputId + 'PreviewWrapper').addClass('hidden');
-                });
-
-                $(document).on('click', '.submit-btn', function(e) {
-                    e.preventDefault();
-                    let $btn = $(this);
-                    let form = $('#sellerRegistrationForm')[0];
-                    let formData = new FormData(form);
-                    formData.append('_token', '{{ csrf_token() }}');
-                    formData.append('step', 3);
-
-                    let originalContent = $btn.html();
-                    $btn.attr('disabled', true).html(
-                        `<svg class="animate-spin h-5 w-5 mr-2 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg> Loading...`
-                    );
-
-                    $.ajax({
-                        url: "{{ route('seller.signup') }}",
-                        type: 'POST',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function(response) {
-                            $btn.attr('disabled', false).html(originalContent);
-                            window.location.href = "{{ route('frontend.message') }}";
-                        },
-                        error: function(xhr) {
-                            $btn.attr('disabled', false).html(originalContent);
-                            if (xhr.status === 422) {
-                                const errors = xhr.responseJSON.errors;
-                                Object.entries(errors).forEach(([field, messages]) => {
-                                    const $field = $('#step-3').find(`[name="${field}"]`);
-                                    if ($field.length) {
-                                        $field.addClass('border-red-500');
-                                        if (!$field.next('.error-msg').length) {
-                                            $field.after(
-                                                '<span class="error-msg text-red-500 text-xs mt-1">' +
-                                                messages[0] + '</span>');
-                                        }
-                                    }
-                                });
-                            }
-                        }
-                    });
-                });
-            });
-        </script>
-    @endpush
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Form step navigation
+        const steps = document.querySelectorAll('.form-step');
+        const nextButtons = document.querySelectorAll('.next-step');
+        const prevButtons = document.querySelectorAll('.prev-step');
+        const progressSteps = document.querySelectorAll('.flex.flex-col.items-center');
+
+        let currentStep = 0;
+
+        // Initialize first step
+        showStep(currentStep);
+
+        // Next button event listeners
+        nextButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                if (currentStep < steps.length - 1) {
+                    currentStep++;
+                    showStep(currentStep);
+                    updateProgressIndicator();
+                }
+            });
+        });
+
+        // Previous button event listeners
+        prevButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                if (currentStep > 0) {
+                    currentStep--;
+                    showStep(currentStep);
+                    updateProgressIndicator();
+                }
+            });
+        });
+
+        // Show the current step
+        function showStep(stepIndex) {
+            steps.forEach((step, index) => {
+                step.classList.toggle('active', index === stepIndex);
+            });
+        }
+
+        // Update progress indicator
+        function updateProgressIndicator() {
+            progressSteps.forEach((step, index) => {
+                const circle = step.querySelector('div');
+                const label = step.querySelector('span');
+
+                if (index <= currentStep) {
+                    circle.classList.remove('bg-gray-300', 'text-gray-600');
+                    circle.classList.add('bg-orange-500', 'text-white');
+                    label.classList.remove('text-gray-500');
+                    label.classList.add('text-orange-500');
+                } else {
+                    circle.classList.remove('bg-orange-500', 'text-white');
+                    circle.classList.add('bg-gray-300', 'text-gray-600');
+                    label.classList.remove('text-orange-500');
+                    label.classList.add('text-gray-500');
+                }
+            });
+        }
+
+        // Password toggle functionality
+        const passwordToggles = document.querySelectorAll('.password-toggle');
+        passwordToggles.forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                const input = this.previousElementSibling;
+                const icon = this.querySelector('i');
+
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
+        });
+
+        // File upload functionality
+        const fileUploads = document.querySelectorAll('.file-upload');
+        fileUploads.forEach(upload => {
+            const input = upload.querySelector('input[type="file"]');
+
+            // Click to upload
+            upload.addEventListener('click', function() {
+                input.click();
+            });
+
+            // Drag and drop functionality
+            upload.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('dragover');
+            });
+
+            upload.addEventListener('dragleave', function() {
+                this.classList.remove('dragover');
+            });
+
+            upload.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+
+                if (e.dataTransfer.files.length) {
+                    input.files = e.dataTransfer.files;
+
+                    // Update UI to show file name
+                    const fileName = e.dataTransfer.files[0].name;
+                    const fileText = this.querySelector('p');
+                    fileText.textContent = fileName;
+                    fileText.classList.add('text-orange-500', 'font-medium');
+                }
+            });
+
+            // Change event for regular file selection
+            input.addEventListener('change', function() {
+                if (this.files.length) {
+                    const fileName = this.files[0].name;
+                    const fileText = upload.querySelector('p');
+                    fileText.textContent = fileName;
+                    fileText.classList.add('text-orange-500', 'font-medium');
+                }
+            });
+        });
+
+        // Division to District mapping (simplified)
+        const divisionDistricts = {
+            dhaka: ['Dhaka', 'Gazipur', 'Narayanganj', 'Tangail', 'Kishoreganj'],
+            chattogram: ['Chattogram', 'Cox\'s Bazar', 'Rangamati', 'Bandarban'],
+            rajshahi: ['Rajshahi', 'Bogra', 'Pabna', 'Sirajganj'],
+            khulna: ['Khulna', 'Satkhira', 'Bagerhat', 'Jessore'],
+            barishal: ['Barishal', 'Patuakhali', 'Bhola', 'Jhalokati'],
+            sylhet: ['Sylhet', 'Moulvibazar', 'Habiganj', 'Sunamganj'],
+            rangpur: ['Rangpur', 'Dinajpur', 'Nilphamari', 'Gaibandha'],
+            mymensingh: ['Mymensingh', 'Jamalpur', 'Netrokona', 'Sherpur']
+        };
+
+        // Update districts based on division selection
+        const divisionSelect = document.getElementById('division');
+        const districtSelect = document.getElementById('district');
+
+        divisionSelect.addEventListener('change', function() {
+            const selectedDivision = this.value;
+            const districts = divisionDistricts[selectedDivision] || [];
+
+            // Clear previous options
+            districtSelect.innerHTML = '<option value="" disabled selected>Select District</option>';
+
+            // Add new options
+            districts.forEach(district => {
+                const option = document.createElement('option');
+                option.value = district.toLowerCase();
+                option.textContent = district;
+                districtSelect.appendChild(option);
+            });
+        });
+    });
+</script>
+@endpush
