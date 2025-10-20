@@ -7,7 +7,7 @@ $settings = settings();
 
 @section('content')
 
-<div class="flex items-center justify-center bg-gray-50 sm:px-4 mt-3 sm:mt-0">
+<div class="flex items-center justify-center bg-gray-50 sm:px-4">
     <div class="w-full max-w-6xl grid lg:grid-cols-2 bg-white rounded-2xl shadow-lg overflow-hidden">
         <div class="hidden lg:block">
             <img src="{{ asset('assets/frontend/images/login-illustration.png') }}" alt="Illustration" class="object-cover w-full h-full" />
