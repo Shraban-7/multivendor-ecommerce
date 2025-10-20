@@ -430,10 +430,11 @@
                         if (xhr.status === 422) {
                             let errors = xhr.responseJSON.errors;
                             if (errors.image) {
-                                alert(errors.image[0]);
+                               toastr.error(errors.image[0]);
                             }
                         } else {
-                            console.error('Upload failed:', xhr);
+                            toastr.error('Upload failed, Please reupload image');
+                            // console.error('Upload failed:', xhr);
                         }
                     }
                 });
@@ -530,7 +531,7 @@
                                 }
                             }
                         } else {
-                            alert('Error: ' + (xhr.responseJSON?.message || 'Something went wrong'));
+                            toastr.error('Error: ' + (xhr.responseJSON?.message || 'Something went wrong'));
                         }
                     },
                     complete: function() {
@@ -575,7 +576,6 @@
                     window.location.href = "{{ route('frontend.message') }}";
                 }, $btn);
             });
-
 
             function updateStepIndicators(fromStep, toStep) {
                 const steps = [1, 2, 3];
