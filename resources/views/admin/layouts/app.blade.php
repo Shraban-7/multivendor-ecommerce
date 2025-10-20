@@ -16,7 +16,8 @@
 
     <!-- Datatable -->
     <link rel="stylesheet" href="{{ asset('assets/dashboard/libs/data-table/datatables.min.css') }}">
-
+    <!-- Toastr CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
 
     <!-- <link href="assets/dashboard/libs/@mdi/font/css/materialdesignicons.min.css" rel="stylesheet" />
         <link href="assets/dashboard/libs/prismjs/themes/okaidia.css" rel="stylesheet"> -->
@@ -60,6 +61,9 @@
 
     <!-- Datatable -->
     <script src="{{ asset('assets/dashboard/libs/data-table/datatables.min.js') }} "></script>
+    <!-- Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
     @stack('footer')
     @stack('scripts')
 

@@ -37,6 +37,8 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
 
     Route::prefix('sellers')->as('sellers.')->group(function () {
         Route::get('/', [SellerController::class, 'index'])->name('index');
+        Route::get('/create', [SellerController::class, 'create'])->name('create');
+        Route::post('/store', [SellerController::class, 'store'])->name('store');
         Route::post('{seller}/update', [SellerController::class, 'update'])->name('update');
         Route::post('{seller}/best-seller', [SellerController::class, 'best_seller'])->name('best_seller');
         Route::post('{seller}/toggle-block', [SellerController::class, 'toggleBlock'])->name('toggleBlock');

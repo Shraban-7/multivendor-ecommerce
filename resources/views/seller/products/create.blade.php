@@ -293,9 +293,6 @@
 
                 let form = $('#form')[0];
                 let formData = new FormData(form);
-
-                $('#alertBox').html(''); // optional, if you want to keep this div for fallback
-
                 $.ajax({
                     url: "{{ route('seller.products.store') }}",
                     method: 'POST',

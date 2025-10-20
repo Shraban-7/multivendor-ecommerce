@@ -73,10 +73,41 @@ $settings = settings();
                 </x-dashboard.nav-item-link>
             @endif
 
-            @if (hasPermission('admin.sellers.index'))
-                <x-dashboard.nav-item-link :route="'admin.sellers.index'">
-                    <i data-feather="users" class="nav-icon icon-xs me-2"></i>Sellers
-                </x-dashboard.nav-item-link>
+            @if (hasPermission('admin.sellers.index') ||
+                    hasPermission('admin.seller.requests') ||
+                    hasPermission('admin.seller.payments'))
+                <li class="nav-item">
+                    <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center"
+                        href="#!" data-bs-toggle="collapse" data-bs-target="#navSellers"
+                        aria-expanded="{{ request()->routeIs('admin.sellers.*') || request()->routeIs('admin.seller.requests') || request()->routeIs('admin.seller.payments') ? 'true' : 'false' }}"
+                        aria-controls="navSellers">
+
+                        <div>
+                            <i data-feather="users" class="nav-icon icon-xs me-2"></i>
+                            Manage Sellers
+                        </div>
+
+                        <i data-feather="chevron-right" class="chevron-icon transition"></i>
+                    </a>
+
+                    <div id="navSellers"
+                        class="collapse {{ request()->routeIs('admin.sellers.*') || request()->routeIs('admin.seller.requests') || request()->routeIs('admin.seller.payments') ? 'show' : '' }}"
+                        data-bs-parent="#sideNavbar">
+                        <ul class="nav flex-column">
+
+                            @if (hasPermission('admin.sellers.index'))
+                                <x-dashboard.nav-item-link :route="'admin.sellers.index'">
+                                    All Sellers
+                                </x-dashboard.nav-item-link>
+                            @endif
+                            @if (hasPermission('admin.sellers.create'))
+                                <x-dashboard.nav-item-link :route="'admin.sellers.create'">
+                                    Add Seller
+                                </x-dashboard.nav-item-link>
+                            @endif
+                        </ul>
+                    </div>
+                </li>
             @endif
 
             <li class="nav-item">
