@@ -95,6 +95,12 @@ class SellerController extends Controller
         return successResponse('Seller created successfully.');
     }
 
+    public function edit($username)
+    {
+        $seller = Seller::where('username',$username)->first();
+        return view('admin.sellers.edit');
+    }
+
     public function best_seller(Seller $seller, Request $request)
     {
         $seller->is_best_seller = $request->is_best_seller;
