@@ -6,27 +6,6 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PaymentController;
 use App\Models\VerificationCode;
-use Illuminate\Http\Request;
-
-Route::match(['get', 'post'], 'file-upload', function (Request $request) {
-    if ($request->isMethod('GET')) {
-        return view('file-upload');
-    }
-
-    $request->validate([
-        'folder_name' => 'required|string',
-        'images' => 'required|array',
-        'images.*' => 'file|mimes:jpg,jpeg,png|max:8120'
-    ]);
-
-    $path = "images/test/{$request->folder_name}";
-
-    foreach ($request->file('images') as $image) {
-        upload_file($image, $path);
-    }
-
-    return back()->with('success', 'Images uploaded successfully.');
-});
 
 Route::get('mails/test', function () {
     $data['customerName'] = 'John Doe';
