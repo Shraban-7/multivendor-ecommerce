@@ -37,7 +37,7 @@ class SellerController extends Controller
         return view('admin.sellers.profile', $data);
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $divisions = Division::all();
         return view('admin.sellers.create', compact('divisions'));
@@ -95,6 +95,70 @@ class SellerController extends Controller
         return successResponse('Seller created successfully.');
     }
 
+    public function edit(Seller $seller)
+    {
+        $divisions = Division::all();
+        return view('admin.sellers.edit', compact('seller','divisions'));
+    }
+
+    public function update(Request $request, Seller $seller)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:sellers,email,' . $seller->id,
+            'phone' => 'required',
+            'business_name' => 'required',
+            'business_address' => 'required',
+            'division_id' => 'required|integer',
+            'district_id' => 'required|integer',
+            'image' => 'nullable|image|max:4096',
+            'nid_front_image' => 'nullable|image|max:4096',
+            'nid_back_image' => 'nullable|image|max:4096',
+            'business_logo' => 'nullable|image|max:4096',
+            'trade_license_image' => 'nullable|image|max:4096',
+            'shop_image' => 'nullable|image|max:4096',
+        ]);
+
+        $username = str_slug('sellers', 'username', $request->name);
+        $destinationDir = "images/{$username}";
+        Storage::disk('public')->makeDirectory($destinationDir);
+
+        $data = $request->only([
+            'name',
+            'email',
+            'phone',
+            'nid_no',
+            'business_name',
+            'business_email',
+            'business_address',
+            'division_id',
+            'district_id',
+            'trade_license_no'
+        ]);
+
+        $files = [
+            'image',
+            'nid_front_image',
+            'nid_back_image',
+            'business_logo',
+            'trade_license_image',
+            'shop_image',
+        ];
+
+        foreach ($files as $file) {
+            if ($request->hasFile($file)) {
+                delete_file($seller->$file);
+                $data[$file] = upload_file($request->file($file), $destinationDir);
+            }
+        }
+
+        $seller->update($data);
+
+        return apiResponse([
+            "redirect" => route('admin.sellers.edit',$seller->username)
+        ],'Seller updated successfully');
+    }
+
     public function best_seller(Seller $seller, Request $request)
     {
         $seller->is_best_seller = $request->is_best_seller;
@@ -124,7 +188,7 @@ class SellerController extends Controller
     }
 
 
-    public function update(Seller $seller, Request $request)
+    public function updateStatus(Seller $seller, Request $request)
     {
         $data = $request->validate([
             'commission_type' => 'required|string|in:flat,percentage',

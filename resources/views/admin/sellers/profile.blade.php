@@ -8,9 +8,14 @@
     <div class="container-fluid">
         <div class="d-flex justify-content-between align-items-center mb-2">
             <h4 class="mb-0">Seller Profile</h4>
-            <a href="{{ route('admin.sellers.index') }}" class="btn btn-outline-secondary btn-sm">
-                <i data-feather="arrow-left" class="icon-xs me-1"></i> Back to Sellers
-            </a>
+            <div>
+                <a href="{{ route('admin.sellers.index') }}" class="btn btn-outline-secondary btn-sm">
+                    <i data-feather="arrow-left" class="icon-xs me-1"></i> Back to Sellers
+                </a>
+                <a href="{{ route('admin.sellers.edit', $seller->username) }}" class="btn btn-white border btn-sm">
+                    <i data-feather="edit" class="icon-xs me-1"></i> Edit
+                </a>
+            </div>
         </div>
 
         <!-- Profile and Analytics Row -->
@@ -45,7 +50,7 @@
                     <hr class="my-3">
 
                     <!-- Business Info -->
-                    <div class="d-flex align-items-start {{ $seller->status == $deleted ? '':'mb-3' }} ">
+                    <div class="d-flex align-items-start {{ $seller->status == $deleted ? '' : 'mb-3' }} ">
                         <img src="{{ storage_url($seller->business_logo) }}" alt="{{ $seller->business_name }}"
                             class="img-thumbnail me-3"
                             style="width: 100px; height: 100px; object-fit: cover; border-radius: .5rem;">

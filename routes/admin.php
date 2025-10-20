@@ -39,7 +39,9 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
         Route::get('/', [SellerController::class, 'index'])->name('index');
         Route::get('/create', [SellerController::class, 'create'])->name('create');
         Route::post('/store', [SellerController::class, 'store'])->name('store');
-        Route::post('{seller}/update', [SellerController::class, 'update'])->name('update');
+        Route::get('{seller:username}/edit', [SellerController::class, 'edit'])->name('edit');
+        Route::post('{seller:username}/update', [SellerController::class, 'update'])->name('update');
+        Route::post('{seller}/update-status', [SellerController::class, 'updateStatus'])->name('updateStatus');
         Route::post('{seller}/best-seller', [SellerController::class, 'best_seller'])->name('best_seller');
         Route::post('{seller}/toggle-block', [SellerController::class, 'toggleBlock'])->name('toggleBlock');
         Route::post('{seller}/delete', [SellerController::class, 'delete'])->name('delete');
