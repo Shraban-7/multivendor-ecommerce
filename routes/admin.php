@@ -47,7 +47,9 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
         Route::post('{seller}/best-seller', [SellerController::class, 'best_seller'])->name('best_seller');
         Route::post('{seller}/toggle-block', [SellerController::class, 'toggleBlock'])->name('toggleBlock');
         Route::post('{seller}/delete', [SellerController::class, 'delete'])->name('delete');
+        Route::post('{seller}/restore', [SellerController::class, 'restore'])->name('restore');
         Route::get('{seller:username}/profile', [SellerController::class, 'profile'])->name('profile');
+        Route::post('{seller}/permanent-delete', [SellerController::class, 'permanentDelete'])->name('permanent-delete');
     });
 
     Route::prefix('products')->as('products.')->group(function () {
@@ -172,7 +174,7 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
         Route::delete('/delete-cropped-image', [ImageController::class, 'deleteCroppedImage'])->name('delete-cropped-image');
     });
 
-    Route::prefix('manual-gateways')->as('manualGateways.')->group(function(){
+    Route::prefix('manual-gateways')->as('manualGateways.')->group(function () {
         Route::get('/', [ManualPaymentMethodController::class, 'index'])->name('index');
         Route::post('/store', [ManualPaymentMethodController::class, 'store'])->name('store');
         Route::put('/{manualPayment}/update', [ManualPaymentMethodController::class, 'update'])->name('update');

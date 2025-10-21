@@ -43,6 +43,11 @@ class Seller extends Authenticatable
         return $query->where('status', self::PENDING);
     }
 
+    public function employees()
+    {
+        return $this->hasMany(SellerEmployee::class, 'seller_id');
+    }
+
     public function orders()
     {
         return $this->hasMany(Order::class, 'seller_id');
@@ -56,6 +61,21 @@ class Seller extends Authenticatable
     public function banner_images()
     {
         return $this->hasMany(SellerBannerImage::class);
+    }
+
+    public function chats()
+    {
+        return $this->hasMany(SellerChat::class);
+    }
+
+    public function expenses()
+    {
+        return $this->hasMany(SellerExpense::class);
+    }
+
+    public function seller_expense_categories()
+    {
+        return $this->hasMany(SellerExpenseCategory::class);
     }
 
     public function country(): BelongsTo

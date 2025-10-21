@@ -7,6 +7,7 @@ use App\Models\Seller;
 use App\Models\Product;
 use App\Models\Division;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -105,7 +106,7 @@ class SellerController extends Controller
     public function edit(Seller $seller)
     {
         $divisions = Division::all();
-        return view('admin.sellers.edit', compact('seller','divisions'));
+        return view('admin.sellers.edit', compact('seller', 'divisions'));
     }
 
     public function update(Request $request, Seller $seller)
@@ -162,8 +163,8 @@ class SellerController extends Controller
         $seller->update($data);
 
         return apiResponse([
-            "redirect" => route('admin.sellers.edit',$seller->username)
-        ],'Seller updated successfully');
+            "redirect" => route('admin.sellers.edit', $seller->username)
+        ], 'Seller updated successfully');
     }
 
     public function best_seller(Seller $seller, Request $request)
@@ -194,6 +195,13 @@ class SellerController extends Controller
         return redirect()->back()->with('success', 'Seller deleted successfully');
     }
 
+    public function restore(Seller $seller)
+    {
+        $seller->status = Seller::ACTIVE;
+        $seller->save();
+
+        return redirect()->back()->with('success', 'Seller restore successfully');
+    }
 
     public function updateStatus(Seller $seller, Request $request)
     {
@@ -206,5 +214,25 @@ class SellerController extends Controller
         $seller->update($data);
 
         return redirect()->back()->with('success', 'Seller update successfully');
+    }
+
+    public function permanentDelete(Seller $seller)
+    {
+        DB::transaction(function () use ($seller) {
+            // Delete all related models
+            $seller->orders()->delete();
+            $seller->employees()->delete();
+            $seller->products()->delete();
+            $seller->banner_images()->delete();
+            $seller->followers()->delete();
+            $seller->followerUsers()->delete();
+            $seller->campaigns()->delete();
+            $seller->chats()->delete();
+            $seller->expenses()->delete();
+            $seller->seller_expense_categories()->delete();
+            $seller->forceDelete(); 
+        });
+
+        return successResponse('Seller and all related data permanently deleted.');
     }
 }

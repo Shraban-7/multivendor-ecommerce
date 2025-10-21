@@ -20,21 +20,25 @@
 
         <!-- Profile and Analytics Row -->
         <div class="row mb-5">
+
             <!-- Left: Seller + Business Info -->
             <div class="col-md-4">
                 <div class="bg-white rounded-lg shadow-sm p-4 mb-4 position-relative">
-                    <!-- Joined Date Top Right -->
-                    <span class="position-absolute top-0 end-0 bg-light text-muted small px-2 py-1 mt-2 me-2 rounded">
-                        <i data-feather="calendar" class="icon-xs me-1"></i>
-                        {{ optional($seller->created_at)->format('d M Y') }}
-                    </span>
+
 
                     <!-- Seller Info -->
                     <div class="d-flex align-items-start mb-3">
                         <img src="{{ storage_url($seller->image) }}" alt="{{ $seller->name }}" class="img-thumbnail me-3"
                             style="width: 100px; height: 100px; object-fit: cover; border-radius: .5rem;">
                         <div>
-                            <h5 class="fw-bold mb-1">{{ $seller->name }}</h5>
+                            <div class="d-flex align-items-center mb-2">
+                                <h5 class="fw-bold mb-0">{{ $seller->name }}</h5>
+
+                                @if ($seller->status == $deleted)
+                                    <span class="badge bg-danger ms-2">Deleted</span>
+                                @endif
+                            </div>
+
                             <p class="text-muted small mb-1">
                                 <i data-feather="mail" class="icon-xs me-1"></i>{{ $seller->email }}
                             </p>
@@ -44,9 +48,55 @@
                             <p class="text-muted small mb-1">
                                 <i data-feather="map-pin" class="icon-xs me-1"></i>{{ $seller->address ?? '' }}
                             </p>
+                            <p class="text-muted small mb-1">
+                                <i data-feather="calendar" class="icon-xs me-1"></i>
+                                {{ optional($seller->created_at)->format('d M Y') }}
+                            </p>
                         </div>
                     </div>
+                    @if ($seller->status == $deleted)
+                        <div class="d-flex justify-content-end align-items-center mb-3 gap-2">
+                            <!-- Restore Button -->
+                            <button type="button" class="btn btn-sm btn-light border"
+                                onclick="restoreItem({{ $seller->id }})">
+                                Restore Account
+                            </button>
 
+                            <!-- Permanently Delete Button -->
+                            <button type="button" class="btn btn-sm btn-danger d-flex align-items-center gap-1"
+                                data-bs-toggle="modal" data-bs-target="#permanentDeleteModal{{ $seller->id }}">
+                                <i class="bi bi-exclamation-triangle-fill"></i>
+                                Delete Permanently
+                            </button>
+                        </div>
+
+                        <!-- Confirmation Modal -->
+                        <div class="modal fade" id="permanentDeleteModal{{ $seller->id }}" tabindex="-1"
+                            aria-labelledby="permanentDeleteModalLabel{{ $seller->id }}" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="permanentDeleteModalLabel{{ $seller->id }}">Confirm
+                                            Permanent Deletion</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure you want to permanently delete this seller? This action cannot be
+                                        undone.
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Cancel</button>
+                                        <button type="button" class="btn btn-danger"
+                                            onclick="permanentlyDeleteSeller({{ $seller->id }})">
+                                            Yes, Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                     <hr class="my-3">
 
                     <!-- Business Info -->
@@ -94,7 +144,8 @@
                                     Are you sure you want to delete this seller? This action cannot be undone.
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Cancel</button>
                                     <form action="{{ route('admin.sellers.delete', $seller->id) }}" method="POST"
                                         class="d-inline">
                                         @csrf
@@ -245,6 +296,43 @@
     @push('scripts')
         <script>
             feather.replace();
+
+            function restoreItem(sellerId) {
+                if (!sellerId) return;
+
+                $.ajax({
+                    url: "{{ route('admin.sellers.restore', ':id') }}".replace(':id', sellerId),
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        alert('Seller restored successfully!');
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        // console.error(error);
+                        alert('Failed to restore seller.');
+                    }
+                });
+            }
+
+            function permanentlyDeleteSeller(sellerId) {
+                $.ajax({
+                    url: "{{ route('admin.sellers.permanent-delete', ':id') }}".replace(':id', sellerId),
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        alert('Seller permanently deleted!');
+                        window.location.href = "{{ route('admin.sellers.index') }}";
+                    },
+                    error: function(xhr) {
+                        alert('Failed to permanently delete seller.');
+                    }
+                });
+            }
         </script>
     @endpush
 
