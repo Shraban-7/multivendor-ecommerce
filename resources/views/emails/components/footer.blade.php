@@ -3,7 +3,7 @@
         <p style="margin:0 0 12px;color:#5A6C7D;font-size:13px;line-height:1.5;text-align:center;">
             {{ $footerText ?? '' }}
             <a href="mailto:{{ $supportEmail ?? config('mail.support_address') }}" style="color:#FF6B35;text-decoration:none;">
-                {{ $supportEmail ?? config('mail.support_address') }}
+                {{ config('mail.from.address') }}
             </a>
         </p>
         <p style="margin:0;color:#8A9BA8;font-size:12px;text-align:center;">

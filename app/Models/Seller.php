@@ -3,11 +3,14 @@
 namespace App\Models;
 
 use App\Enums\CommissionType;
+use App\Mail\WelcomeMail;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+
+use Illuminate\Support\Facades\Mail;
 
 class Seller extends Authenticatable
 {
@@ -103,5 +106,10 @@ class Seller extends Authenticatable
             'total_commission' => $total_commission,
             'seller_earning' => $sellerEarning,
         ];
+    }
+
+    public function sendWelcomeMail()
+    {
+        Mail::to($this->email)->queue(new WelcomeMail($this->name));
     }
 }

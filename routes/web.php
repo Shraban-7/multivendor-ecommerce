@@ -19,16 +19,10 @@ Route::get('mails/test', function () {
 });
 
 Route::prefix('mails')->as('mails.')->group(function () {
-    Route::get('/welcome', function () {
-        $data['customerName'] = 'John Doe';
-        $data['orderId'] = '223';
-        $data['orderDate'] = '223';
-        $data['totalAmount'] = '223';
-        $data['items'] = [];
-        $data['trackOrderUrl'] = '';
-
-        return view('emails.welcome', $data);
-    })->name('welcome');
+    // Route::get('/welcome', function () {
+    //     $data['receipent_name'] = 'John Doe';
+    //     return view('emails.welcome', $data);
+    // })->name('welcome');
 
     Route::get('/test', function () {
         $data['customerName'] = 'John Doe';
@@ -171,19 +165,19 @@ Route::prefix('mails')->as('mails.')->group(function () {
         return view('emails.shipping-update', $data);
     })->name('shipping_update');
 
-    Route::get('/email-verification', function () {
+    // Route::get('/email-verification', function () {
 
-        $data['verification_code'] = VerificationCode::where('type', VerificationCode::PASSWORD_RESET)
-            ->whereNull('used_at')
-            ->latest()
-            ->first();
+    //     $data['verification_code'] = VerificationCode::where('type', VerificationCode::PASSWORD_RESET)
+    //         ->whereNull('used_at')
+    //         ->latest()
+    //         ->first();
 
-        $data['customer_name'] = "Jhon Doe";
+    //     $data['customer_name'] = "Jhon Doe";
 
-        $data['expiry_minutes'] = VerificationCode::EXPIRY_MINUTES;
+    //     $data['expiry_minutes'] = VerificationCode::EXPIRY_MINUTES;
 
-        return view('emails.email-verification', $data);
-    });
+    //     return view('emails.email-verification', $data);
+    // });
 
     Route::get('/refund-processed', function () {
         $data['customer_name'] = 'John Doe';
