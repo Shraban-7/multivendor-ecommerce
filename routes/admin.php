@@ -173,9 +173,9 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
 
     Route::prefix('manual-gateways')->as('manual-gateways.')->group(function(){
         Route::get('/', [ManualPaymentMethodController::class, 'index'])->name('index');
-        Route::post('/', [ManualPaymentMethodController::class, 'store'])->name('store');
-        Route::put('/', [ManualPaymentMethodController::class, 'update'])->name('update');
-        Route::delete('/', [ManualPaymentMethodController::class, 'delete'])->name('delete');
+        Route::post('/store', [ManualPaymentMethodController::class, 'store'])->name('store');
+        Route::put('/{manualPayment}/update', [ManualPaymentMethodController::class, 'update'])->name('update');
+        Route::delete('/{manualPayment}/delete', [ManualPaymentMethodController::class, 'delete'])->name('delete');
     });
 });
 
