@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('account_name');
             $table->string('account_number');
             $table->string('image');
+            $table->string('qr_image')->nullable();
             $table->boolean('is_active')->default(1);
             $table->timestamps();
         });
