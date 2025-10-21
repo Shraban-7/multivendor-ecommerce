@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 
 class ManualPaymentMethodController extends Controller
 {
+    private const IMAGE_DIR = 'images/payment-gateways';
+
     public function index()
     {
         $methods = ManualPaymentMethod::get();
@@ -30,11 +32,11 @@ class ManualPaymentMethodController extends Controller
         $data['slug'] = str_slug('manual_payment_methods', 'slug', $data['name']);
 
         if ($request->hasFile('image')) {
-            $data['image'] = upload_file($request->file('image'), 'images/manual_payment/logo');
+            $data['image'] = upload_file($request->file('image'), $this::IMAGE_DIR);
         }
 
         if ($request->hasFile('qr_image')) {
-            $data['qr_image'] = upload_file($request->file('qr_image'), 'images/manual_payment/qr');
+            $data['qr_image'] = upload_file($request->file('qr_image'), $this::IMAGE_DIR);
         }
 
         ManualPaymentMethod::create($data);
