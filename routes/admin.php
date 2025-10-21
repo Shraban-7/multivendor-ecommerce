@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\HeroBannerController;
 use App\Http\Controllers\Admin\HomeMidController;
 use App\Http\Controllers\Admin\ImageController;
+use App\Http\Controllers\Admin\ManualPaymentMethodController;
 use App\Http\Controllers\Admin\OptionController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PaymentController;
@@ -168,6 +169,13 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
         Route::delete('/delete-all', [ImageController::class, 'deleteAll'])->name('delete-all');
         Route::post('/cropped-image', [ImageController::class, 'croppedImage'])->name('cropped-image');
         Route::delete('/delete-cropped-image', [ImageController::class, 'deleteCroppedImage'])->name('delete-cropped-image');
+    });
+
+    Route::prefix('manual-pms')->as('manual-pms.')->group(function(){
+        Route::get('/', [ManualPaymentMethodController::class, 'index'])->name('index');
+        Route::post('/', [ManualPaymentMethodController::class, 'store'])->name('store');
+        Route::put('/', [ManualPaymentMethodController::class, 'update'])->name('update');
+        Route::delete('/', [ManualPaymentMethodController::class, 'delete'])->name('delete');
     });
 });
 
