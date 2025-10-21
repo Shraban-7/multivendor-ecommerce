@@ -19,16 +19,10 @@ Route::get('mails/test', function () {
 });
 
 Route::prefix('mails')->as('mails.')->group(function () {
-    Route::get('/welcome', function () {
-        $data['customerName'] = 'John Doe';
-        $data['orderId'] = '223';
-        $data['orderDate'] = '223';
-        $data['totalAmount'] = '223';
-        $data['items'] = [];
-        $data['trackOrderUrl'] = '';
-
-        return view('emails.welcome', $data);
-    })->name('welcome');
+    // Route::get('/welcome', function () {
+    //     $data['receipent_name'] = 'John Doe';
+    //     return view('emails.welcome', $data);
+    // })->name('welcome');
 
     Route::get('/test', function () {
         $data['customerName'] = 'John Doe';

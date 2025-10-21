@@ -124,7 +124,7 @@ class AuthController extends Controller
                 $allData['username'] = str_slug('sellers', 'username', $allData['name']);
                 $username = $allData['username'];
 
-                $destinationDir = "images/".$username;
+                $destinationDir = "images/" . $username;
                 if (!Storage::disk('public')->exists($destinationDir)) {
                     Storage::disk('public')->makeDirectory($destinationDir);
                 }
@@ -287,7 +287,6 @@ class AuthController extends Controller
         return redirect()->route('password.reset');
     }
 
-
     public function resetPassword(Request $request)
     {
         $settings = settings();
@@ -344,9 +343,13 @@ class AuthController extends Controller
             return redirect()->route('login')->with('info', 'Please register first.');
         }
 
-        $account = User::where('email', $email)->first() ?? Seller::where('email', $email)->first();
+        $user = User::where('email', $email)->first() ?? Seller::where('email', $email)->first();
+        if (!$user) {
+            $request->session()->forget('verify_email');
+            return redirect()->route('login')->with('info', 'Please register first.');
+        }
 
-        if ($account && $account->email_verified_at) {
+        if ($user->email_verified_at) {
             $request->session()->forget('verify_email');
             return redirect()->route('login')->with('success', 'Your account is already verified. Please login.');
         }
@@ -383,9 +386,9 @@ class AuthController extends Controller
 
         $verification->update(['used_at' => now()]);
 
-        if ($account) {
-            $account->update(['email_verified_at' => now()]);
-        }
+        $user->update(['email_verified_at' => now()]);
+        
+        $user->sendWelcomeMail();
 
         $request->session()->forget('verify_email');
 
