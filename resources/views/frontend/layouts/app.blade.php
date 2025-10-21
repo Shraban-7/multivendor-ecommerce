@@ -29,6 +29,9 @@ $isDashboard = View::hasSection('dashboard');
         body {
             background-color: #f9f9f9;
         }
+        #main {
+            min-height: calc(100vh - 140px)
+        }
     </style>
 
     @stack('header')
@@ -67,7 +70,7 @@ $isDashboard = View::hasSection('dashboard');
     @endif
 
     @if (!$isDashboard)
-        <main class="max-w-7xl mx-auto p-4 mb-10">
+        <main class="max-w-7xl mx-auto p-4" id="main">
             @yield('content')
         </main>
     @endif
@@ -79,7 +82,7 @@ $isDashboard = View::hasSection('dashboard');
     @endif
 
     @if ($isDashboard)
-        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mb-10">
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mb-10" id="main">>
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 items-start">
                 @include('frontend.layouts.sidebar')
                 <section class="md:col-span-3 space-y-6">
