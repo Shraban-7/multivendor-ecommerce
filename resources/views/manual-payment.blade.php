@@ -40,10 +40,10 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"> <!-- Even tighter gap -->
 
                 <!-- Payment Method Card: Bkash (Radio-button style) -->
-                <div class="relative bg-white rounded-lg border border-gray-200 shadow-sm hover:border-orange-400 hover:shadow-md transition-all duration-300 ease-in-out p-3 flex items-center cursor-pointer group" onclick="selectPaymentMethod('Bkash', '017XXXXXXXX', 'John Doe', 'https://via.placeholder.com/40x40/F59E0B/FFFFFF?text=Bk', 'Bkash Personal')">
+                <div class="relative bg-white rounded-lg border border-gray-200 shadow-sm hover:border-orange-400 hover:shadow-md transition-all duration-300 ease-in-out p-3 flex items-center cursor-pointer group" onclick="selectPaymentMethod('Bkash', '017XXXXXXXX', 'John Doe', 'https://www.logo.wine/a/logo/BKash/BKash-Icon2-Logo.wine.svg', 'Bkash Personal')">
                     <input type="radio" name="paymentMethod" id="bkash" class="hidden-radio">
                     <div class="flex-shrink-0 mr-3"> <!-- Logo container -->
-                        <img src="https://via.placeholder.com/40x40/F59E0B/FFFFFF?text=Bk" alt="Bkash Logo" class="w-10 h-10 object-contain">
+                        <img src="https://www.logo.wine/a/logo/BKash/BKash-Icon2-Logo.wine.svg" alt="Bkash Logo" class="w-10 h-10 object-contain">
                     </div>
                     <div class="flex-grow"> <!-- Text content -->
                         <h3 class="text-base font-semibold text-gray-800 leading-tight">Bkash Personal</h3>
@@ -57,10 +57,10 @@
                 </div>
 
                 <!-- Payment Method Card: Nagad (Radio-button style) -->
-                <div class="relative bg-white rounded-lg border border-gray-200 shadow-sm hover:border-orange-400 hover:shadow-md transition-all duration-300 ease-in-out p-3 flex items-center cursor-pointer group" onclick="selectPaymentMethod('Nagad', '018XXXXXXXX', 'Jane Smith', 'https://via.placeholder.com/40x40/EA580C/FFFFFF?text=Ng', 'Nagad Personal')">
+                <div class="relative bg-white rounded-lg border border-gray-200 shadow-sm hover:border-orange-400 hover:shadow-md transition-all duration-300 ease-in-out p-3 flex items-center cursor-pointer group" onclick="selectPaymentMethod('Nagad', '018XXXXXXXX', 'Jane Smith', 'https://www.logo.wine/a/logo/Nagad/Nagad-Logo.wine.svg', 'Nagad Personal')">
                     <input type="radio" name="paymentMethod" id="nagad" class="hidden-radio">
                     <div class="flex-shrink-0 mr-3">
-                        <img src="https://via.placeholder.com/40x40/EA580C/FFFFFF?text=Ng" alt="Nagad Logo" class="w-10 h-10 object-contain">
+                        <img src="https://www.logo.wine/a/logo/Nagad/Nagad-Logo.wine.svg" alt="Nagad Logo" class="w-10 h-10 object-contain">
                     </div>
                     <div class="flex-grow">
                         <h3 class="text-base font-semibold text-gray-800 leading-tight">Nagad Personal</h3>
@@ -74,10 +74,10 @@
                 </div>
 
                 <!-- Payment Method Card: Bank Transfer (Radio-button style) -->
-                <div class="relative bg-white rounded-lg border border-gray-200 shadow-sm hover:border-orange-400 hover:shadow-md transition-all duration-300 ease-in-out p-3 flex items-center cursor-pointer group" onclick="selectPaymentMethod('Bank Transfer', '1234567890123', 'Fintech Innovations Ltd.', 'https://via.placeholder.com/40x40/6B7280/FFFFFF?text=B', 'Bank: Global Trust Bank<br>Swift: GTBLBDDH')">
+                <div class="relative bg-white rounded-lg border border-gray-200 shadow-sm hover:border-orange-400 hover:shadow-md transition-all duration-300 ease-in-out p-3 flex items-center cursor-pointer group" onclick="selectPaymentMethod('Bank Transfer', '1234567890123', 'Fintech Innovations Ltd.', 'https://images.seeklogo.com/logo-png/21/1/bangladesh-bank-logo-png_seeklogo-219689.png', 'Bank: Global Trust Bank<br>Swift: GTBLBDDH')">
                     <input type="radio" name="paymentMethod" id="banktransfer" class="hidden-radio">
                     <div class="flex-shrink-0 mr-3">
-                        <img src="https://via.placeholder.com/40x40/6B7280/FFFFFF?text=B" alt="Bank Logo" class="w-10 h-10 object-contain">
+                        <img src="https://images.seeklogo.com/logo-png/21/1/bangladesh-bank-logo-png_seeklogo-219689.png" alt="Bank Logo" class="w-10 h-10 object-contain">
                     </div>
                     <div class="flex-grow">
                         <h3 class="text-base font-semibold text-gray-800 leading-tight">Bank Transfer</h3>
@@ -94,7 +94,7 @@
                 <div class="relative bg-white rounded-lg border border-gray-200 shadow-sm p-3 opacity-70 cursor-not-allowed flex items-center">
                     <input type="radio" name="paymentMethod" id="upay" class="hidden-radio" disabled>
                     <div class="flex-shrink-0 mr-3">
-                        <img src="https://via.placeholder.com/40x40/9CA3AF/FFFFFF?text=UP" alt="UPay Logo" class="w-10 h-10 object-contain">
+                        <img src="https://images.seeklogo.com/logo-png/40/1/upay-logo-png_seeklogo-404483.png" alt="UPay Logo" class="w-10 h-10 object-contain">
                     </div>
                     <div class="flex-grow">
                         <h3 class="text-base font-semibold text-gray-800 leading-tight">UPay</h3>
