@@ -523,6 +523,8 @@ $isDashboard = View::hasSection('dashboard');
                 const product = $wrapper.data("product");
                 if (!product) return;
 
+                $('.quantity').attr('value', parseInt($('.quantity').val()) + 1);
+
                 let quantity = parseInt($wrapper.find(".qtyInputValue").val()) || 1;
                 quantity = $btn.hasClass("increaseBtn") ? quantity + 1 : Math.max(1, quantity - 1);
 
