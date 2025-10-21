@@ -56,10 +56,9 @@ class ManualPaymentMethodController extends Controller
             'qr_image' => 'nullable|image|mimes:jpg,jpeg,png,gif,bmp,svg,webp|max:2048',
         ]);
 
-        if($request->name !=$manualPayment->name)
-        {
+        if ($request->name != $manualPayment->name) {
             $data['slug'] = str_slug('manual_payment_methods', 'slug', $data['name']);
-        }else{
+        } else {
             $data['slug'] = $manualPayment->slug;
         }
 
@@ -67,14 +66,14 @@ class ManualPaymentMethodController extends Controller
             if (!empty($manualPayment->image)) {
                 delete_file($manualPayment->image);
             }
-            $data['image'] = upload_file($request->file('image'), 'images/manual_payment/logo');
+            $data['image'] = upload_file($request->file('image'), $this::IMAGE_DIR);
         }
 
         if ($request->hasFile('qr_image')) {
             if (!empty($manualPayment->qr_image)) {
                 delete_file($manualPayment->qr_image);
             }
-            $data['qr_image'] = upload_file($request->file('qr_image'), 'images/manual_payment/qr');
+            $data['qr_image'] = upload_file($request->file('qr_image'), $this::IMAGE_DIR);
         }
 
         $manualPayment->update($data);
@@ -86,6 +85,13 @@ class ManualPaymentMethodController extends Controller
 
     public function delete(ManualPaymentMethod $manualPayment)
     {
+        if (!empty($manualPayment->image)) {
+            delete_file($manualPayment->image);
+        }
+        if (!empty($manualPayment->qr_image)) {
+            delete_file($manualPayment->qr_image);
+        }
+
         $manualPayment->delete();
 
         return redirect()
