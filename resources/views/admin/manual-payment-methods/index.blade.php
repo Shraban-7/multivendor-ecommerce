@@ -63,7 +63,7 @@
                                     <i class="bi bi-pencil"></i>
                                 </button>
                                 <form
-                                    action="{{ route('admin.manual-pms', $method->id) }}"
+                                    action="{{ route('admin.manual-gateways', $method->id) }}"
                                     method="POST"
                                     class="d-inline">
                                     @csrf
@@ -103,7 +103,7 @@
                 id="manualPaymentForm"
                 method="POST"
                 enctype="multipart/form-data"
-                action="{{ route('admin.manual-pms.store') }}">
+                action="{{ route('admin.manual-gateways.store') }}">
                 @csrf
                 <input type="hidden" name="id" id="method_id" />
                 <div class="modal-header">
@@ -207,7 +207,7 @@
         document.getElementById("method_id").value = "";
         document
             .getElementById("manualPaymentForm")
-            .setAttribute("action", "{{ route('admin.manual-pms.store') }}");
+            .setAttribute("action", "{{ route('admin.manual-gateways.store') }}");
     }
 
     function openEditModal(method) {

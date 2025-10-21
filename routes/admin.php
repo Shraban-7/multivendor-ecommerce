@@ -171,7 +171,7 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
         Route::delete('/delete-cropped-image', [ImageController::class, 'deleteCroppedImage'])->name('delete-cropped-image');
     });
 
-    Route::prefix('manual-pms')->as('manual-pms.')->group(function(){
+    Route::prefix('manual-gateways')->as('manual-gateways.')->group(function(){
         Route::get('/', [ManualPaymentMethodController::class, 'index'])->name('index');
         Route::post('/', [ManualPaymentMethodController::class, 'store'])->name('store');
         Route::put('/', [ManualPaymentMethodController::class, 'update'])->name('update');
