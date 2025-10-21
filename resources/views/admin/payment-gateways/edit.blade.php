@@ -5,7 +5,7 @@
     <h5 class="mb-3">Edit Payment Gateway</h5>
     <div class="row col-md-6">
         <div class="card card-body">
-            <form action="{{ route('admin.payment_gateways.update', $gateway->id) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('admin.paymentGateways.update', $gateway->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-3">
                     <label class="form-label">Gateway Name</label>

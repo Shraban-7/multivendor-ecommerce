@@ -57,7 +57,7 @@
                                             data-bs-target="#addEditModal" onclick="openEditModal({{ $method }})">
                                             <i class="bi bi-pencil"></i>
                                         </button>
-                                        <form action="{{ route('admin.manual-gateways.delete', $method->id) }}"
+                                        <form action="{{ route('admin.manualGateways.delete', $method->id) }}"
                                             method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
@@ -87,7 +87,7 @@
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <form id="manualPaymentForm" method="POST" enctype="multipart/form-data"
-                    action="{{ route('admin.manual-gateways.store') }}">
+                    action="{{ route('admin.manualGateways.store') }}">
                     @csrf
                     <input type="hidden" name="id" id="method_id" />
                     <div class="modal-header">
@@ -162,11 +162,11 @@
             document.getElementById("method_id").value = "";
             document
                 .getElementById("manualPaymentForm")
-                .setAttribute("action", "{{ route('admin.manual-gateways.store') }}");
+                .setAttribute("action", "{{ route('admin.manualGateways.store') }}");
         }
 
         function openEditModal(method) {
-            const manualGatewayUpdateUrl = "{{ route('admin.manual-gateways.update', ':id') }}";
+            const manualGatewayUpdateUrl = "{{ route('admin.manualGateways.update', ':id') }}";
             document.getElementById("addEditModalLabel").textContent =
                 "Edit Manual Payment Method";
             document.getElementById("method_id").value = method.id;

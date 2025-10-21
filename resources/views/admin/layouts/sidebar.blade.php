@@ -136,7 +136,6 @@ $settings = settings();
                 </div>
             </li>
 
-
             @if (hasPermission('admin.reviews.index'))
                 <x-dashboard.nav-item-link :route="'admin.reviews.index'">
                     <i data-feather="layers" class="nav-icon icon-xs me-2"></i>Reviews
@@ -174,38 +173,37 @@ $settings = settings();
                 </div>
             </li>
 
-
             @if (hasPermission('admin.roles.index'))
                 <x-dashboard.nav-item-link :route="'admin.roles.index'">
                     <i data-feather="layers" class="nav-icon icon-xs me-2"></i>Permissions
                 </x-dashboard.nav-item-link>
             @endif
 
+            <?php
+                $gatewayExpanded = (request()->routeIs('admin.paymentGateways.*') || request()->routeIs('admin.manualGateways.*')) ? true : false;
+            ?>
+
             <li class="nav-item">
                 <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center" href="#!"
                     data-bs-toggle="collapse" data-bs-target="#navGateways"
-                    aria-expanded="{{ request()->routeIs('admin.payment_gateways.*') ? 'true' : 'false' }}"
+                    aria-expanded="{{ $gatewayExpanded ? 'true' : 'false' }}"
                     aria-controls="navGateways">
-
                     <div>
                         <i data-feather="credit-card" class="nav-icon icon-xs me-2"></i>
                         Payment Gateways
                     </div>
-
                     <i data-feather="chevron-right" class="chevron-icon transition"></i>
                 </a>
 
-                <div id="navGateways" class="collapse {{ request()->routeIs('admin.admins.*') ? 'show' : '' }}"
+                <div id="navGateways" class="collapse {{ $gatewayExpanded ? 'show' : '' }}"
                     data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
-                        {{-- @if (hasPermission('admin.admins.index')) --}}
-                        <x-dashboard.nav-item-link :route="'admin.payment_gateways.index'">
+                        <x-dashboard.nav-item-link :route="'admin.paymentGateways.index'">
                             Payment Gateways
                         </x-dashboard.nav-item-link>
-                        <x-dashboard.nav-item-link :route="'admin.manual-gateways.index'">
+                        <x-dashboard.nav-item-link :route="'admin.manualGateways.index'">
                             Manual Gateways
                         </x-dashboard.nav-item-link>
-                        {{-- @endif --}}
                     </ul>
                 </div>
             </li>

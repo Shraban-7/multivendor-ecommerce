@@ -6,7 +6,7 @@
         <h4 class="mb-0">Payment Gateways</h4>
 
         {{-- @if (hasPermission('admin.settings.payment_gateways.store')) --}}
-        <a href="{{ route('admin.payment_gateways.create') }}" class="btn btn-primary">
+        <a href="{{ route('admin.paymentGateways.create') }}" class="btn btn-primary">
             <i data-feather="plus" class="icon-xs"></i> Add Gateway
         </a>
         {{-- @endif --}}
@@ -61,7 +61,7 @@
                             @endif
                         </td>
                         <td>
-                            <a href="{{ route('admin.payment_gateways.edit', $gateway->id) }}"
+                            <a href="{{ route('admin.paymentGateways.edit', $gateway->id) }}"
                                 class="btn btn-sm btn-light border">
                                 Edit
                             </a>
@@ -85,7 +85,7 @@
                                             Are you sure you want to delete <strong>{{ $gateway->name }}</strong>?
                                         </div>
                                         <div class="modal-footer">
-                                            <form action="{{ route('admin.payment_gateways.destroy', $gateway->id) }}"
+                                            <form action="{{ route('admin.paymentGateways.destroy', $gateway->id) }}"
                                                 method="POST">
                                                 @csrf
                                                 <button type="button" class="btn btn-secondary"

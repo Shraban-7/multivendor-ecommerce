@@ -46,7 +46,7 @@ class PaymentGatewayController extends Controller
 
         PaymentGateway::create($data);
 
-        return redirect()->route('admin.payment_gateways.index')
+        return redirect()->route('admin.paymentGateways.index')
             ->with('success', 'Payment gateway added successfully.');
     }
 
@@ -87,7 +87,7 @@ class PaymentGatewayController extends Controller
 
         $gateway->update($data);
 
-        return redirect()->route('admin.payment_gateways.index')
+        return redirect()->route('admin.paymentGateways.index')
             ->with('success', 'Payment gateway updated successfully.');
     }
 
@@ -99,7 +99,7 @@ class PaymentGatewayController extends Controller
 
         $gateway->delete();
 
-        return redirect()->route('admin.payment_gateways.index')
+        return redirect()->route('admin.paymentGateways.index')
             ->with('success', 'Payment gateway deleted successfully.');
     }
 

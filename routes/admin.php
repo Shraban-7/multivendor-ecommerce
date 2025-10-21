@@ -118,7 +118,7 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
         Route::post('/{admin}/delete', [AdminController::class, 'delete'])->name('delete');
     });
 
-    Route::prefix('payment-gateways')->as('payment_gateways.')->group(function () {
+    Route::prefix('payment-gateways')->as('paymentGateways.')->group(function () {
         Route::get('/', [PaymentGatewayController::class, 'index'])->name('index');
         Route::get('/create', [PaymentGatewayController::class, 'create'])->name('create');
         Route::post('/store', [PaymentGatewayController::class, 'store'])->name('store');
@@ -171,7 +171,7 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
         Route::delete('/delete-cropped-image', [ImageController::class, 'deleteCroppedImage'])->name('delete-cropped-image');
     });
 
-    Route::prefix('manual-gateways')->as('manual-gateways.')->group(function(){
+    Route::prefix('manual-gateways')->as('manualGateways.')->group(function(){
         Route::get('/', [ManualPaymentMethodController::class, 'index'])->name('index');
         Route::post('/store', [ManualPaymentMethodController::class, 'store'])->name('store');
         Route::put('/{manualPayment}/update', [ManualPaymentMethodController::class, 'update'])->name('update');

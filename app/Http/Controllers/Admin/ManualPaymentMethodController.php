@@ -41,7 +41,7 @@ class ManualPaymentMethodController extends Controller
 
         ManualPaymentMethod::create($data);
 
-        return redirect()->route('admin.manual-gateways.index')->with('success', 'Manual payment method create successfully');
+        return redirect()->route('admin.manualGateways.index')->with('success', 'Manual payment method create successfully');
     }
 
     public function update(Request $request, ManualPaymentMethod $manualPayment)
@@ -95,7 +95,7 @@ class ManualPaymentMethodController extends Controller
         $manualPayment->delete();
 
         return redirect()
-            ->route('admin.manual-gateways.index')
+            ->route('admin.manualGateways.index')
             ->with('success', 'Manual payment method deleted successfully');
     }
 }

@@ -5,7 +5,7 @@
     <h5 class="mb-3">Add Payment Gateway</h5>
     <div class="row col-md-6">
         <div class="card card-body">
-            <form action="{{ route('admin.payment_gateways.store') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('admin.paymentGateways.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <div class="mb-3">
