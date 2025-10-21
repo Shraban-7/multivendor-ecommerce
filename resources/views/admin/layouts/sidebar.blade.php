@@ -72,8 +72,8 @@ $settings = settings();
             @endif
 
             @if (hasPermission('admin.sellers.index') ||
-                    hasPermission('admin.seller.requests') ||
-                    hasPermission('admin.seller.payments'))
+                    hasPermission('admin.seller.create') ||
+                    hasPermission('admin.sellers.pending'))
                 <li class="nav-item">
                     <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center"
                         href="#!" data-bs-toggle="collapse" data-bs-target="#navSellers"
@@ -96,6 +96,11 @@ $settings = settings();
                             @if (hasPermission('admin.sellers.index'))
                                 <x-dashboard.nav-item-link :route="'admin.sellers.index'">
                                     All Sellers
+                                </x-dashboard.nav-item-link>
+                            @endif
+                            @if (hasPermission('admin.sellers.pending'))
+                                <x-dashboard.nav-item-link :route="'admin.sellers.pending'">
+                                    Pending
                                 </x-dashboard.nav-item-link>
                             @endif
                             @if (hasPermission('admin.sellers.create'))

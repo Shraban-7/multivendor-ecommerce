@@ -38,6 +38,7 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
 
     Route::prefix('sellers')->as('sellers.')->group(function () {
         Route::get('/', [SellerController::class, 'index'])->name('index');
+        Route::get('/pending', [SellerController::class, 'pending'])->name('pending');
         Route::get('/create', [SellerController::class, 'create'])->name('create');
         Route::post('/store', [SellerController::class, 'store'])->name('store');
         Route::get('{seller:username}/edit', [SellerController::class, 'edit'])->name('edit');

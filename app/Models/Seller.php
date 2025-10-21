@@ -38,6 +38,11 @@ class Seller extends Authenticatable
         return $query->where('status', self::ACTIVE);
     }
 
+    public function scopePending($query)
+    {
+        return $query->where('status', self::PENDING);
+    }
+
     public function orders()
     {
         return $this->hasMany(Order::class, 'seller_id');

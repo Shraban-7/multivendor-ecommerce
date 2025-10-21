@@ -20,6 +20,13 @@ class SellerController extends Controller
         return view('admin.sellers.index', compact('sellers'));
     }
 
+    public function pending()
+    {
+        $sellers = Seller::pending()->latest('id')->paginate(30);
+
+        return view('admin.sellers.pending', compact('sellers'));
+    }
+
     public function profile(Seller $seller)
     {
         $data = [];
