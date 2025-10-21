@@ -339,7 +339,7 @@
                         },
                         error: function() {
                             button.prop('disabled', false).text('Load More');
-                            alert('Something went wrong. Please try again.');
+                            toastr.error('Something went wrong. Please try again.');
                         }
                     });
                 });

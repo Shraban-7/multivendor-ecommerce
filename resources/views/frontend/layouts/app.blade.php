@@ -165,28 +165,24 @@ $isDashboard = View::hasSection('dashboard');
                 ).prop('disabled', true);
 
                 var product_id = $btn.data('id');
-                var modal = $btn.data('modal');
-                var wishlistId = $btn.data('wishlist-id');
+                var $product_content = $btn.closest("[id^='product-wrapper']");
+                var product = $product_content.data("product");
 
-                var $product_content = $btn.closest('.product-contents');
-
-                var variantId = $product_content.find('.variantId').val() || null;
-                var product_price_text = $product_content.find('.product-price').text().replace(/[^0-9.]/g,
-                    '');
-                var product_price = parseFloat(product_price_text);
-
-                let selectedOptionIds = [];
-                $product_content.find('.variant-option:checked').each(function() {
-                    selectedOptionIds.push($(this).val());
-                });
-
-                if (!product_id) {
-                    alert("No Product Selected!");
+                if (!product) {
+                    toastr.error("Product data not found!");
                     $btn.html(originalText).prop('disabled', false);
                     return;
                 }
 
-                var qtyInput = $product_content.find('.qtyInputValue').val() || 1;
+                const selectedOptions = collectSelectedOptions($product_content);
+                const variant = getSelectedVariant(product, selectedOptions);
+
+                var variantId = variant ? variant.id : null;
+                var product_price_text = $product_content.find('.product-price').text().replace(/[^0-9.]/g,
+                    '');
+                var product_price = parseFloat(product_price_text);
+
+                var qtyInput = $product_content.find('.quantity').val() || 1;
 
                 $.ajax({
                     url: "{{ route('cart.add') }}",
@@ -196,7 +192,6 @@ $isDashboard = View::hasSection('dashboard');
                         variant_id: variantId,
                         quantity: qtyInput,
                         price: product_price,
-                        selected_options: selectedOptionIds
                     },
                     success: function(data) {
                         if (data.unauthorized) {
@@ -204,7 +199,6 @@ $isDashboard = View::hasSection('dashboard');
                         } else if (data.success) {
                             toastr.success(data.message);
                             updateCartData();
-
                             if ("{{ Route::currentRouteName() }}" === 'cart.details' && data
                                 .action === 'add_to_cart') {
                                 window.location.reload();
@@ -353,8 +347,8 @@ $isDashboard = View::hasSection('dashboard');
             }
 
             function updateProductUI($wrapper, variant, quantity, isInitialLoad = false) {
+                const $qtyEl = $wrapper.find("input.quantity");
                 const $mainImage = $wrapper.find(".main-product-image");
-                const $thumbWrapper = $wrapper.find(".thumbnailWrapper");
                 const $priceEl = $wrapper.find(".product-price");
                 const $originalPriceEl = $wrapper.find(".original-price");
                 const $skuEl = $wrapper.find(".sku-text");
@@ -363,8 +357,6 @@ $isDashboard = View::hasSection('dashboard');
                 const $variantError = $wrapper.find(".variant-error");
                 const $addToCartBtn = $wrapper.find(".addToCartBtn");
                 const $variantIdInput = $wrapper.find("input.variantId");
-                const $qtyInput = $wrapper.find(".qtyInputValue");
-                const $qtyEl = $wrapper.find("input.quantity");
                 const product = $wrapper.data("product");
 
                 if (variant) {
@@ -374,10 +366,8 @@ $isDashboard = View::hasSection('dashboard');
                     const price = discounted && discounted > 0 ? discounted : basePrice;
 
                     $priceEl.text(`৳ ${formatPrice(price, quantity)}`);
-
-                    if (discounted == 0 || discounted == null) {
-                        $originalPriceEl.addClass('hidden');
-                    } else {
+                    if (!discounted || discounted == 0) $originalPriceEl.addClass('hidden');
+                    else {
                         $originalPriceEl.removeClass('hidden');
                         $originalPriceEl.text(`৳ ${formatPrice(basePrice, quantity)}`);
                     }
@@ -386,78 +376,37 @@ $isDashboard = View::hasSection('dashboard');
                     $stockEl.text(variant.stock);
                     $availability.text(variant.stock > 0 ? "In Stock" : "Out of Stock");
                     $variantIdInput.val(variant.id);
+                    $qtyEl.val(quantity);
+                    $qtyEl.attr('value', parseInt($qtyEl.val()));
                     $variantError.addClass("hidden");
 
-                    if (variant.stock <= 0) {
-                        $addToCartBtn.prop("disabled", true).addClass("opacity-50 cursor-not-allowed");
-                    } else {
-                        $addToCartBtn.prop("disabled", false).removeClass("opacity-50 cursor-not-allowed");
-                    }
-
-                    $qtyInput.val(quantity);
-                    $qtyEl.val(quantity);
+                    $addToCartBtn.prop("disabled", variant.stock <= 0).toggleClass("opacity-50 cursor-not-allowed",
+                        variant.stock <= 0);
 
                     if (!isInitialLoad && variant.image) {
                         const imageUrl = storageURL(variant.image);
                         $mainImage.attr('src', imageUrl);
-                        $wrapper.find('.slide-thumb').removeClass('border-primary').addClass('border-transparent');
-                        const $thumbEl = $wrapper.find(`.thumb-img[data-full="${imageUrl}"]`);
-                        if ($thumbEl.length) {
-                            $thumbEl.closest('.slide-thumb').addClass('border-primary').removeClass(
-                                'border-transparent');
-                        }
                     }
 
-                } else if (product.variants.length > 0 && !variant) {
-                    $skuEl.text("N/A");
-                    $stockEl.text("0");
-                    $availability.text("Not Available");
-                    $priceEl.text("৳ 0.00");
-                    $originalPriceEl.addClass('hidden');
-                    $variantIdInput.val("");
-                    $variantError.removeClass("hidden");
-                    $addToCartBtn.prop("disabled", true).addClass("opacity-50 cursor-not-allowed");
-
-                    let allThumbs = '';
-                    product.slider.forEach((img, i) => {
-                        const full = `/storage/${img}`;
-                        const border = i === 0 ? 'border-primary' : 'border-transparent';
-                        allThumbs += `<div class="slide-thumb w-full xl:h-24 md:h-22 lg:h-28 h-20 rounded-2xl cursor-pointer border-2 ${border} overflow-hidden">
-                            <img src="${full}" class="w-full h-full object-cover thumb-img" data-full="${full}" />
-                    </div>`;
-                    });
-                    $wrapper.find('#thumbnailWrapper').html(allThumbs);
-                    $mainImage.attr('src', `/storage/${product.slider[0] ?? ''}`);
-
                 } else {
-                    // console.log("variant not found");
                     const basePrice = parseFloat(product.price) || 0;
                     const discounted = product.discounted_price !== null ? parseFloat(product.discounted_price) :
                         null;
                     const price = discounted && discounted > 0 ? discounted : basePrice;
 
                     $priceEl.text(`৳ ${formatPrice(price, quantity)}`);
-                    $skuEl.text(product.sku ?? "N/A");
-                    $stockEl.text(product.stock ?? 0);
-                    $availability.text((product.stock ?? 0) > 0 ? "In Stock" : "Out of Stock");
+                    $originalPriceEl.toggleClass('hidden', !discounted || discounted == 0);
+                    if (discounted) $originalPriceEl.text(`৳ ${formatPrice(basePrice, quantity)}`);
+
+                    $skuEl.text(product.sku || "N/A");
+                    $stockEl.text(product.stock || 0);
+                    $availability.text((product.stock || 0) > 0 ? "In Stock" : "Out of Stock");
                     $variantIdInput.val("");
                     $variantError.addClass("hidden");
                     $addToCartBtn.prop("disabled", false).removeClass("opacity-50 cursor-not-allowed");
-                    $qtyInput.val(quantity);
-                    $qtyEl.val(quantity);
-
-                    let allThumbs = '';
-                    product.slider.forEach((img, i) => {
-                        const full = `/storage/${img}`;
-                        const border = i === 0 ? 'border-primary' : 'border-transparent';
-                        allThumbs += `<div class="slide-thumb w-full xl:h-24 md:h-22 lg:h-28 h-20 rounded-2xl cursor-pointer border-2 ${border} overflow-hidden">
-                                        <img src="${full}" class="w-full h-full object-cover thumb-img" data-full="${full}" />
-                                      </div>`;
-                    });
-                    $wrapper.find('#thumbnailWrapper').html(allThumbs);
-                    $mainImage.attr('src', `/storage/${product.slider[0] ?? ''}`);
                 }
             }
+
 
             function getSelectedVariant(product, selectedOptions) {
                 const selectedIds = Object.values(selectedOptions).map(Number).sort();
@@ -499,7 +448,7 @@ $isDashboard = View::hasSection('dashboard');
 
                 const variant = getSelectedVariant(product, selectedOptions);
 
-                const quantity = parseInt($wrapper.find(".qtyInputValue").val()) || 1;
+                const quantity = parseInt($wrapper.find(".quantity").val()) || 1;
 
                 updateProductUI($wrapper, variant, quantity);
             });
@@ -523,8 +472,14 @@ $isDashboard = View::hasSection('dashboard');
                 const product = $wrapper.data("product");
                 if (!product) return;
 
-                let quantity = parseInt($wrapper.find(".qtyInputValue").val()) || 1;
-                quantity = $btn.hasClass("increaseBtn") ? quantity + 1 : Math.max(1, quantity - 1);
+                const $qtyInput = $wrapper.find("input.quantity");
+
+                let quantity = parseInt($qtyInput.val()) || 1;
+
+                if ($btn.hasClass("increaseBtn")) quantity += 1;
+                else quantity -= 1;
+
+                if (quantity < 1) quantity = 1;
 
                 const selectedOptions = collectSelectedOptions($wrapper);
                 const variant = getSelectedVariant(product, selectedOptions);
@@ -532,7 +487,8 @@ $isDashboard = View::hasSection('dashboard');
                 updateProductUI($wrapper, variant, quantity);
             });
 
-            $(document).on("input", ".qtyInputValue", function() {
+
+            $(document).on("input", ".quantity", function() {
                 const $input = $(this);
                 const $wrapper = $input.closest("[id^='product-wrapper']");
                 const product = $wrapper.data("product");
@@ -568,7 +524,7 @@ $isDashboard = View::hasSection('dashboard');
                         .addClass("bg-primary/10 text-primary border-primary");
                 });
 
-                const quantity = parseInt($wrapper.find(".qtyInputValue").val()) || 1;
+                const quantity = parseInt($wrapper.find(".quantity").val()) || 1;
                 updateProductUI($wrapper, defaultVariant, quantity, true);
 
                 $wrapper.data('variant-initialized', true);

@@ -17,41 +17,26 @@ class CartController extends Controller
     {
         $data = $request->validate([
             'product_id' => 'required',
-            'variant_id' => 'nullable',
+            'variant_id' => 'required',
             'quantity'   => 'required|integer|min:1',
             'is_default' => 'nullable|boolean',
         ]);
 
-        $variant   = $variantId   = null;
+        $variant   = ProductVariant::find($data['variant_id']);
         $userId    = Auth::id();
         $product   = Product::find($data['product_id']);
 
-        $defaultVariant = $product->variants->firstWhere('is_default', 1);
+        // $defaultVariant = $product->variants->firstWhere('is_default', 1);
 
         if (! $product) {
             return response()->json(['success' => false, 'error' => 'Product not found']);
-        }
-
-        if ($defaultVariant) {
-            $variant = $defaultVariant;
-        }
-
-        if ($data['variant_id'] != null) {
-            $variant = ProductVariant::find($data['variant_id']);
-            if (! $variant) {
-                return errorResponse('Variant not found!');
-            }
         }
 
         $cart = Cart::firstOrCreate(
             ['user_id' => $userId, 'seller_id' => $product->seller_id],
         );
 
-        if ($variant) {
-            $price = $variant->discounted_price ?? $variant->selling_price;
-        } else {
-            $price = $product->discounted_price ?? $product->selling_price;
-        }
+        $price = $variant->discounted_price ?? $variant->selling_price;
 
         $variantId = $variant->id ?? null;
 
