@@ -98,9 +98,16 @@
                     </div>
                     <div class="modal-body">
                         <div class="row g-3">
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <label class="form-label">Name</label>
                                 <input type="text" name="name" id="name" class="form-control" required />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Active</label>
+                                <select name="is_active" id="is_active" class="form-select">
+                                    <option value="1">Yes</option>
+                                    <option value="0">No</option>
+                                </select>
                             </div>
                             <div class="col-md-12">
                                 <label class="form-label">Description</label>
@@ -129,13 +136,6 @@
                                 <small class="text-muted">Upload small QR image.</small>
                                 <img id="methodPreviewQRImage" src="" alt="Preview"
                                     class="rounded-lg border mt-2" width="55" height="55" style="display:none;">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Active</label>
-                                <select name="is_active" id="is_active" class="form-select">
-                                    <option value="1">Yes</option>
-                                    <option value="0">No</option>
-                                </select>
                             </div>
                         </div>
                     </div>
