@@ -1,4 +1,5 @@
 @extends('admin.layouts.app')
+@section('title','Manual Payment Gateways')
 
 @section('content')
     <div class="container-fluid py-4">
