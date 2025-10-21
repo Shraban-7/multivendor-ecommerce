@@ -56,6 +56,8 @@ class AuthController extends Controller
 
         $request->session()->put('verify_email', $user->email);
 
+        $user->sendEmailVerificationMail();
+
         return redirect()->route('verify')
             ->with('success', 'Signup successful! Please check your email for a verification code.');
     }

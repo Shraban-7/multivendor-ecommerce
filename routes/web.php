@@ -165,19 +165,19 @@ Route::prefix('mails')->as('mails.')->group(function () {
         return view('emails.shipping-update', $data);
     })->name('shipping_update');
 
-    Route::get('/email-verification', function () {
+    // Route::get('/email-verification', function () {
 
-        $data['verification_code'] = VerificationCode::where('type', VerificationCode::PASSWORD_RESET)
-            ->whereNull('used_at')
-            ->latest()
-            ->first();
+    //     $data['verification_code'] = VerificationCode::where('type', VerificationCode::PASSWORD_RESET)
+    //         ->whereNull('used_at')
+    //         ->latest()
+    //         ->first();
 
-        $data['customer_name'] = "Jhon Doe";
+    //     $data['customer_name'] = "Jhon Doe";
 
-        $data['expiry_minutes'] = VerificationCode::EXPIRY_MINUTES;
+    //     $data['expiry_minutes'] = VerificationCode::EXPIRY_MINUTES;
 
-        return view('emails.email-verification', $data);
-    });
+    //     return view('emails.email-verification', $data);
+    // });
 
     Route::get('/refund-processed', function () {
         $data['customer_name'] = 'John Doe';
