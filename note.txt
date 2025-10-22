@@ -24,8 +24,17 @@ ALTER TABLE `order_items` ADD `is_reviewed` TINYINT(1) NOT NULL DEFAULT '0' AFTE
 delete columns form users and sellers country_id, state_id, zip
 
 
-[09/23/2045]
+[09/23/2025]
 
 button reload
 details page new tab 
 product filter
+
+[10/22/2025]
+
+seller registration password toggle not working
+ admin panel dashboard fontawesome missing
+ large image not upload user registration
+ quantity > stock visual problem
+ seller select toggle problem
+ order details not dynamic fully

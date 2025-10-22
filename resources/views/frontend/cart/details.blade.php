@@ -34,7 +34,7 @@
                                             <label for="selectSeller{{ $sellerId }}"
                                                 class="flex items-center cursor-pointer">
                                                 <div class="relative">
-                                                    <input type="radio" name="seller_id"
+                                                    <input type="checkbox" name="seller_id"
                                                         id="selectSeller{{ $sellerId }}"
                                                         class="hidden form-checkbox seller-checkbox peer"
                                                         data-seller-id="{{ $sellerId }}" value="{{ $sellerId }}" />

@@ -29,6 +29,7 @@ $isDashboard = View::hasSection('dashboard');
         body {
             background-color: #f9f9f9;
         }
+
         #main {
             min-height: calc(100vh - 140px)
         }
@@ -476,19 +477,26 @@ $isDashboard = View::hasSection('dashboard');
                 if (!product) return;
 
                 const $qtyInput = $wrapper.find("input.quantity");
-
                 let quantity = parseInt($qtyInput.val()) || 1;
-
-                if ($btn.hasClass("increaseBtn")) quantity += 1;
-                else quantity -= 1;
-
-                if (quantity < 1) quantity = 1;
 
                 const selectedOptions = collectSelectedOptions($wrapper);
                 const variant = getSelectedVariant(product, selectedOptions);
+                const availableStock = variant.stock;
+
+                if ($btn.hasClass("increaseBtn")) {
+                    if (quantity < availableStock) quantity += 1;
+                    else {
+                        quantity = availableStock;
+                        toastr.warning("You’ve reached the maximum stock limit.");
+                    }
+                } else {
+                    quantity -= 1;
+                    if (quantity < 1) quantity = 1;
+                }
 
                 updateProductUI($wrapper, variant, quantity);
             });
+
 
 
             $(document).on("input", ".quantity", function() {
