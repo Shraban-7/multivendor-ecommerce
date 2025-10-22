@@ -38,3 +38,5 @@ seller registration password toggle not working
  quantity > stock visual problem
  seller select toggle problem
  order details not dynamic fully
+ stock check when quantity update on cart details
+ selling price show on cart details
