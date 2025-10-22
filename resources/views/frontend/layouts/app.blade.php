@@ -71,7 +71,7 @@ $isDashboard = View::hasSection('dashboard');
     @endif
 
     @if (!$isDashboard)
-        <main class="max-w-7xl mx-auto p-4" id="main">
+        <main class="max-w-7xl mx-auto p-4 mb-15 md:mb-0" id="main">
             @yield('content')
         </main>
     @endif
