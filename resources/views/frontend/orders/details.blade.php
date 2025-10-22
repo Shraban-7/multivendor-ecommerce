@@ -43,7 +43,7 @@
                         <div class="flex-1 min-w-0">
                             <div class="flex justify-between items-start">
                                 <h3 class="font-medium">{{ $item->product->name }}</h3>
-                                <p class="font-medium">{{ money($item->price) }}</p>
+                                <p class="font-medium">{{ money($item->total) }}</p>
                             </div>
                             <div class="flex justify-between items-end mt-1">
                                 <div class="text-sm text-gray-500">
@@ -195,7 +195,7 @@
                     </div>
 
                     <div class="flex items-center justify-between">
-                        <span class="text-gray-600">Shipping</span>
+                        <span class="text-gray-600">Shipping Fee</span>
                         <span>{{ money($order->shipping_fee) }}</span>
                     </div>
 
@@ -206,7 +206,7 @@
 
                     <div class="border-t border-gray-200 pt-2 flex items-center justify-between font-medium">
                         <span>Total</span>
-                        <span>{{ $order->total }}</span>
+                        <span>{{ $order->payable }}</span>
                     </div>
                 </div>
 

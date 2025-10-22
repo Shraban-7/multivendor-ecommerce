@@ -88,7 +88,7 @@
                                                 </form>
                                             @endif
                                         </td>
-                                        <td class="px-6 py-4 font-semibold">{{ money($order->total) }}</td>
+                                        <td class="px-6 py-4 font-semibold">{{ money($order->payable) }}</td>
                                         <td class="px-6 py-4">
                                             <div class="flex items-center gap-2">
                                                 <a href="{{ route('orders.details', $order->invoice_id) }}"

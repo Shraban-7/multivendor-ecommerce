@@ -95,11 +95,16 @@ class OrderController extends Controller
             ->first();
 
         if (! $cart) {
-            return response()->json([
-                'status'  => false,
-                'message' => 'No cart found for the selected seller.',
-            ], 404);
+            if ($request->ajax()) {
+                return response()->json([
+                    'status'  => false,
+                    'message' => 'No cart found for the selected seller.',
+                ], 404);
+            }
+
+            return redirect()->route('home');
         }
+
 
         $sub_total = 0;
         $total = 0;
@@ -124,7 +129,7 @@ class OrderController extends Controller
             $grand_total = $sub_total + $discount;
 
             $payment_type = Order::getPaymentType($product);
-            
+
             $orderItems[] = [
                 'product_id' => $product->id,
                 'product_variant_id' => $cartItem->product_variant_id ?? null,
@@ -136,7 +141,7 @@ class OrderController extends Controller
                 'unit_price' => $cartItem->price,
                 'quantity' => $cartItem->quantity,
                 'discount' => $itemDiscount,
-                'sub_total' => $itemSubtotal+$itemDiscount,
+                'sub_total' => $itemSubtotal + $itemDiscount,
                 'total' => $itemTotal,
                 'vat_percent' => $product->vat_percent,
                 'vat_amount' => floatval(($product->vat_percent * $unitPrice) / 100) * $cartItem->quantity,
@@ -151,7 +156,7 @@ class OrderController extends Controller
                 ->latest()
                 ->get();
 
-            return view('frontend.pages.checkout', compact('user', 'selectedSellerId', 'sub_total', 'discount', 'vat_amount', 'shipping_fee', 'payment_gateways', 'grand_total', 'divisions', 'districts', 'billingAddresses','total'));
+            return view('frontend.pages.checkout', compact('user', 'selectedSellerId', 'sub_total', 'discount', 'vat_amount', 'shipping_fee', 'payment_gateways', 'grand_total', 'divisions', 'districts', 'billingAddresses', 'total'));
         }
 
         $billingData = collect($validated)->except('seller_id')->toArray();
@@ -251,7 +256,7 @@ class OrderController extends Controller
 
         $this->processAffiliateCommissions($order->items, auth()->user(), $order->id);
 
-        $affiliate = AffiliateCommission::where('order_id',$order->id)->first();
+        $affiliate = AffiliateCommission::where('order_id', $order->id)->first();
 
         $order->affiliate_id = $affiliate->affiliate_id ?? null;
 

@@ -811,7 +811,7 @@
 
                 const $btn = $(this);
                 const originalText = $btn.text();
-                const sellerId = $btn.data('seller-id'); 
+                const sellerId = $btn.data('seller-id');
 
                 $btn.attr('disabled', true)
                     .addClass('opacity-60 cursor-not-allowed')
@@ -837,16 +837,21 @@
                     url: "{{ route('orders.checkout') }}",
                     data: $.param(formData),
                     success: function(response) {
-                        toastr.success(response.message);
-                        if (response.payment_url !== '') {
-                            window.location.href = response.payment_url;
+                        if (response.status === true) {
+                            toastr.success(response.message);
+                            if (response.payment_url !== '') {
+                                window.location.href = response.payment_url;
+                            }
+                        } else {
+                            window.location.href = "{{ route('home') }}";
                         }
                     },
                     error: function(xhr) {
-                        console.error(xhr.responseText);
                         $btn.html(originalText)
                             .attr('disabled', false)
                             .removeClass('opacity-60 cursor-not-allowed');
+                        window.location.href = "{{ route('home') }}";
+
                     }
                 });
             });
