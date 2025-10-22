@@ -24,6 +24,7 @@
                         @foreach ($carts as $sellerId => $cartGroup)
                             @php
                                 $seller = \App\Models\Seller::find($sellerId);
+                                $shippingCharge = $seller?->shipping_cost;
                                 $sellerName = $seller ? $seller->business_name : '';
                             @endphp
                             <!-- Store/Seller Header with Select All for this seller -->
@@ -37,12 +38,13 @@
                                                     <input type="checkbox" name="seller_id"
                                                         id="selectSeller{{ $sellerId }}"
                                                         class="hidden form-checkbox seller-checkbox peer"
-                                                        data-seller-id="{{ $sellerId }}" value="{{ $sellerId }}" />
+                                                        data-seller-id="{{ $sellerId }}"
+                                                        data-shipping="{{ $shippingCharge }}" value="{{ $sellerId }}" />
 
                                                     <div
                                                         class="w-6 h-6 flex items-center justify-center border-2 border-gray-300 rounded-md
                                                      peer-checked:bg-primary peer-checked:border-primary transition-colors">
-                                                         <i class="fas fa-check text-white hidden peer-checked:block"></i>
+                                                        <i class="fas fa-check text-white hidden peer-checked:block"></i>
                                                     </div>
                                                 </div>
 
@@ -121,10 +123,24 @@
                                                         <!-- Prices & Quantity Controls -->
                                                         <div class="flex items-center justify-between mt-4">
                                                             <!-- Price -->
-                                                            <div class="flex items-center cart-item" id="cart-item-{{ $item->id }}">
-                                                                <span class="current-price text-lg font-bold text-primary">
-                                                                    {{ money($item->price * $item->quantity) }}
-                                                                </span>
+                                                            <div class="flex items-center cart-item gap-2"
+                                                                id="cart-item-{{ $item->id }}">
+                                                                @if (!empty($item->discounted_price))
+                                                                    <!-- Discounted item -->
+                                                                    <span
+                                                                        class="current-price text-lg font-bold text-primary">
+                                                                        {{ money($item->price) }}
+                                                                    </span>
+                                                                    <span class="text-gray-500 line-through text-sm">
+                                                                        {{ money($item->variant->selling_price) }}
+                                                                    </span>
+                                                                @else
+                                                                    <!-- Regular item -->
+                                                                    <span
+                                                                        class="current-price text-lg font-bold text-primary">
+                                                                        {{ money($item->price) }}
+                                                                    </span>
+                                                                @endif
                                                             </div>
 
                                                             <!-- Quantity controls -->
@@ -187,13 +203,15 @@
                             <div class="space-y-3">
                                 <div class="flex justify-between">
                                     <span class="text-gray-600">Items total:</span>
-                                    <span id="itemsTotal"
-                                        class="{{ $discount != 0 ? 'line-through text-gray-400' : 'text-gray-900' }}">{{ money($grand_total) }}</span>
+                                    <span id="itemsTotal" class="text-gray-600">{{ money($grand_total) }}</span>
                                 </div>
                                 <div class="flex justify-between">
                                     <span class="text-gray-600">Item Discount:</span>
-                                    <span id="itemDiscount"
-                                        class="text-primary">-{{ money($discount) }}</span>
+                                    <span id="itemDiscount" class="text-gray-600">-{{ money($discount) }}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Shipping Charge:</span>
+                                    <span id="shippingCharge" class="text-gray-600">+{{ money(0) }}</span>
                                 </div>
                             </div>
 
@@ -311,7 +329,7 @@
                 $('#checkoutLink').attr('href', `${checkoutRoute}?seller_id=${selectedSellerId}`);
             });
 
-            $('.increase-qty, .decrease-qty').click(debounce( function() {
+            $('.increase-qty, .decrease-qty').click(debounce(function() {
                 var cartItem = $(this).closest('.quantity-controls');
                 var cartItemId = cartItem.data('id');
 
@@ -327,7 +345,7 @@
                 }
 
                 updateCartQuantity(cartItemId, currentQuantity, quantityInput);
-            },1000));
+            }, 1000));
 
             $('.delete-btn').click(function() {
                 var cartItemId = $(this).data('id');
@@ -465,8 +483,9 @@
                 let discountedTotal = 0;
                 let originalTotal = 0;
                 let selectedCount = 0;
-
+                let sellerShippingCharge = $('.seller-checkbox:checked').data('shipping') || 0;
                 $('.item-checkbox:checked').each(function() {
+
                     const cartItem = $(this).closest('.cart-item');
                     if (cartItem.length) {
                         const price = parseFloat(cartItem.data('price'));
@@ -484,8 +503,10 @@
 
                 $('#itemsTotal').text(formatCurrency(originalTotal));
                 $('#itemDiscount').text('-' + formatCurrency(discount));
-                $('#estimatedTotal').text(formatCurrency(discountedTotal));
+                let total = parseFloat(discountedTotal) + parseFloat(sellerShippingCharge);
+                $('#estimatedTotal').text(formatCurrency(total));
                 $('#selectedItemsCount').text(selectedCount);
+                $('#shippingCharge').text('+' + formatCurrency(sellerShippingCharge));
 
                 const checkoutBtn = $('#checkoutBtn');
                 checkoutBtn.html(`Checkout (${selectedCount})`);
@@ -512,9 +533,12 @@
             }
 
             function formatCurrency(amount) {
-                return '৳ ' + amount.toFixed(2);
-            }
+                amount = parseFloat(amount);
+                const formatted = (amount % 1 === 0) ? amount.toFixed(0) : amount.toFixed(2); 
 
+                return '৳ ' + formatted.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            }
+            
             updateOrderSummary();
             updateCounts();
         });
