@@ -68,6 +68,9 @@
                                 <div class="seller-items seller-{{ $sellerId }} space-y-4">
                                     @foreach ($cartGroup as $key => $cart)
                                         @foreach ($cart->cart_items as $item)
+                                            @php
+                                                $stock = $item->variant->stock_in - $item->variant->stock_out;
+                                            @endphp
                                             <div class="p-4 bg-white border border-gray-200 rounded-lg cart-item"
                                                 data-price="{{ $item->original_price }}"
                                                 data-seller-id="{{ $sellerId }}"
@@ -144,7 +147,8 @@
                                                             </div>
 
                                                             <!-- Quantity controls -->
-                                                            <div class="quantity-controls" data-id="{{ $item->id }}">
+                                                            <div class="quantity-controls" data-id="{{ $item->id }}"
+                                                                data-stock="{{ $stock }}">
                                                                 <div
                                                                     class="flex items-center h-9 rounded-lg border border-gray-300 overflow-hidden">
                                                                     <input type="hidden" class="product-id"
@@ -332,14 +336,19 @@
             $('.increase-qty, .decrease-qty').click(debounce(function() {
                 var cartItem = $(this).closest('.quantity-controls');
                 var cartItemId = cartItem.data('id');
+                var cartItemStock = cartItem.data('stock');
 
                 let quantityInput = cartItem.find('.quantity-input');
                 let currentQuantity = parseInt(quantityInput.val()) || 1;
                 let formattedQuantity = currentQuantity.toString().padStart(2, "0");
 
-
                 if ($(this).hasClass('increase-qty')) {
-                    currentQuantity++;
+                    if (currentQuantity < cartItemStock) {
+                        currentQuantity++;
+                    } else {
+                        currentQuantity = cartItemStock;
+                        toastr.warning("You’ve reached the maximum stock limit.");
+                    }
                 } else if ($(this).hasClass('decrease-qty') && currentQuantity > 1) {
                     currentQuantity--;
                 }
@@ -534,11 +543,11 @@
 
             function formatCurrency(amount) {
                 amount = parseFloat(amount);
-                const formatted = (amount % 1 === 0) ? amount.toFixed(0) : amount.toFixed(2); 
+                const formatted = (amount % 1 === 0) ? amount.toFixed(0) : amount.toFixed(2);
 
                 return '৳ ' + formatted.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
             }
-            
+
             updateOrderSummary();
             updateCounts();
         });
