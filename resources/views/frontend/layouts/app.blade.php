@@ -105,6 +105,16 @@ $isDashboard = View::hasSection('dashboard');
 
     <script src="https://unpkg.com/feather-icons"></script>
     <script>
+        function debounce(func, delay) {
+            let timer;
+            return function(...args) {
+                const context = this;
+                clearTimeout(timer);
+                timer = setTimeout(() => func.apply(context, args), delay);
+            };
+        }
+    </script>
+    <script>
         feather.replace();
     </script>
 
@@ -470,7 +480,7 @@ $isDashboard = View::hasSection('dashboard');
                 $img.closest(".slide-thumb").addClass("border-primary").removeClass("border-gray-200");
             });
 
-            $(document).on("click", ".increaseBtn, .decreaseBtn", function() {
+            $(document).on("click", ".increaseBtn, .decreaseBtn", debounce(function() {
                 const $btn = $(this);
                 const $wrapper = $btn.closest("[id^='product-wrapper']");
                 const product = $wrapper.data("product");
@@ -495,9 +505,7 @@ $isDashboard = View::hasSection('dashboard');
                 }
 
                 updateProductUI($wrapper, variant, quantity);
-            });
-
-
+            }, 300));
 
             $(document).on("input", ".quantity", function() {
                 const $input = $(this);

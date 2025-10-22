@@ -937,7 +937,7 @@ foreach ($categories as $cat) {
                         toastr.error(xhr.responseJSON?.message);
                     }
                 });
-            }, 500));
+            }, 300));
 
             let deleteOrderItemId = null;
 

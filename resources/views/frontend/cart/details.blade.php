@@ -311,7 +311,7 @@
                 $('#checkoutLink').attr('href', `${checkoutRoute}?seller_id=${selectedSellerId}`);
             });
 
-            $('.increase-qty, .decrease-qty').click(function() {
+            $('.increase-qty, .decrease-qty').click(debounce( function() {
                 var cartItem = $(this).closest('.quantity-controls');
                 var cartItemId = cartItem.data('id');
 
@@ -327,7 +327,7 @@
                 }
 
                 updateCartQuantity(cartItemId, currentQuantity, quantityInput);
-            });
+            },1000));
 
             $('.delete-btn').click(function() {
                 var cartItemId = $(this).data('id');
