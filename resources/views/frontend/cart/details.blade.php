@@ -70,12 +70,14 @@
                                         @foreach ($cart->cart_items as $item)
                                             @php
                                                 $stock = $item->variant->stock_in - $item->variant->stock_out;
+                                                $vat_amount =0;
+                                                $vat_amount += floatval(($item->product->vat_percent * $item->price) / 100);
                                             @endphp
                                             <div class="p-4 bg-white border border-gray-200 rounded-lg cart-item"
                                                 data-price="{{ $item->original_price }}"
                                                 data-seller-id="{{ $sellerId }}"
                                                 data-discounted-price="{{ $item->price }}" data-id="{{ $item->id }}"
-                                                data-discount="{{ $item->product->discount }}">
+                                                data-discount="{{ $item->product->discount }}" data-vat="{{ $vat_amount }}">
                                                 <div class="flex gap-4">
                                                     <!-- Item Checkbox -->
                                                     <div class="flex items-start pt-2">
@@ -206,22 +208,22 @@
                         <div class="space-y-4">
                             <div class="space-y-3">
                                 <div class="flex justify-between">
-                                    <span class="text-gray-600">Items total:</span>
+                                    <span class="text-gray-600">Subtotal:</span>
                                     <span id="itemsTotal" class="text-gray-600">{{ money($grand_total) }}</span>
                                 </div>
                                 <div class="flex justify-between">
-                                    <span class="text-gray-600">Item Discount:</span>
-                                    <span id="itemDiscount" class="text-gray-600">-{{ money($discount) }}</span>
+                                    <span class="text-gray-600">VAT:</span>
+                                    <span id="itemVat" class="text-gray-600">+{{ money(0) }}</span>
                                 </div>
                                 <div class="flex justify-between">
-                                    <span class="text-gray-600">Shipping Charge:</span>
+                                    <span class="text-gray-600">Shipping Fee:</span>
                                     <span id="shippingCharge" class="text-gray-600">+{{ money(0) }}</span>
                                 </div>
                             </div>
 
                             <div class="pt-4 border-t border-dashed border-gray-300">
                                 <div class="flex justify-between text-lg">
-                                    <span>Estimated Total (<span
+                                    <span>Total (<span
                                             id="selectedItemsCount">{{ $total_products_count }}</span> Items)</span>
                                     <span id="estimatedTotal"
                                         class="text-xl text-gray-900">{{ money($sub_total) }}</span>
@@ -297,8 +299,8 @@
 
                 $('.seller-checkbox').not(this).prop('checked', false);
 
-                $('.seller-items').hide();
-                $(`.seller-items.seller-${sellerId}`).show();
+                // $('.seller-items').hide();
+                // $(`.seller-items.seller-${sellerId}`).show();
 
                 updateSellerSelection();
             });
@@ -493,6 +495,7 @@
                 let discountedTotal = 0;
                 let originalTotal = 0;
                 let selectedCount = 0;
+                let totalVat = 0;
                 let sellerShippingCharge = $('.seller-checkbox:checked').data('shipping') || 0;
                 $('.item-checkbox:checked').each(function() {
 
@@ -502,17 +505,19 @@
                         const discountedPrice = parseFloat(cartItem.data('discounted-price'));
                         const discount = parseFloat(cartItem.data('discount'));
                         const quantity = parseInt(cartItem.find('.quantity-input').val(), 10);
+                        const vat = parseFloat(cartItem.data('vat'));
 
                         discountedTotal += discountedPrice * quantity;
                         originalTotal += price * quantity;
+                        totalVat += vat * quantity;
                         selectedCount += quantity;
                     }
                 });
 
                 const discount = originalTotal - discountedTotal;
 
-                $('#itemsTotal').text(formatCurrency(originalTotal));
-                $('#itemDiscount').text('-' + formatCurrency(discount));
+                $('#itemsTotal').text(formatCurrency(discountedTotal));
+                $('#itemVat').text('+' + formatCurrency(totalVat));
                 let total = parseFloat(discountedTotal) + parseFloat(sellerShippingCharge);
                 $('#estimatedTotal').text(formatCurrency(total));
                 $('#selectedItemsCount').text(selectedCount);

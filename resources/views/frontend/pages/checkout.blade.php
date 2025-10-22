@@ -87,19 +87,19 @@
 
                     <dl class="text-sm space-y-2 mb-4">
                         <div class="flex justify-between">
-                            <dt>Items Total</dt>
-                            <dd class="font-medium">{{ money($sub_total) }}</dd>
+                            <dt>Subtotal</dt>
+                            <dd class="font-medium">{{ money($total) }}</dd>
                         </div>
-                        <div class="flex justify-between">
+                        {{-- <div class="flex justify-between">
                             <dt>Discount</dt>
                             <dd class="text-primary">-{{ money($discount) }}</dd>
-                        </div>
+                        </div> --}}
                         <div class="flex justify-between">
-                            <dt>Tax</dt>
+                            <dt>VAT</dt>
                             <dd>+{{ money($vat_amount) }}</dd>
                         </div>
                         <div class="flex justify-between">
-                            <dt>Shipping</dt>
+                            <dt>Shipping Fee</dt>
                             <dd>+{{ money($shipping_fee) }}</dd>
                         </div>
                     </dl>
@@ -107,7 +107,7 @@
                     <div class="border-t border-dashed my-3"></div>
 
                     <div class="flex justify-between items-center text-base font-semibold mb-2">
-                        <span>Estimated Total</span>
+                        <span>Total</span>
                         <span class="text-lg text-primary">{{ money($total + $vat_amount + $shipping_fee) }}</span>
                     </div>
 
@@ -484,7 +484,7 @@
                             <!-- summary -->
                             <div class="space-y-2 item-info">
                                 <p class="flex justify-between">
-                                    <span class="text-theme-dark">Item's total:</span>
+                                    <span class="text-theme-dark">Subtotal:</span>
                                     <span id="itemsTotal" class="text-jet-gray mr-2">{{ money($sub_total) }}</span>
                                 </p>
                                 <p class="flex justify-between">
