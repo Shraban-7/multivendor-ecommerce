@@ -816,7 +816,7 @@
         @foreach($billingAddresses as $address)
         let divisionId {
             {
-                $address - > id
+                $address->id
             }
         } = $('#division_id_{{ $address->id }}').val();
         let districtId {

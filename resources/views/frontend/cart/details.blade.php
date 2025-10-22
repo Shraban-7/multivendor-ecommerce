@@ -347,7 +347,8 @@
                         currentQuantity++;
                     } else {
                         currentQuantity = cartItemStock;
-                        toastr.warning("You’ve reached the maximum stock limit.");
+                        toastr.warning("Not enough stock!");
+                        return false;
                     }
                 } else if ($(this).hasClass('decrease-qty') && currentQuantity > 1) {
                     currentQuantity--;

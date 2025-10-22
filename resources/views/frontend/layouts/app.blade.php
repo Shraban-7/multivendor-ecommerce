@@ -497,7 +497,7 @@ $isDashboard = View::hasSection('dashboard');
                     if (quantity < availableStock) quantity += 1;
                     else {
                         quantity = availableStock;
-                        toastr.warning("You’ve reached the maximum stock limit.");
+                        toastr.warning("Not enough stock!");
                     }
                 } else {
                     quantity -= 1;
