@@ -645,3 +645,50 @@ if(!function_exists('optimize_image')) {
         ImageOptimizer::optimize(storage_path('app/public/' . $path));
     }
 }
+
+if(!function_exists('optimizeImage')) {
+    function optimizeImage(string $sourcePath, string $destinationPath, int $maxWidth = 1920, int $quality = 75): bool {
+        if (!extension_loaded('imagick')) {
+            throw new Exception('Imagick extension not installed');
+        }
+
+        $image = new Imagick($sourcePath);
+        $format = strtolower($image->getImageFormat());
+
+        // Resize if wider than $maxWidth
+        $width = $image->getImageWidth();
+        if ($width > $maxWidth) {
+            $height = $image->getImageHeight();
+            $ratio = $maxWidth / $width;
+            $image->resizeImage($maxWidth, intval($height * $ratio), Imagick::FILTER_LANCZOS, 1);
+        }
+
+        // Strip metadata (EXIF, comments, profiles)
+        $image->stripImage();
+
+        // Adjust compression depending on format
+        switch ($format) {
+            case 'jpeg':
+            case 'jpg':
+                $image->setImageCompression(Imagick::COMPRESSION_JPEG);
+                $image->setImageCompressionQuality($quality);
+                break;
+
+            case 'png':
+                $image->setImageCompression(Imagick::COMPRESSION_ZIP);
+                $image->setImageCompressionQuality($quality);
+                break;
+
+            case 'webp':
+                $image->setImageCompression(Imagick::COMPRESSION_WEBP);
+                $image->setImageCompressionQuality($quality);
+                break;
+        }
+
+        // Write optimized image
+        $result = $image->writeImage($destinationPath);
+        $image->destroy();
+
+        return $result;
+    }
+}
