@@ -76,17 +76,130 @@ if (! function_exists('upload_file')) {
             Storage::disk($disk)->makeDirectory($directory);
         }
 
-        // $fileName = time() . rand(1, 9999) . '.' . $file->getClientOriginalExtension();
-        // $path     = $directory . '/' . $fileName;
-        // Storage::disk($disk)->put($path, File::get($file));
-
         $fileName = time() . rand(1, 9999) . '.' . $file->getClientOriginalExtension();
         $path = $directory . '/' . $fileName;
         $file->storeAs($directory, $fileName, $disk);
 
+        //$storagePath = Storage::disk($disk)->path($path);
+        //optimize_image($storagePath, $storagePath);
+
         return $path;
     }
 }
+
+if (!function_exists('optimize_image')) {
+    /**
+     * Optimize an image to reduce file size without perceptible quality loss.
+     * Supports JPEG, PNG, WebP.
+     *
+     * @param string $sourcePath Path to original image
+     * @param string $destinationPath Path to save optimized image
+     * @param int $maxWidth Optional max width to resize (keeps aspect ratio)
+     * @param int $quality 0-100 JPEG/WebP quality
+     * @return bool
+     * @throws Exception
+     */
+    function optimize_image(string $sourcePath, string $destinationPath, int $maxWidth = 0, int $quality = 80): bool
+    {
+        if (!extension_loaded('gd')) {
+            throw new Exception('GD extension not installed.');
+        }
+
+        // Get original image info
+        [$width, $height, $type] = getimagesize($sourcePath);
+
+        // Calculate new dimensions if resizing
+        if ($maxWidth > 0 && $width > $maxWidth) {
+            $ratio = $maxWidth / $width;
+            $newWidth  = $maxWidth;
+            $newHeight = intval($height * $ratio);
+        } else {
+            $newWidth  = $width;
+            $newHeight = $height;
+        }
+
+        // Create GD image from file
+        switch ($type) {
+            case IMAGETYPE_JPEG:
+                $src = imagecreatefromjpeg($sourcePath);
+                break;
+            case IMAGETYPE_PNG:
+                $src = imagecreatefrompng($sourcePath);
+                break;
+            case IMAGETYPE_WEBP:
+                $src = imagecreatefromwebp($sourcePath);
+                break;
+            default:
+                throw new Exception('Unsupported image type.');
+        }
+
+        // Create true color destination image
+        $dst = imagecreatetruecolor($newWidth, $newHeight);
+
+        // Preserve transparency for PNG/WebP
+        if (in_array($type, [IMAGETYPE_PNG, IMAGETYPE_WEBP])) {
+            imagealphablending($dst, false);
+            imagesavealpha($dst, true);
+        }
+
+        // Resample
+        imagecopyresampled($dst, $src, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+
+        // Save as WebP for best compression (JPEG or PNG can also be saved)
+        $result = imagewebp($dst, $destinationPath, $quality);
+
+        // Free memory
+        imagedestroy($src);
+        imagedestroy($dst);
+
+        return $result;
+    }
+}
+
+// if(!function_exists('optimize_image')) {
+//     function optimize_image(string $sourcePath, string $destinationPath, int $maxWidth = 1920, int $quality = 75): bool {
+//         if (!extension_loaded('imagick')) {
+//             throw new Exception('Imagick extension not installed');
+//         }
+
+//         $image = new Imagick($sourcePath);
+//         $format = strtolower($image->getImageFormat());
+
+//         // Resize if wider than $maxWidth
+//         $width = $image->getImageWidth();
+//         if ($width > $maxWidth) {
+//             $height = $image->getImageHeight();
+//             $ratio = $maxWidth / $width;
+//             $image->resizeImage($maxWidth, intval($height * $ratio), Imagick::FILTER_LANCZOS, 1);
+//         }
+
+//         // Strip metadata (EXIF, comments, profiles)
+//         $image->stripImage();
+
+//         switch ($format) {
+//             case 'jpeg':
+//             case 'jpg':
+//                 $image->setImageCompression(Imagick::COMPRESSION_JPEG);
+//                 $image->setImageCompressionQuality($quality);
+//                 break;
+
+//             case 'png':
+//                 $image->setImageCompression(Imagick::COMPRESSION_ZIP);
+//                 $image->setImageCompressionQuality($quality);
+//                 break;
+
+//             case 'webp':
+//                 $image->setImageCompression(Imagick::COMPRESSION_WEBP);
+//                 $image->setImageCompressionQuality($quality);
+//                 break;
+//         }
+
+//         $result = $image->writeImage($destinationPath);
+//         $image->destroy();
+
+//         return $result;
+//     }
+// }
 
 if (! function_exists('upload_with_watermark')) {
     function upload_with_watermark($file, $directory, $disk = 'public')
@@ -637,50 +750,5 @@ if (!function_exists('calculate_vat')) {
     function calculate_vat(float $vatPercentage, float $price): float
     {
         return round(($vatPercentage / 100) * $price, 2);
-    }
-}
-
-if(!function_exists('optimize_image')) {
-    function optimize_image(string $sourcePath, string $destinationPath, int $maxWidth = 1920, int $quality = 80): bool {
-        if (!extension_loaded('imagick')) {
-            throw new Exception('Imagick extension not installed');
-        }
-
-        $image = new Imagick($sourcePath);
-        $format = strtolower($image->getImageFormat());
-
-        // Resize if wider than $maxWidth
-        $width = $image->getImageWidth();
-        if ($width > $maxWidth) {
-            $height = $image->getImageHeight();
-            $ratio = $maxWidth / $width;
-            $image->resizeImage($maxWidth, intval($height * $ratio), Imagick::FILTER_LANCZOS, 1);
-        }
-
-        // Strip metadata (EXIF, comments, profiles)
-        $image->stripImage();
-        
-        switch ($format) {
-            case 'jpeg':
-            case 'jpg':
-                $image->setImageCompression(Imagick::COMPRESSION_JPEG);
-                $image->setImageCompressionQuality($quality);
-                break;
-
-            case 'png':
-                $image->setImageCompression(Imagick::COMPRESSION_ZIP);
-                $image->setImageCompressionQuality($quality);
-                break;
-
-            case 'webp':
-                $image->setImageCompression(Imagick::COMPRESSION_WEBP);
-                $image->setImageCompressionQuality($quality);
-                break;
-        }
-
-        $result = $image->writeImage($destinationPath);
-        $image->destroy();
-
-        return $result;
     }
 }
