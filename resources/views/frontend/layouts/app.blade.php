@@ -379,7 +379,7 @@ $isDashboard = View::hasSection('dashboard');
                         null;
                     const price = discounted && discounted > 0 ? discounted : basePrice;
 
-                    $priceEl.text(`৳ ${formatPrice(price, quantity)}`);
+                    //$priceEl.text(`৳ ${formatPrice(price, quantity)}`);
                     if (!discounted || discounted == 0) $originalPriceEl.addClass('hidden');
                     else {
                         $originalPriceEl.removeClass('hidden');
@@ -408,7 +408,7 @@ $isDashboard = View::hasSection('dashboard');
                         null;
                     const price = discounted && discounted > 0 ? discounted : basePrice;
 
-                    $priceEl.text(`৳ ${formatPrice(price, quantity)}`);
+                    //$priceEl.text(`৳ ${formatPrice(price, quantity)}`);
                     $originalPriceEl.toggleClass('hidden', !discounted || discounted == 0);
                     if (discounted) $originalPriceEl.text(`৳ ${formatPrice(basePrice, quantity)}`);
 
@@ -420,7 +420,6 @@ $isDashboard = View::hasSection('dashboard');
                     $addToCartBtn.prop("disabled", false).removeClass("opacity-50 cursor-not-allowed");
                 }
             }
-
 
             function getSelectedVariant(product, selectedOptions) {
                 const selectedIds = Object.values(selectedOptions).map(Number).sort();

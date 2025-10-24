@@ -13,6 +13,12 @@ $publicProduct = [
     'variants' => $product['variants'],
 ];
 $breadCrumbs = [['label' => $product['category']], ['label' => $product['subcategory']]];
+
+$defaultVariant = $product['default_variant'] ?? null;
+$variantDiscountedPrice = $defaultVariant ? (is_array($defaultVariant) ? $defaultVariant['discounted_price'] ?? null : $defaultVariant->discounted_price ?? null) : null;
+$variantPrice = $defaultVariant ? (is_array($defaultVariant) ? $defaultVariant['selling_price'] ?? null : $defaultVariant->selling_price ?? null) : null;
+$showVariantDiscount = $variantDiscountedPrice !== null && $variantDiscountedPrice < $variantPrice;
+$showProductDiscount = isset($product['discounted_price'], $product['price']) && $product['discounted_price'] !== null && $product['discounted_price'] < $product['price'];
 ?>
 
 <div id="product-wrapper{{ $product['id'] }}" class="product-contents flex flex-col gap-5 md:flex-row"
@@ -50,28 +56,6 @@ $breadCrumbs = [['label' => $product['category']], ['label' => $product['subcate
                 {{ $product['name'] }}
             </h1>
             <div class="flex flex-wrap items-center gap-4">
-                @php
-                    $defaultVariant = $product['default_variant'] ?? null;
-                    $variantDiscountedPrice = $defaultVariant
-                        ? (is_array($defaultVariant)
-                            ? $defaultVariant['discounted_price'] ?? null
-                            : $defaultVariant->discounted_price ?? null)
-                        : null;
-
-                    $variantPrice = $defaultVariant
-                        ? (is_array($defaultVariant)
-                            ? $defaultVariant['selling_price'] ?? null
-                            : $defaultVariant->selling_price ?? null)
-                        : null;
-
-                    $showVariantDiscount = $variantDiscountedPrice !== null && $variantDiscountedPrice < $variantPrice;
-
-                    $showProductDiscount =
-                        isset($product['discounted_price'], $product['price']) &&
-                        $product['discounted_price'] !== null &&
-                        $product['discounted_price'] < $product['price'];
-                @endphp
-
                 <div class="flex flex-wrap items-center gap-2">
                     @if ($showVariantDiscount)
                         <h3 class="font-bold text-gray-900  text-lg product-price">
@@ -117,9 +101,7 @@ $breadCrumbs = [['label' => $product['category']], ['label' => $product['subcate
         <x-frontend.variant-selection-card :product="$product" />
 
         @isset($seller)
-            <!-- Compact Seller Section -->
             <div class="mt-3 p-4 bg-gray-50 rounded-xl shadow-sm">
-                <!-- Seller Header -->
                 <div class="flex items-center justify-between mb-4">
                     <div class="flex items-center gap-3">
                         <a href="{{ route('sellers.shop', $seller['username']) }}"
@@ -149,8 +131,6 @@ $breadCrumbs = [['label' => $product['category']], ['label' => $product['subcate
                         <i class="fa-regular fa-comment-dots text-xl"></i>
                     </button> --}}
                 </div>
-
-                <!-- Action Buttons -->
                 <div class="flex gap-2 mb-4">
                     <button
                         class="flex-1 py-2 px-4 border border-gray-300 rounded-lg hover:bg-primary hover:text-white hover:border-primary transition-all text-sm font-medium">
@@ -165,14 +145,9 @@ $breadCrumbs = [['label' => $product['category']], ['label' => $product['subcate
             </div>
         @endisset
 
-        <!-- Top Rated Badge & Our Commitments -->
         <div class="mt-3 p-4 bg-gray-50 rounded-xl shadow-sm">
-            <!-- Our Commitments Header -->
             <span class="font-semibold text-gray-800">Our Commitments</span>
-
-            <!-- Commitments Cards -->
             <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <!-- Security & Privacy -->
                 <div class="bg-gray-50 p-3 rounded-lg">
                     <h4 class="text-leaf-green font-medium mb-2 text-sm">Security & Privacy</h4>
                     <ul class="space-y-1 text-xs text-gray-600">
@@ -186,8 +161,6 @@ $breadCrumbs = [['label' => $product['category']], ['label' => $product['subcate
                         </li>
                     </ul>
                 </div>
-
-                <!-- Delivery Guarantee -->
                 <div class="bg-gray-50 p-3 rounded-lg ">
                     <h4 class="text-leaf-green font-medium mb-2 text-sm">Delivery Guarantee</h4>
                     <ul class="space-y-1 text-xs text-gray-600">
