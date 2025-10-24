@@ -641,13 +641,7 @@ if (!function_exists('calculate_vat')) {
 }
 
 if(!function_exists('optimize_image')) {
-    function optimize_image($path) {
-        ImageOptimizer::optimize(storage_path('app/public/' . $path));
-    }
-}
-
-if(!function_exists('optimizeImage')) {
-    function optimizeImage(string $sourcePath, string $destinationPath, int $maxWidth = 1920, int $quality = 75): bool {
+    function optimize_image(string $sourcePath, string $destinationPath, int $maxWidth = 1920, int $quality = 80): bool {
         if (!extension_loaded('imagick')) {
             throw new Exception('Imagick extension not installed');
         }
@@ -665,8 +659,7 @@ if(!function_exists('optimizeImage')) {
 
         // Strip metadata (EXIF, comments, profiles)
         $image->stripImage();
-
-        // Adjust compression depending on format
+        
         switch ($format) {
             case 'jpeg':
             case 'jpg':
@@ -685,7 +678,6 @@ if(!function_exists('optimizeImage')) {
                 break;
         }
 
-        // Write optimized image
         $result = $image->writeImage($destinationPath);
         $image->destroy();
 
