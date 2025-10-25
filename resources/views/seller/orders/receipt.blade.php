@@ -85,7 +85,7 @@
             <tr>
                 <td class="left">{{ $item->product->name }} <small>({{ $item->variant->fullName }})</small></td>
                 <td class="center">{{ $item->quantity }}</td>
-                <td class="right">{{ money($item->original_price * $item->quantity, $showCurrency) }}</td>
+                <td class="right">{{ money($item->unit_price * $item->quantity, $showCurrency) }}</td>
             </tr>
             @endforeach
         </tbody>
@@ -94,27 +94,27 @@
     <div class="line"></div>
 
     <table>
-        <tr>
+        <!-- <tr>
             <td class="left">Subtotal</td>
             <td class="right">{{ money($order->sub_total, $showCurrency) }}</td>
-        </tr>
-        @if ($order->discount > 0)
+        </tr> -->
+        <!-- @if ($order->discount > 0)
         <tr>
             <td class="left">Discount</td>
             <td class="right">{{ money($order->discount, $showCurrency) }}</td>
         </tr>
-        @endif
+        @endif -->
         @if ($order->vat > 0)
         <tr>
             <td class="left">VAT ({{ number_format($order->tax_rate ?? 0, 2) }}%)</td>
             <td class="right">{{ money($order->vat, $showCurrency) }}</td>
         </tr>
         @endif
-        <tr>
+        <!-- <tr>
             <td colspan="2">
                 <div class="line"></div>
             </td>
-        </tr>
+        </tr> -->
         <tr class="totals">
             <td class="left"><strong>TOTAL</strong></td>
             <td class="right"><strong>{{ money($order->total, $showCurrency) }}</strong></td>

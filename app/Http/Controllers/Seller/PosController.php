@@ -299,7 +299,8 @@ class PosController extends Controller
             'customer_phone' => 'nullable|string|max:20|required_with:customer_name',
             'paid' => 'required|numeric',
             'due' => 'nullable|numeric',
-            'discount' => 'nullable'
+            'discount' => 'nullable',
+            'items' => 'required|array',
         ]);
 
         $seller = Seller::find(get_seller_id());
@@ -322,29 +323,38 @@ class PosController extends Controller
         $discount = 0;
         $orderItems = [];
 
+        $itemsCollection = collect($request->items);
+
         foreach ($cartItems as $item) {
             $product = $item->variant->product;
             $variant = $item->variant;
-            $unitPrice = $variant->calculatedPrice;
-            $itemTotal = $item->quantity * $unitPrice;
-            $itemSubtotal = $item->quantity * $variant->selling_price;
+            //$unitPrice = $variant->calculatedPrice;
 
-            $discountAmount = $variant->calculatedDiscount;
-            $itemDiscount = $item->quantity * ($discountAmount);
+            $itemPrice = $variant->selling_price;
+            $unitPrice = $itemsCollection->firstWhere('id', $item->id)['price'];
+            
+            $itemDiscount = $itemPrice > $unitPrice ? ($itemPrice - $unitPrice) : 0;
+            $itemDiscount = $itemDiscount * $item->quantity;
+            $discount += $itemDiscount;
+
+            $itemTotal = $item->quantity * $unitPrice;
+            $itemSubtotal = $item->quantity * $itemPrice;
+
+            //$discountAmount = $variant->calculatedDiscount;
+            //$itemDiscount = $item->quantity * ($discountAmount);
             $vatAmount = calculate_vat($product->vat_percent, $unitPrice) * $item->quantity;
             $totalVat += $vatAmount;
 
-            $sub_total += $variant->selling_price * $item->quantity;
-            $discount += $itemDiscount;
+            $sub_total += $itemPrice * $item->quantity;
 
             $orderItems[] = [
                 'product_id' => $product->id,
-                'product_variant_id' => $item->product_variant_id ?? null,
+                'product_variant_id' => $variant->id,
                 'sku' => $variant->sku,
                 'product_name' => $product->name,
                 'variant_name' => $variant->fullName,
                 'buying_price' => $variant->buying_price,
-                'selling_price' => $variant->selling_price,
+                'selling_price' => $itemPrice,
                 'unit_price' => $unitPrice,
                 'quantity' => $item->quantity,
                 'discount' => $itemDiscount,
