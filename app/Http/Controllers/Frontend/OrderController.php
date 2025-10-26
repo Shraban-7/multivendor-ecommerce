@@ -202,7 +202,7 @@ class OrderController extends Controller
 
         $order->items()->createMany($orderItems);
 
-        $order_billing_address = OrderBillingAddress::create([
+        $orderBillingAddress = OrderBillingAddress::create([
             'order_id' => $order->id,
             'customer_name' => $billingAddress->customer_name,
             'customer_phone' => $billingAddress->customer_phone,
@@ -250,7 +250,13 @@ class OrderController extends Controller
                 'payment_url' => route('orders.index'),
             ];
         } else {
-            $paymentGateway = $this->initiatePaymentGateway($invoiceId, $payableAmount, $order_billing_address->customer_name,$order_billing_address->customer_phone);
+            $paymentGateway = $this->initiatePaymentGateway(
+                $user,
+                $invoiceId,
+                $payableAmount,
+                $orderBillingAddress->customer_name,
+                $orderBillingAddress->customer_phone
+            );
         }
 
         $this->processAffiliateCommissions($order->items, auth()->user(), $order->id);
@@ -326,13 +332,8 @@ class OrderController extends Controller
         Cookie::queue(Cookie::forget('affiliate_refs'));
     }
 
-    private function initiatePaymentGateway($invoiceId, $amount, $customer_name,$customer_phone)
+    private function initiatePaymentGateway($user, $invoiceId, $amount, $customerName, $customerPhone)
     {
-        $user = Auth::user();
-        $customerName  = $customer_name;
-        $customerEmail = $user->email;
-        $customerPhone = $customer_phone;
-
         $payment = Payment::where('transaction_id', $invoiceId)->first();
 
         if (!$payment) {
@@ -344,7 +345,7 @@ class OrderController extends Controller
                 'currency' => 'BDT',
                 'customer_name' => $customerName,
                 'customer_email' => $customerPhone,
-                'customer_phone' => $customerEmail,
+                'customer_phone' => $user->email,
             ]);
         }
 
@@ -370,7 +371,7 @@ class OrderController extends Controller
                 'amount' => $amount,
                 'desc' => 'Test Payment',
                 'cus_name' => $customerName,
-                'cus_email' => $customerEmail,
+                'cus_email' => $user->email,
                 'cus_add1' => '',
                 'cus_add2' => '',
                 'cus_city' => '',
@@ -467,13 +468,14 @@ class OrderController extends Controller
 
     public function payNow(Order $order)
     {
-        $billingAddress = OrderBillingAddress::where('order_id',$order->id)->first();
+        $orderBillingAddress = OrderBillingAddress::where('order_id', $order->id)->first();
 
         $paymentGateway = $this->initiatePaymentGateway(
+            $order->user,
             $order->invoice_id,
             $order->payable,
-            $billingAddress->customer_name,
-            $billingAddress->customer_phone,
+            $orderBillingAddress->customer_name,
+            $orderBillingAddress->customer_phone,
         );
 
         $this->processAffiliateCommissions($order->items, auth()->user(), $order->id);
