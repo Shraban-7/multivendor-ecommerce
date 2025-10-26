@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Order extends Model
 {
@@ -27,9 +28,9 @@ class Order extends Model
     public const ORDER_TYPE_CUSTOMER = 'C';
     public const ORDER_TYPE_POS = 'P';
 
-    public function billing_address()
+    public function billing_address() : HasOne
     {
-        return $this->belongsTo(BillingAddress::class);
+        return $this->hasOne(BillingAddress::class);
     }
 
     public function statusLogs()
