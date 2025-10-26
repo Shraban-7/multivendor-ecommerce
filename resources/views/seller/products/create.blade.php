@@ -115,14 +115,12 @@
                     <div class="mb-3 col-md-3">
                         <div class="row g-2 align-items-end">
                             <div class="col-6">
-                                <label class="form-label">Unit Value <small class="text-muted">(e.g.,
-                                        2.5)</small></label>
-                                <input type="number" step="0.01" name="unit_value" class="form-control"
+                                <label class="form-label">Unit Value</label>
+                                <input type="number"  name="unit_value" placeholder="1" class="form-control"
                                     placeholder="Value" required>
                             </div>
                             <div class="col-6">
-                                <label class="form-label">Unit <small class="text-muted">(e.g., Pc,
-                                        kg)</small></label>
+                                <label class="form-label">Unit</label>
                                 <select name="unit_id" class="form-select" required>
                                     <option value="" disabled selected>--</option>
                                     @foreach ($units as $unit)
