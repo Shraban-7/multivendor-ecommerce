@@ -43,3 +43,10 @@ body {
 .table-small tbody > tr > td {
     padding: 4px 8px;
 }
+
+label:has(+ input[required])::after,
+label:has(+ select[required])::after,
+label:has(+ textarea[required])::after {
+  content: " *";
+  color: red;
+}
