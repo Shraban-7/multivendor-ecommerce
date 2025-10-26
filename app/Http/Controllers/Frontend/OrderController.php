@@ -45,7 +45,7 @@ class OrderController extends Controller
             $query->where('status', $statusValue);
         }
 
-        $orders = $query->get();
+        $orders = $query->latest('id')->get();
 
         $interest_products = Product::with([
             'category',
