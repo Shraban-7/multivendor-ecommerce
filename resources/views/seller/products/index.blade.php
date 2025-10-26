@@ -16,6 +16,7 @@
                     <th>Product</th>
                     <th>Price Range</th>
                     <th>Status</th>
+                    <th>Added</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -45,7 +46,7 @@
                             </div>
                         </td>
 
-                        <td>{{ money($minPrice) }} – {{ money($maxPrice) }}</td>
+                        <td><span>{{ money($minPrice) }}</span> @if($maxPrice != $minPrice) - money($maxPrice) @endif</td>
 
                         <td>
                             @if ($product->status == $product::STATUS_ACTIVE)
@@ -59,6 +60,8 @@
                             @endif
 
                         </td>
+
+                        <td>{{ $product->created_at->format('d M h:ia') }}</td>
 
                         <td>
                             <div class="d-flex">
