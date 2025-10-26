@@ -13,16 +13,13 @@
     </td>
     <td class="text-end align-middle">
         <div class="input-group input-group-sm justify-content-end" style="max-width: 130px; margin-left: auto;">
-            @if ($item->variant->discounted_price)
             <span class="input-group-text">
-                <small class="text-muted text-decoration-line-through">{{ money($item->variant->selling_price) }}</small>
+                <small class="text-muted">{{ removeZeroFromDecimal($item->variant->selling_price) }}</small>
             </span>
-            @endif
             <input type="number" class="form-control text-end price-input"
                 data-price="{{ removeZeroFromDecimal($item->variant->selling_price) }}"
                 value="{{ removeZeroFromDecimal($item->variant->discounted_price ?? $item->variant->selling_price) }}"
-                data-id="{{ $item->id }}" min="0" 
-            />
+                data-id="{{ $item->id }}" min="0" />
         </div>
     </td>
     <td class="text-end align-middle">
