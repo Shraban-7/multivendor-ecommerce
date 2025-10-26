@@ -131,17 +131,7 @@ class OrderController extends Controller
 
         $billingAddress = BillingAddress::find($request->billing_address_id);
 
-        $billingAddressArray = array(
-            'customer_name' => $billingAddress->customer_name,
-            'customer_phone' => $billingAddress->customer_phone,
-            'division' => $billingAddress->division->name,
-            'district' => $billingAddress->district->name,
-            'address' => $billingAddress->address,
-            'type' => $billingAddress->type->title(),
-        );
-
         try {
-
             DB::beginTransaction();
 
             $order = Order::create([
@@ -199,7 +189,7 @@ class OrderController extends Controller
 
             DB::commit();
 
-            $paymentGateway = $this->initiatePaymentGateway($order_billing_address, $invoiceId, $payableAmount);
+            $paymentGateway = $this->initiatePaymentGateway($invoiceId, $payableAmount,$order_billing_address->customer_name,$order_billing_address->customer_phone);
         } catch (Exception $e) {
             DB::rollBack();
             return errorResponse($e->getMessage());
@@ -234,14 +224,14 @@ class OrderController extends Controller
         ]);
     }
 
-    private function initiatePaymentGateway(OrderBillingAddress $billingAddress, $invoiceId, $amount): array
+    private function initiatePaymentGateway($invoiceId, $amount,$customer_name,$customer_phone): array
     {
         $user = Auth::user();
 
         $payment = Payment::where('transaction_id', $invoiceId)->first();
 
-        $customerName = $billingAddress->customer_name;
-        $customerPhone = $billingAddress->customer_phone;
+        $customerName = $customer_name;
+        $customerPhone = $customer_phone;
         $customerEmail = $user->email;
 
         if (!$payment) {
@@ -385,12 +375,13 @@ class OrderController extends Controller
 
     public function payNow(Order $order)
     {
-        $billingAddress = BillingAddress::find($order->billing_address_id);
+        $billingAddress = OrderBillingAddress::where('order_id',$order->id)->first();
 
         $paymentGateway = $this->initiatePaymentGateway(
-            $billingAddress,
             $order->invoice_id,
             $order->payable,
+            $billingAddress->customer_name,
+            $billingAddress->customer_phone,
         );
 
         if (is_null($paymentGateway['payment_url'])) {

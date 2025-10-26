@@ -130,6 +130,7 @@ class Product extends Model
 
     public function toDetailsArray()
     {
+        // dd($this->seller);
         //$this->load('images', 'category', 'subcategory', 'variants', 'seller', 'reviews.user');
 
         //$sold          = OrderItem::where('product_id', $this->id)->count();

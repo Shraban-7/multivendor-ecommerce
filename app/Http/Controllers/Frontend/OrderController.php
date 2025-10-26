@@ -250,7 +250,7 @@ class OrderController extends Controller
                 'payment_url' => route('orders.index'),
             ];
         } else {
-            $paymentGateway = $this->initiatePaymentGateway($request, $invoiceId, $payableAmount, $order_billing_address->id);
+            $paymentGateway = $this->initiatePaymentGateway($invoiceId, $payableAmount, $order_billing_address->customer_name,$order_billing_address->customer_phone);
         }
 
         $this->processAffiliateCommissions($order->items, auth()->user(), $order->id);
@@ -326,13 +326,12 @@ class OrderController extends Controller
         Cookie::queue(Cookie::forget('affiliate_refs'));
     }
 
-    private function initiatePaymentGateway(Request $request, $invoiceId, $amount, $billingAddressId)
+    private function initiatePaymentGateway($invoiceId, $amount, $customer_name,$customer_phone)
     {
         $user = Auth::user();
-        $billingInformation = OrderBillingAddress::find($billingAddressId);
-        $customerName  = $billingInformation->customer_name;
+        $customerName  = $customer_name;
         $customerEmail = $user->email;
-        $customerPhone = $billingInformation->customer_phone;
+        $customerPhone = $customer_phone;
 
         $payment = Payment::where('transaction_id', $invoiceId)->first();
 
@@ -466,15 +465,15 @@ class OrderController extends Controller
         return response()->json($districts);
     }
 
-    public function payNow(Order $order, Request $request)
+    public function payNow(Order $order)
     {
-        $billingAddress = BillingAddress::find($order->billing_address_id);
+        $billingAddress = OrderBillingAddress::where('order_id',$order->id)->first();
 
         $paymentGateway = $this->initiatePaymentGateway(
-            $request,
             $order->invoice_id,
             $order->payable,
-            $billingAddress->id
+            $billingAddress->customer_name,
+            $billingAddress->customer_phone,
         );
 
         $this->processAffiliateCommissions($order->items, auth()->user(), $order->id);
