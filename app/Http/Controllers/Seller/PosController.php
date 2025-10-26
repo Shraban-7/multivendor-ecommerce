@@ -60,7 +60,8 @@ class PosController extends Controller
                 $cartDiscount = $cartItems->sum(fn($item) => ($item->variant->discounted_price ? $item->variant->selling_price - $item->variant->discounted_price : 0) * $item->quantity);
                 $cartTotal = $cartSubtotal + $cart_vat_amount - $cartDiscount;
 
-                $subtotal = $order->sub_total + $cartSubtotal;
+                $orderItemSubtotal = $order->items->sum('sub_total');
+                $subtotal = $orderItemSubtotal + $cartSubtotal;
                 $vat_amount = $order->vat_amount + $cart_vat_amount;
                 $discount = $order->discount + $cartDiscount;
 
@@ -103,10 +104,13 @@ class PosController extends Controller
             $cartItems = $cart ? $cart->items()->with('variant.product')->get() : collect();
             foreach ($cartItems as $item) {
                 $variant = $item->variant;
-                $unitPrice = $variant->calculatedPrice;
+                $sellingPrice = $variant->selling_price;
+                $sellingPrice = $variant->selling_price;
+                $unitPrice = $item->price;
+                $itemDiscount = $sellingPrice - $unitPrice;
                 $subtotal += $variant->selling_price * $item->quantity;
                 $vat_amount += calculate_vat($variant->product->vat_percent, $unitPrice);
-                $discount += ($variant->calculatedDiscount * $item->quantity);
+                $discount += ($itemDiscount * $item->quantity);
             }
             $total = $subtotal + $vat_amount - $discount;
         }

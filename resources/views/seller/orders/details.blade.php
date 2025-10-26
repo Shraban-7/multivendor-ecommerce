@@ -258,9 +258,9 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="text-center">{{ money($item->original_price) }}</td>
-                                        <td class="text-center">{{ money($item->variant->discount_amount) }}</td>
-                                        <td class="text-end">{{ money($item->sub_total) }}</td>
+                                        <td class="text-center">{{ money($item->selling_price) }}</td>
+                                        <td class="text-center">{{ money($item->discount) }}</td>
+                                        <td class="text-end">{{ money($item->total) }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>

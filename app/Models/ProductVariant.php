@@ -75,10 +75,13 @@ class ProductVariant extends Model
 
     public function calculatedDiscount(): Attribute
     {
-        $discountedPrice = $this->discounted_price ? $this->discounted_price : 0;
-
         return Attribute::make(
-            get: fn() => $this->selling_price - $discountedPrice
+            get: function () {
+                $discountedPrice = $this->discounted_price ?? 0;
+                $sellingPrice = $this->selling_price ?? 0;
+
+                return $sellingPrice - $discountedPrice;
+            }
         );
     }
 }

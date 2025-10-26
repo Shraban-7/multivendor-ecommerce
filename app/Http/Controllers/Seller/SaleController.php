@@ -11,6 +11,8 @@ use App\Enums\OrderStatus;
 use Illuminate\Http\Request;
 use App\Models\ProductVariant;
 use App\Models\SellerEmployee;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 
 class SaleController extends Controller
@@ -48,6 +50,157 @@ class SaleController extends Controller
         return view('seller.pos.orders', compact('orders'));
     }
 
+    // public function update(Request $request)
+    // {
+    //     $orderId = $request->input('order_id', $request->query('order_id'));
+    //     $seller = Seller::find(get_seller_id());
+    //     $employee = SellerEmployee::find(auth()->guard('employee')->id());
+
+    //     $data = $request->validate([
+    //         'customer_name' => 'nullable|string|max:255|required_with:customer_phone',
+    //         'customer_phone' => 'nullable|string|max:20|required_with:customer_name',
+    //         'paid' => 'nullable|numeric',
+    //         'additional_discount' => 'nullable|numeric|min:0',
+    //     ]);
+
+    //     $order = Order::where('invoice_id', $orderId)
+    //         ->where('seller_id', $seller->id)
+    //         ->with('items.variant.product')
+    //         ->first();
+
+    //     $oldCommission = $order->total_commission;
+
+    //     if (!$order) return errorResponse("Order not found!");
+
+    //     if (!empty($data['customer_name']) && !empty($data['customer_phone'])) {
+    //         $customer = Customer::firstOrCreate([
+    //             'name' => $data['customer_name'],
+    //             'phone' => $data['customer_phone']
+    //         ]);
+    //         $order->update(['customer_id' => $customer->id]);
+    //     }
+
+    //     $cart = PosCart::where('seller_id', $seller->id)
+    //         ->where('order_id', $order->id)
+    //         ->first();
+
+    //     $cartItems = $cart?->items()->with('variant.product')->get() ?? collect();
+
+    //     $productDiscount = 0;
+    //     $newSubTotal = 0;
+    //     $newVat = 0;
+
+    //     foreach ($cartItems as $cartItem) {
+    //         $quantity = $cartItem->quantity;
+    //         $product = $cartItem->variant->product;
+    //         $variant = $cartItem->variant;
+
+    //         $sellingPrice = $variant->selling_price;
+    //         $unitPrice = $variant->calculatedPrice;
+    //         $itemTotal = $cartItem->quantity * $unitPrice;
+    //         $itemSubtotal = $cartItem->quantity * $variant->selling_price;
+
+    //         $discountAmount = $variant->calculatedDiscount;
+    //         $itemDiscount = $cartItem->quantity * ($discountAmount);
+    //         $itemVat = calculate_vat($product->vat_percent, $unitPrice) * $quantity;
+
+    //         $itemSubtotal = $variant->selling_price * $cartItem->quantity;
+    //         $itemTotal = ($unitPrice * $quantity) + $itemVat;
+
+    //         $orderItem = $order->items()
+    //             ->where('product_variant_id', $variant->id)
+    //             ->where('unit_price', $unitPrice)
+    //             ->first();
+
+    //         if ($orderItem) {
+    //             $orderItem->quantity += $quantity;
+    //             $orderItem->sub_total += $itemSubtotal;
+    //             $orderItem->discount += $itemDiscount;
+    //             $orderItem->vat_amount += $itemVat;
+    //             $orderItem->total += $itemTotal;
+    //             $orderItem->save();
+    //         } else {
+    //             $order->items()->create([
+    //                 'product_id' => $product->id,
+    //                 'product_variant_id' => $variant->id,
+    //                 'sku' => $variant->sku,
+    //                 'product_name' => $product->name,
+    //                 'variant_name' => $variant->fullName,
+    //                 'buying_price' => $variant->buying_price,
+    //                 'selling_price' => $sellingPrice,
+    //                 'unit_price' => $unitPrice,
+    //                 'quantity' => $quantity,
+    //                 'sub_total' => $itemSubtotal,
+    //                 'discount' => $itemDiscount,
+    //                 'vat_percent' => $product->vat_percent,
+    //                 'vat_amount' => $itemVat,
+    //                 'total' => $itemTotal,
+    //             ]);
+    //         }
+    //     }
+
+    //     $newSubTotal = $order->items()->sum('sub_total');
+    //     $productDiscount = $order->items()->sum('discount');
+    //     $newVat = $order->items()->sum('vat_amount');
+
+    //     $combinedSubTotal = $newSubTotal;
+    //     $combinedVat = $order->vat_amount + $newVat;
+
+    //     $additionalDiscount = (float) ($data['additional_discount'] ?? 0) ?? (float) ($order->additional_discount ?? 0);
+    //     $order->additional_discount = $additionalDiscount;
+
+    //     $combinedDiscount = $productDiscount + $additionalDiscount;
+
+    //     $payable = ($combinedSubTotal + $combinedVat) - $combinedDiscount;
+
+    //     $commissionData = $seller->calculateEarning($payable, $combinedVat);
+
+    //     $total_commission = $commissionData['total_commission'];
+    //     $sellerEarning = $commissionData['seller_earning'];
+
+    //     $paid = ($data['paid'] ?? 0);
+    //     $due = max(0, $payable - $paid);
+
+    //     $order->update([
+    //         'seller_employee_id' => $employee->id ?? $order->seller_employee_id,
+    //         'sub_total' => $combinedSubTotal,
+    //         'vat_amount' => $combinedVat,
+    //         'discount' => $combinedDiscount,
+    //         'additional_discount' => $additionalDiscount,
+    //         'total' => $payable,
+    //         'paid' => $paid,
+    //         'due' => $due,
+    //         'total_commission' => $total_commission,
+    //         'seller_earnings' => $sellerEarning,
+    //         'status' => OrderStatus::DELIVERED->value,
+    //         'seller_earning_added' => 0
+    //     ]);
+
+    //     $newCommission = $order->total_commission;
+
+    //     $commission = $newCommission - $oldCommission;
+
+    //     $cart?->items()->delete();
+    //     $cart?->delete();
+
+    //     $order->addSellerEarningToBalance($commission);
+
+    //     $html = view('components.seller.pos-order-items', [
+    //         'orderItems' => $order->items()->with('variant.product')->get(),
+    //     ])->render();
+
+    //     return apiResponse([
+    //         'invoice_id' => $order->invoice_id,
+    //         'html' => $html,
+    //         'subtotal' => $combinedSubTotal,
+    //         'vat_amount' => $combinedVat,
+    //         'discount' => $combinedDiscount,
+    //         'total' => $payable,
+    //         'paid' => $paid,
+    //         'due' => $due,
+    //     ], "Order updated successfully");
+    // }
+
     public function update(Request $request)
     {
         $orderId = $request->input('order_id', $request->query('order_id'));
@@ -57,146 +210,111 @@ class SaleController extends Controller
         $data = $request->validate([
             'customer_name' => 'nullable|string|max:255|required_with:customer_phone',
             'customer_phone' => 'nullable|string|max:20|required_with:customer_name',
-            'paid' => 'nullable|numeric',
+            'paid' => 'nullable|numeric|min:0',
+            'due' => 'nullable|numeric|min:0',
+            'total' => 'nullable|numeric|min:0',
+            'discount' => 'nullable|numeric|min:0',
+            'subtotal' => 'nullable|numeric|min:0',
+            'vat' => 'nullable|numeric|min:0',
+            'items' => 'nullable|array',
+            'items.*.id' => 'nullable|integer',
+            'items.*.price' => 'nullable|numeric|min:0',
+            'items.*.quantity' => 'nullable|numeric|min:0',
             'additional_discount' => 'nullable|numeric|min:0',
         ]);
 
         $order = Order::where('invoice_id', $orderId)
             ->where('seller_id', $seller->id)
             ->with('items.variant.product')
-            ->first();
+            ->firstOrFail();
 
-        $oldCommission = $order->total_commission;
+        DB::beginTransaction();
 
-        if (!$order) return errorResponse("Order not found!");
-
-        if (!empty($data['customer_name']) && !empty($data['customer_phone'])) {
-            $customer = Customer::firstOrCreate([
-                'name' => $data['customer_name'],
-                'phone' => $data['customer_phone']
-            ]);
-            $order->update(['customer_id' => $customer->id]);
-        }
-
-        $cart = PosCart::where('seller_id', $seller->id)
-            ->where('order_id', $order->id)
-            ->first();
-
-        $cartItems = $cart?->items()->with('variant.product')->get() ?? collect();
-
-        $productDiscount = 0;
-        $newSubTotal = 0;
-        $newVat = 0;
-
-        foreach ($cartItems as $cartItem) {
-            $quantity = $cartItem->quantity;
-            $product = $cartItem->variant->product;
-            $variant = $cartItem->variant;
-
-            $sellingPrice = $variant->selling_price;
-            $unitPrice = $variant->calculatedPrice;
-            $itemTotal = $cartItem->quantity * $unitPrice;
-            $itemSubtotal = $cartItem->quantity * $variant->selling_price;
-
-            $discountAmount = $variant->calculatedDiscount;
-            $itemDiscount = $cartItem->quantity * ($discountAmount);
-            $itemVat = calculate_vat($product->vat_percent, $unitPrice) * $quantity;
-
-            $itemSubtotal = $variant->selling_price * $cartItem->quantity;
-            $itemTotal = ($unitPrice * $quantity) + $itemVat;
-
-            $orderItem = $order->items()
-                ->where('product_variant_id', $variant->id)
-                ->where('unit_price', $unitPrice)
-                ->first();
-
-            if ($orderItem) {
-                $orderItem->quantity += $quantity;
-                $orderItem->sub_total += $itemSubtotal;
-                $orderItem->discount += $itemDiscount;
-                $orderItem->vat_amount += $itemVat;
-                $orderItem->total += $itemTotal;
-                $orderItem->save();
-            } else {
-                $order->items()->create([
-                    'product_id' => $product->id,
-                    'product_variant_id' => $variant->id,
-                    'sku' => $variant->sku,
-                    'product_name' => $product->name,
-                    'variant_name' => $variant->fullName,
-                    'buying_price' => $variant->buying_price,
-                    'selling_price' => $sellingPrice,
-                    'unit_price' => $unitPrice,
-                    'quantity' => $quantity,
-                    'sub_total' => $itemSubtotal,
-                    'discount' => $itemDiscount,
-                    'vat_percent' => $product->vat_percent,
-                    'vat_amount' => $itemVat,
-                    'total' => $itemTotal,
+        try {
+            if (!empty($data['customer_name']) && !empty($data['customer_phone'])) {
+                $customer = Customer::firstOrCreate([
+                    'name' => $data['customer_name'],
+                    'phone' => $data['customer_phone']
                 ]);
+                $order->update(['customer_id' => $customer->id]);
             }
+
+            $items = $data['items'] ?? [];
+            foreach ($items as $item) {
+                $orderItem = $order->items()->find($item['id']);
+                if ($orderItem) {
+                    $orderItem->update([
+                        'quantity' => $item['quantity'],
+                        'unit_price' => $item['price'],
+                        'total' => $item['price'] * $item['quantity'],
+                        'sub_total' => $orderItem->selling_price * $item['quantity'],
+                    ]);
+                } else {
+                    // New item from cart
+                    $variant = ProductVariant::find($item['id']);
+                    if ($variant) {
+                        $order->items()->create([
+                            'product_id' => $variant->product_id,
+                            'product_variant_id' => $variant->id,
+                            'sku' => $variant->sku,
+                            'product_name' => $variant->product->name,
+                            'variant_name' => $variant->fullName,
+                            'unit_price' => $item['price'],
+                            'quantity' => $item['quantity'],
+                            'sub_total' => $variant->selling_price * $item['quantity'],
+                            'total' => $item['price'] * $item['quantity'],
+                            'selling_price' => $variant->selling_price,
+                            'vat_percent' => $variant->product->vat_percent,
+                            'vat_amount' => calculate_vat($variant->product->vat_percent, $item['price']) * $item['quantity'],
+                            'discount' => $variant->calculatedDiscount * $item['quantity'],
+                        ]);
+                    }
+                }
+            }
+
+            $subTotal = $order->items()->sum('sub_total');
+            $vat = $order->items()->sum('vat_amount');
+            $discount = ($data['discount'] ?? 0) + ($data['additional_discount'] ?? 0);
+            $total = $order->items()->sum('total');
+            $paid = min($data['paid'] ?? 0, $total);
+            $due = max($total - $paid, 0);
+
+            $commissionData = $seller->calculateEarning($total, $vat);
+            $order->update([
+                'sub_total' => $subTotal,
+                'vat_amount' => $vat,
+                'discount' => $discount,
+                'additional_discount' => $data['additional_discount'] ?? 0,
+                'total' => $total,
+                'payable' => $total,
+                'paid' => $paid,
+                'due' => $due,
+                'total_commission' => $commissionData['total_commission'],
+                'seller_earnings' => $commissionData['seller_earning'],
+                'seller_employee_id' => $employee->id ?? $order->seller_employee_id,
+            ]);
+
+            DB::commit();
+
+            $html = view('components.seller.pos-order-items', [
+                'orderItems' => $order->items()->with('variant.product')->get(),
+            ])->render();
+
+            return apiResponse([
+                'invoice_id' => $order->invoice_id,
+                'html' => $html,
+                'subtotal' => $subTotal,
+                'vat_amount' => $vat,
+                'discount' => $discount,
+                'total' => $total,
+                'paid' => $paid,
+                'due' => $due,
+            ], "Order updated successfully");
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            \Log::error($e->getMessage());
+            return errorResponse("Order update failed, please try again.");
         }
-
-        $newSubTotal = $order->items()->sum('sub_total');
-        $productDiscount = $order->items()->sum('discount');
-        $newVat = $order->items()->sum('vat_amount');
-
-        $combinedSubTotal = $newSubTotal;
-        $combinedVat = $order->vat_amount + $newVat;
-
-        $additionalDiscount = (float) ($data['additional_discount'] ?? 0) ?? (float) ($order->additional_discount ?? 0);
-        $order->additional_discount = $additionalDiscount;
-
-        $combinedDiscount = $productDiscount + $additionalDiscount;
-
-        $payable = ($combinedSubTotal + $combinedVat) - $combinedDiscount;
-
-        $commissionData = $seller->calculateEarning($payable, $combinedVat);
-
-        $total_commission = $commissionData['total_commission'];
-        $sellerEarning = $commissionData['seller_earning'];
-
-        $paid = ($data['paid'] ?? 0);
-        $due = max(0, $payable - $paid);
-
-        $order->update([
-            'seller_employee_id' => $employee->id ?? $order->seller_employee_id,
-            'sub_total' => $combinedSubTotal,
-            'vat_amount' => $combinedVat,
-            'discount' => $combinedDiscount,
-            'additional_discount' => $additionalDiscount,
-            'total' => $payable,
-            'paid' => $paid,
-            'due' => $due,
-            'total_commission' => $total_commission,
-            'seller_earnings' => $sellerEarning,
-            'status' => OrderStatus::DELIVERED->value,
-            'seller_earning_added' => 0
-        ]);
-
-        $newCommission = $order->total_commission;
-
-        $commission = $newCommission - $oldCommission;
-
-        $cart?->items()->delete();
-        $cart?->delete();
-
-        $order->addSellerEarningToBalance($commission);
-
-        $html = view('components.seller.pos-order-items', [
-            'orderItems' => $order->items()->with('variant.product')->get(),
-        ])->render();
-
-        return apiResponse([
-            'invoice_id' => $order->invoice_id,
-            'html' => $html,
-            'subtotal' => $combinedSubTotal,
-            'vat_amount' => $combinedVat,
-            'discount' => $combinedDiscount,
-            'total' => $payable,
-            'paid' => $paid,
-            'due' => $due,
-        ], "Order updated successfully");
     }
 
     public function delete($id)
