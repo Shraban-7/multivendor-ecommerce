@@ -21,7 +21,6 @@ class Order extends Model
         'status' => OrderStatus::class,
         'payment_type' => PaymentType::class,
         'created_at' => 'datetime',
-        'billing_information' => 'array',
         'delivery_status' => 'integer',
     ];
 
@@ -30,7 +29,7 @@ class Order extends Model
 
     public function billing_address() : HasOne
     {
-        return $this->hasOne(BillingAddress::class);
+        return $this->hasOne(OrderBillingAddress::class);
     }
 
     public function statusLogs()

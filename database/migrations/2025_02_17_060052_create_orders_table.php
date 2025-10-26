@@ -16,8 +16,6 @@ return new class extends Migration
             $table->string('invoice_id')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('seller_id')->nullable();
-            $table->unsignedBigInteger('_id')->nullable();
-            $table->json('billing_information')->nullable();
             $table->decimal('sub_total', 10, 2);
             $table->decimal('discount', 6, 2)->nullable();
             $table->decimal('tax', 6, 2)->nullable();
@@ -26,12 +24,10 @@ return new class extends Migration
             $table->decimal('payable', 10, 2)->nullable();
             $table->decimal('due', 10, 2)->nullable();
             $table->unsignedBigInteger('payment_id')->nullable();
-
             $table->string('commission_type')->nullable();
             $table->decimal('commission_amount', 6, 1)->nullable();
             $table->decimal('total_commission', 8, 2)->nullable();
             $table->decimal('seller_earnings', 10, 2)->default(0);
-
             $table->tinyInteger('status')->default(1);
             $table->tinyInteger('delivery_status')->default(1);
             $table->timestamps();

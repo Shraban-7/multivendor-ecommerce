@@ -13,16 +13,17 @@ use App\Models\District;
 use App\Models\Division;
 use App\Models\OrderItem;
 use App\Enums\OrderStatus;
+use App\Enums\PaymentType;
 use App\Models\ReviewImage;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Enums\CommissionType;
-use App\Enums\PaymentType;
 use App\Models\BillingAddress;
 use App\Models\PaymentGateway;
 use App\Models\ProductVariant;
 use App\Services\AamarpayService;
 use App\Models\AffiliateCommission;
+use App\Models\OrderBillingAddress;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
@@ -164,15 +165,6 @@ class OrderController extends Controller
 
         $billingAddress = BillingAddress::find($validated['billing_address_id']);
 
-        $billingAddressArray = array(
-            'customer_name' => $billingAddress->customer_name,
-            'customer_phone' => $billingAddress->customer_phone,
-            'division' => $billingAddress->division->name,
-            'district' => $billingAddress->district->name,
-            'address' => $billingAddress->address,
-            'type' => $billingAddress->type->title(),
-        );
-
         $seller = Seller::where('id', $selectedSellerId)->first();
 
         $commissionData = $seller->calculateEarning($total, $vat_amount);
@@ -191,8 +183,6 @@ class OrderController extends Controller
         $order = Order::create([
             'user_id' => $user->id,
             'seller_id' => $selectedSellerId,
-            'billing_address_id' => $billingAddress->id,
-            'billing_information' => json_encode($billingAddressArray),
             'invoice_id' => $invoiceId,
             'sub_total' => $sub_total,
             'total' => $total,
@@ -211,6 +201,15 @@ class OrderController extends Controller
         ]);
 
         $order->items()->createMany($orderItems);
+
+        $order_billing_address = OrderBillingAddress::create([
+            'order_id' => $order->id,
+            'customer_name' => $billingAddress->customer_name,
+            'customer_phone' => $billingAddress->customer_phone,
+            'division_id' => $billingAddress->division_id,
+            'district_id' => $billingAddress->district_id,
+            'address' => $billingAddress->address,
+        ]);
 
         foreach ($order->items as $item) {
             $product = Product::find($item['product_id']);
@@ -251,7 +250,7 @@ class OrderController extends Controller
                 'payment_url' => route('orders.index'),
             ];
         } else {
-            $paymentGateway = $this->initiatePaymentGateway($request, $invoiceId, $payableAmount, $billingAddress->id);
+            $paymentGateway = $this->initiatePaymentGateway($request, $invoiceId, $payableAmount, $order_billing_address->id);
         }
 
         $this->processAffiliateCommissions($order->items, auth()->user(), $order->id);
@@ -330,7 +329,7 @@ class OrderController extends Controller
     private function initiatePaymentGateway(Request $request, $invoiceId, $amount, $billingAddressId)
     {
         $user = Auth::user();
-        $billingInformation = BillingAddress::find($billingAddressId);
+        $billingInformation = OrderBillingAddress::find($billingAddressId);
         $customerName  = $billingInformation->customer_name;
         $customerEmail = $user->email;
         $customerPhone = $billingInformation->customer_phone;

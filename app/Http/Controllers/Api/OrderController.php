@@ -25,6 +25,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\OrderResource;
 use App\Http\Resources\InvoiceResource;
+use App\Models\OrderBillingAddress;
+
 use function PHPUnit\Framework\returnSelf;
 
 class OrderController extends Controller
@@ -125,7 +127,7 @@ class OrderController extends Controller
 
         $invoiceId = Order::generateInvoiceID($seller->id);
         $payableAmount = $sub_total + $shipping_fee + $vat_amount;
-        $sellerEarning = $sub_total+$vat_amount - $total_commission;
+        $sellerEarning = $sub_total + $vat_amount - $total_commission;
 
         $billingAddress = BillingAddress::find($request->billing_address_id);
 
@@ -145,8 +147,6 @@ class OrderController extends Controller
             $order = Order::create([
                 'user_id' => $user->id,
                 'seller_id' => $selectedSellerId,
-                'billing_address_id' => $billingAddress->id,
-                'billing_information' => json_encode($billingAddressArray),
                 'invoice_id' => $invoiceId,
                 'sub_total' => $sub_total,
                 'total' => $sub_total + $vat_amount + $shipping_fee,
@@ -160,11 +160,19 @@ class OrderController extends Controller
                 'seller_earnings' => $sellerEarning,
                 'total_commission' => $total_commission,
                 'status' => OrderStatus::PENDING->value,
-                'delivery_status' => OrderStatus::ORDER_PLACED->value,
                 'payment_type' => $payment_type,
             ]);
 
             $order->items()->createMany($orderItems);
+            
+            $order_billing_address = OrderBillingAddress::create([
+                'order_id' => $order->id,
+                'customer_name' => $billingAddress->customer_name,
+                'customer_phone' => $billingAddress->customer_phone,
+                'division_id' => $billingAddress->division_id,
+                'district_id' => $billingAddress->district_id,
+                'address' => $billingAddress->address,
+            ]);
 
             foreach ($order->items as $item) {
                 if (isset($item['product_variant_id'])) {
@@ -191,7 +199,7 @@ class OrderController extends Controller
 
             DB::commit();
 
-            $paymentGateway = $this->initiatePaymentGateway($billingAddress, $invoiceId, $payableAmount);
+            $paymentGateway = $this->initiatePaymentGateway($order_billing_address, $invoiceId, $payableAmount);
         } catch (Exception $e) {
             DB::rollBack();
             return errorResponse($e->getMessage());
@@ -226,7 +234,7 @@ class OrderController extends Controller
         ]);
     }
 
-    private function initiatePaymentGateway(BillingAddress $billingAddress, $invoiceId, $amount): array
+    private function initiatePaymentGateway(OrderBillingAddress $billingAddress, $invoiceId, $amount): array
     {
         $user = Auth::user();
 

@@ -4,9 +4,7 @@
 
 @section('content')
     @php
-        $billing = is_string($order->billing_information)
-            ? json_decode($order->billing_information, true)
-            : $order->billing_information;
+        $billing = $order->billing_address;
     @endphp
     <main class="tracking-page pb-5 sm:pb-10">
 
@@ -30,7 +28,7 @@
                     </div>
                     <div>
                         <p class="font-medium">Customer:</p>
-                        <p>{{ $billing['customer_name'] }}</p>
+                        <p>{{ $billing->customer_name }}</p>
                     </div>
                     <div>
                         <p class="font-medium">Payment Method:</p>
@@ -38,7 +36,7 @@
                     </div>
                     <div class="sm:col-span-2">
                         <p class="font-medium">Shipping Address:</p>
-                        <p>{{ $billing['address'] }}, {{ $billing['district'] }},{{ $billing['division'] }}</p>
+                        <p>{{ $billing->address }}, {{ $billing->district }},{{ $billing->division }}</p>
                     </div>
                 </div>
             </div>

@@ -850,7 +850,7 @@
                         $btn.html(originalText)
                             .attr('disabled', false)
                             .removeClass('opacity-60 cursor-not-allowed');
-                        window.location.href = "{{ route('home') }}";
+                        toastr.error(xhr.message);
 
                     }
                 });
