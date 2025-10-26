@@ -45,10 +45,8 @@ class ProductController extends Controller
         $validated = $request->validate([
             'category_id' => 'required|integer|exists:categories,id',
             'subcategory_id' => 'nullable',
-            'brand' => 'nullable',
+            'brand' => 'required',
             'name' => 'required|string|max:255',
-            'short_description' => 'nullable|string',
-            'description' => 'nullable|string',
             'sku' => 'nullable|string|max:255',
             'buying_price' => 'required|numeric',
             'selling_price' => 'required|numeric',
@@ -58,20 +56,13 @@ class ProductController extends Controller
             'payment_type' => 'required|numeric',
             'unit_id' => 'required|numeric',
             'unit_value' => 'required|string',
-            'is_trending' => 'nullable|boolean',
-            'best_selling' => 'nullable|boolean',
-            'is_featured' => 'nullable|boolean',
             'low_stock_quantity' => 'required|numeric',
-            'video' => 'nullable|file',
             'thumbnail' => [
-                'required',
+                'nullable',
                 'image',
                 'max:4096', 
                 // 'dimensions:ratio=1/1',
             ],
-            'files' => 'nullable|array',
-            'files.*' => 'file|max:4096|mimetypes:image/*',
-            'meta_title' => 'nullable|string',
         ]);
 
         $brandId = null;
@@ -94,17 +85,13 @@ class ProductController extends Controller
 
         $imageFolder = "images/{$seller->username}/products";
 
-        //$validated['thumbnail'] = upload_with_watermark($request->file('thumbnail'), "$imageFolder/thumb");
-
-        $validated['thumbnail'] = upload_file($request->file('thumbnail'), "$imageFolder/thumb");
-
-        if ($request->hasFile('video')) {
-            $validated['video'] = upload_file($request->file('video'), "videos/{$seller->username}/products");
+        if($request->hasFile('thumbnail'))
+        {
+            $validated['thumbnail'] = upload_file($request->file('thumbnail'), "$imageFolder/thumb");
         }
 
         $validated['seller_id'] = $seller->id;
         $validated['slug'] = str_slug('products', 'slug', $validated['name']);
-
 
         $product = Product::create($validated);
 
@@ -125,15 +112,6 @@ class ProductController extends Controller
         ];
 
         ProductVariant::create($variantData);
-
-        if ($request->hasFile('files')) {
-            foreach ($request->file('files') as $file) {
-                ProductImage::create([
-                    'product_id' => $product->id,
-                    'image' => upload_file($file, $imageFolder),
-                ]);
-            }
-        }
 
         return response()->json(['success' => true, 'message' => 'Product Added Successfully']);
     }
