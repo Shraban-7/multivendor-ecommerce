@@ -116,8 +116,8 @@
                         <div class="row g-2 align-items-end">
                             <div class="col-6">
                                 <label class="form-label">Unit Value</label>
-                                <input type="number"  name="unit_value" placeholder="1" class="form-control"
-                                    placeholder="Value" required>
+                                <input type="number"  name="unit_value" class="form-control"
+                                    placeholder="1" required>
                             </div>
                             <div class="col-6">
                                 <label class="form-label">Unit</label>
