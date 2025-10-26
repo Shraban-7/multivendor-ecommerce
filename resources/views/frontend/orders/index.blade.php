@@ -160,7 +160,7 @@
                     },
                     columns: [{
                         select: 1,
-                        sort: "desc"
+                        sort: false
                     }]
                 });
             }
