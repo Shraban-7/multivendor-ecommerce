@@ -69,7 +69,7 @@ foreach ($categories as $cat) {
 @section('content')
     <div class="row">
         <!-- Products/Search Section -->
-        <div class="col-md-8">
+        <div class="col-md-7">
             <div class="card mb-4 ">
                 <div class="card-header bg-white py-3">
                     <div class="row align-items-center">
@@ -339,7 +339,7 @@ foreach ($categories as $cat) {
         </div>
 
         <!-- Cart & Checkout Section -->
-        <div class="col-md-4">
+        <div class="col-md-5">
             <div class="card sticky-top" style="top: 20px;">
                 <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Order Summery @if (request()->has('order_id'))
