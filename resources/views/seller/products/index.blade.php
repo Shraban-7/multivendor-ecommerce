@@ -45,7 +45,7 @@
                             </div>
                         </td>
 
-                        <td>{{ money($minPrice) }} – {{ money($maxPrice) }}</td>
+                        <td><span>{{ money($minPrice) }}</span> @if($maxPrice != $minPrice) - money($maxPrice) @endif</td>
 
                         <td>
                             @if ($product->status == $product::STATUS_ACTIVE)
