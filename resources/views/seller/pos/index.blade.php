@@ -929,17 +929,11 @@ foreach ($categories as $cat) {
 
             let deleteOrderItemId = null;
 
-            $('.delete-order-item-btn').on('click', function() {
-                const row = $(this).closest('.order-item');
-                const id = $(this).data('id');
-
-                // remove row visually after AJAX
-                row.remove();
-                calculateSummaryPrice();
+            $(document).on('click', '.delete-order-item-btn', function() {
+                deleteOrderItemId = $(this).data('id');
             });
 
-
-            $('#confirmDeleteOrderBtn').on('click', function() {
+            $(document).on('click', '#confirmDeleteOrderBtn', function() {
                 if (!deleteOrderItemId) return;
 
                 $.ajax({
@@ -952,9 +946,11 @@ foreach ($categories as $cat) {
                     },
                     success: function(response) {
                         if (response.status) {
+                            $('#order-item-' + deleteOrderItemId).remove();
+
                             toastr.success("Order item removed successfully!");
-                            $('.order-item-' + deleteOrderItemId).remove();
                             summery = response.data;
+
                             resetOrderSummary(summery);
 
                             const deleteModalEl = document.getElementById(
@@ -967,7 +963,6 @@ foreach ($categories as $cat) {
                             if (response.data && response.data.redirect) {
                                 window.location.href = response.data.redirect;
                             }
-
                         } else {
                             toastr.error(response.message);
                         }
@@ -977,6 +972,7 @@ foreach ($categories as $cat) {
                     }
                 });
             });
+
 
             $('#updateOrderBtn').on('click', function() {
                 let button = $(this);
@@ -1137,29 +1133,17 @@ foreach ($categories as $cat) {
             setupDropdown($('#customerPhone'), $('#customerPhoneDropdown'), 'phone');
 
             function resetOrderSummary(summary) {
-                let totalDiscount = 0;
                 let subtotal = 0;
+                let totalDiscount = 0;
+                let vat = 0;
+                let total = 0;
+                let due = 0;
 
-                if (summary && Array.isArray(summary.cart_items)) {
-                    summary.cart_items.forEach(item => {
-                        let sellingPrice = parseFloat(item.variant?.selling_price) || 0;
-                        let discountedPrice = parseFloat(item.variant?.discounted_price) || 0;
-                        let quantity = parseInt(item.quantity) || 1;
-
-                        let itemDiscount = (discountedPrice ? sellingPrice - discountedPrice : 0) *
-                            quantity;
-                        totalDiscount += itemDiscount;
-
-                        subtotal += (parseFloat(sellingPrice) || 0) * quantity;
-                    });
-                } else {
-                    totalDiscount = parseFloat(summary.discount) || 0;
-                    subtotal = parseFloat(summary.subtotal) || 0;
-                }
-
-                let total = parseFloat(summary.total) || subtotal;
-                let due = parseFloat(summary.due) || total;
-                let vat = parseMoney(summary.vat_amount);
+                subtotal = parseFloat(summary.sub_total) || 0;
+                totalDiscount = parseFloat(summary.discount) || 0;
+                vat = parseFloat(summary.vat_amount) || 0;
+                total = parseFloat(summary.total) || 0;
+                due = parseFloat(summary.due) || total;
 
                 $('#summary-subtotal').text(subtotal.toFixed(2));
                 $('#summary-vat').text(vat.toFixed(2));
@@ -1182,8 +1166,6 @@ foreach ($categories as $cat) {
                     .data('due', due)
                     .attr('data-due', due)
                     .text(due.toFixed(2));
-
-                calculateDiscount();
             }
 
             $(document).on('click', '.filter-btn', function() {
@@ -1205,47 +1187,11 @@ foreach ($categories as $cat) {
 
             let fullPaidActive = false;
 
-            // $('#paid-amount').on('input change', function() {
-            //     fullPaidActive = false;
-            //     let previousPaid = parseFloat($('#previous-paid').val()) || 0;
-            //     let total = parseFloat($('#summary-total').attr('data-total')) || 0;
-            //     let paidInputValue = $(this).val() || 0;
-
-            //     if (paidInputValue) {
-            //         paidInputValue = parseFloat(paidInputValue);
-            //         let maxPayable = total;
-            //         if (maxPayable < 0) maxPayable = 0;
-
-            //         if (paidInputValue > maxPayable) paidInputValue = maxPayable;
-            //         $(this).val(paidInputValue);
-
-            //         let newDue = total - previousPaid - paidInputValue;
-            //         if (newDue < 0) newDue = 0;
-
-            //         $('#due-amount').attr('data-due', newDue).text(newDue.toFixed(2));
-            //     }
-            // });
-
-            // $(document).on("click", "#set-full-paid", function() {
-            //     const dueAmount = parseFloat($('#due-amount').text().trim());
-            //     $('#paid-amount').val(dueAmount.toFixed(2));
-            //     $('#due-amount').attr('data-due', 0).text('0.00');
-            // });
-
             $(document).on("click", "#set-full-paid", function() {
                 let fullPaid = 0;
-
-                const orderId = "{{ request('order_id') }}"; // Laravel Blade: current order ID
-
-                if (orderId) {
-                    // Existing order → set paid to total
-                    const total = parseFloat($('#summary-total').attr('data-total')) || 0;
-                    fullPaid = total;
-                } else {
-                    // New order → set paid to current due
-                    const dueAmount = parseFloat($('#due-amount').text().trim()) || 0;
-                    fullPaid = dueAmount;
-                }
+                const orderId = "{{ request('order_id') }}";
+                const total = parseFloat($('#summary-total').attr('data-total')) || 0;
+                fullPaid = total;
 
                 $('#paid-amount').val(fullPaid.toFixed(2));
                 $('#due-amount').attr('data-due', 0).text('0.00');
@@ -1286,10 +1232,6 @@ foreach ($categories as $cat) {
                 $('#summary-discount').text(totalDiscount.toFixed(2));
                 $('#due-amount').attr('data-due', newDue).text(newDue.toFixed(2));
             }
-
-            // $('#discount-type, #discount-amount').on('input change', function() {
-            //     calculateDiscount();
-            // });
 
             function getTotalDiscount() {
                 let discount = parseFloat($('#discount-amount').val());
@@ -1349,64 +1291,23 @@ foreach ($categories as $cat) {
                     calculateSummaryPrice();
                 });
 
-            // function calculateSummaryPrice() {
-            //     let subtotal = 0;
-            //     let total = 0;
-            //     let vatAmount = parseFloat($('#summary-vat').text().trim());
-
-            //     $('.cart-item').each(function() {
-            //         let row = $(this);
-            //         let quantity = parseFloat(row.find('.quantity').text().trim()) || 0;
-            //         let originalPrice = parseFloat(row.find('.price-input').data('price')) || 0;
-            //         let currentPrice = parseFloat(row.find('.price-input').val()) || 0;
-
-            //         subtotal += originalPrice * quantity;
-            //         total += currentPrice * quantity;
-            //     });
-
-            //     let discountValue = parseFloat($('#discount-amount').val()) || 0;
-            //     let discountType = $('#discount-type').val();
-            //     let discountAmount = 0;
-
-            //     if (discountType === 'percentage') {
-            //         discountAmount = total * (discountValue / 100);
-            //     } else {
-            //         discountAmount = discountValue;
-            //     }
-
-            //     let grandTotal = total + vatAmount - discountAmount;
-            //     let paid = parseFloat($('#paid-amount').val()) || 0;
-            //     let due = Math.max(grandTotal - paid, 0);
-            //     let discount = subtotal - grandTotal;
-
-            //     $('#summary-subtotal').text(subtotal.toFixed(2));
-            //     $('#summary-vat').text(vatAmount.toFixed(2));
-            //     $('#summary-discount').text(discount.toFixed(2)).data('base', discount.toFixed(2));
-            //     $('#summary-total').text(grandTotal.toFixed(2)).data('total', grandTotal.toFixed(2));
-            //     $('#due-amount').text(due.toFixed(2)).data('due', due.toFixed(2));
-            // }
-
             function calculateSummaryPrice() {
                 let subtotal = 0;
                 let total = 0;
-
-                // Get VAT safely (default 0 if empty)
                 let vatAmount = parseFloat($('#summary-vat').text().trim()) || 0;
 
-                // Loop through BOTH .cart-item and .order-item
                 $('.cart-item, .order-item').each(function() {
                     let row = $(this);
                     let quantity = parseFloat(row.find('.quantity').text().trim()) || 0;
                     let originalPrice = parseFloat(row.find('.price-input').data('price')) || 0;
                     console.log(originalPrice);
-                    
+
                     let currentPrice = parseFloat(row.find('.price-input').val()) || 0;
 
                     subtotal += originalPrice * quantity;
                     total += currentPrice * quantity;
                 });
 
-                // Discount section (optional fields)
                 let discountValue = parseFloat($('#discount-amount').val()) || 0;
                 let discountType = $('#discount-type').val();
                 let discountAmount = 0;
@@ -1417,25 +1318,17 @@ foreach ($categories as $cat) {
                     discountAmount = discountValue;
                 }
 
-                // Final calculations
                 let grandTotal = total + vatAmount - discountAmount;
                 let paid = parseFloat($('#paid-amount').val()) || 0;
                 let due = Math.max(grandTotal - paid, 0);
                 let discount = subtotal - grandTotal;
 
-                console.log(subtotal);
-                
-
-                // Update summary
                 $('#summary-subtotal').text(subtotal.toFixed(2));
                 $('#summary-vat').text(vatAmount.toFixed(2));
                 $('#summary-discount').text(discount.toFixed(2)).data('base', discount.toFixed(2));
-                // $('#summary-total').text(grandTotal.toFixed(2)).data('total', grandTotal.toFixed(2));
                 $('#summary-total').text(grandTotal.toFixed(2)).attr('data-total', grandTotal.toFixed(2));
                 $('#due-amount').text(due.toFixed(2)).data('due', due.toFixed(2));
             }
-
-
         });
     </script>
 @endpush

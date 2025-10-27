@@ -4,10 +4,8 @@ namespace App\Http\Controllers\Seller;
 
 use App\Models\Order;
 use App\Models\Seller;
-use App\Models\PosCart;
 use App\Models\Customer;
 use App\Models\OrderItem;
-use App\Enums\OrderStatus;
 use Illuminate\Http\Request;
 use App\Models\ProductVariant;
 use App\Models\SellerEmployee;
@@ -50,157 +48,6 @@ class SaleController extends Controller
         return view('seller.pos.orders', compact('orders'));
     }
 
-    // public function update(Request $request)
-    // {
-    //     $orderId = $request->input('order_id', $request->query('order_id'));
-    //     $seller = Seller::find(get_seller_id());
-    //     $employee = SellerEmployee::find(auth()->guard('employee')->id());
-
-    //     $data = $request->validate([
-    //         'customer_name' => 'nullable|string|max:255|required_with:customer_phone',
-    //         'customer_phone' => 'nullable|string|max:20|required_with:customer_name',
-    //         'paid' => 'nullable|numeric',
-    //         'additional_discount' => 'nullable|numeric|min:0',
-    //     ]);
-
-    //     $order = Order::where('invoice_id', $orderId)
-    //         ->where('seller_id', $seller->id)
-    //         ->with('items.variant.product')
-    //         ->first();
-
-    //     $oldCommission = $order->total_commission;
-
-    //     if (!$order) return errorResponse("Order not found!");
-
-    //     if (!empty($data['customer_name']) && !empty($data['customer_phone'])) {
-    //         $customer = Customer::firstOrCreate([
-    //             'name' => $data['customer_name'],
-    //             'phone' => $data['customer_phone']
-    //         ]);
-    //         $order->update(['customer_id' => $customer->id]);
-    //     }
-
-    //     $cart = PosCart::where('seller_id', $seller->id)
-    //         ->where('order_id', $order->id)
-    //         ->first();
-
-    //     $cartItems = $cart?->items()->with('variant.product')->get() ?? collect();
-
-    //     $productDiscount = 0;
-    //     $newSubTotal = 0;
-    //     $newVat = 0;
-
-    //     foreach ($cartItems as $cartItem) {
-    //         $quantity = $cartItem->quantity;
-    //         $product = $cartItem->variant->product;
-    //         $variant = $cartItem->variant;
-
-    //         $sellingPrice = $variant->selling_price;
-    //         $unitPrice = $variant->calculatedPrice;
-    //         $itemTotal = $cartItem->quantity * $unitPrice;
-    //         $itemSubtotal = $cartItem->quantity * $variant->selling_price;
-
-    //         $discountAmount = $variant->calculatedDiscount;
-    //         $itemDiscount = $cartItem->quantity * ($discountAmount);
-    //         $itemVat = calculate_vat($product->vat_percent, $unitPrice) * $quantity;
-
-    //         $itemSubtotal = $variant->selling_price * $cartItem->quantity;
-    //         $itemTotal = ($unitPrice * $quantity) + $itemVat;
-
-    //         $orderItem = $order->items()
-    //             ->where('product_variant_id', $variant->id)
-    //             ->where('unit_price', $unitPrice)
-    //             ->first();
-
-    //         if ($orderItem) {
-    //             $orderItem->quantity += $quantity;
-    //             $orderItem->sub_total += $itemSubtotal;
-    //             $orderItem->discount += $itemDiscount;
-    //             $orderItem->vat_amount += $itemVat;
-    //             $orderItem->total += $itemTotal;
-    //             $orderItem->save();
-    //         } else {
-    //             $order->items()->create([
-    //                 'product_id' => $product->id,
-    //                 'product_variant_id' => $variant->id,
-    //                 'sku' => $variant->sku,
-    //                 'product_name' => $product->name,
-    //                 'variant_name' => $variant->fullName,
-    //                 'buying_price' => $variant->buying_price,
-    //                 'selling_price' => $sellingPrice,
-    //                 'unit_price' => $unitPrice,
-    //                 'quantity' => $quantity,
-    //                 'sub_total' => $itemSubtotal,
-    //                 'discount' => $itemDiscount,
-    //                 'vat_percent' => $product->vat_percent,
-    //                 'vat_amount' => $itemVat,
-    //                 'total' => $itemTotal,
-    //             ]);
-    //         }
-    //     }
-
-    //     $newSubTotal = $order->items()->sum('sub_total');
-    //     $productDiscount = $order->items()->sum('discount');
-    //     $newVat = $order->items()->sum('vat_amount');
-
-    //     $combinedSubTotal = $newSubTotal;
-    //     $combinedVat = $order->vat_amount + $newVat;
-
-    //     $additionalDiscount = (float) ($data['additional_discount'] ?? 0) ?? (float) ($order->additional_discount ?? 0);
-    //     $order->additional_discount = $additionalDiscount;
-
-    //     $combinedDiscount = $productDiscount + $additionalDiscount;
-
-    //     $payable = ($combinedSubTotal + $combinedVat) - $combinedDiscount;
-
-    //     $commissionData = $seller->calculateEarning($payable, $combinedVat);
-
-    //     $total_commission = $commissionData['total_commission'];
-    //     $sellerEarning = $commissionData['seller_earning'];
-
-    //     $paid = ($data['paid'] ?? 0);
-    //     $due = max(0, $payable - $paid);
-
-    //     $order->update([
-    //         'seller_employee_id' => $employee->id ?? $order->seller_employee_id,
-    //         'sub_total' => $combinedSubTotal,
-    //         'vat_amount' => $combinedVat,
-    //         'discount' => $combinedDiscount,
-    //         'additional_discount' => $additionalDiscount,
-    //         'total' => $payable,
-    //         'paid' => $paid,
-    //         'due' => $due,
-    //         'total_commission' => $total_commission,
-    //         'seller_earnings' => $sellerEarning,
-    //         'status' => OrderStatus::DELIVERED->value,
-    //         'seller_earning_added' => 0
-    //     ]);
-
-    //     $newCommission = $order->total_commission;
-
-    //     $commission = $newCommission - $oldCommission;
-
-    //     $cart?->items()->delete();
-    //     $cart?->delete();
-
-    //     $order->addSellerEarningToBalance($commission);
-
-    //     $html = view('components.seller.pos-order-items', [
-    //         'orderItems' => $order->items()->with('variant.product')->get(),
-    //     ])->render();
-
-    //     return apiResponse([
-    //         'invoice_id' => $order->invoice_id,
-    //         'html' => $html,
-    //         'subtotal' => $combinedSubTotal,
-    //         'vat_amount' => $combinedVat,
-    //         'discount' => $combinedDiscount,
-    //         'total' => $payable,
-    //         'paid' => $paid,
-    //         'due' => $due,
-    //     ], "Order updated successfully");
-    // }
-
     public function update(Request $request)
     {
         $orderId = $request->input('order_id', $request->query('order_id'));
@@ -212,10 +59,6 @@ class SaleController extends Controller
             'customer_phone' => 'nullable|string|max:20|required_with:customer_name',
             'paid' => 'nullable|numeric|min:0',
             'due' => 'nullable|numeric|min:0',
-            'total' => 'nullable|numeric|min:0',
-            'discount' => 'nullable|numeric|min:0',
-            'subtotal' => 'nullable|numeric|min:0',
-            'vat' => 'nullable|numeric|min:0',
             'items' => 'nullable|array',
             'items.*.id' => 'nullable|integer',
             'items.*.price' => 'nullable|numeric|min:0',
@@ -247,10 +90,10 @@ class SaleController extends Controller
                         'quantity' => $item['quantity'],
                         'unit_price' => $item['price'],
                         'total' => $item['price'] * $item['quantity'],
+                        'discount' => max(0, $orderItem->selling_price - $item['price']),
                         'sub_total' => $orderItem->selling_price * $item['quantity'],
                     ]);
                 } else {
-                    // New item from cart
                     $variant = ProductVariant::find($item['id']);
                     if ($variant) {
                         $order->items()->create([
@@ -274,8 +117,8 @@ class SaleController extends Controller
 
             $subTotal = $order->items()->sum('sub_total');
             $vat = $order->items()->sum('vat_amount');
-            $discount = ($data['discount'] ?? 0) + ($data['additional_discount'] ?? 0);
-            $total = $order->items()->sum('total');
+            $discount = $order->items()->sum('discount') + ($data['additional_discount'] ?? 0);
+            $total = $order->items()->sum('total') - ($data['additional_discount'] ?? 0);
             $paid = min($data['paid'] ?? 0, $total);
             $due = max($total - $paid, 0);
 
@@ -303,7 +146,7 @@ class SaleController extends Controller
             return apiResponse([
                 'invoice_id' => $order->invoice_id,
                 'html' => $html,
-                'subtotal' => $subTotal,
+                'sub_total' => $subTotal,
                 'vat_amount' => $vat,
                 'discount' => $discount,
                 'total' => $total,
@@ -402,7 +245,7 @@ class SaleController extends Controller
         $productDiscount = $orderItems->sum(fn($i) => $i->discount);
         $totalDiscount = $productDiscount + ($order->additional_discount ?? 0);
         $vatAmount = $orderItems->sum(fn($i) => $i->vat_amount);
-        $total = $subTotal + $vatAmount - $totalDiscount;
+        $total = $orderItems->sum(fn($i) => $i->total) - ($order->additional_discount ?? 0);
         $due = $total - $order->paid;
 
         $order->update([
@@ -417,9 +260,9 @@ class SaleController extends Controller
 
         return apiResponse([
             'html' => $html,
-            'subtotal' => $subTotal,
-            'vat_amount' => $vatAmount,
+            'sub_total' => $subTotal,
             'discount' => $totalDiscount,
+            'vat_amount' => $vatAmount,
             'total' => $total,
             'due' => $due,
         ], "Item added successfully");
@@ -471,11 +314,11 @@ class SaleController extends Controller
 
         return apiResponse([
             'html' => $html,
-            'subtotal' => $subTotal,
-            'vat_amount' => $vatAmount,
-            'discount' => $totalDiscount,
-            'total' => $total,
-            'due' => $due,
+            'subtotal' => $order->sub_total,
+            'vat_amount' => $order->vat_amount,
+            'discount' => $order->discount,
+            'total' => $order->total,
+            'due' => $order->due,
         ], "Item updated successfully");
     }
 
@@ -495,7 +338,8 @@ class SaleController extends Controller
         $productDiscount = $orderItems->sum(fn($i) => $i->discount);
         $totalDiscount = $productDiscount + ($order->additional_discount ?? 0);
         $vatAmount = $orderItems->sum(fn($i) => $i->vat_amount);
-        $total = $subTotal + $vatAmount - $totalDiscount;
+        $productTotal = $orderItems->sum(fn($i) => $i->total);
+        $total = $productTotal - ($order->additional_discount ?? 0);
         $due = $total - $order->paid;
 
         $order->update([
@@ -510,14 +354,13 @@ class SaleController extends Controller
 
         return apiResponse([
             'html' => $html,
-            'subtotal' => $subTotal,
-            'vat_amount' => $vatAmount,
-            'discount' => $totalDiscount,
-            'total' => $total,
-            'due' => $due,
+            'sub_total' => $order->sub_total,
+            'vat_amount' => $order->vat_amount,
+            'discount' => $order->discount,
+            'total' => $order->total,
+            'due' => $order->due,
         ], "Item removed successfully");
     }
-
 
     public function pay(Request $request, Order $order)
     {
