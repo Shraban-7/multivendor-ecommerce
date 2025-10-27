@@ -29,13 +29,6 @@ if (! function_exists('currency_symbol')) {
     }
 }
 
-if (! function_exists('redirect_intended')) {
-    function redirect_intended($default = '/')
-    {
-        return redirect()->intended($default);
-    }
-}
-
 if (! function_exists('str_slug')) {
     function str_slug($table, $column, $title, $separator = '-')
     {
