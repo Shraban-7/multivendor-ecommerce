@@ -148,14 +148,12 @@
             const deleteModal = new bootstrap.Modal($('#deleteConfirmModal')[0]);
             const $form = $('#planForm');
 
-            // Add Plan
             $('#addPlanBtn').on('click', function() {
                 $form[0].reset();
                 $('#planModalLabel').text('Add New Plan');
                 $('#plan_id').val('');
             });
 
-            // Edit Plan
             $('.editPlanBtn').on('click', function() {
                 const plan = $(this).data('plan');
                 $('#planModalLabel').text('Edit Plan');
@@ -172,7 +170,6 @@
                 modal.show();
             });
 
-            // 🔽 Delete Plan - Open modal
             $('.deletePlanBtn').on('click', function() {
                 const id = $(this).data('id');
                 const name = $(this).data('name');
@@ -181,7 +178,6 @@
                 deleteModal.show();
             });
 
-            // 🔽 Confirm Delete
             $('#confirmDeleteBtn').on('click', function() {
                 const id = $('#deletePlanId').val();
                 const url = "{{ route('admin.subscription-plans.delete', ':id') }}".replace(':id', id);
@@ -216,8 +212,6 @@
                 });
             });
 
-
-            // Save Plan (existing logic)
             $form.on('submit', function(e) {
                 e.preventDefault();
                 const id = $('#plan_id').val();

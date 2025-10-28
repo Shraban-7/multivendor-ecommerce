@@ -58,6 +58,10 @@ class SubscriptionPlanController extends Controller
 
     public function delete(SubscriptionPlan $plan)
     {
+        if (SellerSubscription::where('subscription_plan_id', $plan->id)->exists()) {
+            return errorResponse('This subscription plan is currently assigned to a seller and cannot be deleted.');
+        }
+
         $plan->delete();
 
         return successResponse('Subscription plan deleted successfully.');
