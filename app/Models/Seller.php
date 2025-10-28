@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\CommissionType;
 use App\Mail\WelcomeMail;
+use App\Traits\HasSubscription;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -15,7 +16,7 @@ use Illuminate\Support\Facades\Mail;
 
 class Seller extends Authenticatable
 {
-    use HasFactory, Notifiable, SoftDeletes;
+    use HasFactory, Notifiable, SoftDeletes, HasSubscription;
 
     protected $guarded = ['id'];
 

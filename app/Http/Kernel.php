@@ -42,7 +42,7 @@ class Kernel extends HttpKernel
 
         'api' => [
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-            \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
+            \Illuminate\Routing\Middleware\ThrottleRequests::class . ':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
     ];
@@ -72,5 +72,7 @@ class Kernel extends HttpKernel
         'aamarpay' => \App\Http\Middleware\AamarpayMiddleware::class,
 
         'markReadAuto' => \App\Http\Middleware\AutoMarkNotificationsAsRead::class,
+
+        'subscription.feature' => \App\Http\Middleware\CheckSubscriptionFeature::class,
     ];
 }

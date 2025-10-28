@@ -269,6 +269,35 @@ $settings = settings();
                 </div>
             </li>
 
+            <?php
+                $subscriptionExpanded = (request()->routeIs('admin.subscription-plans.*') || request()->routeIs('admin.subscriptions.*')) ? true : false;
+            ?>
+
+            <li class="nav-item">
+                <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center" href="#!"
+                    data-bs-toggle="collapse" data-bs-target="#navSubscriptions"
+                     aria-expanded="{{ $subscriptionExpanded ? 'true' : 'false' }}"
+                    aria-controls="navSubscriptions">
+
+                    <div>
+                        <i data-feather="layers" class="nav-icon icon-xs me-2"></i>
+                        Subscriptions
+                    </div>
+
+                    <i data-feather="chevron-right" class="chevron-icon transition"></i>
+                </a>
+
+                <div id="navSubscriptions"
+                    class="collapse {{ request()->routeIs('admin.brands.*') || request()->routeIs('admin.categories.*') || request()->routeIs('admin.options*') || request()->routeIs('admin.subcategories.*') ? 'show' : '' }}"
+                    data-bs-parent="#sideNavbar">
+                    <ul class="nav flex-column">
+                        <x-dashboard.nav-item-link :route="'admin.subscription-plans.index'">
+                            Plans
+                        </x-dashboard.nav-item-link>
+                    </ul>
+                </div>
+            </li>
+
             @if (hasPermission('admin.images.index'))
                 <x-dashboard.nav-item-link :route="'admin.images.index'">
                     <i data-feather="image" class="nav-icon icon-xs me-2"></i>Image

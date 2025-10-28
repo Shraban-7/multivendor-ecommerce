@@ -24,6 +24,7 @@ use App\Http\Controllers\Admin\SellerController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SocialLinkController;
 use App\Http\Controllers\Admin\SubcategoryController;
+use App\Http\Controllers\Admin\SubscriptionPlanController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
@@ -179,6 +180,12 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
         Route::post('/store', [ManualPaymentMethodController::class, 'store'])->name('store');
         Route::put('/{manualPayment}/update', [ManualPaymentMethodController::class, 'update'])->name('update');
         Route::delete('/{manualPayment}/delete', [ManualPaymentMethodController::class, 'delete'])->name('delete');
+    });
+
+    Route::prefix('subscription-plans')->as('subscription-plans.')->group(function () {
+        Route::get('/', [SubscriptionPlanController::class, 'index'])->name('index');
+        Route::post('/', [SubscriptionPlanController::class, 'store'])->name('store');
+        Route::put('/{plan}', [SubscriptionPlanController::class, 'update'])->name('update');
     });
 });
 
