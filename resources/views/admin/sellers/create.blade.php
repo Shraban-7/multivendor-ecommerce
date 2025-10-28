@@ -54,12 +54,12 @@
             <div class="form-step form-step-active" id="step1">
                 <h5 class="fw-semibold mb-3 text-primary"><i data-feather="user" class="me-2"></i> Personal Information</h5>
                 <div class="row g-3">
-                    <div class="col-md-6"><label class="form-label">Full Name *</label><input type="text" name="name" class="form-control" required></div>
-                    <div class="col-md-6"><label class="form-label">Email *</label><input type="email" name="email" class="form-control" required></div>
-                    <div class="col-md-6"><label class="form-label">Phone *</label><input type="text" name="phone" class="form-control" required></div>
+                    <div class="col-md-6"><label class="form-label">Full Name</label><input type="text" name="name" class="form-control" required></div>
+                    <div class="col-md-6"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required></div>
+                    <div class="col-md-6"><label class="form-label">Phone</label><input type="text" name="phone" class="form-control" required></div>
                     <div class="col-md-6"><label class="form-label">NID Number</label><input type="text" name="nid_no" class="form-control"></div>
-                    <div class="col-md-6"><label class="form-label">Password *</label><input type="password" name="password" class="form-control" required></div>
-                    <div class="col-md-6"><label class="form-label">Confirm Password *</label><input type="password" name="password_confirmation" class="form-control" required></div>
+                    <div class="col-md-6"><label class="form-label">Password</label><input type="password" name="password" class="form-control" required></div>
+                    <div class="col-md-6"><label class="form-label">Confirm Password</label><input type="password" name="password_confirmation" class="form-control" required></div>
                     <div class="col-12"><label class="form-label">Profile Image</label><input type="file" name="image" class="form-control" accept="image/*"></div>
                 </div>
                 <div class="text-end mt-4"><button type="button" class="btn btn-primary nextBtn px-4">Next →</button></div>
@@ -69,11 +69,11 @@
             <div class="form-step" id="step2">
                 <h5 class="fw-semibold mb-3 text-primary"><i data-feather="briefcase" class="me-2"></i> Business Information</h5>
                 <div class="row g-3">
-                    <div class="col-md-6"><label class="form-label">Business Name *</label><input type="text" name="business_name" class="form-control" required></div>
+                    <div class="col-md-6"><label class="form-label">Business Name</label><input type="text" name="business_name" class="form-control" required></div>
                     <div class="col-md-6"><label class="form-label">Business Email</label><input type="email" name="business_email" class="form-control"></div>
-                    <div class="col-12"><label class="form-label">Business Address *</label><textarea name="business_address" class="form-control" rows="2" required></textarea></div>
+                    <div class="col-12"><label class="form-label">Business Address</label><textarea name="business_address" class="form-control" rows="2" required></textarea></div>
                     <div class="col-md-6">
-                        <label class="form-label">Division *</label>
+                        <label class="form-label">Division</label>
                         <select name="division_id" class="form-select" required>
                             <option value="">Select Division</option>
                             @foreach ($divisions as $division)
@@ -82,7 +82,7 @@
                         </select>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">District *</label>
+                        <label class="form-label">District</label>
                         <select name="district_id" class="form-select" required>
                             <option value="">Select District</option>
                         </select>
