@@ -17,7 +17,7 @@ $route = request()->route()->getName();
 <nav class="navbar-vertical navbar">
     <div class="nav-scroller">
         <a class="navbar-brand d-flex" href="/">
-            <img src="{{ storage_url($settings->logo) }}" alt="logo" />
+            <img src="{{ storage_url($seller->business_logo ?? $settings->logo) }}" alt="logo" />
         </a>
         <ul class="navbar-nav flex-column" id="sideNavbar">
 
