@@ -58,11 +58,11 @@
                     <h5 class="fw-semibold mb-3 text-primary"><i data-feather="user" class="me-2"></i> Personal
                         Information</h5>
                     <div class="row g-3">
-                        <div class="col-md-6"><label class="form-label">Full Name *</label><input type="text"
+                        <div class="col-md-6"><label class="form-label">Full Name</label><input type="text"
                                 name="name" value="{{ $seller->name }}" class="form-control" required></div>
-                        <div class="col-md-6"><label class="form-label">Email *</label><input type="email" name="email"
+                        <div class="col-md-6"><label class="form-label">Email</label><input type="email" name="email"
                                 value="{{ $seller->email }}" class="form-control" required></div>
-                        <div class="col-md-6"><label class="form-label">Phone *</label><input type="text" name="phone"
+                        <div class="col-md-6"><label class="form-label">Phone</label><input type="text" name="phone"
                                 value="{{ $seller->phone }}" class="form-control" required></div>
                         <div class="col-md-6"><label class="form-label">NID Number</label><input type="text"
                                 name="nid_no" value="{{ $seller->nid_no }}" class="form-control"></div>
@@ -83,16 +83,16 @@
                     <h5 class="fw-semibold mb-3 text-primary"><i data-feather="briefcase" class="me-2"></i> Business
                         Information</h5>
                     <div class="row g-3">
-                        <div class="col-md-6"><label class="form-label">Business Name *</label><input type="text"
+                        <div class="col-md-6"><label class="form-label">Business Name</label><input type="text"
                                 name="business_name" value="{{ $seller->business_name }}" class="form-control" required>
                         </div>
                         <div class="col-md-6"><label class="form-label">Business Email</label><input type="email"
                                 name="business_email" value="{{ $seller->business_email }}" class="form-control"></div>
-                        <div class="col-12"><label class="form-label">Business Address *</label>
+                        <div class="col-12"><label class="form-label">Business Address</label>
                             <textarea name="business_address" class="form-control" rows="2" required>{{ $seller->business_address }}</textarea>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Division *</label>
+                            <label class="form-label">Division</label>
                             <select name="division_id" class="form-select" required>
                                 <option value="">Select Division</option>
                                 @foreach ($divisions as $division)
@@ -104,7 +104,7 @@
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">District *</label>
+                            <label class="form-label">District</label>
                             <select name="district_id" class="form-select" required>
                                 <option value="">Select District</option>
                             </select>

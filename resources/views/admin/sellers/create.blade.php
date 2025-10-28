@@ -170,7 +170,6 @@
             }
         });
 
-        // ✅ AJAX FORM SUBMIT
         $('#submitButton').on('click', function(e) {
             e.preventDefault();
             let form = $('#sellerForm')[0];
