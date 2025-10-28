@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\CommissionType;
 use App\Mail\WelcomeMail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -136,5 +137,31 @@ class Seller extends Authenticatable
     public function sendWelcomeMail()
     {
         Mail::to($this->email)->queue(new WelcomeMail($this->name));
+    }
+
+    public function profileCompleted(): Attribute
+    {
+        $completed = true;
+
+        $requiredFields = [
+            'nid_no',
+            'nid_front_image',
+            'nid_back_image',
+            'trade_licenso_no',
+            'trade_licenso_image',
+            'shop_image',
+            'email_verified_at',
+        ];
+
+        foreach ($requiredFields as $field) {
+            if (is_null($this->$field) || empty($this->$field)) {
+                $completed = false;
+                break;
+            }
+        }
+
+        return Attribute::make(
+            get: fn() => $completed
+        );
     }
 }
