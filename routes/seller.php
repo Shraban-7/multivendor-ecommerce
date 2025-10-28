@@ -55,7 +55,9 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
-    Route::match(['get', 'post'], '/profile/{username}', [SellerController::class, 'profile'])->name('profile');
+    Route::match(['get', 'post'], '/profile', [SellerController::class, 'profile'])->name('profile');
+    Route::get('/profile-info/{username}', [SellerController::class, 'profileInfo'])->name('profileInfo');
+    Route::get('/profile-info/update', [SellerController::class, 'profileUpdate'])->name('profile.update');
 
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
 

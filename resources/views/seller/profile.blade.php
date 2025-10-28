@@ -1,6 +1,6 @@
 @extends('seller.layouts.app')
 
-@section('title', 'Seller Profile')
+@section('title', 'Profile')
 
 @section('content')
     <div class="d-flex justify-content-between align-items-end mb-3">

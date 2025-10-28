@@ -39,7 +39,7 @@
                     <div class="lh-1">
                         <h5 class="mb-1">{{ seller()->name ?? employee()->name }}</h5>
                         @if (auth('seller')->check())
-                            <a href="{{ route('seller.profile', seller()->username) }}"
+                            <a href="{{ route('seller.profile')}}"
                                 class="text-inherit fs-6">Profile</a>
                         @elseif (auth('employee')->check())
                             <a href="{{ route('seller.employees.profile') }}" class="text-inherit fs-6">Profile</a>
@@ -51,7 +51,7 @@
                 <ul class="list-unstyled">
                     <li>
                         @if (auth('seller')->check())
-                            <a class="dropdown-item" href="{{ route('seller.profile', seller()->username) }}">
+                            <a class="dropdown-item" href="{{ route('seller.profile') }}">
                                 <i class="me-2 icon-xxs dropdown-item-icon" data-feather="settings"></i>
                                 Account Settings
                             </a>

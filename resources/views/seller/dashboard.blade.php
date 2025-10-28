@@ -12,7 +12,7 @@ $pageTitle = "Seller Dashboard | {$seller->business_name}";
                 <div>
                     <strong>Your profile is incomplete</strong>. Please complete your profile to ensure full access to all platform features.
                 </div>
-                <a href="#" class="btn btn-warning btn-sm mt-3 mt-sm-0">Complete Profile</a>
+                <a href="{{ route('seller.profile') }}" class="btn btn-warning btn-sm mt-3 mt-sm-0">Complete Profile</a>
             </div>
         </div>
     </div>
