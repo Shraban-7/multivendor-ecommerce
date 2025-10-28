@@ -186,6 +186,7 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
         Route::get('/', [SubscriptionPlanController::class, 'index'])->name('index');
         Route::post('/', [SubscriptionPlanController::class, 'store'])->name('store');
         Route::put('/{plan}', [SubscriptionPlanController::class, 'update'])->name('update');
+        Route::delete('/{plan}', [SubscriptionPlanController::class, 'delete'])->name('delete');
     });
 
     Route::get('/subscriptions', [SubscriptionPlanController::class, 'subscriptions'])->name('subscriptions.index');

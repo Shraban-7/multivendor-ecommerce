@@ -288,7 +288,7 @@ $settings = settings();
                 </a>
 
                 <div id="navSubscriptions"
-                    class="collapse {{ request()->routeIs('admin.brands.*') || request()->routeIs('admin.categories.*') || request()->routeIs('admin.options*') || request()->routeIs('admin.subcategories.*') ? 'show' : '' }}"
+                    class="collapse {{ $subscriptionExpanded ? 'show' : '' }}"
                     data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
                         <x-dashboard.nav-item-link :route="'admin.subscription-plans.index'">

@@ -28,12 +28,12 @@ class SubscriptionPlanController extends Controller
             'analytics_access' => 'boolean',
             'priority_support' => 'boolean',
             'custom_domain' => 'boolean',
-            'staff_accounts' => 'required|integer|min:0',
+            'staff_account_limit' => 'required|integer|min:0',
         ]);
 
         SubscriptionPlan::create($data);
 
-        return response()->json(['success' => true, 'message' => 'Plan added successfully']);
+        return successResponse('Plan added successfully');
     }
 
     public function update(Request $request, SubscriptionPlan $plan)
@@ -48,12 +48,19 @@ class SubscriptionPlanController extends Controller
             'analytics_access' => 'boolean',
             'priority_support' => 'boolean',
             'custom_domain' => 'boolean',
-            'staff_accounts' => 'required|integer|min:0',
+            'staff_account_limit' => 'required|integer|min:0',
         ]);
 
         $plan->update($data);
 
-        return response()->json(['success' => true, 'message' => 'Plan updated successfully']);
+        return successResponse('Plan updated successfully');
+    }
+
+    public function delete(SubscriptionPlan $plan)
+    {
+        $plan->delete();
+
+        return successResponse('Subscription plan deleted successfully.');
     }
 
     public function subscriptions()
