@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\SellerSubscription;
 use App\Models\SubscriptionPlan;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,7 @@ class SubscriptionPlanController extends Controller
     {
         $plans = SubscriptionPlan::orderBy('price')->get();
 
-        return view('admin.subscription-plans.index', compact('plans'));
+        return view('admin.subscription.plans', compact('plans'));
     }
 
     public function store(Request $request)
@@ -53,5 +54,12 @@ class SubscriptionPlanController extends Controller
         $plan->update($data);
 
         return response()->json(['success' => true, 'message' => 'Plan updated successfully']);
+    }
+
+    public function subscriptions()
+    {
+        $subscriptions = SellerSubscription::with('plan', 'seller')->latest('id')->paginate(30);
+
+        return view('admin.subscription.index', compact('subscriptions'));
     }
 }

@@ -294,6 +294,10 @@ $settings = settings();
                         <x-dashboard.nav-item-link :route="'admin.subscription-plans.index'">
                             Plans
                         </x-dashboard.nav-item-link>
+
+                        <x-dashboard.nav-item-link :route="'admin.subscriptions.index'">
+                            Subscriptions
+                        </x-dashboard.nav-item-link>
                     </ul>
                 </div>
             </li>
