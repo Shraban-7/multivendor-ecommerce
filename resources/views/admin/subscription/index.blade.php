@@ -44,11 +44,11 @@
                             <span class="badge bg-secondary text-dark">Pending</span>
                             @endif
                         </td>
-                        <td>{{ \Carbon\Carbon::parse($sub->start_date)->format('d M, Y') }}</td>
-                        <td>{{ \Carbon\Carbon::parse($sub->end_date)->format('d M, Y') }}</td>
+                        <td>{{ $sub->start_date->format('d M, Y') }}</td>
+                        <td>{{ $sub->end_date->format('d M, Y') }}</td>
                         <td>
                             @php
-                            $remaining = \Carbon\Carbon::parse($sub->end_date)->diffInDays(now(), false);
+                            $remaining = $sub->end_date->diffInDays(now(), false);
                             @endphp
                             @if ($remaining > 0)
                             <span class="text-success fw-semibold">{{ $remaining }} days left</span>
@@ -96,7 +96,7 @@
                                         <div class="mb-3">
                                             <label class="form-label fw-semibold">New End Date</label>
                                             <input type="date" class="form-control" name="end_date"
-                                                value="{{ \Carbon\Carbon::parse($sub->end_date)->format('Y-m-d') }}" required>
+                                                value="{{ $sub->end_date->format('Y-m-d') }}" required>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
