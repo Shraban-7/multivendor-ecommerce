@@ -510,7 +510,7 @@
 
                 $('#itemsTotal').text(formatCurrency(discountedTotal));
                 $('#itemVat').text('+' + formatCurrency(totalVat));
-                let total = parseFloat(discountedTotal) + parseFloat(sellerShippingCharge);
+                let total = parseFloat(discountedTotal) + parseFloat(sellerShippingCharge)+parseFloat(totalVat);
                 $('#estimatedTotal').text(formatCurrency(total));
                 $('#selectedItemsCount').text(selectedCount);
                 $('#shippingCharge').text('+' + formatCurrency(sellerShippingCharge));
