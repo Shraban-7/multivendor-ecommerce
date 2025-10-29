@@ -98,7 +98,10 @@ class SellerController extends Controller
                 $fileFields = ['image', 'nid_front_image', 'nid_back_image'];
                 foreach ($fileFields as $field) {
                     if ($request->hasFile($field)) {
-                        delete_file($seller->$field);
+                        if($seller->$field)
+                        {
+                            delete_file($seller->$field);
+                        }
                         $data[$field] = upload_file($request->file($field), "images/{$usernameForPath}/profile");
                     } else {
                         $data[$field] = $seller->$field;
@@ -121,7 +124,11 @@ class SellerController extends Controller
                 $fileFields = ['business_logo', 'shop_image'];
                 foreach ($fileFields as $field) {
                     if ($request->hasFile($field)) {
-                        delete_file($seller->$field);
+                        if($seller->$field!= null)
+                        {
+                            delete_file($seller->$field);
+                        }
+
                         $folder = $field === 'business_logo' ? 'logo' : 'shop';
                         $data[$field] = upload_file($request->file($field), "images/{$usernameForPath}/{$folder}");
                     } else {
@@ -138,7 +145,10 @@ class SellerController extends Controller
                 ]);
 
                 if ($request->hasFile('trade_license_image')) {
-                    delete_file($seller->trade_license_image);
+                    if($seller->trade_license_image!= null)
+                    {
+                        delete_file($seller->trade_license_image);
+                    }
                     $data['trade_license_image'] = upload_file($request->file('trade_license_image'), "images/{$usernameForPath}/documents");
                 } else {
                     $data['trade_license_image'] = $seller->trade_license_image;

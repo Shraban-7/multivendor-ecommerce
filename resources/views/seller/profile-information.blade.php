@@ -186,6 +186,35 @@
 
     @push('scripts')
         <script>
+            let sellerDivision = "{{ $seller->division_id }}";
+            let sellerDistrict = "{{ $seller->district_id }}";
+
+            function loadDistricts(divisionId, selectedDistrict = null) {
+                let districtSelect = $('select[name="district_id"]');
+                districtSelect.html('<option value="">Loading...</option>');
+
+                if (divisionId) {
+                    $.get("{{ url('/get-districts') }}/" + divisionId, function(data) {
+                        districtSelect.html('<option value="">Select District</option>');
+                        $.each(data, function(key, district) {
+                            let selected = selectedDistrict == key ? 'selected' : '';
+                            districtSelect.append('<option value="' + key + '" ' + selected + '>' +
+                                district + '</option>');
+                        });
+                    });
+                } else {
+                    districtSelect.html('<option value="">Select District</option>');
+                }
+            }
+
+            if (sellerDivision) {
+                loadDistricts(sellerDivision, sellerDistrict);
+            }
+
+            $('select[name="division_id"]').on('change', function() {
+                loadDistricts($(this).val());
+            });
+            
             $(function() {
                 $('form').on('submit', function(e) {
                     e.preventDefault();
