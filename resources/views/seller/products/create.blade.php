@@ -113,7 +113,7 @@
                         <div class="col-6">
                             <label class="form-label">Unit Value</label>
                             <input type="number" name="unit_value" class="form-control"
-                                placeholder="1" required>
+                                placeholder="Enter value" required>
                         </div>
                         <div class="col-6">
                             <label class="form-label">Unit</label>
