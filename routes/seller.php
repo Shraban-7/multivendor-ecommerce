@@ -138,5 +138,5 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::post('{expense}/destroy', [SellerExpenseController::class, 'destroy'])->name('destroy');
     });
 
-    Route::post('banner-image/{image}/delete', [SettingController::class, 'deleteImage'])->name('bannerImages.delete');
+    Route::post('banner-image/{image}/', [SettingController::class, 'deleteImage'])->name('bannerImages.delete');
 });

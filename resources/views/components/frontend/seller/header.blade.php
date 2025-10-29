@@ -1,7 +1,12 @@
 {{-- Shop Header --}}
 <div class="relative h-40 md:h-64 rounded overflow-hidden">
     <!-- Background Overlay -->
-    <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent">
+        @if ($seller->banner_images->isNotEmpty())
+            <img src="{{ storage_url($seller->banner_images->first()->image) }}" alt="{{ $seller->business_name }} Banner"
+                class="w-full h-full object-cover">
+        @endif
+    </div>
 
     <!-- Content -->
     <div class="container mx-auto px-4 relative h-full flex items-end pb-6">
@@ -9,8 +14,7 @@
             <!-- Logo -->
             <div
                 class="w-20 h-20 md:w-32 md:h-32 rounded-full border-4 border-white bg-white shadow-lg overflow-hidden flex-shrink-0">
-                <img src="{{ storage_url($seller->business_logo) }}" alt="Shop Logo"
-                    class="w-full h-full object-cover">
+                <img src="{{ storage_url($seller->business_logo) }}" alt="Shop Logo" class="w-full h-full object-cover">
             </div>
 
             <!-- Shop Info -->
@@ -41,8 +45,7 @@
             class="pb-1 font-medium transition-colors {{ request()->routeIs('sellers.shop') ? 'text-primary border-b-2 border-primary' : 'hover:text-primary' }}">
             Products
         </a>
-        <a href="#"
-            class="pb-1 font-medium hover:text-primary transition-colors">
+        <a href="#" class="pb-1 font-medium hover:text-primary transition-colors">
             About
         </a>
         <a href="{{ route('sellers.reviews', $seller->username) }}"

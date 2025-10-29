@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
@@ -27,25 +28,13 @@ class SettingController extends Controller
             'business_logo'    => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
             'business_email'   => 'required|string|email|max:255|unique:sellers,business_email,' . $seller->id,
             'business_address' => 'required|string|max:1000',
-            'shop_image'       => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
             'shipping_cost'    => 'nullable|numeric',
-            'files'            => 'nullable|array',
-            'files.*'          => 'file|max:9096|mimetypes:image/*',
         ]);
 
         $username = $seller->username;
 
-        if ($request->hasFile('shop_image')) {
-            if (! empty($seller->shop_image)) {
-                delete_file($seller->shop_image);
-            }
-            $data['shop_image'] = upload_file($request->file('shop_image'), "images/{$username}/shop");
-        } else {
-            $data['shop_image'] = $seller->shop_image;
-        }
-
         if ($request->hasFile('business_logo')) {
-            if (! empty($seller->business_logo)) {
+            if (!empty($seller->business_logo)) {
                 delete_file($seller->business_logo);
             }
             $data['business_logo'] = upload_file($request->file('business_logo'), "images/{$username}/logo");
@@ -55,12 +44,8 @@ class SettingController extends Controller
 
         $seller->update($data);
 
+        // Handle new banner uploads
         if ($request->hasFile('files')) {
-            $seller->banner_images->each(function ($image) {
-                delete_file($image->image);
-                $image->delete();
-            });
-
             foreach ($request->file('files') as $file) {
                 SellerBannerImage::create([
                     'seller_id' => $seller->id,
@@ -69,15 +54,18 @@ class SettingController extends Controller
             }
         }
 
-        return redirect()->route('seller.settings.index')->with('success', 'Setting update successfully');
+        return redirect()->route('seller.settings.index')->with('success', 'Settings updated successfully');
     }
+
 
     public function deleteImage(SellerBannerImage $image)
     {
         delete_file($image->image);
-
         $image->delete();
 
-        return redirect()->back()->with('success', "Seller banner deleted successfully!");
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Banner image deleted successfully!'
+        ]);
     }
 }
