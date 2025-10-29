@@ -69,11 +69,11 @@ class OrderController extends Controller
     {
         $user = Auth::user();
 
-        $order = Order::where('invoice_id', $invoice_id)->with('seller')->first();
+        $order = Order::where('invoice_id', $invoice_id)->with('seller', 'payment', 'items')->first();
 
-        $order->load('items.product');
+        $products = Product::latest('id')->limit(8)->get();
 
-        return view('frontend.orders.details', compact('order', 'user'));
+        return view('frontend.orders.details', compact('order', 'user', 'products'));
     }
 
     public function checkout(Request $request)
