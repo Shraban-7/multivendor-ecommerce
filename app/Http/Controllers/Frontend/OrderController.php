@@ -338,6 +338,7 @@ class OrderController extends Controller
 
         if (!$payment) {
             $payment = Payment::create([
+                'user_id' => $user->id,
                 'gateway' => 'aamarpay',
                 'transaction_id' => $invoiceId,
                 'status' => Payment::PENDING,
