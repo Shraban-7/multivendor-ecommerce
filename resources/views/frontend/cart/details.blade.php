@@ -299,9 +299,6 @@
 
                 $('.seller-checkbox').not(this).prop('checked', false);
 
-                // $('.seller-items').hide();
-                // $(`.seller-items.seller-${sellerId}`).show();
-
                 updateSellerSelection();
             });
 
@@ -410,11 +407,6 @@
                             toastr.success(response.message);
                             updateCartData();
                             updateOrderSummary();
-                            var priceElement = $('#cart-item-' + cartItemId +
-                                ' .current-price');
-                            if (priceElement) {
-                                priceElement.text(response.updatedPrice);
-                            }
                         } else {
                             toastr.error(response.message);
                         }

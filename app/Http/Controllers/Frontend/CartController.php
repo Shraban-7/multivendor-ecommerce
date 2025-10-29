@@ -147,12 +147,9 @@ class CartController extends Controller
             $discount           = $grandTotal - $subTotal;
             $totalProductsCount = CartItem::where('cart_id', $request->cart_id)->count();
 
-            $updatedPrice = money($cartItem->price * $cartItem->quantity);
-
             return response()->json([
                 'success'              => true,
                 'message'              => 'Cart updated successfully',
-                'updatedPrice'         => $updatedPrice,
                 'order_subtotal'       => number_format($subTotal, 2),
                 'order_total'          => number_format($grandTotal, 2),
                 'discount'             => number_format($discount, 2),
