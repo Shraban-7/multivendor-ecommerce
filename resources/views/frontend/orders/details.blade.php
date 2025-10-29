@@ -200,8 +200,8 @@
                     </div>
 
                     <div class="flex items-center justify-between">
-                        <span class="text-gray-600">Tax</span>
-                        <span>{{ money($order->tax) }}</span>
+                        <span class="text-gray-600">Vat</span>
+                        <span>{{ money($order->vat_amount) }}</span>
                     </div>
 
                     <div class="border-t border-gray-200 pt-2 flex items-center justify-between font-medium">

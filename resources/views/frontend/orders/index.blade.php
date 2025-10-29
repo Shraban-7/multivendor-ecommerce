@@ -132,6 +132,7 @@
             </section>
         @endif
 
+        @if(!empty($products))
         <section class="explore-interest section-padding">
             <div class="container">
                 <h2 class="text-xl sm:text-2xl lg:text-3xl font-medium text-jet-gray mb-5">
@@ -142,6 +143,7 @@
                 </div>
             </div>
         </section>
+        @endif
     </main>
 
     @push('scripts')

@@ -56,12 +56,12 @@ class OrderController extends Controller
             'reviews.user',
         ])->inRandomOrder()->limit(8)->get();
 
-        $products = $interest_products->map(fn($product) => $product->toDetailsArray());
+        //$products = $interest_products->map(fn($product) => $product->toDetailsArray());
 
         return view('frontend.orders.index', [
             'orders'   => $orders,
             'status'   => $statusLabel,
-            'products' => $products,
+            'products' => [],
         ]);
     }
 
