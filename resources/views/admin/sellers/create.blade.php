@@ -52,15 +52,22 @@
         <div class="card-body p-4">
             <!-- STEP 1 -->
             <div class="form-step form-step-active" id="step1">
-                <h5 class="fw-semibold mb-3 text-primary"><i data-feather="user" class="me-2"></i> Personal Information</h5>
                 <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Select Plan</label>
+                        <select name="plan_id" class="form-select" required>
+                            @foreach ($plans as $plan)
+                            <option value="{{ $plan->id }}">{{ $plan->name }} | {{ money($plan->price) }}/{{ $plan->duration_type}}</option>
+                            @endforeach
+                        </select>
+                    </div>
                     <div class="col-md-6"><label class="form-label">Full Name</label><input type="text" name="name" class="form-control" required></div>
                     <div class="col-md-6"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required></div>
                     <div class="col-md-6"><label class="form-label">Phone</label><input type="text" name="phone" class="form-control" required></div>
-                    <div class="col-md-6"><label class="form-label">NID Number</label><input type="text" name="nid_no" class="form-control"></div>
+
                     <div class="col-md-6"><label class="form-label">Password</label><input type="password" name="password" class="form-control" required></div>
                     <div class="col-md-6"><label class="form-label">Confirm Password</label><input type="password" name="password_confirmation" class="form-control" required></div>
-                    <div class="col-12"><label class="form-label">Profile Image</label><input type="file" name="image" class="form-control" accept="image/*"></div>
+                    <div class="col-md-6"><label class="form-label">Profile Image</label><input type="file" name="image" class="form-control" accept="image/*"></div>
                 </div>
                 <div class="text-end mt-4"><button type="button" class="btn btn-primary nextBtn px-4">Next →</button></div>
             </div>
@@ -100,8 +107,11 @@
                 <h5 class="fw-semibold mb-3 text-primary"><i data-feather="file-text" class="me-2"></i> Documents Upload</h5>
                 <div class="row g-3">
                     <div class="col-md-6"><label class="form-label">Trade License No</label><input type="text" name="trade_license_no" class="form-control"></div>
+                    <div class="col-md-6"><label class="form-label">NID Number</label><input type="text" name="nid_no" class="form-control"></div>
+
                     <div class="col-md-6"><label class="form-label">Trade License Image</label><input type="file" name="trade_license_image" class="form-control" accept="image/*"></div>
                     <div class="col-md-6"><label class="form-label">Shop Image</label><input type="file" name="shop_image" class="form-control" accept="image/*"></div>
+
                     <div class="col-md-6"><label class="form-label">NID Front</label><input type="file" name="nid_front_image" class="form-control" accept="image/*"></div>
                     <div class="col-md-6"><label class="form-label">NID Back</label><input type="file" name="nid_back_image" class="form-control" accept="image/*"></div>
                 </div>
@@ -134,13 +144,19 @@
         nextBtns.forEach(btn => btn.addEventListener("click", () => {
             if (actStep < steps.length - 1) actStep++;
             showStep(actStep);
-            window.scrollTo({ top: 0, behavior: "smooth" });
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
         }));
 
         prevBtns.forEach(btn => btn.addEventListener("click", () => {
             if (actStep > 0) actStep--;
             showStep(actStep);
-            window.scrollTo({ top: 0, behavior: "smooth" });
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
         }));
 
         showStep(actStep);

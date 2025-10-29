@@ -9,6 +9,7 @@ use App\Models\Division;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\SubscriptionPlan;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
@@ -48,7 +49,10 @@ class SellerController extends Controller
     public function create(Request $request)
     {
         $divisions = Division::all();
-        return view('admin.sellers.create', compact('divisions'));
+
+        $plans = SubscriptionPlan::all();
+
+        return view('admin.sellers.create', compact('divisions', 'plans'));
     }
 
     public function store(Request $request)
@@ -230,7 +234,7 @@ class SellerController extends Controller
             $seller->chats()->delete();
             $seller->expenses()->delete();
             $seller->seller_expense_categories()->delete();
-            $seller->forceDelete(); 
+            $seller->forceDelete();
         });
 
         return successResponse('Seller and all related data permanently deleted.');

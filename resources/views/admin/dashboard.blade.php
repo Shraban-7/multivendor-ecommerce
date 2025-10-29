@@ -35,7 +35,7 @@
 </div>
 @endif
 
-<div class="container-fluid mt-2">
+<div class="mt-2">
     <div class="row mb-2">
         <div class="col d-flex align-items-end">
             <h3 class="fw-bold mb-0">Dashboard</h3>
