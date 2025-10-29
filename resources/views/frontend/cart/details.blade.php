@@ -234,7 +234,7 @@
                         <div class="mt-6 space-y-3">
                             <a href="{{ route('orders.checkout') }}" id="checkoutLink" class="block">
                                 <button id="checkoutBtn" type="button"
-                                    class="w-full py-3.5 text-white bg-primary rounded-lg hover:bg-primary-dark transition-colors font-medium flex flex-col items-center">
+                                    class="w-full py-3 bg-primary text-white text-sm font-semibold rounded-md hover:bg-primary/90 focus:ring-2 focus:ring-primary/40 transition">
                                     Checkout (0)
                                 </button>
                             </a>
