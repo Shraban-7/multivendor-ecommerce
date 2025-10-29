@@ -59,6 +59,7 @@ class SellerController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
+            'plan_id' => 'nullable',
             'email' => 'required|email|unique:sellers,email',
             'phone' => 'required|string|max:200',
             'nid_no' => 'nullable|string|max:50',
