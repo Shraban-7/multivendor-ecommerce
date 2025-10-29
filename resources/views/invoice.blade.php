@@ -205,7 +205,7 @@
                         </tr>
                         <tr>
                             <td class="text-end text-uppercase"><strong>VAT:</strong></td>
-                            <td class="text-end text-uppercase">{{ strtoupper(money($order->tax)) }}</td>
+                            <td class="text-end text-uppercase">{{ strtoupper(money($order->vat_amount)) }}</td>
                         </tr>
                         <tr>
                             <td class="text-end text-uppercase"><strong>SHIPPING FEE:</strong></td>
