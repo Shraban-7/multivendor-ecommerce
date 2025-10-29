@@ -1,41 +1,36 @@
-{{-- Shop Header --}}
-<div class="relative h-40 md:h-64 rounded overflow-hidden">
-    <!-- Background Overlay -->
-    <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent">
+<div class="relative h-32 md:h-48 rounded overflow-hidden">
+    <div class="absolute inset-0">
         @if ($seller->banner_images->isNotEmpty())
-            <img src="{{ storage_url($seller->banner_images->first()->image) }}" alt="{{ $seller->business_name }} Banner"
-                class="w-full h-full object-cover">
+        <img src="{{ storage_url($seller->banner_images->first()->image) }}" alt="{{ $seller->business_name }} Banner"
+            class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
         @endif
     </div>
 
-    <!-- Content -->
-    <div class="container mx-auto px-4 relative h-full flex items-end pb-6">
-        <div class="flex items-end md:items-center gap-4 md:gap-6">
-            <!-- Logo -->
+    <div class="container mx-auto px-4 relative h-full flex items-end pb-4 md:pb-6">
+        <div class="flex items-end md:items-center gap-3 md:gap-4 w-full">
             <div
-                class="w-20 h-20 md:w-32 md:h-32 rounded-full border-4 border-white bg-white shadow-lg overflow-hidden flex-shrink-0">
+                class="w-16 h-16 md:w-24 md:h-24 rounded-full border-3 border-white bg-white shadow-xl overflow-hidden flex-shrink-0 transform translate-y-2 md:translate-y-0">
                 <img src="{{ storage_url($seller->business_logo) }}" alt="Shop Logo" class="w-full h-full object-cover">
             </div>
 
-            <!-- Shop Info -->
-            <div class="text-white">
-                <h1 class="text-xl md:text-3xl font-bold">{{ $seller->business_name }}</h1>
-                <div class="mt-2 flex flex-col md:flex-row md:items-center md:gap-3 text-sm md:text-base text-gray-100">
-                    <span class="flex items-center">
-                        <i class="fas fa-star text-yellow-300 mr-1"></i>
-                        <span class="font-semibold">{{ number_format($avgRating, 2) }}</span>
+            <div class="text-white pt-2 overflow-hidden">
+                <h1 class="text-lg md:text-2xl font-extrabold truncate">{{ $seller->business_name }}</h1>
+                <div class="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs md:text-sm text-gray-200">
+                    <span class="flex items-center font-semibold">
+                        <i class="fas fa-star text-yellow-400 mr-1 text-sm"></i>
+                        <span>{{ number_format($avgRating, 2) }}</span>
                     </span>
-                    <span class="hidden md:inline">|</span>
-                    <span>{{ number_shorten_format($seller->totalReviews) }} Reviews</span>
-                    <span class="hidden md:inline">|</span>
-                    <span>{{ number_shorten_format($seller->total_followers) }} Followers</span>
+                    <span class="text-white/50 hidden md:inline">|</span>
+                    <span class="whitespace-nowrap">{{ number_shorten_format($seller->totalReviews) }} Reviews</span>
+                    <span class="text-white/50 hidden md:inline">|</span>
+                    <span class="whitespace-nowrap">{{ number_shorten_format($seller->total_followers) }} Followers</span>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-{{-- Shop Navigation --}}
 <div class="shop-links mb-4 bg-white rounded shadow-sm mt-2">
     <nav
         class="container mx-auto px-4 flex flex-wrap items-center gap-x-6 gap-y-2 border-b border-gray-200 py-4 text-gray-700">
