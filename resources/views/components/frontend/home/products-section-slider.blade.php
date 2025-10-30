@@ -62,7 +62,7 @@
                                                     <i class="fa-regular fa-star"></i>
                                                 @endfor
                                                 <span class="ml-1 text-gray-500 text-[10px] sm:text-xs">
-                                                    ({{ $product['reviews_count'] ?? 0 }})
+                                                    ({{ $product['total_reviews'] }})
                                                 </span>
                                             </div>
                                         @endif
@@ -147,7 +147,7 @@
                                             <i class="fa-regular fa-star"></i>
                                         @endfor
                                         <span class="ml-1 text-gray-500 text-[10px] sm:text-xs">
-                                            ({{ $product['reviews_count'] ?? 0 }})
+                                            ({{ $product['total_reviews'] }})
                                         </span>
                                     </div>
                                 @endif

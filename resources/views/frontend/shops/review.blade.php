@@ -139,24 +139,7 @@
                     <div class="comments-tags text-xs lg:text-sm text-davy-gray">
                         <h4>Item Reviews</h4>
                         <!-- review tags -->
-                        <div class="review-tags flex flex-wrap gap-2 mt-2 md:mt-4 font-medium">
-                            <button
-                                class="inline-flex items-center lg:px-3 px-2 py-1 rounded-full border border-jet-gray gap-2">
-                                <span class="flag-wrap h-4 lg:h-6 w-auto"><img class="w-auto h-full object-contain"
-                                        src="{{ asset('assets/frontend/images/us-flag.png') }}"
-                                        alt="Flag of USA" /></span>
-                                <span>(800)</span>
-                            </button>
-                            <button class="inline-flex items-center lg:px-3 px-3 py-1 rounded-full border border-jet-gray">
-                                Gift (90)
-                            </button>
-                            <button class="inline-flex items-center lg:px-3 px-3 py-1 rounded-full border border-jet-gray">
-                                Adorable (250)
-                            </button>
-                            <button class="inline-flex items-center lg:px-3 px-3 py-1 rounded-full border border-jet-gray">
-                                Beautiful (250)
-                            </button>
-                        </div>
+                     
 
                         <!-- User Reviews -->
                         <div id="reviews-wrapper"
