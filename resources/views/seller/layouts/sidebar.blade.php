@@ -221,6 +221,11 @@ $route = request()->route()->getName();
                     <i data-feather="dollar-sign" class="nav-icon icon-xs me-2"></i> Expenses
                 </x-dashboard.nav-item-link>
             @endif
+            @if ($seller || $employee->hasPermission('seller.expenses.index'))
+                <x-dashboard.nav-item-link :route="'seller.subscriptions.index'">
+                    <i data-feather="credit-card" class="nav-icon icon-xs me-2"></i> Upgrade Plan
+                </x-dashboard.nav-item-link>
+            @endif
 
             @if ($seller || $employee->hasPermission('seller.settings.index'))
                 <x-dashboard.nav-item-link :route="'seller.settings.index'">

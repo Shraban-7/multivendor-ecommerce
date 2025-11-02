@@ -13,6 +13,10 @@ class SellerSubscription extends Model
     protected $guarded = ['id'];
 
     protected $dates = ['start_date', 'end_date'];
+    protected $casts = [
+        'start_date' => 'date',
+        'end_date' => 'date',
+    ];
 
     public const ACTIVE = 1;
     public const EXPIRED = 0;

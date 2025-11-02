@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Seller\PosController;
 use App\Http\Controllers\Seller\AuthController;
+use App\Http\Controllers\Seller\SaleController;
 use App\Http\Controllers\Seller\OrderController;
 use App\Http\Controllers\Seller\OptionController;
 use App\Http\Controllers\Seller\SellerController;
@@ -11,12 +13,11 @@ use App\Http\Controllers\Seller\CustomerController;
 use App\Http\Controllers\Seller\DashboardController;
 use App\Http\Controllers\Seller\SellerChatController;
 use App\Http\Controllers\Seller\NotificationController;
-use App\Http\Controllers\Seller\PosController;
+use App\Http\Controllers\Seller\SellerExpenseController;
 use App\Http\Controllers\Seller\ProductVariantController;
-use App\Http\Controllers\Seller\SaleController;
 use App\Http\Controllers\Seller\SellerCampaignController;
 use App\Http\Controllers\Seller\SellerEmployeeController;
-use App\Http\Controllers\Seller\SellerExpenseController;
+use App\Http\Controllers\Seller\SubscriptionPlanController;
 
 Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () {
 
@@ -136,6 +137,11 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::post('/store', [SellerExpenseController::class, 'store'])->name('store');
         Route::post('{expense}/update', [SellerExpenseController::class, 'update'])->name('update');
         Route::post('{expense}/destroy', [SellerExpenseController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('subscriptions')->as('subscriptions.')->group(function () {
+        Route::get('/subscriptions', [SubscriptionPlanController::class, 'index'])->name('index');
+        Route::post('/subscriptions/subscribe', [SubscriptionPlanController::class, 'subscribe'])->name('subscribe');
     });
 
     Route::post('banner-image/{image}/', [SettingController::class, 'deleteImage'])->name('bannerImages.delete');
