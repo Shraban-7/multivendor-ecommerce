@@ -17,7 +17,7 @@ class SellerController extends Controller
 {
     public function index()
     {
-        $sellers = Seller::latest('id')->paginate(30);
+        $sellers = Seller::with('plan')->latest('id')->paginate(30);
 
         return view('admin.sellers.index', compact('sellers'));
     }

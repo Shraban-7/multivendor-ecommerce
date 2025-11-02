@@ -55,6 +55,11 @@ class Seller extends Authenticatable
         return $this->hasMany(Order::class, 'seller_id');
     }
 
+    public function plan()
+    {
+        return $this->belongsTo(SubscriptionPlan::class);
+    }
+
     public function products()
     {
         return $this->hasMany(Product::class, 'category_id');

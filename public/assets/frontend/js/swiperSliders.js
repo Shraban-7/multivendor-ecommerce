@@ -161,11 +161,8 @@ function addPauseOnHover(swiperInstance) {
         const el = swiperInstance.el;
         el.addEventListener("mouseenter", () => swiperInstance.autoplay.stop());
         el.addEventListener("mouseleave", () => swiperInstance.autoplay.start());
-    } else {
-        console.warn("Invalid Swiper instance:", swiperInstance);
-    }
+    } 
 }
-
 
 [
     lightDealsSwiper,

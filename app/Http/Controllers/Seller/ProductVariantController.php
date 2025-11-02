@@ -130,9 +130,13 @@ class ProductVariantController extends Controller
         return redirect()->back()->with('success', 'Variant Updated Successfully');
     }
 
-
     public function destroy(ProductVariant $variant)
     {
+        if($variant->stock_out>0)
+        {
+            return redirect()->back()->with('warning', 'This variant cannot be deleted because it has existing orders.');
+        }
+        
         $product_id = $variant->product_id;
 
         CartItem::where('product_variant_id', $variant->id)->delete();

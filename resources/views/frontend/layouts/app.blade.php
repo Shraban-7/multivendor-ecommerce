@@ -128,6 +128,21 @@ $isDashboard = View::hasSection('dashboard');
 
     <script>
         $(function() {
+            function refreshCsrfToken() {
+                return $.get("{{ route('refresh.csrf') }}").then(function(data) {
+                    const newToken = data.token;
+                    $('meta[name="csrf-token"]').attr('content', newToken);
+
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': newToken
+                        }
+                    });
+
+                    return newToken;
+                });
+            }
+
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -175,7 +190,10 @@ $isDashboard = View::hasSection('dashboard');
                 var $btn = $(this);
                 var originalText = $btn.html();
                 $btn.html(
-                    `<svg class="animate-spin h-4 w-4 text-white inline-block mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg> Adding...`
+                                `<svg class="animate-spin h-4 w-4 text-white inline-block mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                    </svg> Adding...`
                 ).prop('disabled', true);
 
                 var product_id = $btn.data('id');
@@ -190,48 +208,57 @@ $isDashboard = View::hasSection('dashboard');
 
                 const selectedOptions = collectSelectedOptions($product_content);
                 const variant = getSelectedVariant(product, selectedOptions);
-
                 var variantId = variant ? variant.id : null;
+
                 var product_price_text = $product_content.find('.product-price').text().replace(/[^0-9.]/g,
                     '');
                 var product_price = parseFloat(product_price_text);
-
                 var qtyInput = $product_content.find('.quantity').val() || 1;
 
-                $.ajax({
-                    url: "{{ route('cart.add') }}",
-                    type: "POST",
-                    data: {
-                        product_id: product_id,
-                        variant_id: variantId,
-                        quantity: qtyInput,
-                        price: product_price,
-                    },
-                    success: function(data) {
-                        if (data.unauthorized) {
-                            window.location.href = "{{ route('login') }}";
-                        } else if (data.success) {
-                            toastr.success(data.message);
-                            updateCartData();
-                            if ("{{ Route::currentRouteName() }}" === 'cart.details' && data
-                                .action === 'add_to_cart') {
-                                window.location.reload();
+                function addToCartRequest() {
+                    return $.ajax({
+                        url: "{{ route('cart.add') }}",
+                        type: "POST",
+                        data: {
+                            product_id: product_id,
+                            variant_id: variantId,
+                            quantity: qtyInput,
+                            price: product_price,
+                        },
+                        success: function(data) {
+                            if (data.unauthorized) {
+                                window.location.href = "{{ route('login') }}";
+                            } else if (data.success) {
+                                toastr.success(data.message);
+                                updateCartData();
+
+                                if ("{{ Route::currentRouteName() }}" === 'cart.details' &&
+                                    data.action === 'add_to_cart') {
+                                    window.location.reload();
+                                }
+                            } else if (data.error) {
+                                toastr.error(data.error);
+                            } else {
+                                toastr.error('Unexpected response!');
                             }
-                        } else {
-                            toastr.error(data.error);
+                        },
+                        error: async function(xhr) {
+                            if (xhr.status === 419) { 
+                                await refreshCsrfToken();
+                                addToCartRequest();
+                            } else if (xhr.status === 401) {
+                                window.location.href = "{{ route('login') }}";
+                            } else {
+                                toastr.error('Something went wrong!');
+                            }
+                        },
+                        complete: function() {
+                            $btn.html(originalText).prop('disabled', false);
                         }
-                    },
-                    error: function(xhr) {
-                        if (xhr.status === 401) {
-                            window.location.href = "{{ route('login') }}";
-                        } else {
-                            toastr.error('Something went wrong!');
-                        }
-                    },
-                    complete: function() {
-                        $btn.html(originalText).prop('disabled', false);
-                    }
-                });
+                    });
+                }
+
+                addToCartRequest();
             });
 
             $('.buyNowBtn').click(function() {

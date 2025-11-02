@@ -541,3 +541,8 @@ Route::prefix('payment')->as('payment.')->group(function () {
 Route::as('static.')->group(function () {
     Route::get('seller-guide', fn() => view('static.seller-guide'))->name('sellerGuide');
 });
+
+Route::get('/refresh-csrf', function () {
+    return response()->json(['token' => csrf_token()]);
+})->name('refresh.csrf');
+
