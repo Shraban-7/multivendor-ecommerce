@@ -12,10 +12,12 @@ class SubscriptionPlanController extends Controller
     public function index()
     {
         $plans = SubscriptionPlan::orderBy('price')->get();
-        $current_subscription = SellerSubscription::where('seller_id', auth('seller')->id())
+
+        $current_subscription = SellerSubscription::active()
+            ->where('seller_id', get_seller_id())
             ->with('plan')
-            ->latest('end_date')
             ->first();
+
         return view('seller.subscription-plans', compact('plans', 'current_subscription'));
     }
 
@@ -32,7 +34,7 @@ class SubscriptionPlanController extends Controller
             return redirect()->back()->with('error', 'Free plan not found. Please create one first.');
         }
 
-         $current_plan = SellerSubscription::where('seller_id', $seller->id)->first();
+        $current_plan = SellerSubscription::where('seller_id', $seller->id)->first();
         if ($request->plan_id) {
             $plan = SubscriptionPlan::findOrFail($request->plan_id);
             $start_date = now();
@@ -54,7 +56,7 @@ class SubscriptionPlanController extends Controller
                 'seller_id' => $seller->id,
                 'subscription_plan_id' => $freePlan->id,
                 'start_date' => now(),
-                'end_date' => null, 
+                'end_date' => null,
                 'status' => SellerSubscription::ACTIVE,
             ]);
 
