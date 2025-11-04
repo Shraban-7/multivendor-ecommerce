@@ -26,7 +26,7 @@ class ProductController extends Controller
 
         $brands = Brand::all();
 
-        $products = Product::with('variants.option_values', 'unit')->where('seller_id', get_seller_id())->latest('id')->get();
+        $products = Product::with('variants.option_values', 'unit')->where('seller_id', get_seller_id())->latest('id')->paginate(25);
 
         return view('seller.products.index', compact('products', 'categories', 'brands'));
     }
