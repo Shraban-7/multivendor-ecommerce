@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+
+        body { background-color: #f8f9fa; }
+        .container { max-width: 900px; }
+        .card { box-shadow: 0 4px 8px rgba(0,0,0,.05); margin-bottom: 20px; }
+        .variant-card { border-left: 5px solid #198754; }
+        .attribute-row { margin-bottom: 10px; }
+        .json-preview {
+            background-color: #e9ecef;
+            border: 1px solid #ced4da;
+            padding: 15px;
+            border-radius: .25rem;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .image-preview {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border: 1px solid #ccc;
+            margin-top: 5px;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4 text-center">Product Form</h1>
+        <form id="productForm" novalidate>
+            
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white p-3">
+                    <h5 class="mb-0">Product Details</h5>
+                </div>
+                <div class="card-body p-3">
+                    
+                    <div class="row g-2 mb-3">
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="productName" placeholder="Product Name (Required)" required>
+                            <div class="invalid-feedback">Name required.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="productCategory" placeholder="Category (Required)" required>
+                            <div class="invalid-feedback">Category required.</div>
+                        </div>
+                    </div>
+
+                    <div class="row g-2 align-items-end">
+                        <div class="col-md-3">
+                            <input type="text" class="form-control form-control-sm" id="productSku" placeholder="Base SKU (Required)" required>
+                            <div class="invalid-feedback">SKU required.</div>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="number" class="form-control form-control-sm" id="productPrice" min="0.01" step="0.01" placeholder="Base Price ($)" required>
+                            <div class="invalid-feedback">Price required.</div>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="number" class="form-control form-control-sm" id="productStock" min="0" step="1" placeholder="Stock" required>
+                            <div class="invalid-feedback">Stock required.</div>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-center">
+                            <input class="form-control form-control-sm product-image" type="file" id="productImage" accept="image/*" data-variant-id="product-base">
+                            <img src="#" alt="P.I." class="image-preview d-none" id="preview-product-base">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="mb-3">Variants</h3>
+            <div id="variantsContainer">
+                </div>
+            
+            <button type="button" class="btn btn-success mb-4" id="addVariantBtn">+ Add Variant</button>
+
+            <button type="submit" class="btn btn-lg btn-primary w-100 mb-5">💾 Save Product</button>
+        </form>
+
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">JSON Output Preview</h5>
+            </div>
+            <div class="card-body">
+                <pre id="jsonOutput" class="json-preview">Product data will appear here upon submission...</pre>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <script>
+        let variantCounter = 0;
+        const variantImageData = new Map();
+
+        const variantsContainer = document.getElementById('variantsContainer');
+        const addVariantBtn = document.getElementById('addVariantBtn');
+        const productForm = document.getElementById('productForm');
+        const jsonOutput = document.getElementById('jsonOutput');
+    
+
+        const handleImageUpload = (event) => {
+            const input = event.target;
+            const variantId = input.getAttribute('data-variant-id');
+            const preview = document.getElementById(`preview-${variantId}`);
+            
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const base64String = e.target.result;
+                    variantImageData.set(variantId, base64String);
+                    
+                    preview.src = base64String;
+                    preview.classList.remove('d-none');
+                };
+
+                reader.readAsDataURL(file);
+            } else {
+                variantImageData.delete(variantId);
+                preview.src = '#';
+                preview.classList.add('d-none');
+            }
+        };
+
+        /**
+         * @function createAttributeRow
+         * @description Generates the HTML for a single attribute (key/value pair).
+         */
+        const createAttributeRow = () => {
+            return `
+                <div class="input-group attribute-row input-group-sm">
+                    <input type="text" class="form-control attribute-key" placeholder="Key (e.g., Color)" required>
+                    <input type="text" class="form-control attribute-value" placeholder="Value (e.g., Blue)" required>
+                    <button class="btn btn-outline-danger remove-attribute-btn" type="button">
+                        &times;
+                    </button>
+                    <div class="invalid-feedback">Key/Value required.</div>
+                </div>
+            `;
+        };
+
+        /**
+         * @function createVariantCard
+         * @description Generates the HTML structure for a single product variant.
+         */
+        const createVariantCard = () => {
+            variantCounter++;
+            const variantId = `variant-${variantCounter}`;
+            const collapseId = `collapse-${variantCounter}`;
+
+            return `
+                <div class="card variant-card" id="${variantId}">
+                    <div class="card-header p-0">
+                        <button class="btn btn-link w-100 text-start text-decoration-none p-3 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${collapseId}" aria-expanded="false" aria-controls="${collapseId}">
+                            Variant #${variantCounter} <span class="badge bg-secondary ms-2 variant-sku-display">SKU: N/A</span>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 mt-2 me-2 remove-variant-btn" data-variant-id="${variantId}">
+                            Remove
+                        </button>
+                    </div>
+                    <div id="${collapseId}" class="collapse show" data-bs-parent="#variantsContainer">
+                        <div class="card-body p-3">
+                            
+                            <div class="row g-2 mb-3 align-items-end">
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control form-control-sm variant-sku" placeholder="Variant SKU" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="number" class="form-control form-control-sm variant-price" min="0.01" step="0.01" placeholder="Price ($)" required>
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="number" class="form-control form-control-sm variant-stock" min="0" step="1" placeholder="Stock" required>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <input class="form-control form-control-sm variant-image" type="file" id="image-${variantId}" accept="image/*" data-variant-id="${variantId}">
+                                    <img src="#" alt="V.I." class="image-preview d-none" id="preview-${variantId}">
+                                </div>
+                            </div>
+
+                            <h6 class="mt-2 mb-2 text-success">Attributes</h6>
+                            <div class="attributes-container">
+                                ${createAttributeRow()}
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-secondary add-attribute-btn mt-2">+ Attribute</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        };
+
+        /**
+         * @function setupVariantListeners
+         * @description Sets up event listeners for a newly created variant element.
+         * @param {HTMLElement} variantElement - The DOM element of the variant card.
+         */
+        const setupVariantListeners = (variantElement) => {
+            const variantId = variantElement.id;
+
+            // 1. Remove Variant
+            variantElement.querySelector('.remove-variant-btn').addEventListener('click', () => {
+                document.getElementById(variantId).remove();
+                variantImageData.delete(variantId);
+            });
+
+            // 2. Add Attribute
+            variantElement.querySelector('.add-attribute-btn').addEventListener('click', () => {
+                const attributesContainer = variantElement.querySelector('.attributes-container');
+                const tempRowDiv = document.createElement('div');
+                tempRowDiv.innerHTML = createAttributeRow().trim();
+                attributesContainer.appendChild(tempRowDiv.firstChild);
+            });
+
+            // 3. Remove Attribute (Delegated)
+            variantElement.querySelector('.attributes-container').addEventListener('click', (e) => {
+                if (e.target.classList.contains('remove-attribute-btn')) {
+                    e.target.closest('.attribute-row').remove();
+                }
+            });
+
+            // 4. Real-time SKU display update
+            const skuInput = variantElement.querySelector('.variant-sku');
+            const skuDisplay = variantElement.querySelector('.variant-sku-display');
+            skuInput.addEventListener('input', () => {
+                skuDisplay.textContent = `SKU: ${skuInput.value.trim() || 'N/A'}`;
+            });
+
+            // 5. Image Upload Handler 
+            variantElement.querySelector('.variant-image').addEventListener('change', handleImageUpload);
+        };
+
+        /**
+         * @function addVariant
+         * @description Appends a new variant card to the DOM and sets up its initial event listeners.
+         */
+        const addVariant = () => {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = createVariantCard().trim();
+            const newVariantElement = tempDiv.firstChild;
+            variantsContainer.appendChild(newVariantElement);
+
+            setupVariantListeners(newVariantElement);
+        };
+
+        /**
+         * @function collectProductData
+         * @description Collects all form data and structures it into the required JSON object.
+         */
+        const collectProductData = () => {
+            // Helper to generate image placeholder string
+            const getImageValue = (id) => {
+                const base64Data = variantImageData.get(id);
+                return base64Data ? `BASE64_IMAGE_DATA_(${base64Data.length}chars)` : null;
+            };
+
+            // --- 1. Collect Base Product Data ---
+            const basePrice = parseFloat(document.getElementById('productPrice').value);
+            const baseStock = parseInt(document.getElementById('productStock').value, 10);
+            
+            // --- 2. Collect Variants Data ---
+            const variants = [];
+            variantsContainer.querySelectorAll('.variant-card').forEach(variantEl => {
+                const variantId = variantEl.id;
+                const sku = variantEl.querySelector('.variant-sku').value.trim();
+                const price = parseFloat(variantEl.querySelector('.variant-price').value);
+                const stock = parseInt(variantEl.querySelector('.variant-stock').value, 10);
+                
+                // Collect Attributes
+                const attributes = {};
+                variantEl.querySelectorAll('.attribute-row').forEach(row => {
+                    const key = row.querySelector('.attribute-key').value.trim();
+                    const value = row.querySelector('.attribute-value').value.trim();
+                    if (key && value) { attributes[key] = value; }
+                });
+
+                if (sku) {
+                    variants.push({
+                        sku: sku,
+                        image: getImageValue(variantId),
+                        attributes: attributes,
+                        price: isNaN(price) ? 0 : price,
+                        stock: isNaN(stock) ? 0 : stock
+                    });
+                }
+            });
+
+            // --- 3. Construct Final Object ---
+            return {
+                name: document.getElementById('productName').value.trim(),
+                category: document.getElementById('productCategory').value.trim(),
+                sku: document.getElementById('productSku').value.trim(),
+                image: getImageValue('product-base'),
+                price: isNaN(basePrice) ? 0 : basePrice,
+                stock: isNaN(baseStock) ? 0 : baseStock,
+                variants: variants
+            };
+        };
+        
+        // ------------------------------------------------------------------
+        // --- Event Listeners & Initialization ---
+        // ------------------------------------------------------------------
+
+        // Base Product Image Listener (Correctly placed after function declaration)
+        document.getElementById('productImage').addEventListener('change', handleImageUpload);
+
+        // Add Variant Button Click
+        addVariantBtn.addEventListener('click', addVariant);
+
+        // Form Submission Handler
+        productForm.addEventListener('submit', (event) => {
+            event.preventDefault(); 
+            event.stopPropagation();
+            
+            productForm.classList.add('was-validated');
+
+            // Basic validation check
+            let isFormValid = true;
+            document.querySelectorAll('#productForm input[required]').forEach(input => {
+                if (!input.checkValidity()) {
+                    isFormValid = false;
+                    input.reportValidity(); 
+                }
+            });
+
+            const hasVariants = variantsContainer.querySelector('.variant-card') !== null;
+            if (!hasVariants && isFormValid) {
+                alert('Please add at least one product variant.');
+                isFormValid = false;
+            }
+            
+            if (!isFormValid) {
+                return;
+            }
+
+            // Data collection and JSON generation
+            const finalProductData = collectProductData();
+            
+            // Display the JSON
+            const jsonString = JSON.stringify(finalProductData, null, 2);
+            jsonOutput.textContent = jsonString;
+            jsonOutput.closest('.card').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            addVariant(); // Add a starting variant
+        });
+
+    </script>
+</body>
+</html>
