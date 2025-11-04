@@ -135,7 +135,7 @@
                         <label for="inputImage" class="text-primary text-decoration-underline" style="cursor:pointer;">Crop
                             Image First</label>
                         <input type="file" id="inputImage" hidden accept="image/*" />
-                        <div class="mt-2" style="width:120px;">
+                        {{-- <div class="mt-2" style="width:120px;">
                             <div class="border bg-light d-flex justify-content-center align-items-center rounded"
                                 style="height:120px;overflow:hidden;">
                                 <img src="{{ asset('assets/frontend/images/default.png') }}" class="img-fluid"
@@ -144,7 +144,8 @@
                             <input type="file" name="thumbnail" class="d-none file-input" accept="image/*">
                             <button type="button" class="btn btn-danger btn-sm mt-2 w-100 d-none remove-image">Remove
                                 Image</button>
-                        </div>
+                        </div> --}}
+                        <x-image-input name="thumbnail" />
                     </div>
                 </div>
             </div>
