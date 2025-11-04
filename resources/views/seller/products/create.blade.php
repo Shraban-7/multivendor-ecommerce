@@ -152,6 +152,8 @@
 
         <h5 class="mb-3">Product Variants</h5>
         <div class="card-body mb-3" id="variantsContainer"></div>
+        
+
         <button type="button" class="btn btn-sm btn-success mb-3" id="addVariantBtn">+ Add Variant</button>
 
         <div class="d-flex justify-content-end">
@@ -234,7 +236,7 @@
                                     <!-- Options will be populated dynamically based on key -->
                                 </datalist>
 
-                                <button type="button" class="btn btn-outline-danger remove-attribute-btn">&times;</button>
+                                <button type="button" class="btn btn-danger remove-attribute-btn">&times;</button>
                             </div>`;
                 }
 
@@ -270,7 +272,6 @@
                                     <button class="btn btn-link w-100 text-start text-decoration-none p-3 collapsed" type="button"
                                         data-bs-toggle="collapse" data-bs-target="#${collapseId}">
                                         Variant #${variantCounter}
-                                        <span class="badge bg-secondary ms-2 variant-sku-display">SKU: N/A</span>
                                     </button>
                                     ${variantCounter > 1
                                         ? `<button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 mt-2 me-2 remove-variant-btn" data-variant-id="${id}">Remove</button>`
@@ -280,21 +281,21 @@
                                 <div id="${collapseId}" class="collapse show">
                                     <div class="card-body p-3">
                                         <div class="row g-2 mb-3 align-items-end">
-                                            <div class="col-md-3">
+                                            <div class="col-md-6">
                                                 <div class="input-group input-group-sm">
                                                     <input type="text" class="form-control variant-sku" placeholder="Variant SKU">
                                                     <button class="btn btn-outline-secondary generate-sku-btn" type="button">Generate</button>
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-3">
+                                            <div class="col-md-6">
+                                                <input type="number" class="form-control form-control-sm variant-stock" min="0" step="1" placeholder="Stock">
+                                            </div>
+                                            <div class="col-md-6">
                                                 <input type="number" class="form-control form-control-sm variant-buying-price" min="0.01" step="0.01" placeholder="Buying Price ({{ currency() }})">
                                             </div>
-                                            <div class="col-md-3">
+                                            <div class="col-md-6">
                                                 <input type="number" class="form-control form-control-sm variant-selling-price" min="0.01" step="0.01" placeholder="selling Price ({{ currency() }})">
-                                            </div>
-                                            <div class="col-md-3">
-                                                <input type="number" class="form-control form-control-sm variant-stock" min="0" step="1" placeholder="Stock">
                                             </div>
                                         </div>
                 
