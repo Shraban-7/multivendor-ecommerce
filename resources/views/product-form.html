@@ -1,17 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Form</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
+        body {
+            background-color: #f8f9fa;
+        }
 
-        body { background-color: #f8f9fa; }
-        .container { max-width: 900px; }
-        .card { box-shadow: 0 4px 8px rgba(0,0,0,.05); margin-bottom: 20px; }
-        .variant-card { border-left: 5px solid #198754; }
-        .attribute-row { margin-bottom: 10px; }
+        .container {
+            max-width: 900px;
+        }
+
+        .card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, .05);
+            margin-bottom: 20px;
+        }
+
+        .variant-card {
+            border-left: 5px solid #198754;
+        }
+
+        .attribute-row {
+            margin-bottom: 10px;
+        }
+
         .json-preview {
             background-color: #e9ecef;
             border: 1px solid #ced4da;
@@ -20,6 +37,7 @@
             font-family: monospace;
             white-space: pre-wrap;
         }
+
         .image-preview {
             width: 50px;
             height: 50px;
@@ -30,43 +48,50 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container mt-5">
         <h1 class="mb-4 text-center">Product Form</h1>
         <form id="productForm" novalidate>
-            
+
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white p-3">
                     <h5 class="mb-0">Product Details</h5>
                 </div>
                 <div class="card-body p-3">
-                    
+
                     <div class="row g-2 mb-3">
                         <div class="col-md-6">
-                            <input type="text" class="form-control" id="productName" placeholder="Product Name (Required)" required>
+                            <input type="text" class="form-control" id="productName"
+                                placeholder="Product Name (Required)" required>
                             <div class="invalid-feedback">Name required.</div>
                         </div>
                         <div class="col-md-6">
-                            <input type="text" class="form-control" id="productCategory" placeholder="Category (Required)" required>
+                            <input type="text" class="form-control" id="productCategory"
+                                placeholder="Category (Required)" required>
                             <div class="invalid-feedback">Category required.</div>
                         </div>
                     </div>
 
                     <div class="row g-2 align-items-end">
                         <div class="col-md-3">
-                            <input type="text" class="form-control form-control-sm" id="productSku" placeholder="Base SKU (Required)" required>
+                            <input type="text" class="form-control form-control-sm" id="productSku"
+                                placeholder="Base SKU (Required)" required>
                             <div class="invalid-feedback">SKU required.</div>
                         </div>
                         <div class="col-md-3">
-                            <input type="number" class="form-control form-control-sm" id="productPrice" min="0.01" step="0.01" placeholder="Base Price ($)" required>
+                            <input type="number" class="form-control form-control-sm" id="productPrice" min="0.01"
+                                step="0.01" placeholder="Base Price ($)" required>
                             <div class="invalid-feedback">Price required.</div>
                         </div>
                         <div class="col-md-2">
-                            <input type="number" class="form-control form-control-sm" id="productStock" min="0" step="1" placeholder="Stock" required>
+                            <input type="number" class="form-control form-control-sm" id="productStock" min="0" step="1"
+                                placeholder="Stock" required>
                             <div class="invalid-feedback">Stock required.</div>
                         </div>
                         <div class="col-md-4 d-flex align-items-center">
-                            <input class="form-control form-control-sm product-image" type="file" id="productImage" accept="image/*" data-variant-id="product-base">
+                            <input class="form-control form-control-sm product-image" type="file" id="productImage"
+                                accept="image/*" data-variant-id="product-base">
                             <img src="#" alt="P.I." class="image-preview d-none" id="preview-product-base">
                         </div>
                     </div>
@@ -75,8 +100,8 @@
 
             <h3 class="mb-3">Variants</h3>
             <div id="variantsContainer">
-                </div>
-            
+            </div>
+
             <button type="button" class="btn btn-success mb-4" id="addVariantBtn">+ Add Variant</button>
 
             <button type="submit" class="btn btn-lg btn-primary w-100 mb-5">💾 Save Product</button>
@@ -93,7 +118,9 @@
 
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
 
     <script>
         let variantCounter = 0;
@@ -103,13 +130,13 @@
         const addVariantBtn = document.getElementById('addVariantBtn');
         const productForm = document.getElementById('productForm');
         const jsonOutput = document.getElementById('jsonOutput');
-    
+
 
         const handleImageUpload = (event) => {
             const input = event.target;
             const variantId = input.getAttribute('data-variant-id');
             const preview = document.getElementById(`preview-${variantId}`);
-            
+
             if (input.files && input.files[0]) {
                 const file = input.files[0];
                 const reader = new FileReader();
@@ -117,7 +144,7 @@
                 reader.onload = function (e) {
                     const base64String = e.target.result;
                     variantImageData.set(variantId, base64String);
-                    
+
                     preview.src = base64String;
                     preview.classList.remove('d-none');
                 };
@@ -263,7 +290,7 @@
             // --- 1. Collect Base Product Data ---
             const basePrice = parseFloat(document.getElementById('productPrice').value);
             const baseStock = parseInt(document.getElementById('productStock').value, 10);
-            
+
             // --- 2. Collect Variants Data ---
             const variants = [];
             variantsContainer.querySelectorAll('.variant-card').forEach(variantEl => {
@@ -271,7 +298,7 @@
                 const sku = variantEl.querySelector('.variant-sku').value.trim();
                 const price = parseFloat(variantEl.querySelector('.variant-price').value);
                 const stock = parseInt(variantEl.querySelector('.variant-stock').value, 10);
-                
+
                 // Collect Attributes
                 const attributes = {};
                 variantEl.querySelectorAll('.attribute-row').forEach(row => {
@@ -302,7 +329,7 @@
                 variants: variants
             };
         };
-        
+
         // ------------------------------------------------------------------
         // --- Event Listeners & Initialization ---
         // ------------------------------------------------------------------
@@ -315,9 +342,9 @@
 
         // Form Submission Handler
         productForm.addEventListener('submit', (event) => {
-            event.preventDefault(); 
+            event.preventDefault();
             event.stopPropagation();
-            
+
             productForm.classList.add('was-validated');
 
             // Basic validation check
@@ -325,7 +352,7 @@
             document.querySelectorAll('#productForm input[required]').forEach(input => {
                 if (!input.checkValidity()) {
                     isFormValid = false;
-                    input.reportValidity(); 
+                    input.reportValidity();
                 }
             });
 
@@ -334,14 +361,14 @@
                 alert('Please add at least one product variant.');
                 isFormValid = false;
             }
-            
+
             if (!isFormValid) {
                 return;
             }
 
             // Data collection and JSON generation
             const finalProductData = collectProductData();
-            
+
             // Display the JSON
             const jsonString = JSON.stringify(finalProductData, null, 2);
             jsonOutput.textContent = jsonString;
@@ -355,4 +382,5 @@
 
     </script>
 </body>
+
 </html>

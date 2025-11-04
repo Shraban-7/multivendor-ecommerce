@@ -103,10 +103,10 @@
                             data-bs-target="#addOptionModal">
                             <i data-feather="plus" class="icon-xs"></i> Add Option
                         </button>
-                        <button type="button" class="btn btn-sm btn-outline-success btn-sm" data-bs-toggle="modal"
+                        {{-- <button type="button" class="btn btn-sm btn-outline-success btn-sm" data-bs-toggle="modal"
                             data-bs-target="#addVariantModal">
                             <i data-feather="plus" class="icon-xs"></i> Add Variant
-                        </button>
+                        </button> --}}
                     </div>
                 </div>
 

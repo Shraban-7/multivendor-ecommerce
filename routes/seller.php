@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\Option;
+use App\Models\OptionValue;
+use App\Models\ProductVariantOption;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Seller\PosController;
 use App\Http\Controllers\Seller\AuthController;
@@ -71,6 +74,25 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
     Route::get('/customers', [CustomerController::class, 'index'])->name('customers');
 
     Route::prefix('products')->as('products.')->group(function () {
+        Route::get('attribute-suggestions', function () {
+            $keys = Option::pluck('name')->unique()->values();
+
+            $values = [];
+            foreach ($keys as $key) {
+                $option = Option::where('name', $key)->first();
+                if ($option) {
+                    $values[$key] = $option->options()->pluck('value')->unique()->values();
+                } else {
+                    $values[$key] = [];
+                }
+            }
+
+            return response()->json([
+                'keys' => $keys,
+                'values' => $values
+            ]);
+        })->name('attribute_suggestions');
+
         Route::get('/', [ProductController::class, 'index'])->name('index');
         Route::get('/stock-histories', [ProductController::class, 'stockHistory'])->name('stockHistory');
         Route::get('/create', [ProductController::class, 'create'])->name('create');

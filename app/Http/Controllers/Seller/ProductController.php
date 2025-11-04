@@ -2,19 +2,21 @@
 
 namespace App\Http\Controllers\Seller;
 
-use App\Enums\StockType;
-use App\Http\Controllers\Controller;
 use App\Models\Brand;
-use App\Models\Category;
 use App\Models\Option;
-use App\Models\Product;
-use App\Models\ProductImage;
-use App\Models\ProductSeo;
-use App\Models\ProductUnit;
-use App\Models\ProductVariant;
 use App\Models\Seller;
+use App\Models\Product;
+use App\Enums\StockType;
+use App\Models\Category;
+use App\Models\ProductSeo;
+use App\Models\OptionValue;
+use App\Models\ProductUnit;
+use App\Models\ProductImage;
 use App\Models\StockHistory;
 use Illuminate\Http\Request;
+use App\Models\ProductVariant;
+use App\Http\Controllers\Controller;
+use App\Models\ProductVariantOption;
 
 class ProductController extends Controller
 {
@@ -34,8 +36,9 @@ class ProductController extends Controller
         $categories = Category::category()->with('subcategories')->get();
         $brands = Brand::all();
         $units = ProductUnit::all();
+        $product_options = Option::with('options')->get();
 
-        return view('seller.products.create', compact('categories', 'brands', 'units'));
+        return view('seller.products.create', compact('categories', 'brands', 'units', 'product_options'));
     }
 
     public function store(Request $request)
@@ -44,10 +47,10 @@ class ProductController extends Controller
 
         $validated = $request->validate([
             'category_id' => 'required|integer|exists:categories,id',
-            'subcategory_id' => 'nullable',
+            'subcategory_id' => 'nullable|integer|exists:categories,id',
             'brand' => 'required',
+            'sku' => 'required',
             'name' => 'required|string|max:255',
-            'sku' => 'nullable|string|max:255',
             'buying_price' => 'required|numeric',
             'selling_price' => 'required|numeric',
             'vat_percent' => 'required|numeric',
@@ -57,64 +60,84 @@ class ProductController extends Controller
             'unit_id' => 'required|numeric',
             'unit_value' => 'required|string',
             'low_stock_quantity' => 'required|numeric',
-            'thumbnail' => [
-                'nullable',
-                'image',
-                'max:4096', 
-                // 'dimensions:ratio=1/1',
-            ],
+            'thumbnail' => 'nullable|image|max:4096',
+            'variants' => 'nullable|string',
         ]);
 
         $brandId = null;
-
         if (!empty($validated['brand'])) {
             if (is_numeric($validated['brand'])) {
                 $brandId = (int) $validated['brand'];
             } else {
                 $brand = Brand::firstOrCreate(
                     ['name' => trim($validated['brand'])],
-                    ['slug' => str_slug('brands', 'slug', $validated['brand'])]
+                    ['slug' => str_slug('brands', 'slug', trim($validated['brand']))]
                 );
                 $brandId = $brand->id;
             }
         }
-
         $validated['brand_id'] = $brandId;
-
         unset($validated['brand']);
 
         $imageFolder = "images/{$seller->username}/products";
-
-        if($request->hasFile('thumbnail'))
-        {
+        if ($request->hasFile('thumbnail')) {
             $validated['thumbnail'] = upload_file($request->file('thumbnail'), "$imageFolder/thumb");
         }
 
         $validated['seller_id'] = $seller->id;
-        $validated['slug'] = str_slug('products', 'slug', $validated['name']);
+        $validated['slug'] = str_slug('products', 'slug', trim($validated['name']));
 
         $product = Product::create($validated);
 
-        $variantData = [
-            'product_id' => $product->id,
-            'sku' => $validated['sku'] ?? ProductVariant::generate_sku(),
-            'buying_price' => $validated['buying_price'],
-            'selling_price' => $validated['selling_price'],
-            'discount_type' => $validated['discount_type'] ?? null,
-            'discount_value' => $validated['discount_value'] ?? null,
-            'discount_amount' => (isset($validated['discount_type'], $validated['discount_value']) && $validated['discount_type'] && $validated['discount_value'])
-                ? calculate_discount_amount($validated['selling_price'], $validated['discount_type'], $validated['discount_value'])
-                : 0,
-            'discounted_price' => (isset($validated['discount_type'], $validated['discount_value']) && $validated['discount_type'] && $validated['discount_value'])
-                ? calculate_discounted_price($validated['selling_price'], $validated['discount_type'], $validated['discount_value'])
-                : $validated['selling_price'],
-            'is_default' => 1,
-        ];
+        $variants = json_decode($request->variants, true);
+        if ($request->filled('variants')) {
+            foreach ($variants as $index => $v) {
+                if (empty($v['sku']) || empty($v['buying_price']) || empty($v['selling_price'])) continue;
 
-        ProductVariant::create($variantData);
+                $variant = new ProductVariant();
+                $variant->product_id = $product->id;
+                $variant->sku = $v['sku'];
+                $variant->buying_price = $v['buying_price'];
+                $variant->selling_price = $v['selling_price'];
+                $variant->stock_in = $v['stock'] ?? 0;
+                $variant->discount_type = $v['discount_type'] ?? null;
+                $variant->discount_value = $v['discount_value'] ?? null;
+                $variant->discount_amount = isset($v['discount_type'], $v['discount_value'])
+                    ? calculate_discount_amount($v['selling_price'], $v['discount_type'], $v['discount_value'])
+                    : 0;
+                $variant->discounted_price = isset($v['discount_type'], $v['discount_value'])
+                    ? calculate_discounted_price($v['selling_price'], $v['discount_type'], $v['discount_value'])
+                    : $v['selling_price'];
 
-        return response()->json(['success' => true, 'message' => 'Product Added Successfully']);
+                $variant->is_default = $index === 0 ? 1 : 0;
+
+                $variant->save();
+
+                if (!empty($v['attributes']) && is_array($v['attributes'])) {
+                    foreach ($v['attributes'] as $attr) {
+                        $key = trim($attr['key']);
+                        $value = trim($attr['value']);
+                        if (!$key || !$value) continue;
+
+                        $option = Option::firstOrCreate(['name' => $key]);
+
+                        $optionValue = OptionValue::firstOrCreate([
+                            'option_id' => $option->id,
+                            'value' => $value,
+                        ]);
+
+                        ProductVariantOption::create([
+                            'product_variant_id' => $variant->id,
+                            'option_value_id' => $optionValue->id,
+                        ]);
+                    }
+                }
+            }
+        }
+
+        return successResponse('Product Added Successfully');
     }
+
 
     public function show(Product $product)
     {
@@ -177,7 +200,7 @@ class ProductController extends Controller
             'thumbnail' => [
                 'nullable',
                 'image',
-                'max:4096', 
+                'max:4096',
                 // 'dimensions:ratio=1/1',
             ],
             'video' => 'nullable|file',
