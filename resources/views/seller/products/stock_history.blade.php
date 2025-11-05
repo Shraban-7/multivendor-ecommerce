@@ -148,7 +148,7 @@
                             $productSelect.html('<option value="">-- Select Product --</option>');
                             $.each(response.products, function(i, product) {
                                 $productSelect.append(`<option value="${product.id}">
-                                    ${product.name} (Stock: ${product.current_stock})
+                                    ${product.name} | SKU: ${product.sku} | Stock: ${product.current_stock}
                                 </option>`);
                             });
                         },
@@ -182,7 +182,7 @@
                                     '<option value="">-- Select Variant --</option>');
                                 $.each(response.variants, function(i, variant) {
                                     $variantSelect.append(`<option value="${variant.id}">
-                                        ${variant.name} (Stock: ${variant.current_stock})
+                                        ${variant.name} | SKU: ${variant.sku} | Stock: ${variant.current_stock}
                                         </option>`);
                                 });
                             } else {

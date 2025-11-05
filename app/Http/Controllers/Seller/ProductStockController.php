@@ -36,7 +36,8 @@ class ProductStockController extends Controller
                 return [
                     'id' => $product->id,
                     'name' => $product->name,
-                    'current_stock' => max($product->current_stock, 0), // prevent negative stock
+                    'sku' => $product->sku,
+                    'current_stock' => max($product->current_stock, 0),
                 ];
             });
 
@@ -46,7 +47,7 @@ class ProductStockController extends Controller
     public function variants(Request $request)
     {
         $variants = ProductVariant::where('product_id', $request->product_id)
-            ->with('option_values.option') // Make sure the relation is loaded
+            ->with('option_values.option') 
             ->get()
             ->map(function ($variant) {
                 $currentStock = (int) $variant->stock_in - (int) $variant->stock_out;
@@ -54,6 +55,7 @@ class ProductStockController extends Controller
                 return [
                     'id' => $variant->id,
                     'name' => $variant->fullName,
+                    'sku' => $variant->sku,
                     'current_stock' => max($currentStock, 0),
                 ];
             });
