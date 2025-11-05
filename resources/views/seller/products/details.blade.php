@@ -2,20 +2,20 @@
 @section('title', $product->name)
 @section('content')
     <!-- <div class="content-header mb-3">
-            <div class="container-fluid">
-                <div class="row gy-3 align-items-start align-items-lg-center justify-content-between">
-                    <div class="col-12 col-lg-6">
-                        <h4 class="m-0 text-dark">Product Details</h4>
-                    </div>
-                    <div class="col-12 col-lg-6 text-lg-end">
-                        <a href="{{ route('seller.products.edit', $product->slug) }}"
-                            class="btn btn-primary btn-sm w-100 w-lg-auto">
-                            <i data-feather="edit" class="icon-xs me-1"></i> Edit Product
-                        </a>
+                <div class="container-fluid">
+                    <div class="row gy-3 align-items-start align-items-lg-center justify-content-between">
+                        <div class="col-12 col-lg-6">
+                            <h4 class="m-0 text-dark">Product Details</h4>
+                        </div>
+                        <div class="col-12 col-lg-6 text-lg-end">
+                            <a href="{{ route('seller.products.edit', $product->slug) }}"
+                                class="btn btn-primary btn-sm w-100 w-lg-auto">
+                                <i data-feather="edit" class="icon-xs me-1"></i> Edit Product
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div> -->
+            </div> -->
 
     <div id="alertBox"></div>
 
@@ -24,14 +24,14 @@
         <div class="col-lg-8">
             <div class="mb-4 shadow-sm card">
                 <!-- <div class="bg-white card-header d-flex justify-content-between">
-                        <h5 class="mb-0 card-title">Product Overview</h5>
-                        <div class="d-flex flex-column flex-sm-row justify-content-sm-end gap-2">
-                            <button class="btn btn-danger btn-sm" title="Delete" data-bs-toggle="modal"
-                                data-bs-target="#deleteModal-{{ $product->id }}">
-                                <i data-feather="trash-2" class="icon-xs"></i> Delete Product
-                            </button>
-                        </div>
-                    </div> -->
+                            <h5 class="mb-0 card-title">Product Overview</h5>
+                            <div class="d-flex flex-column flex-sm-row justify-content-sm-end gap-2">
+                                <button class="btn btn-danger btn-sm" title="Delete" data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal-{{ $product->id }}">
+                                    <i data-feather="trash-2" class="icon-xs"></i> Delete Product
+                                </button>
+                            </div>
+                        </div> -->
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-4">
@@ -427,7 +427,9 @@
                                     <thead class="table-light text-center">
                                         <tr>
                                             <th>Date</th>
-                                            <th>Variant</th>
+                                            @if ($product->variants->count() > 0)
+                                                <th>Variant</th>
+                                            @endif
                                             <th>Quantity</th>
                                             <th>Action</th>
                                         </tr>
@@ -438,9 +440,11 @@
                                                 <td class="text-nowrap small">
                                                     {{ $history->created_at?->format('d/m/y h:i A') ?? '-' }}
                                                 </td>
-                                                <td class="text-nowrap small">
-                                                    {{ $history->variant?->fullName === null ? 'Default' : $history->variant->fullName }}
-                                                </td>
+                                                @if ($product->variants->count() > 0)
+                                                    <td class="text-nowrap small">
+                                                        {{ $history->variant?->fullName === null ? 'Default' : $history->variant->fullName }}
+                                                    </td>
+                                                @endif
                                                 <td class="text-center small">
                                                     {{ abs($history->quantity ?? 0) }}
                                                 </td>
@@ -507,64 +511,6 @@
         </div>
 
         <!-- Stock Update Modal -->
-        <div class="modal fade" id="stockUpdateModal2" tabindex="-1" aria-hidden="true" data-id="{{ $product->id }}">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <form action="{{ route('seller.products.stockUpdate', $product->id) }}" method="POST">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Update Inventory</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            @csrf
-                            <div class="mb-3">
-                                <label class="form-label">Variants</label>
-                                <select class="form-select" id="variant" name="product_variant_id">
-                                    <option value="">--Select Variant--</option>
-                                    @foreach ($product->variants as $variant)
-                                        <option value="{{ $variant->id }}">
-                                            {{ $variant?->fullName == null ? 'Default' : $variant->fullName }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Action</label>
-                                <select class="form-select" id="stockAction" name="stock_action">
-                                    <option value="{{ \App\Enums\StockType::ADD_STOCK->value }}">
-                                        {{ \App\Enums\StockType::ADD_STOCK->label() }}
-                                    </option>
-                                    <option value="{{ \App\Enums\StockType::REMOVE_STOCK->value }}">
-                                        {{ \App\Enums\StockType::REMOVE_STOCK->label() }}
-                                    </option>
-                                    <option value="{{ \App\Enums\StockType::SET_EXACT_STOCK->value }}">
-                                        {{ \App\Enums\StockType::SET_EXACT_STOCK->label() }}
-                                    </option>
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Quantity</label>
-                                <input type="number" class="form-control" id="stockQuantity" name="stock_quantity"
-                                    min="1" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Note (Optional)</label>
-                                <textarea class="form-control" id="stockNote" name="stock_note" rows="2"
-                                    placeholder="Reason for this inventory change"></textarea>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-primary">Save
-                                Changes</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
         <div class="modal fade" id="stockUpdateModal" tabindex="-1" aria-hidden="true" data-id="{{ $product->id }}">
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
@@ -601,11 +547,47 @@
                                 </div>
                             </div>
 
-                            @foreach ($product->variants as $variant)
-                                <h5>{{ $variant->fullName == null ? 'Default' : $variant->fullName }}</h5>
+                            @if ($product->variants->count() > 0)
+                                @foreach ($product->variants as $variant)
+                                    <h5>{{ $variant->fullName == null ? 'Default' : $variant->fullName }}</h5>
+                                    <div class="row">
+                                        <div class="col-md-4 mb-2">
+                                            <select class="form-select form-select-sm"
+                                                name="stock_action[{{ $variant->id }}]">
+                                                <option value="{{ \App\Enums\StockType::ADD_STOCK->value }}">
+                                                    {{ \App\Enums\StockType::ADD_STOCK->label() }}
+                                                </option>
+                                                <option value="{{ \App\Enums\StockType::REMOVE_STOCK->value }}">
+                                                    {{ \App\Enums\StockType::REMOVE_STOCK->label() }}
+                                                </option>
+                                                <option value="{{ \App\Enums\StockType::SET_EXACT_STOCK->value }}">
+                                                    {{ \App\Enums\StockType::SET_EXACT_STOCK->label() }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4 mb-2">
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text">Qty
+                                                    ({{ $variant->stock_in - $variant->stock_out }})
+                                                </span>
+                                                <input type="number" class="form-control"
+                                                    name="stock_quantity[{{ $variant->id }}]" min="1">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mb-2">
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text">Note</span>
+                                                <input type="text" class="form-control"
+                                                    name="stock_note[{{ $variant->id }}]">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                @endforeach
+                            @else
                                 <div class="row">
                                     <div class="col-md-4 mb-2">
-                                        <select class="form-select form-select-sm" name="stock_action[{{ $variant->id }}]">
+                                        <select class="form-select form-select-sm" name="stock_action_product">
                                             <option value="{{ \App\Enums\StockType::ADD_STOCK->value }}">
                                                 {{ \App\Enums\StockType::ADD_STOCK->label() }}
                                             </option>
@@ -620,22 +602,20 @@
                                     <div class="col-md-4 mb-2">
                                         <div class="input-group input-group-sm">
                                             <span class="input-group-text">Qty
-                                                ({{ $variant->stock_in - $variant->stock_out }})
+                                                ({{ $product->stock_in - $product->stock_out }})
                                             </span>
-                                            <input type="number" class="form-control"
-                                                name="stock_quantity[{{ $variant->id }}]" min="1">
+                                            <input type="number" class="form-control" name="stock_quantity_product"
+                                                min="1">
                                         </div>
                                     </div>
                                     <div class="col-md-4 mb-2">
                                         <div class="input-group input-group-sm">
                                             <span class="input-group-text">Note</span>
-                                            <input type="text" class="form-control"
-                                                name="stock_note[{{ $variant->id }}]">
+                                            <input type="text" class="form-control" name="stock_note_product">
                                         </div>
                                     </div>
                                 </div>
-                                <hr>
-                            @endforeach
+                            @endif
                         </div>
 
                         <div class="modal-footer">

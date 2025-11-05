@@ -77,8 +77,8 @@ $route = request()->route()->getName();
                                 <i data-feather="database" class="nav-icon icon-xs me-2"></i> Products
                             </x-dashboard.nav-item-link>
                         @endif
-                        @if ($seller || $employee->hasPermission('seller.products.stockHistory'))
-                            <x-dashboard.nav-item-link :route="'seller.products.stockHistory'">
+                        @if ($seller || $employee->hasPermission('seller.stock.index'))
+                            <x-dashboard.nav-item-link :route="'seller.stock.index'">
                                 <i data-feather="clock" class="nav-icon icon-xs me-2"></i> Stock History
                             </x-dashboard.nav-item-link>
                         @endif

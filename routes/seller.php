@@ -16,6 +16,7 @@ use App\Http\Controllers\Seller\CustomerController;
 use App\Http\Controllers\Seller\DashboardController;
 use App\Http\Controllers\Seller\SellerChatController;
 use App\Http\Controllers\Seller\NotificationController;
+use App\Http\Controllers\Seller\ProductStockController;
 use App\Http\Controllers\Seller\SellerExpenseController;
 use App\Http\Controllers\Seller\ProductVariantController;
 use App\Http\Controllers\Seller\SellerCampaignController;
@@ -94,7 +95,7 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         })->name('attribute_suggestions');
 
         Route::get('/', [ProductController::class, 'index'])->name('index');
-        Route::get('/stock-histories', [ProductController::class, 'stockHistory'])->name('stockHistory');
+
         Route::get('/create', [ProductController::class, 'create'])->name('create');
         Route::post('/store', [ProductController::class, 'store'])->name('store');
 
@@ -113,6 +114,13 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::get('inventory', [ProductController::class, 'inventory'])->name('inventory');
 
         Route::get('/{product:slug}', [ProductController::class, 'show'])->name('show');
+    });
+
+    Route::prefix('stock')->as('stock.')->group(function(){
+        Route::get('/history', [ProductStockController::class, 'index'])->name('index');
+        Route::get('/products', [ProductStockController::class, 'products'])->name('products');
+        Route::get('/variants', [ProductStockController::class, 'variants'])->name('variants');
+        Route::post('/update', [ProductStockController::class, 'update'])->name('update');
     });
 
     Route::prefix('orders')->as('orders.')->group(function () {

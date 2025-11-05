@@ -307,11 +307,46 @@ class ProductController extends Controller
             'stock_quantity.*' => 'nullable|numeric|min:0',
             'stock_action.*'   => 'nullable|numeric',
             'stock_note.*'     => 'nullable|string',
+            'stock_quantity_product' => 'nullable|numeric|min:0',
+            'stock_action_product'   => 'nullable|numeric',
+            'stock_note_product'     => 'nullable|string',
         ]);
 
         $stockQuantities = $request->input('stock_quantity', []);
         $stockActions    = $request->input('stock_action', []);
         $stockNotes      = $request->input('stock_note', []);
+
+        if ($request->has('stock_quantity_product') && $request->has('stock_action_product')) {
+            $productCurrentStock = ($product->stock_in ?? 0) - ($product->stock_out ?? 0);
+            $productAction = $request->stock_action_product;
+            $productQuantity = $request->stock_quantity_product;
+            $productNote = $request->stock_note_product;
+
+            if ($productAction == StockType::REMOVE_STOCK->value && $productQuantity > $productCurrentStock) {
+                return redirect()->back()->with('warning', 'Insufficient stock! You cannot remove more than the available quantity.');
+            }
+
+            StockHistory::create([
+                'product_id' => $product->id,
+                'quantity' => $productQuantity,
+                'type' => $productAction,
+                'note' => $productNote,
+            ]);
+
+            if ($productAction == StockType::SET_EXACT_STOCK->value) {
+                $product->stock_in = $productQuantity;
+                $product->stock_out = 0;
+            } elseif ($productAction == StockType::ADD_STOCK->value) {
+                $product->stock_in += $productQuantity;
+            } elseif ($productAction == StockType::REMOVE_STOCK->value) {
+                $product->stock_in -= $productQuantity;
+                if ($product->stock_in < 0) $product->stock_in = 0;
+            }
+
+            $product->save();
+
+            return redirect()->back()->with('success', 'Stock updated successfully product!');
+        }
 
         foreach ($stockQuantities as $variantId => $quantity) {
             if (!$quantity) continue;
@@ -429,7 +464,6 @@ class ProductController extends Controller
             return redirect()->route('seller.products.printBarcode')->with('error', 'Product not found!');
         }
 
-        //$price = is_null($variant->discounted_price) ? $variant->selling_price : $variant->discounted_price;
         $price = $variant->selling_price;
 
         $data = [
