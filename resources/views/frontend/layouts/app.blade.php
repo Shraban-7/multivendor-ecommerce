@@ -387,7 +387,7 @@ $isDashboard = View::hasSection('dashboard');
                 });
             }
 
-            function updateProductUI($wrapper, variant, quantity, isInitialLoad = false) {
+            function updateProductUI($wrapper, variant = null, quantity, isInitialLoad = false) {
                 const $qtyEl = $wrapper.find("input.quantity");
                 const $mainImage = $wrapper.find(".main-product-image");
                 const $priceEl = $wrapper.find(".product-price");
@@ -400,16 +400,21 @@ $isDashboard = View::hasSection('dashboard');
                 const $variantIdInput = $wrapper.find("input.variantId");
                 const product = $wrapper.data("product");
 
-                if (variant) {
+                if (variant) {                                        
                     const basePrice = parseFloat(variant.price) || 0;
                     const discounted = variant.discounted_price !== null ? parseFloat(variant.discounted_price) :
                         null;
+                    
                     const price = discounted && discounted > 0 ? discounted : basePrice;
 
-                    //$priceEl.text(`৳ ${formatPrice(price, quantity)}`);
-                    if (!discounted || discounted == 0) $originalPriceEl.addClass('hidden');
+                    if (!discounted || discounted == 0)
+                    {
+                        $originalPriceEl.addClass('hidden');
+                        $priceEl.text(`৳ ${formatPrice(basePrice, quantity)}`);
+                    } 
                     else {
                         $originalPriceEl.removeClass('hidden');
+                        $priceEl.text(`৳ ${formatPrice(discounted, quantity)}`);
                         $originalPriceEl.text(`৳ ${formatPrice(basePrice, quantity)}`);
                     }
 
@@ -429,19 +434,28 @@ $isDashboard = View::hasSection('dashboard');
                         $mainImage.attr('src', imageUrl);
                     }
 
-                } else {
+                } else {                    
                     const basePrice = parseFloat(product.price) || 0;
                     const discounted = product.discounted_price !== null ? parseFloat(product.discounted_price) :
                         null;
                     const price = discounted && discounted > 0 ? discounted : basePrice;
 
-                    //$priceEl.text(`৳ ${formatPrice(price, quantity)}`);
-                    $originalPriceEl.toggleClass('hidden', !discounted || discounted == 0);
-                    if (discounted) $originalPriceEl.text(`৳ ${formatPrice(basePrice, quantity)}`);
+                    if (!discounted || discounted == 0)
+                    {
+                        $originalPriceEl.addClass('hidden');
+                        $priceEl.text(`৳ ${formatPrice(basePrice, quantity)}`);
+                    } 
+                    else {
+                        $originalPriceEl.removeClass('hidden');
+                        $priceEl.text(`৳ ${formatPrice(discounted, quantity)}`);
+                        $originalPriceEl.text(`৳ ${formatPrice(basePrice, quantity)}`);
+                    }
 
                     $skuEl.text(product.sku || "N/A");
                     $stockEl.text(product.stock || 0);
                     $availability.text((product.stock || 0) > 0 ? "In Stock" : "Out of Stock");
+                    $qtyEl.val(quantity);
+                    $qtyEl.attr('value', parseInt($qtyEl.val()));
                     $variantIdInput.val("");
                     $variantError.addClass("hidden");
                     $addToCartBtn.prop("disabled", false).removeClass("opacity-50 cursor-not-allowed");
@@ -517,7 +531,8 @@ $isDashboard = View::hasSection('dashboard');
 
                 const selectedOptions = collectSelectedOptions($wrapper);
                 const variant = getSelectedVariant(product, selectedOptions);
-                const availableStock = variant.stock;
+                
+                const availableStock = variant ? variant.stock : product.stock;
 
                 if ($btn.hasClass("increaseBtn")) {
                     if (quantity < availableStock) quantity += 1;
