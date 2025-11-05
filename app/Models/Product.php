@@ -186,13 +186,15 @@ class Product extends Model
             //     ->values(),
 
             'short_description' => $this->short_description,
-            'description'       => $this->description,
-            'stock_status'      => $this->stock_status,
-            'in_stock'          => $this->stock_in,
-            'sold_out'          => $this->stock_out,
-            'stock'             => $this->stock_in - $this->stock_out,
-            'almost_sold_out'   => ($this->stock_in - $this->stock_out) <= $this->low_stock_quantity ? true : false,
-            'variants'          => $this->variants->map(function ($variant) {
+            'description' => $this->description,
+            'selling_price' => $this->selling_price,
+            'discounted_price' => $this->discounted_price,
+            'stock_status' => $this->stock_status,
+            'in_stock' => $this->stock_in,
+            'sold_out' => $this->stock_out,
+            'stock' => $this->stock_in - $this->stock_out,
+            'almost_sold_out' => ($this->stock_in - $this->stock_out) <= $this->low_stock_quantity ? true : false,
+            'variants' => $this->variants->map(function ($variant) {
                 return [
                     'id'               => $variant->id,
                     'sku'              => $variant->sku,

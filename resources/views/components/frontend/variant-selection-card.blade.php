@@ -33,7 +33,7 @@
         @endforeach
 
         <div class="flex items-center gap-2 text-sm text-gray-600">
-            <span>Stock: <span class="stock-text">{{ $defaultVariant['stock'] ?? '' }}</span></span>
+            <span>Stock: <span class="stock-text">{{ $defaultVariant['stock'] ?? $product['stock'] }}</span></span>
             {{-- <span class="text-xs text-muted font-medium almost-sold-out hidden">(Almost Sold Out)</span> --}}
         </div>
 

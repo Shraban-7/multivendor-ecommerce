@@ -26,8 +26,8 @@
                         $totalStockIn = $product->variants->sum('stock_in');
                         $totalStockOut = $product->variants->sum('stock_out');
                         $totalStock = $totalStockIn = $totalStockOut;
-                        $minPrice = $product->variants->min('selling_price');
-                        $maxPrice = $product->variants->max('selling_price');
+                        $minPrice = min($product->variants->min('selling_price'), $product->selling_price);
+                        $maxPrice = max($product->variants->max('selling_price'), $product->selling_price);
                     @endphp
                     <tr>
                         <td>
@@ -35,7 +35,8 @@
                                 <img src="{{ storage_url($product->thumbnail) }}" class="rounded me-2"
                                     style="width:50px;height:50px;object-fit:cover">
                                 <div>
-                                    <a href="{{ route('seller.products.show', $product->slug) }}" target="__blank" class="fw-bold">{{ $product->name }}</a><br>
+                                    <a href="{{ route('seller.products.show', $product->slug) }}" target="__blank"
+                                        class="fw-bold">{{ $product->name }}</a><br>
                                     @if ($product->variants->count() > 0)
                                         <a href="#" class="small text-muted text-decoration-underline"
                                             data-bs-toggle="modal" data-bs-target="#variantsModal-{{ $product->id }}">
@@ -46,7 +47,11 @@
                             </div>
                         </td>
 
-                        <td><span>{{ money($minPrice) }}</span> @if($maxPrice != $minPrice) - {{ money($maxPrice) }} @endif</td>
+                        <td><span>{{ money($minPrice) }}</span>
+                            @if ($maxPrice != $minPrice)
+                                - {{ money($maxPrice) }}
+                            @endif
+                        </td>
 
                         <td>
                             @if ($product->status == $product::STATUS_ACTIVE)
@@ -131,7 +136,3 @@
     @endforeach
 
 @endsection
-
-
-
-

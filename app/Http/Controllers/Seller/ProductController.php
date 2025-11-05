@@ -64,6 +64,8 @@ class ProductController extends Controller
             'variants' => 'nullable|string',
         ]);
 
+        // dd($validated);
+
         $brandId = null;
         if (!empty($validated['brand'])) {
             if (is_numeric($validated['brand'])) {
@@ -100,13 +102,13 @@ class ProductController extends Controller
                 $variant->buying_price = $v['buying_price'];
                 $variant->selling_price = $v['selling_price'];
                 $variant->stock_in = $v['stock'] ?? 0;
-                $variant->discount_type = $v['discount_type'] ?? null;
-                $variant->discount_value = $v['discount_value'] ?? null;
-                $variant->discount_amount = isset($v['discount_type'], $v['discount_value'])
-                    ? calculate_discount_amount($v['selling_price'], $v['discount_type'], $v['discount_value'])
+                $variant->discount_type = $v['variant_discount_type'] ?? null;
+                $variant->discount_value = $v['variant_discount_value'] ?? null;
+                $variant->discount_amount = isset($v['variant_discount_type'], $v['variant_discount_value'])
+                    ? calculate_discount_amount($v['selling_price'], $v['variant_discount_type'], $v['variant_discount_value'])
                     : 0;
-                $variant->discounted_price = isset($v['discount_type'], $v['discount_value'])
-                    ? calculate_discounted_price($v['selling_price'], $v['discount_type'], $v['discount_value'])
+                $variant->discounted_price = isset($v['variant_discount_type'], $v['variant_discount_value'])
+                    ? calculate_discounted_price($v['selling_price'], $v['variant_discount_type'], $v['variant_discount_value'])
                     : $v['selling_price'];
 
                 $variant->is_default = $index === 0 ? 1 : 0;

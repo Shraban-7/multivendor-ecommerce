@@ -7,8 +7,8 @@
     </button>
 
     @php
-    $original_price = $product['default_variant']->selling_price ?? null;
-    $discounted_price = $product['default_variant']->discounted_price ?? null;
+    $original_price = $product['default_variant']->selling_price ?? $product['selling_price'];
+    $discounted_price = $product['default_variant']->discounted_price ?? $product['discounted_price'];
     $discountPercent = $discounted_price ? round((($original_price - $discounted_price) / $original_price) * 100) : null;
     @endphp
 

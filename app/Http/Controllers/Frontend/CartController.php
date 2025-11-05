@@ -11,13 +11,15 @@ use App\Models\Seller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+use function PHPUnit\Framework\isNull;
+
 class CartController extends Controller
 {
     public function add(Request $request)
     {
         $data = $request->validate([
             'product_id' => 'required',
-            'variant_id' => 'required',
+            'variant_id' => 'nullable|integer',
             'quantity'   => 'required|integer|min:1',
             'is_default' => 'nullable|boolean',
         ]);
@@ -25,8 +27,6 @@ class CartController extends Controller
         $variant   = ProductVariant::find($data['variant_id']);
         $userId    = Auth::id();
         $product   = Product::find($data['product_id']);
-
-        // $defaultVariant = $product->variants->firstWhere('is_default', 1);
 
         if (! $product) {
             return response()->json(['success' => false, 'error' => 'Product not found']);
@@ -36,8 +36,12 @@ class CartController extends Controller
             ['user_id' => $userId, 'seller_id' => $product->seller_id],
         );
 
-        $price = $variant->discounted_price ?? $variant->selling_price;
-
+        if (!empty($variant)) {
+            $price = $variant->discounted_price ?? $variant->selling_price;
+        } else {
+            $price = $product->discounted_price ?? $product->selling_price;
+        }
+        
         $variantId = $variant->id ?? null;
 
         $cartItem = CartItem::where('cart_id', $cart->id)->where('product_variant_id', $variantId)->where('product_id', $product->id)->first();

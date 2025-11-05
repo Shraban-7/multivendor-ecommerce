@@ -57,22 +57,22 @@ $showProductDiscount = isset($product['discounted_price'], $product['price']) &&
             </h1>
             <div class="flex flex-wrap items-center gap-4">
                 <div class="flex flex-wrap items-center gap-2">
-                    @if ($showVariantDiscount)
+                    @if ($showVariantDiscount || $product['discounted_price'])
                         <h3 class="font-bold text-gray-900  text-lg product-price">
-                            {{ money($variantDiscountedPrice) }}
+                            {{ $showVariantDiscount ? money($variantDiscountedPrice) : money($product['discounted_price']) }}
                         </h3>
                         <h6 class="text-jet-gray line-through text-sm original-price">
-                            {{ money($variantPrice) }}
+                            {{ $showVariantDiscount ? money($variantPrice) : money($product['selling_price']) }}
                         </h6>
-                    @elseif ($variantPrice)
+                    @elseif ($variantPrice || $product['selling_price'])
                         <h3 class="font-bold text-gray-900 text-lg product-price">
-                            {{ money($variantPrice) }}
+                            {{ $variantPrice ? money($variantPrice) : money($product['selling_price']) }}
                         </h3>
                     @endif
                 </div>
 
                 <div class="flex flex-wrap items-center gap-3 text-sm text-gray-700">
-                    <div><strong>SKU:</strong> <span class="sku-text">{{ $defaultVariant->sku ?? '' }}</span></div>
+                    <div><strong>SKU:</strong> <span class="sku-text">{{ $defaultVariant->sku ?? $product['sku'] }}</span></div>
 
                     @if (auth()->check() && auth()->user()->isAffiliate())
                         <button

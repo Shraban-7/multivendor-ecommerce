@@ -69,7 +69,7 @@
                                     @foreach ($cartGroup as $key => $cart)
                                         @foreach ($cart->cart_items as $item)
                                             @php
-                                                $stock = $item->variant->stock_in - $item->variant->stock_out;
+                                                $stock = $item->variant ? ($item->variant->stock_in - $item->variant->stock_out) : ($item->product->stock_in - $item->product->stock_out);
                                                 $vat_amount =0;
                                                 $vat_amount += floatval(($item->product->vat_percent * $item->price) / 100);
                                             @endphp
@@ -137,7 +137,7 @@
                                                                         {{ money($item->price) }}
                                                                     </span>
                                                                     <span class="text-gray-500 line-through text-sm">
-                                                                        {{ money($item->variant->selling_price) }}
+                                                                        {{ $item->variant ? money($item->variant->selling_price) :money($item->product->selling_price) }}
                                                                     </span>
                                                                 @else
                                                                     <!-- Regular item -->

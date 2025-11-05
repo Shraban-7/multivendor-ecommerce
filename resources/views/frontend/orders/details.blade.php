@@ -46,7 +46,7 @@
                             </div>
                             <div class="flex justify-between items-end mt-1">
                                 <div class="text-sm text-gray-500">
-                                    <p>{{ $item->variant->fullname }} • Qty: {{ $item->quantity }}</p>
+                                    <p>{{ $item->variant->fullname ?? '' }} • Qty: {{ $item->quantity }}</p>
                                 </div>
                             </div>
                         </div>

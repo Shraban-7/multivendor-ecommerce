@@ -23,8 +23,8 @@
                     @foreach ($products as $product)
                         @php
                             $defaultVariant = $product['default_variant'];
-                            $basePrice = $defaultVariant['selling_price'] ?? 0;
-                            $discountPrice = $defaultVariant['discounted_price'] ?? 0;
+                            $basePrice = $defaultVariant['selling_price'] ?? $product['selling_price'];
+                            $discountPrice = $defaultVariant['discounted_price'] ?? $product['discounted_price'];
                         @endphp
                         <div class="swiper-slide group/product-card h-full">
                             <div class="flex flex-col w-full h-full p-2">
@@ -116,8 +116,8 @@
                 @foreach ($products as $product)
                     @php
                         $defaultVariant = $product['default_variant'];
-                        $basePrice = $defaultVariant['selling_price'] ?? 0;
-                        $discountPrice = $defaultVariant['discounted_price'] ?? 0;
+                        $basePrice = $defaultVariant['selling_price'] ?? $product['selling_price'];
+                        $discountPrice = $defaultVariant['discounted_price'] ?? $product['discounted_price'];
                     @endphp
                     <div class="group/product-card h-full">
                         <div

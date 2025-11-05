@@ -120,7 +120,8 @@ class OrderController extends Controller
             $product = $cartItem->product;
             $variant = $cartItem->variant;
             $unitPrice = $cartItem->price;
-            $itemSubtotal = $cartItem->quantity * $variant->selling_price;
+            $sellingPrice = $variant ? $variant->selling_price : $product->selling_price;
+            $itemSubtotal = $cartItem->quantity * $sellingPrice;
             $itemTotal = $cartItem->quantity * $unitPrice;
             $itemDiscount = $cartItem->quantity * ($cartItem->original_price - $cartItem->discounted_price);
             $vat_amount += floatval(($product->vat_percent * $unitPrice) / 100) * $cartItem->quantity;
@@ -128,17 +129,18 @@ class OrderController extends Controller
             $total += $itemTotal;
             $discount += $itemDiscount;
             $grand_total = $sub_total + $discount;
+            $sku = $variant ? $variant->sku : $product->sku;
 
             $payment_type = Order::getPaymentType($product);
 
             $orderItems[] = [
                 'product_id' => $product->id,
                 'product_variant_id' => $cartItem->product_variant_id ?? null,
-                'sku' => $variant->sku,
+                'sku' => $sku,
                 'product_name' => $product->name,
-                'variant_name' => $variant->fullName,
+                'variant_name' => $variant->fullName ?? null,
                 'buying_price' => $variant ? $variant->buying_price : $product->buying_price,
-                'selling_price' => $variant->selling_price,
+                'selling_price' => $sellingPrice,
                 'unit_price' => $cartItem->price,
                 'quantity' => $cartItem->quantity,
                 'discount' => $itemDiscount,

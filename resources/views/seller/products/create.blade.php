@@ -135,16 +135,6 @@
                         <label for="inputImage" class="text-primary text-decoration-underline" style="cursor:pointer;">Crop
                             Image First</label>
                         <input type="file" id="inputImage" hidden accept="image/*" />
-                        {{-- <div class="mt-2" style="width:120px;">
-                            <div class="border bg-light d-flex justify-content-center align-items-center rounded"
-                                style="height:120px;overflow:hidden;">
-                                <img src="{{ asset('assets/frontend/images/default.png') }}" class="img-fluid"
-                                    id="thumbPreview" style="object-fit:cover;width:100%;height:100%;">
-                            </div>
-                            <input type="file" name="thumbnail" class="d-none file-input" accept="image/*">
-                            <button type="button" class="btn btn-danger btn-sm mt-2 w-100 d-none remove-image">Remove
-                                Image</button>
-                        </div> --}}
                         <x-image-input name="thumbnail" />
                     </div>
                 </div>
@@ -153,7 +143,7 @@
 
         <h5 class="mb-3">Product Variants</h5>
         <div class="card-body mb-3" id="variantsContainer"></div>
-        
+
 
         <button type="button" class="btn btn-sm btn-success mb-3" id="addVariantBtn">+ Add Variant</button>
 
@@ -298,6 +288,16 @@
                                             <div class="col-md-6">
                                                 <input type="number" class="form-control form-control-sm variant-selling-price" min="0.01" step="0.01" placeholder="selling Price ({{ currency() }})">
                                             </div>
+                                            <div class="col-md-6">
+                                                <select class="form-select form-select-sm variant-discount-type">
+                                                    <option value="">-- Select Discount Type --</option>
+                                                    <option value="{{ \App\Enums\DiscountType::FLAT->value }}">Flat</option>
+                                                    <option value="{{ \App\Enums\DiscountType::PERCENTAGE->value }}">Percentage</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input type="number" class="form-control form-control-sm variant-discount-value" min="0.01" step="0.01" placeholder="Discount value ({{ currency() }})">
+                                            </div>
                                         </div>
                 
                                         <h6 class="mt-2 mb-2 text-success">Attributes</h6>
@@ -313,37 +313,41 @@
                     $variantsContainer.append($(createVariantCard()));
                 };
 
-                const collectVariants = () => {
-                    const variants = [];
+                // const collectVariants = () => {
+                //     const variants = [];
 
-                    $('.variant-card').each(function() {
-                        const id = $(this).attr('id');
-                        const sku = $(this).find('.variant-sku').val().trim();
-                        const buying_price = parseFloat($(this).find('.variant-buying-price').val()) || 0;
-                        const selling_price = parseFloat($(this).find('.variant-selling-price').val()) || 0;
-                        const stock = parseInt($(this).find('.variant-stock').val()) || 0;
+                //     $('.variant-card').each(function() {
+                //         const id = $(this).attr('id');
+                //         const sku = $(this).find('.variant-sku').val().trim();
+                //         const buying_price = parseFloat($(this).find('.variant-buying-price').val()) || 0;
+                //         const selling_price = parseFloat($(this).find('.variant-selling-price').val()) || 0;
+                //         const variant_discount_type = parseInt($(this).find('.variant-discount-type').val()) || 0;
+                //         const variant_discount_value = parseFloat($(this).find('.variant-selling-price').val()) || 0;
+                //         const stock = parseInt($(this).find('.variant-stock').val()) || 0;
 
-                        const attributes = [];
-                        $(this).find('.attribute-row').each(function() {
-                            const key = $(this).find('.attribute-key').val().trim();
-                            const value = $(this).find('.attribute-value').val().trim();
-                            if (key && value) attributes.push({
-                                key,
-                                value
-                            });
-                        });
+                //         const attributes = [];
+                //         $(this).find('.attribute-row').each(function() {
+                //             const key = $(this).find('.attribute-key').val().trim();
+                //             const value = $(this).find('.attribute-value').val().trim();
+                //             if (key && value) attributes.push({
+                //                 key,
+                //                 value
+                //             });
+                //         });
 
-                        variants.push({
-                            sku,
-                            buying_price,
-                            selling_price,
-                            stock,
-                            attributes
-                        });
-                    });
+                //         variants.push({
+                //             sku,
+                //             buying_price,
+                //             selling_price,
+                //             stock,
+                //             variant_discount_type,
+                //             variant_discount_value,
+                //             attributes
+                //         });
+                //     });
 
-                    return variants;
-                };
+                //     return variants;
+                // };
 
                 $(document).on('click', '#addVariantBtn', addVariant);
                 $(document).on('click', '.remove-variant-btn', function() {
@@ -379,6 +383,8 @@
                             sku: $card.find('.variant-sku').val(),
                             buying_price: $card.find('.variant-buying-price').val(),
                             selling_price: $card.find('.variant-selling-price').val(),
+                            variant_discount_type: $card.find('.variant-discount-type').val(),
+                            variant_discount_value: $card.find('.variant-selling-price').val(),
                             stock: $card.find('.variant-stock').val(),
                             attributes: []
                         };
