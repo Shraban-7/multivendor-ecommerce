@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PaymentListenerDevice extends Model
 {
@@ -26,5 +27,10 @@ class PaymentListenerDevice extends Model
             self::STATUS_ACTIVE,
             self::STATUS_INACTIVE,
         ];
+    }
+
+    public function seller(): BelongsTo
+    {
+        return $this->belongsTo(Seller::class);
     }
 }
