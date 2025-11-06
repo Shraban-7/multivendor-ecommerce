@@ -16,6 +16,7 @@ use App\Http\Controllers\Seller\CustomerController;
 use App\Http\Controllers\Seller\DashboardController;
 use App\Http\Controllers\Seller\SellerChatController;
 use App\Http\Controllers\Seller\NotificationController;
+use App\Http\Controllers\Seller\PaymentListnerController;
 use App\Http\Controllers\Seller\ProductStockController;
 use App\Http\Controllers\Seller\SellerExpenseController;
 use App\Http\Controllers\Seller\ProductVariantController;
@@ -116,7 +117,7 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::get('/{product:slug}', [ProductController::class, 'show'])->name('show');
     });
 
-    Route::prefix('stock')->as('stock.')->group(function(){
+    Route::prefix('stock')->as('stock.')->group(function () {
         Route::get('/history', [ProductStockController::class, 'index'])->name('index');
         Route::get('/products', [ProductStockController::class, 'products'])->name('products');
         Route::get('/variants', [ProductStockController::class, 'variants'])->name('variants');
@@ -175,4 +176,13 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
     });
 
     Route::post('banner-image/{image}/', [SettingController::class, 'deleteImage'])->name('bannerImages.delete');
+
+    Route::prefix('payment-listener')->as('paymentListener.')->group(function () {
+        Route::prefix('devices')->as('devices.')->group(function () {
+            Route::get('/', [PaymentListnerController::class, 'devices'])->name('index');
+            Route::post('/generate-code', [PaymentListnerController::class, 'generateCode'])->name('generateCode');
+            Route::delete('/{device}', [PaymentListnerController::class, 'deleteDevice'])->name('store');
+        });
+        Route::get('/payments', [PaymentListnerController::class, 'payments']);
+    });
 });

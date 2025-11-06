@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\DataController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\SellerChatController;
+use App\Http\Controllers\Seller\PaymentListnerController;
 
 Route::prefix('auth')->group(function () {
     Route::prefix('password-reset')->group(function () {
@@ -99,4 +100,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/store', [BillingAddressController::class, 'store']);
         Route::post('/{address}/update', [BillingAddressController::class, 'update']);
     });
+});
+
+Route::prefix('payment-listener')->group(function () {
+    Route::get('/connect', [PaymentListnerController::class, 'connectDevice']);
+    Route::get('/disconnect', [PaymentListnerController::class, 'disconnectDevice']);    
+    Route::get('/trigger', [PaymentListnerController::class, 'triggerSms']);    
 });
