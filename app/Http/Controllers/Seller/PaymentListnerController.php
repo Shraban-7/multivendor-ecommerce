@@ -75,6 +75,10 @@ class PaymentListnerController extends Controller
             return errorResponse("This device code is already connected!");
         }
 
+        if (!is_null($device->device_name) && $device->device_name != $request->device_name) {
+            return errorResponse("Use this code for {$device->device_name}");
+        }
+
         $device->update([
             'device_name' => $request->device_name,
             //'device_details' => json_encode($request->device_details),
