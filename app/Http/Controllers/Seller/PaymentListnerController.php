@@ -85,7 +85,7 @@ class PaymentListnerController extends Controller
 
     public function triggerSms(Request $request)
     {
-        $request->validate([
+        $validator = validateRequest($request, [
             'device_code' => 'required|string',
             'sender' => 'required|string',
             'sender_number' => 'required|string',
@@ -93,6 +93,10 @@ class PaymentListnerController extends Controller
             // 'trx_id' => 'nullable|string',
             'full_sms' => 'required|string',
         ]);
+
+        if ($validator->fails()) {
+            return sendValidationError($validator->errors());
+        }
 
         $device = PaymentListenerDevice::where('device_code', $request->device_code)->first();
         if (!$device) {
@@ -102,7 +106,7 @@ class PaymentListnerController extends Controller
         PaymentListenerPayment::create([
             'seller_id' => $device->seller_id,
             'device_id' => $device->id,
-            'gateway' => $request->gateway,
+            'sender' => $request->sender,
             'sender_number' => $request->sender_number,
             'amount' => $request->amount,
             'trx_id' => $request->trx_id,
