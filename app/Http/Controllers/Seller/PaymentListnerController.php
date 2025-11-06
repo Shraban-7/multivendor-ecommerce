@@ -109,7 +109,7 @@ class PaymentListnerController extends Controller
 
         $device = PaymentListenerDevice::where('device_code', $request->device_code)->first();
         if (!$device) {
-            return errorResponse("Invalid device code!");
+            return errorResponse("Invalid device code!", 403);
         }
 
         PaymentListenerPayment::create([
