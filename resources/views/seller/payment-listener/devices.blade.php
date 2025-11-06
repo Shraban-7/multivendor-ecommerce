@@ -13,133 +13,124 @@
     }
 </style>
 
-<div>
-    <h4 class="mb-3">Automatic Payment Listener</h4>
+<h4 class="mb-3">Automatic Payment Listener</h4>
 
-    <!-- <div class="card p-3 mb-3">
-        <div class="d-flex justify-content-between align-items-center">
-            <label class="form-label mb-0">Enable Auto Payment Confirmation</label>
-            <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="autoConfirmToggle" checked />
-            </div>
+<!-- <div class="card p-3 mb-3">
+    <div class="d-flex justify-content-between align-items-center">
+        <label class="form-label mb-0">Enable Auto Payment Confirmation</label>
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="autoConfirmToggle" checked />
         </div>
-    </div> -->
+    </div>
+</div> -->
 
-    <div class="row">
-        <div class="col-md-6 mb-3">
-            <div class="card card-shadow">
-                <div class="card-body">
-                    <h5 class="card-title">🔗 Add New Device</h5>
-                    <p class="small text-muted">Click **'Generate Device Code'**. Enter this code in the **Payment Listener App** on your device to connect.</p>
-                    <button class="btn btn-primary btn-lg" id="generateCodeTrigger">
-                        <i class="bi bi-qr-code-scan"></i> Generate Device Code
-                    </button>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 mb-3">
-            <div class="card p-3">
-                <h6>Instructions</h6>
-                <div class="alert bg-light border mb-1" role="alert">
-                    <ol class="mb-0">
-                        <li>
-                            Click <strong>“Generate Device Code”</strong>.
-                        </li>
-                        <li>Enter the generated code in the Payment Listener App.</li>
-                        <li>Allow SMS & background permissions on the device.</li>
-                        <li>
-                            Device status will change to <strong>Active</strong> once
-                            connected.
-                        </li>
-                    </ol>
-                </div>
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <div class="card card-shadow">
+            <div class="card-body">
+                <h5 class="card-title">🔗 Add New Device</h5>
+                <p class="small text-muted">Click **'Generate Device Code'**. Enter this code in the **Payment Listener App** on your device to connect.</p>
+                <button class="btn btn-primary btn-lg" id="generateCodeTrigger">
+                    <i class="bi bi-qr-code-scan"></i> Generate Device Code
+                </button>
             </div>
         </div>
     </div>
-
-    @if($devices->count())
-    <div class="card p-3 mb-3">
-        <h6 class="mb-3">Linked Devices</h6>
-        <div class="list-group" id="deviceList">
-            @foreach ($devices as $device)
-            <div
-                class="list-group-item d-flex flex-wrap justify-content-between align-items-center">
-                <div>
-                    <strong>{{ $device->device_name ?? 'Pending Device' }}</strong>
-                    <div>
-                        Code:
-                        <span class="device-code">{{ $device->device_code }}</span>
-                        <span class="ms-2">{{ $device->status }}</span>
-                    </div>
-                    <small class="text-muted">Last sync: {{ $device->last_sync_at?->formt('Y-m-d h:i A') }}</small>
-                </div>
-                <div class="mt-2 mt-md-0">
-                    <button class="btn btn-sm btn-outline-warning me-1">
-                        Deactivate
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger">
-                        Remove
-                    </button>
-                </div>
+    <div class="col-md-6 mb-3">
+        <div class="card p-3">
+            <h6>Instructions</h6>
+            <div class="alert bg-light border mb-1" role="alert">
+                <ol class="mb-0">
+                    <li>
+                        Click <strong>“Generate Device Code”</strong>.
+                    </li>
+                    <li>Enter the generated code in the Payment Listener App.</li>
+                    <li>Allow SMS & background permissions on the device.</li>
+                    <li>
+                        Device status will change to <strong>Active</strong> once
+                        connected.
+                    </li>
+                </ol>
             </div>
-            @endforeach
         </div>
     </div>
-    @endif
-
-    @if($payments->count())
-    <div class="card p-3">
-        <h6 class="mb-3">Recent Payments</h6>
-        <div class="table-responsive">
-            <table class="table table-sm align-middle">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Gateway</th>
-                        <th>Amount</th>
-                        <th>Sender</th>
-                        <th>TrxID</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($payments as $payment)
-                    <tr>
-                        <td>{{ $payment->created_at->format('Y-m-d h:i A') }}</td>
-                        <td>{{ $payment->sender }}</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    </div>
-    @endif
 </div>
+
+@if($devices->count())
+<div class="card p-3 mb-3">
+    <h6 class="mb-3">Linked Devices</h6>
+    <div class="list-group" id="deviceList">
+        @foreach ($devices as $device)
+        <div
+            class="list-group-item d-flex flex-wrap justify-content-between align-items-center">
+            <div>
+                <strong>{{ $device->device_name ?? 'Pending Device' }}</strong>
+                <div>
+                    Code:
+                    <span class="device-code">{{ $device->device_code }}</span>
+                    <span class="ms-2">{{ $device->status }}</span>
+                </div>
+                <small class="text-muted">Last sync: {{ $device->last_sync_at?->format('Y-m-d h:i A') }}</small>
+            </div>
+            <div class="mt-2 mt-md-0">
+                <form action="{{ route('seller.paymentListener.devices.delete', $device->id) }}" method="POST">
+                    <button class="btn btn-sm btn-danger" type="submit">
+                        Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+        @endforeach
+    </div>
+</div>
+@endif
+
+@if($payments->count())
+<div class="card p-3">
+    <h6 class="mb-3">Recent Payments</h6>
+    <div class="table-responsive">
+        <table class="table table-sm align-middle">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Gateway</th>
+                    <th>Amount</th>
+                    <th>Sender</th>
+                    <th>TrxID</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($payments as $payment)
+                <tr>
+                    <td>{{ $payment->created_at->format('Y-m-d h:i A') }}</td>
+                    <td>{{ $payment->sender }}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
+@endif
 
 <div class="modal fade" id="generateCodeModal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="generateCodeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header border-0 pb-0">
                 <h5 class="modal-title fw-bold text-primary" id="generateCodeModalLabel">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-link-45deg me-2" viewBox="0 0 16 16">
-                        <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337c-.375.39-.892.64-1.494.64-.59 0-1.109-.235-1.5-.588l-.832-.832c-.146-.146-.35-.285-.57-.442c-.094-.076-.174-.15-.25-.224Zm2.12-.542a2 2 0 0 1 3.374 1.94c-.203.204-.436.392-.667.575l-.602.599v.001l-.104.104-.51.51a3 3 0 1 0 4.243-4.243L12.715 5.295A3 3 0 0 0 10.586 4c-.552 0-1.09.117-1.61.34L8.147 4.39A1.003 1.003 0 0 0 8 5.5z" />
-                    </svg>
                     Connect New Device
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
             <div class="modal-body text-center pt-2">
-                <p class="mb-3">
-                    <span class="badge bg-info text-dark me-2">Step 1</span> Enter this code in your Payment Listener App:
+                <p class="mt-3 mb-2">
+                    Enter this code in your Payment Listener App:
                 </p>
-
                 <div class="p-4 bg-light rounded border border-primary mx-4">
                     <h1 id="deviceCodeToCopy" class="mono-code display-4 text-primary fw-bolder mb-0">K9L0M1N2</h1>
                 </div>
-
                 <div class="mt-3 d-grid gap-2 mx-4">
                     <button class="btn btn-primary" id="copyCodeButton">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-check-fill me-2" viewBox="0 0 16 16">
@@ -161,7 +152,7 @@
             </div>
 
             <div class="modal-footer justify-content-center border-0 pt-0">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Done</button>
+                <a href="{{ route('seller.paymentListener.devices.index') }}" class="btn btn-outline-secondary">Close</a>
             </div>
         </div>
     </div>

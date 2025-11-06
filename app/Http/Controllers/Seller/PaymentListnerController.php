@@ -71,6 +71,10 @@ class PaymentListnerController extends Controller
             return errorResponse("Invalid device code!");
         }
 
+        if(!is_null($device->device_name)) {
+            return errorResponse("This device code is already connected!");
+        }
+
         $device->update([
             'device_name' => $request->device_name,
             //'device_details' => json_encode($request->device_details),
@@ -88,7 +92,7 @@ class PaymentListnerController extends Controller
         $validator = validateRequest($request, [
             'device_code' => 'required|string',
             'sender' => 'required|string',
-            'sender_number' => 'required|string',
+            'sender_number' => 'nullable|string',
             // 'amount' => 'nullable|numeric',
             // 'trx_id' => 'nullable|string',
             'full_sms' => 'required|string',
