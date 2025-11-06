@@ -74,7 +74,9 @@
             </div>
             <div class="mt-2 mt-md-0">
                 <form action="{{ route('seller.paymentListener.devices.delete', $device->id) }}" method="POST">
-                    <button class="btn btn-sm btn-danger" type="submit">
+                    @csrf
+                    @method('DELETE')
+                    <button class="btn btn-sm btn-danger" type="submit" onclick="return confirm('Are you sure?')">
                         Delete
                     </button>
                 </form>
