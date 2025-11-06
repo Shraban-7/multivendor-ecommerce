@@ -49,7 +49,7 @@ class PaymentListnerController extends Controller
 
     public function payments()
     {
-        $payments = PaymentListenerPayment::where('seller_id', get_seller_id())->latest('id')->pagiante(30);
+        $payments = PaymentListenerPayment::where('seller_id', get_seller_id())->latest('id')->paginate(30);
 
         return view('seller.payment-listener.payments', compact('payments'));
     }

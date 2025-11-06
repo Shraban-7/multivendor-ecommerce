@@ -93,10 +93,8 @@
             <thead>
                 <tr>
                     <th>Date</th>
-                    <th>Gateway</th>
-                    <th>Amount</th>
                     <th>Sender</th>
-                    <th>TrxID</th>
+                    <th>SMS</th>
                 </tr>
             </thead>
             <tbody>
@@ -104,9 +102,7 @@
                 <tr>
                     <td>{{ $payment->created_at->format('Y-m-d h:i A') }}</td>
                     <td>{{ $payment->sender }}</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>{{ $payment->full_sms }}</td>
                 </tr>
                 @endforeach
             </tbody>
