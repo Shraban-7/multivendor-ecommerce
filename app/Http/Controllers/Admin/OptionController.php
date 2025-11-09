@@ -5,25 +5,32 @@ use App\Models\Option;
 use App\Models\OptionValue;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\CategoryOption;
 
 class OptionController extends Controller
 {
     public function index()
     {
         $productOptions = Option::get();
-        return view('admin.options.index', compact('productOptions'));
+        $categories = Category::category()->get();
+
+        return view('admin.options.index', compact('productOptions','categories'));
     }
 
     public function store(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'value'     => 'required|string',
             'name'      => 'nullable|string',
             'option_id' => 'nullable|exists:options,id',
+            'category_id' => 'nullable|array'
         ]);
 
-        $value    = trim($request->value);
-        $optionId = $request->option_id;
+        // dd($data);
+
+        $value    = trim($data['value']);
+        $optionId = $data['option_id'];
 
         if (! $optionId) {
             if (! $request->name) {
@@ -31,7 +38,7 @@ class OptionController extends Controller
             }
 
             $option = Option::create([
-                'name' => $request->name,
+                'name' => $data['name'],
             ]);
 
             $optionId = $option->id;
@@ -49,6 +56,14 @@ class OptionController extends Controller
             'option_id' => $optionId,
             'value'     => $value,
         ]);
+
+        foreach($data['category_id'] as $category)
+        {
+            CategoryOption::create([
+                'category_id' => $category,
+                'option_id' => $optionId
+            ]);
+        }
 
         return redirect()->back()->with('success', 'Option Added Successfully!');
     }

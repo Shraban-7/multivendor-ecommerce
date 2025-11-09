@@ -5,7 +5,7 @@
     <div class="mb-4 d-flex justify-content-between align-items-center">
         <h4 class="mb-0">Product Options</h4>
         <button class="btn btn-theme btn-sm" data-bs-toggle="modal" data-bs-target="#addOptionModal">
-                <i data-feather="plus" class="icon-xs"></i> Add Option
+            <i data-feather="plus" class="icon-xs"></i> Add Option
         </button>
     </div>
 
@@ -60,8 +60,7 @@
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary"
                                                     data-bs-dismiss="modal">Cancel</button>
-                                                <form
-                                                    action="{{ route('admin.options.option_value_delete', $option->id) }}"
+                                                <form action="{{ route('admin.options.option_value_delete', $option->id) }}"
                                                     method="POST">
                                                     @csrf
                                                     <button type="submit" class="btn btn-danger">Delete</button>
@@ -107,8 +106,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                    <form action="{{ route('admin.options.delete', $productOption->id) }}"
-                                        method="POST">
+                                    <form action="{{ route('admin.options.delete', $productOption->id) }}" method="POST">
                                         @csrf
                                         <button type="submit" class="btn btn-danger">Delete</button>
                                     </form>
@@ -148,10 +146,19 @@
                                 placeholder="Enter new attribute name">
                         </div>
                         <div class="mb-3">
-                            <label for="attribute_value" class="form-label fw-bold">Value <span
-                                    class="text-danger">*</span></label>
+                            <label for="attribute_value" class="form-label fw-bold">Value</label>
                             <input type="text" class="form-control" id="attribute_value" name="value"
                                 placeholder="e.g., Red, XL" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="category_id" class="form-label fw-bold">Categories</label>
+                            <select class="form-select" id="category_id" name="category_id[]" multiple="multiple">
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+                            <small class="text-muted">You can select or add new categories.</small>
                         </div>
                     </div>
 
@@ -166,6 +173,15 @@
     @push('scripts')
         <script>
             new DataTable('#product-attribute-table');
+            $(document).ready(function() {
+                $('#category_id').select2({
+                    tags: true,
+                    placeholder: 'Select or add categories',
+                    width: '100%',
+                    allowClear: true,
+                    dropdownParent: $('#addOptionModal')
+                });
+            });
         </script>
     @endpush
 @endsection
