@@ -13,7 +13,7 @@ class OptionController extends Controller
 {
     public function index()
     {
-        $productOptions = Option::with('categories')->get();
+        $productOptions = Option::with('categories')->paginate(15);
         $categories = Category::category()->get();
 
         return view('admin.options.index', compact('productOptions', 'categories'));

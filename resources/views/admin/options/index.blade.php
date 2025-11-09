@@ -152,6 +152,9 @@
             </tbody>
         </table>
     </div>
+    <div class="d-flex justify-content-end">
+        {{ $productOptions->links() }}
+    </div>
     <div class="modal fade" id="addOptionModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -194,8 +197,6 @@
             </div>
         </div>
     </div>
-
-
 
     @push('scripts')
         <script>
