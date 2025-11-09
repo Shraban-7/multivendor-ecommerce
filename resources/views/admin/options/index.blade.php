@@ -16,7 +16,7 @@
                     <th scope="col">Name</th>
                     <th scope="col">Categories</th>
                     <th scope="col">Options</th>
-                    <th scope="col">Date</th>
+                    <th scope="col">Last Update</th>
                     <th scope="col">Action</th>
                 </tr>
             </thead>
@@ -33,7 +33,7 @@
                             {{ $productOption->options->pluck('value')->implode(', ') }}
                         </td>
 
-                        <td>{{ $productOption->created_at->format('d-m-y h:i A') }}</td>
+                        <td>{{ $productOption->updated_at->format('d-m-y h:i A') }}</td>
                         <td class="d-flex gap-3">
                             @if (hasPermission('admin.options.delete'))
                                 <button type="button" class="btn btn-light btn-sm d-flex align-items-center gap-1 border"
@@ -76,20 +76,6 @@
                                                 value="{{ $productOption->name }}" required>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="edit_attribute_value_{{ $productOption->id }}"
-                                                class="form-label fw-bold">Values</label>
-                                            <select class="form-select select2-values"
-                                                id="edit_attribute_value_{{ $productOption->id }}" name="values[]"
-                                                multiple="multiple" required>
-                                                @foreach ($productOption->options as $value)
-                                                    <option value="{{ $value->value }}" selected>{{ $value->value }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                            <small class="text-muted">Type and press Enter or comma to add multiple
-                                                values.</small>
-                                        </div>
-                                        <div class="mb-3">
                                             <label for="edit_category_id_{{ $productOption->id }}"
                                                 class="form-label fw-bold">Categories</label>
                                             <select class="form-select select2-categories"
@@ -103,9 +89,23 @@
                                                 @endforeach
                                             </select>
                                         </div>
+                                        <div class="mb-3">
+                                            <label for="edit_attribute_value_{{ $productOption->id }}"
+                                                class="form-label fw-bold">Values</label>
+                                            <select class="form-select select2-values"
+                                                id="edit_attribute_value_{{ $productOption->id }}" name="values[]"
+                                                multiple="multiple" required>
+                                                @foreach ($productOption->options as $value)
+                                                    <option value="{{ $value->value }}" selected>{{ $value->value }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <small class="text-muted">Type and press Enter or comma to add multiple
+                                                values.</small>
+                                        </div>
                                     </div>
 
-                                    <div class="modal-footer bg-light">
+                                    <div class="modal-footer">
                                         <button type="button" class="btn btn-outline-secondary"
                                             data-bs-dismiss="modal">Cancel</button>
                                         <button type="submit" class="btn btn-primary">Update</button>
@@ -132,7 +132,7 @@
                                         <i class="bi bi-exclamation-circle-fill me-2 text-danger"
                                             style="font-size: 1.5rem;"></i>
                                         <p class="mt-1 text-secondary">
-                                            Are you sure you want to delete this Product Option?
+                                            Are you sure you want to delete {{ $productOption->name }} Option?
                                         </p>
                                     </div>
                                 </div>
@@ -172,13 +172,6 @@
                             <input type="text" class="form-control" id="option_name" name="name" required>
                         </div>
                         <div class="mb-3">
-                            <label for="attribute_value" class="form-label fw-bold">Values</label>
-                            <select class="form-select" id="attribute_value" name="values[]" multiple="multiple"
-                                required></select>
-                            <small class="text-muted">Type and press Enter or comma to add multiple values.</small>
-                        </div>
-
-                        <div class="mb-3">
                             <label for="category_id" class="form-label fw-bold">Categories</label>
                             <select class="form-select" id="category_id" name="categories[]" multiple="multiple"
                                 required>
@@ -187,9 +180,15 @@
                                 @endforeach
                             </select>
                         </div>
+                        <div class="mb-3">
+                            <label for="attribute_value" class="form-label fw-bold">Values</label>
+                            <select class="form-select" id="attribute_value" name="values[]" multiple="multiple"
+                                required></select>
+                            <small class="text-muted">Type and press Enter or comma to add multiple values.</small>
+                        </div>
                     </div>
 
-                    <div class="modal-footer bg-light">
+                    <div class="modal-footer">
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-primary">Save</button>
                     </div>
