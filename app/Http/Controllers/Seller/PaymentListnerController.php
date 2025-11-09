@@ -59,7 +59,7 @@ class PaymentListnerController extends Controller
         $validator = validateRequest($request, [
             'device_code' => 'required|string',
             'device_name' => 'required|string',
-            //'device_details' => 'nullable|array',
+            'fcm_token' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -81,7 +81,7 @@ class PaymentListnerController extends Controller
 
         $device->update([
             'device_name' => $request->device_name,
-            //'device_details' => json_encode($request->device_details),
+            'fcm_token' => $request->fcm_token,
             'status' => PaymentListenerDevice::STATUS_ACTIVE,
             'last_sync_at' => now(),
         ]);
