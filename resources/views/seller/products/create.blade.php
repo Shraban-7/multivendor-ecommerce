@@ -153,9 +153,32 @@
         </div>
 
     </form>
+    @php
+
+        $categoryAttributes = $categories
+            ->mapWithKeys(function ($cat) {
+                return [
+                    $cat->id => collect($cat->options ?? [])
+                        ->map(function ($a) {
+                            return [
+                                'id' => $a->id,
+                                'name' => $a->name,
+                                'values' => $a->options,
+                            ];
+                        })
+                        ->toArray(),
+                ];
+            })
+            ->toArray();
+    @endphp
+
+
+
     @push('scripts')
         <x-seller.image-cropper-modal />
-
+        <script>
+            const categoryAttributes = @json($categoryAttributes);
+        </script>
         <script>
             $(function() {
                 $(".brand-select").select2({
@@ -163,16 +186,18 @@
                     theme: "bootstrap-5",
                 });
 
-                $('#categorySelect').change(function() {
-                    var selectedCategoryId = $(this).val();
-                    var hasOptions = false;
+                let selectedCategoryId = null;
 
+                $('#categorySelect').change(function() {
+                    selectedCategoryId = $(this).val();
+
+                    // Subcategory filtering
+                    let hasOptions = false;
                     $('#subcategorySelect').val('').trigger('change');
 
                     $('#subcategorySelect option').each(function() {
-                        var optionCategoryId = $(this).data('category');
-
-                        if (selectedCategoryId == optionCategoryId || selectedCategoryId == "") {
+                        const optionCategoryId = $(this).data('category');
+                        if (selectedCategoryId == optionCategoryId) {
                             $(this).show();
                             hasOptions = true;
                         } else {
@@ -180,77 +205,70 @@
                         }
                     });
 
-                    if (hasOptions == true) {
-                        $('#subcategorySelect').attr('disabled', false);
-                    } else {
-                        $('#subcategorySelect').attr('disabled', true);
-                    }
+                    $('#subcategorySelect').attr('disabled', !hasOptions);
 
-                    if (!selectedCategoryId) {
-                        $('#subcategorySelect').val('').trigger('change');
-                    }
+                    $('.variant-card').each(function() {
+                        const $attributesContainer = $(this).find('.attributes-container');
+                        $attributesContainer.empty();
+
+                        if (selectedCategoryId && categoryAttributes[selectedCategoryId]?.length > 0) {
+                            $attributesContainer.append(createAttributeRow());
+                        }
+                    });
                 });
 
                 let variantCounter = 0;
-                const variantImageData = new Map();
                 const $variantsContainer = $('#variantsContainer');
 
-                let attributeData = {};
-
-                $.ajax({
-                    url: '{{ route('seller.products.attribute_suggestions') }}',
-                    method: 'GET',
-                    success: function(data) {
-                        attributeData =
-                            data;
-                    },
-                    error: function(err) {
-                        console.error("Failed to fetch attribute suggestions:", err);
-                    }
-                });
-
                 function createAttributeRow() {
-                    const timestamp = Date.now();
-                    const keyDatalistId = 'attributeKeyList-' + timestamp;
-                    const valueDatalistId = 'attributeValueList-' + timestamp;
+                    if (!selectedCategoryId || !categoryAttributes[selectedCategoryId] || categoryAttributes[
+                            selectedCategoryId].length === 0) {
+                        return ''; 
+                    }
 
-                    const keyOptions = (attributeData.keys || []).map(key => `<option value="${key}">`).join('');
+                    const timestamp = Date.now();
+                    const keyOptions = categoryAttributes[selectedCategoryId]
+                        .map(attr =>
+                            `<option value="${attr.name}" data-values='${JSON.stringify(attr.values)}'>${attr.name}</option>`
+                            )
+                        .join('');
 
                     return `
-                            <div class="input-group attribute-row input-group-sm mb-1">
-                                <input type="text" class="form-control form-control-sm attribute-key" placeholder="Key (e.g., Color)" list="${keyDatalistId}">
-                                <datalist id="${keyDatalistId}">
+                        <div class="row g-2 mb-2 attribute-row align-items-end">
+                            <div class="col-md-5">
+                                <select class="form-select form-select-sm attribute-name" id="attribute-key-${timestamp}">
+                                    <option disabled selected>-- Select Attribute --</option>
                                     ${keyOptions}
-                                </datalist>
-
-                                <input type="text" class="form-control form-control-sm attribute-value" placeholder="Value (e.g., Blue)" list="${valueDatalistId}">
-                                <datalist id="${valueDatalistId}">
-                                    <!-- Options will be populated dynamically based on key -->
-                                </datalist>
-
-                                <button type="button" class="btn btn-danger remove-attribute-btn">&times;</button>
-                            </div>`;
+                                </select>
+                            </div>
+                            <div class="col-md-5">
+                                <select class="form-select form-select-sm attribute-value" id="attribute-value-${timestamp}">
+                                    <option disabled selected>-- Select Value --</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-sm btn-danger remove-attribute-btn">Remove</button>
+                            </div>
+                        </div>
+                    `;
                 }
 
-                $(document).on('input', '.attribute-key', function() {
-                    const key = $(this).val().trim();
+                $(document).on('change', '.attribute-name', function() {
                     const $row = $(this).closest('.attribute-row');
-                    const $valueInput = $row.find('.attribute-value');
-                    const $valueDatalist = $row.find('datalist');
+                    const $valueSelect = $row.find('.attribute-value');
 
-                    $valueInput.val('');
-
-                    $valueDatalist.empty();
-                    if (key && attributeData.values && attributeData.values[key]) {
-                        attributeData.values[key].forEach(val => {
-                            $valueDatalist.append(`<option value="${val}">`);
-                        });
+                    const selectedOption = $(this).find('option:selected');
+                    let values = [];
+                    try {
+                        values = JSON.parse(selectedOption.attr('data-values') || '[]');
+                    } catch (e) {
+                        values = [];
                     }
-                });
 
-                $(document).on('click', '.generate-sku-btn', function() {
-                    const randomSKU = crypto.randomUUID().split('-')[0].toUpperCase();
-                    $(this).siblings('.variant-sku').val(randomSKU);
+                    $valueSelect.empty().append(`<option disabled selected>-- Select Value --</option>`);
+                    values.forEach(v => {
+                        $valueSelect.append(`<option value="${v.value}">${v.value}</option>`);
+                    });
                 });
 
                 const createVariantCard = () => {
@@ -265,11 +283,9 @@
                                         data-bs-toggle="collapse" data-bs-target="#${collapseId}">
                                         Variant #${variantCounter}
                                     </button>
-                                    ${variantCounter > 1
-                                        ? `<button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 mt-2 me-2 remove-variant-btn" data-variant-id="${id}">Remove</button>`
-                                        : ''}
+                                    ${variantCounter > 1 ? `<button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 mt-2 me-2 remove-variant-btn" data-variant-id="${id}">Remove</button>` : ''}
                                 </div>
-                
+
                                 <div id="${collapseId}" class="collapse show">
                                     <div class="card-body p-3">
                                         <div class="row g-2 mb-3 align-items-end">
@@ -287,7 +303,7 @@
                                                 <input type="number" class="form-control form-control-sm variant-buying-price" min="0.01" step="0.01" placeholder="Buying Price ({{ currency() }})">
                                             </div>
                                             <div class="col-md-6">
-                                                <input type="number" class="form-control form-control-sm variant-selling-price" min="0.01" step="0.01" placeholder="selling Price ({{ currency() }})">
+                                                <input type="number" class="form-control form-control-sm variant-selling-price" min="0.01" step="0.01" placeholder="Selling Price ({{ currency() }})">
                                             </div>
                                             <div class="col-md-6">
                                                 <select class="form-select form-select-sm variant-discount-type">
@@ -300,7 +316,7 @@
                                                 <input type="number" class="form-control form-control-sm variant-discount-value" min="0.01" step="0.01" placeholder="Discount value ({{ currency() }})">
                                             </div>
                                         </div>
-                
+
                                         <h6 class="mt-2 mb-2 text-success">Attributes</h6>
                                         <div class="attributes-container">${createAttributeRow()}</div>
                                         <button type="button" class="btn btn-sm btn-outline-secondary add-attribute-btn mt-2">+ Attribute</button>
@@ -318,20 +334,19 @@
                 $(document).on('click', '.remove-variant-btn', function() {
                     const variantId = $(this).data('variant-id');
                     $(`#${variantId}`).remove();
-                    variantImageData.delete(variantId);
                 });
+
                 $(document).on('click', '.add-attribute-btn', function() {
                     $(this).siblings('.attributes-container').append(createAttributeRow());
                 });
+
                 $(document).on('click', '.remove-attribute-btn', function() {
                     $(this).closest('.attribute-row').remove();
                 });
-                $(document).on('input', '.variant-sku', function() {
-                    const value = $(this).val().trim() || 'N/A';
-                    $(this).closest('.variant-card').find('.variant-sku-display').text(`SKU: ${value}`);
-                });
-                $(document).on('change', '.variant-image', function() {
-                    handleImageUpload(this);
+
+                $(document).on('click', '.generate-sku-btn', function() {
+                    const randomSKU = crypto.randomUUID().split('-')[0].toUpperCase();
+                    $(this).siblings('.variant-sku').val(randomSKU);
                 });
 
                 $('#submitBtn').click(function(e) {
@@ -340,22 +355,22 @@
                     let form = $('#productForm')[0];
                     let formData = new FormData(form);
                     const variants = [];
+
                     $('.variant-card').each(function(index) {
                         const $card = $(this);
-                        const id = $card.attr('id');
-
                         const variant = {
                             sku: $card.find('.variant-sku').val(),
                             buying_price: $card.find('.variant-buying-price').val(),
                             selling_price: $card.find('.variant-selling-price').val(),
                             variant_discount_type: $card.find('.variant-discount-type').val(),
-                            variant_discount_value: $card.find('.variant-selling-price').val(),
+                            variant_discount_value: $card.find('.variant-discount-value').val(),
                             stock: $card.find('.variant-stock').val(),
                             attributes: []
                         };
 
                         $card.find('.attribute-row').each(function() {
-                            const key = $(this).find('.attribute-key').val();
+                            const key = $(this).find('.attribute-name').val() || $(this).find(
+                                '.attribute-key').val();
                             const value = $(this).find('.attribute-value').val();
                             if (key && value) {
                                 variant.attributes.push({
@@ -381,10 +396,8 @@
                         },
                         success: function(response) {
                             toastr.success(response.message);
-                            setTimeout(function() {
-                                window.location.href =
-                                    "{{ route('seller.products.index') }}";
-                            }, 1500);
+                            setTimeout(() => window.location.href =
+                                "{{ route('seller.products.index') }}", 1500);
                         },
                         error: function(xhr) {
                             $('#submitBtn').attr('disabled', false).text('Save');
@@ -404,4 +417,5 @@
             });
         </script>
     @endpush
+
 @endsection

@@ -102,14 +102,31 @@ class ProductController extends Controller
                 $variant->buying_price = $v['buying_price'];
                 $variant->selling_price = $v['selling_price'];
                 $variant->stock_in = $v['stock'] ?? 0;
-                $variant->discount_type = $v['variant_discount_type'] ?? null;
-                $variant->discount_value = $v['variant_discount_value'] ?? null;
-                $variant->discount_amount = isset($v['variant_discount_type'], $v['variant_discount_value'])
-                    ? calculate_discount_amount($v['selling_price'], $v['variant_discount_type'], $v['variant_discount_value'])
-                    : 0;
-                $variant->discounted_price = isset($v['variant_discount_type'], $v['variant_discount_value'])
-                    ? calculate_discounted_price($v['selling_price'], $v['variant_discount_type'], $v['variant_discount_value'])
-                    : $v['selling_price'];
+                $variant->discount_type = !empty($v['variant_discount_type'])
+                    ? $v['variant_discount_type']
+                    : null;
+
+                $variant->discount_value = !empty($v['variant_discount_value'])
+                    ? (float) $v['variant_discount_value']
+                    : null;
+
+                $hasDiscount = !empty($v['variant_discount_type']) && !empty($v['variant_discount_value']);
+
+                $variant->discount_amount = $hasDiscount
+                    ? calculate_discount_amount(
+                        (float) $v['selling_price'],
+                        $v['variant_discount_type'],
+                        (float) $v['variant_discount_value']
+                    )
+                    : 0.0;
+
+                $variant->discounted_price = $hasDiscount
+                    ? calculate_discounted_price(
+                        (float) $v['selling_price'],
+                        $v['variant_discount_type'],
+                        (float) $v['variant_discount_value']
+                    )
+                    : 0.0;
 
                 $variant->is_default = $index === 0 ? 1 : 0;
 

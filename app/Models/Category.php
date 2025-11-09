@@ -59,4 +59,9 @@ class Category extends Model
     {
         return $this->belongsToMany(Seller::class);
     }
+
+    public function options()
+    {
+        return $this->belongsToMany(Option::class,'category_options');
+    }
 }
