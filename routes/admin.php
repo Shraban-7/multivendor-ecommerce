@@ -71,6 +71,7 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
         Route::get('/', [OptionController::class, 'index'])->name('index');
         Route::post('/store', [OptionController::class, 'store'])->name('store');
         Route::post('{value}/option-value-delete', [OptionController::class, 'optionDelete'])->name('option_value_delete');
+        Route::post('{option}/update', [OptionController::class, 'update'])->name('update');
         Route::post('{option}/delete', [OptionController::class, 'destroy'])->name('delete');
     });
 

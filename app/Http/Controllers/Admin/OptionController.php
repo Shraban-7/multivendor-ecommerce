@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Option;
@@ -12,61 +13,75 @@ class OptionController extends Controller
 {
     public function index()
     {
-        $productOptions = Option::get();
+        $productOptions = Option::with('categories')->get();
         $categories = Category::category()->get();
 
-        return view('admin.options.index', compact('productOptions','categories'));
+        return view('admin.options.index', compact('productOptions', 'categories'));
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
-            'value'     => 'required|string',
-            'name'      => 'nullable|string',
-            'option_id' => 'nullable|exists:options,id',
-            'category_id' => 'nullable|array'
+            'name'      => 'required|string',
+            'values'     => 'required|array',
+            'categories' => 'nullable|array'
         ]);
 
-        // dd($data);
+        $option = Option::create([
+            'name' => $data['name'],
+        ]);
 
-        $value    = trim($data['value']);
-        $optionId = $data['option_id'];
-
-        if (! $optionId) {
-            if (! $request->name) {
-                return redirect()->back()->with('error', 'Please provide an option name or select an existing one.');
-            }
-
-            $option = Option::create([
-                'name' => $data['name'],
+        foreach ($data['values'] as $value) {
+            OptionValue::create([
+                'option_id' => $option->id,
+                'value'     => $value,
             ]);
-
-            $optionId = $option->id;
         }
 
-        $exists = OptionValue::where('option_id', $optionId)
-            ->whereRaw('LOWER(value) = ?', [strtolower($value)])
-            ->exists();
-
-        if ($exists) {
-            return redirect()->back()->with('error', 'This option value already exists.');
-        }
-
-        OptionValue::create([
-            'option_id' => $optionId,
-            'value'     => $value,
-        ]);
-
-        foreach($data['category_id'] as $category)
-        {
+        foreach ($data['categories'] as $category) {
             CategoryOption::create([
                 'category_id' => $category,
-                'option_id' => $optionId
+                'option_id' => $option->id
             ]);
         }
 
         return redirect()->back()->with('success', 'Option Added Successfully!');
     }
+
+    public function update(Request $request, Option $option)
+    {
+        $data = $request->validate([
+            'name'       => 'required|string',
+            'values'     => 'required|array',
+            'categories' => 'nullable|array',
+        ]);
+
+        $option->update([
+            'name' => $data['name'],
+        ]);
+
+        $existingValues = $option->options->pluck('value')->toArray();
+
+        OptionValue::where('option_id', $option->id)
+            ->whereNotIn('value', $data['values'])
+            ->delete();
+
+        foreach ($data['values'] as $value) {
+            if (!in_array($value, $existingValues)) {
+                OptionValue::create([
+                    'option_id' => $option->id,
+                    'value'     => $value,
+                ]);
+            }
+        }
+
+        CategoryOption::where('option_id', $option->id)->delete();
+
+        $option->categories()->sync($data['categories'] ?? []);
+
+        return redirect()->back()->with('success', 'Option Updated Successfully!');
+    }
+
 
     public function optionDelete(OptionValue $value)
     {
@@ -77,6 +92,10 @@ class OptionController extends Controller
 
     public function destroy(Option $option)
     {
+        $option->options()->delete();
+
+        $option->categories()->detach();
+
         $option->delete();
 
         return redirect()->back()->with('success', 'Option removed successfully.');

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,9 +16,9 @@ class Option extends Model
         return $this->hasMany(OptionValue::class);
     }
 
-    public function category()
+    public function categories()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsToMany(Category::class, 'category_options', 'option_id', 'category_id');
     }
 
     public function variants()
