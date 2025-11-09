@@ -136,6 +136,7 @@
                             Image First</label>
                         <input type="file" id="inputImage" hidden accept="image/*" />
                         <x-image-input name="thumbnail" />
+                        <span class="text-muted small mt-2">NB: JPG/PNG/WEBP only, max 4MB</span>
                     </div>
                 </div>
             </div>
@@ -312,42 +313,6 @@
                 const addVariant = () => {
                     $variantsContainer.append($(createVariantCard()));
                 };
-
-                // const collectVariants = () => {
-                //     const variants = [];
-
-                //     $('.variant-card').each(function() {
-                //         const id = $(this).attr('id');
-                //         const sku = $(this).find('.variant-sku').val().trim();
-                //         const buying_price = parseFloat($(this).find('.variant-buying-price').val()) || 0;
-                //         const selling_price = parseFloat($(this).find('.variant-selling-price').val()) || 0;
-                //         const variant_discount_type = parseInt($(this).find('.variant-discount-type').val()) || 0;
-                //         const variant_discount_value = parseFloat($(this).find('.variant-selling-price').val()) || 0;
-                //         const stock = parseInt($(this).find('.variant-stock').val()) || 0;
-
-                //         const attributes = [];
-                //         $(this).find('.attribute-row').each(function() {
-                //             const key = $(this).find('.attribute-key').val().trim();
-                //             const value = $(this).find('.attribute-value').val().trim();
-                //             if (key && value) attributes.push({
-                //                 key,
-                //                 value
-                //             });
-                //         });
-
-                //         variants.push({
-                //             sku,
-                //             buying_price,
-                //             selling_price,
-                //             stock,
-                //             variant_discount_type,
-                //             variant_discount_value,
-                //             attributes
-                //         });
-                //     });
-
-                //     return variants;
-                // };
 
                 $(document).on('click', '#addVariantBtn', addVariant);
                 $(document).on('click', '.remove-variant-btn', function() {

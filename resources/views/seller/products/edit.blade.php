@@ -160,6 +160,7 @@
                                         Image</button>
                                 </div>
                             </div>
+                            <span class="text-muted small mt-2">NB: JPG/PNG/WEBP only, max 4MB</span>
                         </div>
 
                         <div class="col-12">
