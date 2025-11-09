@@ -182,6 +182,7 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
             Route::get('/', [PaymentListnerController::class, 'devices'])->name('index');
             Route::post('/generate-code', [PaymentListnerController::class, 'generateCode'])->name('generateCode');
             Route::delete('/{device}', [PaymentListnerController::class, 'deleteDevice'])->name('delete');
+            Route::post('/{device}/check-payments', [PaymentListnerController::class, 'checkPayments'])->name('checkPayments');
         });
         Route::get('/payments', [PaymentListnerController::class, 'payments']);
     });

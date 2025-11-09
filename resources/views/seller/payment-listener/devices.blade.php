@@ -73,6 +73,11 @@
                 <small class="text-muted">Last sync: {{ $device->last_sync_at?->format('Y-m-d h:i A') }}</small>
             </div>
             <div class="mt-2 mt-md-0">
+                <form action="{{ route('seller.paymentListener.devices.checkPayments', $device->id) }}" method="POST">
+                    @csrf
+                    <button class="btn btn-sm btn-primary" type="submit">Check Payments</button>
+                </form>
+
                 <form action="{{ route('seller.paymentListener.devices.delete', $device->id) }}" method="POST">
                     @csrf
                     @method('DELETE')
