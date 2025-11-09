@@ -7,6 +7,11 @@ use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PaymentController;
 use App\Models\VerificationCode;
 
+Route::get('push', function () {
+    $token = 'eDxLZ8cDSi-PZto6qgFcBn:APA91bFNiAhXFSWGaIhTI2P-YWM3aF4ZuhlAfMG39QpEdj-zsI2M1wnr9OcZXAKJChLTsog5bL4yY87hi6TMqKlMHOcKEK8DFJVmJGuNAPzOhcyUT8rOdl0';
+    return (new App\Services\Firebase)->notifyPaymentListener($token, "Test Notification", "Good Afternoon");
+});
+
 Route::get('mails/test', function () {
     $data['customerName'] = 'John Doe';
     $data['orderId'] = '223';
@@ -545,4 +550,3 @@ Route::as('static.')->group(function () {
 Route::get('/refresh-csrf', function () {
     return response()->json(['token' => csrf_token()]);
 })->name('refresh.csrf');
-
