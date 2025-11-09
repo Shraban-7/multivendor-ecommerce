@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('seller_id');
             $table->string('device_name')->nullable();
             $table->string('device_code')->nullable();
-            $table->json('device_details')->nullable();
+            $table->string('fcm_token')->nullable();
             $table->tinyInteger('status')->default(PaymentListenerDevice::STATUS_PENDING);
             $table->timestamp('last_sync_at')->nullable();
             $table->timestamps();

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Seller;
 use App\Http\Controllers\Controller;
 use App\Models\PaymentListenerDevice;
 use App\Models\PaymentListenerPayment;
+use App\Services\FcmService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -59,7 +60,7 @@ class PaymentListnerController extends Controller
         $validator = validateRequest($request, [
             'device_code' => 'required|string',
             'device_name' => 'required|string',
-            //'device_details' => 'nullable|array',
+            'fcm_token' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -81,7 +82,7 @@ class PaymentListnerController extends Controller
 
         $device->update([
             'device_name' => $request->device_name,
-            //'device_details' => json_encode($request->device_details),
+            'fcm_token' => $request->fcm_token,
             'status' => PaymentListenerDevice::STATUS_ACTIVE,
             'last_sync_at' => now(),
         ]);
@@ -152,5 +153,12 @@ class PaymentListnerController extends Controller
         $device->save();
 
         return successResponse('Disconnected successfully');
+    }
+
+    public function checkPayments(PaymentListenerDevice $device)
+    {
+        (new FcmService)->notifyPaymentListener($device->fcm_token, "Payment Listener", "Checking new payment messages");
+
+        return redirect()->back()->with('success', "Checked successfully");
     }
 }
