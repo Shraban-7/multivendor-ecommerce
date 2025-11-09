@@ -73,18 +73,21 @@
                 <small class="text-muted">Last sync: {{ $device->last_sync_at?->format('Y-m-d h:i A') }}</small>
             </div>
             <div class="mt-2 mt-md-0">
-                <form action="{{ route('seller.paymentListener.devices.checkPayments', $device->id) }}" method="POST">
-                    @csrf
-                    <button class="btn btn-sm btn-primary" type="submit">Check Payments</button>
-                </form>
+                <div class="d-flex">
+                    <form action="{{ route('seller.paymentListener.devices.checkPayments', $device->id) }}" method="POST" class="me-1 mb-1">
+                        @csrf
+                        <button class="btn btn-sm btn-primary" type="submit">Check Payments</button>
+                    </form>
 
-                <form action="{{ route('seller.paymentListener.devices.delete', $device->id) }}" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <button class="btn btn-sm btn-danger" type="submit" onclick="return confirm('Are you sure?')">
-                        Delete
-                    </button>
-                </form>
+                    <form action="{{ route('seller.paymentListener.devices.delete', $device->id) }}" method="POST" class="mb-1">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-sm btn-danger" type="submit" onclick="return confirm('Are you sure?')">
+                            Delete
+                        </button>
+                    </form>
+                </div>
+
             </div>
         </div>
         @endforeach
