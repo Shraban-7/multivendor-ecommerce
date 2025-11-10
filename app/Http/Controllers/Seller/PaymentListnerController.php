@@ -87,7 +87,7 @@ class PaymentListnerController extends Controller
             'last_sync_at' => now(),
         ]);
 
-        $data['allowed_senders'] = ['NAGAD', 'bKash', 'ROCKET', 'Upay', '+8801985763086'];
+        $data['allowed_senders'] = PaymentListenerPayment::allowed_senders();
 
         $data['user'] = [
             'id' => $device->seller->id,
@@ -132,6 +132,31 @@ class PaymentListnerController extends Controller
         $device->update(['last_sync_at' => now()]);
 
         return successResponse('Payment received successfully');
+    }
+
+    public function checkDevice(Request $request)
+    {
+        $validator = validateRequest($request, [
+            'device_code' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return errorResponse(sendValidationError($validator->errors()));
+        }
+
+        $device = PaymentListenerDevice::where('device_code', $request->device_code)->first();
+        if (!$device) {
+            return errorResponse("Invalid device code!", 403);
+        }
+
+        $data['allowed_senders'] = PaymentListenerPayment::allowed_senders();
+        $data['user'] = [
+            'id' => $device->seller->id,
+            'name' => $device->seller->name,
+            'last_sync_at' => $device->last_sync_at->diffForHumans()
+        ];
+
+        return apiResponse($data);
     }
 
     public function disconnectDevice(Request $request)

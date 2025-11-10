@@ -104,6 +104,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::prefix('payment-listener')->group(function () {
     Route::post('/connect', [PaymentListnerController::class, 'connectDevice']);
+    Route::post('/check-device', [PaymentListnerController::class, 'checkDevice']);
     Route::post('/disconnect', [PaymentListnerController::class, 'disconnectDevice']);
     Route::post('/trigger', [PaymentListnerController::class, 'triggerSms']);
 });
