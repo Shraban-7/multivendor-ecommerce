@@ -13,6 +13,6 @@ class PaymentListenerPayment extends Model
 
     public static function allowed_senders(): array
     {
-        return ['NAGAD', 'bKash', 'ROCKET', 'Upay', '+8801985763086'];
+        return ['NAGAD', 'bKash', 'ROCKET', 'Upay', '+8801985763086', '+8801842357696'];
     }
 }
