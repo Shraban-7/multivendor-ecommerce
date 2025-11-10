@@ -92,6 +92,7 @@ class PaymentListnerController extends Controller
         $data['user'] = [
             'id' => $device->seller->id,
             'name' => $device->seller->name,
+            'last_sync_at' => $device->last_sync_at->diffForHumans()
         ];
 
         return apiResponse($data, "Device connected successfully");
