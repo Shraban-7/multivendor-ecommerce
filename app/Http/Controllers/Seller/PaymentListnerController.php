@@ -84,7 +84,6 @@ class PaymentListnerController extends Controller
             'device_name' => $request->device_name,
             'fcm_token' => $request->fcm_token,
             'status' => PaymentListenerDevice::STATUS_ACTIVE,
-            'last_sync_at' => now(),
         ]);
 
         $data['allowed_senders'] = PaymentListenerPayment::allowed_senders();
@@ -92,7 +91,7 @@ class PaymentListnerController extends Controller
         $data['user'] = [
             'id' => $device->seller->id,
             'name' => $device->seller->name,
-            'last_sync_at' => $device->last_sync_at->diffForHumans()
+            'last_sync_at' => $device->last_sync_at ? $device->last_sync_at->format('Y/m/d h:iA') : 'Never'
         ];
 
         return apiResponse($data, "Device connected successfully");
@@ -155,7 +154,7 @@ class PaymentListnerController extends Controller
         $data['user'] = [
             'id' => $device->seller->id,
             'name' => $device->seller->name,
-            'last_sync_at' => $device->last_sync_at->diffForHumans()
+            'last_sync_at' => $device->last_sync_at ? $device->last_sync_at->format('Y/m/d h:iA') : 'Never'
         ];
 
         return apiResponse($data);
