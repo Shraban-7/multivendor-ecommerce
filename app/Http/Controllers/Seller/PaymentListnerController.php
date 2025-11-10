@@ -106,6 +106,7 @@ class PaymentListnerController extends Controller
             // 'amount' => 'nullable|numeric',
             // 'trx_id' => 'nullable|string',
             'full_sms' => 'required|string',
+            'received_at' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -125,7 +126,7 @@ class PaymentListnerController extends Controller
             'amount' => $request->amount,
             'trx_id' => $request->trx_id,
             'status' => 'pending',
-            'received_at' => now(),
+            'received_at' => $request->received_at,
             'full_sms' => $request->full_sms,
         ]);
 
