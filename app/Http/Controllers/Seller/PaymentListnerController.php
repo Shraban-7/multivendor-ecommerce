@@ -72,9 +72,9 @@ class PaymentListnerController extends Controller
             return errorResponse("Invalid device code!");
         }
 
-        if (!is_null($device->device_name) && $device->status == PaymentListenerDevice::STATUS_ACTIVE) {
-            return errorResponse("This device code is already connected!");
-        }
+        // if (!is_null($device->device_name) && $device->status == PaymentListenerDevice::STATUS_ACTIVE) {
+        //     return errorResponse("This device code is already connected!");
+        // }
 
         if (!is_null($device->device_name) && $device->device_name != $request->device_name) {
             return errorResponse("Use this code for {$device->device_name}");
@@ -87,7 +87,7 @@ class PaymentListnerController extends Controller
             'last_sync_at' => now(),
         ]);
 
-        $data['allowed_senders'] = ['NAGAD', 'bKash', 'ROCKET', 'Upay'];
+        $data['allowed_senders'] = ['NAGAD', 'bKash', 'ROCKET', 'Upay', '+8801985763086'];
 
         $data['user'] = [
             'id' => $device->seller->id,
