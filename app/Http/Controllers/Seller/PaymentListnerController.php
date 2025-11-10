@@ -72,9 +72,9 @@ class PaymentListnerController extends Controller
             return errorResponse("Invalid device code!");
         }
 
-        if (!is_null($device->device_name) && $device->status == PaymentListenerDevice::STATUS_ACTIVE) {
-            return errorResponse("This device code is already connected!");
-        }
+        // if (!is_null($device->device_name) && $device->status == PaymentListenerDevice::STATUS_ACTIVE) {
+        //     return errorResponse("This device code is already connected!");
+        // }
 
         if (!is_null($device->device_name) && $device->device_name != $request->device_name) {
             return errorResponse("Use this code for {$device->device_name}");
@@ -84,14 +84,14 @@ class PaymentListnerController extends Controller
             'device_name' => $request->device_name,
             'fcm_token' => $request->fcm_token,
             'status' => PaymentListenerDevice::STATUS_ACTIVE,
-            'last_sync_at' => now(),
         ]);
 
-        $data['allowed_senders'] = ['NAGAD', 'bKash', 'ROCKET', 'Upay'];
+        $data['allowed_senders'] = PaymentListenerPayment::allowed_senders();
 
         $data['user'] = [
             'id' => $device->seller->id,
             'name' => $device->seller->name,
+            'last_sync_at' => $device->last_sync_at ? $device->last_sync_at->format('Y/m/d h:iA') : 'Never'
         ];
 
         return apiResponse($data, "Device connected successfully");
@@ -106,6 +106,7 @@ class PaymentListnerController extends Controller
             // 'amount' => 'nullable|numeric',
             // 'trx_id' => 'nullable|string',
             'full_sms' => 'required|string',
+            'received_at' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -125,13 +126,38 @@ class PaymentListnerController extends Controller
             'amount' => $request->amount,
             'trx_id' => $request->trx_id,
             'status' => 'pending',
-            'received_at' => now(),
+            'received_at' => $request->received_at,
             'full_sms' => $request->full_sms,
         ]);
 
         $device->update(['last_sync_at' => now()]);
 
         return successResponse('Payment received successfully');
+    }
+
+    public function checkDevice(Request $request)
+    {
+        $validator = validateRequest($request, [
+            'device_code' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return errorResponse(sendValidationError($validator->errors()));
+        }
+
+        $device = PaymentListenerDevice::where('device_code', $request->device_code)->first();
+        if (!$device) {
+            return errorResponse("Invalid device code!", 403);
+        }
+
+        $data['allowed_senders'] = PaymentListenerPayment::allowed_senders();
+        $data['user'] = [
+            'id' => $device->seller->id,
+            'name' => $device->seller->name,
+            'last_sync_at' => $device->last_sync_at ? $device->last_sync_at->format('Y/m/d h:iA') : 'Never'
+        ];
+
+        return apiResponse($data);
     }
 
     public function disconnectDevice(Request $request)

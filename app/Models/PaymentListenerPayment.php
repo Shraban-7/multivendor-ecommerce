@@ -10,4 +10,9 @@ class PaymentListenerPayment extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
+
+    public static function allowed_senders(): array
+    {
+        return ['NAGAD', 'bKash', 'ROCKET', 'Upay', '+8801985763086'];
+    }
 }
