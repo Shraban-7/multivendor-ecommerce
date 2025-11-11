@@ -6,8 +6,10 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
+use App\Models\CategoryOption;
 use App\Models\Option;
 use App\Models\Product;
+use App\Models\ProductVariantOption;
 
 class CategoryController extends Controller
 {
@@ -54,7 +56,14 @@ class CategoryController extends Controller
                 ->having('avg_review', '=', $request->review);
         }
 
-        $productOptions = Option::with('options')->get();
+        $optionIds = CategoryOption::where('category_id', $category->id)->pluck('option_id');
+        $usedOptionValueIds = ProductVariantOption::distinct()->pluck('option_value_id');
+        $productOptions = Option::query()
+            ->whereIn('id', $optionIds)
+            ->with(['option_values' => function ($q) use ($usedOptionValueIds) {
+                $q->whereIn('id', $usedOptionValueIds);
+            }])
+            ->get();
 
         $category_products = Product::withDefaultRelations()
             ->active()

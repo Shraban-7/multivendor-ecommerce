@@ -16,6 +16,11 @@ class Option extends Model
         return $this->hasMany(OptionValue::class);
     }
 
+    public function option_values()
+    {
+        return $this->hasMany(OptionValue::class);
+    }
+
     public function categories()
     {
         return $this->belongsToMany(Category::class, 'category_options', 'option_id', 'category_id');

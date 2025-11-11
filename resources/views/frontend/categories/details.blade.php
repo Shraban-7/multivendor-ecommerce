@@ -55,50 +55,55 @@
             </form>
 
             <!-- Dynamic Product Options -->
-            @foreach ($productOptions as $productOption)
+            {{-- @foreach ($productOptions as $productOption)
             <form method="GET" action="{{ route('category.details', $category->slug) }}" class="space-y-3">
-                <label for="attribute-{{ $productOption->name }}"
-                    class="block text-sm font-medium text-gray-700">{{ $productOption->name }}</label>
-                <select name="{{ strtolower($productOption->name) }}"
-                    id="attribute-{{ $productOption->name }}" onchange="this.form.submit()"
-                    class="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
-                    <option value="all"
-                        {{ request(strtolower($productOption->name)) == 'all' ? 'selected' : '' }}>
-                        All {{ $productOption->name }}
-                    </option>
-                    @foreach ($productOption->options as $option)
-                    <option value="{{ $option->value }}"
-                        {{ request(strtolower($productOption->name)) == $option->value ? 'selected' : '' }}>
-                        {{ strtoupper($option->value) }}
-                    </option>
-                    @endforeach
-                </select>
+            <label for="attribute-{{ $productOption->name }}"
+                class="block text-sm font-medium text-gray-700">{{ $productOption->name }}</label>
+            <select name="{{ strtolower($productOption->name) }}"
+                id="attribute-{{ $productOption->name }}" onchange="this.form.submit()"
+                class="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
+                <option value="all"
+                    {{ request(strtolower($productOption->name)) == 'all' ? 'selected' : '' }}>
+                    All {{ $productOption->name }}
+                </option>
+                @foreach ($productOption->options as $option)
+                <option value="{{ $option->value }}"
+                    {{ request(strtolower($productOption->name)) == $option->value ? 'selected' : '' }}>
+                    {{ strtoupper($option->value) }}
+                </option>
+                @endforeach
+            </select>
             </form>
-            @endforeach
+            @endforeach --}}
 
-            <!-- Review Filter -->
-            <form class="space-y-3">
-                <label for="review-filter" class="block text-sm font-medium text-gray-700">Review</label>
-                <select id="review-filter"
-                    class="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
-                    <option selected>All Reviews</option>
-                    <option value="highest-rated">Highest Rated</option>
-                    <option value="most-reviewed">Most Reviewed</option>
-                    <option value="verified-reviews">Verified Reviews</option>
-                </select>
-            </form>
+            <div class="space-y-6">
+                @foreach ($productOptions as $productOption)
+                <div class="border-b pb-4">
+                    <h3 class="text-sm font-semibold text-gray-800 mb-2">
+                        {{ $productOption->name }}
+                    </h3>
+                    <div class="space-y-2">
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="checkbox"
+                                class="text-primary border-gray-300 rounded focus:ring-primary"
+                                value="all"
+                                data-attribute="{{ strtolower($productOption->name) }}">
+                            <span class="text-gray-700 text-sm">All {{ $productOption->name }}</span>
+                        </label>
 
-            <!-- Recommended Filter -->
-            <form class="space-y-3">
-                <label for="recommended-filter" class="block text-sm font-medium text-gray-700">Recommended</label>
-                <select id="recommended-filter"
-                    class="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
-                    <option selected>All</option>
-                    <option value="best-sellers">Best Sellers</option>
-                    <option value="editor-pick">Editor's Pick</option>
-                    <option value="customers-choice">Customers' Choice</option>
-                </select>
-            </form>
+                        @foreach ($productOption->option_values as $value)
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="checkbox"
+                                class="text-primary border-gray-300 rounded focus:ring-primary"
+                                value="{{ $value->value }}"
+                                data-attribute="{{ strtolower($productOption->name) }}">
+                            <span class="text-gray-700 text-sm">{{ strtoupper($value->value) }}</span>
+                        </label>
+                        @endforeach
+                    </div>
+                </div>
+                @endforeach
+            </div>
         </div>
     </aside>
 
