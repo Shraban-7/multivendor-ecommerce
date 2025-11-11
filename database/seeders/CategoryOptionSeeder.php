@@ -126,7 +126,7 @@ class CategoryOptionSeeder extends Seeder
                     "USB Adapter",
                     "Charger"
                 ],
-                "options" => ["Color", "Storage", "Region"]
+                "options" => ["Color", "Storage", "Region", "Size"]
             ],
             [
                 "category" => "Mobile Accessories",
