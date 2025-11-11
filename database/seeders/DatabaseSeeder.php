@@ -43,6 +43,8 @@ class DatabaseSeeder extends Seeder
             DistrictSeeder::class,
             UpazilaSeeder::class,
             UnionSeeder::class,
+
+            CategoryOptionSeeder::class,
         ]);
     }
 }
