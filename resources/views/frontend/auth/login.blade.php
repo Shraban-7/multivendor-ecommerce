@@ -1,5 +1,5 @@
 @extends('frontend.layouts.app')
-@section('title', 'login')
+@section('title', 'Login')
 
 <?php
 $settings = settings();

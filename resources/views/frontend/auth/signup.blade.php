@@ -1,5 +1,5 @@
 @extends('frontend.auth.layout')
-@section('title', 'login')
+@section('title', 'Sign Up')
 
 @section('content')
 
