@@ -162,17 +162,22 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <x-seller.image-cropper-modal />
+
 <script>
+
     const categoryAttributes = @json($categoryAttributes);
+    let variantCounter = 0;
+    const $variantsContainer = $('#variantsContainer');
+    
     $(function() {
 
         function initAttributeSelect2() {
             $('.attribute-value').select2({
                 tags: true,
                 placeholder: 'Select or type a value',
-                // width: '100%',
                 width: 'resolve',
-                dropdownParent: null
+                dropdownParent: null,
+                allowClear: true
             });
         }
 
@@ -211,7 +216,6 @@
         $('#categorySelect').change(function() {
             selectedCategoryId = $(this).val();
 
-            // Subcategory filtering
             let hasOptions = false;
             $('#subcategorySelect').val('').trigger('change');
 
@@ -237,60 +241,6 @@
             });
             initAttributeSelect2();
         });
-
-        let variantCounter = 0;
-        const $variantsContainer = $('#variantsContainer');
-
-        // function createAttributeRow() {
-        //     if (!selectedCategoryId || !categoryAttributes[selectedCategoryId] || categoryAttributes[
-        //             selectedCategoryId].length === 0) {
-        //         return '';
-        //     }
-
-        //     const timestamp = Date.now();
-        //     const keyOptions = categoryAttributes[selectedCategoryId]
-        //         .map(attr =>
-        //             `<option value="${attr.name}" data-values='${JSON.stringify(attr.values)}'>${attr.name}</option>`
-        //         )
-        //         .join('');
-
-        //     return `
-        //         <div class="row g-2 mb-2 attribute-row align-items-end">
-        //             <div class="col-md-5">
-        //                 <select class="form-select form-select-sm attribute-name" id="attribute-key-${timestamp}">
-        //                     <option disabled selected>-- Select Attribute --</option>
-        //                     ${keyOptions}
-        //                 </select>
-        //             </div>
-        //             <div class="col-md-5">
-        //                 <select class="form-select form-select-sm attribute-value" id="attribute-value-${timestamp}">
-        //                     <option disabled selected>-- Select Value --</option>
-        //                 </select>
-        //             </div>
-        //             <div class="col-md-2">
-        //                 <button type="button" class="btn btn-sm btn-danger remove-attribute-btn">Remove</button>
-        //             </div>
-        //         </div>
-        //     `;
-        // }
-
-        // $(document).on('change', '.attribute-name', function() {
-        //     const $row = $(this).closest('.attribute-row');
-        //     const $valueSelect = $row.find('.attribute-value');
-
-        //     const selectedOption = $(this).find('option:selected');
-        //     let values = [];
-        //     try {
-        //         values = JSON.parse(selectedOption.attr('data-values') || '[]');
-        //     } catch (e) {
-        //         values = [];
-        //     }
-
-        //     $valueSelect.empty().append(`<option disabled selected>-- Select Value --</option>`);
-        //     values.forEach(v => {
-        //         $valueSelect.append(`<option value="${v.value}">${v.value}</option>`);
-        //     });
-        // });
 
         function createAttributeRows() {
             if (!selectedCategoryId || !categoryAttributes[selectedCategoryId] || categoryAttributes[selectedCategoryId].length === 0) {
@@ -460,33 +410,6 @@
             let formData = new FormData(form);
             const variants = [];
 
-            // $('.variant-card').each(function(index) {
-            //     const $card = $(this);
-            //     const variant = {
-            //         sku: $card.find('.variant-sku').val(),
-            //         buying_price: $card.find('.variant-buying-price').val(),
-            //         selling_price: $card.find('.variant-selling-price').val(),
-            //         variant_discount_type: $card.find('.variant-discount-type').val(),
-            //         variant_discount_value: $card.find('.variant-discount-value').val(),
-            //         stock: $card.find('.variant-stock').val(),
-            //         attributes: []
-            //     };
-
-            //     $card.find('.attribute-row').each(function() {
-            //         const key = $(this).find('.attribute-name').val() || $(this).find(
-            //             '.attribute-key').val();
-            //         const value = $(this).find('.attribute-value').val();
-            //         if (key && value) {
-            //             variant.attributes.push({
-            //                 key,
-            //                 value
-            //             });
-            //         }
-            //     });
-
-            //     variants.push(variant);
-            // });
-
             $('.variant-card').each(function() {
                 const $card = $(this);
                 const variant = {
@@ -502,7 +425,7 @@
                 $card.find('.attribute-value').each(function() {
                     const attrName = $(this).data('attribute-name');
                     if (!attrName) return;
-                    
+
                     const selectedTexts = $(this).select2('data')
                         .map(item => item.text.trim())
                         .filter(v => v && !v.startsWith('-- Select')); // remove placeholder text
