@@ -138,8 +138,7 @@
         padding: 0.5rem 0 0;
     }
 </style>
-@endush
-
+@endpush
 
 @section('content')
 
