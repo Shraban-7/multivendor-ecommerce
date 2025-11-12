@@ -1,28 +1,149 @@
 @extends('seller.layouts.app')
 @section('title', 'Payment Listener Devices')
 
-@section('content')
-
+@push('styles')
 <style>
-    .device-code {
-        font-family: monospace;
-        font-size: 0.85rem;
-        background: #f1f1f1;
-        padding: 2px 6px;
+    #connectDeviceModal .modal-content {
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        padding: 1.25rem;
+    }
+
+    #connectDeviceModal .modal-header {
+        border-bottom: none;
+        padding: 0 0 0.5rem 0;
+        text-align: center;
+        display: block;
+    }
+
+    #connectDeviceModal .modal-title {
+        font-weight: 700;
+        font-size: 1.35rem;
+        color: #212529;
+    }
+
+    #connectDeviceModal .modal-body {
+        padding: 0;
+        text-align: center;
+    }
+
+    .instruction-text {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+    }
+
+    #qrCodeContainer {
+        padding: 8px;
+        background: white;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        margin-bottom: 0.75rem;
+        display: inline-block;
+    }
+
+    #qrCodeContainer canvas {
+        width: 120px !important;
+        height: 120px !important;
         border-radius: 4px;
+        display: block;
+    }
+
+    .or-separator {
+        margin: 1.25rem 0;
+        display: flex;
+        align-items: center;
+        color: #adb5bd;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        font-weight: 600;
+    }
+
+    .or-separator::before,
+    .or-separator::after {
+        content: '';
+        flex-grow: 1;
+        height: 1px;
+        background: #e9ecef;
+        margin: 0 1rem;
+    }
+
+    #connectDeviceModal .code-input-group {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        padding: 0;
+        border: 1px solid #9bbdff;
+        background: #e9f2ff;
+        border-radius: 6px;
+        margin-bottom: 0.75rem;
+    }
+
+    #deviceCode {
+        flex-grow: 1;
+        text-align: center;
+        word-break: break-all;
+        overflow-wrap: break-word;
+        font-family: 'Space Mono', monospace;
+        font-weight: 700;
+        font-size: 1.5rem;
+        letter-spacing: 1px;
+        color: #0d6efd;
+        padding: 0.5rem 0.75rem;
+        user-select: all;
+        background: transparent;
+        border: none;
+    }
+
+    #copyCodeButton {
+        height: 100%;
+        padding: 0.7rem 0.75rem;
+        border-radius: 0 6px 6px 0;
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+        flex-shrink: 0;
+    }
+
+    #copyCodeButton:hover {
+        background-color: #0b5ed7;
+        border-color: #0b5ed7;
+    }
+
+    @media (max-width: 350px) {
+        #deviceCode {
+            font-size: 1.2rem;
+            letter-spacing: 0;
+            padding: 0.4rem 0.6rem;
+        }
+    }
+
+    #copyFeedback {
+        font-size: 0.8rem;
+        color: #198754;
+        font-weight: 500;
+        margin-top: 6px;
+        min-height: 1rem;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    #copyFeedback.show {
+        opacity: 1;
+    }
+
+    #connectDeviceModal .modal-footer {
+        border-top: none;
+        justify-content: center;
+        padding: 0.5rem 0 0;
     }
 </style>
+@endush
+
+
+@section('content')
 
 <h4 class="mb-3">Automatic Payment Listener</h4>
-
-<!-- <div class="card p-3 mb-3">
-    <div class="d-flex justify-content-between align-items-center">
-        <label class="form-label mb-0">Enable Auto Payment Confirmation</label>
-        <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" id="autoConfirmToggle" checked />
-        </div>
-    </div>
-</div> -->
 
 <div class="row">
     <div class="col-md-6 mb-3">
@@ -121,48 +242,39 @@
 </div>
 @endif
 
-<div class="modal fade" id="generateCodeModal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="generateCodeModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+<div class="modal fade" id="connectDeviceModal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="connectDeviceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 360px;">
         <div class="modal-content">
-            <div class="modal-header border-0 pb-0">
-                <h5 class="modal-title fw-bold text-primary" id="generateCodeModalLabel">
-                    Connect New Device
-                </h5>
+            <div class="modal-header">
+                <h5 class="modal-title" id="connectDeviceModalLabel">🔑 Connect New Device </h5>
             </div>
-
-            <div class="modal-body text-center pt-2">
-                <p class="mt-3 mb-2">
-                    Enter this code in your Payment Listener App:
+            <div class="modal-body">
+                <p class="instruction-text">
+                    Use one of the two methods below to link your new device.
                 </p>
-                <div class="p-4 bg-light rounded border border-primary mx-4">
-                    <h1 id="deviceCodeToCopy" class="mono-code display-4 text-primary fw-bolder mb-0">K9L0M1N2</h1>
+                <div class="d-flex flex-column align-items-center mb-4">
+                    <div id="qrCodeContainer"></div>
+                    <p class="text-muted small mt-2 mb-0">Scan to auto-pair</p>
                 </div>
-                <div class="mt-3 d-grid gap-2 mx-4">
-                    <button class="btn btn-primary" id="copyCodeButton">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-check-fill me-2" viewBox="0 0 16 16">
-                            <path d="M6.5 2V1a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1Z" />
-                            <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1A2 2 0 0 1 10.5 4h-5A2 2 0 0 1 4 2.5zm6.854 7.354a.5.5 0 0 0-.708-.708L7.5 10.793 6.354 9.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0z" />
-                        </svg>
-                        Copy Code
-                    </button>
-                    <small id="copyFeedback" class="text-success small opacity-0" aria-live="polite">Code copied to clipboard!</small>
+                <div class="or-separator">OR</div>
+                <div class="device-code-wrapper">
+                    <p class="text-muted small mb-2">Enter the code manually:</p>
+                    <div class="code-input-group">
+                        <div id="deviceCode"></div>
+                        <button class="btn btn-primary me-2" id="copyCodeButton" title="Copy code">
+                            <i class="bi bi-clipboard"></i>
+                        </button>
+                    </div>
+                    <div id="copyFeedback" class="mb-3">Code copied successfully!</div>
                 </div>
-
-                <p class="mt-1 small text-muted">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock me-1" viewBox="0 0 16 16">
-                        <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z" />
-                        <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z" />
-                    </svg>
-                    This code is valid for **15 minutes**.
-                </p>
             </div>
-
-            <div class="modal-footer justify-content-center border-0 pt-0">
-                <a href="{{ route('seller.paymentListener.devices.index') }}" class="btn btn-outline-secondary">Close</a>
+            <div class="modal-footer">
+                <a  href="{{ route('seller.paymentListener.devices.index') }}" class="btn btn-light w-100">Done</a>
             </div>
         </div>
     </div>
 </div>
+
 
 <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -185,12 +297,14 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
     const generateButton = document.getElementById('generateCodeTrigger');
-    const successCodeElement = document.getElementById('deviceCodeToCopy');
+    const deviceCodeElement = document.getElementById('deviceCode');
     const errorMessageContent = document.getElementById('errorMessageContent');
+    const copyCodeBtn = document.getElementById('copyCodeButton');
 
-    const successModal = new bootstrap.Modal(document.getElementById('generateCodeModal'));
+    const successModal = new bootstrap.Modal(document.getElementById('connectDeviceModal'));
     const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
 
     const ROUTE_URL = "{{ route('seller.paymentListener.devices.generateCode') }}";
@@ -216,7 +330,8 @@
 
             if (response.ok) {
                 if (data.code) {
-                    successCodeElement.textContent = data.code;
+                    deviceCodeElement.textContent = data.code;
+                    generateQR(data.code, document.getElementById('qrCodeContainer'));
                     successModal.show();
                 } else {
                     throw new Error('Response successful, but device code is missing.');
@@ -244,23 +359,55 @@
         }
     });
 
-    document.getElementById('copyCodeButton').addEventListener('click', function() {
-        const codeElement = document.getElementById('deviceCodeToCopy');
-        const codeText = codeElement.textContent;
-        const feedbackElement = document.getElementById('copyFeedback');
-
-        navigator.clipboard.writeText(codeText).then(() => {
-            feedbackElement.classList.remove('opacity-0');
-            feedbackElement.classList.add('opacity-100');
-
-            setTimeout(() => {
-                feedbackElement.classList.remove('opacity-100');
-                feedbackElement.classList.add('opacity-0');
-            }, 2000);
-        }).catch(err => {
-            console.error('Could not copy text: ', err);
-            alert("Copy failed. Please copy the code manually: " + codeText);
+    function generateQR(codeValue, qrContainer) {
+        qrContainer.innerHTML = '';
+        new QRCode(qrContainer, {
+            text: codeValue,
+            width: 120,
+            height: 120,
+            colorDark: "#212529",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
         });
+    }
+
+    copyCodeBtn.addEventListener("click", () => {
+        const feedback = document.getElementById("copyFeedback");
+        const range = document.createRange();
+        range.selectNode(deviceCodeElement);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+
+        try {
+            const success = document.execCommand('copy');
+            window.getSelection().removeAllRanges();
+
+            if (success) {
+                feedback.classList.add("show");
+
+                const originalIcon = '<i class="bi bi-clipboard"></i>';
+                copyCodeBtn.classList.remove('btn-primary');
+                copyCodeBtn.classList.add('btn-success');
+                copyCodeBtn.innerHTML = '<i class="bi bi-check-lg"></i>';
+
+                setTimeout(() => {
+                    feedback.classList.remove("show");
+                    copyCodeBtn.classList.remove('btn-success');
+                    copyCodeBtn.classList.add('btn-primary');
+                    copyCodeBtn.innerHTML = originalIcon;
+                }, 2000);
+            } else {
+                throw new Error("Copy failed via execCommand.");
+            }
+        } catch (err) {
+            console.error("Copy failed:", err);
+            feedback.textContent = "Copy failed. Please select and copy manually.";
+            feedback.classList.add("show");
+            setTimeout(() => {
+                feedback.classList.remove("show");
+                feedback.textContent = "Code copied successfully!";
+            }, 3000);
+        }
     });
 </script>
 @endpush
