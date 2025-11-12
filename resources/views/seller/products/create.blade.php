@@ -16,105 +16,23 @@
 
         <div class="card-body">
             <div class="row">
-                <!-- Basic Info -->
-                <div class="col-md-8 mb-3">
-                    <label class="form-label">Product Name</label>
-                    <input name="name" type="text" class="form-control form-control-sm" required>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">SKU</label>
-                    <input name="sku" type="text" value="{{ \App\Models\ProductVariant::generate_sku() }}"
-                        class="form-control form-control-sm" required>
-                </div>
-
-                <!-- Category -->
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">Category</label>
-                    <select id="categorySelect" name="category_id" class="form-select form-select-sm" required>
-                        <option disabled selected>-- Select Category --</option>
-                        @foreach ($categories as $category)
-                        <option value="{{ $category->id }}">{{ $category->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">Subcategory</label>
-                    <select id="subcategorySelect" name="subcategory_id" class="form-select form-select-sm" disabled>
-                        <option disabled selected>-- Select Subcategory --</option>
-                        @foreach ($categories as $category)
-                        @foreach ($category->subcategories as $subcategory)
-                        <option value="{{ $subcategory->id }}" data-category="{{ $category->id }}">
-                            {{ $subcategory->name }}
-                        </option>
-                        @endforeach
-                        @endforeach
-                    </select>
-                </div>
-
-                <!-- Brand -->
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">Brand</label>
-                    <select name="brand" class="form-select form-select-sm brand-select" required>
-                        <option disabled selected>-- Select Brand --</option>
-                        @foreach ($brands as $brand)
-                        <option value="{{ $brand->id }}">{{ $brand->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <!-- Pricing -->
-                <div class="col-md-3 mb-3">
-                    <label class="form-label">Buying Price</label>
-                    <input name="buying_price" type="number" min="0" class="form-control form-control-sm"
-                        required>
-                </div>
-
-                <div class="col-md-3 mb-3">
-                    <label class="form-label">Selling Price</label>
-                    <input name="selling_price" type="number" min="0" class="form-control form-control-sm"
-                        required>
-                </div>
-
-                <div class="col-md-3 mb-3">
-                    <label class="form-label">VAT (%)</label>
-                    <input name="vat_percent" type="number" min="0" class="form-control form-control-sm"
-                        required>
-                </div>
-
-                <!-- Payment & Discount -->
-                <div class="col-md-3 mb-3">
-                    <label class="form-label">Payment Type</label>
-                    <select name="payment_type" class="form-select form-select-sm" required>
-                        @foreach (App\Enums\PaymentType::cases() as $paymentType)
-                        <option value="{{ $paymentType->value }}">{{ $paymentType->title() }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div class="col-md-3 mb-3">
-                    <label class="form-label">Discount Type</label>
-                    <select name="discount_type" class="form-select form-select-sm">
-                        <option value="">-- None --</option>
-                        <option value="{{ \App\Enums\DiscountType::FLAT->value }}">Flat</option>
-                        <option value="{{ \App\Enums\DiscountType::PERCENTAGE->value }}">Percentage</option>
-                    </select>
-                </div>
-
-                <div class="col-md-3 mb-3">
-                    <label class="form-label">Discount Value</label>
-                    <input name="discount_value" type="number" class="form-control form-control-sm">
-                </div>
-
-                <!-- Unit -->
-                <div class="col-md-3 mb-3">
-                    <div class="row g-2 align-items-end">
-                        <div class="col-6">
-                            <label class="form-label">Unit Value</label>
-                            <input type="number" name="unit_value" class="form-control form-control-sm"
-                                placeholder="Enter value" required>
+                <div class="col-md-7">
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Product Name</label>
+                            <input name="name" type="text" class="form-control form-control-sm" required>
                         </div>
-                        <div class="col-6">
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">SKU</label>
+                            <input name="sku" type="text" value="{{ \App\Models\ProductVariant::generate_sku() }}" class="form-control form-control-sm" required>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Unit Value</label>
+                            <input type="number" name="unit_value" class="form-control form-control-sm" placeholder="Enter value" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
                             <label class="form-label">Unit</label>
                             <select name="unit_id" class="form-select form-select-sm" required>
                                 <option disabled selected>--</option>
@@ -123,24 +41,86 @@
                                 @endforeach
                             </select>
                         </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Category</label>
+                            <select id="categorySelect" name="category_id" class="form-select form-select-sm" required>
+                                <option disabled selected>-- Select Category --</option>
+                                @foreach ($categories as $category)
+                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Subcategory</label>
+                            <select id="subcategorySelect" name="subcategory_id" class="form-select form-select-sm" disabled>
+                                <option disabled selected>-- Select Subcategory --</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Brand</label>
+                            <select name="brand" class="form-select form-select-sm brand-select" required>
+                                <option disabled selected>-- Select Brand --</option>
+                                @foreach ($brands as $brand)
+                                <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Buying Price</label>
+                            <input name="buying_price" type="number" min="0" class="form-control form-control-sm" required>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Selling Price</label>
+                            <input name="selling_price" type="number" min="0" class="form-control form-control-sm" required>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">VAT (%)</label>
+                            <input name="vat_percent" type="number" min="0" class="form-control form-control-sm" required>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Payment Type</label>
+                            <select name="payment_type" class="form-select form-select-sm" required>
+                                @foreach (App\Enums\PaymentType::cases() as $paymentType)
+                                <option value="{{ $paymentType->value }}">{{ $paymentType->title() }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Low Stock Quantity</label>
+                            <input name="low_stock_quantity" type="number" min="0" class="form-control form-control-sm" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Discount Type</label>
+                            <select name="discount_type" class="form-select form-select-sm">
+                                <option value="">-- None --</option>
+                                <option value="{{ \App\Enums\DiscountType::FLAT->value }}">Flat</option>
+                                <option value="{{ \App\Enums\DiscountType::PERCENTAGE->value }}">Percentage</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Discount Value</label>
+                            <input name="discount_value" type="number" class="form-control form-control-sm">
+                        </div>
                     </div>
                 </div>
 
-                <!-- Stock -->
-                <div class="col-md-3 mb-3">
-                    <label class="form-label">Low Stock Quantity</label>
-                    <input name="low_stock_quantity" type="number" min="0" class="form-control form-control-sm"
-                        required>
-                </div>
-
-                <!-- Thumbnail -->
-                <div class="col-12 mb-3">
-                    <label class="form-label">Thumbnail <span class="text-muted small">(1:1 Ratio)</span></label>
-                    <label for="inputImage" class="text-primary text-decoration-underline" style="cursor:pointer;">Crop
-                        Image First</label>
+                <div class="col-md-5 d-flex flex-column align-items-center justify-content-center">
+                    <label class="form-label text-center">Product Thumbnail <span class="text-muted small">(1:1 Ratio)</span></label>
+                    <div class="mb-3">
+                        <x-image-input name="thumbnail" />
+                    </div>
+                    <label for="inputImage" class="text-primary text-decoration-underline" style="cursor:pointer;">Crop Image First</label>
                     <input type="file" id="inputImage" hidden accept="image/*" />
-                    <x-image-input name="thumbnail" />
-                    <span class="text-muted small mt-2">NB: JPG/PNG/WEBP only, max 4MB</span>
+                    <span class="text-muted small mt-2 text-center">NB: JPG/PNG/WEBP only, max 4MB</span>
                 </div>
             </div>
         </div>
@@ -164,11 +144,10 @@
 <x-seller.image-cropper-modal />
 
 <script>
-
     const categoryAttributes = @json($categoryAttributes);
     let variantCounter = 0;
     const $variantsContainer = $('#variantsContainer');
-    
+
     $(function() {
 
         function initAttributeSelect2() {
