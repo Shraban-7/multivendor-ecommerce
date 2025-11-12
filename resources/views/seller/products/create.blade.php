@@ -3,6 +3,14 @@
 
 @push('styles')
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+    #productForm .form-label {
+        margin-bottom: 3px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #6c757d !important;
+    }
+</style>
 @endpush
 
 @section('content')
@@ -20,7 +28,7 @@
                     <div class="row">
                         <div class="col-12 mb-3">
                             <label class="form-label">Product Name</label>
-                            <input name="name" type="text" class="form-control form-control-sm" required>
+                            <input name="name" type="text" class="form-control" required>
                         </div>
 
                         <div class="col-md-4 mb-3">
