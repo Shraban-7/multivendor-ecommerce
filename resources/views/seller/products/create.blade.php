@@ -64,6 +64,13 @@
                             <label class="form-label">Subcategory</label>
                             <select id="subcategorySelect" name="subcategory_id" class="form-select form-select-sm" disabled>
                                 <option disabled selected>-- Select Subcategory --</option>
+                                @foreach ($categories as $category)
+                                @foreach ($category->subcategories as $subcategory)
+                                <option value="{{ $subcategory->id }}" data-category="{{ $category->id }}">
+                                    {{ $subcategory->name }}
+                                </option>
+                                @endforeach
+                                @endforeach
                             </select>
                         </div>
 
