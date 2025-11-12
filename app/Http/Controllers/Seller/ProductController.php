@@ -33,12 +33,28 @@ class ProductController extends Controller
 
     public function create()
     {
-        $categories = Category::category()->with('subcategories')->get();
+        $categories = Category::category()->with('subcategories', 'options.option_values')->get();
         $brands = Brand::all();
         $units = ProductUnit::all();
-        $product_options = Option::with('options')->get();
+        $categoryAttributes = $this->categorizedAtributes($categories);
 
-        return view('seller.products.create', compact('categories', 'brands', 'units', 'product_options'));
+        return view('seller.products.create', compact('categories', 'brands', 'units', 'categoryAttributes'));
+    }
+
+    private function categorizedAtributes($categories)
+    {
+        $data = [];
+        foreach ($categories as $cat) {
+            foreach ($cat->options as $option) {
+                $data[$cat->id][] = [
+                    'id' => $option->id,
+                    'name' => $option->name,
+                    'values' => $option->option_values->select('id', 'value')
+                ];
+            }
+        }
+
+        return $data;
     }
 
     public function store(Request $request)
@@ -63,8 +79,6 @@ class ProductController extends Controller
             'thumbnail' => 'nullable|image|max:4096',
             'variants' => 'nullable|string',
         ]);
-
-        // dd($validated);
 
         $brandId = null;
         if (!empty($validated['brand'])) {
@@ -133,9 +147,9 @@ class ProductController extends Controller
                 $variant->save();
 
                 if (!empty($v['attributes']) && is_array($v['attributes'])) {
-                    foreach ($v['attributes'] as $attr) {
-                        $key = trim($attr['key']);
-                        $value = trim($attr['value']);
+                    foreach ($v['attributes'] as $key => $value) {
+                        $key = trim($key);
+                        $value = trim($value);
                         if (!$key || !$value) continue;
 
                         $option = Option::firstOrCreate(['name' => $key]);
