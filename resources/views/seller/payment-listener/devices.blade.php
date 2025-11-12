@@ -219,26 +219,19 @@
 @if($payments->count())
 <div class="card p-3">
     <h6 class="mb-3">Recent Payments</h6>
-    <div class="table-responsive">
-        <table class="table table-sm align-middle">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Sender</th>
-                    <th>SMS</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($payments as $payment)
-                <tr>
-                    <td>{{ $payment->created_at->format('Y-m-d h:i A') }}</td>
-                    <td>{{ $payment->sender }}</td>
-                    <td>{{ $payment->full_sms }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
+    <ul class="list-group">
+        @foreach ($payments as $payment)
+        <li class="list-group-item">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="me-3">
+                    <div class="fw-bold">{{ $payment->sender }}</div>
+                    <div class="small">{{ $payment->full_sms }}</div>
+                </div>
+                <div class="small text-muted text-nowrap">{{ $payment->received_at?->format('Y-m-d h:i A') }}</div>
+            </div>
+        </li>
+        @endforeach
+    </ul>
 </div>
 @endif
 
@@ -269,7 +262,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <a  href="{{ route('seller.paymentListener.devices.index') }}" class="btn btn-light w-100">Done</a>
+                <a href="{{ route('seller.paymentListener.devices.index') }}" class="btn btn-light w-100">Done</a>
             </div>
         </div>
     </div>
