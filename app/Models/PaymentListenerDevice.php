@@ -14,7 +14,6 @@ class PaymentListenerDevice extends Model
 
     protected $casts = [
         'last_sync_at' => 'datetime',
-        'received_at' => 'datetime'
     ];
 
     const STATUS_PENDING = 0;
