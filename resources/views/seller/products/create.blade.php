@@ -14,8 +14,7 @@
 @endpush
 
 @section('content')
-<form id="productForm" autocomplete="off" method="POST" action="{{ route('seller.products.store') }}"
-    enctype="multipart/form-data">
+<form id="productForm" autocomplete="off" method="POST" action="{{ route('seller.products.store') }}" enctype="multipart/form-data">
     @csrf
     <div class="card mb-3">
         <div class="card-header bg-white">
@@ -140,17 +139,10 @@
             </div>
         </div>
     </div>
-
-    <h5 class="mb-3">Product Variants</h5>
-    <div class="card-body mb-3" id="variantsContainer"></div>
-
-
-    <button type="button" class="btn btn-sm btn-success mb-3" id="addVariantBtn">+ Add Variant</button>
-
+    @include('seller.products.variant-generator')
     <div class="d-flex justify-content-end">
         <button type="button" id="submitBtn" class="btn btn-primary">Save Product</button>
     </div>
-
 </form>
 @endsection
 
@@ -159,45 +151,15 @@
 <x-seller.image-cropper-modal />
 
 <script>
-    const categoryAttributes = @json($categoryAttributes);
-    let variantCounter = 0;
-    const $variantsContainer = $('#variantsContainer');
-
     $(function() {
-
-        function initAttributeSelect2() {
-            $('.attribute-value').select2({
-                tags: true,
-                placeholder: 'Select or type a value',
-                width: 'resolve',
-                dropdownParent: null,
-                allowClear: true
-            });
-        }
-
-        $('.attribute-value').select2({
+        $('.option_values').select2({
             tags: true,
             placeholder: 'Select or type a value',
+            dropdownParent: null,
+            allowClear: true,
             width: '100%',
-            createTag: function(params) {
-                const term = $.trim(params.term);
-                if (term === '') {
-                    return null;
-                }
-
-                // Check if the option already exists
-                if ($(".attribute-value option").filter(function() {
-                        return $(this).text() === term;
-                    }).length) {
-                    return null; // Ignore duplicates
-                }
-
-                return {
-                    id: term,
-                    text: term,
-                    newTag: true
-                };
-            }
+            closeOnSelect: false,
+            theme: "bootstrap-5",
         });
 
         $(".brand-select").select2({
@@ -209,188 +171,18 @@
 
         $('#categorySelect').change(function() {
             selectedCategoryId = $(this).val();
-
-            let hasOptions = false;
-            $('#subcategorySelect').val('').trigger('change');
-
-            $('#subcategorySelect option').each(function() {
-                const optionCategoryId = $(this).data('category');
-                if (selectedCategoryId == optionCategoryId) {
-                    $(this).show();
-                    hasOptions = true;
-                } else {
-                    $(this).hide();
-                }
-            });
-
-            $('#subcategorySelect').attr('disabled', !hasOptions);
-
-            $('.variant-card').each(function() {
-                const $attributesContainer = $(this).find('.attributes-container');
-                $attributesContainer.empty();
-
-                if (selectedCategoryId && categoryAttributes[selectedCategoryId]?.length > 0) {
-                    $attributesContainer.append(createAttributeRows());
-                }
-            });
-            initAttributeSelect2();
+            showVariantOptions(selectedCategoryId);
         });
 
-        function createAttributeRows() {
-            if (!selectedCategoryId || !categoryAttributes[selectedCategoryId] || categoryAttributes[selectedCategoryId].length === 0) {
-                return '';
+        function showVariantOptions(categoryId) {
+            $('.attributeColumn').addClass('d-none');
+            const $visibleColumns = $('.attributeColumn[data-category="' + categoryId + '"]').removeClass('d-none');
+            if ($visibleColumns.length > 0) {
+                $('#variantGenerator').removeClass('d-none');
+            } else {
+                $('#variantGenerator').addClass('d-none');
             }
-
-            return categoryAttributes[selectedCategoryId].map(attr => {
-                const timestamp = Date.now() + Math.floor(Math.random() * 1000);
-                const valueOptions = attr.values.map(value =>
-                    `<option value="${value.id}">${value.value}</option>`
-                ).join('');
-
-                return `
-                    <div class="col-sm-6 col-xl-4">
-                        <div class="input-group input-group-sm mb-2 attribute-row">
-                            <label class="form-label mb-0">${attr.name}</label>
-                            <select class="form-select form-select-sm attribute-value" 
-                                    id="attribute-value-${timestamp}" 
-                                    data-attribute-name="${attr.name}">
-                                <option value="">-- Select ${attr.name} --</option>
-                                ${valueOptions}
-                            </select>
-                        </div>
-                    </div>
-                `;
-            }).join('');
         }
-
-        const createVariantCard = () => {
-            variantCounter++;
-            const id = `variant-${variantCounter}`;
-            const collapseId = `collapse-${variantCounter}`;
-
-            return `
-                <div class="card variant-card mb-3" id="${id}">
-                    <div class="card-header bg-white p-0 position-relative">
-                        <button class="btn btn-link w-100 text-start text-decoration-none p-3 collapsed" type="button"
-                            data-bs-toggle="collapse" data-bs-target="#${collapseId}">
-                            Variant #${variantCounter}
-                        </button>
-                        ${variantCounter > 1 ? `<button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 mt-2 me-2 remove-variant-btn" data-variant-id="${id}">Remove</button>` : ''}
-                    </div>
-
-                    <div id="${collapseId}" class="collapse show">
-                        <div class="card-body p-3">
-                            <div class="row g-2 mb-3 align-items-end">
-                                <div class="col-md-6">
-                                    <div class="input-group input-group-sm">
-                                        <input type="text" class="form-control variant-sku" placeholder="Variant SKU">
-                                        <button class="btn btn-outline-secondary generate-sku-btn" type="button">Generate</button>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <input type="number" class="form-control form-control-sm variant-stock" min="0" step="1" placeholder="Stock">
-                                </div>
-                                <div class="col-md-3">
-                                    <input type="number" class="form-control form-control-sm variant-buying-price" min="0.01" step="0.01" placeholder="Buying Price ({{ currency() }})">
-                                </div>
-                                <div class="col-md-3">
-                                    <input type="number" class="form-control form-control-sm variant-selling-price" min="0.01" step="0.01" placeholder="Selling Price ({{ currency() }})">
-                                </div>
-                                <div class="col-md-3">
-                                    <select class="form-select form-select-sm variant-discount-type">
-                                        <option value="">-- Select Discount Type --</option>
-                                        <option value="{{ \App\Enums\DiscountType::FLAT->value }}">Flat</option>
-                                        <option value="{{ \App\Enums\DiscountType::PERCENTAGE->value }}">Percentage</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
-                                    <input type="number" class="form-control form-control-sm variant-discount-value" min="0.01" step="0.01" placeholder="Discount value ({{ currency() }})">
-                                </div>
-                            </div>
-
-                            <h6 class="mt-2 mb-2">Attributes (optional)</h6>
-                            <div class="attributes-container row g-2">
-                                ${createAttributeRows()}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        };
-
-        const createVariantCardOld = () => {
-            variantCounter++;
-            const id = `variant-${variantCounter}`;
-            const collapseId = `collapse-${variantCounter}`;
-
-            return `
-                            <div class="card variant-card mb-3" id="${id}">
-                                <div class="card-header bg-white p-0 position-relative">
-                                    <button class="btn btn-link w-100 text-start text-decoration-none p-3 collapsed" type="button"
-                                        data-bs-toggle="collapse" data-bs-target="#${collapseId}">
-                                        Variant #${variantCounter}
-                                    </button>
-                                    ${variantCounter > 1 ? `<button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 mt-2 me-2 remove-variant-btn" data-variant-id="${id}">Remove</button>` : ''}
-                                </div>
-
-                                <div id="${collapseId}" class="collapse show">
-                                    <div class="card-body p-3">
-                                        <div class="row g-2 mb-3 align-items-end">
-                                            <div class="col-md-6">
-                                                <div class="input-group input-group-sm">
-                                                    <input type="text" class="form-control variant-sku" placeholder="Variant SKU">
-                                                    <button class="btn btn-outline-secondary generate-sku-btn" type="button">Generate</button>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-6">
-                                                <input type="number" class="form-control form-control-sm variant-stock" min="0" step="1" placeholder="Stock">
-                                            </div>
-                                            <div class="col-md-3">
-                                                <input type="number" class="form-control form-control-sm variant-buying-price" min="0.01" step="0.01" placeholder="Buying Price ({{ currency() }})">
-                                            </div>
-                                            <div class="col-md-3">
-                                                <input type="number" class="form-control form-control-sm variant-selling-price" min="0.01" step="0.01" placeholder="Selling Price ({{ currency() }})">
-                                            </div>
-                                            <div class="col-md-3">
-                                                <select class="form-select form-select-sm variant-discount-type">
-                                                    <option value="">-- Select Discount Type --</option>
-                                                    <option value="{{ \App\Enums\DiscountType::FLAT->value }}">Flat</option>
-                                                    <option value="{{ \App\Enums\DiscountType::PERCENTAGE->value }}">Percentage</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <input type="number" class="form-control form-control-sm variant-discount-value" min="0.01" step="0.01" placeholder="Discount value ({{ currency() }})">
-                                            </div>
-                                        </div>
-
-                                        <h6 class="mt-2 mb-2 text-success">Attributes</h6>
-                                        <div class="attributes-container row g-2">${createAttributeRow()}</div>
-                                        <button type="button" class="btn btn-sm btn-outline-secondary add-attribute-btn mt-2">+ Attribute</button>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-        };
-
-        const addVariant = () => {
-            $variantsContainer.append($(createVariantCard()));
-            initAttributeSelect2();
-        };
-
-        $(document).on('click', '#addVariantBtn', addVariant);
-        $(document).on('click', '.remove-variant-btn', function() {
-            const variantId = $(this).data('variant-id');
-            $(`#${variantId}`).remove();
-        });
-
-        $(document).on('click', '.add-attribute-btn', function() {
-            $(this).siblings('.attributes-container').append(createAttributeRow());
-        });
-
-        $(document).on('click', '.remove-attribute-btn', function() {
-            $(this).closest('.attribute-row').remove();
-        });
 
         $(document).on('click', '.generate-sku-btn', function() {
             const randomSKU = crypto.randomUUID().split('-')[0].toUpperCase();
@@ -402,35 +194,35 @@
 
             let form = $('#productForm')[0];
             let formData = new FormData(form);
-            const variants = [];
+            const variants = collectVariantsData();
 
-            $('.variant-card').each(function() {
-                const $card = $(this);
-                const variant = {
-                    sku: $card.find('.variant-sku').val()?.trim() || null,
-                    buying_price: $card.find('.variant-buying-price').val() || null,
-                    selling_price: $card.find('.variant-selling-price').val() || null,
-                    variant_discount_type: $card.find('.variant-discount-type').val() || null,
-                    variant_discount_value: $card.find('.variant-discount-value').val() || null,
-                    stock: $card.find('.variant-stock').val() || null,
-                    attributes: {}
-                };
+            // $('.variant-card').each(function() {
+            //     const $card = $(this);
+            //     const variant = {
+            //         sku: $card.find('.variant-sku').val()?.trim() || null,
+            //         buying_price: $card.find('.variant-buying-price').val() || null,
+            //         selling_price: $card.find('.variant-selling-price').val() || null,
+            //         variant_discount_type: $card.find('.variant-discount-type').val() || null,
+            //         variant_discount_value: $card.find('.variant-discount-value').val() || null,
+            //         stock: $card.find('.variant-stock').val() || null,
+            //         attributes: {}
+            //     };
 
-                $card.find('.attribute-value').each(function() {
-                    const attrName = $(this).data('attribute-name');
-                    if (!attrName) return;
+            //     $card.find('.attribute-value').each(function() {
+            //         const attrName = $(this).data('attribute-name');
+            //         if (!attrName) return;
 
-                    const selectedTexts = $(this).select2('data')
-                        .map(item => item.text.trim())
-                        .filter(v => v && !v.startsWith('-- Select')); // remove placeholder text
+            //         const selectedTexts = $(this).select2('data')
+            //             .map(item => item.text.trim())
+            //             .filter(v => v && !v.startsWith('-- Select')); // remove placeholder text
 
-                    if (selectedTexts.length) {
-                        variant.attributes[attrName] = selectedTexts.length === 1 ? selectedTexts[0] : selectedTexts;
-                    }
-                });
+            //         if (selectedTexts.length) {
+            //             variant.attributes[attrName] = selectedTexts.length === 1 ? selectedTexts[0] : selectedTexts;
+            //         }
+            //     });
 
-                variants.push(variant);
-            });
+            //     variants.push(variant);
+            // });
 
             formData.append('variants', JSON.stringify(variants));
 
@@ -462,7 +254,70 @@
             });
         });
 
-        addVariant();
+        function collectVariantsData() {
+            const variantBody = document.getElementById("variantsTableBody");
+            if (!variantBody) return [];
+
+            const variantRows = variantBody.querySelectorAll("tr");
+            const variants = [];
+
+            // Get headers only from THIS table
+            const table = variantBody.closest("table");
+            const headerCells = table.querySelectorAll("thead th");
+
+            // Extract only attribute columns (skip fixed ones)
+            const skipColumns = [
+                "#",
+                "SKU",
+                "Buying Price",
+                "Selling Price",
+                "Discount Type",
+                "Discount Value",
+                "Image",
+                "Actions",
+            ];
+
+            const attributeHeaders = Array.from(headerCells)
+                .map((cell) => cell.textContent.trim())
+                .filter((title) => !skipColumns.includes(title) && title !== "");
+
+            variantRows.forEach((row) => {
+                const variant = {};
+                variant.sku =
+                    row.querySelector('td:nth-child(2) input')?.value.trim() || "";
+
+                // Collect attribute values
+                variant.attributes = {};
+
+                attributeHeaders.forEach((title, i) => {
+                    // +3 because the 1st column is #, 2nd is SKU
+                    const cellInput = row.querySelector(`td:nth-child(${i + 3}) input`);
+                    variant.attributes[title] = cellInput?.value?.trim() || "";
+                });
+
+                // Prices
+                const colStart = 3 + attributeHeaders.length;
+                const buyingPriceInput = row.querySelector(
+                    `td:nth-child(${colStart}) input`
+                );
+                const sellingPriceInput = row.querySelector(
+                    `td:nth-child(${colStart + 1}) input`
+                );
+                const discountTypeSelect = row.querySelector(".variant-discount-type");
+                const discountValueInput = row.querySelector(".variant-discount-value");
+                const imageInput = row.querySelector('input[type="file"]');
+
+                variant.buying_price = buyingPriceInput?.value || "";
+                variant.selling_price = sellingPriceInput?.value || "";
+                variant.discount_type = discountTypeSelect?.value || "none";
+                variant.discount_value = discountValueInput?.value || "";
+                variant.image = imageInput?.files?.[0] || null;
+
+                variants.push(variant);
+            });
+
+            return variants;
+        }
     });
 </script>
 @endpush
