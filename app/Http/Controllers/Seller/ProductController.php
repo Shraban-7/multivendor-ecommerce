@@ -248,8 +248,6 @@ class ProductController extends Controller
     {
         $product->load('variants.option_values', 'stock_history', 'seo');
 
-        $seo = $product->seo;
-
         $costPrice = $product->buying_price ?? 0;
         $sellingPrice = $product->selling_price ?? 0;
 
@@ -267,7 +265,7 @@ class ProductController extends Controller
 
         $product_options = Option::with('options')->get();
 
-        return view('seller.products.details', compact('product', 'product_options', 'seo'));
+        return view('seller.products.details', compact('product', 'product_options'));
     }
 
     public function edit($slug)
@@ -277,8 +275,9 @@ class ProductController extends Controller
         $categories = Category::category()->with('subcategories')->get();
         $brands = Brand::all();
         $units = ProductUnit::all();
+        $seo = $product->seo;
 
-        return view('seller.products.edit', compact('product', 'categories', 'brands', 'units'));
+        return view('seller.products.edit', compact('product', 'categories', 'brands', 'units', 'seo'));
     }
 
     public function update($slug, Request $request)
