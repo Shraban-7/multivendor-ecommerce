@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use App\Models\CategoryOption;
 use App\Models\Option;
+use App\Models\Product;
 use App\Models\ProductVariantOption;
 
 class CategoryController extends Controller
@@ -24,7 +25,7 @@ class CategoryController extends Controller
 
         $brands = Brand::all();
 
-        $query = $category->products()->withDefaultRelations()->active();
+        $query = Product::where('category_id', $category->id)->withDefaultRelations()->active();
 
         if ($request->filled('subcategory') && $request->subcategory !== 'all') {
             $query->whereHas('subcategory', function ($q) use ($request) {
@@ -59,12 +60,12 @@ class CategoryController extends Controller
             foreach ($request->attributes as $optionName => $values) {
                 dd("enter");
                 if (!empty($values) && !in_array('all', $values)) {
-                 $ok =   $query->whereHas('variants.variantOptions.optionValue.option', function ($q) use ($optionName) {
+                    $ok =   $query->whereHas('variants.variantOptions.optionValue.option', function ($q) use ($optionName) {
                         $q->where('name', $optionName);
                     })->whereHas('variants.variantOptions.optionValue', function ($q) use ($values) {
                         $q->whereIn('value', (array) $values);
                     });
-                dd($ok);
+                    dd($ok);
                 }
             }
         }

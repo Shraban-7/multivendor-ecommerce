@@ -23,23 +23,36 @@
 
                 <div class="space-y-6" id="filterOptions">
                     @foreach ($productOptions as $productOption)
-                    <div class="border-b pb-4">
-                        <h3 class="text-sm font-semibold text-gray-800 mb-2">{{ $productOption->name }}</h3>
-                        <div class="space-y-2">
-                            <label class="flex items-center space-x-2 cursor-pointer">
-                                <input type="checkbox"
-                                    class="filter-checkbox text-primary border-gray-300 rounded focus:ring-primary"
-                                    value="all" data-attribute="{{ strtolower($productOption->name) }}">
-                                <span class="text-gray-700 text-sm">All {{ $productOption->name }}</span>
+                    <div class="rounded-lg border border-gray-200 bg-white p-4">
+                        <h3 class="mb-3 text-sm font-semibold text-gray-800">
+                            {{ $productOption->name }}
+                        </h3>
+                        <div
+                            class="space-y-2"
+                            style="max-height: 200px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #d1d5db #f3f4f6;">
+                            <label class="group flex cursor-pointer items-center space-x-3">
+                                <input
+                                    type="checkbox"
+                                    class="filter-checkbox h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary focus:ring-offset-0"
+                                    value="all"
+                                    data-attribute="{{ Str::lower($productOption->name) }}" />
+                                <span
+                                    class="text-sm text-gray-700 transition-colors duration-150 group-hover:text-primary">
+                                    All {{ $productOption->name }}
+                                </span>
                             </label>
 
                             @foreach ($productOption->option_values as $value)
-                            <label class="flex items-center space-x-2 cursor-pointer">
-                                <input type="checkbox"
-                                    class="filter-checkbox text-primary border-gray-300 rounded focus:ring-primary"
+                            <label class="group flex cursor-pointer items-center space-x-3">
+                                <input
+                                    type="checkbox"
+                                    class="filter-checkbox h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary focus:ring-offset-0"
                                     value="{{ $value->value }}"
-                                    data-attribute="{{ strtolower($productOption->name) }}">
-                                <span class="text-gray-700 text-sm">{{ strtoupper($value->value) }}</span>
+                                    data-attribute="{{ Str::lower($productOption->name) }}" />
+                                <span
+                                    class="text-sm text-gray-700 transition-colors duration-150 group-hover:text-primary">
+                                    {{ ucwords($value->value) }}
+                                </span>
                             </label>
                             @endforeach
                         </div>
@@ -173,7 +186,7 @@
         filterState.sortBy = $(this).val();
         updateFilters();
     });
-    
+
     $(document).on('change', '.filter-checkbox', function() {
         const attr = $(this).data('attribute');
         const value = $(this).val();

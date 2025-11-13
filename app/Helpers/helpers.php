@@ -487,7 +487,9 @@ if (! function_exists('hasPermission')) {
 if (! function_exists('settings')) {
     function settings()
     {
-        return SystemSetting::first();
+        return Cache::remember('system_settings', 120, function(){
+            return SystemSetting::first();
+        });
     }
 }
 
