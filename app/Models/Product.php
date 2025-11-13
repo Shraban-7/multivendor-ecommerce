@@ -149,12 +149,12 @@ class Product extends Model
 
         $images = [];
         $images[] = $this->thumbnail;
-        foreach($this->images as $img) {
+        foreach ($this->images as $img) {
             $images[] = $img->image;
         }
 
-        foreach($this->variants as $variant) {
-            if(!is_null($variant->image)) {
+        foreach ($this->variants as $variant) {
+            if (!is_null($variant->image)) {
                 $images[] = $variant->image;
             }
         }
@@ -277,5 +277,12 @@ class Product extends Model
     public function scopeActive($query)
     {
         return $query->where('status', self::STATUS_ACTIVE);
+    }
+
+    public function imageUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->thumbnail ? storage_url($this->thumbnail) : asset('assets/frontend/images/default.png')
+        );
     }
 }

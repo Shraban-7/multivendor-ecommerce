@@ -32,7 +32,7 @@
                     <tr>
                         <td>
                             <div class="d-flex align-items-center">
-                                <img src="{{ storage_url($product->thumbnail) }}" class="rounded me-2"
+                                <img src="{{ $product->imageUrl }}" class="rounded me-2"
                                     style="width:50px;height:50px;object-fit:cover">
                                 <div>
                                     <a href="{{ route('seller.products.show', $product->slug) }}" target="__blank"

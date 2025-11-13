@@ -84,4 +84,11 @@ class ProductVariant extends Model
             }
         );
     }
+
+    public function imageUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->image ? storage_url($this->image) : asset('assets/frontend/images/default.png')
+        );
+    }
 }
