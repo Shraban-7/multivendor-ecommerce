@@ -1,4 +1,4 @@
-<div class="card shadow-sm border-0 mb-4" id="variantGenerator">
+<div class="card shadow-sm border-0 mb-4 d-none" id="variantGenerator">
     <div class="card-header bg-white">
         <h5 class="mb-0">Product Variant Generator</h5>
     </div>

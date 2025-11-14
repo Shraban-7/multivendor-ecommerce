@@ -158,8 +158,7 @@
             dropdownParent: null,
             allowClear: true,
             width: '100%',
-            closeOnSelect: false,
-            theme: "bootstrap-5",
+            closeOnSelect: false
         });
 
         $(".brand-select").select2({
@@ -183,11 +182,6 @@
                 $('#variantGenerator').addClass('d-none');
             }
         }
-
-        $(document).on('click', '.generate-sku-btn', function() {
-            const randomSKU = crypto.randomUUID().split('-')[0].toUpperCase();
-            $(this).siblings('.variant-sku').val(randomSKU);
-        });
 
         $('#submitBtn').click(function(e) {
             e.preventDefault();
