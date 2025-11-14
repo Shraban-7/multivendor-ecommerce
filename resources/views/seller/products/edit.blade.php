@@ -7,226 +7,179 @@
 
 @section('content')
 
-<div class="mb-3 d-flex justify-content-between align-items-end">
-    <h4 class="mb-0">Edit Product</h4>
-    <a href="{{ route('seller.products.show', $product->slug) }}" class="btn btn-secondary border ">
-        ← Back to Details
-    </a>
+<div class="d-flex align-items-end justify-content-between mb-3">
+    <h4 class="fw-semibold mb-0">Edit Product</h4>
+    <a href="{{ route('seller.products.show', $product->slug) }}" class="btn btn-secondary btn-sm">← Back to Details</a>
 </div>
-<div id="alertBox"></div>
-<div class="row">
-    <div class="col-12">
-        <div class="card card-body">
-            <form id="productUpdateForm" enctype="multipart/form-data" method="POST">
-                @csrf
-                <div class="row">
-                    <div class="mb-3 col-md-3">
-                        <label class="form-label">Name</label>
-                        <input name="name" type="text" value="{{ $product->name }}" class="form-control" required>
-                    </div>
-                    <div class="mb-3 col-md-3">
-                        <label class="form-label">Category</label>
-                        <select name="category_id" class="form-select w-100" id="categorySelect" required>
-                            <option value="" disabled>--Choose--</option>
-                            @foreach ($categories as $category)
-                            <option value="{{ $category->id }}"
-                                {{ $category->id == $product->category_id ? 'selected' : '' }}>{{ $category->name }}
-                            </option>
-                            @endforeach
-                        </select>
-                    </div>
+<div class="card shadow-sm border-0 mb-3">
+    <div class="card-body p-4">
+        <form id="productUpdateForm" enctype="multipart/form-data" method="POST">
+            @csrf
+            <div class="row g-4">
+                <div class="col-12 col-lg-8">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Product Name</label>
+                            <input type="text" class="form-control form-control-sm" value="{{ $product->name }}" name="name" required />
+                        </div>
 
-                    <div class="mb-3 col-md-3">
-                        <input type="hidden" name="subcategory_id" id="hiddenSubcategoryId" value="">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Brand</label>
+                            <select name="brand" class="form-select form-select-sm">
+                                <option value="">--Choose--</option>
+                                @foreach ($brands as $brand)
+                                <option value="{{ $brand->id }}" {{ $product->brand_id == $brand->id ? 'selected' : '' }}>{{ $brand->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
 
-                        <label class="form-label">Subcategory</label>
-                        <select name="subcategory_id" class="form-select w-100" id="subcategorySelect"
-                            {{ $product->subcategory_id ? '' : 'disabled' }}>
-                            <option value="" disabled>--Choose--</option>
-                            @foreach ($categories as $category)
-                            @foreach ($category->subcategories as $subcategory)
-                            <option value="{{ $subcategory->id }}" data-category="{{ $category->id }}"
-                                {{ $subcategory->id == $product->subcategory_id ? 'selected' : '' }}>
-                                {{ $subcategory->name }}
-                            </option>
-                            @endforeach
-                            @endforeach
-                        </select>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Category</label>
+                            <select name="category_id" class="form-select form-select-sm" id="categorySelect" required>
+                                <option value="" disabled>--Choose--</option>
+                                @foreach ($categories as $category)
+                                <option value="{{ $category->id }}" @selected($category->id == $product->category_id)>{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
 
-                    </div>
-
-                    <div class="mb-3 col-md-3">
-                        <label class="form-label">Brand</label>
-                        <select name="brand" class="form-select w-100 brand-select">
-                            <option value="">--Choose--</option>
-                            @foreach ($brands as $brand)
-                            <option value="{{ $brand->id }}"
-                                {{ isset($product) && $product->brand_id == $brand->id ? 'selected' : '' }}>
-                                {{ $brand->name }}
-                            </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="mb-3 col-md-6">
-                        <label class="form-label">Short Description</label>
-                        <x-textarea-input name="short_description" :value="$product->short_description" />
-                    </div>
-                    <div class="mb-3 col-md-6">
-                        <label class="form-label">Description</label>
-                        <x-textarea-input name="description" :value="$product->description" />
-                    </div>
-                    <div class="mb-3 col-md-3">
-                        <label class="form-label">VAT (%)</label>
-                        <input name="vat_percent" type="number" value="{{ $product->vat_percent }}"
-                            class="form-control" required>
-                    </div>
-                    <div class="mb-3 col-md-3">
-                        <label class="form-label">Unit <small class="text-muted">(e.g., 2.5 kg)</small></label>
-                        <div class="d-flex align-items-center gap-2">
-                            <input type="number" step="0.01" name="unit_value" value="{{ $product->unit_value }}"
-                                class="form-control form-control" placeholder="Value" style="width: 60%;" required>
-                            <select name="unit_id" class="form-select form-select" style="width: 40%;" required>
-                                <option value="" disabled {{ $product->unit_id === null ? 'selected' : '' }}>--
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Subcategory</label>
+                            <select name="subcategory_id" class="form-select form-select-sm" id="subcategorySelect" {{ $product->subcategory_id ? '' : 'disabled' }}>
+                                <option value="" disabled>--Choose--</option>
+                                @foreach ($categories as $category)
+                                @foreach ($category->subcategories as $subcategory)
+                                <option value="{{ $subcategory->id }}" data-category="{{ $category->id }}" @selected($subcategory->id == $product->subcategory_id)>
+                                    {{ $subcategory->name }}
                                 </option>
-                                @foreach ($units as $unit)
-                                <option value="{{ $unit->id }}"
-                                    {{ $product->unit_id == $unit->id ? 'selected' : '' }}>
-                                    {{ $unit->short_name }}
+                                @endforeach @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Unit <small class="text-muted">(e.g., 2.5 kg)</small></label>
+                            <div class="input-group">
+                                <input type="number" step="0.01" name="unit_value" value="{{ $product->unit_value }}"
+                                    class="form-control form-control-sm" placeholder="Value" style="width: 60%;" required>
+                                <select name="unit_id" class="form-select form-select-sm" style="width: 40%;" required>
+                                    <option value="" disabled {{ $product->unit_id === null ? 'selected' : '' }}>--
+                                    </option>
+                                    @foreach ($units as $unit)
+                                    <option value="{{ $unit->id }}"
+                                        {{ $product->unit_id == $unit->id ? 'selected' : '' }}>
+                                        {{ $unit->short_name }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Payment Type</label>
+                            <select name="payment_type" class="form-select form-select-sm w-100">
+                                @foreach (App\Enums\PaymentType::cases() as $paymentType)
+                                <option value="{{ $paymentType->value }}" @selected($paymentType->value == $product->payment_type->value)>
+                                    {{ $paymentType->title() }}
                                 </option>
                                 @endforeach
                             </select>
                         </div>
-                    </div>
 
-                    <div class="mb-3 col-md-3">
-                        <label class="form-label">Payment Type</label>
-                        <select name="payment_type" class="form-select w-100">
-                            @foreach (App\Enums\PaymentType::cases() as $paymentType)
-                            <option value="{{ $paymentType->value }}" @selected($paymentType->value == $product->payment_type->value)>
-                                {{ $paymentType->title() }}
-                            </option>
-                            @endforeach
-                        </select>
-                    </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Low Stock Quantity</label>
+                            <input name="low_stock_quantity" type="number" min="0" class="form-control form-control-sm" value="{{ $product->low_stock_quantity }}" required>
+                        </div>
 
-                    <div class="mb-3 col-md-12">
-                        <div class="row">
-                            <div class="col-md-3 col-sm-6 mb-2">
-                                <div class="form-check form-switch">
-                                    <input type="hidden" name="is_trending" value="0">
-                                    <input class="form-check-input" type="checkbox" name="is_trending"
-                                        {{ $product->is_trending ? 'checked' : '' }} value="1" role="switch"
-                                        id="is_trending">
-                                    <label class="form-check-label" for="is_trending">Trending</label>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-6 mb-2">
-                                <div class="form-check form-switch">
-                                    <input type="hidden" name="best_selling" value="0">
-                                    <input class="form-check-input" type="checkbox" name="best_selling"
-                                        {{ $product->best_selling ? 'checked' : '' }} value="1" role="switch"
-                                        id="best_selling">
-                                    <label class="form-check-label" for="best_selling">Best Selling</label>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-6 mb-2">
-                                <div class="form-check form-switch">
-                                    <input type="hidden" name="is_featured" value="0">
-                                    <input class="form-check-input" type="checkbox" name="is_featured"
-                                        {{ $product->is_featured ? 'checked' : '' }} value="1" role="switch"
-                                        id="is_featured">
-                                    <label class="form-check-label" for="is_featured">Featured</label>
-                                </div>
-                            </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Buying Price</label>
+                            <input type="text" name="buying_price" class="form-control form-control-sm" value="{{ $product->buying_price }}" required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Selling Price</label>
+                            <input type="text" name="selling_price" class="form-control form-control-sm" value="{{ $product->selling_price }}" required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">VAT (%)</label>
+                            <input name="vat_percent" type="number" value="{{ $product->vat_percent }}" class="form-control form-control-sm" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Discount Type</label>
+                            <select name="discount_type" class="form-select form-select-sm">
+                                <option value="">-- None --</option>
+                                <option value="{{ \App\Enums\DiscountType::FLAT->value }}">Flat</option>
+                                <option value="{{ \App\Enums\DiscountType::PERCENTAGE->value }}">Percentage</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Discount Value</label>
+                            <input name="discount_value" type="number" class="form-control form-control-sm" value="{{ $product->discount_value }}">
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Short Description</label>
+                            <x-textarea-input name="short_description" :value="$product->short_description" />
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Description</label>
+                            <x-textarea-input name="description" :value="$product->description" />
                         </div>
                     </div>
-
-
-                    <div class="mb-3 col-12">
-                        <label class="form-label">Thumbnail <span class="text-muted small">(Ratio 1:1)</span></label>
-                        <div style="width: 250px;">
-                            <div class="form-group">
-                                <div class="image-preview border bg-light d-flex justify-content-center text-center align-items-center position-relative"
-                                    style="width: 200px; height: 200px; cursor: pointer; overflow: hidden;">
-                                    <img src="{{ $product->imageUrl }}" alt="image"
-                                        class="img-fluid rounded"
-                                        style="width: 100%; height: 100%; object-fit: cover;">
-                                </div>
-                                <input type="file" name="thumbnail" class="d-none file-input" accept="image/*">
-                                <button type="button" class="btn btn-danger btn-sm mt-2 remove-image d-none">Remove
-                                    Image</button>
-                            </div>
-                        </div>
-                        <span class="text-muted small mt-2">NB: JPG/PNG/WEBP only, max 4MB</span>
-                    </div>
-
-                    <div class="col-12">
-                        <label class="form-label">Product Video</label>
-                        @if ($product->video)
-                        <div>
-                            <video width="320" height="240" controls>
-                                <source src="{{ storage_url($product->video) }}">
-                                Your browser does not support the video tag.
-                            </video>
-                        </div>
-                        @endif
-
-                        <!-- File Input for New Video -->
-                        <input type="file" id="video" class="mb-2 form-control" name="video">
-                    </div>
-
-
-                    <div class="col-12 mb-3">
-                        <label class="form-label">Gallery Images</label>
-                        <input type="file" id="files" class="mb-2 form-control" name="files[]" multiple>
-
-                        <div id="selectedImages" class="row g-2">
-                            @foreach ($product->images as $image)
-                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
-                                <div class="position-relative">
-                                    <img src="{{ storage_url($image->image) }}" alt="image"
-                                        class="img-fluid rounded"
-                                        style="height: 150px; object-fit: cover; width: 100%;">
-
-                                    <button type="button" class="btn btn-danger btn-sm w-100 mt-1"
-                                        onclick="deleteImage({{ $image->id }})">
-                                        Delete
-                                    </button>
-                                </div>
-                            </div>
-                            @endforeach
-                        </div>
-                    </div>
-
                 </div>
-                <button type="submit" id="updateBtn" class="btn btn-theme">Update</button>
-            </form>
-        </div>
+                <div class="col-12 col-lg-4">
+                    <div class="mb-3 d-flex justify-content-center">
+                        <div>
+                            <label class="form-label">Thumbnail <span class="text-muted small">(Ratio 1:1)</span></label>
+                            <div style="width: 250px;">
+                                <div class="form-group">
+                                    <div class="image-preview border bg-light d-flex justify-content-center text-center align-items-center position-relative"
+                                        style="width: 200px; height: 200px; cursor: pointer; overflow: hidden;">
+                                        <img src="{{ $product->imageUrl }}" alt="image"
+                                            class="img-fluid rounded"
+                                            style="width: 100%; height: 100%; object-fit: cover;">
+                                    </div>
+                                    <input type="file" name="thumbnail" class="d-none file-input" accept="image/*">
+                                    <button type="button" class="btn btn-danger btn-sm mt-2 remove-image d-none">Remove
+                                        Image</button>
+                                </div>
+                            </div>
+                            <span class="text-muted small mt-2">NB: JPG/PNG/WEBP only, max 4MB</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-3 border-top pt-3">
+                        <div class="form-check form-switch">
+                            <input
+                                class="form-check-input"
+                                type="checkbox"
+                                name="is_featured"
+                                {{ $product->is_featured ? 'checked' : '' }} />
+                            <label class="form-check-label small">Featured Product</label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input
+                                class="form-check-input"
+                                type="checkbox"
+                                name="best_selling"
+                                {{ $product->best_selling ? 'checked' : '' }} />
+                            <label class="form-check-label small">Best Selling</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">
+                        Update Product
+                    </button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
-
-<!-- Image Cropper Modal -->
-<div class="modal fade" id="thumbnailCropperModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Crop Thumbnail</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-                    id="closeCropperModalBtn"></button>
-            </div>
-            <div class="modal-body text-center">
-                <input type="file" id="thumbnailUploadInput" accept="image/*" class="form-control mb-3">
-                <img id="thumbnailCropperImage" src="#" class="d-none img-fluid" style="max-height: 400px;">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-success" id="cropThumbnailBtn">Crop & Insert</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="card my-3">
+<div class="card">
     <div class="card-header bg-white">
         <h5 class="mb-0">SEO & Social Share Settings</h5>
     </div>
@@ -315,6 +268,27 @@
     </div>
 </div>
 
+<div id="alertBox"></div>
+
+<!-- Image Cropper Modal -->
+<div class="modal fade" id="thumbnailCropperModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Crop Thumbnail</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    id="closeCropperModalBtn"></button>
+            </div>
+            <div class="modal-body text-center">
+                <input type="file" id="thumbnailUploadInput" accept="image/*" class="form-control mb-3">
+                <img id="thumbnailCropperImage" src="#" class="d-none img-fluid" style="max-height: 400px;">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="cropThumbnailBtn">Crop & Insert</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')

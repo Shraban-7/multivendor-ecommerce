@@ -38,7 +38,7 @@
                     @include('seller.layouts.navbar')
                 </div>
 
-                <div class="my-3 container-fluid px-sm-4">
+                <div class="my-3 container px-sm-4">
                     <x-flash-message />
                     @yield('content')
                 </div>

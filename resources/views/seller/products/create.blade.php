@@ -140,9 +140,7 @@
         </div>
     </div>
     @include('seller.products.variant-generator')
-    <div class="d-flex justify-content-end">
-        <button type="button" id="submitBtn" class="btn btn-primary">Save Product</button>
-    </div>
+    <button type="button" id="submitBtn" class="btn btn-primary">Save Product</button>
 </form>
 @endsection
 
