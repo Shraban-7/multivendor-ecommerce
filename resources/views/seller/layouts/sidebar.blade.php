@@ -69,7 +69,11 @@ $route = request()->route()->getName();
                     <i data-feather="chevron-right" class="chevron-icon transition"></i>
                 </a>
 
-                <div id="navProducts" class="collapse {{ request()->routeIs('seller.products.*') ? 'show' : '' }}"
+                @php
+                    $productMenuOpen = (request()->routeIs('seller.products.*') || request()->routeIs('seller.stock.index')) ? true : false;
+                @endphp
+
+                <div id="navProducts" class="collapse {{ $productMenuOpen ? 'show' : '' }}"
                     data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
                         @if ($seller || $employee->hasPermission('seller.products.index'))

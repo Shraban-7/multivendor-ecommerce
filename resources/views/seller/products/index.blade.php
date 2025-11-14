@@ -13,6 +13,7 @@
         <table class="table table-bordered table-hover align-middle bg-white" id="product-table">
             <thead>
                 <tr>
+                    <th>SKU</th>
                     <th>Product</th>
                     <th>Price Range</th>
                     <th>Status</th>
@@ -28,8 +29,10 @@
                         $totalStock = $totalStockIn = $totalStockOut;
                         $minPrice = min($product->variants->min('selling_price'), $product->selling_price);
                         $maxPrice = max($product->variants->max('selling_price'), $product->selling_price);
+                        $variantCount = $product->variants->count();
                     @endphp
                     <tr>
+                        <td>{{ $product->sku }}</td>
                         <td>
                             <div class="d-flex align-items-center">
                                 <img src="{{ $product->imageUrl }}" class="rounded me-2"
@@ -37,10 +40,10 @@
                                 <div>
                                     <a href="{{ route('seller.products.show', $product->slug) }}" target="__blank"
                                         class="fw-bold">{{ $product->name }}</a><br>
-                                    @if ($product->variants->count() > 0)
+                                    @if ($variantCount > 0)
                                         <a href="#" class="small text-muted text-decoration-underline"
                                             data-bs-toggle="modal" data-bs-target="#variantsModal-{{ $product->id }}">
-                                            View variants ({{ $totalStock }} {{ $product->unit->short_name }})
+                                            View {{ $variantCount }} variants
                                         </a>
                                     @endif
                                 </div>
@@ -66,7 +69,7 @@
 
                         </td>
 
-                        <td>{{ $product->created_at->format('d M h:ia') }}</td>
+                        <td>{{ $product->created_at->format('d/m/Y h:ia') }}</td>
 
                         <td>
                             <div class="d-flex">
