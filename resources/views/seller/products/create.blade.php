@@ -171,6 +171,20 @@
         $('#categorySelect').change(function() {
             selectedCategoryId = $(this).val();
             showVariantOptions(selectedCategoryId);
+
+            let hasOptions = false;
+            $('#subcategorySelect').val('').trigger('change');
+            $('#subcategorySelect option').each(function() {
+                const optionCategoryId = $(this).data('category');
+                if (selectedCategoryId == optionCategoryId) {
+                    $(this).show();
+                    hasOptions = true;
+                } else {
+                    $(this).hide();
+                }
+            });
+
+            $('#subcategorySelect').attr('disabled', !hasOptions);
         });
 
         function showVariantOptions(categoryId) {

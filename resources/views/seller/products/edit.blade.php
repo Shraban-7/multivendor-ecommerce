@@ -145,13 +145,11 @@
 
                     <div class="mb-3 col-12">
                         <label class="form-label">Thumbnail <span class="text-muted small">(Ratio 1:1)</span></label>
-                        <!-- <x-image-input name="thumbnail" :image="storage_url($product->thumbnail)" /> -->
-
                         <div style="width: 250px;">
                             <div class="form-group">
                                 <div class="image-preview border bg-light d-flex justify-content-center text-center align-items-center position-relative"
                                     style="width: 200px; height: 200px; cursor: pointer; overflow: hidden;">
-                                    <img src="{{ storage_url($product->thumbnail) }}" alt="image"
+                                    <img src="{{ $product->imageUrl }}" alt="image"
                                         class="img-fluid rounded"
                                         style="width: 100%; height: 100%; object-fit: cover;">
                                 </div>
