@@ -179,6 +179,102 @@
         </form>
     </div>
 </div>
+
+<div class="card shadow-sm border-0 mb-3">
+    <div
+        class="card-header d-flex justify-content-between align-items-center bg-white border-bottom">
+        <h5 class="mb-0">Gallery Images</h5>
+        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#uploadModal">
+            <i class="bi bi-plus-circle"></i> Add Images
+        </button>
+    </div>
+
+    <div class="card-body">
+        @if ($images->count())
+        <div class="row g-3">
+            @foreach ($images as $image)
+            <div class="col-6 col-md-3">
+                <div class="position-relative border rounded overflow-hidden shadow-sm">
+                    <img
+                        src="{{ storage_url($image->image) }}"
+                        alt="Product Image"
+                        class="w-100"
+                        style="object-fit: cover; height: 180px;" />
+                    <form
+                        action="{{ route('seller.products.image.delete', $image->id) }}"
+                        method="POST"
+                        class="position-absolute top-0 end-0 m-1">
+                        @csrf
+                        @method('DELETE')
+                        <button
+                            type="submit"
+                            class="btn btn-sm btn-danger rounded-circle"
+                            style="line-height: 1;"
+                            title="Delete"
+                            onclick="return confirm('Are you sure you want to delete this image?')">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            @endforeach
+        </div>
+        @else
+        <p class="text-muted mb-0 text-center">No images in this gallery yet.</p>
+        @endif
+    </div>
+</div>
+
+<!-- Upload Modal -->
+<div
+    class="modal fade"
+    id="uploadModal"
+    tabindex="-1"
+    aria-labelledby="uploadModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadModalLabel">Upload Images</h5>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <form
+                action="{{ route('seller.products.uploadImages') }}"
+                method="POST"
+                enctype="multipart/form-data">
+                @csrf
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                        <label class="form-label fw-semibold">Select Images</label>
+                        <input
+                            type="file"
+                            name="images[]"
+                            accept="image/*"
+                            multiple
+                            class="form-control"
+                            required />
+                        <div class="form-text">You can select multiple images.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button
+                        type="button"
+                        class="btn btn-light"
+                        data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <div class="card">
     <div class="card-header bg-white">
         <h5 class="mb-0">SEO & Social Share Settings</h5>
@@ -378,25 +474,6 @@
 
         }
     });
-
-    function deleteImage(imageId) {
-        var url = "{{ route('seller.products.image.delete', ':id') }}".replace(':id', imageId);
-        if (confirm("Are you sure you want to delete this image?")) {
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                url: url,
-                method: "DELETE",
-                success: function(response) {
-                    location.reload();
-                },
-                error: function(error) {
-                    alert('Something went wrong');
-                }
-            });
-        }
-    }
 
     $('#productUpdateForm').submit(function(e) {
         e.preventDefault();

@@ -215,13 +215,13 @@ class ProductController extends Controller
     public function edit($slug)
     {
         $product = Product::where('slug', $slug)->first();
-
         $categories = Category::category()->with('subcategories')->get();
         $brands = Brand::all();
         $units = ProductUnit::all();
         $seo = $product->seo;
+        $images = ProductImage::where('product_id', $product->id)->get();
 
-        return view('seller.products.edit', compact('product', 'categories', 'brands', 'units', 'seo'));
+        return view('seller.products.edit', compact('product', 'categories', 'brands', 'units', 'seo', 'images'));
     }
 
     public function update($slug, Request $request)
@@ -338,13 +338,33 @@ class ProductController extends Controller
         return redirect()->route('seller.products.index')->with('success', 'Product Removed Successfully');
     }
 
+    public function uploadImages(Request $request)
+    {
+        $request->validate([
+            'images' => 'required|array',
+            'images.*' => 'image|mimes:jpeg,jpg,png,webp|max:2048'
+        ]);
+
+        $product = Product::find($request->product_id);
+        $imageFolder = $imageFolder = "images/{$product->seller->username}/products";
+
+        foreach ($request->file('images') as $file) {
+            ProductImage::create([
+                'product_id' => $request->product_id,
+                'image' => upload_file($file, $imageFolder)
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Images added Successfully');
+    }
+
     public function deleteImage(ProductImage $image)
     {
         delete_file($image->image);
 
         $image->delete();
 
-        return successResponse("Product image deleted successfully!");
+        return redirect()->back()->with('success', 'Images deleted Successfully');
     }
 
     public function stockUpdate(Request $request, Product $product)

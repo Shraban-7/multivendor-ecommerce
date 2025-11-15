@@ -86,6 +86,7 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::post('/{slug}/update-seo', [ProductController::class, 'updateSeo'])->name('updateSeo');
         Route::post('/{product}/stock-update', [ProductController::class, 'stockUpdate'])->name('stockUpdate');
         Route::delete('/delete-variant/{variant}', [ProductController::class, 'deleteVariant'])->name('deleteVariant');
+        Route::post('images/upload', [ProductController::class, 'uploadImages'])->name('uploadImages');
         Route::delete('images/{image}/delete', [ProductController::class, 'deleteImage'])->name('image.delete');
         Route::delete('/{product}/delete', [ProductController::class, 'delete'])->name('delete');
         Route::get('/get-options/{attributeId}', [ProductController::class, 'getOptions']);
