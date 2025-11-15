@@ -9,134 +9,102 @@ use App\Models\PosCartItem;
 use Illuminate\Http\Request;
 use App\Models\ProductVariant;
 use App\Http\Controllers\Controller;
+use App\Models\Option;
+use App\Models\OptionValue;
 use App\Models\ProductVariantOption;
+use Illuminate\Support\Facades\Validator;
 
 class ProductVariantController extends Controller
 {
     public function store(Request $request, Product $product)
     {
-        $data = $request->validate([
-            'buying_price' => 'required|numeric',
-            'selling_price' => 'required|numeric',
-            'discount_type' => 'nullable|string',
-            'discount_value' => 'nullable|numeric',
-            'option_values' => 'nullable|array|min:1',
-            'option_values.*' => 'nullable|array|min:1',
+        $variants = json_decode($request->variants, true);
+
+        $validator = Validator::make([
+            'variants' => $variants
+        ], [
+            'variants' => 'required|array|min:1',
+            'variants.*.sku' => 'required|string|max:255|unique:product_variants,sku',
+            'variants.*.attributes' => 'required|array',
+            'variants.*.attributes.Size' => 'required|string',
+            'variants.*.attributes.Color' => 'required|string',
+            'variants.*.buying_price' => 'required|numeric|min:0',
+            'variants.*.selling_price' => 'required|numeric|min:0|gte:variants.*.buying_price',
+            'variants.*.discount_type' => 'nullable|in:flat,percentage',
+            'variants.*.discount_value' => 'nullable|numeric|min:0',
+            'variants.*.image' => 'nullable|file|image|max:2048',
         ]);
 
-        $data['product_id'] = $product->id;
-
-        $optionValues = $request->option_values ?? [];
-
-        $valuesArrays = array_values($optionValues);
-
-        if (!empty($valuesArrays)) {
-            $combinations = $this->cartesianProduct($valuesArrays);
-        } else {
-            $combinations = [[]];
+        if ($validator->fails()) {
+            return sendValidationError($validator->errors());
         }
 
-        $first = true;
+        $product = Product::find($request->product_id);
 
-        $default = ProductVariant::where('is_default', 1)->first();
+        $imageFolder = "images/{$product->seller->username}/products";
 
-        if ($default) {
-            $first = false;
-        }
+        if (!empty($variants) && is_array($variants)) {
+            foreach ($variants as $index => $v) {
+                if (empty($v['sku']) || empty($v['buying_price']) || empty($v['selling_price'])) {
+                    continue;
+                }
 
-        foreach ($combinations as $combination) {
-            $variantData = [
-                'product_id' => $product->id,
-                'sku' => ProductVariant::generate_sku(),
-                'buying_price' => $data['buying_price'],
-                'selling_price' => $data['selling_price'],
-                'discount_type' => $data['discount_type'] ?? null,
-                'discount_value' => $data['discount_value'] ?? null,
-                'discount_amount' => (isset($data['discount_type'], $data['discount_value']) && $data['discount_type'] && $data['discount_value'])
-                    ? round(calculate_discount_amount($data['selling_price'], $data['discount_type'], $data['discount_value']))
-                    : 0,
+                $variant = new ProductVariant();
+                $variant->product_id = $product->id;
+                $variant->sku = $v['sku'];
+                $variant->buying_price = (float) $v['buying_price'];
+                $variant->selling_price = (float) $v['selling_price'];
+                $variant->stock_in = $v['stock'] ?? 0;
 
-                'discounted_price' => (isset($data['discount_type'], $data['discount_value']) && $data['discount_type'] && $data['discount_value'])
-                    ? round(calculate_discounted_price($data['selling_price'], $data['discount_type'], $data['discount_value']))
-                    : null,
+                $variant->discount_type = ($v['discount_type'] ?? 'none') !== 'none' ? $v['discount_type'] : null;
+                $variant->discount_value = !empty($v['discount_value']) ? (float) $v['discount_value'] : null;
+                $hasDiscount = !empty($variant->discount_type) && !empty($variant->discount_value);
 
+                $variant->discount_amount = $hasDiscount
+                    ? calculate_discount_amount((float) $v['selling_price'], $variant->discount_type, (float) $variant->discount_value) : 0.0;
 
-                'is_default' => $first ? 1 : 0,
-            ];
+                $variant->discounted_price = $hasDiscount
+                    ? calculate_discounted_price((float) $v['selling_price'], $variant->discount_type, (float) $variant->discount_value) : (float) $v['selling_price'];
 
-            $variant = ProductVariant::create($variantData);
+                $variant->is_default = $index === 0 ? 1 : 0;
 
-            foreach ($combination as $optionValueId) {
-                ProductVariantOption::create([
-                    'product_variant_id' => $variant->id,
-                    'option_value_id' => $optionValueId,
-                ]);
+                if (isset($v['image']) && $request->hasFile("variants.$index.image")) {
+                    $variant->image = upload_file($request->file("variants.$index.image"), "$imageFolder/variants");
+                }
+
+                $variant->save();
+
+                if (!empty($v['attributes']) && is_array($v['attributes'])) {
+                    foreach ($v['attributes'] as $key => $value) {
+                        $key = trim($key);
+                        $value = trim($value);
+                        if (!$key || !$value) continue;
+
+                        $option = Option::firstOrCreate(['name' => $key]);
+
+                        $optionValue = OptionValue::firstOrCreate([
+                            'option_id' => $option->id,
+                            'value' => $value,
+                        ]);
+
+                        ProductVariantOption::create([
+                            'product_variant_id' => $variant->id,
+                            'option_value_id' => $optionValue->id,
+                        ]);
+                    }
+                }
             }
-
-            $first = false;
         }
 
-        return response()->json(['success' => true, 'message' => 'Variants added successfully']);
-    }
-
-    public function update(Request $request, Product $product, ProductVariant $variant)
-    {
-        $data = $request->validate([
-            'buying_price' => 'required|string',
-            'selling_price' => 'required|string',
-            'discount_type' => 'nullable|string',
-            'discount_value' => 'nullable|numeric',
-            'low_stock_quantity' => 'required|numeric',
-            'is_default' => 'nullable|boolean',
-            'image' => 'nullable|image|max:5120',
-        ]);
-
-        $data['product_id'] = $product->id;
-
-        $product = Product::find($data['product_id']);
-        $seller = Seller::find(get_seller_id());
-
-        if (!empty($data['discount_type']) && !empty($data['discount_value'])) {
-            $data['discount_amount']  = round(calculate_discount_amount($data['selling_price'], $data['discount_type'], $data['discount_value']));
-            $data['discounted_price'] = round(calculate_discounted_price($data['selling_price'], $data['discount_type'], $data['discount_value']));
-        } else {
-            $data['discount_amount']  = null;
-            $data['discounted_price'] = null;
-            $data['discount_type']    = null;
-            $data['discount_value']   = null;
-        }
-        
-        $data['is_default'] = $request->has('is_default') ? 1 : 0;
-
-        if ($data['is_default'] == 1) {
-            ProductVariant::where('product_id', $data['product_id'])
-                ->where('id', '!=', $variant->id)
-                ->update(['is_default' => 0]);
-        }
-
-        $imageFolder = "images/{$seller->username}/products";
-
-
-        if ($request->hasFile('image')) {
-            if ($variant->image != null) {
-                delete_file($variant->image);
-            }
-
-            $data['image'] = upload_file($request->file('image'), "$imageFolder/variant-image");
-        }
-
-        $variant->update($data);
-
-        return redirect()->back()->with('success', 'Variant Updated Successfully');
+        return successResponse("Variants added successfully");
     }
 
     public function destroy(ProductVariant $variant)
     {
-        if($variant->stock_out>0)
-        {
+        if ($variant->stock_out > 0) {
             return redirect()->back()->with('warning', 'This variant cannot be deleted because it has existing orders.');
         }
-        
+
         $product_id = $variant->product_id;
 
         CartItem::where('product_variant_id', $variant->id)->delete();

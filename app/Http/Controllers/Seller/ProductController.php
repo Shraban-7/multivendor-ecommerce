@@ -16,6 +16,7 @@ use App\Models\StockHistory;
 use Illuminate\Http\Request;
 use App\Models\ProductVariant;
 use App\Http\Controllers\Controller;
+use App\Models\CategoryOption;
 use App\Models\ProductVariantOption;
 
 class ProductController extends Controller
@@ -41,10 +42,13 @@ class ProductController extends Controller
         return view('seller.products.create', compact('categories', 'brands', 'units', 'categoryAttributes'));
     }
 
-    private function categorizedAtributes($categories)
+    private function categorizedAtributes($categories, $category_id = null)
     {
         $data = [];
         foreach ($categories as $cat) {
+            if (!is_null($category_id) && $cat->id != $category_id) {
+                continue;
+            }
             foreach ($cat->options as $option) {
                 $data[$cat->id][] = [
                     'id' => $option->id,
@@ -120,7 +124,7 @@ class ProductController extends Controller
                 $variant->buying_price = (float) $v['buying_price'];
                 $variant->selling_price = (float) $v['selling_price'];
                 $variant->stock_in = $v['stock'] ?? 0;
-                
+
                 $variant->discount_type = ($v['discount_type'] ?? 'none') !== 'none'
                     ? $v['discount_type']
                     : null;
@@ -154,7 +158,7 @@ class ProductController extends Controller
                 }
 
                 $variant->save();
-                
+
                 if (!empty($v['attributes']) && is_array($v['attributes'])) {
                     foreach ($v['attributes'] as $key => $value) {
                         $key = trim($key);
@@ -257,15 +261,18 @@ class ProductController extends Controller
 
         $product->profit_amount  = $profitAmount;
         $product->profit_percent = $profitPercent;
-        $product->stock          = $product->stock;
+        $product->stock = $product->stock;
 
         foreach ($product->variants as $variant) {
             $variant->stock = ($variant->stock_in ?? 0) - ($variant->stock_out ?? 0);
         }
 
-        $product_options = Option::with('options')->get();
+        $optionIds = CategoryOption::where('category_id', $product->category_id)->pluck('option_id')->toArray();
+        $product_options = Option::whereIn('id', $optionIds)->with('option_values')->get();
+        $categories = Category::where('id', $product->category_id)->with('options.option_values')->get();
+        $categoryAttributes = $this->categorizedAtributes($categories, $product->category_id);
 
-        return view('seller.products.details', compact('product', 'product_options'));
+        return view('seller.products.details', compact('product', 'product_options', 'categoryAttributes'));
     }
 
     public function edit($slug)

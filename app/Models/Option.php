@@ -11,11 +11,6 @@ class Option extends Model
 
     protected $guarded = ['id'];
 
-    public function options()
-    {
-        return $this->hasMany(OptionValue::class);
-    }
-
     public function option_values()
     {
         return $this->hasMany(OptionValue::class);

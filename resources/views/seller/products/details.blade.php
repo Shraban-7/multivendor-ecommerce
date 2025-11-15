@@ -1,12 +1,18 @@
 @extends('seller.layouts.app')
 @section('title', $product->name)
+
+@push('styles')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+@endpush
+
 @section('content')
+
+<?php $variantCount = $product->variants->count(); ?>
 
 <div class="row">
     <div class="col-md-6">
         <div class="card shadow-sm border-0 mb-4 px-3 pt-3 pb-2">
             <div class="d-flex flex-wrap align-items-start gap-4">
-                {{-- Product Image --}}
                 <div style="width:180px; flex-shrink:0;">
                     <div class="border rounded position-relative overflow-hidden bg-light">
                         <img
@@ -15,8 +21,6 @@
                             class="img-fluid"
                             style="width:100%; height:180px; object-fit:contain;" />
                     </div>
-
-                    {{-- gallery thumbs --}}
                     @if($product->images->count() > 0)
                     <div class="d-flex flex-wrap gap-1 mt-2">
                         @foreach($product->images as $image)
@@ -29,8 +33,6 @@
                     </div>
                     @endif
                 </div>
-
-                {{-- Details --}}
                 <div class="flex-grow-1">
                     <div class="row g-0 small lh-sm">
                         <div class="col-md-6">
@@ -76,8 +78,6 @@
                     </div>
                 </div>
             </div>
-
-            {{-- Footer Buttons --}}
             <div class="d-flex gap-2 mt-3 border-top pt-3">
                 <a href="{{ route('seller.products.edit', $product->slug) }}" class="btn btn-primary btn-sm d-flex align-items-center gap-1">
                     <i data-feather="edit" class="icon-xs"></i> Edit Product
@@ -110,7 +110,7 @@
                         <thead class="table-light text-center">
                             <tr>
                                 <th>Date</th>
-                                @if ($product->variants->count() > 0)
+                                @if ($variantCount > 0)
                                 <th>Variant</th>
                                 @endif
                                 <th>Quantity</th>
@@ -123,7 +123,7 @@
                                 <td class="text-nowrap small">
                                     {{ $history->created_at->format('d/m/y h:i A') }}
                                 </td>
-                                @if ($product->variants->count() > 0)
+                                @if ($variantCount > 0)
                                 <td class="text-nowrap small">
                                     {{ $history->variant?->fullName === null ? 'Default' : $history->variant->fullName }}
                                 </td>
@@ -149,8 +149,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="4" class="text-center text-muted">No stock history
-                                    available</td>
+                                <td colspan="4" class="text-center text-muted">No stock history available</td>
                             </tr>
                             @endforelse
                         </tbody>
@@ -163,10 +162,10 @@
 
 <div class="card shadow-sm mb-4">
     <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
-        <h6 class="mb-0">Variants</h6>
-        <span class="text-muted small">{{ $product->variants->count() }} total</span>
+        <h5 class="mb-0">@if($variantCount > 0) $variantCount @endif Variants</h5>
+        <button class="btn btn-light btn-sm border" data-bs-toggle="modal" data-bs-target="#addVariantModal">+ Add Variants</button>
     </div>
-    @if($product->variants->count() > 0)
+    @if($variantCount > 0)
     <div class="table-responsive">
         <table class="table align-middle mb-0">
             <thead class="table-light">
@@ -361,7 +360,6 @@
     @endif
 </div>
 
-
 <div id="alertBox"></div>
 
 <div class="modal fade" id="deleteModal-{{ $product->id }}" tabindex="-1"
@@ -429,7 +427,7 @@
                         </div>
                     </div>
 
-                    @if ($product->variants->count() > 0)
+                    @if ($variantCount > 0)
                     @foreach ($product->variants as $variant)
                     <h5>{{ $variant->fullName == null ? 'Default' : $variant->fullName }}</h5>
                     <div class="row">
@@ -510,7 +508,7 @@
 </div>
 
 <div class="modal fade" id="addVariantModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Add Variant</h5>
@@ -518,73 +516,13 @@
             </div>
             <div class="modal-body">
                 <div id="variantAlert"></div>
-                <form id="variantForm" action="{{ route('seller.productVariants.store', $product->id) }}"
-                    method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <div class="row">
-                        <div class="mb-3 col-6">
-                            <label class="form-label">Buying Price</label>
-                            <div class="input-group">
-                                <span class="input-group-text">{{ currency() }}</span>
-                                <input type="number" class="form-control" name="buying_price" required>
-                            </div>
-                        </div>
-                        <div class="mb-3 col-6">
-                            <label class="form-label">Selling Price</label>
-                            <div class="input-group">
-                                <span class="input-group-text">{{ currency() }}</span>
-                                <input type="number" class="form-control" name="selling_price" required>
-                            </div>
-                        </div>
-                        <div class="mb-3 col-md-6">
-                            <label class="form-label">Discount Type</label>
-                            <select name="discount_type" class="form-select w-100" id="" required>
-                                <option value="" selected>--Choose--</option>
-                                <option value="{{ \App\Enums\DiscountType::FLAT->value }}"
-                                    {{ $product->discount_type == \App\Enums\DiscountType::FLAT->value ? 'selected' : '' }}>
-                                    {{ ucfirst(\App\Enums\DiscountType::FLAT->label()) }}
-                                </option>
-                                <option value="{{ \App\Enums\DiscountType::PERCENTAGE->value }}"
-                                    {{ $product->discount_type == \App\Enums\DiscountType::PERCENTAGE->value ? 'selected' : '' }}>
-                                    {{ ucfirst(\App\Enums\DiscountType::PERCENTAGE->label()) }}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="mb-3 col-md-6">
-                            <label class="form-label">Discount Value</label>
-                            <input name="discount_value" type="number" class="form-control" required>
-                        </div>
-                        <div>
-                            <div class="row">
-                                <div class="col-md-12 mb-3">
-                                    <label class="form-label fw-bold">Select Options</label>
-                                    <select id="mainOptionSelect" class="form-select" multiple>
-                                        @foreach ($product_options as $option)
-                                        <option value="{{ $option->id }}">{{ $option->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-
-                                @foreach ($product_options as $option)
-                                <div class="col-md-12 mb-3 option-values" id="option-{{ $option->id }}"
-                                    style="display:none;">
-                                    <label class="form-label fw-bold">{{ $option->name }}</label>
-                                    <select name="option_values[{{ $option->id }}][]" class="form-select"
-                                        multiple>
-                                        @foreach ($option->options as $item)
-                                        <option value="{{ $item->id }}">{{ $item->value }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
+                <form id="variantForm">
+                    @include('seller.products.variant-generator')
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="saveVariant">Save Variant</button>
+                <button type="button" class="btn btn-primary" id="saveVariantsBtn">Save Variants</button>
             </div>
         </div>
     </div>
@@ -633,65 +571,49 @@
         </div>
     </div>
 </div>
-@endsection
 
+<div class="d-none">
+    <input type="text" name="sku" value="{{ $product->sku }}">
+    <input type="text" name="buying_price" value="{{ $product->buying_price }}">
+    <input type="text" name="selling_price" value="{{ $product->selling_price }}">
+    <input type="text" name="discount_value" value="{{ $product->discount_value }}">
+    <select name="discount_type">
+        @foreach (\App\Enums\DiscountType::cases() as $type)
+        <option value="{{ $type->value }}" @selected($type->value == $product->discount_type)>{{ $type->label() }}</option>
+        @endforeach
+    </select>
+</div>
+
+@endsection
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     $(document).ready(function() {
+        const categoryId = "{{ $product->category_id }}";
+        showVariantOptions(categoryId);
+
+        function showVariantOptions(categoryId) {
+            $('.attributeColumn').addClass('d-none');
+            const $visibleColumns = $('.attributeColumn[data-category="' + categoryId + '"]').removeClass('d-none');
+            if ($visibleColumns.length > 0) {
+                $('#variantGenerator').removeClass('d-none');
+            } else {
+                $('#variantGenerator').addClass('d-none');
+            }
+        }
+
+        $('.option_values').select2({
+            tags: true,
+            placeholder: 'Select or type a value',
+            dropdownParent: '#addVariantModal',
+            allowClear: true,
+            width: '100%',
+            closeOnSelect: false
+        });
+
         $('.toggle-desc').on('click', function() {
             let expanded = $(this).attr('aria-expanded') === 'true';
             $(this).text(expanded ? 'Read less' : 'Read more');
-        });
-
-        $('#mainOptionSelect').select2({
-            theme: "bootstrap-5",
-            placeholder: "Choose options",
-            allowClear: true,
-            selectionCssClass: "select2",
-            dropdownCssClass: "select2"
-        });
-
-        $('.option-values select').select2({
-            theme: "bootstrap-5",
-            placeholder: "Choose option values",
-            allowClear: true
-        });
-
-        $('#mainOptionSelect').on('change', function() {
-            $('.option-values').hide();
-            let selected = $(this).val() || [];
-
-            selected.forEach(function(id) {
-                $('#option-' + id).show();
-            });
-        });
-
-        $('#mainOptionSelect').trigger('change');
-
-        $('#attributeSelect').on('change', function() {
-            let attributeId = $(this).val();
-
-            if (attributeId) {
-                $.ajax({
-                    url: `/seller/products/get-options/${attributeId}`,
-                    type: 'GET',
-                    success: function(data) {
-                        $('#optionSelect').empty();
-                        $('#optionSelect').append(
-                            '<option disabled selected>Select Attribute Option</option>'
-                        );
-
-                        $.each(data, function(key, option) {
-                            $('#optionSelect').append(
-                                `<option value="${option.id}">${option.value}</option>`
-                            );
-                        });
-                    }
-                });
-            } else {
-                $('#optionSelect').empty();
-                $('#optionSelect').append('<option disabled selected>Select Attribute Option</option>');
-            }
         });
     });
 
@@ -703,14 +625,16 @@
         dropdownCssClass: "select2"
     });
 
-    $('#saveVariant').click(function(e) {
-        e.preventDefault();
+    $('#saveVariantsBtn').click(function(e) {
+        const variants = collectVariantsData();
 
-        let form = $('#variantForm')[0];
-        let formData = new FormData(form);
+        let formData = new FormData();
+        formData.append('variants', JSON.stringify(variants));
+        formData.append('_token', '{{ csrf_token() }}');
+        formData.append('product_id', "{{ $product->id }}");
 
         $('#variantAlert').html('');
-        $('#saveVariant').attr('disabled', true).text('Saving...');
+        $('#saveVariantsBtn').attr('disabled', true).text('Saving...');
 
         $.ajax({
             url: "{{ route('seller.productVariants.store', $product->id) }}",
@@ -732,7 +656,13 @@
                 }, 1000);
             },
             error: function(xhr) {
-                $('#saveVariant').attr('disabled', false).text('Save Variant');
+                $('#saveVariantsBtn').attr('disabled', false).text('Save Variants');
+                $('#variantAlert').html(`
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        `+xhr.responseJSON.message+`
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                `);
 
                 if (xhr.status === 422) {
                     let errors = xhr.responseJSON.errors;
@@ -755,6 +685,71 @@
             }
         });
     });
+
+    function collectVariantsData() {
+        const variantBody = document.getElementById("variantsTableBody");
+        if (!variantBody) return [];
+
+        const variantRows = variantBody.querySelectorAll("tr");
+        const variants = [];
+
+        // Get headers only from THIS table
+        const table = variantBody.closest("table");
+        const headerCells = table.querySelectorAll("thead th");
+
+        // Extract only attribute columns (skip fixed ones)
+        const skipColumns = [
+            "#",
+            "SKU",
+            "Buying Price",
+            "Selling Price",
+            "Discount Type",
+            "Discount Value",
+            "Image",
+            "Actions",
+        ];
+
+        const attributeHeaders = Array.from(headerCells)
+            .map((cell) => cell.textContent.trim())
+            .filter((title) => !skipColumns.includes(title) && title !== "");
+
+        variantRows.forEach((row) => {
+            const variant = {};
+            variant.sku =
+                row.querySelector('td:nth-child(2) input')?.value.trim() || "";
+
+            // Collect attribute values
+            variant.attributes = {};
+
+            attributeHeaders.forEach((title, i) => {
+                // +3 because the 1st column is #, 2nd is SKU
+                const cellInput = row.querySelector(`td:nth-child(${i + 3}) input`);
+                variant.attributes[title] = cellInput?.value?.trim() || "";
+            });
+
+            // Prices
+            const colStart = 3 + attributeHeaders.length;
+            const buyingPriceInput = row.querySelector(
+                `td:nth-child(${colStart}) input`
+            );
+            const sellingPriceInput = row.querySelector(
+                `td:nth-child(${colStart + 1}) input`
+            );
+            const discountTypeSelect = row.querySelector(".variant-discount-type");
+            const discountValueInput = row.querySelector(".variant-discount-value");
+            const imageInput = row.querySelector('input[type="file"]');
+
+            variant.buying_price = buyingPriceInput?.value || "";
+            variant.selling_price = sellingPriceInput?.value || "";
+            variant.discount_type = discountTypeSelect?.value || "none";
+            variant.discount_value = discountValueInput?.value || "";
+            variant.image = imageInput?.files?.[0] || null;
+
+            variants.push(variant);
+        });
+
+        return variants;
+    }
 
     $('#generateSkuBtn').on('click', function() {
         let skuParts = [];
