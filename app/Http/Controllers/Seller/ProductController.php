@@ -114,13 +114,13 @@ class ProductController extends Controller
         if (!empty($variants) && is_array($variants)) {
             foreach ($variants as $index => $v) {
                 // Skip incomplete variants
-                if (empty($v['sku']) || empty($v['buying_price']) || empty($v['selling_price'])) {
+                if (empty($v['buying_price']) || empty($v['selling_price'])) {
                     continue;
                 }
 
                 $variant = new ProductVariant();
                 $variant->product_id = $product->id;
-                $variant->sku = $v['sku'];
+                $variant->sku = ProductVariant::generate_sku();
                 $variant->buying_price = (float) $v['buying_price'];
                 $variant->selling_price = (float) $v['selling_price'];
                 $variant->stock_in = $v['stock'] ?? 0;
@@ -180,69 +180,6 @@ class ProductController extends Controller
                 }
             }
         }
-
-        // $variants = json_decode($request->variants, true);
-        // if ($request->filled('variants')) {
-        //     foreach ($variants as $index => $v) {
-        //         if (empty($v['sku']) || empty($v['buying_price']) || empty($v['selling_price'])) continue;
-
-        //         $variant = new ProductVariant();
-        //         $variant->product_id = $product->id;
-        //         $variant->sku = $v['sku'];
-        //         $variant->buying_price = $v['buying_price'];
-        //         $variant->selling_price = $v['selling_price'];
-        //         $variant->stock_in = $v['stock'] ?? 0;
-        //         $variant->discount_type = !empty($v['variant_discount_type'])
-        //             ? $v['variant_discount_type']
-        //             : null;
-
-        //         $variant->discount_value = !empty($v['variant_discount_value'])
-        //             ? (float) $v['variant_discount_value']
-        //             : null;
-
-        //         $hasDiscount = !empty($v['variant_discount_type']) && !empty($v['variant_discount_value']);
-
-        //         $variant->discount_amount = $hasDiscount
-        //             ? calculate_discount_amount(
-        //                 (float) $v['selling_price'],
-        //                 $v['variant_discount_type'],
-        //                 (float) $v['variant_discount_value']
-        //             )
-        //             : 0.0;
-
-        //         $variant->discounted_price = $hasDiscount
-        //             ? calculate_discounted_price(
-        //                 (float) $v['selling_price'],
-        //                 $v['variant_discount_type'],
-        //                 (float) $v['variant_discount_value']
-        //             )
-        //             : 0.0;
-
-        //         $variant->is_default = $index === 0 ? 1 : 0;
-
-        //         $variant->save();
-
-        //         if (!empty($v['attributes']) && is_array($v['attributes'])) {
-        //             foreach ($v['attributes'] as $key => $value) {
-        //                 $key = trim($key);
-        //                 $value = trim($value);
-        //                 if (!$key || !$value) continue;
-
-        //                 $option = Option::firstOrCreate(['name' => $key]);
-
-        //                 $optionValue = OptionValue::firstOrCreate([
-        //                     'option_id' => $option->id,
-        //                     'value' => $value,
-        //                 ]);
-
-        //                 ProductVariantOption::create([
-        //                     'product_variant_id' => $variant->id,
-        //                     'option_value_id' => $optionValue->id,
-        //                 ]);
-        //             }
-        //         }
-        //     }
-        // }
 
         return successResponse('Product Added Successfully');
     }

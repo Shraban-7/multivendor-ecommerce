@@ -45,13 +45,13 @@ class ProductVariantController extends Controller
 
         if (!empty($variants) && is_array($variants)) {
             foreach ($variants as $index => $v) {
-                if (empty($v['sku']) || empty($v['buying_price']) || empty($v['selling_price'])) {
+                if (empty($v['buying_price']) || empty($v['selling_price'])) {
                     continue;
                 }
 
                 $variant = new ProductVariant();
                 $variant->product_id = $product->id;
-                $variant->sku = $v['sku'];
+                $variant->sku = ProductVariant::generate_sku();
                 $variant->buying_price = (float) $v['buying_price'];
                 $variant->selling_price = (float) $v['selling_price'];
                 $variant->stock_in = $v['stock'] ?? 0;
