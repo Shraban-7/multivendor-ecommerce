@@ -8,15 +8,16 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\CategoryOption;
+use App\Models\ProductVariantOption;
 
 class OptionController extends Controller
 {
     public function index()
     {
-        $productOptions = Option::with('categories')->paginate(15);
+        $options = Option::with('categories', 'option_values')->paginate(15);
         $categories = Category::category()->get();
 
-        return view('admin.options.index', compact('productOptions', 'categories'));
+        return view('admin.options.index', compact('options', 'categories'));
     }
 
     public function store(Request $request)
@@ -83,16 +84,21 @@ class OptionController extends Controller
     }
 
 
-    public function optionDelete(OptionValue $value)
+    public function deleteValue(OptionValue $value)
     {
         $value->delete();
 
-        return redirect()->back()->with('success', 'Option values removed successfully.');
+        return redirect()->back()->with('success', 'Option value deleted successfully.');
     }
 
     public function destroy(Option $option)
     {
-        $option->options()->delete();
+        $optionValueIds = OptionValue::where('option_id', $option->id)->pluck('id')->toArray();
+        if(!empty($optionValueIds)) {
+            ProductVariantOption::whereIn('option_value_id', $optionValueIds)->delete();
+        }
+        
+        $option->option_values()->delete();
 
         $option->categories()->detach();
 
