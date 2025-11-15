@@ -99,6 +99,45 @@ class ProductVariantController extends Controller
         return successResponse("Variants added successfully");
     }
 
+    public function update(ProductVariant $variant, Request $request)
+    {
+        $request->validate([
+            'buying_price' => 'required',
+            'selling_price' => 'required',
+            'discount_type' => 'nullable',
+            'discount_value' => 'nullable',
+            'low_stock_quantity' => 'required',
+            'is_default' => 'nullable',
+            'image' => 'nullable|image|mimes:png,jpg,jpeg|max:4000'
+        ]);
+
+        if ($request->hasFile('image')) {
+            $imageFolder = "images/{$variant->product->seller->username}/products";
+            $variant->image = upload_file($request->file('image'), $imageFolder);
+        }
+
+        if ($request->is_default && !$variant->is_default) {
+            ProductVariant::where('product_id', $variant->product_id)->where('is_default', 1)->update(['is_default' => 0]);
+        }
+
+        $variant->is_default = $request->is_default ? 1 : 0;
+        $variant->low_stock_quantity = $request->low_stock_quantity;
+        $variant->buying_price = $request->buying_price;
+        $variant->selling_price = $request->selling_price;
+        $variant->discount_type = $request->discount_type;
+        $variant->discount_value = $request->discount_value;
+        $variant->save();
+
+        if (!$request->is_default) {
+            $defaultExists = ProductVariant::where('product_id', $variant->product_id)->where('is_default', 1)->exists();
+            if (!$defaultExists) {
+                ProductVariant::where('product_id', $variant->product_id)->first()->update(['is_default' => 1]);
+            }
+        }
+
+        return redirect()->back()->with('success', 'Variant updated successfully.');
+    }
+
     public function destroy(ProductVariant $variant)
     {
         if ($variant->stock_out > 0) {

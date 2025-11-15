@@ -235,9 +235,7 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                             </div>
-                            <form
-                                action="{{ route('seller.productVariants.update', [$product->id, $variant->id]) }}"
-                                method="POST" enctype="multipart/form-data">
+                            <form action="{{ route('seller.productVariants.update', $variant->id) }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <div class="modal-body">
                                     <div class="row">
@@ -245,26 +243,21 @@
                                             <label class="form-label">Buying Price</label>
                                             <div class="input-group">
                                                 <span class="input-group-text">{{ currency() }}</span>
-                                                <input type="number" class="form-control"
-                                                    name="buying_price" step="0.01"
-                                                    value="{{ $variant->buying_price }}" required>
+                                                <input type="number" class="form-control" name="buying_price" step="0.01" value="{{ $variant->buying_price }}" required>
                                             </div>
                                         </div>
                                         <div class="mb-3 col-6">
                                             <label class="form-label">Selling Price</label>
                                             <div class="input-group">
                                                 <span class="input-group-text">{{ currency() }}</span>
-                                                <input type="number" class="form-control"
-                                                    name="selling_price" step="0.01"
-                                                    value="{{ $variant->selling_price }}" required>
+                                                <input type="number" class="form-control" name="selling_price" step="0.01" value="{{ $variant->selling_price }}" required>
                                             </div>
                                         </div>
 
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Discount Type</label>
                                             <select name="discount_type" class="form-select">
-                                                <option value="" selected>
-                                                    --Choose--</option>
+                                                <option value="" selected>--Choose--</option>
                                                 <option value="{{ \App\Enums\DiscountType::FLAT->value }}"
                                                     {{ $variant->discount_type == \App\Enums\DiscountType::FLAT->value ? 'selected' : '' }}>
                                                     {{ ucfirst(\App\Enums\DiscountType::FLAT->label()) }}
@@ -278,36 +271,25 @@
                                         </div>
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Discount Value</label>
-                                            <input name="discount_value" type="number"
-                                                value="{{ $variant->discount_value }}" class="form-control">
+                                            <input name="discount_value" type="number" value="{{ $variant->discount_value }}" class="form-control">
                                         </div>
                                         <div class="mb-3 col-md-12">
-                                            <label class="form-label">Low Stock
-                                                Quantity</label>
-                                            <input name="low_stock_quantity" type="number"
-                                                value="{{ $variant->low_stock_quantity }}"
-                                                class="form-control">
+                                            <label class="form-label">Low Stock Quantity</label>
+                                            <input name="low_stock_quantity" type="number" value="{{ $variant->low_stock_quantity }}" class="form-control">
                                         </div>
                                         <div class="col-12 mb-3">
                                             <x-image-input name="image" :image="$variant->imageUrl" />
                                         </div>
                                         <div class="mb-3 col-12">
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox"
-                                                    id="is_default_{{ $variant->id }}" name="is_default"
-                                                    value="1"
-                                                    {{ $variant->is_default ? 'checked' : '' }}>
-                                                <label class="form-check-label"
-                                                    for="is_default_{{ $variant->id }}">
-                                                    Set as default variant
-                                                </label>
+                                                <input class="form-check-input" type="checkbox" id="is_default_{{ $variant->id }}" name="is_default" value="1"{{ $variant->is_default ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="is_default_{{ $variant->id }}">Set as default variant</label>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-light border"
-                                        data-bs-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Cancel</button>
                                     <button type="submit" class="btn btn-success">Update</button>
                                 </div>
                             </form>
