@@ -23,7 +23,7 @@
     <!-- Product Image -->
     <div class="relative aspect-square overflow-hidden">
         <a href="{{ route('products.details', $product['slug']) }}">
-            <img src="{{ storage_url($product['thumbnail']) }}" alt="{{ $product['name'] }}"
+            <img src="{{ $product['thumbnail'] }}" alt="{{ $product['name'] }}"
                 class="w-full h-full object-cover object-top 
                     transition-transform duration-500 group-hover:scale-105" />
         </a>

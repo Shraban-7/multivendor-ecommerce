@@ -130,16 +130,6 @@ class Product extends Model
 
     public function toDetailsArray()
     {
-        // dd($this->seller);
-        //$this->load('images', 'category', 'subcategory', 'variants', 'seller', 'reviews.user');
-
-        //$sold          = OrderItem::where('product_id', $this->id)->count();
-        //$revenue       = $sold * $this->selling_price;
-        //$profit        = $revenue - ($sold * $this->buying_price);
-        //$lastOrder     = OrderItem::where('product_id', $this->id)->latest('created_at')->first();
-        //$lastSale      = $lastOrder?->created_at;
-        //$stockHistory  = StockHistory::where('product_id', $this->id)->latest()->get();
-
         $margin = $this->selling_price - $this->buying_price;
         $marginPercent = $this->buying_price > 0 ? ($margin / $this->buying_price) * 100 : 0;
 
@@ -168,22 +158,9 @@ class Product extends Model
             'subcategory'       => $this->subcategory?->name,
             'brand'             => $this->brand?->name,
             'name'              => $this->name,
-            'thumbnail'         => $this->thumbnail,
+            'thumbnail'         => $this->imageUrl,
             'images'            => $images,
             'slider' => $images,
-            // 'slider'            => $this->variants->pluck('image')->filter()->isNotEmpty()
-            //     ? collect([
-            //         optional($this->variants->firstWhere('is_default', true))->image,
-            //     ])
-            //     ->filter()
-            //     ->concat($this->variants->pluck('image')->filter())
-            //     ->unique()
-            //     ->values()
-            //     : collect([$this->thumbnail])
-            //     ->filter()
-            //     ->concat($this->images->pluck('image')->filter())
-            //     ->unique()
-            //     ->values(),
 
             'short_description' => $this->short_description,
             'description' => $this->description,
@@ -207,13 +184,8 @@ class Product extends Model
                 ];
             }),
             'options'           => $this->grouped_options,
-            //'default_variant'    => collect($this['variants'])->firstWhere('is_default', 1),
             'default_variant'    => collect($this['variants'])->sortByDesc('is_default')->first(),
             'total_sold'        => $sold,
-            // 'revenue'           => $revenue,
-            // 'profit'            => $profit,
-            // 'last_sale'         => $lastSale,
-            // 'stock_history'     => $stockHistory,
             'profit'            => [
                 'margin'  => (float) $margin,
                 'percent' => round($marginPercent, 2),

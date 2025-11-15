@@ -18,7 +18,7 @@
 
     <div class="relative aspect-[4/3] overflow-hidden">
         <a href="{{ route('products.details', $product['slug']) }}">
-            <img src="{{ storage_url($product['thumbnail']) }}" alt="{{ $product['name'] }}"
+            <img src="{{ $product['thumbnail'] }}" alt="{{ $product['name'] }}"
                 class="h-auto max-w-full transition-transform duration-300 group-hover:scale-105" />
         </a>
         <button type="button" data-modal-target="quick-view-modal-{{ $product['id'] }}"

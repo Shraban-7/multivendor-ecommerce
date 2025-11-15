@@ -34,7 +34,7 @@
                                     <div class="relative aspect-square bg-white overflow-hidden">
                                         <a href="{{ route('products.details', $product['slug']) }}"
                                             aria-label="View {{ $product['name'] }}">
-                                            <img src="{{ storage_url($product['thumbnail']) }}"
+                                            <img src="{{ $product['thumbnail'] }}"
                                                 alt="{{ $product['slug'] }}" loading="lazy"
                                                 class="w-full h-full object-cover object-top transition-transform duration-500 group-hover/product-card:scale-105" />
                                         </a>
@@ -126,7 +126,7 @@
                             <div class="relative aspect-square bg-white overflow-hidden">
                                 <a href="{{ route('products.details', $product['slug']) }}"
                                     aria-label="View {{ $product['name'] }}">
-                                    <img src="{{ storage_url($product['thumbnail']) }}" alt="{{ $product['slug'] }}"
+                                    <img src="{{ $product['thumbnail'] }}" alt="{{ $product['slug'] }}"
                                         loading="lazy"
                                         class="w-full h-full object-cover object-top transition-transform duration-500 group-hover/product-card:scale-105" />
                                 </a>

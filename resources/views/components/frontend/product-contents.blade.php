@@ -27,7 +27,7 @@ $showProductDiscount = isset($product['discounted_price'], $product['price']) &&
     <div class="md:w-[50%] w-full flex flex-col gap-3 bg-white rounded border-1 border-gray-200 py-5">
         <div class="w-full flex justify-center ">
             <div class="relative w-full md:w-[360px] xl:w-[460px] aspect-[3/4] rounded-md">
-                <img src="{{ storage_url($product['thumbnail']) }}" alt="Thumbnail"
+                <img src="{{ $product['thumbnail'] }}" alt="Thumbnail"
                     class="absolute inset-0 w-full h-full object-contain transition-all duration-300 main-product-image" />
             </div>
         </div>

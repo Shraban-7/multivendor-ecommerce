@@ -24,7 +24,7 @@
                                      class="h-52 px-4 pt-6 pb-4 overflow-hidden item-img flex items-center justify-center">
                                      <a href="{{ route('products.details', $product['slug']) }}">
                                          <img class="object-contain w-full h-full"
-                                             src="{{ storage_url($product['thumbnail']) }}" alt="{{ $product['slug'] }}"
+                                             src="{{ $product['thumbnail'] }}" alt="{{ $product['slug'] }}"
                                              loading="lazy" />
                                      </a>
                                  </div>
