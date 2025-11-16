@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 
 class PaymentListnerController extends Controller
 {
-    public function devices()
+    public function index()
     {
         $seller_id = get_seller_id();
 
