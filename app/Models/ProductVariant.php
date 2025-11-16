@@ -15,6 +15,11 @@ class ProductVariant extends Model
 
     protected $casts = [
         'option_ids' => 'array',
+        'buying_price' => 'decimal:2',
+        'selling_price' => 'decimal:2',
+        'discount_value' => 'decimal:2',
+        'discount_amount' => 'decimal:2',
+        'discounted_price' => 'decimal:2',
     ];
 
     public function scopeWhereProduct($query, Product $product)

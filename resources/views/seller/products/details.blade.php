@@ -162,7 +162,7 @@
 
 <div class="card shadow-sm mb-4">
     <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
-        <h5 class="mb-0">@if($variantCount > 0) $variantCount @endif Variants</h5>
+        <h5 class="mb-0">@if($variantCount > 0) {{ $variantCount }} @endif Variants</h5>
         <button class="btn btn-light btn-sm border" data-bs-toggle="modal" data-bs-target="#addVariantModal">+ Add Variants</button>
     </div>
     @if($variantCount > 0)

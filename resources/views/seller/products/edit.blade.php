@@ -109,8 +109,8 @@
                             <label class="form-label">Discount Type</label>
                             <select name="discount_type" class="form-select form-select-sm">
                                 <option value="">-- None --</option>
-                                <option value="{{ \App\Enums\DiscountType::FLAT->value }}">Flat</option>
-                                <option value="{{ \App\Enums\DiscountType::PERCENTAGE->value }}">Percentage</option>
+                                <option {{ \App\Enums\DiscountType::FLAT->value == $product->discount_type ? 'selected' : '' }} value="{{ \App\Enums\DiscountType::FLAT->value }}">Flat</option>
+                                <option {{ \App\Enums\DiscountType::PERCENTAGE->value == $product->discount_type ? 'selected' : '' }} value="{{ \App\Enums\DiscountType::PERCENTAGE->value }}">Percentage</option>
                             </select>
                         </div>
 

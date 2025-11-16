@@ -84,6 +84,12 @@ class ProductController extends Controller
             'variants' => 'nullable|string',
         ]);
 
+        $hasDiscount = !empty($validated['discount_type']) && !empty($validated['discount_value']);
+
+        $validated['discount_amount'] = $hasDiscount ? calculate_discount_amount($validated['selling_price'], $validated['discount_type'], $validated['discount_value']) : null;
+
+        $validated['discounted_price'] = $hasDiscount ? calculate_discounted_price($validated['selling_price'], $validated['discount_type'], $validated['discount_value']) : null;
+
         $brandId = null;
         if (!empty($validated['brand'])) {
             if (is_numeric($validated['brand'])) {
@@ -113,7 +119,6 @@ class ProductController extends Controller
 
         if (!empty($variants) && is_array($variants)) {
             foreach ($variants as $index => $v) {
-                // Skip incomplete variants
                 if (empty($v['buying_price']) || empty($v['selling_price'])) {
                     continue;
                 }
@@ -121,8 +126,8 @@ class ProductController extends Controller
                 $variant = new ProductVariant();
                 $variant->product_id = $product->id;
                 $variant->sku = ProductVariant::generate_sku();
-                $variant->buying_price = (float) $v['buying_price'];
-                $variant->selling_price = (float) $v['selling_price'];
+                $variant->buying_price =  $v['buying_price'];
+                $variant->selling_price = $v['selling_price'];
                 $variant->stock_in = $v['stock'] ?? 0;
 
                 $variant->discount_type = ($v['discount_type'] ?? 'none') !== 'none'
@@ -137,19 +142,19 @@ class ProductController extends Controller
 
                 $variant->discount_amount = $hasDiscount
                     ? calculate_discount_amount(
-                        (float) $v['selling_price'],
+                         $v['selling_price'],
                         $variant->discount_type,
-                        (float) $variant->discount_value
+                         $variant->discount_value
                     )
-                    : 0.0;
+                    : null;
 
                 $variant->discounted_price = $hasDiscount
                     ? calculate_discounted_price(
-                        (float) $v['selling_price'],
+                         $v['selling_price'],
                         $variant->discount_type,
-                        (float) $variant->discount_value
+                        $variant->discount_value
                     )
-                    : (float) $v['selling_price'];
+                    :  null;
 
                 $variant->is_default = $index === 0 ? 1 : 0;
 
@@ -163,7 +168,8 @@ class ProductController extends Controller
                     foreach ($v['attributes'] as $key => $value) {
                         $key = trim($key);
                         $value = trim($value);
-                        if (!$key || !$value) continue;
+                        if (!$key || !$value)
+                            continue;
 
                         $option = Option::firstOrCreate(['name' => $key]);
 
@@ -184,7 +190,6 @@ class ProductController extends Controller
         return successResponse('Product Added Successfully');
     }
 
-
     public function show(Product $product)
     {
         $product->load('variants.option_values', 'stock_history', 'seo');
@@ -192,11 +197,11 @@ class ProductController extends Controller
         $costPrice = $product->buying_price ?? 0;
         $sellingPrice = $product->selling_price ?? 0;
 
-        $profitAmount  = $sellingPrice - $costPrice;
+        $profitAmount = $sellingPrice - $costPrice;
         $profitPercent = $costPrice > 0 ? ($profitAmount / $costPrice) * 100 : 0;
-        $productStock  = $product->stock_in - $product->stock_out;
+        $productStock = $product->stock_in - $product->stock_out;
 
-        $product->profit_amount  = $profitAmount;
+        $product->profit_amount = $profitAmount;
         $product->profit_percent = $profitPercent;
         $product->stock = $product->stock;
 
@@ -235,16 +240,19 @@ class ProductController extends Controller
             'subcategory_id' => 'nullable',
             'brand' => 'nullable',
             'name' => 'required|string|max:255',
-            'short_description'  => 'nullable|string',
+            'short_description' => 'nullable|string',
             'description' => 'nullable|string',
             'sku' => 'nullable|string|max:255',
+            'buying_price' => 'required|numeric',
+            'selling_price' => 'required|numeric',
             'vat_percent' => 'required|numeric',
+            'discount_type' => 'nullable|string',
+            'discount_value' => 'nullable|numeric',
             'payment_type' => 'required|numeric',
             'unit_id' => 'required|numeric',
             'unit_value' => 'required|string',
-            'is_trending' => 'nullable|boolean',
-            'best_selling' => 'nullable|boolean',
-            'is_featured' => 'nullable|boolean',
+            'best_selling' => 'nullable',
+            'is_featured' => 'nullable',
             'thumbnail' => [
                 'nullable',
                 'image',
@@ -255,6 +263,20 @@ class ProductController extends Controller
             'files' => 'nullable|array',
             'files.*' => 'mimetypes:image/*',
         ]);
+
+        $hasDiscount = !empty($product->discount_type) && !empty($product->discount_value);
+
+        $validated['discount_amount'] = $hasDiscount ? calculate_discount_amount($validated['selling_price'], $validated['discount_type'], $validated['discount_value']) : null;
+
+        $validated['discounted_price'] = $hasDiscount ? calculate_discounted_price($validated['selling_price'], $validated['discount_type'], $validated['discount_value']) : null;
+
+        if ($request->best_selling) {
+            $validated['best_selling'] = $validated['best_selling'] ? 1 : 0;
+        }
+
+        if ($request->is_featured) {
+            $validated['is_featured'] = $validated['is_featured'] ? 1 : 0;
+        }
 
         $brandId = null;
 
@@ -308,7 +330,7 @@ class ProductController extends Controller
                 foreach ($request->file('files') as $file) {
                     ProductImage::create([
                         'product_id' => $product->id,
-                        'image'      => upload_file($file, $imageFolder),
+                        'image' => upload_file($file, $imageFolder),
                     ]);
                 }
             }
@@ -371,16 +393,16 @@ class ProductController extends Controller
     {
         $request->validate([
             'stock_quantity.*' => 'nullable|numeric|min:0',
-            'stock_action.*'   => 'nullable|numeric',
-            'stock_note.*'     => 'nullable|string',
+            'stock_action.*' => 'nullable|numeric',
+            'stock_note.*' => 'nullable|string',
             'stock_quantity_product' => 'nullable|numeric|min:0',
-            'stock_action_product'   => 'nullable|numeric',
-            'stock_note_product'     => 'nullable|string',
+            'stock_action_product' => 'nullable|numeric',
+            'stock_note_product' => 'nullable|string',
         ]);
 
         $stockQuantities = $request->input('stock_quantity', []);
-        $stockActions    = $request->input('stock_action', []);
-        $stockNotes      = $request->input('stock_note', []);
+        $stockActions = $request->input('stock_action', []);
+        $stockNotes = $request->input('stock_note', []);
 
         if ($request->has('stock_quantity_product') && $request->has('stock_action_product')) {
             $productCurrentStock = ($product->stock_in ?? 0) - ($product->stock_out ?? 0);
@@ -406,7 +428,8 @@ class ProductController extends Controller
                 $product->stock_in += $productQuantity;
             } elseif ($productAction == StockType::REMOVE_STOCK->value) {
                 $product->stock_in -= $productQuantity;
-                if ($product->stock_in < 0) $product->stock_in = 0;
+                if ($product->stock_in < 0)
+                    $product->stock_in = 0;
             }
 
             $product->save();
@@ -415,13 +438,15 @@ class ProductController extends Controller
         }
 
         foreach ($stockQuantities as $variantId => $quantity) {
-            if (!$quantity) continue;
+            if (!$quantity)
+                continue;
             $action = $stockActions[$variantId] ?? null;
-            $note   = $stockNotes[$variantId] ?? null;
+            $note = $stockNotes[$variantId] ?? null;
 
             $variant = ProductVariant::find($variantId);
 
-            if (! $variant) continue;
+            if (!$variant)
+                continue;
 
             $currentStock = ($variant->stock_in ?? 0) - ($variant->stock_out ?? 0);
 
@@ -444,7 +469,8 @@ class ProductController extends Controller
                 $variant->stock_in += $quantity;
             } elseif ($action == StockType::REMOVE_STOCK->value) {
                 $variant->stock_in -= $quantity;
-                if ($variant->stock_in < 0) $variant->stock_in = 0;
+                if ($variant->stock_in < 0)
+                    $variant->stock_in = 0;
             }
 
             $variant->save();

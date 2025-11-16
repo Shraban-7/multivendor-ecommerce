@@ -16,6 +16,11 @@ class Product extends Model
 
     protected $casts = [
         'payment_type' => PaymentType::class,
+        'buying_price' => 'decimal:2',
+        'selling_price' => 'decimal:2',
+        'discount_value' => 'decimal:2',
+        'discount_amount' => 'decimal:2',
+        'discounted_price' => 'decimal:2',
     ];
 
     const STATUS_PENDING_APPROVAL = 0;
