@@ -9,6 +9,18 @@
 
 <?php $variantCount = $product->variants->count(); ?>
 
+<div class="d-none">
+    <input type="text" name="sku" value="{{ $product->sku }}">
+    <input type="text" name="buying_price" value="{{ $product->buying_price }}">
+    <input type="text" name="selling_price" value="{{ $product->selling_price }}">
+    <input type="text" name="discount_value" value="{{ $product->discount_value }}">
+    <select name="discount_type">
+        @foreach (\App\Enums\DiscountType::cases() as $type)
+        <option value="{{ $type->value }}" @selected($type->value == $product->discount_type)>{{ $type->label() }}</option>
+        @endforeach
+    </select>
+</div>
+
 <div class="row">
     <div class="col-md-6">
         <div class="card shadow-sm border-0 mb-4 px-3 pt-3 pb-2">
@@ -162,7 +174,7 @@
 
 <div class="card shadow-sm mb-4">
     <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
-        <h5 class="mb-0">@if($variantCount > 0) {{ $variantCount }} @endif Variants</h5>
+        <h5 class="mb-0">@if($variantCount > 0) $variantCount @endif Variants</h5>
         <button class="btn btn-light btn-sm border" data-bs-toggle="modal" data-bs-target="#addVariantModal">+ Add Variants</button>
     </div>
     @if($variantCount > 0)
@@ -489,7 +501,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="addVariantModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="addVariantModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl">
         <div class="modal-content">
             <div class="modal-header">
@@ -552,18 +564,6 @@
             </form>
         </div>
     </div>
-</div>
-
-<div class="d-none">
-    <input type="text" name="sku" value="{{ $product->sku }}">
-    <input type="text" name="buying_price" value="{{ $product->buying_price }}">
-    <input type="text" name="selling_price" value="{{ $product->selling_price }}">
-    <input type="text" name="discount_value" value="{{ $product->discount_value }}">
-    <select name="discount_type">
-        @foreach (\App\Enums\DiscountType::cases() as $type)
-        <option value="{{ $type->value }}" @selected($type->value == $product->discount_type)>{{ $type->label() }}</option>
-        @endforeach
-    </select>
 </div>
 
 @endsection
