@@ -15,7 +15,7 @@ class OrderItemResource extends JsonResource
             'id' => $this->id,
             'product_id' => $product->id,
             'name' => $product->name,
-            'thumbnail' => storage_url($product->thumbnail),
+            'thumbnail' => $product->imageUrl,
             'quantity' => $this->quantity,
             'price' => money($this->unit_price),
             'discount' => money($this->discount),

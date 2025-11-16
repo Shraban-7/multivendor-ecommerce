@@ -7,7 +7,7 @@
             <li>
                 <a href="{{ route('products.details', $product->slug) }}"
                     class="flex items-center gap-3 px-3 py-2 hover:bg-orange-50 rounded-md text-gray-700">
-                    <img src="{{ storage_url($product->thumbnail) }}"
+                    <img src="{{ $product->imageUrl }}"
                         alt="{{ $product->name }}"
                         class="w-10 h-10 rounded-md object-cover">
 

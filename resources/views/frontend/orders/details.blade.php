@@ -220,7 +220,7 @@
                 @foreach ($products as $product)
                     <a href="{{ route('products.details', $product->slug) }}">
                         <div class="bg-white p-3 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                            <img src="{{ storage_url($product->thumbnail) }}" alt="Product"
+                            <img src="{{ $product->imageUrl }}" alt="{{ $product->name }}"
                                 class="w-full h-32 object-cover rounded-md mb-2">
                             <h3 class="font-medium text-sm">{{ $product->name }}</h3>
                             <p class="text-yellow-500 text-sm font-bold mt-1">{{ money($product->selling_price) }}</p>

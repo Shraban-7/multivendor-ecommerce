@@ -25,7 +25,7 @@ class CartItemResource extends JsonResource
             'id'               => $this->id,
             'product_id'       => $product->id,
             'name'             => $product->name,
-            'thumbnail'        => storage_url($product->thumbnail),
+            'thumbnail'        => $product->imageUrl,
             'quantity'         => $this->quantity,
             'price'            => removeZeroFromDecimal($price),
             'discounted_price' => removeZeroFromDecimal($discountedPrice),
