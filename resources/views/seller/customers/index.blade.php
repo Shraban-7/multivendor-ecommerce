@@ -14,7 +14,7 @@
         </button>
     </div>
 
-    <ul class="nav nav-tabs mb-3" id="customerTabs" role="tablist">
+    <ul class="nav nav-tabs mb-3 bg-white" id="customerTabs" role="tablist">
         <li class="nav-item" role="presentation">
             <a href="{{ route('seller.customers') }}"
                 class="nav-link {{ $activeTab == 'pos' ? 'active' : '' }}">
@@ -32,9 +32,9 @@
 
     <div class="tab-content">
         <div class="tab-pane fade {{ $activeTab == 'pos' ? 'show active' : '' }}">
-            <div class="table-responsive">
+            <div class="table-responsive ">
                 <table class="table table-bordered bg-white mb-3 align-middle">
-                    <thead class="table-light">
+                    <thead class="bg-white">
                         <tr>
                             <th>Customer</th>
                             <th>Phone</th>
@@ -61,7 +61,7 @@
         <div class="tab-pane fade {{ $activeTab == 'website' ? 'show active' : '' }}">
             <div class="table-responsive">
                 <table class="table table-bordered bg-white mb-3 align-middle">
-                    <thead class="table-light">
+                    <thead class="bg-white">
                         <tr>
                             <th>Customer</th>
                             <th>Phone</th>

@@ -13,8 +13,8 @@
 
                     <div class="card shadow-sm border-0 mb-0 flex-fill d-flex flex-column">
                         <div class="card-header bg-white border-bottom">
-                            <h5 class="fw-semibold text-primary mb-0">
-                                <i data-feather="user" class="me-2"></i>Edit Personal Information
+                            <h5 class="fw-semibold text-dark mb-0">
+                                Edit Personal Information
                             </h5>
                         </div>
                         <div class="card-body flex-grow-1">
@@ -66,8 +66,8 @@
 
                             </div>
                         </div>
-                        <div class="text-end p-3 border-top bg-light">
-                            <button type="submit" class="btn btn-success">Update Personal Info</button>
+                        <div class="text-end p-3 border-top bg-white">
+                            <button type="submit" class="btn btn-primary">Update Personal Info</button>
                         </div>
                     </div>
                 </form>
@@ -80,8 +80,8 @@
 
                     <div class="card shadow-sm border-0 mb-0 flex-fill d-flex flex-column">
                         <div class="card-header bg-white border-bottom">
-                            <h5 class="fw-semibold text-primary mb-0">
-                                <i data-feather="briefcase" class="me-2"></i>Edit Business Information
+                            <h5 class="fw-semibold text-dark mb-0">
+                                Edit Business Information
                             </h5>
                         </div>
                         <div class="card-body flex-grow-1">
@@ -138,8 +138,8 @@
 
                             </div>
                         </div>
-                        <div class="text-end p-3 border-top bg-light">
-                            <button type="submit" class="btn btn-success">Update Business Info</button>
+                        <div class="text-end p-3 border-top bg-white">
+                            <button type="submit" class="btn btn-primary">Update Business Info</button>
                         </div>
                     </div>
                 </form>
@@ -154,8 +154,8 @@
 
                     <div class="card shadow-sm border-0 mb-4">
                         <div class="card-header bg-white border-bottom">
-                            <h5 class="fw-semibold text-primary mb-0">
-                                <i data-feather="file-text" class="me-2"></i>Edit Documents
+                            <h5 class="fw-semibold text-dark mb-0">
+                                Edit Documents
                             </h5>
                         </div>
                         <div class="card-body">
@@ -175,8 +175,8 @@
 
                             </div>
                         </div>
-                        <div class="text-end p-3 border-top bg-light">
-                            <button type="submit" class="btn btn-success">Update Documents</button>
+                        <div class="text-end p-3 border-top bg-white">
+                            <button type="submit" class="btn btn-primary">Update Documents</button>
                         </div>
                     </div>
                 </form>
