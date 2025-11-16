@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\SellerSubscription;
+use App\Enums\SubscriptionStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,8 +18,15 @@ return new class extends Migration
             $table->foreignId('subscription_plan_id')->constrained('subscription_plans')->onDelete('cascade');
             $table->date('start_date');
             $table->date('end_date');
-            $table->tinyInteger('status')->default(SellerSubscription::ACTIVE);
+            $table->date('trial_end_date')->nullable();
+            $table->boolean('is_trial')->default(false);
+            $table->enum('status', array_column(SubscriptionStatus::cases(), 'value'))->default(SubscriptionStatus::TRIAL->value);
+            $table->text('cancellation_reason')->nullable();
+            $table->timestamp('cancelled_at')->nullable();
+            $table->foreignId('admin_id')->nullable()->constrained('admins');
+            $table->text('admin_notes')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

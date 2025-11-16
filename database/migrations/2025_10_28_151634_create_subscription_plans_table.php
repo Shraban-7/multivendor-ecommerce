@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('subscription_plans', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('slug')->unique();
+            $table->text('description')->nullable();
             $table->decimal('price', 10, 2)->default(0);
             $table->enum('duration_type', ['monthly', 'yearly'])->default('monthly');
             $table->integer('product_limit')->default(10);
@@ -23,7 +25,13 @@ return new class extends Migration
             $table->boolean('priority_support')->default(false);
             $table->boolean('custom_domain')->default(false);
             $table->integer('staff_account_limit')->default(0);
+
+            $table->integer('sort_order')->default(0);
+            $table->boolean('is_active')->default(true);
+            $table->boolean('is_featured')->default(false);
+
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

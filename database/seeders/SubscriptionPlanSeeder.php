@@ -62,6 +62,7 @@ class SubscriptionPlanSeeder extends Seeder
         ];
 
         foreach ($plans as $plan) {
+            $plan['slug'] = str_slug('subscription_plans', 'slug', $plan['name']);
             SubscriptionPlan::updateOrCreate(['name' => $plan['name']], $plan);
         }
     }
