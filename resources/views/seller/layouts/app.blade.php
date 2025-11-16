@@ -36,13 +36,19 @@
             <div id="page-content">
                 <div class="header">
                     @include('seller.layouts.navbar')
-                </div>
+                </div>                
 
+                @if(View::hasSection('container-fluid'))
+                <div class="my-3 container-fluid px-sm-4">
+                    <x-flash-message />
+                    @yield('container-fluid')
+                </div>
+                @else
                 <div class="my-3 container px-sm-4">
                     <x-flash-message />
                     @yield('content')
                 </div>
-
+                @endif
             </div>
         </div>
     </div>

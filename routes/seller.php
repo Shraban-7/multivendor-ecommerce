@@ -160,8 +160,8 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
     Route::post('banner-image/{image}/', [SettingController::class, 'deleteImage'])->name('bannerImages.delete');
 
     Route::prefix('payment-listener')->as('paymentListener.')->group(function () {
+        Route::get('/', [PaymentListnerController::class, 'index'])->name('index');
         Route::prefix('devices')->as('devices.')->group(function () {
-            Route::get('/', [PaymentListnerController::class, 'devices'])->name('index');
             Route::post('/generate-code', [PaymentListnerController::class, 'generateCode'])->name('generateCode');
             Route::delete('/{device}', [PaymentListnerController::class, 'deleteDevice'])->name('delete');
             Route::post('/{device}/check-payments', [PaymentListnerController::class, 'checkPayments'])->name('checkPayments');
