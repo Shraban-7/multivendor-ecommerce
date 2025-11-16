@@ -232,6 +232,12 @@ $route = request()->route()->getName();
                 </x-dashboard.nav-item-link>
             @endif
 
+            @if ($seller || $employee->hasPermission('seller.paymentListener.index'))
+                <x-dashboard.nav-item-link :route="'seller.paymentListener.index'">
+                    <i data-feather="smartphone" class="nav-icon icon-xs me-2"></i> Payment Checker
+                </x-dashboard.nav-item-link>
+            @endif
+
             <x-dashboard.nav-item-link :route="'seller.subscriptions.index'">
                 <i data-feather="trending-up" class="nav-icon icon-xs me-2"></i> Upgrade Plan
             </x-dashboard.nav-item-link>

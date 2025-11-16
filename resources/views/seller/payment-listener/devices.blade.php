@@ -1,5 +1,5 @@
 @extends('seller.layouts.app')
-@section('title', 'Payment Listener Devices')
+@section('title', 'Payment Checker')
 
 @push('styles')
 <style>
@@ -142,7 +142,7 @@
 
 @section('content')
 
-<h4 class="mb-3">Automatic Payment Listener</h4>
+<h4 class="mb-3">Automatic Payment Checker</h4>
 
 <div class="row">
     <div class="col-md-6 mb-3">
@@ -261,7 +261,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <a href="{{ route('seller.paymentListener.devices.index') }}" class="btn btn-light w-100">Done</a>
+                <a href="{{ route('seller.paymentListener.index') }}" class="btn btn-light w-100">Done</a>
             </div>
         </div>
     </div>
