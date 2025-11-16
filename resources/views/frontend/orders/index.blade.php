@@ -92,16 +92,16 @@
                                         <td class="px-6 py-4">
                                             <div class="flex items-center gap-2">
                                                 <a href="{{ route('orders.details', $order->invoice_id) }}"
-                                                    class="bg-primary text-white px-3 py-2 rounded text-xs hover:opacity-90 transition">
+                                                    class="btn-primary btn-xs">
                                                     <i class="fa-solid fa-eye mr-1"></i> View
                                                 </a>
                                                 <a href="{{ route('invoice', $order->invoice_id) }}" target="__blank"
-                                                    class="bg-theme-light text-black px-3 py-2 rounded text-xs hover:opacity-90 transition">
+                                                    class="btn-light btn-xs">
                                                     <i class="fa-solid fa-download mr-1"></i> Invoice
                                                 </a>
                                                 @if (in_array($order->status->label(), [OrderStatus::SHIPPED->label(), OrderStatus::SHIPPED->label()]))
                                                     <a href="{{ route('orders.tracking', $order->invoice_id) }}"
-                                                        class="bg-orange-500 text-white px-3 py-2 rounded text-xs hover:opacity-90 transition">
+                                                        class="btn-success btn-xs">
                                                         <i class="fa-solid fa-truck-fast mr-1"></i> Track
                                                     </a>
                                                 @endif
