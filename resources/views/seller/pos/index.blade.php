@@ -66,7 +66,7 @@ foreach ($categories as $cat) {
 }
 ?>
 
-@section('content')
+@section('container-fluid')
     <div class="row">
         <!-- Products/Search Section -->
         <div class="col-md-7">
