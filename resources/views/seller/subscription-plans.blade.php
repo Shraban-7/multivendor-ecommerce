@@ -54,6 +54,12 @@ $currentPlanId = $current_subscription->plan_id ?? 0;
                     <li class="text-muted text-decoration-line-through">❌ Custom Domain</li>
                     @endif
 
+                    @if ($plan->payment_checker)
+                    <li class="text-success">✅ Payment Checker</li>
+                    @else
+                    <li class="text-muted text-decoration-line-through">❌ Payment Checker</li>
+                    @endif
+
                     <li>👥 <span class="fw-semibold">{{ $plan->staff_account_limit }}</span> Staff Accounts</li>
                 </ul>
 

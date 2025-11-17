@@ -4,72 +4,85 @@
 @section('content')
 
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="fw-bold text-dark mb-0">Subscription Plans</h4>
+        <h4 class="text-dark mb-0">Subscription Plans</h4>
         <button class="btn btn-success btn-sm px-3" data-bs-toggle="modal" data-bs-target="#planModal" id="addPlanBtn">
             <i class="bi bi-plus-lg me-1"></i> Add Plan
         </button>
     </div>
 
-    <div class="card shadow-sm border-0">
-        <div class="card-body p-0 table-responsive">
-            <table class="table table-hover mb-0 align-middle">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Price (৳)</th>
-                        <th>Duration</th>
-                        <th>Product Limit</th>
-                        <th>Commission</th>
-                        <th>POS</th>
-                        <th>Analytics</th>
-                        <th>Priority</th>
-                        <th>Domain</th>
-                        <th>Staff</th>
-                        <th class="text-center">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($plans as $plan)
-                        <tr>
-                            <td class="fw-semibold">{{ $plan->name }}</td>
-                            <td>{{ number_format($plan->price, 2) }}</td>
-                            <td><span class="badge bg-secondary">{{ ucfirst($plan->duration_type) }}</span></td>
-                            <td>{{ $plan->product_limit == 0 ? 'Unlimited' : $plan->product_limit }}</td>
-                            <td>{{ $plan->commission_rate }}%</td>
-                            <td>{!! $plan->pos_access
-                                ? '<i class="bi bi-check-circle text-success"></i>'
-                                : '<i class="bi bi-x-circle text-danger"></i>' !!}</td>
-                            <td>{!! $plan->analytics_access
-                                ? '<i class="bi bi-check-circle text-success"></i>'
-                                : '<i class="bi bi-x-circle text-danger"></i>' !!}</td>
-                            <td>{!! $plan->priority_support
-                                ? '<i class="bi bi-check-circle text-success"></i>'
-                                : '<i class="bi bi-x-circle text-danger"></i>' !!}</td>
-                            <td>{!! $plan->custom_domain
-                                ? '<i class="bi bi-check-circle text-success"></i>'
-                                : '<i class="bi bi-x-circle text-danger"></i>' !!}</td>
-                            <td>{{ $plan->staff_account_limit }}</td>
-                            <td class="text-center">
-                                <button class="btn btn-outline-primary btn-sm editPlanBtn me-1"
-                                    data-plan='@json($plan)'>
-                                    <i class="bi bi-pencil-square"></i>
-                                </button>
 
-                                {{-- 🔽 Delete button added --}}
-                                <button class="btn btn-outline-danger btn-sm deletePlanBtn" data-id="{{ $plan->id }}"
-                                    data-name="{{ $plan->name }}">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="11" class="text-center py-4 text-muted">No subscription plans found.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+    <div class="row g-4">
+        @foreach ($plans as $plan)
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="card shadow-sm h-100 border-0">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title text-center text-primary fw-bold mb-3">
+                            {{ $plan->name }}
+                        </h5>
+
+                        <h2 class="text-center mb-1 fw-bold">
+                            {{ money($plan->price) }}
+                        </h2>
+                        <p class="text-center text-muted mb-4">
+                            {{ ucfirst($plan->duration_type) }}
+                        </p>
+
+                        <ul class="list-unstyled small flex-grow-1">
+                            <li>✅ <span
+                                    class="fw-semibold">{{ $plan->product_limit == 0 ? 'Unlimited' : $plan->product_limit }}</span>
+                                Products</li>
+                            <li>✅ <span class="fw-semibold">{{ $plan->commission_rate }}%</span> Commission</li>
+
+                            @if ($plan->pos_access)
+                                <li class="fw-semibold">✅ POS Access</li>
+                            @else
+                                <li class="text-muted text-decoration-line-through">❌ POS Access</li>
+                            @endif
+
+                            @if ($plan->analytics_access)
+                                <li class="fw-semibold">✅ Analytics Access</li>
+                            @else
+                                <li class="text-muted text-decoration-line-through">❌ Analytics Access</li>
+                            @endif
+
+                            @if ($plan->priority_support)
+                                <li class="fw-semibold">✅ Priority Support</li>
+                            @else
+                                <li class="text-muted text-decoration-line-through">❌ Priority Support</li>
+                            @endif
+
+                            @if ($plan->custom_domain)
+                                <li class="fw-semibold">✅ Custom Domain</li>
+                            @else
+                                <li class="text-muted text-decoration-line-through">❌ Custom Domain</li>
+                            @endif
+
+                            @if ($plan->payment_checker)
+                                <li class="fw-semibold">✅ Payment Checker</li>
+                            @else
+                                <li class="text-muted text-decoration-line-through">❌ Payment Checker</li>
+                            @endif
+
+                            <li>👥 <span class="fw-semibold">{{ $plan->staff_account_limit }}</span> Staff Accounts</li>
+                        </ul>
+
+                        <div class="d-flex justify-content-between gap-2 mt-3">
+                            <!-- Edit Button -->
+                            <button class="btn btn-sm btn-primary rounded-lg w-full editPlanBtn"
+                                data-plan='@json($plan)' title="Edit Plan">
+                                <i class="bi bi-pencil-fill"></i> Edit
+                            </button>
+
+                            <!-- Delete Button -->
+                            <button class="btn btn-sm btn-danger rounded-lg w-full deletePlanBtn" data-id="{{ $plan->id }}"
+                                data-name="{{ $plan->name }}" title="Delete Plan">
+                                <i class="bi bi-trash-fill"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endforeach
     </div>
 
     {{-- 🔽 Delete Confirmation Modal --}}
@@ -116,10 +129,11 @@
                                     class="form-control" id="product_limit" min="0" required> <small
                                     class="text-muted">0 = unlimited</small> </div>
                             <div class="col-md-4"> <label class="form-label">Commission Rate (%)</label> <input
-                                    type="number" class="form-control" id="commission_rate" step="0.01" required> </div>
+                                    type="number" class="form-control" id="commission_rate" step="0.01" required>
+                            </div>
                             <div class="col-md-4"> <label class="form-label">Staff Accounts</label> <input type="number"
                                     class="form-control" id="staff_account_limit" min="0" required> </div>
-                            <div class="col-12 mt-3"> @php $features = [ 'pos_access' => 'POS Access', 'analytics_access' => 'Analytics', 'priority_support' => 'Priority Support', 'custom_domain' => 'Custom Domain', ]; @endphp <div class="row g-2">
+                            <div class="col-12 mt-3"> @php $features = [ 'pos_access' => 'POS Access', 'analytics_access' => 'Analytics', 'priority_support' => 'Priority Support', 'custom_domain' => 'Custom Domain', 'payment_checker' => 'Payment Checker',]; @endphp <div class="row g-2">
                                     @foreach ($features as $key => $label)
                                         <div class="col-6 col-md-3">
                                             <div class="form-check"> <input type="checkbox" class="form-check-input"
