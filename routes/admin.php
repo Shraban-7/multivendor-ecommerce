@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\PromoPosterController;
 use App\Http\Controllers\Admin\ReviewsController;
 use App\Http\Controllers\Admin\SellerController;
+use App\Http\Controllers\Admin\SellerSubscriptionController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SocialLinkController;
 use App\Http\Controllers\Admin\SubcategoryController;
@@ -190,7 +191,18 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
         Route::delete('/{plan}', [SubscriptionPlanController::class, 'delete'])->name('delete');
     });
 
-    Route::get('/subscriptions', [SubscriptionPlanController::class, 'subscriptions'])->name('subscriptions.index');
+    Route::prefix('subscriptions')->name('subscriptions.')->group(function () {
+        Route::get('/', [SellerSubscriptionController::class, 'index'])->name('index');
+        // Route::get('/{sellerSubscription}', [SellerSubscriptionController::class, 'show'])->name('show');
+        // Route::get('/{sellerSubscription}/edit', [SellerSubscriptionController::class, 'edit'])->name('edit');
+        // Route::put('/{sellerSubscription}', [SellerSubscriptionController::class, 'update'])->name('update');
+        // Route::post('/{sellerSubscription}/cancel', [SellerSubscriptionController::class, 'cancel'])->name('cancel');
+        // Route::post('/{sellerSubscription}/renew', [SellerSubscriptionController::class, 'renew'])->name('renew');
+        // Route::post('/{sellerSubscription}/suspend', [SellerSubscriptionController::class, 'suspend'])->name('suspend');
+        // Route::post('/{sellerSubscription}/activate', [SellerSubscriptionController::class, 'activate'])->name('activate');
+    });
+
+    // Route::get('/subscriptions', [SubscriptionPlanController::class, 'subscriptions'])->name('subscriptions.index');
 });
 
 Route::middleware('guest')->prefix('admin')->as('admin.')->group(function () {
