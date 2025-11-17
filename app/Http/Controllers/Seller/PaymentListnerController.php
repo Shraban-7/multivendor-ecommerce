@@ -17,9 +17,9 @@ class PaymentListnerController extends Controller
 
         $devices = PaymentListenerDevice::where('seller_id', $seller_id)->get();
 
-        $payments = PaymentListenerPayment::where('seller_id', $seller_id)->latest('id')->limit(50)->get();
+        $payments = PaymentListenerPayment::where('seller_id', $seller_id)->with('device')->latest('id')->limit(50)->get();
 
-        return view('seller.payment-listener.devices', compact('devices', 'payments'));
+        return view('seller.payment-listener.index', compact('devices', 'payments'));
     }
 
     public function generateCode()

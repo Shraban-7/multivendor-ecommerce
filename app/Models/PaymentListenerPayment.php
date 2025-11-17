@@ -19,4 +19,9 @@ class PaymentListenerPayment extends Model
     {
         return ['NAGAD', 'bKash', 'ROCKET', 'Upay'];
     }
+    
+    public function device()
+    {
+        return $this->belongsTo(PaymentListenerDevice::class, 'device_id');
+    }
 }

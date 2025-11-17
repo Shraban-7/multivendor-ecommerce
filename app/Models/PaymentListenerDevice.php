@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -32,5 +33,16 @@ class PaymentListenerDevice extends Model
     public function seller(): BelongsTo
     {
         return $this->belongsTo(Seller::class);
+    }
+
+    public function statusName(): Attribute
+    {
+        $status = 'Pending';
+        if ($this->attributes['status'] == $this::STATUS_ACTIVE) $status = 'Active';
+        if ($this->attributes['status'] == $this::STATUS_INACTIVE) $status = 'Inactive';
+
+        return Attribute::make(
+            get: fn() => $status
+        );
     }
 }
