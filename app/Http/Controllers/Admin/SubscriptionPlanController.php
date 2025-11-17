@@ -66,11 +66,4 @@ class SubscriptionPlanController extends Controller
 
         return successResponse('Subscription plan deleted successfully.');
     }
-
-    public function subscriptions()
-    {
-        $subscriptions = SellerSubscription::with('plan', 'seller')->latest('id')->paginate(30);
-
-        return view('admin.subscription.index', compact('subscriptions'));
-    }
 }
