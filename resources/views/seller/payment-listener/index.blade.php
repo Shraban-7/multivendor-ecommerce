@@ -142,9 +142,15 @@
 
 @section('content')
 
-@php
+<?php
 $deviceCount = $devices->count();
-@endphp
+$seller = seller();
+$hasAccess = $seller->hasFeature('payment_checker');
+?>
+
+@if(!$hasAccess)
+<x-seller.subscription-modal />
+@endif
 
 <div class="d-flex justify-content-between align-items-end mb-3">
     <h4 class="mb-0">Automatic Payment Checker</h4>
@@ -360,6 +366,7 @@ $deviceCount = $devices->count();
 @endsection
 
 @push('scripts')
+@if($hasAccess)
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
     const generateButton = document.getElementById('generateCodeTrigger');
@@ -473,4 +480,14 @@ $deviceCount = $devices->count();
         }
     });
 </script>
+@endif
+
+@if(!$hasAccess)
+<script>
+    $('#generateCodeTrigger').click(function() {
+        const modal = new bootstrap.Modal(document.getElementById('upgradeModal'));
+        modal.show();
+    });
+</script>
+@endif
 @endpush
