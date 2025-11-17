@@ -119,6 +119,26 @@
                             <input name="discount_value" type="number" class="form-control form-control-sm" value="{{ $product->discount_value }}">
                         </div>
 
+                        @if($product->variants_count > 0)
+                        <div class="col-md-6">
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" id="useMainPrices" name="useMainPrices">
+                                <label class="form-check-label fw-semibold" for="useMainPrices">
+                                    Use main prices for all variants
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="useMainDiscount" name="useMainDiscount">
+                                <label class="form-check-label fw-semibold" for="useMainDiscount">
+                                    Use main discount for all variants
+                                </label>
+                            </div>
+                        </div>
+                        @endif
+
                         <div class="col-12">
                             <label class="form-label">Short Description</label>
                             <x-textarea-input name="short_description" :value="$product->short_description" />
@@ -190,9 +210,9 @@
     </div>
 
     <div class="card-body">
-        @if ($images->count())
+        @if ($product->images->count())
         <div class="row g-3">
-            @foreach ($images as $image)
+            @foreach ($product->images as $image)
             <div class="col-6 col-md-3">
                 <div class="position-relative border rounded overflow-hidden shadow-sm">
                     <img
@@ -274,7 +294,9 @@
         </div>
     </div>
 </div>
-
+@php
+$seo = $product->seo;
+@endphp
 <div class="card">
     <div class="card-header bg-white">
         <h5 class="mb-0">SEO & Social Share Settings</h5>

@@ -142,15 +142,15 @@ class ProductController extends Controller
 
                 $variant->discount_amount = $hasDiscount
                     ? calculate_discount_amount(
-                         $v['selling_price'],
+                        $v['selling_price'],
                         $variant->discount_type,
-                         $variant->discount_value
+                        $variant->discount_value
                     )
                     : null;
 
                 $variant->discounted_price = $hasDiscount
                     ? calculate_discounted_price(
-                         $v['selling_price'],
+                        $v['selling_price'],
                         $variant->discount_type,
                         $variant->discount_value
                     )
@@ -219,14 +219,16 @@ class ProductController extends Controller
 
     public function edit($slug)
     {
-        $product = Product::where('slug', $slug)->first();
+        $product = Product::where('slug', $slug)
+            ->withCount('variants')
+            ->withCount('images', 'seo')
+            ->first();
+
         $categories = Category::category()->with('subcategories')->get();
         $brands = Brand::all();
         $units = ProductUnit::all();
-        $seo = $product->seo;
-        $images = ProductImage::where('product_id', $product->id)->get();
 
-        return view('seller.products.edit', compact('product', 'categories', 'brands', 'units', 'seo', 'images'));
+        return view('seller.products.edit', compact('product', 'categories', 'brands', 'units'));
     }
 
     public function update($slug, Request $request)
@@ -263,6 +265,9 @@ class ProductController extends Controller
             'files' => 'nullable|array',
             'files.*' => 'mimetypes:image/*',
         ]);
+
+        $useMainPrices = $request->has('useMainPrices');
+        $useMainDiscount = $request->has('useMainDiscount');
 
         $hasDiscount = !empty($product->discount_type) && !empty($product->discount_value);
 
