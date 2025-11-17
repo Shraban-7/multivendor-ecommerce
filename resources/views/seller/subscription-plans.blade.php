@@ -103,9 +103,8 @@ $currentPlanId = $current_subscription->plan_id ?? 0;
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary"
                                     data-bs-dismiss="modal">Cancel</button>
-                                <form action="{{ route('seller.subscriptions.subscribe') }}" method="POST">
+                                <form action="{{ route('seller.plans.subscribe', $plan->id) }}" method="POST">
                                     @csrf
-                                    <input type="hidden" name="plan_id" value="{{ $plan->id }}">
                                     <button type="submit" class="btn btn-primary">Yes, Subscribe</button>
                                 </form>
                             </div>
@@ -132,9 +131,8 @@ $currentPlanId = $current_subscription->plan_id ?? 0;
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <form action="{{ route('seller.subscriptions.subscribe') }}" method="POST">
+                <form action="{{ route('seller.plans.subscribe', $plan->id) }}" method="POST">
                     @csrf
-                    <input type="hidden" name="plan_id" value="">
                     <button type="submit" class="btn btn-danger">Yes, Cancel</button>
                 </form>
             </div>
