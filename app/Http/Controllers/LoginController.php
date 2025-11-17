@@ -14,6 +14,19 @@ class LoginController extends Controller
 {
     public function login(Request $request)
     {
+        if (Auth::guard('web')->check()) {
+            return redirect()->route('home');
+        }
+        if (Auth::guard('seller')->check()) {
+            return redirect()->route('seller.dashboard');
+        }
+        if (Auth::guard('employee')->check()) {
+            return redirect()->route('seller.pos.index');
+        }
+        if (Auth::guard('admin')->check()) {
+            return redirect()->route('admin.dashboard');
+        }
+        
         if ($request->isMethod('GET')) {
             return view('frontend.auth.login');
         }
@@ -57,7 +70,7 @@ class LoginController extends Controller
             $model = $config['model'];
             $user = $model::where('email', $request->email)->first();
 
-            if (! $user) {
+            if (!$user) {
                 continue;
             }
 
@@ -69,11 +82,11 @@ class LoginController extends Controller
                 if ($user->status != Seller::ACTIVE) {
                     return redirect()->back()->with('warning', 'Your account is pending approval. Please wait for admin review.');
                 }
-            } elseif (! ($config['check'])($user)) {
+            } elseif (!($config['check'])($user)) {
                 return redirect()->back()->with('warning', $config['inactiveMessage'] ?? 'Account inactive');
             }
 
-            if (! Auth::guard($config['guard'])->attempt($credentials)) {
+            if (!Auth::guard($config['guard'])->attempt($credentials)) {
                 return redirect()->back()->with('error', 'Incorrect password!');
             }
 
