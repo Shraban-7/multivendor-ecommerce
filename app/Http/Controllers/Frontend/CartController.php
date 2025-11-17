@@ -17,18 +17,30 @@ class CartController extends Controller
 {
     public function add(Request $request)
     {
+        if (Auth::guard('seller')->check() || Auth::guard('admin')->check()) {
+            return response()->json([
+                'error' => 'Please login as a user.'
+            ], 403);
+        }
+
+        if (!Auth::check()) {
+            return response()->json([
+                'error' => 'Please login to continue cart.'
+            ], 401);
+        }
+
         $data = $request->validate([
             'product_id' => 'required',
             'variant_id' => 'nullable|integer',
-            'quantity'   => 'required|integer|min:1',
+            'quantity' => 'required|integer|min:1',
             'is_default' => 'nullable|boolean',
         ]);
 
-        $variant   = ProductVariant::find($data['variant_id']);
-        $userId    = Auth::id();
-        $product   = Product::find($data['product_id']);
+        $variant = ProductVariant::find($data['variant_id']);
+        $userId = Auth::id();
+        $product = Product::find($data['product_id']);
 
-        if (! $product) {
+        if (!$product) {
             return response()->json(['success' => false, 'error' => 'Product not found']);
         }
 
@@ -41,7 +53,7 @@ class CartController extends Controller
         } else {
             $price = $product->discounted_price ?? $product->selling_price;
         }
-        
+
         $variantId = $variant->id ?? null;
 
         $cartItem = CartItem::where('cart_id', $cart->id)->where('product_variant_id', $variantId)->where('product_id', $product->id)->first();
@@ -50,10 +62,10 @@ class CartController extends Controller
             $cartItem->increment('quantity', $data['quantity']);
         } else {
             CartItem::create([
-                'cart_id'            => $cart->id,
-                'product_id'         => $product->id,
-                'quantity'           => $data['quantity'],
-                'price'              => $price,
+                'cart_id' => $cart->id,
+                'product_id' => $product->id,
+                'quantity' => $data['quantity'],
+                'price' => $price,
                 'product_variant_id' => $variantId,
             ]);
         }
@@ -61,13 +73,13 @@ class CartController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Product added to cart',
-            'action'  => 'add_to_cart',
+            'action' => 'add_to_cart',
         ]);
     }
 
     public function details(Request $request)
     {
-        $categoryIds = $subcategoryIds =  $brandIds = $addedItemIds = [];
+        $categoryIds = $subcategoryIds = $brandIds = $addedItemIds = [];
 
         $carts = Cart::where('user_id', Auth::id())
             ->with('cart_items.product', 'cart_items.variant')
@@ -77,7 +89,7 @@ class CartController extends Controller
             });
 
         $grand_total = 0;
-        $sub_total   = 0;
+        $sub_total = 0;
 
         foreach ($carts as $seller_id => $cartGroup) {
             $seller = Seller::find($seller_id);
@@ -90,9 +102,12 @@ class CartController extends Controller
                     $grand_total += $discounted_price * $quantity;
 
                     $addedItemIds[] = $item->product->id;
-                    if (!is_null($item->product->category_id)) $categoryIds[] = $item->product->category_id;
-                    if (!is_null($item->product->subcategory_id)) $subcategoryIds[] = $item->product->subcategory_id;
-                    if (!is_null($item->product->brand_id)) $brandIds[] = $item->product->brand_id;
+                    if (!is_null($item->product->category_id))
+                        $categoryIds[] = $item->product->category_id;
+                    if (!is_null($item->product->subcategory_id))
+                        $subcategoryIds[] = $item->product->subcategory_id;
+                    if (!is_null($item->product->brand_id))
+                        $brandIds[] = $item->product->brand_id;
                 }
             }
         }
@@ -110,9 +125,12 @@ class CartController extends Controller
             ->get()
             ->sortByDesc(function ($product) use ($categoryIds, $subcategoryIds, $brandIds) {
                 $score = 0;
-                if (in_array($product->subcategory_id, $subcategoryIds ?? [])) $score += 3;
-                if (in_array($product->category_id, $categoryIds ?? [])) $score += 2;
-                if (in_array($product->brand_id, $brandIds ?? [])) $score += 1;
+                if (in_array($product->subcategory_id, $subcategoryIds ?? []))
+                    $score += 3;
+                if (in_array($product->category_id, $categoryIds ?? []))
+                    $score += 2;
+                if (in_array($product->brand_id, $brandIds ?? []))
+                    $score += 1;
                 return $score;
             })
             ->take(16)
@@ -148,15 +166,15 @@ class CartController extends Controller
                     return $item->quantity * $item->product_original_price;
                 });
 
-            $discount           = $grandTotal - $subTotal;
+            $discount = $grandTotal - $subTotal;
             $totalProductsCount = CartItem::where('cart_id', $request->cart_id)->count();
 
             return response()->json([
-                'success'              => true,
-                'message'              => 'Cart updated successfully',
-                'order_subtotal'       => number_format($subTotal, 2),
-                'order_total'          => number_format($grandTotal, 2),
-                'discount'             => number_format($discount, 2),
+                'success' => true,
+                'message' => 'Cart updated successfully',
+                'order_subtotal' => number_format($subTotal, 2),
+                'order_total' => number_format($grandTotal, 2),
+                'discount' => number_format($discount, 2),
                 'total_products_count' => $totalProductsCount,
             ]);
         }
@@ -186,8 +204,8 @@ class CartController extends Controller
 
     public function getLiveCartData()
     {
-        $cartCount   = 0;
-        $sub_total   = 0;
+        $cartCount = 0;
+        $sub_total = 0;
         $grand_total = 0;
 
         if (Auth::check()) {
@@ -208,7 +226,7 @@ class CartController extends Controller
         }
 
         return response()->json([
-            'cartCount'  => $cartCount,
+            'cartCount' => $cartCount,
             'totalPrice' => money($grand_total),
         ]);
     }

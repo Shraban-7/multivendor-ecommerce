@@ -1,6 +1,6 @@
 <div class="w-full max-w-3xl mx-auto mt-6 rounded-lg p-4 space-y-4 shadow-sm">
     @php
-        $defaultVariant = $product['variants'];
+        $defaultVariant = collect($product['variants'])->firstWhere('is_default', 1);
         $defaultPrice = $defaultVariant['selling_price'] ?? '';
         $defaultDiscounted = $defaultVariant['discounted_price'] ?? '';
         $defaultValueIds = $defaultVariant['value_ids'] ?? [];

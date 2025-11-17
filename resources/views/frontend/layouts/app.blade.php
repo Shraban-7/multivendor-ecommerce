@@ -190,7 +190,7 @@ $isDashboard = View::hasSection('dashboard');
                 var $btn = $(this);
                 var originalText = $btn.html();
                 $btn.html(
-                                `<svg class="animate-spin h-4 w-4 text-white inline-block mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    `<svg class="animate-spin h-4 w-4 text-white inline-block mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
                     </svg> Adding...`
@@ -226,9 +226,7 @@ $isDashboard = View::hasSection('dashboard');
                             price: product_price,
                         },
                         success: function(data) {
-                            if (data.unauthorized) {
-                                window.location.href = "{{ route('login') }}";
-                            } else if (data.success) {
+                            if (data.success) {
                                 toastr.success(data.message);
                                 updateCartData();
 
@@ -243,11 +241,16 @@ $isDashboard = View::hasSection('dashboard');
                             }
                         },
                         error: async function(xhr) {
-                            if (xhr.status === 419) { 
+                            if (xhr.status === 419) {
                                 await refreshCsrfToken();
                                 addToCartRequest();
                             } else if (xhr.status === 401) {
-                                window.location.href = "{{ route('login') }}";
+                                toastr.warning(xhr.responseJSON.error);
+                                setTimeout(() => {
+                                    window.location.href = "{{ route('login') }}";
+                                }, 1000); 
+                            } else if (xhr.status === 403) {
+                                toastr.warning(xhr.responseJSON.error);
                             } else {
                                 toastr.error('Something went wrong!');
                             }
@@ -400,19 +403,17 @@ $isDashboard = View::hasSection('dashboard');
                 const $variantIdInput = $wrapper.find("input.variantId");
                 const product = $wrapper.data("product");
 
-                if (variant) {                                        
+                if (variant) {
                     const basePrice = parseFloat(variant.price) || 0;
                     const discounted = variant.discounted_price !== null ? parseFloat(variant.discounted_price) :
                         null;
-                    
+
                     const price = discounted && discounted > 0 ? discounted : basePrice;
 
-                    if (!discounted || discounted == 0)
-                    {
+                    if (!discounted || discounted == 0) {
                         $originalPriceEl.addClass('hidden');
                         $priceEl.text(`৳ ${formatPrice(basePrice, quantity)}`);
-                    } 
-                    else {
+                    } else {
                         $originalPriceEl.removeClass('hidden');
                         $priceEl.text(`৳ ${formatPrice(discounted, quantity)}`);
                         $originalPriceEl.text(`৳ ${formatPrice(basePrice, quantity)}`);
@@ -434,18 +435,16 @@ $isDashboard = View::hasSection('dashboard');
                         $mainImage.attr('src', imageUrl);
                     }
 
-                } else {                    
+                } else {
                     const basePrice = parseFloat(product.price) || 0;
                     const discounted = product.discounted_price !== null ? parseFloat(product.discounted_price) :
                         null;
                     const price = discounted && discounted > 0 ? discounted : basePrice;
 
-                    if (!discounted || discounted == 0)
-                    {
+                    if (!discounted || discounted == 0) {
                         $originalPriceEl.addClass('hidden');
                         $priceEl.text(`৳ ${formatPrice(basePrice, quantity)}`);
-                    } 
-                    else {
+                    } else {
                         $originalPriceEl.removeClass('hidden');
                         $priceEl.text(`৳ ${formatPrice(discounted, quantity)}`);
                         $originalPriceEl.text(`৳ ${formatPrice(basePrice, quantity)}`);
@@ -531,7 +530,7 @@ $isDashboard = View::hasSection('dashboard');
 
                 const selectedOptions = collectSelectedOptions($wrapper);
                 const variant = getSelectedVariant(product, selectedOptions);
-                
+
                 const availableStock = variant ? variant.stock : product.stock;
 
                 if ($btn.hasClass("increaseBtn")) {

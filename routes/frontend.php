@@ -45,13 +45,14 @@ Route::prefix('campaigns')->as('campaigns.')->group(function () {
 
 Route::get('/get-districts/{divisionId}', [OrderController::class, 'getDistricts']);
 
+Route::post('cart/add', [CartController::class, 'add'])->name('cart.add');
 
 Route::middleware('auth')->group(function () {
 
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index')->middleware('markReadAuto');
 
     Route::prefix('cart')->as('cart.')->group(function () {
-        Route::post('/add', [CartController::class, 'add'])->name('add');
+        // Route::post('/add', [CartController::class, 'add'])->name('add');
         Route::post('/update', [CartController::class, 'update'])->name('update');
         Route::post('/delete', [CartController::class, 'delete'])->name('delete');
         Route::get('/details', [CartController::class, 'details'])->name('details');
