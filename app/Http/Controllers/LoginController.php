@@ -14,20 +14,20 @@ class LoginController extends Controller
 {
     public function login(Request $request)
     {
-        if (Auth::guard('web')->check()) {
-            return redirect()->route('home');
-        }
-        if (Auth::guard('seller')->check()) {
-            return redirect()->route('seller.dashboard');
-        }
-        if (Auth::guard('employee')->check()) {
-            return redirect()->route('seller.pos.index');
-        }
-        if (Auth::guard('admin')->check()) {
-            return redirect()->route('admin.dashboard');
-        }
-        
         if ($request->isMethod('GET')) {
+            if (Auth::guard('web')->check()) {
+                return redirect()->route('home');
+            }
+            if (Auth::guard('seller')->check()) {
+                return redirect()->route('seller.dashboard');
+            }
+            if (Auth::guard('employee')->check()) {
+                return redirect()->route('seller.pos.index');
+            }
+            if (Auth::guard('admin')->check()) {
+                return redirect()->route('admin.dashboard');
+            }
+            
             return view('frontend.auth.login');
         }
 
