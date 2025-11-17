@@ -190,14 +190,14 @@ $deviceCount = $devices->count();
 @endif
 
 @if($payments->count())
-<div class="card p-3 mb-3">
+<div class="card p-3 mb-3" style="max-height: 600px; overflow-y:scroll;">
     <h6 class="mb-3">Recent Payments</h6>
-    <ul class="list-group">
+    <ul class="list-group list-group-flush">
         @foreach ($payments as $payment)
         <li class="list-group-item">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="me-3">
-                    <div class="fw-bold">{{ $payment->sender }} ({{ $payment->device->device_name }})</div>
+                    <div><span class="fw-bold">{{ $payment->sender }}</span> <span class="text-muted">({{ $payment->device->device_name }})</span></div>
                     <div class="small">{{ $payment->full_sms }}</div>
                 </div>
                 <div class="small text-muted text-nowrap">{{ $payment->received_at?->format('Y-m-d h:i A') }}</div>
