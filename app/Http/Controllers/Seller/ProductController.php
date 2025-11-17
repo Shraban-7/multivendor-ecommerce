@@ -325,6 +325,24 @@ class ProductController extends Controller
         }
         $product->update($validated);
 
+        if ($useMainPrices) {
+            foreach ($product->variants as $variant) {
+                $variant->buying_price = $product->buying_price;
+                $variant->selling_price = $product->selling_price;
+                $variant->save();
+            }
+        }
+
+        if ($useMainDiscount) {
+            foreach ($product->variants as $variant) {
+                $variant->discount_type = $product->discount_type;
+                $variant->discount_value = $product->discount_value;
+                $variant->discount_amount = $product->discount_amount;
+                $variant->discounted_price = $product->discounted_price;
+                $variant->save();
+            }
+        }
+
         if ($request->hasFile('files')) {
             // $product->images->each(function ($image) {
             //     delete_file($image->image);
