@@ -128,7 +128,7 @@ $settings = settings();
                 </a>
 
                 <div id="navOrders"
-                    class="collapse {{ request()->routeIs('admin.orders.*') || request()->routeIs('admin.payments.*') ? 'show' : '' }}"
+                    class="collapse {{ request()->routeIs('admin.orders.*') || request()->routeIs('admin.payments.*') ||request()->routeIs('admin.reviews.*') ? 'show' : '' }}"
                     data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
                         <x-dashboard.nav-item-link :route="'admin.orders.index'">
@@ -137,15 +137,14 @@ $settings = settings();
                         <x-dashboard.nav-item-link :route="'admin.payments.index'">
                             Payments
                         </x-dashboard.nav-item-link>
+                        @if (hasPermission('admin.reviews.index'))
+                            <x-dashboard.nav-item-link :route="'admin.reviews.index'">
+                                Reviews
+                            </x-dashboard.nav-item-link>
+                        @endif
                     </ul>
                 </div>
             </li>
-
-            @if (hasPermission('admin.reviews.index'))
-                <x-dashboard.nav-item-link :route="'admin.reviews.index'">
-                    <i data-feather="layers" class="nav-icon icon-xs me-2"></i>Reviews
-                </x-dashboard.nav-item-link>
-            @endif
 
             <li class="nav-item">
                 <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center" href="#!"
@@ -185,14 +184,13 @@ $settings = settings();
             @endif
 
             <?php
-                $gatewayExpanded = (request()->routeIs('admin.paymentGateways.*') || request()->routeIs('admin.manualGateways.*')) ? true : false;
+            $gatewayExpanded = request()->routeIs('admin.paymentGateways.*') || request()->routeIs('admin.manualGateways.*') ? true : false;
             ?>
 
             <li class="nav-item">
                 <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center" href="#!"
                     data-bs-toggle="collapse" data-bs-target="#navGateways"
-                    aria-expanded="{{ $gatewayExpanded ? 'true' : 'false' }}"
-                    aria-controls="navGateways">
+                    aria-expanded="{{ $gatewayExpanded ? 'true' : 'false' }}" aria-controls="navGateways">
                     <div>
                         <i data-feather="credit-card" class="nav-icon icon-xs me-2"></i>
                         Payment Gateways
@@ -270,14 +268,13 @@ $settings = settings();
             </li>
 
             <?php
-                $subscriptionExpanded = (request()->routeIs('admin.subscription-plans.*') || request()->routeIs('admin.subscriptions.*')) ? true : false;
+            $subscriptionExpanded = request()->routeIs('admin.subscription-plans.*') || request()->routeIs('admin.subscriptions.*') ? true : false;
             ?>
 
             <li class="nav-item">
-                <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center" href="#!"
-                    data-bs-toggle="collapse" data-bs-target="#navSubscriptions"
-                     aria-expanded="{{ $subscriptionExpanded ? 'true' : 'false' }}"
-                    aria-controls="navSubscriptions">
+                <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center"
+                    href="#!" data-bs-toggle="collapse" data-bs-target="#navSubscriptions"
+                    aria-expanded="{{ $subscriptionExpanded ? 'true' : 'false' }}" aria-controls="navSubscriptions">
 
                     <div>
                         <i data-feather="layers" class="nav-icon icon-xs me-2"></i>
@@ -287,8 +284,7 @@ $settings = settings();
                     <i data-feather="chevron-right" class="chevron-icon transition"></i>
                 </a>
 
-                <div id="navSubscriptions"
-                    class="collapse {{ $subscriptionExpanded ? 'show' : '' }}"
+                <div id="navSubscriptions" class="collapse {{ $subscriptionExpanded ? 'show' : '' }}"
                     data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
                         <x-dashboard.nav-item-link :route="'admin.subscription-plans.index'">
