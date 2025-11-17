@@ -54,19 +54,19 @@ class ProductVariantController extends Controller
                 $variant = new ProductVariant();
                 $variant->product_id = $product->id;
                 $variant->sku = ProductVariant::generate_sku();
-                $variant->buying_price = (float) $v['buying_price'];
-                $variant->selling_price = (float) $v['selling_price'];
+                $variant->buying_price =  $v['buying_price'];
+                $variant->selling_price =  $v['selling_price'];
                 $variant->stock_in = $v['stock'] ?? 0;
 
                 $variant->discount_type = ($v['discount_type'] ?? 'none') !== 'none' ? $v['discount_type'] : null;
-                $variant->discount_value = !empty($v['discount_value']) ? (float) $v['discount_value'] : null;
+                $variant->discount_value = !empty($v['discount_value']) ?  $v['discount_value'] : null;
                 $hasDiscount = !empty($variant->discount_type) && !empty($variant->discount_value);
 
                 $variant->discount_amount = $hasDiscount
-                    ? calculate_discount_amount((float) $v['selling_price'], $variant->discount_type, (float) $variant->discount_value) : 0.0;
+                    ? calculate_discount_amount($v['selling_price'], $variant->discount_type,  $variant->discount_value) : null;
 
                 $variant->discounted_price = $hasDiscount
-                    ? calculate_discounted_price((float) $v['selling_price'], $variant->discount_type, (float) $variant->discount_value) : (float) $v['selling_price'];
+                    ? calculate_discounted_price( $v['selling_price'], $variant->discount_type,  $variant->discount_value) : null;
 
                 if (!$defaultExists) {
                     $variant->is_default = $index === 0 ? 1 : 0;
@@ -124,12 +124,16 @@ class ProductVariantController extends Controller
             ProductVariant::where('product_id', $variant->product_id)->where('is_default', 1)->update(['is_default' => 0]);
         }
 
+        $hasDiscount = !empty($request->discount_type) && !empty($request->discount_value);
+        
         $variant->is_default = $request->is_default ? 1 : 0;
         $variant->low_stock_quantity = $request->low_stock_quantity;
         $variant->buying_price = $request->buying_price;
         $variant->selling_price = $request->selling_price;
         $variant->discount_type = $request->discount_type;
         $variant->discount_value = $request->discount_value;
+        $variant->discount_amount = $hasDiscount ? calculate_discount_amount($request->selling_price, $request->discount_type, $request->discount_value) : null;
+        $variant->discounted_price = $hasDiscount ? calculate_discounted_price($request->selling_price, $request->discount_type, $request->discount_value) : null;
         $variant->save();
 
         if (!$request->is_default) {
