@@ -142,8 +142,20 @@
 
 @section('content')
 
-<h4 class="mb-3">Automatic Payment Checker</h4>
+@php
+$deviceCount = $devices->count();
+@endphp
 
+<div class="d-flex justify-content-between align-items-end mb-3">
+    <h4 class="mb-0">Automatic Payment Checker</h4>
+    @if($deviceCount > 0)
+    <button class="btn btn-primary" id="generateCodeTrigger">
+        <i class="bi bi-qr-code-scan"></i> Generate Device Code
+    </button>
+    @endif
+</div>
+
+@if($deviceCount == 0)
 <div class="row">
     <div class="col-md-6 mb-3">
         <div class="card card-shadow">
@@ -175,9 +187,88 @@
         </div>
     </div>
 </div>
+@endif
 
-@if($devices->count())
+@if($payments->count())
 <div class="card p-3 mb-3">
+    <h6 class="mb-3">Recent Payments</h6>
+    <ul class="list-group">
+        @foreach ($payments as $payment)
+        <li class="list-group-item">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="me-3">
+                    <div class="fw-bold">{{ $payment->sender }} ({{ $payment->device->device_name }})</div>
+                    <div class="small">{{ $payment->full_sms }}</div>
+                </div>
+                <div class="small text-muted text-nowrap">{{ $payment->received_at?->format('Y-m-d h:i A') }}</div>
+            </div>
+        </li>
+        @endforeach
+    </ul>
+</div>
+@endif
+
+@if($deviceCount)
+<h4 class="mb-2">Linked Devices</h4>
+<div class="row g-3">
+    @foreach ($devices as $device)
+    <div class="col-md-4 col-sm-6">
+        <div class="device-card p-3 rounded-4 border bg-white h-100 d-flex flex-column justify-content-between shadow-sm">
+            <div>
+                <div class="d-flex justify-content-between">
+                    <strong class="fs-5">{{ $device->device_name ?? 'Pending Device' }}</strong>
+                    <div>
+                        <span class="badge 
+                            @if($device->status === 1) bg-success
+                            @elseif($device->status === 0) bg-warning text-dark
+                            @else bg-secondary
+                            @endif">
+                            {{ $device->statusName }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="mt-2 small text-muted">
+                    <span class="text-dark fw-semibold">Code:</span>
+                    <span class="device-code">{{ $device->device_code }}</span>
+                </div>
+
+                <small class="text-muted d-block mt-2">
+                    Last sync: {{ $device->last_sync_at?->format('Y-m-d h:i A') }}
+                </small>
+            </div>
+
+            <div class="d-flex mt-3 gap-2">
+                <form action="{{ route('seller.paymentListener.devices.checkPayments', $device->id) }}"
+                    method="POST" class="flex-fill">
+                    @csrf
+                    <button class="btn btn-sm btn-primary w-100 d-flex align-items-center justify-content-center">
+                        <i class="bi bi-arrow-clockwise me-1"></i> Check
+                    </button>
+
+                </form>
+
+                <form action="{{ route('seller.paymentListener.devices.delete', $device->id) }}"
+                    method="POST" class="flex-fill">
+                    @csrf
+                    @method('DELETE')
+                    <button class="btn btn-sm btn-outline-danger w-100"
+                        onclick="return confirm('Are you sure?')">
+                        Delete
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    @endforeach
+
+</div>
+@endif
+
+
+<!-- @if($deviceCount)
+<div class="card p-3">
     <h6 class="mb-3">Linked Devices</h6>
     <div class="list-group" id="deviceList">
         @foreach ($devices as $device)
@@ -213,26 +304,7 @@
         @endforeach
     </div>
 </div>
-@endif
-
-@if($payments->count())
-<div class="card p-3">
-    <h6 class="mb-3">Recent Payments</h6>
-    <ul class="list-group">
-        @foreach ($payments as $payment)
-        <li class="list-group-item">
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="me-3">
-                    <div class="fw-bold">{{ $payment->sender }}</div>
-                    <div class="small">{{ $payment->full_sms }}</div>
-                </div>
-                <div class="small text-muted text-nowrap">{{ $payment->received_at?->format('Y-m-d h:i A') }}</div>
-            </div>
-        </li>
-        @endforeach
-    </ul>
-</div>
-@endif
+@endif -->
 
 <div class="modal fade" id="connectDeviceModal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="connectDeviceModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" style="max-width: 360px;">
@@ -266,7 +338,6 @@
         </div>
     </div>
 </div>
-
 
 <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
