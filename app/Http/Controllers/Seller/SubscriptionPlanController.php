@@ -21,12 +21,8 @@ class SubscriptionPlanController extends Controller
         return view('seller.subscription-plans', compact('plans', 'current_subscription'));
     }
 
-    public function subscribe(Request $request)
+    public function subscribe(SubscriptionPlan $plan, Request $request)
     {
-        $request->validate([
-            'plan_id' => 'nullable|exists:subscription_plans,id',
-        ]);
-
         $seller = auth('seller')->user();
 
         $freePlan = SubscriptionPlan::where('price', 0)->first();

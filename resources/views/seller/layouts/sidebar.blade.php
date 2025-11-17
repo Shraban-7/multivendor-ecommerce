@@ -238,7 +238,7 @@ $route = request()->route()->getName();
                 </x-dashboard.nav-item-link>
             @endif
 
-            <x-dashboard.nav-item-link :route="'seller.subscriptions.index'">
+            <x-dashboard.nav-item-link :route="'seller.plans.index'">
                 <i data-feather="trending-up" class="nav-icon icon-xs me-2"></i> Upgrade Plan
             </x-dashboard.nav-item-link>
         </ul>       

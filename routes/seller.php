@@ -152,9 +152,9 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::post('{expense}/destroy', [SellerExpenseController::class, 'destroy'])->name('destroy');
     });
 
-    Route::prefix('subscriptions')->as('subscriptions.')->group(function () {
-        Route::get('/subscriptions', [SubscriptionPlanController::class, 'index'])->name('index');
-        Route::post('/subscriptions/subscribe', [SubscriptionPlanController::class, 'subscribe'])->name('subscribe');
+    Route::prefix('plans')->as('plans.')->group(function () {
+        Route::get('/', [SubscriptionPlanController::class, 'index'])->name('index');
+        Route::post('/{plan}/subscribe', [SubscriptionPlanController::class, 'subscribe'])->name('subscribe');
     });
 
     Route::post('banner-image/{image}/', [SettingController::class, 'deleteImage'])->name('bannerImages.delete');
