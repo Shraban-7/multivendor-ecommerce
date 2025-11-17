@@ -43,6 +43,8 @@ class ProductVariantController extends Controller
 
         $imageFolder = "images/{$product->seller->username}/products";
 
+        $defaultExists = ProductVariant::where('product_id', $product->id)->where('is_default', 1)->exists();
+
         if (!empty($variants) && is_array($variants)) {
             foreach ($variants as $index => $v) {
                 if (empty($v['buying_price']) || empty($v['selling_price'])) {
@@ -66,7 +68,9 @@ class ProductVariantController extends Controller
                 $variant->discounted_price = $hasDiscount
                     ? calculate_discounted_price((float) $v['selling_price'], $variant->discount_type, (float) $variant->discount_value) : (float) $v['selling_price'];
 
-                $variant->is_default = $index === 0 ? 1 : 0;
+                if (!$defaultExists) {
+                    $variant->is_default = $index === 0 ? 1 : 0;
+                }
 
                 if (isset($v['image']) && $request->hasFile("variants.$index.image")) {
                     $variant->image = upload_file($request->file("variants.$index.image"), "$imageFolder/variants");
