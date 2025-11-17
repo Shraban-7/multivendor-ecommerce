@@ -190,7 +190,7 @@ $deviceCount = $devices->count();
 @endif
 
 @if($payments->count())
-<div class="card p-3 mb-3" style="max-height: 600px; overflow-y:scroll;">
+<div class="card p-3 mb-3" style="max-height: 500px; overflow-y:scroll;">
     <h6 class="mb-3">Recent Payments</h6>
     <ul class="list-group list-group-flush">
         @foreach ($payments as $payment)
