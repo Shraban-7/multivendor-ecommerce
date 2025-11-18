@@ -374,7 +374,7 @@ class PosController extends Controller
         $total = ($sub_total + $totalVat) - ($discount + $data['discount']);
         $payableAmount = $total;
 
-        $commissionData = $seller->calculateEarning($payableAmount, $totalVat);
+        $commissionData = $seller->calculateEarning($payableAmount);
 
         $total_commission = $commissionData['total_commission'];
         $sellerEarning = $commissionData['seller_earning'];

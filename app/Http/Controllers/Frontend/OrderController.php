@@ -169,7 +169,7 @@ class OrderController extends Controller
 
         $seller = Seller::where('id', $selectedSellerId)->first();
 
-        $commissionData = $seller->calculateEarning($total, $vat_amount);
+        $commissionData = $seller->calculateEarning($total);
 
         $total_commission = $commissionData['total_commission'];
         $sellerEarning = $commissionData['seller_earning'];

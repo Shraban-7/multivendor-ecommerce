@@ -122,7 +122,7 @@ class SaleController extends Controller
             $paid = min($data['paid'] ?? 0, $total);
             $due = max($total - $paid, 0);
 
-            $commissionData = $seller->calculateEarning($total, $vat);
+            $commissionData = $seller->calculateEarning($total);
             $order->update([
                 'sub_total' => $subTotal,
                 'vat_amount' => $vat,

@@ -120,19 +120,19 @@ class Seller extends Authenticatable
         return $this->belongsToMany(Category::class);
     }
 
-    public function calculateEarning($total, $vat_amount)
+    public function calculateEarning($total)
     {
         $total_commission = 0;
 
         if ($this->commission_amount !== null && $this->commission_type !== null) {
             if ($this->commission_type === CommissionType::PERCENTAGE->value) {
-                $total_commission = ($total + $vat_amount) * ($this->commission_amount / 100);
+                $total_commission = ($total) * ($this->commission_amount / 100);
             } elseif ($this->commission_type === CommissionType::FLAT->value) {
                 $total_commission = $this->commission_amount;
             }
         }
 
-        $sellerEarning = ($total + $vat_amount) - $total_commission;
+        $sellerEarning = ($total) - $total_commission;
 
         return [
             'total_commission' => $total_commission,
