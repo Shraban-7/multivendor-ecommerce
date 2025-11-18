@@ -226,6 +226,24 @@ $route = request()->route()->getName();
                 </x-dashboard.nav-item-link>
             @endif
 
+            <li class="nav-item">
+                <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center" href="#!"
+                    data-bs-toggle="collapse" data-bs-target="#navReports"
+                    aria-expanded="{{ request()->routeIs('seller.reports.*') ? 'true' : 'false' }}"
+                    aria-controls="navReports">
+
+                    <div><i data-feather="users" class="nav-icon icon-xs me-2"></i> Reports</div>
+                    <i data-feather="chevron-right" class="chevron-icon transition"></i>
+                </a>
+
+                <div id="navReports" class="collapse {{ request()->routeIs('seller.reports.*') ? 'show' : '' }}"
+                    data-bs-parent="#sideNavbar">
+                    <ul class="nav flex-column">
+                        <x-dashboard.nav-item-link :route="'seller.reports.financial'">Financial</x-dashboard.nav-item-link>
+                    </ul>
+                </div>
+            </li>
+
             @if ($seller || $employee->hasPermission('seller.settings.index'))
                 <x-dashboard.nav-item-link :route="'seller.settings.index'">
                     <i data-feather="settings" class="nav-icon icon-xs me-2"></i> Settings

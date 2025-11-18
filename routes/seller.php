@@ -20,6 +20,7 @@ use App\Http\Controllers\Seller\PaymentListnerController;
 use App\Http\Controllers\Seller\ProductStockController;
 use App\Http\Controllers\Seller\SellerExpenseController;
 use App\Http\Controllers\Seller\ProductVariantController;
+use App\Http\Controllers\Seller\ReportController;
 use App\Http\Controllers\Seller\SellerCampaignController;
 use App\Http\Controllers\Seller\SellerEmployeeController;
 use App\Http\Controllers\Seller\SubscriptionPlanController;
@@ -167,5 +168,9 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
             Route::post('/{device}/check-payments', [PaymentListnerController::class, 'checkPayments'])->name('checkPayments');
         });
         Route::get('/payments', [PaymentListnerController::class, 'payments']);
+    });
+
+    Route::prefix('reports')->as('reports.')->group(function () {
+        Route::get('/financial', [ReportController::class, 'financial'])->name('financial');
     });
 });
