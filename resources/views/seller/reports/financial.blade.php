@@ -31,7 +31,7 @@
         }
 
         .kpi-value {
-            font-size: 2.25rem;
+            font-size: 1.55rem;
         }
 
         .nav-tabs .nav-link {
