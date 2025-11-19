@@ -65,6 +65,47 @@
 
 @section('content')
 <div>
+    <header>
+        <div class="row align-items-center mb-4">
+            <div class="col-md-6 mb-3 mb-md-0">
+                <h2 class="fw-bold mb-1">Customer Report</h2>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 small">
+                        <li class="breadcrumb-item text-muted">Reports</li>
+                        <li class="breadcrumb-item active fw-semibold" aria-current="page">Customer Report</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="col-md-6">
+                <form method="GET" class="row g-2 justify-content-end">
+                    <div class="col-md-4 col-sm-6">
+                        <label class="form-label small">Filter By</label>
+                        <select name="range" class="form-select form-select-sm"
+                            onchange="toggleCustomDates(this.value)">
+                            <option value="daily" {{ request('range') == 'daily' ? 'selected' : '' }}>Daily</option>
+                            <option value="weekly" {{ request('range') == 'weekly' ? 'selected' : '' }}>Weekly</option>
+                            <option value="monthly" {{ request('range') == 'monthly' ? 'selected' : '' }}>Monthly
+                            </option>
+                            <option value="yearly" {{ request('range') == 'yearly' ? 'selected' : '' }}>Yearly</option>
+                            <option value="custom" {{ request('range') == 'custom' ? 'selected' : '' }}>Custom</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 col-sm-6" id="customDateRange"
+                        style="{{ request('range') == 'custom' ? '' : 'display:none;' }}">
+                        <label class="form-label small">Custom Date Range</label>
+                        <div class="input-group input-group-sm">
+                            <input type="date" name="date_from" value="{{ request('date_from') }}"
+                                class="form-control">
+                            <input type="date" name="date_to" value="{{ request('date_to') }}" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-12 d-flex align-items-end">
+                        <button class="btn btn-primary btn-sm w-100 mt-1 mt-md-4">Filter</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </header>
 
     <header class="mb-4 pb-2 border-bottom">
         <h2 class="fw-bold mb-1"><i class="fas fa-users-viewfinder me-2 text-primary"></i> Customer Analytics</h2>
