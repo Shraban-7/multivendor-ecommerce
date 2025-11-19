@@ -13,6 +13,11 @@
             --card-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
         }
 
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+
         .card {
             border: none;
             border-radius: 0.75rem;
@@ -60,15 +65,15 @@
 
 @section('content')
     <div>
-        <div class="page-header bg-white mb-4 p-3 rounded-3 shadow-sm">
-            <h3 class="fw-bold mb-1">Financial Reports</h3>
+        <header class="mb-3">
+            <h2 class="fw-bold mb-1">Financial Reports</h2>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item text-muted">Reports</li>
                     <li class="breadcrumb-item active fw-semibold" aria-current="page">Financial Reports</li>
                 </ol>
             </nav>
-        </div>
+        </header>
 
         <div class="row mb-5 g-3">
             <div class="col-xl-2 col-lg-4 col-md-6 col-sm-6">
@@ -178,7 +183,6 @@
                 </div>
             </div>
         </div>
-
 
         <ul class="nav nav-tabs mb-4" id="financialTabs" role="tablist">
             <li class="nav-item" role="presentation">
@@ -499,10 +503,6 @@
             </div>
 
         </div>
-        <footer class="mt-5 pt-3 border-top text-center text-muted">
-            <p class="mb-0">© [YourBrand] Financial Dashboard - Updated November 18, 2025</p>
-        </footer>
-
     </div>
 @endsection
 

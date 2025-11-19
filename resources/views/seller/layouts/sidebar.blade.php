@@ -232,7 +232,7 @@ $route = request()->route()->getName();
                     aria-expanded="{{ request()->routeIs('seller.reports.*') ? 'true' : 'false' }}"
                     aria-controls="navReports">
 
-                    <div><i data-feather="users" class="nav-icon icon-xs me-2"></i> Reports</div>
+                    <div><i data-feather="bar-chart-2" class="nav-icon icon-xs me-2"></i> Reports</div>
                     <i data-feather="chevron-right" class="chevron-icon transition"></i>
                 </a>
 
@@ -240,6 +240,7 @@ $route = request()->route()->getName();
                     data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
                         <x-dashboard.nav-item-link :route="'seller.reports.financial'">Financial</x-dashboard.nav-item-link>
+                        <x-dashboard.nav-item-link :route="'seller.reports.sales'">Sales</x-dashboard.nav-item-link>
                     </ul>
                 </div>
             </li>

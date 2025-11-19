@@ -252,4 +252,9 @@ class ReportController extends Controller
             'totalStockValue'
         ));
     }
+
+    public function sales()
+    {
+        return view('seller.reports.sales');
+    }
 }
