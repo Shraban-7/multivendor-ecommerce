@@ -484,6 +484,8 @@ class ReportController extends Controller
         ));
     }
 
-
-
+    public function customers()
+    {
+        return view('seller.reports.customers');
+    }
 }

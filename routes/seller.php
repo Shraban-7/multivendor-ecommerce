@@ -173,5 +173,6 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
     Route::prefix('reports')->as('reports.')->group(function () {
         Route::get('/financial', [ReportController::class, 'financial'])->name('financial');
         Route::get('/sales', [ReportController::class, 'sales'])->name('sales');
+        Route::get('/customers', [ReportController::class, 'customers'])->name('customers');
     });
 });

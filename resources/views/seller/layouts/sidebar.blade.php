@@ -241,6 +241,7 @@ $route = request()->route()->getName();
                     <ul class="nav flex-column">
                         <x-dashboard.nav-item-link :route="'seller.reports.financial'">Financial</x-dashboard.nav-item-link>
                         <x-dashboard.nav-item-link :route="'seller.reports.sales'">Sales</x-dashboard.nav-item-link>
+                        <x-dashboard.nav-item-link :route="'seller.reports.customers'">Customers</x-dashboard.nav-item-link>
                     </ul>
                 </div>
             </li>
