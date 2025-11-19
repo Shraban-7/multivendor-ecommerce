@@ -12,14 +12,12 @@ class SellerExpenseController extends Controller
     public function index()
     {
         $expenses = SellerExpense::where('seller_id', get_seller_id())
-            ->orWhereNull('seller_id')
             ->latest()
             ->paginate(25);
 
         $categories = SellerExpenseCategory::get();
 
         $descriptions = SellerExpense::where('seller_id', get_seller_id())
-            ->orWhereNull('seller_id')
             ->pluck('description')
             ->filter()
             ->unique()
