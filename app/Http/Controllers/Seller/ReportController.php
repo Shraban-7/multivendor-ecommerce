@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Seller;
 
 use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Order;
 use App\Models\Seller;
 use App\Models\Product;
+use App\Models\Customer;
 use App\Models\District;
 use App\Models\Division;
 use Carbon\CarbonPeriod;
@@ -484,8 +486,200 @@ class ReportController extends Controller
         ));
     }
 
-    public function customers()
+    public function customers(Request $request)
     {
-        return view('seller.reports.customers');
+        $filter = $request->get('filter', null); 
+
+        if ($filter) {
+            $dates = $this->getDateRange($filter);
+            $currentStart = $dates['currentStart'];
+            $currentEnd = $dates['currentEnd'];
+            $lastStart = $dates['lastStart'];
+            $lastEnd = $dates['lastEnd'];
+        } else {
+            $currentStart = Order::min('created_at');
+            $currentEnd = now();
+            $lastStart = null;
+            $lastEnd = null;
+        }
+
+        $allTimeTotalCustomers = Order::get(['user_id', 'customer_id'])
+            ->unique(fn($item) => $item->user_id . '-' . $item->customer_id)
+            ->count();
+
+        $newCustomersCurrent = Order::whereBetween('created_at', [$currentStart, $currentEnd->toDateString()])
+            ->get(['user_id', 'customer_id'])
+            ->unique(fn($item) => $item->user_id . '-' . $item->customer_id)
+            ->count();
+
+        $newCustomersLast = $lastStart && $lastEnd
+            ? Order::whereBetween('created_at', [$lastStart, $lastEnd->toDateString()])
+                ->get(['user_id', 'customer_id'])
+                ->unique(fn($item) => $item->user_id . '-' . $item->customer_id)
+                ->count()
+            : 0;
+
+        $returningCustomersCurrent = max($allTimeTotalCustomers - $newCustomersCurrent, 0);
+
+        $returningPercentage = $allTimeTotalCustomers > 0
+            ? round(($returningCustomersCurrent / $allTimeTotalCustomers) * 100, 1)
+            : 0;
+
+        $avgClvCurrent = Order::whereBetween('created_at', [$currentStart, $currentEnd->toDateString()])->avg('total') ?? 0;
+        $avgClvLast = $lastStart && $lastEnd
+            ? Order::whereBetween('created_at', [$lastStart, $lastEnd])->avg('total') ?? 0
+            : 0;
+
+
+        $totalOrdersCurrent = Order::whereBetween('created_at', [$currentStart, $currentEnd->toDateString()])->count();
+        $totalOrdersLast = $lastStart && $lastEnd
+            ? Order::whereBetween('created_at', [$lastStart, $lastEnd])->count()
+            : 0;
+
+        $avgOrdersPerCustomerCurrent = $newCustomersCurrent > 0
+            ? round($totalOrdersCurrent / $newCustomersCurrent, 2)
+            : 0;
+
+        $avgOrdersPerCustomerLast = $newCustomersLast > 0
+            ? round($totalOrdersLast / $newCustomersLast, 2)
+            : 0;
+
+        $newCustomersChange = $newCustomersLast > 0
+            ? round((($newCustomersCurrent - $newCustomersLast) / $newCustomersLast) * 100, 1)
+            : 0;
+
+        $avgClvChange = $avgClvLast > 0
+            ? round((($avgClvCurrent - $avgClvLast) / $avgClvLast) * 100, 1)
+            : 0;
+
+        $avgOrdersPerCustomerChange = $avgOrdersPerCustomerLast > 0
+            ? round((($avgOrdersPerCustomerCurrent - $avgOrdersPerCustomerLast) / $avgOrdersPerCustomerLast) * 100, 1)
+            : 0;
+
+
+        $chartData = [
+            'total' => ['labels' => [], 'data' => []],
+            'new_vs_returning' => ['labels' => [], 'new' => [], 'returning' => []],
+        ];
+
+        $months = collect();
+        for ($i = 11; $i >= 0; $i--) {
+            $months->push(now()->copy()->subMonths($i));
+        }
+
+        foreach ($months as $month) {
+
+            $monthStart = $month->copy()->startOfMonth();
+            $monthEnd = $month->copy()->endOfMonth();
+
+            $monthlyTotal = Order::whereBetween('created_at', [$monthStart, $monthEnd])
+                ->get(['user_id', 'customer_id'])
+                ->unique(fn($item) => $item->user_id . '-' . $item->customer_id)
+                ->count();
+
+            $previousTotal = Order::where('created_at', '<', $monthStart)
+                ->get(['user_id', 'customer_id'])
+                ->unique(fn($item) => $item->user_id . '-' . $item->customer_id)
+                ->count();
+
+            $newCustomers = $monthlyTotal > 0 ? max($monthlyTotal - $previousTotal, 0) : 0;
+
+            $returningCustomers = max($monthlyTotal - $newCustomers, 0);
+
+            $label = $month->format('M Y');
+
+            $chartData['total']['labels'][] = $label;
+            $chartData['total']['data'][] = $monthlyTotal;
+
+            $chartData['new_vs_returning']['labels'][] = $label;
+            $chartData['new_vs_returning']['new'][] = $newCustomers;
+            $chartData['new_vs_returning']['returning'][] = $returningCustomers;
+        }
+
+
+        $topCustomers = Order::with(['user:id,name', 'customer:id,name'])
+            ->whereBetween('created_at', [$currentStart, $currentEnd->toDateString()])   // ← your filter applied
+            ->selectRaw("
+                    user_id,
+                    customer_id,
+                    COUNT(id) as total_orders,
+                    SUM(total) as total_spent
+                ")
+            ->groupBy('user_id', 'customer_id')
+            ->orderByDesc('total_spent')
+            ->take(5)
+            ->get()
+            ->map(function ($row) {
+
+                // Determine customer name
+                if ($row->user_id && $row->user) {
+                    $name = $row->user->name;
+                } elseif ($row->customer_id && $row->customer) {
+                    $name = $row->customer->name;
+                } else {
+                    $name = 'Guest Customer';
+                }
+
+                return [
+                    'name' => $name,
+                    'orders' => $row->total_orders,
+                    'spent' => $row->total_spent,
+                ];
+            });
+
+
+        return view('seller.reports.customers', compact(
+            'filter',
+            'allTimeTotalCustomers',
+            'newCustomersCurrent',
+            'newCustomersChange',
+            'returningPercentage',
+            'avgClvCurrent',
+            'avgClvChange',
+            'avgOrdersPerCustomerCurrent',
+            'avgOrdersPerCustomerChange',
+            'chartData',
+            'topCustomers'
+        ));
     }
+
+
+
+
+
+
+
+    protected function getDateRange($filter)
+    {
+        switch ($filter) {
+            case 'weekly':
+                $currentStart = now()->startOfWeek();
+                $currentEnd = now()->endOfWeek();
+                $lastStart = now()->subWeek()->startOfWeek();
+                $lastEnd = now()->subWeek()->endOfWeek();
+                break;
+
+            case 'yearly':
+                $currentStart = now()->startOfYear();
+                $currentEnd = now()->endOfYear();
+                $lastStart = now()->subYear()->startOfYear();
+                $lastEnd = now()->subYear()->endOfYear();
+                break;
+
+            case 'monthly':
+            default:
+                $currentStart = now()->startOfMonth();
+                $currentEnd = now()->endOfMonth();
+                $lastStart = now()->subMonth()->startOfMonth();
+                $lastEnd = now()->subMonth()->endOfMonth();
+        }
+
+        return [
+            'currentStart' => $currentStart,
+            'currentEnd' => $currentEnd,
+            'lastStart' => $lastStart,
+            'lastEnd' => $lastEnd,
+        ];
+    }
+
 }
