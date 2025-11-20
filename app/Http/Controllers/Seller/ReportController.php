@@ -12,6 +12,7 @@ use App\Models\District;
 use App\Models\Division;
 use Carbon\CarbonPeriod;
 use App\Models\OrderItem;
+use App\Enums\OrderStatus;
 use Illuminate\Http\Request;
 use App\Models\SellerExpense;
 use Illuminate\Support\Facades\DB;
@@ -23,7 +24,7 @@ class ReportController extends Controller
     public function financial(Request $request)
     {
         $seller = Seller::find(get_seller_id());
-        $filter = $request->get('range');          // daily/weekly/monthly/yearly/custom
+        $filter = $request->get('range');
         $dateFrom = $request->get('date_from');
         $dateTo = $request->get('date_to');
 
@@ -224,7 +225,6 @@ class ReportController extends Controller
             'totalStockValue'
         ));
     }
-
 
     public function sales()
     {
@@ -916,9 +916,221 @@ class ReportController extends Controller
         return $expenseTrend;
     }
 
-    public function overview()
+    public function overview(Request $request)
     {
-        return view('seller.reports.overview');
+        $seller = Seller::find(get_seller_id());
+
+        $filter = $request->get('range');
+        $dateFrom = $request->get('date_from');
+        $dateTo = $request->get('date_to');
+
+        if ($filter && $filter !== 'custom') {
+
+            $dates = $this->getDateRange($filter);
+
+            $currentStart = $dates['currentStart'];
+            $currentEnd = $dates['currentEnd'];
+
+            $lastStart = $dates['lastStart'];
+            $lastEnd = $dates['lastEnd'];
+
+        } elseif ($filter === 'custom') {
+
+            $currentStart = Carbon::parse($dateFrom)->startOfDay();
+            $currentEnd = Carbon::parse($dateTo)->endOfDay();
+
+            $days = Carbon::parse($dateFrom)->diffInDays($dateTo) + 1;
+
+            $lastEnd = Carbon::parse($dateFrom)->subDay()->endOfDay();
+            $lastStart = $lastEnd->copy()->subDays($days - 1)->startOfDay();
+
+        } else {
+            $currentStart = Order::min('created_at') ?? now();
+            $currentEnd = now();
+            $lastStart = null;
+            $lastEnd = null;
+        }
+
+        $currentSales = Order::where('seller_id', $seller->id)
+            ->whereBetween('created_at', [$currentStart, $currentEnd])
+            ->sum('total');
+
+        $currentOrders = Order::where('seller_id', $seller->id)
+            ->whereBetween('created_at', [$currentStart, $currentEnd])
+            ->count();
+
+        $currentAOV = $currentOrders > 0 ? $currentSales / $currentOrders : 0;
+
+        $currentCost = OrderItem::whereHas('order', function ($q) use ($seller, $currentStart, $currentEnd) {
+            $q->where('seller_id', $seller->id)
+                ->whereBetween('created_at', [$currentStart, $currentEnd]);
+        })->sum(DB::raw('buying_price * quantity'));
+
+        $currentProfit = $currentSales - $currentCost;
+
+        $currentStock = Product::where('seller_id', $seller->id)->sum(DB::raw('stock_in - stock_out'));
+
+        if ($lastStart && $lastEnd) {
+            $lastSales = Order::where('seller_id', $seller->id)
+                ->whereBetween('created_at', [$lastStart, $lastEnd])
+                ->sum('total');
+
+            $lastOrders = Order::where('seller_id', $seller->id)
+                ->whereBetween('created_at', [$lastStart, $lastEnd])
+                ->count();
+
+            $lastAOV = $lastOrders > 0 ? $lastSales / $lastOrders : 0;
+
+            $lastCost = OrderItem::whereHas('order', function ($q) use ($seller, $lastStart, $lastEnd) {
+                $q->where('seller_id', $seller->id)
+                    ->whereBetween('created_at', [$lastStart, $lastEnd]);
+            })->sum(DB::raw('buying_price * quantity'));
+
+            $lastProfit = $lastSales - $lastCost;
+
+            $lastStock = Product::where('seller_id', $seller->id)->sum(DB::raw('stock_in-stock_out'));
+        } else {
+            $lastSales = $lastOrders = $lastAOV = $lastProfit = $lastStock = 0;
+        }
+
+        $growth = function ($current, $last) {
+            if ($last == 0)
+                return 0;
+            return round((($current - $last) / $last) * 100, 2);
+        };
+
+        $calculateMetrics = [
+            'total_sales' => $currentSales,
+            'total_orders' => $currentOrders,
+            'aov' => $currentAOV,
+            'net_profit' => $currentProfit,
+            'total_stock' => $currentStock,
+
+            'sales_growth' => $growth($currentSales, $lastSales),
+            'orders_growth' => $growth($currentOrders, $lastOrders),
+            'aov_growth' => $growth($currentAOV, $lastAOV),
+            'profit_growth' => $growth($currentProfit, $lastProfit),
+            'stock_growth' => $growth($currentStock, $lastStock),
+        ];
+
+        switch ($filter) {
+            case 'daily':
+                $trend = Order::where('seller_id', $seller->id)
+                    ->whereBetween('created_at', [$currentStart, $currentEnd])
+                    ->selectRaw('HOUR(created_at) as label, SUM(seller_earnings) as revenue')
+                    ->groupBy('label')
+                    ->orderBy('label')
+                    ->get();
+                break;
+
+            case 'weekly':
+                $trend = Order::where('seller_id', $seller->id)
+                    ->whereBetween('created_at', [$currentStart, $currentEnd])
+                    ->selectRaw('DAYNAME(created_at) as label, SUM(seller_earnings) as revenue')
+                    ->groupBy('label')
+                    ->orderByRaw('MIN(created_at)')
+                    ->get();
+                break;
+
+            case 'monthly':
+                $trend = Order::where('seller_id', $seller->id)
+                    ->whereBetween('created_at', [$currentStart, $currentEnd])
+                    ->selectRaw('DAY(created_at) as label, SUM(seller_earnings) as revenue')
+                    ->groupBy('label')
+                    ->orderBy('label')
+                    ->get();
+                break;
+
+            case 'yearly':
+                $trend = Order::where('seller_id', $seller->id)
+                    ->whereBetween('created_at', [$currentStart, $currentEnd])
+                    ->selectRaw('MONTHNAME(created_at) as label, SUM(seller_earnings) as revenue')
+                    ->groupBy('label')
+                    ->orderByRaw('MIN(created_at)')
+                    ->get();
+                break;
+
+            case 'custom':
+            default:
+                $trend = Order::where('seller_id', $seller->id)
+                    ->whereBetween('created_at', [$currentStart, $currentEnd])
+                    ->selectRaw('DATE(created_at) as label, SUM(seller_earnings) as revenue')
+                    ->groupBy('label')
+                    ->orderBy('label')
+                    ->get();
+                break;
+        }
+
+        $revenueTrend = [
+            'labels' => $trend->pluck('label'),
+            'values' => $trend->pluck('revenue'),
+        ];
+
+        $ordersReturns = Order::where('seller_id', $seller->id)
+            ->whereBetween('created_at', [$currentStart, $currentEnd])
+            ->selectRaw('
+                SUM(CASE WHEN status = ' . OrderStatus::DELIVERED->value . ' THEN 1 ELSE 0 END) AS orders,
+                SUM(CASE WHEN status = ' . OrderStatus::RETURNED->value . ' THEN 1 ELSE 0 END) AS returns
+            ')
+            ->first();
+
+        $ordersReturnsChart = [
+            'orders' => $ordersReturns->orders ?? 0,
+            'returns' => $ordersReturns->returns ?? 0,
+        ];
+
+        $chartData = [
+            'revenueTrend' => $revenueTrend,
+            'ordersReturns' => $ordersReturnsChart,
+        ];
+
+        $orders = Order::where('seller_id', $seller->id)
+            ->whereBetween('created_at', [$currentStart, $currentEnd]);
+
+        $totalOrders = $orders->count();
+
+        $refundRate = $orders->where('status', OrderStatus::REFUNDED->value)
+            ->count();
+        $refundRatePercent = $totalOrders > 0 ? round(($refundRate / $totalOrders) * 100, 2) : 0;
+
+        $bestSalesDay = Order::where('seller_id', $seller->id)
+            ->whereBetween('created_at', [$currentStart, $currentEnd])
+            ->selectRaw('DATE(created_at) as order_date, SUM(total) as total_sales')
+            ->groupBy('order_date')
+            ->orderByDesc('total_sales')
+            ->first();
+
+        $quickFacts = [
+            'total_orders' => $totalOrders,
+            'refund_rate' => $refundRatePercent,
+            'best_sales_day' => $bestSalesDay
+                ? Carbon::parse($bestSalesDay->order_date)->format('M d') . ' (' . money($bestSalesDay->total_sales) . ')'
+                : null,
+        ];
+
+        $topProducts = OrderItem::with('product')
+            ->whereHas('order', function ($q) use ($seller, $currentStart, $currentEnd) {
+                $q->where('seller_id', $seller->id)
+                    ->whereBetween('created_at', [$currentStart, $currentEnd])
+                    ->whereIn('status', [OrderStatus::DELIVERED->value, OrderStatus::COMPLETED->value]);
+            })
+            ->selectRaw('product_id, SUM(quantity) as units_sold, SUM(unit_price * quantity) as total_sales')
+            ->groupBy('product_id')
+            ->orderByDesc('units_sold')
+            ->take(5)
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'name' => $item->product->name ?? 'N/A',
+                    'units_sold' => $item->units_sold,
+                    'sales' => $item->total_sales,
+                    'stock' => ($item->product->stock_in -$item->product->stock_out) ?? 0,
+                ];
+            });
+
+        return view('seller.reports.overview', compact('calculateMetrics', 'chartData', 'quickFacts', 'filter','topProducts'));
     }
+
+
 
 }
