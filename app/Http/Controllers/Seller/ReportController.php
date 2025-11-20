@@ -23,90 +23,81 @@ class ReportController extends Controller
     public function financial(Request $request)
     {
         $seller = Seller::find(get_seller_id());
-        $filter = $request->get('filter', 'monthly');
+        $filter = $request->get('range');          // daily/weekly/monthly/yearly/custom
+        $dateFrom = $request->get('date_from');
+        $dateTo = $request->get('date_to');
 
-        // Define current, last, next periods
-        switch ($filter) {
-            case 'weekly':
-                $currentStart = now()->startOfWeek();
-                $currentEnd = now()->endOfWeek();
-                $lastStart = now()->subWeek()->startOfWeek();
-                $lastEnd = now()->subWeek()->endOfWeek();
-                $nextStart = now()->addWeek()->startOfWeek();
-                $nextEnd = now()->addWeek()->endOfWeek();
-                break;
+        if ($filter && $filter !== 'custom') {
+            $dates = $this->getDateRange($filter);
+            $currentStart = $dates['currentStart'];
+            $currentEnd = $dates['currentEnd'];
+            $lastStart = $dates['lastStart'];
+            $lastEnd = $dates['lastEnd'];
+        } elseif ($filter === 'custom') {
+            $currentStart = Carbon::parse($dateFrom)->startOfDay();
+            $currentEnd = Carbon::parse($dateTo)->endOfDay();
 
-            case 'monthly':
-                $currentStart = now()->startOfMonth();
-                $currentEnd = now()->endOfMonth();
-                $lastStart = now()->subMonth()->startOfMonth();
-                $lastEnd = now()->subMonth()->endOfMonth();
-                $nextStart = now()->addMonth()->startOfMonth();
-                $nextEnd = now()->addMonth()->endOfMonth();
-                break;
-
-            case 'yearly':
-                $currentStart = now()->startOfYear();
-                $currentEnd = now()->endOfYear();
-                $lastStart = now()->subYear()->startOfYear();
-                $lastEnd = now()->subYear()->endOfYear();
-                $nextStart = now()->addYear()->startOfYear();
-                $nextEnd = now()->addYear()->endOfYear();
-                break;
-
-            default:
-                $currentStart = now()->startOfMonth();
-                $currentEnd = now()->endOfMonth();
-                $lastStart = now()->subMonth()->startOfMonth();
-                $lastEnd = now()->subMonth()->endOfMonth();
-                $nextStart = now()->addMonth()->startOfMonth();
-                $nextEnd = now()->addMonth()->endOfMonth();
+            $days = Carbon::parse($dateFrom)->diffInDays($dateTo) + 1;
+            $lastEnd = Carbon::parse($dateFrom)->subDay()->endOfDay();
+            $lastStart = $lastEnd->copy()->subDays($days - 1)->startOfDay();
+        } else {
+            $currentStart = Order::min('created_at') ?? now();
+            $currentEnd = now();
+            $lastStart = null;
+            $lastEnd = null;
         }
 
-        // Helper to calculate metrics
-        $calculateMetrics = function ($start, $end) use ($seller) {
-            $orders = Order::where('seller_id', $seller->id)
+        $nextStart = match ($filter) {
+            'daily' => now()->addDay()->startOfDay(),
+            'weekly' => now()->addWeek()->startOfWeek(),
+            'monthly' => now()->addMonth()->startOfMonth(),
+            'yearly' => now()->addYear()->startOfYear(),
+            'custom' => $currentEnd->copy()->addDay()->startOfDay(),
+            default => now()->addMonth()->startOfMonth(),
+        };
+
+        $nextEnd = match ($filter) {
+            'daily' => now()->addDay()->endOfDay(),
+            'weekly' => now()->addWeek()->endOfWeek(),
+            'monthly' => now()->addMonth()->endOfMonth(),
+            'yearly' => now()->addYear()->endOfYear(),
+            'custom' => $currentEnd->copy()->addDay()->endOfDay(),
+            default => now()->addMonth()->endOfMonth(),
+        };
+
+        $calculateMetrics = function ($sellerId, $start, $end) {
+            $orders = Order::where('seller_id', $sellerId)
                 ->whereBetween('created_at', [$start, $end])
                 ->get();
 
             $total_revenue = $orders->sum('seller_earnings');
 
-            $total_product_cost = OrderItem::whereHas('order', function ($q) use ($seller, $start, $end) {
-                $q->where('seller_id', $seller->id)
+            $total_product_cost = OrderItem::whereHas('order', function ($q) use ($sellerId, $start, $end) {
+                $q->where('seller_id', $sellerId)
                     ->whereBetween('created_at', [$start, $end]);
             })->sum(DB::raw('buying_price * quantity'));
 
-            $total_selling_price = OrderItem::whereHas('order', function ($q) use ($seller, $start, $end) {
-                $q->where('seller_id', $seller->id)
+            $total_selling_price = OrderItem::whereHas('order', function ($q) use ($sellerId, $start, $end) {
+                $q->where('seller_id', $sellerId)
                     ->whereBetween('created_at', [$start, $end]);
             })->sum(DB::raw('unit_price * quantity'));
 
             $gross_profit = $total_selling_price - $total_product_cost;
 
-            $total_expense = SellerExpense::where('seller_id', $seller->id)
+            $total_expense = SellerExpense::where('seller_id', $sellerId)
                 ->whereBetween('created_at', [$start, $end])
                 ->sum('amount');
 
             $net_profit = $gross_profit - $total_expense;
-
             $profit_margin = $total_revenue > 0 ? ($net_profit / $total_revenue) * 100 : 0;
 
-            return [
-                'total_revenue' => $total_revenue,
-                'total_product_cost' => $total_product_cost,
-                'gross_profit' => $gross_profit,
-                'total_expense' => $total_expense,
-                'net_profit' => $net_profit,
-                'profit_margin' => $profit_margin,
-            ];
+            return compact('total_revenue', 'total_product_cost', 'gross_profit', 'total_expense', 'net_profit', 'profit_margin');
         };
 
-        // Current, last, next metrics
-        $currentMetrics = $calculateMetrics($currentStart, $currentEnd);
-        $lastMetrics = $calculateMetrics($lastStart, $lastEnd);
-        $nextMetrics = $calculateMetrics($nextStart, $nextEnd);
+        $currentMetrics = $calculateMetrics($seller->id, $currentStart, $currentEnd);
+        $lastMetrics = $calculateMetrics($seller->id, $lastStart, $lastEnd);
+        $nextMetrics = $calculateMetrics($seller->id, $nextStart, $nextEnd);
 
-        // Change percentages
         $calculateChange = fn($current, $last) => $last > 0 ? (($current - $last) / $last) * 100 : 100;
 
         $changes = [
@@ -117,53 +108,54 @@ class ReportController extends Controller
             'expense' => $calculateChange($currentMetrics['total_expense'], $lastMetrics['total_expense']),
         ];
 
-        // Inventory value
         $inventory_value = Product::where('seller_id', $seller->id)
             ->sum(DB::raw('buying_price * (stock_in - stock_out)'));
 
-        // Low turnover warning (example: products not sold in last 90 days)
         $lowTurnoverDays = 90;
         $cutoffDate = now()->subDays($lowTurnoverDays);
-
-        // Get product IDs sold in the last X days
         $soldProductIds = OrderItem::whereHas('order', function ($q) use ($seller, $cutoffDate) {
             $q->where('seller_id', $seller->id)
                 ->where('created_at', '>=', $cutoffDate);
         })->pluck('product_id')->unique();
 
-        // Count products not sold in last X days
         $lowTurnoverCount = Product::where('seller_id', $seller->id)
             ->whereNotIn('id', $soldProductIds)
             ->count();
 
-        // Inventory grouped by category
-        $inventoryByCategory = Product::where('seller_id', $seller->id)
-            ->select('category_id', DB::raw('COUNT(*) as sku_count'), DB::raw('SUM(buying_price * (stock_in - stock_out)) as stock_value'))
-            ->groupBy('category_id')
-            ->with('category') // assuming Product has relation: category()
-            ->get();
-
-        // Total stock value for percentage calculation
-        $totalStockValue = $inventoryByCategory->sum('stock_value');
-
-        // Prepare 12-month trend for chart
-        $monthlyTrend = collect();
-        for ($i = 11; $i >= 0; $i--) {
-            $start = now()->subMonths($i)->startOfMonth();
-            $end = now()->subMonths($i)->endOfMonth();
-            $metrics = $calculateMetrics($start, $end);
-            $monthlyTrend->push([
-                'month' => $start->format('M Y'),
-                'net_profit' => $metrics['net_profit'],
-                'gross_profit' => $metrics['gross_profit'],
-                'total_revenue' => $metrics['total_revenue'],
-            ]);
+        if ($filter && $filter !== 'custom') {
+            $dates = $this->getDateRange($filter);
+            $startDate = $dates['currentStart'];
+            $endDate = $dates['currentEnd'];
+        } elseif ($filter === 'custom') {
+            $startDate = Carbon::parse($dateFrom)->startOfDay();
+            $endDate = Carbon::parse($dateTo)->endOfDay();
+        } else {
+            $startDate = Product::min('created_at') ?? now();
+            $endDate = now();
         }
 
-        // --- Income Sources Data (dynamic) ---
+        $inventoryByCategory = Product::where('seller_id', $seller->id)
+            ->whereHas('orderItems.order', function ($q) use ($startDate, $endDate) {
+                $q->whereBetween('created_at', [$startDate, $endDate]);
+            })
+            ->select('category_id', DB::raw('COUNT(*) as sku_count'), DB::raw('SUM(buying_price * (stock_in - stock_out)) as stock_value'))
+            ->groupBy('category_id')
+            ->with('category')
+            ->get();
+
+        $totalStockValue = $inventoryByCategory->sum('stock_value');
+
+        $trendData = $this->getTrendData($filter, $dateFrom, $dateTo);
+        $expenseTrend = $this->getExpenseTrend($seller->id, $filter, $dateFrom, $dateTo);
+
         $incomeSources = [
-            'Product Sales' => Order::where('seller_id', $seller->id)->sum('seller_earnings'),
-            'POS Sales' => Order::where('seller_id', $seller->id)->where('user_id', null)->sum('total'),
+            'Product Sales' => Order::where('seller_id', $seller->id)
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->sum('seller_earnings'),
+            'POS Sales' => Order::where('seller_id', $seller->id)
+                ->where('user_id', null)
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->sum('total'),
         ];
 
         $totalIncome = array_sum($incomeSources);
@@ -172,13 +164,11 @@ class ReportController extends Controller
             $percentage = $totalIncome > 0 ? ($amount / $totalIncome) * 100 : 0;
             $status = match ($source) {
                 'Product Sales' => 'Primary Source',
-                'Service Fees' => 'Stable Stream',
                 'POS Sales' => 'New Stream',
                 default => 'Other',
             };
             $badgeClass = match ($source) {
                 'Product Sales' => 'bg-primary',
-                'Service Fees' => 'bg-secondary',
                 'POS Sales' => 'bg-info',
                 default => 'bg-dark',
             };
@@ -191,27 +181,19 @@ class ReportController extends Controller
             ];
         });
 
-        // Total Expense for current period
         $totalExpense = SellerExpense::where('seller_id', $seller->id)
             ->whereBetween('created_at', [$currentStart, $currentEnd])
             ->sum('amount');
 
-        // Expense categories with total
         $expenseCategories = SellerExpense::where('seller_id', $seller->id)
             ->select('seller_expense_category_id', DB::raw('SUM(amount) as total'))
             ->whereBetween('created_at', [$currentStart, $currentEnd])
             ->groupBy('seller_expense_category_id')
-            ->with('category') // make sure relation exists in model
+            ->with('category')
             ->get();
 
-        // Highest expense category
         $highestExpense = $expenseCategories->sortByDesc('total')->first();
 
-        // Last period range (already calculated in controller)
-        $lastStart = $lastStart ?? now()->subMonth()->startOfMonth();
-        $lastEnd = $lastEnd ?? now()->subMonth()->endOfMonth();
-
-        // Expense growth %
         $lastTotalExpense = SellerExpense::where('seller_id', $seller->id)
             ->whereBetween('created_at', [$lastStart, $lastEnd])
             ->sum('amount');
@@ -220,30 +202,13 @@ class ReportController extends Controller
             ? (($totalExpense - $lastTotalExpense) / $lastTotalExpense) * 100
             : 100;
 
-        // Expense trend for chart
-        $expenseTrend = collect();
-        for ($i = 11; $i >= 0; $i--) {
-            $monthStart = now()->subMonths($i)->startOfMonth();
-            $monthEnd = now()->subMonths($i)->endOfMonth();
-
-            $monthlyAmount = SellerExpense::where('seller_id', $seller->id)
-                ->whereBetween('created_at', [$monthStart, $monthEnd])
-                ->sum('amount');
-
-            $expenseTrend->push([
-                'month' => $monthStart->format('M Y'),
-                'amount' => $monthlyAmount,
-            ]);
-        }
-
-
         return view('seller.reports.financial', compact(
             'currentMetrics',
             'lastMetrics',
             'nextMetrics',
             'changes',
             'inventory_value',
-            'monthlyTrend',
+            'trendData',
             'incomeData',
             'filter',
             'totalExpense',
@@ -259,6 +224,7 @@ class ReportController extends Controller
             'totalStockValue'
         ));
     }
+
 
     public function sales()
     {
@@ -488,7 +454,7 @@ class ReportController extends Controller
 
     public function customers(Request $request)
     {
-        $filter = $request->get('filter', null); 
+        $filter = $request->get('filter', null);
 
         if ($filter) {
             $dates = $this->getDateRange($filter);
@@ -643,15 +609,47 @@ class ReportController extends Controller
         ));
     }
 
+    protected function calculateMetrics($sellerId, $start, $end)
+    {
+        $orders = Order::where('seller_id', $sellerId)
+            ->whereBetween('created_at', [$start, $end])
+            ->get();
+
+        $total_revenue = $orders->sum('seller_earnings');
+
+        $total_product_cost = OrderItem::whereHas('order', function ($q) use ($sellerId, $start, $end) {
+            $q->where('seller_id', $sellerId)
+                ->whereBetween('created_at', [$start, $end]);
+        })->sum(DB::raw('buying_price * quantity'));
+
+        $total_selling_price = OrderItem::whereHas('order', function ($q) use ($sellerId, $start, $end) {
+            $q->where('seller_id', $sellerId)
+                ->whereBetween('created_at', [$start, $end]);
+        })->sum(DB::raw('unit_price * quantity'));
+
+        $gross_profit = $total_selling_price - $total_product_cost;
+
+        $total_expense = SellerExpense::where('seller_id', $sellerId)
+            ->whereBetween('created_at', [$start, $end])
+            ->sum('amount');
+
+        $net_profit = $gross_profit - $total_expense;
+
+        return compact('total_revenue', 'total_product_cost', 'gross_profit', 'total_expense', 'net_profit');
+    }
 
 
-
-
-
-
-    protected function getDateRange($filter)
+    protected function getDateRange($filter, $dateFrom = null, $dateTo = null)
     {
         switch ($filter) {
+
+            case 'daily':
+                $currentStart = now()->startOfDay();
+                $currentEnd = now()->endOfDay();
+                $lastStart = now()->subDay()->startOfDay();
+                $lastEnd = now()->subDay()->endOfDay();
+                break;
+
             case 'weekly':
                 $currentStart = now()->startOfWeek();
                 $currentEnd = now()->endOfWeek();
@@ -664,6 +662,16 @@ class ReportController extends Controller
                 $currentEnd = now()->endOfYear();
                 $lastStart = now()->subYear()->startOfYear();
                 $lastEnd = now()->subYear()->endOfYear();
+                break;
+
+            case 'custom':
+                $currentStart = Carbon::parse($dateFrom)->startOfDay();
+                $currentEnd = Carbon::parse($dateTo)->endOfDay();
+
+                $days = Carbon::parse($dateFrom)->diffInDays($dateTo) + 1;
+
+                $lastEnd = Carbon::parse($dateFrom)->subDay()->endOfDay();
+                $lastStart = $lastEnd->copy()->subDays($days - 1)->startOfDay();
                 break;
 
             case 'monthly':
@@ -680,6 +688,232 @@ class ReportController extends Controller
             'lastStart' => $lastStart,
             'lastEnd' => $lastEnd,
         ];
+    }
+
+    protected function periodUnit($filter, $dateFrom = null, $dateTo = null)
+    {
+        return match ($filter) {
+            'daily' => 'day',
+            'weekly' => 'week',
+            'yearly' => 'year',
+            'monthly' => 'month',
+            'custom' => 'day',
+            default => 'month',
+        };
+    }
+
+    protected function getTrendData($filter, $dateFrom = null, $dateTo = null)
+    {
+        $calculateMetrics = function ($start, $end) {
+            $seller = Seller::find(get_seller_id());
+            $orders = Order::where('seller_id', $seller->id)
+                ->whereBetween('created_at', [$start, $end])
+                ->get();
+
+            $total_revenue = $orders->sum('seller_earnings');
+
+            $total_product_cost = OrderItem::whereHas('order', function ($q) use ($seller, $start, $end) {
+                $q->where('seller_id', $seller->id)
+                    ->whereBetween('created_at', [$start, $end]);
+            })->sum(DB::raw('buying_price * quantity'));
+
+            $total_selling_price = OrderItem::whereHas('order', function ($q) use ($seller, $start, $end) {
+                $q->where('seller_id', $seller->id)
+                    ->whereBetween('created_at', [$start, $end]);
+            })->sum(DB::raw('unit_price * quantity'));
+
+            $gross_profit = $total_selling_price - $total_product_cost;
+
+            $total_expense = SellerExpense::where('seller_id', $seller->id)
+                ->whereBetween('created_at', [$start, $end])
+                ->sum('amount');
+
+            $net_profit = $gross_profit - $total_expense;
+
+            return [
+                'net_profit' => $net_profit,
+                'gross_profit' => $gross_profit,
+                'total_revenue' => $total_revenue,
+            ];
+        };
+
+        $trendData = collect();
+
+        switch ($filter) {
+            case 'daily':
+                for ($i = 29; $i >= 0; $i--) {
+                    $start = now()->subDays($i)->startOfDay();
+                    $end = now()->subDays($i)->endOfDay();
+                    $metrics = $calculateMetrics($start, $end);
+                    $trendData->push([
+                        'label' => $start->format('d M'),
+                        'net_profit' => $metrics['net_profit'],
+                        'gross_profit' => $metrics['gross_profit'],
+                        'total_revenue' => $metrics['total_revenue'],
+                    ]);
+                }
+                break;
+
+            case 'weekly':
+                for ($i = 11; $i >= 0; $i--) {
+                    $start = now()->subWeeks($i)->startOfWeek();
+                    $end = now()->subWeeks($i)->endOfWeek();
+                    $metrics = $calculateMetrics($start, $end);
+                    $trendData->push([
+                        'label' => 'Week ' . now()->subWeeks($i)->weekOfYear,
+                        'net_profit' => $metrics['net_profit'],
+                        'gross_profit' => $metrics['gross_profit'],
+                        'total_revenue' => $metrics['total_revenue'],
+                    ]);
+                }
+                break;
+
+            case 'yearly':
+                for ($i = 4; $i >= 0; $i--) {
+                    $start = now()->subYears($i)->startOfYear();
+                    $end = now()->subYears($i)->endOfYear();
+                    $metrics = $calculateMetrics($start, $end);
+                    $trendData->push([
+                        'label' => $start->format('Y'),
+                        'net_profit' => $metrics['net_profit'],
+                        'gross_profit' => $metrics['gross_profit'],
+                        'total_revenue' => $metrics['total_revenue'],
+                    ]);
+                }
+                break;
+
+            case 'custom':
+                if ($dateFrom && $dateTo) {
+                    $startDate = Carbon::parse($dateFrom);
+                    $endDate = Carbon::parse($dateTo);
+                    $days = $startDate->diffInDays($endDate);
+
+                    for ($i = 0; $i <= $days; $i++) {
+                        $start = $startDate->copy()->addDays($i)->startOfDay();
+                        $end = $startDate->copy()->addDays($i)->endOfDay();
+                        $metrics = $calculateMetrics($start, $end);
+                        $trendData->push([
+                            'label' => $start->format('d M'),
+                            'net_profit' => $metrics['net_profit'],
+                            'gross_profit' => $metrics['gross_profit'],
+                            'total_revenue' => $metrics['total_revenue'],
+                        ]);
+                    }
+                }
+                break;
+
+            case 'monthly':
+            default:
+                for ($i = 11; $i >= 0; $i--) {
+                    $start = now()->subMonths($i)->startOfMonth();
+                    $end = now()->subMonths($i)->endOfMonth();
+                    $metrics = $calculateMetrics($start, $end);
+                    $trendData->push([
+                        'label' => $start->format('M Y'),
+                        'net_profit' => $metrics['net_profit'],
+                        'gross_profit' => $metrics['gross_profit'],
+                        'total_revenue' => $metrics['total_revenue'],
+                    ]);
+                }
+        }
+
+        return $trendData;
+    }
+
+    protected function getExpenseTrend($sellerId, $filter, $dateFrom = null, $dateTo = null)
+    {
+        $expenseTrend = collect();
+
+        switch ($filter) {
+            case 'daily':
+                $days = 11; // last 12 days
+                for ($i = $days; $i >= 0; $i--) {
+                    $start = now()->subDays($i)->startOfDay();
+                    $end = now()->subDays($i)->endOfDay();
+
+                    $amount = SellerExpense::where('seller_id', $sellerId)
+                        ->whereBetween('created_at', [$start, $end])
+                        ->sum('amount');
+
+                    $expenseTrend->push([
+                        'label' => $start->format('d M'),
+                        'amount' => $amount,
+                    ]);
+                }
+                break;
+
+            case 'weekly':
+                for ($i = 11; $i >= 0; $i--) { // last 12 weeks
+                    $start = now()->subWeeks($i)->startOfWeek();
+                    $end = now()->subWeeks($i)->endOfWeek();
+
+                    $amount = SellerExpense::where('seller_id', $sellerId)
+                        ->whereBetween('created_at', [$start, $end])
+                        ->sum('amount');
+
+                    $expenseTrend->push([
+                        'label' => $start->format('d M'),
+                        'amount' => $amount,
+                    ]);
+                }
+                break;
+
+            case 'yearly':
+                for ($i = 4; $i >= 0; $i--) { // last 5 years
+                    $start = now()->subYears($i)->startOfYear();
+                    $end = now()->subYears($i)->endOfYear();
+
+                    $amount = SellerExpense::where('seller_id', $sellerId)
+                        ->whereBetween('created_at', [$start, $end])
+                        ->sum('amount');
+
+                    $expenseTrend->push([
+                        'label' => $start->format('Y'),
+                        'amount' => $amount,
+                    ]);
+                }
+                break;
+
+            case 'custom':
+                $from = $dateFrom ? Carbon::parse($dateFrom)->startOfDay() : now()->subMonth()->startOfMonth();
+                $to = $dateTo ? Carbon::parse($dateTo)->endOfDay() : now()->endOfMonth();
+
+                $period = CarbonPeriod::create($from, $to);
+
+                foreach ($period as $date) {
+                    $start = $date->copy()->startOfDay();
+                    $end = $date->copy()->endOfDay();
+
+                    $amount = SellerExpense::where('seller_id', $sellerId)
+                        ->whereBetween('created_at', [$start, $end])
+                        ->sum('amount');
+
+                    $expenseTrend->push([
+                        'label' => $start->format('d M Y'),
+                        'amount' => $amount,
+                    ]);
+                }
+                break;
+
+            case 'monthly':
+            default:
+                for ($i = 11; $i >= 0; $i--) {
+                    $start = now()->subMonths($i)->startOfMonth();
+                    $end = now()->subMonths($i)->endOfMonth();
+
+                    $amount = SellerExpense::where('seller_id', $sellerId)
+                        ->whereBetween('created_at', [$start, $end])
+                        ->sum('amount');
+
+                    $expenseTrend->push([
+                        'label' => $start->format('M Y'),
+                        'amount' => $amount,
+                    ]);
+                }
+                break;
+        }
+
+        return $expenseTrend;
     }
 
 }

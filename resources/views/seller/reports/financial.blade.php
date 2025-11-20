@@ -65,14 +65,53 @@
 
 @section('content')
     <div>
-        <header class="mb-3">
-            <h2 class="fw-bold mb-1">Financial Reports</h2>
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item text-muted">Reports</li>
-                    <li class="breadcrumb-item active fw-semibold" aria-current="page">Financial Reports</li>
-                </ol>
-            </nav>
+        <header>
+            <div class="row align-items-center mb-4">
+                <!-- Title + Breadcrumb -->
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <h2 class="fw-bold mb-1">Financial Reports</h2>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0 small">
+                            <li class="breadcrumb-item text-muted">Reports</li>
+                            <li class="breadcrumb-item active fw-semibold" aria-current="page">Financial Reports</li>
+                        </ol>
+                    </nav>
+                </div>
+
+                <!-- Filter Section -->
+                <div class="col-md-6">
+                    <form method="GET" class="row g-2 justify-content-end">
+
+                        <!-- Filter Dropdown -->
+                        <div class="col-md-4 col-sm-6">
+                            <select name="range" class="form-select form-select-sm"
+                                onchange="toggleCustomDates(this.value)">
+                                <option disabled selected>--select--</option>
+                                <option value="daily" {{ request('range') == 'daily' ? 'selected' : '' }}>Daily</option>
+                                <option value="weekly" {{ request('range') == 'weekly' ? 'selected' : '' }}>Weekly</option>
+                                <option value="monthly" {{ request('range') == 'monthly' ? 'selected' : '' }}>Monthly</option>
+                                <option value="yearly" {{ request('range') == 'yearly' ? 'selected' : '' }}>Yearly</option>
+                                <option value="custom" {{ request('range') == 'custom' ? 'selected' : '' }}>Custom</option>
+                            </select>
+                        </div>
+
+                        <!-- Custom Date Range -->
+                        <div class="col-md-6 col-sm-6" id="customDateRange"
+                            style="{{ request('range') == 'custom' ? '' : 'display:none;' }}">
+                            <div class="input-group input-group-sm">
+                                <input type="date" name="date_from" value="{{ request('date_from') }}"
+                                    class="form-control">
+                                <input type="date" name="date_to" value="{{ request('date_to') }}" class="form-control">
+                            </div>
+                        </div>
+
+                        <!-- Filter Button -->
+                        <div class="col-md-2 col-sm-12 d-flex align-items-end">
+                            <button class="btn btn-primary btn-sm w-100">Filter</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </header>
 
         <div class="row mb-5 g-3">
@@ -187,7 +226,8 @@
         <ul class="nav nav-tabs mb-4" id="financialTabs" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="pnl-tab" data-bs-toggle="tab" data-bs-target="#pnl" type="button"
-                    role="tab" aria-controls="pnl" aria-selected="true"><i class="fas fa-chart-line me-2"></i>Profit &
+                    role="tab" aria-controls="pnl" aria-selected="true"><i class="fas fa-chart-line me-2"></i>Profit
+                    &
                     Loss</button>
             </li>
             <li class="nav-item" role="presentation">
@@ -196,8 +236,8 @@
                         class="fas fa-money-bill-transfer me-2"></i>Income Breakdown</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="expenses-tab" data-bs-toggle="tab" data-bs-target="#expenses" type="button"
-                    role="tab" aria-controls="expenses" aria-selected="false"><i
+                <button class="nav-link" id="expenses-tab" data-bs-toggle="tab" data-bs-target="#expenses"
+                    type="button" role="tab" aria-controls="expenses" aria-selected="false"><i
                         class="fas fa-hand-holding-usd me-2"></i>Expenses</button>
             </li>
             <li class="nav-item" role="presentation">
@@ -214,8 +254,29 @@
                     <!-- Monthly Profit Trend Chart -->
                     <div class="col-lg-8">
                         <div class="card p-4 h-100">
-                            <h5 class="card-title fw-bold text-primary">Monthly Profit Trend</h5>
-                            <p class="text-muted">Net Profit Over the Last 12 Months</p>
+                            @php
+                                $filterText = match (request('range', 'monthly')) {
+                                    'daily' => 'Daily Profit Trend',
+                                    'weekly' => 'Weekly Profit Trend',
+                                    'monthly' => 'Monthly Profit Trend',
+                                    'yearly' => 'Yearly Profit Trend',
+                                    'custom' => 'Custom Profit Trend',
+                                    default => 'Monthly Profit Trend',
+                                };
+
+                                $descriptionText = match (request('range', 'monthly')) {
+                                    'daily' => 'Net Profit Over the Last 7 Days',
+                                    'weekly' => 'Net Profit Over the Last 12 Weeks',
+                                    'monthly' => 'Net Profit Over the Last 12 Months',
+                                    'yearly' => 'Net Profit Over the Last 5 Years',
+                                    'custom' => 'Net Profit Over the Selected Date Range',
+                                    default => 'Net Profit Over the Last 12 Months',
+                                };
+                            @endphp
+
+                            <h5 class="card-title fw-bold text-primary">{{ $filterText }}</h5>
+                            <p class="text-muted">{{ $descriptionText }}</p>
+
                             <div class="chart-placeholder text-center py-5 bg-light rounded-3 border">
                                 <canvas id="profitChart" class="w-100" style="max-height: 300px;"></canvas>
                             </div>
@@ -369,7 +430,7 @@
                     <div class="col-lg-6">
                         <div class="card p-4 h-100">
                             <h5 class="card-title fw-bold text-danger">Expense Trend</h5>
-                            <p class="text-muted">Monthly expense comparison.</p>
+                            <p class="text-muted">{{ ucfirst(request('range')) }} expense comparison.</p>
                             <div class="chart-placeholder text-center py-5 bg-light rounded-3 border">
                                 <canvas id="expenseBarChart" class="w-100" style="max-height: 300px;"></canvas>
                             </div>
@@ -442,8 +503,7 @@
                 <div class="card p-4 mb-4 border-bottom border-warning border-4">
                     <div class="d-flex justify-content-between align-items-center">
                         <h4 class="fw-bold text-warning mb-0">
-                            Total Inventory Value: <span
-                                class="text-dark">{{ money($inventory_value) }}</span>
+                            Total Inventory Value: <span class="text-dark">{{ money($inventory_value) }}</span>
                         </h4>
                         <span class="badge bg-danger-subtle text-danger p-2 fw-semibold">
                             <i class="fas fa-triangle-exclamation me-1"></i>
@@ -509,14 +569,19 @@
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
     <script>
+        function toggleCustomDates(value) {
+            const custom = document.getElementById('customDateRange');
+            custom.style.display = (value === 'custom') ? 'block' : 'none';
+        }
+
         const ctx = document.getElementById('profitChart').getContext('2d');
         const profitChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: {!! json_encode($monthlyTrend->pluck('month')) !!},
+                labels: {!! json_encode($trendData->pluck('label')) !!}, 
                 datasets: [{
                         label: 'Net Profit',
-                        data: {!! json_encode($monthlyTrend->pluck('net_profit')) !!},
+                        data: {!! json_encode($trendData->pluck('net_profit')) !!},
                         backgroundColor: 'rgba(54, 162, 235, 0.2)',
                         borderColor: 'rgba(54, 162, 235, 1)',
                         borderWidth: 2,
@@ -525,7 +590,7 @@
                     },
                     {
                         label: 'Gross Profit',
-                        data: {!! json_encode($monthlyTrend->pluck('gross_profit')) !!},
+                        data: {!! json_encode($trendData->pluck('gross_profit')) !!},
                         backgroundColor: 'rgba(75, 192, 192, 0.2)',
                         borderColor: 'rgba(75, 192, 192, 1)',
                         borderWidth: 2,
@@ -534,7 +599,7 @@
                     },
                     {
                         label: 'Revenue',
-                        data: {!! json_encode($monthlyTrend->pluck('total_revenue')) !!},
+                        data: {!! json_encode($trendData->pluck('total_revenue')) !!},
                         backgroundColor: 'rgba(255, 206, 86, 0.2)',
                         borderColor: 'rgba(255, 206, 86, 1)',
                         borderWidth: 2,
@@ -548,15 +613,35 @@
                 plugins: {
                     legend: {
                         position: 'top'
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
                     }
+                },
+                interaction: {
+                    mode: 'nearest',
+                    intersect: false
                 },
                 scales: {
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '৳' + value.toLocaleString(); // optional: add currency formatting
+                            }
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            maxRotation: 45,
+                            minRotation: 0
+                        }
                     }
                 }
             }
         });
+
 
         const incomeCtx = document.getElementById('incomePieChart').getContext('2d');
         new Chart(incomeCtx, {
@@ -584,7 +669,7 @@
         new Chart(expenseCtx, {
             type: 'bar',
             data: {
-                labels: {!! json_encode($expenseTrend->pluck('month')) !!},
+                labels: {!! json_encode($expenseTrend->pluck('label')) !!}, // changed from 'month' to 'label'
                 datasets: [{
                     label: 'Expenses',
                     data: {!! json_encode($expenseTrend->pluck('amount')) !!},
@@ -596,15 +681,34 @@
                 plugins: {
                     legend: {
                         display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return '৳ ' + context.formattedValue;
+                            }
+                        }
                     }
                 },
                 scales: {
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '৳ ' + value; 
+                            }
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            maxRotation: 45,
+                            minRotation: 0
+                        }
                     }
                 }
             }
         });
+
 
         const inventoryCtx = document.getElementById('inventoryChart').getContext('2d');
         const inventoryChart = new Chart(inventoryCtx, {

@@ -70,7 +70,6 @@
 
                         <!-- Filter Dropdown -->
                         <div class="col-md-4 col-sm-6">
-                            <label class="form-label small">Filter By</label>
                             <select name="range" class="form-select form-select-sm"
                                 onchange="toggleCustomDates(this.value)">
                                 <option value="daily" {{ request('range') == 'daily' ? 'selected' : '' }}>Daily</option>
@@ -85,7 +84,6 @@
                         <!-- Custom Date Range -->
                         <div class="col-md-6 col-sm-6" id="customDateRange"
                             style="{{ request('range') == 'custom' ? '' : 'display:none;' }}">
-                            <label class="form-label small">Custom Date Range</label>
                             <div class="input-group input-group-sm">
                                 <input type="date" name="date_from" value="{{ request('date_from') }}"
                                     class="form-control">
@@ -95,7 +93,7 @@
 
                         <!-- Filter Button -->
                         <div class="col-md-2 col-sm-12 d-flex align-items-end">
-                            <button class="btn btn-primary btn-sm w-100 mt-1 mt-md-4">Filter</button>
+                            <button class="btn btn-primary btn-sm w-100">Filter</button>
                         </div>
                     </form>
                 </div>
