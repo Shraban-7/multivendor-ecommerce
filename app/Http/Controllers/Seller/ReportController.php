@@ -916,4 +916,9 @@ class ReportController extends Controller
         return $expenseTrend;
     }
 
+    public function overview()
+    {
+        return view('seller.reports.overview');
+    }
+
 }
