@@ -1,5 +1,5 @@
-<section class="section-padding">
-    <h2 class="uppercase md:text-center sm:text-xl xl:text-4xl lg:text-3xl md:text-2xl text-theme-dark mb-4 md:mb-10">
+<section class="mt-5 p-5 bg-white rounded">
+    <h2 class="sm:text-xl md:text-2xl text-theme-dark mb-3">
         Featured Categories
     </h2>
     <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3">

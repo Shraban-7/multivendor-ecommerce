@@ -4,12 +4,10 @@
     'slider' => true,
 ])
 
-<section class="section-padding">
-    <div class="{{ $slider ? 'container p-4 bg-gray-50 rounded' : '' }}">
+<section class="my-5">
+    <div class="p-4 bg-white rounded">
         <div class="relative sec-heading">
-            <h2 class="font-semibold uppercase sm:text-xl md:text-2xl text-theme-dark">
-                {{ $section }}
-            </h2>
+            <h2 class="sm:text-xl md:text-2xl text-theme-dark">{{ $section }}</h2>
             <span class="absolute right-0 inline-block -translate-y-1/2 top-1/2">
                 <a href="#" class="text-sm text-indigo-600 hover:text-indigo-800 mt-2 inline-block transition">
                     View All →
@@ -18,7 +16,7 @@
         </div>
 
         @if ($slider)
-            <div class="mt-5 swiper productCommonSwiper">
+            <div class="swiper productCommonSwiper">
                 <div class="swiper-wrapper">
                     @foreach ($products as $product)
                         @php
