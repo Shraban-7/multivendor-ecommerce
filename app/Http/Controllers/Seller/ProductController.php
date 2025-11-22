@@ -598,6 +598,7 @@ class ProductController extends Controller
         $products = Product::whereHas('variants')
             ->with('variants.option_values')
             ->orderBy('name', 'ASC')
+            ->where('seller_id', get_seller_id())
             ->get()
             ->map(function ($product) {
                 return [
