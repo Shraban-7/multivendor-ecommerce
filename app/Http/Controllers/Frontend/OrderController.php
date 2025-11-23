@@ -59,8 +59,8 @@ class OrderController extends Controller
         //$products = $interest_products->map(fn($product) => $product->toDetailsArray());
 
         return view('frontend.orders.index', [
-            'orders'   => $orders,
-            'status'   => $statusLabel,
+            'orders' => $orders,
+            'status' => $statusLabel,
             'products' => [],
         ]);
     }
@@ -90,15 +90,15 @@ class OrderController extends Controller
         $selectedSellerId = $validated['seller_id'];
 
         $seller = Seller::find($selectedSellerId);
-        $cart   = Cart::where('user_id', $user->id)
+        $cart = Cart::where('user_id', $user->id)
             ->where('seller_id', $selectedSellerId)
             ->with('cart_items.product')
             ->first();
 
-        if (! $cart) {
+        if (!$cart) {
             if ($request->ajax()) {
                 return response()->json([
-                    'status'  => false,
+                    'status' => false,
                     'message' => 'No cart found for the selected seller.',
                 ], 404);
             }
@@ -115,7 +115,7 @@ class OrderController extends Controller
         $shipping_fee = $seller->shipping_cost;
 
         // $payment_type = PaymentType::COD_ONLY->value;
-
+        $allCod = true;
         foreach ($cart->cart_items as $cartItem) {
             $product = $cartItem->product;
             $variant = $cartItem->variant;
@@ -149,6 +149,10 @@ class OrderController extends Controller
                 'vat_percent' => $product->vat_percent,
                 'vat_amount' => floatval(($product->vat_percent * $unitPrice) / 100) * $cartItem->quantity,
             ];
+
+            if ($product->payment_type->value !== PaymentType::COD_ONLY->value) {
+                $allCod = false;
+            }
         }
 
         if ($request->isMethod('GET')) {
@@ -158,8 +162,7 @@ class OrderController extends Controller
             $billingAddresses = BillingAddress::where('user_id', $user->id)
                 ->latest()
                 ->get();
-
-            return view('frontend.pages.checkout', compact('user', 'selectedSellerId', 'sub_total', 'discount', 'vat_amount', 'shipping_fee', 'payment_gateways', 'grand_total', 'divisions', 'districts', 'billingAddresses', 'total'));
+            return view('frontend.pages.checkout', compact('user', 'selectedSellerId', 'sub_total', 'discount', 'vat_amount', 'shipping_fee', 'payment_gateways', 'grand_total', 'divisions', 'districts', 'billingAddresses', 'total','allCod'));
         }
 
         $billingData = collect($validated)->except('seller_id')->toArray();
@@ -180,7 +183,7 @@ class OrderController extends Controller
         $payment = Order::calculatePaymentAmounts($product, $payableAmount, $shipping_fee);
 
         $paid_amount = $payment['paid'];
-        $due_amount  = $payment['due'];
+        $due_amount = $payment['due'];
 
         $order = Order::create([
             'user_id' => $user->id,
@@ -362,7 +365,7 @@ class OrderController extends Controller
 
         $aamarpay = (new AamarpayService);
 
-        $message    = 'Redirecting to payment gateway';
+        $message = 'Redirecting to payment gateway';
         $paymentUrl = '';
 
         try {
@@ -383,7 +386,7 @@ class OrderController extends Controller
                 'cus_country' => 'Bangladesh',
                 'cus_phone' => $customerPhone,
                 'opt_a' => base64_encode(json_encode([
-                    'user_id'    => $user->id,
+                    'user_id' => $user->id,
                     'return_url' => route('orders.index'),
                 ])),
             ]);

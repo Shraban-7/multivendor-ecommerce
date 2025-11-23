@@ -116,10 +116,31 @@
                         <h3 class="text-sm font-medium mb-2 text-gray-700">
                             Payment Method
                         </h3>
+
                         <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 justify-items-start">
+
+                            @if ($allCod)
+                                <label
+                                    class="flex flex-col items-center justify-center w-full py-3 px-4 gap-2
+                                    border border-gray-300 rounded-xl cursor-pointer shadow-sm
+                                    hover:shadow-md hover:border-primary transition bg-white">
+
+                                    <div class="flex items-center gap-2">
+                                        <i class="fa-solid fa-box-open text-primary text-xl"></i>
+                                        <span class="font-semibold text-gray-800">COD</span>
+                                    </div>
+
+                                    <input type="radio" name="payment" value="cod" class="accent-primary"
+                                        {{ $allCod ? 'checked' : '' }} />
+                                </label>
+                            @endif
+
                             @foreach ($payment_gateways as $gateway)
                                 <label
-                                    class="flex flex-col items-center justify-center w-full gap-1.5 py-2 border border-gray-200 rounded-md cursor-pointer hover:border-primary/70 hover:bg-primary/5 transition">
+                                    class="flex flex-col items-center justify-center w-full gap-1.5 py-2 
+                                        border border-gray-200 rounded-md cursor-pointer 
+                                        hover:border-primary/70 hover:bg-primary/5 transition">
+
                                     @if ($gateway->image)
                                         <img src="{{ storage_url($gateway->image) }}" alt="{{ $gateway->name }}"
                                             class="h-6 w-auto object-contain" />
@@ -128,8 +149,10 @@
                                             <i class="fa-solid fa-credit-card"></i>
                                         </span>
                                     @endif
+
                                     <input type="radio" name="payment" value="{{ $gateway->slug }}"
-                                        class="accent-primary w-3.5 h-3.5" {{ $gateway->is_default ? 'checked' : '' }} />
+                                        class="accent-primary "
+                                        {{ !$allCod && $gateway->is_default ? 'checked' : '' }} />
                                 </label>
                             @endforeach
                         </div>
