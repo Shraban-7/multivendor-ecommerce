@@ -48,6 +48,7 @@
 <?php
 $variantSkuList = [];
 foreach ($products as $product) {
+    $productStock = $product->stock_in - $product->stock_out;
     foreach ($product->variants as $variant) {
         $variantSkuList[] = [
             'variant_id' => $variant->id,
@@ -56,6 +57,8 @@ foreach ($products as $product) {
         ];
         $product->total_stock += $variant->availableStock;
     }
+
+    $product->total_stock += $productStock;
 }
 $products = $products->sortByDesc('total_stock');
 $productCounts = $products->groupBy('category_id')->map(function ($categoryProducts) {
@@ -294,27 +297,64 @@ foreach ($categories as $cat) {
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @foreach ($product->variants as $variant)
+                                                        @if ($product->variants->count() > 0)
+                                                            @foreach ($product->variants as $variant)
+                                                                <tr>
+                                                                    <td>{{ $variant->sku }}</td>
+                                                                    <td class="fw-bold">{{ $variant->fullName }}</td>
+                                                                    <td class="text-center">{{ $variant->availableStock }}
+                                                                        {{ $product->unit->short_name }}</td>
+                                                                    <td class="text-center">
+                                                                        {{ money($variant->discounted_price ?? $variant->selling_price) }}
+                                                                    </td>
+                                                                    <td class="text-center">
+                                                                        @if ($variant->availableStock > 0)
+                                                                            <button
+                                                                                class="btn btn-sm btn-primary add-to-cart-btn"
+                                                                                data-product-id="{{ $product->id }}"
+                                                                                data-variant-id="{{ $variant->id }}"
+                                                                                data-quantity="1">
+                                                                                <span class="btn-text">
+                                                                                    <i class="bi bi-plus"></i> Add to Cart
+                                                                                </span>
+                                                                                <span
+                                                                                    class="spinner-border spinner-border-sm d-none"></span>
+                                                                            </button>
+                                                                        @else
+                                                                            <button
+                                                                                class="btn btn-sm btn-secondary disabled">
+                                                                                <i class="bi bi-exclamation-circle"></i>
+                                                                                Stock Out
+                                                                            </button>
+                                                                        @endif
+                                                                    </td>
+                                                                </tr>
+                                                            @endforeach
+                                                        @else
+                                                            @php
+                                                                $productStock =
+                                                                    $product->stock_in - $product->stock_out;
+                                                            @endphp
                                                             <tr>
-                                                                <td>{{ $variant->sku }}</td>
-                                                                <td class="fw-bold">{{ $variant->fullName }}</td>
-                                                                <td class="text-center">{{ $variant->availableStock }}
+                                                                <td>{{ $product->sku }}</td>
+                                                                <td class="fw-bold">{{ $product->name }}</td>
+                                                                <td class="text-center">{{ $productStock }}
                                                                     {{ $product->unit->short_name }}</td>
                                                                 <td class="text-center">
-                                                                    {{ money($variant->discounted_price ?? $variant->selling_price) }}
+                                                                    {{ money($product->discounted_price ?? $product->selling_price) }}
                                                                 </td>
                                                                 <td class="text-center">
-                                                                    @if ($variant->availableStock > 0)
+
+                                                                    @if ($productStock > 0)
                                                                         <button
                                                                             class="btn btn-sm btn-primary add-to-cart-btn"
-                                                                            data-variant-id="{{ $variant->id }}"
+                                                                            data-product-id="{{ $product->id }}"
                                                                             data-quantity="1">
                                                                             <span class="btn-text">
-                                                                                <i class="bi bi-plus"></i> Add to
-                                                                                Cart</span>
+                                                                                <i class="bi bi-plus"></i> Add to Cart
+                                                                            </span>
                                                                             <span
-                                                                                class="spinner-border spinner-border-sm d-none"
-                                                                                role="status" aria-hidden="true"></span>
+                                                                                class="spinner-border spinner-border-sm d-none"></span>
                                                                         </button>
                                                                     @else
                                                                         <button class="btn btn-sm btn-secondary disabled">
@@ -324,7 +364,8 @@ foreach ($categories as $cat) {
                                                                     @endif
                                                                 </td>
                                                             </tr>
-                                                        @endforeach
+                                                        @endif
+
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -571,17 +612,18 @@ foreach ($categories as $cat) {
 
             $(document).on('click', '.add-to-cart-btn', function() {
                 let button = $(this);
-                let variantId = $(this).data('variant-id');
+                let productId = $(this).data('product-id');
+                let variantId = $(this).data('variant-id') || null;
                 let quantity = $(this).data('quantity') || 1;
                 let btnText = button.find('.btn-text');
                 let spinner = button.find('.spinner-border');
                 btnText.addClass('d-none');
                 spinner.removeClass('d-none');
 
-                addToCart(variantId, quantity, button);
+                addToCart(productId, variantId, quantity, button);
             });
 
-            function addToCart(variantId, quantity, button = null) {
+            function addToCart(productId, variantId, quantity, button = null) {
                 let url = orderId == 0 ? "{{ route('seller.pos.cart_add') }}" :
                     "{{ route('seller.pos.sales.item_add') }}";
                 let btnText, spinner;
@@ -595,6 +637,7 @@ foreach ($categories as $cat) {
                     url: url,
                     method: 'POST',
                     data: {
+                        product_id: productId,
                         variant_id: variantId,
                         quantity: quantity,
                         order_id: orderId,
@@ -981,7 +1024,6 @@ foreach ($categories as $cat) {
                 let name = $('#customerName').val().trim();
                 let phone = $('#customerPhone').val().trim();
 
-                // Gather frontend summary values
                 let subtotal = parseFloat($('#summary-subtotal').attr('data-subtotal')) ||
                     parseFloat($('#summary-subtotal').text()) || 0;
                 let vat = parseFloat($('#summary-vat').attr('data-vat')) ||
@@ -991,7 +1033,6 @@ foreach ($categories as $cat) {
                 let due = parseFloat($('#due-amount').attr('data-due')) || 0;
                 let paidInput = parseFloat($('#paid-amount').val()) || 0;
 
-                // Validate
                 if (paidInput < 0) {
                     toastr.error("Paid amount cannot be negative.");
                     return;
@@ -1001,16 +1042,17 @@ foreach ($categories as $cat) {
                     return;
                 }
 
-                // Gather all items (cart + order)
                 const allItems = [];
                 $('.cart-item, .order-item').each(function() {
                     let row = $(this);
                     allItems.push({
                         id: row.data('id'),
+                        product_id: row.data('product-id'),
+                        product_variant_id: row.data('product-variant-id'),
                         price: parseFloat(row.find('.price-input').val()) || 0,
                         quantity: parseFloat(row.find('.quantity').text().trim()) || 0
                     });
-                });
+                });         
 
                 button.prop('disabled', true).text('Processing...');
 
@@ -1027,7 +1069,7 @@ foreach ($categories as $cat) {
                         vat: vat,
                         discount: discount,
                         total: total,
-                        items: allItems, // <-- send all items dynamically
+                        items: allItems,
                         additional_discount: getAdditionalDiscount(),
                         _token: "{{ csrf_token() }}"
                     },
@@ -1139,7 +1181,7 @@ foreach ($categories as $cat) {
                 let total = 0;
                 let due = 0;
 
-                subtotal = parseFloat(summary.sub_total) || 0;
+                subtotal = parseFloat(summary.subtotal) || 0;
                 totalDiscount = parseFloat(summary.discount) || 0;
                 vat = parseFloat(summary.vat_amount) || 0;
                 total = parseFloat(summary.total) || 0;

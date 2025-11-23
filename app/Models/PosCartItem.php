@@ -11,6 +11,11 @@ class PosCartItem extends Model
 
     protected $guarded = ['id'];
 
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_id');
+    }
+
     public function variant()
     {
         return $this->belongsTo(ProductVariant::class, 'product_variant_id');

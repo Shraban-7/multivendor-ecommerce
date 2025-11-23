@@ -196,19 +196,19 @@ class Product extends Model
                 'percent' => round($marginPercent, 2),
             ],
             'seller'            => [
-                'id'            => $this->seller->id,
-                'username'      => $this->seller->username,
+                'id' => $this->seller->id,
+                'username' => $this->seller->username,
                 'business_name' => $this->seller->business_name,
                 'business_logo' => $this->seller->business_logo,
-                'best_seller'   => $this->seller->is_best_seller,
+                'best_seller' => $this->seller->is_best_seller,
                 'total_followers' => $this->seller->total_followers,
-                'rating'         => round($this->rating),
+                'rating' => round($this->rating),
             ],
-            'reviews'           => $reviews,
-            'rating'            => number_format($reviews->avg('rating') ?? 0, 1),
-            'total_reviews'     => $reviews->count(),
-            'created_at'        => $this->created_at,
-            'updated_at'        => $this->updated_at,
+            'reviews' => $reviews,
+            'rating' => number_format($reviews->avg('rating') ?? 0, 1),
+            'total_reviews' => $reviews->count(),
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 
