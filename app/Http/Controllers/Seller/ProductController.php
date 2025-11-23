@@ -7,16 +7,18 @@ use App\Models\Option;
 use App\Models\Seller;
 use App\Models\Product;
 use App\Enums\StockType;
+use App\Models\CartItem;
 use App\Models\Category;
 use App\Models\ProductSeo;
 use App\Models\OptionValue;
+use App\Models\PosCartItem;
 use App\Models\ProductUnit;
 use App\Models\ProductImage;
 use App\Models\StockHistory;
 use Illuminate\Http\Request;
+use App\Models\CategoryOption;
 use App\Models\ProductVariant;
 use App\Http\Controllers\Controller;
-use App\Models\CategoryOption;
 use App\Models\ProductVariantOption;
 
 class ProductController extends Controller
@@ -126,7 +128,7 @@ class ProductController extends Controller
                 $variant = new ProductVariant();
                 $variant->product_id = $product->id;
                 $variant->sku = ProductVariant::generate_sku();
-                $variant->buying_price =  $v['buying_price'];
+                $variant->buying_price = $v['buying_price'];
                 $variant->selling_price = $v['selling_price'];
                 $variant->stock_in = $v['stock'] ?? 0;
 
@@ -154,7 +156,7 @@ class ProductController extends Controller
                         $variant->discount_type,
                         $variant->discount_value
                     )
-                    :  null;
+                    : null;
 
                 $variant->is_default = $index === 0 ? 1 : 0;
 
@@ -377,6 +379,9 @@ class ProductController extends Controller
             delete_file($image->image);
             $image->delete();
         });
+
+        CartItem::where('product_id', $product->id)->delete();
+        PosCartItem::where('product_id', $product->id)->delete();
 
         $product->delete();
 

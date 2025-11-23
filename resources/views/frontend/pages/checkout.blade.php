@@ -117,45 +117,53 @@
                             Payment Method
                         </h3>
 
-                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 justify-items-start">
-
+                        <ul class="grid w-full gap-4 sm:grid-cols-3">
                             @if ($allCod)
-                                <label
-                                    class="flex flex-col items-center justify-center w-full py-3 px-4 gap-2
-                                    border border-gray-300 rounded-xl cursor-pointer shadow-sm
-                                    hover:shadow-md hover:border-primary transition bg-white">
-
-                                    <div class="flex items-center gap-2">
-                                        <i class="fa-solid fa-box-open text-primary text-xl"></i>
-                                        <span class="font-semibold text-gray-800">COD</span>
-                                    </div>
-
-                                    <input type="radio" name="payment" value="cod" class="accent-primary"
+                                <li>
+                                    <input type="radio" id="payment-cod" name="payment" value="cod" class="hidden peer"
                                         {{ $allCod ? 'checked' : '' }} />
-                                </label>
+
+                                    <label for="payment-cod"
+                                        class="inline-flex flex-col items-center justify-center w-full p-4 text-gray-700
+                            bg-white border border-gray-300 rounded-xl cursor-pointer transition
+                            hover:bg-gray-50 peer-checked:bg-primary/10 peer-checked:border-primary
+                            peer-checked:text-primary">
+
+                                        <div class="flex items-center gap-2 mb-1">
+                                            <i class="fa-solid fa-box-open text-xl"></i>
+                                            <span class="text-sm">Cash on Delivery</span>
+                                        </div>
+                                    </label>
+                                </li>
                             @endif
 
                             @foreach ($payment_gateways as $gateway)
-                                <label
-                                    class="flex flex-col items-center justify-center w-full gap-1.5 py-2 
-                                        border border-gray-200 rounded-md cursor-pointer 
-                                        hover:border-primary/70 hover:bg-primary/5 transition">
-
-                                    @if ($gateway->image)
-                                        <img src="{{ storage_url($gateway->image) }}" alt="{{ $gateway->name }}"
-                                            class="h-6 w-auto object-contain" />
-                                    @else
-                                        <span class="text-xl text-primary">
-                                            <i class="fa-solid fa-credit-card"></i>
-                                        </span>
-                                    @endif
-
-                                    <input type="radio" name="payment" value="{{ $gateway->slug }}"
-                                        class="accent-primary "
+                                <li>
+                                    <input type="radio" id="payment-{{ $gateway->slug }}" name="payment"
+                                        value="{{ $gateway->slug }}" class="hidden peer"
                                         {{ !$allCod && $gateway->is_default ? 'checked' : '' }} />
-                                </label>
+
+                                    <label for="payment-{{ $gateway->slug }}"
+                                        class="inline-flex flex-col items-center justify-center w-full p-4
+                                    bg-white border border-gray-300 rounded-xl cursor-pointer transition
+                                    hover:bg-gray-50 peer-checked:bg-primary/10 peer-checked:border-primary
+                                    peer-checked:text-primary">
+
+                                        @if ($gateway->image)
+                                            <img src="{{ storage_url($gateway->image) }}"
+                                                class="h-6 w-auto mb-1 object-contain" />
+                                        @else
+                                            <i class="fa-solid fa-credit-card text-xl mb-1"></i>
+                                        @endif
+
+                                        <span class="text-sm">
+                                            {{ $gateway->name }}
+                                        </span>
+                                    </label>
+                                </li>
                             @endforeach
-                        </div>
+
+                        </ul>
                     </div>
 
                     <button id="continue-payment-btn" type="button" data-seller-id="{{ $selectedSellerId }}"
