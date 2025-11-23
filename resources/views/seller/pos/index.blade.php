@@ -47,6 +47,7 @@
 
 <?php
 $variantSkuList = [];
+$productSkuList = [];
 foreach ($products as $product) {
     $productStock = $product->stock_in - $product->stock_out;
     foreach ($product->variants as $variant) {
@@ -57,7 +58,10 @@ foreach ($products as $product) {
         ];
         $product->total_stock += $variant->availableStock;
     }
-
+    $productSkuList[] = [
+        'sku' => $product->sku,
+        'product_id' => $product->id,
+    ];
     $product->total_stock += $productStock;
 }
 $products = $products->sortByDesc('total_stock');
@@ -577,6 +581,7 @@ foreach ($categories as $cat) {
         const orderId = "{{ request('order_id', 0) }}";
 
         var variantSkuList = @json($variantSkuList);
+        var productSkuList = @json($productSkuList);
 
         function debounce(func, delay) {
             let timer;
@@ -589,26 +594,41 @@ foreach ($categories as $cat) {
 
         $(document).ready(function() {
             $('#skuSearch').on('input', function() {
-                var query = $(this).val().trim();
+                var query = $(this).val().trim().toLowerCase();
 
                 if (query === "") {
                     $('.product-card-wrapper').show();
                     return;
                 }
 
-                var matchedVariant = variantSkuList.find(v => v.sku.toLowerCase() === query.toLowerCase());
+                var matchedVariant = variantSkuList.find(v => v.sku && v.sku.toLowerCase() === query);
+
+                var matchedProduct = productSkuList.find(p => p.sku && p.sku.toLowerCase() === query);
+
+                console.log(matchedProduct);
 
                 $('.product-card-wrapper').hide();
 
                 if (matchedVariant) {
                     $('[data-product-id="' + matchedVariant.product_id + '"]').show();
 
-                    addToCart(matchedVariant.variant_id, 1);
+                    addToCart(matchedVariant.product_id, matchedVariant.variant_id, 1);
+
+                    $('#skuSearch').val('');
+                    $('.product-card-wrapper').show();
+                    return; 
+                }
+
+                if (matchedProduct) {
+                    $('[data-product-id="' + matchedProduct.id + '"]').show();
+
+                    addToCart(matchedProduct.product_id, null, 1);
 
                     $('#skuSearch').val('');
                     $('.product-card-wrapper').show();
                 }
             });
+
 
             $(document).on('click', '.add-to-cart-btn', function() {
                 let button = $(this);
@@ -1052,7 +1072,7 @@ foreach ($categories as $cat) {
                         price: parseFloat(row.find('.price-input').val()) || 0,
                         quantity: parseFloat(row.find('.quantity').text().trim()) || 0
                     });
-                });         
+                });
 
                 button.prop('disabled', true).text('Processing...');
 
