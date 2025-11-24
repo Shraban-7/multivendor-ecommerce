@@ -65,7 +65,6 @@
                     @elseif ($product->status == $product::STATUS_DELETED)
                     <span class="badge text-bg-danger">Deleted</span>
                     @endif
-
                 </td>
 
                 <td class="small">{{ $product->created_at->format('d/m/Y h:ia') }}</td>

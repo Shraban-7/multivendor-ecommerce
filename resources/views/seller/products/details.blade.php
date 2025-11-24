@@ -80,10 +80,14 @@
                             </div>
                             <div class="mb-1"><span class="text-muted">Payment Type:</span> {{ ucfirst($product->payment_type->title()) }}</div>
                             <div><span class="text-muted">Status:</span>
-                                @if($product->is_active)
-                                <span class="badge bg-success-subtle text-success">Active</span>
-                                @else
-                                <span class="badge bg-danger-subtle text-danger">Inactive</span>
+                                @if ($product->status == $product::STATUS_ACTIVE)
+                                <span class="badge text-bg-success">Active</span>
+                                @elseif ($product->status == $product::STATUS_PENDING_APPROVAL)
+                                <span class="badge text-bg-warning">Waiting for Approval</span>
+                                @elseif ($product->status == $product::STATUS_INACTIVE)
+                                <span class="badge text-bg-secondary">Inactive</span>
+                                @elseif ($product->status == $product::STATUS_DELETED)
+                                <span class="badge text-bg-danger">Deleted</span>
                                 @endif
                             </div>
                         </div>
