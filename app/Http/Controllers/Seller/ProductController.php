@@ -600,8 +600,7 @@ class ProductController extends Controller
 
     public function inventory()
     {
-        $products = Product::whereHas('variants')
-            ->with('variants.option_values')
+        $products = Product::with('variants.option_values')
             ->orderBy('name', 'ASC')
             ->where('seller_id', get_seller_id())
             ->get()
@@ -609,13 +608,17 @@ class ProductController extends Controller
                 return [
                     'id' => $product->id,
                     'name' => $product->name,
+                    'sku' => $product->sku,
+                    'quantity' => $product->stock_in - $product->stock_out,
+                    'price' => removeZeroFromDecimal($product->selling_price, 'int'),
+                    'discounted_price' => removeZeroFromDecimal($product->discounted_price ?? $product->selling_price, 'int'),
                     'image' => is_null($product->thumbnail) ? asset('assets/frontend/images/placeholder-img.jpg') : storage_url($product->thumbnail),
                     'variants' => $product->variants->map(function ($variant) {
                         return [
                             'id' => $variant->id,
                             'sku' => $variant->sku,
                             'fullName' => $variant->fullName,
-                            'quantity' => $variant->stock_in = $variant->stock_out,
+                            'quantity' => $variant->stock_in - $variant->stock_out,
                             'price' => removeZeroFromDecimal($variant->selling_price, 'int'),
                             'discounted_price' => removeZeroFromDecimal($variant->discounted_price, 'int'),
                             'image' => is_null($variant->image) ? null : storage_url($variant->image)

@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::table('pos_cart_items', function (Blueprint $table) {
             $table->unsignedBigInteger('product_id')->nullable()->after('pos_cart_id');
+            $table->unsignedBigInteger('product_variant_id')->nullable()->change();
         });
     }
 

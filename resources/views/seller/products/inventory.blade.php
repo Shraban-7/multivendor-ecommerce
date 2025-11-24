@@ -153,49 +153,47 @@
         .hidden-column {
             display: none;
         }
+
+        #resizeable {
+            position: relative;
+            user-select: none;
+        }
+
+        #handle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 8px;
+            height: 100%;
+            cursor: ew-resize;
+            background-color: transparent;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 0 2px;
+            transition: background-color 0.2s ease;
+            user-select: none;
+        }
+
+        #handle:hover {
+            background-color: #ddd;
+        }
+
+        #handle span {
+            display: block;
+            width: 4px;
+            height: 2px;
+            margin: 2px 0;
+            background-color: #666;
+            border-radius: 1px;
+        }
+
+        #handle:hover span {
+            background-color: #333;
+        }
     </style>
 </head>
-
-<style>
-    #resizeable {
-        position: relative;
-        user-select: none;
-    }
-
-    #handle {
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 8px;
-        height: 100%;
-        cursor: ew-resize;
-        background-color: transparent;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        padding: 0 2px;
-        transition: background-color 0.2s ease;
-        user-select: none;
-    }
-
-    #handle:hover {
-        background-color: #ddd;
-    }
-
-    #handle span {
-        display: block;
-        width: 4px;
-        height: 2px;
-        margin: 2px 0;
-        background-color: #666;
-        border-radius: 1px;
-    }
-
-    #handle:hover span {
-        background-color: #333;
-    }
-</style>
 
 <body>
     <div class="container-fluid p-0">
@@ -291,23 +289,59 @@
             direction: 'asc'
         };
 
+        // function flattenVariants(products) {
+        //     const variants = [];
+
+        //     products.forEach(product => {
+        //         product.variants.forEach(variant => {
+        //             variants.push({
+        //                 id: variant.id,
+        //                 sku: variant.sku,
+        //                 name: product.name,
+        //                 quantity: parseInt(variant.quantity),
+        //                 price: variant.price,
+        //                 discounted_price: variant.discounted_price || 0,
+        //                 image: variant.image || product.image,
+        //                 productImage: product.image,
+        //                 fullName: `${variant.fullName}`.trim()
+        //             });
+        //         });
+        //     });
+
+        //     return variants;
+        // }
+
         function flattenVariants(products) {
             const variants = [];
 
             products.forEach(product => {
-                product.variants.forEach(variant => {
-                    variants.push({
-                        id: variant.id,
-                        sku: variant.sku,
-                        name: product.name,
-                        quantity: parseInt(variant.quantity),
-                        price: variant.price,
-                        discounted_price: variant.discounted_price || 0,
-                        image: variant.image || product.image,
-                        productImage: product.image,
-                        fullName: `${variant.fullName}`.trim()
+                if (product.variants && product.variants.length > 0) {
+                    product.variants.forEach(variant => {
+                        variants.push({
+                            id: variant.id,
+                            sku: variant.sku ?? product.sku,
+                            name: product.name,
+                            quantity: parseInt(variant.quantity ?? product.quantity),
+                            price: variant.price ?? product.price,
+                            discounted_price: variant.discounted_price ?? product.discounted_price,
+                            image: variant.image || product.image,
+                            productImage: product.image,
+                            fullName: (variant.fullName ?? "").trim()
+                        });
                     });
-                });
+                } else {
+                    variants.push({
+                        id: product.id,
+                        sku: product.sku,
+                        name: product.name,
+                        quantity: parseInt(product.quantity),
+                        price: product.price,
+                        discounted_price: product.discounted_price,
+                        image: product.image,
+                        productImage: product.image,
+                        fullName: ""
+                    });
+                }
             });
 
             return variants;
