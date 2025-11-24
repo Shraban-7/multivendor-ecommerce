@@ -32,14 +32,13 @@
             $variantCount = $product->variants->count();
             @endphp
             <tr>
-                <td>{{ $product->sku }}</td>
+                <td class="small">{{ $product->sku }}</td>
                 <td>
                     <div class="d-flex align-items-center">
                         <img src="{{ $product->imageUrl }}" class="rounded me-2"
                             style="width:50px;height:50px;object-fit:cover">
                         <div>
-                            <a href="{{ route('seller.products.show', $product->slug) }}" target="__blank"
-                                class="fw-bold">{{ $product->name }}</a><br>
+                            <p class="mb-0 fw-bold">{{ $product->name }}</p>
                             @if ($variantCount > 0)
                             <a href="#" class="small text-muted text-decoration-underline"
                                 data-bs-toggle="modal" data-bs-target="#variantsModal-{{ $product->id }}">
@@ -69,12 +68,15 @@
 
                 </td>
 
-                <td>{{ $product->created_at->format('d/m/Y h:ia') }}</td>
+                <td class="small">{{ $product->created_at->format('d/m/Y h:ia') }}</td>
 
                 <td>
-                    <div class="d-flex">
+                    <div class="d-flex text-nowrap">
+                        <a href="{{ route('seller.products.show', $product->slug) }}" target="__blank" class="btn btn-light btn-sm border me-1 mb-1">
+                            <i data-feather="eye" class="icon-xs me-1"></i>Details
+                        </a>
                         <a href="{{ route('seller.products.edit', $product->slug) }}"
-                            class="btn btn-light btn-sm border" target="__blank">
+                            class="btn btn-light btn-sm border mb-1" target="__blank">
                             <i data-feather="edit" class="icon-xs me-1"></i> Edit
                         </a>
                     </div>
