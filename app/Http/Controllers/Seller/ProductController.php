@@ -580,22 +580,36 @@ class ProductController extends Controller
 
         $variant = ProductVariant::with('product.seller')->where('sku', $request->sku)->first();
 
-        if (!$variant) {
-            return redirect()->route('seller.products.printBarcode')->with('error', 'Product not found!');
+        if ($variant) {
+            $price = $variant->selling_price;
+
+            $data = [
+                'sellerName' => $variant->product->seller->business_name,
+                'productName' => $variant->product->name,
+                'variantName' => $variant->fullName,
+                'sku' => $variant->sku,
+                'price' => money($price),
+                'quantity' => $request->quantity,
+            ];
+
+            return view('seller.barcodes.print', compact('data'));
         }
 
-        $price = $variant->selling_price;
+        $product = Product::where('sku', $request->sku)->first();
+        if ($product) {
+            $data = [
+                'sellerName' => $product->seller->business_name,
+                'productName' => $product->name,
+                'variantName' => '',
+                'sku' => $product->sku,
+                'price' => money($product->selling_price),
+                'quantity' => $request->quantity,
+            ];
 
-        $data = [
-            'sellerName' => $variant->product->seller->business_name,
-            'productName' => $variant->product->name,
-            'variantName' => $variant->fullName,
-            'sku' => $variant->sku,
-            'price' => money($price),
-            'quantity' => $request->quantity,
-        ];
+            return view('seller.barcodes.print', compact('data'));
+        }
 
-        return view('seller.barcodes.print', compact('data'));
+        return redirect()->route('seller.products.printBarcode')->with('error', 'Product not found!');
     }
 
     public function inventory()

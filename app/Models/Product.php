@@ -262,4 +262,11 @@ class Product extends Model
             get: fn() => $this->thumbnail ? storage_url($this->thumbnail) : asset('assets/frontend/images/default.png')
         );
     }
+
+    public function availableStock(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->stock_in - $this->stock_out
+        );
+    }
 }

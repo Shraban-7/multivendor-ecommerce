@@ -13,17 +13,29 @@
                         <select name="variant_id" class="select2 w-100" id="product" required>
                             <option value="" disabled selected>Select a product</option>
                             @foreach ($products as $product)
-                            @foreach ($product->variants as $variant)
-                            <option value="{{ $variant->id }}"
-                                data-name="{{ $product->name }}"
-                                data-variant="{{ $variant->fullName }}"
-                                data-sellingprice="{{ $variant->selling_price }}"
-                                data-discountedprice="{{ $variant->discounted_price }}"
-                                data-stock="{{ $variant->availableStock }}"
-                                data-sku="{{ $variant->sku }}">
-                                {{ $product->name }} | {{ $variant->fullName }} | {{ $variant->availableStock }} {{ $product->unit->short_name }}
-                            </option>
-                            @endforeach
+                                @if($product->variants->count() == 0)
+                                    <option value="{{ $product->id }}"
+                                        data-name="{{ $product->name }}"
+                                        data-variant=""
+                                        data-sellingprice="{{ $product->selling_price }}"
+                                        data-discountedprice="{{ $product->discounted_price ?? $product->selling_price }}"
+                                        data-stock="{{ $product->availableStock }}"
+                                        data-sku="{{ $product->sku }}">
+                                        {{ $product->name }} | {{ $product->availableStock }} {{ $product->unit->short_name }}
+                                    </option>
+                                @else
+                                    @foreach ($product->variants as $variant)
+                                    <option value="{{ $variant->id }}"
+                                        data-name="{{ $product->name }}"
+                                        data-variant="{{ $variant->fullName }}"
+                                        data-sellingprice="{{ $variant->selling_price }}"
+                                        data-discountedprice="{{ $variant->discounted_price }}"
+                                        data-stock="{{ $variant->availableStock }}"
+                                        data-sku="{{ $variant->sku }}">
+                                        {{ $product->name }} | {{ $variant->fullName }} | {{ $variant->availableStock }} {{ $product->unit->short_name }}
+                                    </option>
+                                    @endforeach
+                                @endif
                             @endforeach
                         </select>
                     </div>
