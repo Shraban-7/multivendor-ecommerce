@@ -39,9 +39,6 @@
                         <div class="flex-1 min-w-0">
                             <div class="flex justify-between items-start">
                                 <h3 class="font-medium">{{ $item->product_name }}</h3>
-                                @if (!is_null($item->variant_name))
-                                    <span class="small text-muted">{{ $item->variant_name }}</span>
-                                @endif
                                 <p class="font-medium">{{ money($item->total) }}</p>
                             </div>
                             <div class="flex justify-between items-end mt-1">
