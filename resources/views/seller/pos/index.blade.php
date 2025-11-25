@@ -128,19 +128,20 @@ foreach ($categories as $cat) {
                                             <tbody>
                                                 @foreach ($draftCarts as $cart)
                                                     <tr>
-                                                        <td>{{ $cart->created_at->format('d M Y h:i A') }}</td>
+                                                        <td class="small">{{ $cart->created_at->format('d/m/Y, h:i A') }}</td>
                                                         <td>
                                                             <ul class="mb-0 ps-3">
                                                                 @foreach ($cart->items as $item)
-                                                                    <li>
-                                                                        {{ $item->variant->product->name ?? $item->product->name }}
-                                                                        ({{ $item->variant->sku ?? $item->product->sku }})
-                                                                        – Qty: {{ $item->quantity }}
+                                                                    <li class="mb-2">
+                                                                        <p class="fw-bold mb-0">{{ $item->product->name }} - {{ $item->quantity }}</p>
+                                                                        @if($item->variant)
+                                                                         <span class="text-muted small">({{ $item->variant->fullName }})</span>
+                                                                        @endif
                                                                     </li>
                                                                 @endforeach
                                                             </ul>
                                                         </td>
-                                                        <td>{{ $cart->items->sum('quantity') }}</td>
+                                                        <td class="text-center">{{ $cart->items->sum('quantity') }}</td>
                                                         <td>
                                                             <div class="d-flex gap-1 overflow-auto">
                                                                 <a href="{{ route('seller.pos.index', ['draft_cart_id' => $cart->id]) }}"
