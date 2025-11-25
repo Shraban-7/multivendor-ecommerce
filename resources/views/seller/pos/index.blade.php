@@ -133,8 +133,8 @@ foreach ($categories as $cat) {
                                                             <ul class="mb-0 ps-3">
                                                                 @foreach ($cart->items as $item)
                                                                     <li>
-                                                                        {{ $item->variant->product->name ?? '' }}
-                                                                        ({{ $item->variant->sku }})
+                                                                        {{ $item->variant->product->name ?? $item->product->name }}
+                                                                        ({{ $item->variant->sku ?? $item->product->sku }})
                                                                         – Qty: {{ $item->quantity }}
                                                                     </li>
                                                                 @endforeach
@@ -616,7 +616,7 @@ foreach ($categories as $cat) {
 
                     $('#skuSearch').val('');
                     $('.product-card-wrapper').show();
-                    return; 
+                    return;
                 }
 
                 if (matchedProduct) {
@@ -1362,7 +1362,6 @@ foreach ($categories as $cat) {
                     let row = $(this);
                     let quantity = parseFloat(row.find('.quantity').text().trim()) || 0;
                     let originalPrice = parseFloat(row.find('.price-input').data('price')) || 0;
-                    console.log(originalPrice);
 
                     let currentPrice = parseFloat(row.find('.price-input').val()) || 0;
 
@@ -1381,9 +1380,14 @@ foreach ($categories as $cat) {
                 }
 
                 let grandTotal = total + vatAmount - discountAmount;
+                console.log(grandTotal);
+
                 let paid = parseFloat($('#paid-amount').val()) || 0;
                 let due = Math.max(grandTotal - paid, 0);
-                let discount = subtotal - grandTotal;
+                let discount = 0;
+                if (subtotal > total) {
+                     discount = subtotal - grandTotal;
+                }
 
                 $('#summary-subtotal').text(subtotal.toFixed(2));
                 $('#summary-vat').text(vatAmount.toFixed(2));

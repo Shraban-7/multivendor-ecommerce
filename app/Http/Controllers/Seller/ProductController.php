@@ -70,7 +70,7 @@ class ProductController extends Controller
         $validated = $request->validate([
             'category_id' => 'required|integer|exists:categories,id',
             'subcategory_id' => 'nullable|integer|exists:categories,id',
-            'brand' => 'required',
+            'brand' => 'nullable',
             'sku' => 'required',
             'name' => 'required|string|max:255',
             'buying_price' => 'required|numeric',
