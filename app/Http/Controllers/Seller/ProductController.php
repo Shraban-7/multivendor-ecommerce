@@ -462,7 +462,7 @@ class ProductController extends Controller
 
             $product->save();
 
-            return redirect()->back()->with('success', 'Stock updated successfully product!');
+            return redirect()->back()->with('success', 'Stock updated successfully!');
         }
 
         foreach ($stockQuantities as $variantId => $quantity) {

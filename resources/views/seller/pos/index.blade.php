@@ -258,7 +258,7 @@ foreach ($categories as $cat) {
                                     data-bs-target="#variantModal-{{ $product->id }}">
                                     <div class="d-flex p-2">
                                         <div style="width: 48px; height: 48px; flex-shrink: 0;">
-                                            <img src="{{ storage_url($product->thumbnail) }}" alt="{{ $product->name }}"
+                                            <img src="{{ $product->imageUrl }}" alt="{{ $product->name }}"
                                                 class="img-fluid rounded"
                                                 style="object-fit: cover; width: 100%; height: 100%;">
                                         </div>

@@ -514,7 +514,7 @@ $seo = $product->seo;
             },
             success: function(response) {
                 $('#updateBtn').attr('disabled', false).text('Update');
-                toastr.success('Product updated successfully!');
+                showSuccess('Product updated successfully!');
 
                 setTimeout(function() {
                     window.location.href = response.redirect;
@@ -526,7 +526,7 @@ $seo = $product->seo;
                 if (xhr.status === 422) {
                     let errors = xhr.responseJSON.errors;
                     let messages = Object.values(errors).map(item => item[0]).join('<br>');
-                    toastr.error(messages);
+                    showError(messages);
                 } else {
                     let errorMessage = "Something went wrong. Please try again.";
                     if (xhr.responseJSON && xhr.responseJSON.message) {
@@ -534,7 +534,7 @@ $seo = $product->seo;
                     } else if (xhr.responseText) {
                         errorMessage = xhr.responseText;
                     }
-                    toastr.error(errorMessage);
+                    showError(errorMessage);
                 }
             }
         });

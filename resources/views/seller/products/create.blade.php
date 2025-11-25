@@ -242,9 +242,8 @@
                     $('#submitBtn').attr('disabled', true).text('Saving...');
                 },
                 success: function(response) {
-                    toastr.success(response.message);
-                    setTimeout(() => window.location.href =
-                        "{{ route('seller.products.index') }}", 1500);
+                    showSuccess(response.message);
+                    setTimeout(() => window.location.href = "{{ route('seller.products.index') }}", 1500);
                 },
                 error: function(xhr) {
                     $('#submitBtn').attr('disabled', false).text('Save');
@@ -252,9 +251,9 @@
                         let errors = xhr.responseJSON.errors;
                         let messages = Object.values(errors).map(item => item[0]).join(
                             '<br>');
-                        toastr.error(messages);
+                        showError(messages);
                     } else {
-                        toastr.error('Something went wrong. Please try again.');
+                        showError('Something went wrong. Please try again.');
                     }
                 }
             });
