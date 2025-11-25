@@ -75,6 +75,7 @@ foreach ($categories as $cat) {
 
 @section('container-fluid')
     <div class="row">
+        <input type="hidden" id="draft_id" value="{{ request('draft_id') }}">
         <!-- Products/Search Section -->
         <div class="col-md-7">
             <div class="card mb-4 ">
@@ -128,14 +129,17 @@ foreach ($categories as $cat) {
                                             <tbody>
                                                 @foreach ($draftCarts as $cart)
                                                     <tr>
-                                                        <td class="small">{{ $cart->created_at->format('d/m/Y, h:i A') }}</td>
+                                                        <td class="small">{{ $cart->created_at->format('d/m/Y, h:i A') }}
+                                                        </td>
                                                         <td>
                                                             <ul class="mb-0 ps-3">
                                                                 @foreach ($cart->items as $item)
                                                                     <li class="mb-2">
-                                                                        <p class="fw-bold mb-0">{{ $item->product->name }} - {{ $item->quantity }}</p>
-                                                                        @if($item->variant)
-                                                                         <span class="text-muted small">({{ $item->variant->fullName }})</span>
+                                                                        <p class="fw-bold mb-0">{{ $item->product->name }} -
+                                                                            {{ $item->quantity }}</p>
+                                                                        @if ($item->variant)
+                                                                            <span
+                                                                                class="text-muted small">({{ $item->variant->fullName }})</span>
                                                                         @endif
                                                                     </li>
                                                                 @endforeach
@@ -144,12 +148,18 @@ foreach ($categories as $cat) {
                                                         <td class="text-center">{{ $cart->items->sum('quantity') }}</td>
                                                         <td>
                                                             <div class="d-flex gap-1 overflow-auto">
-                                                                <a href="{{ route('seller.pos.index', ['draft_cart_id' => $cart->id]) }}"
+                                                                <a href="{{ route('seller.pos.index', ['draft_id' => $cart->id]) }}"
                                                                     target="__blank"
                                                                     class="btn btn-light border btn-sm d-flex align-items-center">
-                                                                    <i data-feather="edit" class="icon-xs me-1"></i>
-                                                                    Edit
+                                                                    <i data-feather="edit" class="icon-xs me-1"></i> Edit
                                                                 </a>
+                                                                <button
+                                                                    class="btn btn-danger border btn-sm d-flex align-items-center clear-draft-btn"
+                                                                    data-id="{{ $cart->id }}"
+                                                                    data-url="{{ route('seller.pos.draft_clear', $cart->id) }}">
+                                                                    <i data-feather="trash-2" class="icon-xs me-1"></i>
+                                                                    Delete
+                                                                </button>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -230,7 +240,8 @@ foreach ($categories as $cat) {
                                     @endif
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close</button>
                                 </div>
                             </div>
                         </div>
@@ -501,7 +512,7 @@ foreach ($categories as $cat) {
                                     <i class="bi bi-arrow-repeat me-2"></i> Update Order
                                 </button>
                                 <a href="{{ route('seller.pos.index') }}" class="btn btn-secondary">Cancel</a>
-                            @elseif(request()->has('draft_cart_id'))
+                            @elseif(request()->has('draft_id'))
                                 <button id="placeOrderBtn" class="btn btn-success">
                                     <i class="bi bi-cart me-2"></i> Checkout
                                 </button>
@@ -662,6 +673,7 @@ foreach ($categories as $cat) {
                         variant_id: variantId,
                         quantity: quantity,
                         order_id: orderId,
+                        draft_id: $("#draft_id").val(),
                         _token: "{{ csrf_token() }}"
                     },
                     success: function(response) {
@@ -816,6 +828,50 @@ foreach ($categories as $cat) {
                         var message = xhr.responseJSON.message;
                         showError(message);
                     }
+                });
+            });
+
+            $(document).on('click', '.clear-draft-btn', function() {
+                let draftId = $(this).data('id');
+                let url = $(this).data('url');
+                if (!confirm("Are you sure you want to clear this draft?")) return;
+
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: {
+                        id: draftId,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(res) {
+                        if (res.status) {
+                            showSuccess("Draft cleared successfully!!");
+
+                            setTimeout(() => {
+                                window.location.href =
+                                    "{{ route('seller.pos.index') }}";
+                            }, 500);
+                        }
+                    },
+                    error: function(xhr) {
+
+                        let message = "Something went wrong!";
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            message = xhr.responseJSON.message;
+                        }
+
+                        if (xhr.responseJSON && xhr.responseJSON.errors) {
+                            let firstError = Object.values(xhr.responseJSON.errors)[0][0];
+                            message = firstError;
+                        }
+
+                        if (xhr.status === 500) {
+                            message = "Server error (500): Please check logs.";
+                        }
+
+                        showError(message);
+                    }
+
                 });
             });
 
@@ -1381,13 +1437,12 @@ foreach ($categories as $cat) {
                 }
 
                 let grandTotal = total + vatAmount - discountAmount;
-                console.log(grandTotal);
 
                 let paid = parseFloat($('#paid-amount').val()) || 0;
                 let due = Math.max(grandTotal - paid, 0);
                 let discount = 0;
                 if (subtotal > total) {
-                     discount = subtotal - grandTotal;
+                    discount = subtotal - grandTotal;
                 }
 
                 $('#summary-subtotal').text(subtotal.toFixed(2));

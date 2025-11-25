@@ -99,10 +99,10 @@ class PosController extends Controller
             }
         }
 
-        if (request()->has('draft_cart_id')) {
+        if (request()->has('draft_id')) {
 
             $cart = PosCart::where('seller_id', $seller->id)
-                ->where('id', request('draft_cart_id'))
+                ->where('id', request('draft_id'))
                 ->where('is_draft', 1)
                 ->with(['items.variant.product', 'items.product'])
                 ->first();
@@ -180,6 +180,7 @@ class PosController extends Controller
 
     public function cartAdd(Request $request)
     {
+        $draftId = $request->draft_id;
         $data = $request->validate([
             'product_id' => 'required',
             'variant_id' => 'nullable',
@@ -190,7 +191,7 @@ class PosController extends Controller
             [
                 'seller_id' => get_seller_id(),
                 'order_id' => null,
-                'is_draft' => 0
+                'is_draft' => $draftId ? 1 : 0
             ],
         );
 
@@ -381,7 +382,7 @@ class PosController extends Controller
         ], "Item Removed From Cart Successfully!");
     }
 
-    public function cartClear(Request $request)
+    public function cartClear()
     {
         $cart = PosCart::where('seller_id', get_seller_id())->first();
 
@@ -395,6 +396,23 @@ class PosController extends Controller
         }
 
         return successResponse("Cart Clear Successfully");
+    }
+
+    public function draftClear(PosCart $draft)
+    {
+        $cart = PosCart::where('seller_id', get_seller_id())->where('id', $draft->id)
+            ->where('is_draft', 1)->first();
+
+        if (!$cart) {
+            return errorResponse("No Cart Items Found!");
+        }
+
+        if ($cart) {
+            $cart->items()->delete();
+            $cart->delete();
+        }
+
+        return successResponse("Draft Clear Successfully");
     }
 
     public function placeOrder(Request $request)

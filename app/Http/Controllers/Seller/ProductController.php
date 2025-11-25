@@ -39,12 +39,12 @@ class ProductController extends Controller
         $categories = Category::category()->with('subcategories', 'options.option_values')->get();
         $brands = Brand::all();
         $units = ProductUnit::all();
-        $categoryAttributes = $this->categorizedAtributes($categories);
+        $categoryAttributes = $this->categorizedAttributes($categories);
 
         return view('seller.products.create', compact('categories', 'brands', 'units', 'categoryAttributes'));
     }
 
-    private function categorizedAtributes($categories, $category_id = null)
+    private function categorizedAttributes($categories, $category_id = null)
     {
         $data = [];
         foreach ($categories as $cat) {
@@ -205,7 +205,7 @@ class ProductController extends Controller
 
         $product->profit_amount = $profitAmount;
         $product->profit_percent = $profitPercent;
-        $product->stock = $product->stock;
+        $product->stock = $productStock;
 
         foreach ($product->variants as $variant) {
             $variant->stock = ($variant->stock_in ?? 0) - ($variant->stock_out ?? 0);
@@ -214,7 +214,7 @@ class ProductController extends Controller
         $optionIds = CategoryOption::where('category_id', $product->category_id)->pluck('option_id')->toArray();
         $product_options = Option::whereIn('id', $optionIds)->with('option_values')->get();
         $categories = Category::where('id', $product->category_id)->with('options.option_values')->get();
-        $categoryAttributes = $this->categorizedAtributes($categories, $product->category_id);
+        $categoryAttributes = $this->categorizedAttributes($categories, $product->category_id);
 
         return view('seller.products.details', compact('product', 'product_options', 'categoryAttributes'));
     }
