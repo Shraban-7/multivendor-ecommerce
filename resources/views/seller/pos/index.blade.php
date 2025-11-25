@@ -669,7 +669,7 @@ foreach ($categories as $cat) {
                                 button.prop('disabled', false)
                             }
 
-                            toastr.success("Item added successfully!");
+                            showSuccess("Item added successfully!");
 
                             if (orderId && orderId > 0) {
                                 $('.order-items tbody').html(response.data.html);
@@ -683,11 +683,11 @@ foreach ($categories as $cat) {
                                 feather.replace();
                             }
                         } else {
-                            toastr.error(response.message);
+                            showError(response.message);
                         }
                     },
                     error: function(xhr) {
-                        toastr.error(xhr.responseJSON?.message || "Something went wrong");
+                        showError(xhr.responseJSON?.message || "Something went wrong");
                     },
                     complete: function() {
                         if (button != null) {
@@ -713,7 +713,7 @@ foreach ($categories as $cat) {
                     },
                     success: function(response) {
                         if (response.status) {
-                            toastr.success("Cart update successfully!");
+                            showSuccess("Cart update successfully!");
                             $('.order-items tbody').html(response.data.html);
                             if (typeof feather !== 'undefined') {
                                 feather.replace();
@@ -721,12 +721,12 @@ foreach ($categories as $cat) {
                             summery = response.data;
                             resetOrderSummary(summery);
                         } else {
-                            toastr.error(response.message);
+                            showError(response.message);
                         }
                     },
                     error: function(xhr) {
                         var message = xhr.responseJSON.message;
-                        toastr.error(message);
+                        showError(message);
                     }
                 });
             });
@@ -749,7 +749,7 @@ foreach ($categories as $cat) {
                     },
                     success: function(response) {
                         if (response.status) {
-                            toastr.success("Cart item deleted successfully!");
+                            showSuccess("Cart item deleted successfully!");
                             $('#cart-item-' + deleteCartItemId).remove();
                             summery = response.data;
                             resetOrderSummary(summery);
@@ -768,12 +768,12 @@ foreach ($categories as $cat) {
                                 `);
                             }
                         } else {
-                            toastr.error(response.message);
+                            showError(response.message);
                         }
                     },
                     error: function(xhr) {
                         var message = xhr.responseJSON.message;
-                        toastr.error(message);
+                        showError(message);
                     }
                 });
             });
@@ -787,7 +787,7 @@ foreach ($categories as $cat) {
                     },
                     success: function(response) {
                         if (response.status) {
-                            toastr.success(response.message);
+                            showSuccess(response.message);
                             $('.order-items tbody').html(`
                                 <tr>
                                     <td colspan="4" class="text-center text-muted">No items in cart</td>
@@ -808,12 +808,12 @@ foreach ($categories as $cat) {
                             const modal = bootstrap.Modal.getInstance(clearModalEl);
                             modal.hide();
                         } else {
-                            toastr.error(response.message);
+                            showError(response.message);
                         }
                     },
                     error: function(xhr) {
                         var message = xhr.responseJSON.message;
-                        toastr.error(message);
+                        showError(message);
                     }
                 });
             });
@@ -827,27 +827,27 @@ foreach ($categories as $cat) {
                 let due = parseFloat($('#due-amount').text().replace(/[^0-9.-]+/g, "")) || 0;
 
                 if (paid < 0) {
-                    toastr.error("Paid amount cannot be negative.");
+                    showError("Paid amount cannot be negative.");
                     return;
                 }
 
                 if (0 > due) {
-                    toastr.error("Paid amount cannot be greater than Due.");
+                    showError("Paid amount cannot be greater than Due.");
                     return;
                 }
 
                 if (paid == null || paid == 0) {
-                    toastr.error("Enter paid amount!");
+                    showError("Enter paid amount!");
                     $('#paid-amount').focus();
                     return;
                 }
 
                 if (name && !phone) {
-                    toastr.error("Phone is required when Name is provided.");
+                    showError("Phone is required when Name is provided.");
                     return;
                 }
                 if (phone && !name) {
-                    toastr.error("Name is required when Phone is provided.");
+                    showError("Name is required when Phone is provided.");
                     return;
                 }
 
@@ -869,7 +869,7 @@ foreach ($categories as $cat) {
                     success: function(response) {
                         if (response.status) {
                             button.prop('disabled', false).text(originalText);
-                            toastr.success("Order placed successfully!");
+                            showSuccess("Order placed successfully!");
                             $('#customerName').val('');
                             $('#customerPhone').val('');
                             $('#paid-amount').val('');
@@ -915,7 +915,7 @@ foreach ($categories as $cat) {
                                 }, 500);
                             }
                         } else {
-                            toastr.error(response.message);
+                            showError(response.message);
                             if (response.status == false) {
                                 setTimeout(() => {
                                     window.location.reload();
@@ -925,7 +925,7 @@ foreach ($categories as $cat) {
                     },
                     error: function(xhr) {
                         var message = xhr.responseJSON.message;
-                        toastr.error(message);
+                        showError(message);
                     }
                 });
             });
@@ -957,17 +957,17 @@ foreach ($categories as $cat) {
                     },
                     success: function(res) {
                         if (res.status) {
-                            toastr.success(res.message);
+                            showSuccess(res.message);
 
                             setTimeout(() => {
                                 location.reload();
                             }, 1000);
                         } else {
-                            toastr.error(res.message);
+                            showError(res.message);
                         }
                     },
                     error: function() {
-                        toastr.error("Failed to save draft!");
+                        showError("Failed to save draft!");
                     },
                     complete: function() {
                         $("#saveDraftBtn").prop('disabled', false)
@@ -1011,7 +1011,7 @@ foreach ($categories as $cat) {
                         if (response.status) {
                             $('#order-item-' + deleteOrderItemId).remove();
 
-                            toastr.success("Order item removed successfully!");
+                            showSuccess("Order item removed successfully!");
                             summery = response.data;
 
                             resetOrderSummary(summery);
@@ -1027,11 +1027,11 @@ foreach ($categories as $cat) {
                                 window.location.href = response.data.redirect;
                             }
                         } else {
-                            toastr.error(response.message);
+                            showError(response.message);
                         }
                     },
                     error: function(xhr) {
-                        toastr.error(xhr.responseJSON?.message || "Something went wrong");
+                        showError(xhr.responseJSON?.message || "Something went wrong");
                     }
                 });
             });
@@ -1054,11 +1054,11 @@ foreach ($categories as $cat) {
                 let paidInput = parseFloat($('#paid-amount').val()) || 0;
 
                 if (paidInput < 0) {
-                    toastr.error("Paid amount cannot be negative.");
+                    showError("Paid amount cannot be negative.");
                     return;
                 }
                 if (paidInput > total) {
-                    toastr.error("Paid amount cannot be greater than total.");
+                    showError("Paid amount cannot be greater than total.");
                     return;
                 }
 
@@ -1097,7 +1097,7 @@ foreach ($categories as $cat) {
                         button.prop('disabled', false).text(originalText);
 
                         if (response.status) {
-                            toastr.success("Order updated successfully!");
+                            showSuccess("Order updated successfully!");
                             $('.order-items tbody').html(response.data.html);
                             resetOrderSummary(response.data);
                             $('#paid-amount').val('');
@@ -1115,12 +1115,12 @@ foreach ($categories as $cat) {
                                 }, 500);
                             }
                         } else {
-                            toastr.error(response.message || "Something went wrong");
+                            showError(response.message || "Something went wrong");
                         }
                     },
                     error: function(xhr) {
                         button.prop('disabled', false).text(originalText);
-                        toastr.error(xhr.responseJSON?.message || "Something went wrong");
+                        showError(xhr.responseJSON?.message || "Something went wrong");
                     }
                 });
             });

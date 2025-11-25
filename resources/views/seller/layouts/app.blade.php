@@ -14,10 +14,7 @@
     <link rel="stylesheet" href="{{ asset('assets/dashboard/css/custom.css') }}">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
-    <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
-    <!-- Toastr CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 
     <!-- Datatable -->
     <link rel="stylesheet" href="{{ asset('assets/dashboard/libs/data-table/datatables.min.css') }}">
@@ -40,18 +37,20 @@
 
                 @if(View::hasSection('container-fluid'))
                 <div class="my-3 container-fluid px-sm-4">
-                    <x-flash-message />
+                    {{-- <x-flash-message /> --}}
                     @yield('container-fluid')
                 </div>
                 @else
                 <div class="my-3 container px-sm-4">
-                    <x-flash-message />
+                    {{-- <x-flash-message /> --}}
                     @yield('content')
                 </div>
                 @endif
             </div>
         </div>
     </div>
+
+    <x-custom-toastr/>
 
     <script src="{{ asset('assets/dashboard/libs/jquery/dist/jquery.min.js') }}"></script>
     <script src="{{ asset('assets/dashboard/libs/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
@@ -74,8 +73,6 @@
 
     <!-- chart js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Toastr JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 
     @stack('scripts')
@@ -84,6 +81,7 @@
             $(document).on("click", ".image-preview", function() {
                 $(this).closest(".form-group").find(".file-input").click();
             });
+
             $(document).on("change", ".file-input", function(event) {
                 let input = $(this);
                 let file = event.target.files[0];
