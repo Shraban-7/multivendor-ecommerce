@@ -32,14 +32,14 @@ $containerId = 'toast-container';
     }
 
     .toast-header {
-        border-bottom: 1px solid rgba(0, 0, 0, 0.03);
-        background-color: #f8f9fa;
-        padding: 0.6rem 0.9rem;
+        /* border-bottom: 1px solid rgba(0, 0, 0, 0.03); */
+        /* background-color: #f8f9fa;
+        padding: 0.6rem 0.9rem; */
         display: flex;
         align-items: center;
         justify-content: space-between;
-        border-top-left-radius: calc(0.5rem - 1px);
-        border-top-right-radius: calc(0.5rem - 1px);
+        /* border-top-left-radius: calc(0.5rem - 1px);
+        border-top-right-radius: calc(0.5rem - 1px); */
         color: #343a40;
     }
 
@@ -71,7 +71,7 @@ $containerId = 'toast-container';
     }
 
     .toast.toast-success .toast-header {
-        background-color: #e0f2f1;
+        /* background-color: #e0f2f1; */
         color: #1a5e55;
     }
 
@@ -81,7 +81,7 @@ $containerId = 'toast-container';
     }
 
     .toast.toast-error .toast-header {
-        background-color: #fde0e1;
+        /* background-color: #fde0e1; */
         color: #8c2a35;
     }
 
@@ -91,7 +91,7 @@ $containerId = 'toast-container';
     }
 
     .toast.toast-warning .toast-header {
-        background-color: #fff8e1;
+        /* background-color: #fff8e1; */
         color: #8c6e2b;
     }
 
@@ -101,7 +101,7 @@ $containerId = 'toast-container';
     }
 
     .toast.toast-info .toast-header {
-        background-color: #e3f2fd;
+        /* background-color: #e3f2fd; */
         color: #2a698c;
     }
 
@@ -157,6 +157,15 @@ $containerId = 'toast-container';
                 </div>
                 <div class="toast-body">${message}</div>
             `;
+
+            // toastElement.innerHTML = `
+            //     <div class="toast-body">
+            //         <div class="toast-header">
+            //             ${iconSvg}<strong class="me-auto">${title}</strong>${dismissible? `<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>`: ""}
+            //         </div>
+            //         ${message}
+            //     </div>
+            // `;
 
             this.toastContainer.appendChild(toastElement);
 
