@@ -390,7 +390,7 @@ class ProductController extends Controller
     {
         $request->validate([
             'images' => 'required|array',
-            'images.*' => 'image|mimes:jpeg,jpg,png,webp|max:2048'
+            'images.*' => 'image|mimes:jpeg,jpg,png,webp|max:4000'
         ]);
 
         $product = Product::find($request->product_id);
