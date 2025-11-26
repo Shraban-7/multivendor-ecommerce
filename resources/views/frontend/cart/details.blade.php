@@ -70,14 +70,12 @@
                                         @foreach ($cart->cart_items as $item)
                                             @php
                                                 $stock = $item->variant ? ($item->variant->stock_in - $item->variant->stock_out) : ($item->product->stock_in - $item->product->stock_out);
-                                                $vat_amount =0;
-                                                $vat_amount += floatval(($item->product->vat_percent * $item->price) / 100);
                                             @endphp
                                             <div class="p-4 bg-white border border-gray-200 rounded-lg cart-item"
                                                 data-price="{{ $item->original_price }}"
                                                 data-seller-id="{{ $sellerId }}"
                                                 data-discounted-price="{{ $item->price }}" data-id="{{ $item->id }}"
-                                                data-discount="{{ $item->product->discount }}" data-vat="{{ $vat_amount }}">
+                                                data-discount="{{ $item->product->discount }}">
                                                 <div class="flex gap-4">
                                                     <!-- Item Checkbox -->
                                                     <div class="flex items-start pt-2">
@@ -210,10 +208,6 @@
                                 <div class="flex justify-between">
                                     <span class="text-gray-600">Subtotal:</span>
                                     <span id="itemsTotal" class="text-gray-600">{{ money($grand_total) }}</span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span class="text-gray-600">VAT:</span>
-                                    <span id="itemVat" class="text-gray-600">+{{ money(0) }}</span>
                                 </div>
                                 <div class="flex justify-between">
                                     <span class="text-gray-600">Shipping Fee:</span>
@@ -487,7 +481,6 @@
                 let discountedTotal = 0;
                 let originalTotal = 0;
                 let selectedCount = 0;
-                let totalVat = 0;
                 let sellerShippingCharge = $('.seller-checkbox:checked').data('shipping') || 0;
                 $('.item-checkbox:checked').each(function() {
 
@@ -497,11 +490,9 @@
                         const discountedPrice = parseFloat(cartItem.data('discounted-price'));
                         const discount = parseFloat(cartItem.data('discount'));
                         const quantity = parseInt(cartItem.find('.quantity-input').val(), 10);
-                        const vat = parseFloat(cartItem.data('vat'));
 
                         discountedTotal += discountedPrice * quantity;
                         originalTotal += price * quantity;
-                        totalVat += vat * quantity;
                         selectedCount += quantity;
                     }
                 });
@@ -509,8 +500,7 @@
                 const discount = originalTotal - discountedTotal;
 
                 $('#itemsTotal').text(formatCurrency(discountedTotal));
-                $('#itemVat').text('+' + formatCurrency(totalVat));
-                let total = parseFloat(discountedTotal) + parseFloat(sellerShippingCharge)+parseFloat(totalVat);
+                let total = parseFloat(discountedTotal) + parseFloat(sellerShippingCharge);
                 $('#estimatedTotal').text(formatCurrency(total));
                 $('#selectedItemsCount').text(selectedCount);
                 $('#shippingCharge').text('+' + formatCurrency(sellerShippingCharge));

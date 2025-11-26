@@ -17,7 +17,6 @@ class OrderItem extends Model
         'subtotal' => 'float',
         'unit_price' => 'float',
         'discount' => 'float',
-        'vat_amount' => 'float',
     ];
 
     public function order()

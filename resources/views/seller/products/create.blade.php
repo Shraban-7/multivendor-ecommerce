@@ -93,11 +93,6 @@
                             <input name="selling_price" type="number" min="0" class="form-control form-control-sm" required>
                         </div>
 
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">VAT (%)</label>
-                            <input name="vat_percent" type="number" min="0" class="form-control form-control-sm" required>
-                        </div>
-
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Payment Type</label>
                             <select name="payment_type" class="form-select form-select-sm" required>

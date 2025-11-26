@@ -100,11 +100,6 @@
                             <input type="text" name="selling_price" class="form-control form-control-sm" value="{{ $product->selling_price }}" required>
                         </div>
 
-                        <div class="col-md-4">
-                            <label class="form-label">VAT (%)</label>
-                            <input name="vat_percent" type="number" value="{{ $product->vat_percent }}" class="form-control form-control-sm" required>
-                        </div>
-
                         <div class="col-md-6">
                             <label class="form-label">Discount Type</label>
                             <select name="discount_type" class="form-select form-select-sm">

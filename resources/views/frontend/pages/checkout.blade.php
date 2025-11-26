@@ -95,10 +95,6 @@
                             <dd class="text-primary">-{{ money($discount) }}</dd>
                         </div> --}}
                         <div class="flex justify-between">
-                            <dt>VAT</dt>
-                            <dd>+{{ money($vat_amount) }}</dd>
-                        </div>
-                        <div class="flex justify-between">
                             <dt>Shipping Fee</dt>
                             <dd>+{{ money($shipping_fee) }}</dd>
                         </div>
@@ -108,7 +104,7 @@
 
                     <div class="flex justify-between items-center text-base font-semibold mb-2">
                         <span>Total</span>
-                        <span class="text-lg text-primary">{{ money($total + $vat_amount + $shipping_fee) }}</span>
+                        <span class="text-lg text-primary">{{ money($total+ $shipping_fee) }}</span>
                     </div>
 
                     <!-- Payment Method -->
@@ -523,10 +519,6 @@
                                     <span id="itemDiscount" class="text-primary">-{{ money($discount) }}</span>
                                 </p>
                                 <p class="flex justify-between">
-                                    <span class="text-theme-dark">TAX:</span>
-                                    <span id="itemDiscount" class="text-jet-gray">+{{ money($vat_amount) }}</span>
-                                </p>
-                                <p class="flex justify-between">
                                     <span class="text-theme-dark">Shipping Fee:</span>
                                     <span id="itemDiscount" class="text-jet-gray">+{{ money($shipping_fee) }}</span>
                                 </p>
@@ -536,7 +528,7 @@
                                 class="flex justify-between pt-3 mt-6 font-medium border-t-2 border-dashed total border-jet-gray/50">
                                 <span>Estimated Total</span>
                                 <span id="estimatedTotal"
-                                    class="text-xl">{{ money($total + $vat_amount + $shipping_fee) }}</span>
+                                    class="text-xl">{{ money($total + $shipping_fee) }}</span>
                             </div>
                         </div>
 

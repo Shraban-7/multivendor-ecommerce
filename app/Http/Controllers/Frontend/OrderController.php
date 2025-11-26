@@ -110,7 +110,6 @@ class OrderController extends Controller
         $sub_total = 0;
         $total = 0;
         $discount = 0;
-        $vat_amount = 0;
         $orderItems = [];
         $shipping_fee = $seller->shipping_cost;
 
@@ -124,7 +123,6 @@ class OrderController extends Controller
             $itemSubtotal = $cartItem->quantity * $sellingPrice;
             $itemTotal = $cartItem->quantity * $unitPrice;
             $itemDiscount = $cartItem->quantity * ($cartItem->original_price - $cartItem->discounted_price);
-            $vat_amount += floatval(($product->vat_percent * $unitPrice) / 100) * $cartItem->quantity;
             $sub_total += $itemSubtotal;
             $total += $itemTotal;
             $discount += $itemDiscount;
@@ -146,8 +144,6 @@ class OrderController extends Controller
                 'discount' => $itemDiscount,
                 'sub_total' => $itemSubtotal + $itemDiscount,
                 'total' => $itemTotal,
-                'vat_percent' => $product->vat_percent,
-                'vat_amount' => floatval(($product->vat_percent * $unitPrice) / 100) * $cartItem->quantity,
             ];
 
             if ($product->payment_type->value !== PaymentType::COD_ONLY->value) {
@@ -162,7 +158,7 @@ class OrderController extends Controller
             $billingAddresses = BillingAddress::where('user_id', $user->id)
                 ->latest()
                 ->get();
-            return view('frontend.pages.checkout', compact('user', 'selectedSellerId', 'sub_total', 'discount', 'vat_amount', 'shipping_fee', 'payment_gateways', 'grand_total', 'divisions', 'districts', 'billingAddresses', 'total','allCod'));
+            return view('frontend.pages.checkout', compact('user', 'selectedSellerId', 'sub_total', 'discount', 'shipping_fee', 'payment_gateways', 'grand_total', 'divisions', 'districts', 'billingAddresses', 'total','allCod'));
         }
 
         $billingData = collect($validated)->except('seller_id')->toArray();
@@ -178,7 +174,7 @@ class OrderController extends Controller
         $sellerEarning = $commissionData['seller_earning'];
 
         $invoiceId = Order::generateInvoiceID($selectedSellerId);
-        $payableAmount = $total + $shipping_fee + $vat_amount;
+        $payableAmount = $total + $shipping_fee;
 
         $payment = Order::calculatePaymentAmounts($product, $payableAmount, $shipping_fee);
 
@@ -192,7 +188,6 @@ class OrderController extends Controller
             'sub_total' => $sub_total,
             'total' => $total,
             'discount' => $discount,
-            'vat_amount' => $vat_amount,
             'shipping_fee' => $shipping_fee,
             'payable' => $payableAmount,
             'paid' => $paid_amount,

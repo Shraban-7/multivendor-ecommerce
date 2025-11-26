@@ -77,7 +77,6 @@ class OrderController extends Controller
 
         $sub_total = 0;
         $discount = 0;
-        $vat_amount = 0;
         $orderItems = [];
         $shipping_fee = $seller->shipping_cost;
 
@@ -89,7 +88,6 @@ class OrderController extends Controller
             $unitPrice = $cartItem->price;
             $itemTotal = $cartItem->quantity * $unitPrice;
             $itemDiscount = $cartItem->quantity * ($cartItem->original_price - $cartItem->discounted_price);
-            $vat_amount += floatval(($product->vat_percent * $unitPrice) / 100) * $cartItem->quantity;
             $sub_total += $itemTotal;
             $discount += $itemDiscount;
             $grand_total = $sub_total + $discount;
@@ -108,8 +106,6 @@ class OrderController extends Controller
                 'quantity' => $cartItem->quantity,
                 'discount' => $itemDiscount,
                 'sub_total' => $itemTotal,
-                'vat_percent' => $product->vat_percent,
-                'vat_amount' => floatval(($product->vat_percent * $unitPrice) / 100) * $cartItem->quantity,
             ];
         }
 
@@ -119,15 +115,15 @@ class OrderController extends Controller
 
         if ($seller->commission_amount != null && $seller->commission_type != null) {
             if ($seller->commission_type === CommissionType::PERCENTAGE->value) {
-                $total_commission = ($sub_total + $vat_amount) * ($seller->commission_amount / 100);
+                $total_commission = ($sub_total) * ($seller->commission_amount / 100);
             } else if ($seller->commission_type === CommissionType::FLAT->value) {
                 $total_commission = $seller->commission_amount;
             }
         }
 
         $invoiceId = Order::generateInvoiceID($seller->id);
-        $payableAmount = $sub_total + $shipping_fee + $vat_amount;
-        $sellerEarning = $sub_total + $vat_amount - $total_commission;
+        $payableAmount = $sub_total + $shipping_fee;
+        $sellerEarning = $sub_total - $total_commission;
 
         $billingAddress = BillingAddress::find($request->billing_address_id);
 
@@ -139,9 +135,8 @@ class OrderController extends Controller
                 'seller_id' => $selectedSellerId,
                 'invoice_id' => $invoiceId,
                 'sub_total' => $sub_total,
-                'total' => $sub_total + $vat_amount + $shipping_fee,
+                'total' => $sub_total  + $shipping_fee,
                 'discount' => $discount,
-                'vat_amount' => $vat_amount,
                 'shipping_fee' => $shipping_fee,
                 'payable' => $payableAmount,
                 'due' => $payableAmount,

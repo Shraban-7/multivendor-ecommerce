@@ -33,7 +33,6 @@ class PosController extends Controller
         $cartItems = collect();
         $orderItems = collect();
         $subtotal = 0;
-        $vat_amount = 0;
         $discount = 0;
         $total = 0;
         $customer_name = null;
@@ -64,23 +63,16 @@ class PosController extends Controller
                     return $selling * $item->quantity;
                 });
 
-                $cart_vat_amount = $cartItems->sum(function ($item) {
-                    $product = $item->variant->product ?? $item->product;
-                    return calculate_vat($product->vat_percent, $item->price) * $item->quantity;
-                });
-
                 $cartDiscount = $cartItems->sum(function ($item) {
                     $selling = $item->variant->selling_price ?? $item->product->selling_price;
                     $discounted = $item->variant->discounted_price ?? $item->product->discounted_price ?? $selling;
                     return ($selling - $discounted) * $item->quantity;
                 });
 
-                $cartTotal = $cartSubtotal + $cart_vat_amount - $cartDiscount;
+                $cartTotal = $cartSubtotal - $cartDiscount;
 
                 $orderItemSubtotal = $order->items->sum('sub_total');
                 $subtotal = $orderItemSubtotal + $cartSubtotal;
-
-                $vat_amount = $order->vat_amount + $cart_vat_amount;
 
                 $discount = $order->discount + $cartDiscount;
 
@@ -116,11 +108,10 @@ class PosController extends Controller
                 $discounted = $item->variant->discounted_price ?? $item->product->discounted_price ?? $selling;
 
                 $subtotal += ($selling * $item->quantity);
-                $vat_amount += calculate_vat($product->vat_percent, $item->price) * $item->quantity;
                 $discount += (($selling - $discounted) * $item->quantity);
             }
 
-            $total = $subtotal + $vat_amount - $discount;
+            $total = $subtotal - $discount;
         } else {
 
             $cart = PosCart::where('seller_id', $seller->id)
@@ -139,11 +130,10 @@ class PosController extends Controller
                 $itemDiscount = $selling - $discounted;
 
                 $subtotal += ($selling * $item->quantity);
-                $vat_amount += calculate_vat($product->vat_percent, $item->price);
                 $discount += ($itemDiscount * $item->quantity);
             }
 
-            $total = $subtotal + $vat_amount - $discount;
+            $total = $subtotal - $discount;
         }
 
         $orders = Order::where('seller_id', $seller->id)
@@ -165,7 +155,6 @@ class PosController extends Controller
             'orderItems',
             'subtotal',
             'discount',
-            'vat_amount',
             'total',
             'orders',
             'due',
@@ -229,12 +218,6 @@ class PosController extends Controller
             return $price * $item->quantity;
         });
 
-        $vat_amount = $cartItems->sum(function ($item) {
-            $product = $item->variant->product ?? $item->product;
-            $price = $item->price;
-            return ($product->vat_percent * $price / 100) * $item->quantity;
-        });
-
         $discount = $cartItems->sum(function ($item) {
             $variantDiscount = $item->variant->discounted_price ?? null;
             $productDiscount = $item->product->discounted_price ?? null;
@@ -245,14 +228,13 @@ class PosController extends Controller
             return $discounted ? ($selling - $discounted) * $item->quantity : 0;
         });
 
-        $total = $subtotal + $vat_amount - $discount;
+        $total = $subtotal - $discount;
 
         $html = view('components.seller.pos-cart-items', compact('cartItems'))->render();
 
         return apiResponse([
             'html' => $html,
             'subtotal' => $subtotal,
-            'vat_amount' => $vat_amount,
             'discount' => $discount,
             'total' => $total,
             'due' => $total,
@@ -273,7 +255,6 @@ class PosController extends Controller
             return response()->json(['success' => false, 'message' => 'Item not found']);
         }
 
-        // Update Quantity
         if ($request->action === 'increase') {
             $item->quantity += 1;
         } elseif ($request->action === 'decrease' && $item->quantity > 1) {
@@ -282,24 +263,13 @@ class PosController extends Controller
 
         $item->save();
 
-        // Fetch updated cart
         $cart = $item->pos_cart;
         $cartItems = $cart->items()->with(['variant.product', 'product'])->get();
 
-
-        // -----------------------------
-        //  Common Price Extraction
-        // -----------------------------
         $subtotal = $cartItems->sum(function ($i) {
 
             $selling = $i->variant->selling_price ?? $i->product->selling_price;
             return $selling * $i->quantity;
-        });
-
-        $vat_amount = $cartItems->sum(function ($i) {
-
-            $product = $i->variant->product ?? $i->product;
-            return calculate_vat($product->vat_percent, $i->price) * $i->quantity;
         });
 
         $discount = $cartItems->sum(function ($i) {
@@ -310,7 +280,7 @@ class PosController extends Controller
             return ($selling - $discounted) * $i->quantity;
         });
 
-        $total = $subtotal + $vat_amount - $discount;
+        $total = $subtotal - $discount;
 
 
         $html = view('components.seller.pos-cart-items', compact('cartItems'))->render();
@@ -318,14 +288,12 @@ class PosController extends Controller
         return apiResponse([
             'html' => $html,
             'subtotal' => $subtotal,
-            'vat_amount' => $vat_amount,
             'discount' => $discount,
             'total' => $total,
             'due' => $total,
             'cart_items' => $cartItems
         ], "Cart Updated Successfully");
     }
-
 
     public function removeCartItem(Request $request)
     {
@@ -353,12 +321,6 @@ class PosController extends Controller
             return $selling * $i->quantity;
         });
 
-        $vat_amount = $cartItems->sum(function ($i) {
-
-            $product = $i->variant->product ?? $i->product;
-            return calculate_vat($product->vat_percent, $i->price) * $i->quantity;
-        });
-
         $discount = $cartItems->sum(function ($i) {
 
             $selling = $i->variant->selling_price ?? $i->product->selling_price;
@@ -367,14 +329,13 @@ class PosController extends Controller
             return ($selling - $discounted) * $i->quantity;
         });
 
-        $total = $subtotal + $vat_amount - $discount;
+        $total = $subtotal - $discount;
 
         $html = view('components.seller.pos-cart-items', compact('cartItems'))->render();
 
         return apiResponse([
             'html' => $html,
             'subtotal' => $subtotal,
-            'vat_amount' => $vat_amount,
             'discount' => $discount,
             'total' => $total,
             'due' => $total,
@@ -417,6 +378,7 @@ class PosController extends Controller
 
     public function placeOrder(Request $request)
     {
+        $draftId = $request->draft_id;
         $data = $request->validate([
             'customer_name' => 'nullable|string|max:255|required_with:customer_phone',
             'customer_phone' => 'nullable|string|max:20|required_with:customer_name',
@@ -432,7 +394,10 @@ class PosController extends Controller
 
         $data['seller_id'] = $seller->id;
 
-        $cart = PosCart::where('seller_id', get_seller_id())->first();
+        $cart = PosCart::where('seller_id', get_seller_id())->where('is_draft',0)->first();
+        if (!is_null($draftId)) {
+            $cart = PosCart::where('seller_id', get_seller_id())->where('is_draft',1)->first();
+        }
 
         if (!$cart) {
             return errorResponse("No items found in the cart!");
@@ -440,7 +405,6 @@ class PosController extends Controller
 
         $cartItems = $cart->items()->with('variant.product')->get();
 
-        $totalVat = 0;
         $sub_total = 0;
         $total = 0;
         $discount = 0;
@@ -448,12 +412,15 @@ class PosController extends Controller
 
         $itemsCollection = collect($request->items);
 
+        // dd($itemsCollection);
+
         foreach ($cartItems as $item) {
 
             $variant = $item->variant;
             $product = $variant->product ?? $item->product;
 
             $itemPrice = $variant->selling_price ?? $product->selling_price;
+
             $unitPrice = $itemsCollection->firstWhere('id', $item->id)['price'];
 
             $itemDiscount = $itemPrice > $unitPrice ? ($itemPrice - $unitPrice) : 0;
@@ -462,10 +429,6 @@ class PosController extends Controller
 
             $itemTotal = $item->quantity * $unitPrice;
             $itemSubtotal = $item->quantity * $itemPrice;
-
-            $vatPercent = $product->vat_percent ?? 0;
-            $vatAmount = calculate_vat($vatPercent, $unitPrice) * $item->quantity;
-            $totalVat += $vatAmount;
 
             $sub_total += $itemPrice * $item->quantity;
 
@@ -482,8 +445,6 @@ class PosController extends Controller
                 'discount' => $itemDiscount,
                 'sub_total' => $itemSubtotal,
                 'total' => $itemTotal,
-                'vat_percent' => $vatPercent,
-                'vat_amount' => $vatAmount
             ];
         }
 
@@ -491,7 +452,7 @@ class PosController extends Controller
             return errorResponse("No items found in the cart!");
         }
 
-        $total = ($sub_total + $totalVat) - ($discount + $data['discount']);
+        $total = $sub_total - ($discount + $data['discount']);
         $payableAmount = $total;
 
         $commissionData = $seller->calculateEarning($payableAmount);
@@ -506,7 +467,6 @@ class PosController extends Controller
             'seller_employee_id' => $employee->id ?? null,
             'invoice_id' => $invoiceId,
             'sub_total' => $sub_total,
-            'vat_amount' => $totalVat,
             'discount' => $data['discount'] + $discount,
             'additional_discount' => $data['discount'],
             'total' => $total,

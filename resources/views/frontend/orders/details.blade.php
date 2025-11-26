@@ -188,10 +188,6 @@
                         <span>{{ money($order->total) }}</span>
                     </div>
                     <div class="flex items-center justify-between">
-                        <span class="text-gray-600">Vat</span>
-                        <span>{{ money($order->vat_amount) }}</span>
-                    </div>
-                    <div class="flex items-center justify-between">
                         <span class="text-gray-600">Shipping Fee</span>
                         <span>{{ money($order->shipping_fee) }}</span>
                     </div>

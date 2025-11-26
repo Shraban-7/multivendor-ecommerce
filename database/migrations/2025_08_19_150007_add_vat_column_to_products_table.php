@@ -13,7 +13,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->decimal('vat_percent', 5, 2)->default(0);
             $table->tinyInteger('payment_type')->default(PaymentType::FULL_PAYMENT->value);
 
             $table->dropColumn('tax');
@@ -21,14 +20,8 @@ return new class extends Migration
 
         Schema::table('orders', function (Blueprint $table) {
             $table->tinyInteger('payment_type')->default(PaymentType::FULL_PAYMENT->value);
-            $table->decimal('vat_amount', 10, 2)->default(0);
 
             $table->dropColumn('tax');
-        });
-
-        Schema::table('order_items', function (Blueprint $table) {
-            $table->decimal('vat_percent', 5, 2)->default(0);
-            $table->decimal('vat_amount', 10, 2)->default(0);
         });
     }
 

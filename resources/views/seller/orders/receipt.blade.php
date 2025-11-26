@@ -106,12 +106,6 @@
             <td class="right">{{ money($order->discount, $showCurrency) }}</td>
         </tr>
         @endif -->
-        @if ($order->vat > 0)
-        <tr>
-            <td class="left">VAT ({{ number_format($order->tax_rate ?? 0, 2) }}%)</td>
-            <td class="right">{{ money($order->vat, $showCurrency) }}</td>
-        </tr>
-        @endif
         <!-- <tr>
             <td colspan="2">
                 <div class="line"></div>

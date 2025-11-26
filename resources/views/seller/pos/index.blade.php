@@ -459,10 +459,6 @@ foreach ($categories as $cat) {
                             <span id="summary-subtotal">{{ $subtotal }}</span>
                         </div>
                         <div class="d-flex justify-content-between mb-1 small">
-                            <span>Vat:</span>
-                            <span id="summary-vat">{{ $vat_amount }}</span>
-                        </div>
-                        <div class="d-flex justify-content-between mb-1 small">
                             <span>Discount:</span>
                             <span id="summary-discount" data-base="{{ $discount }}">{{ $discount }}</span>
                         </div>
@@ -1103,8 +1099,6 @@ foreach ($categories as $cat) {
 
                 let subtotal = parseFloat($('#summary-subtotal').attr('data-subtotal')) ||
                     parseFloat($('#summary-subtotal').text()) || 0;
-                let vat = parseFloat($('#summary-vat').attr('data-vat')) ||
-                    parseFloat($('#summary-vat').text()) || 0;
                 let discount = parseFloat($('#summary-discount').attr('data-base')) || 0;
                 let total = parseFloat($('#summary-total').attr('data-total')) || 0;
                 let due = parseFloat($('#due-amount').attr('data-due')) || 0;
@@ -1143,7 +1137,6 @@ foreach ($categories as $cat) {
                         paid: paidInput,
                         due: due,
                         subtotal: subtotal,
-                        vat: vat,
                         discount: discount,
                         total: total,
                         items: allItems,
@@ -1254,18 +1247,15 @@ foreach ($categories as $cat) {
             function resetOrderSummary(summary) {
                 let subtotal = 0;
                 let totalDiscount = 0;
-                let vat = 0;
                 let total = 0;
                 let due = 0;
 
                 subtotal = parseFloat(summary.subtotal) || 0;
                 totalDiscount = parseFloat(summary.discount) || 0;
-                vat = parseFloat(summary.vat_amount) || 0;
                 total = parseFloat(summary.total) || 0;
                 due = parseFloat(summary.due) || total;
 
                 $('#summary-subtotal').text(subtotal.toFixed(2));
-                $('#summary-vat').text(vat.toFixed(2));
 
                 $('#summary-discount')
                     .data('base', totalDiscount)
@@ -1413,7 +1403,6 @@ foreach ($categories as $cat) {
             function calculateSummaryPrice() {
                 let subtotal = 0;
                 let total = 0;
-                let vatAmount = parseFloat($('#summary-vat').text().trim()) || 0;
 
                 $('.cart-item, .order-item').each(function() {
                     let row = $(this);
@@ -1436,7 +1425,7 @@ foreach ($categories as $cat) {
                     discountAmount = discountValue;
                 }
 
-                let grandTotal = total + vatAmount - discountAmount;
+                let grandTotal = total - discountAmount;
 
                 let paid = parseFloat($('#paid-amount').val()) || 0;
                 let due = Math.max(grandTotal - paid, 0);
@@ -1446,7 +1435,6 @@ foreach ($categories as $cat) {
                 }
 
                 $('#summary-subtotal').text(subtotal.toFixed(2));
-                $('#summary-vat').text(vatAmount.toFixed(2));
                 $('#summary-discount').text(discount.toFixed(2)).data('base', discount.toFixed(2));
                 $('#summary-total').text(grandTotal.toFixed(2)).attr('data-total', grandTotal.toFixed(2));
                 $('#due-amount').text(due.toFixed(2)).data('due', due.toFixed(2));

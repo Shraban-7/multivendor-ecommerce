@@ -71,7 +71,6 @@
                         <div class="col-md-6">
                             <div class="mb-1"><span class="text-muted">Buying Price:</span> {{ money($product->buying_price) }}</div>
                             <div class="mb-1"><span class="text-muted">Selling Price:</span> {{ money($product->selling_price) }}</div>
-                            <div class="mb-1"><span class="text-muted">VAT:</span> {{ $product->vat_percent }}%</div>
                             <div class="mb-1">
                                 <span class="text-muted">Discount:</span>
                                 @if($product->discount_type)

@@ -113,9 +113,8 @@ class SaleController extends Controller
 
             $quantity = $item['quantity'];
             $discount = max(0, $sellingPrice - $unitPrice) * $quantity;
-            $vatAmount = calculate_vat($product->vat_percent, $unitPrice) * $quantity;
             $subTotal = $sellingPrice * $quantity;
-            $total = $unitPrice * $quantity + $vatAmount;
+            $total = $unitPrice * $quantity;
 
             if ($orderItem) {
                 $orderItem->update([
@@ -124,8 +123,6 @@ class SaleController extends Controller
                     'total' => $total,
                     'discount' => $discount,
                     'sub_total' => $subTotal,
-                    'vat_amount' => $vatAmount,
-                    'vat_percent' => $product->vat_percent,
                 ]);
             } else {
                 $order->items()->create([
@@ -139,16 +136,12 @@ class SaleController extends Controller
                     'quantity' => $quantity,
                     'sub_total' => $subTotal,
                     'discount' => $discount,
-                    'vat_percent' => $product->vat_percent,
-                    'vat_amount' => $vatAmount,
                     'total' => $total,
                 ]);
             }
         }
 
         $subTotal = $order->items()->sum('sub_total');
-
-        $vat = $order->items()->sum('vat_amount');
         $discount = $order->items()->sum('discount') + ($data['additional_discount'] ?? 0);
         $total = $order->items()->sum('total') - ($data['additional_discount'] ?? 0);
         $paid = min($data['paid'] ?? 0, $total);
@@ -158,7 +151,6 @@ class SaleController extends Controller
 
         $order->update([
             'sub_total' => $subTotal,
-            'vat_amount' => $vat,
             'discount' => $discount,
             'additional_discount' => $data['additional_discount'] ?? 0,
             'total' => $total,
@@ -180,7 +172,6 @@ class SaleController extends Controller
             'invoice_id' => $order->invoice_id,
             'html' => $html,
             'subtotal' => $subTotal,
-            'vat_amount' => $vat,
             'discount' => $discount,
             'total' => $total,
             'paid' => $paid,
@@ -275,8 +266,7 @@ class SaleController extends Controller
 
         $subTotal = $sellingPrice * $quantity;
         $discount = ($sellingPrice - $unitPrice) * $quantity;
-        $vatAmount = ($product->vat_percent * $unitPrice / 100) * $quantity;
-        $total = $unitPrice * $quantity + $vatAmount;
+        $total = $unitPrice * $quantity;
 
         $existing = $order->items()
             ->when($variant, fn($q) => $q->where('product_variant_id', $variant->id))
@@ -288,7 +278,6 @@ class SaleController extends Controller
             $existing->quantity += $quantity;
             $existing->sub_total += $subTotal;
             $existing->discount += $discount;
-            $existing->vat_amount += $vatAmount;
             $existing->total += $total;
             $existing->save();
         } else {
@@ -304,8 +293,6 @@ class SaleController extends Controller
                 'quantity' => $quantity,
                 'sub_total' => $subTotal,
                 'discount' => $discount,
-                'vat_percent' => $product->vat_percent,
-                'vat_amount' => $vatAmount,
                 'total' => $total,
             ]);
         }
@@ -346,8 +333,7 @@ class SaleController extends Controller
 
         $item->sub_total = $item->selling_price * $item->quantity;
         $item->discount = ($item->selling_price - $item->unit_price) * $item->quantity;
-        $item->vat_amount = ($item->vat_percent * $item->unit_price / 100) * $item->quantity;
-        $item->total = $item->sub_total - $item->discount + $item->vat_amount;
+        $item->total = $item->sub_total - $item->discount;
         $item->save();
 
         return $this->refreshOrderSummary($item->order, "Item updated successfully");
@@ -398,15 +384,13 @@ class SaleController extends Controller
         $subTotal = $orderItems->sum('sub_total');
         $productDiscount = $orderItems->sum('discount');
         $totalDiscount = $productDiscount + ($order->additional_discount ?? 0);
-        $vatAmount = $orderItems->sum('vat_amount');
 
-        $total = $subTotal + $vatAmount - $totalDiscount;
+        $total = $subTotal - $totalDiscount;
         $due = $total - $order->paid;
 
         $order->update([
             'sub_total' => $subTotal,
             'discount' => $totalDiscount,
-            'vat_amount' => $vatAmount,
             'total' => $total,
             'due' => $due,
         ]);
@@ -417,7 +401,6 @@ class SaleController extends Controller
             'html' => $html,
             'subtotal' => $subTotal,
             'discount' => $totalDiscount,
-            'vat_amount' => $vatAmount,
             'total' => $total,
             'due' => $due,
         ], $message);

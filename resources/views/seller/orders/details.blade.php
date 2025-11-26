@@ -281,12 +281,6 @@
                                         <td class="text-end">{{ money($order->shipping_fee) }}</td>
                                     </tr>
                                 @endif
-                                @if (isset($order->vat_amount) && $order->vat_amount > 0)
-                                    <tr>
-                                        <th colspan="3" class="text-end">VAT:</th>
-                                        <td class="text-end">{{ money($order->vat_amount) }}</td>
-                                    </tr>
-                                @endif
                                 <tr>
                                     <th colspan="3" class="text-end">Total:</th>
                                     <td class="text-end fw-bold">{{ money($order->total) }}</td>
