@@ -412,8 +412,6 @@ class PosController extends Controller
 
         $itemsCollection = collect($request->items);
 
-        // dd($itemsCollection);
-
         foreach ($cartItems as $item) {
 
             $variant = $item->variant;
