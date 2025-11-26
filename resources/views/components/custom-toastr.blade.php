@@ -13,6 +13,7 @@ $containerId = 'toast-container';
         border-radius: 0.5rem;
         box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
         padding: 0;
+        margin-bottom: 10px;
         max-width: 300px;
         opacity: 0;
         transform: translateX(100%);

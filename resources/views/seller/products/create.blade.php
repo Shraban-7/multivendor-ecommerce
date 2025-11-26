@@ -83,12 +83,12 @@
                             </select>
                         </div>
 
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-6 mb-3">
                             <label class="form-label">Buying Price</label>
                             <input name="buying_price" type="number" min="0" class="form-control form-control-sm" required>
                         </div>
 
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-6 mb-3">
                             <label class="form-label">Selling Price</label>
                             <input name="selling_price" type="number" min="0" class="form-control form-control-sm" required>
                         </div>

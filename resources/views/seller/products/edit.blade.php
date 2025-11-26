@@ -90,12 +90,12 @@
                             <input name="low_stock_quantity" type="number" min="0" class="form-control form-control-sm" value="{{ $product->low_stock_quantity }}" required>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label class="form-label">Buying Price</label>
                             <input type="text" name="buying_price" class="form-control form-control-sm" value="{{ $product->buying_price }}" required>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label class="form-label">Selling Price</label>
                             <input type="text" name="selling_price" class="form-control form-control-sm" value="{{ $product->selling_price }}" required>
                         </div>
