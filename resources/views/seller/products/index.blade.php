@@ -13,9 +13,10 @@
     <table class="table table-bordered table-hover align-middle bg-white" id="product-table">
         <thead>
             <tr>
-                <th>SKU</th>
                 <th>Product</th>
+                <th>SKU</th>
                 <th>Price Range</th>
+                <th>Stock</th>
                 <th>Status</th>
                 <th>Added</th>
                 <th>Action</th>
@@ -23,16 +24,20 @@
         </thead>
         <tbody>
             @foreach ($products as $product)
-            @php
-            $totalStockIn = $product->variants->sum('stock_in');
-            $totalStockOut = $product->variants->sum('stock_out');
-            $totalStock = $totalStockIn = $totalStockOut;
-            $minPrice = min($product->variants->min('selling_price'), $product->selling_price);
-            $maxPrice = max($product->variants->max('selling_price'), $product->selling_price);
-            $variantCount = $product->variants->count();
-            @endphp
+                <?php
+                    $variantCount = $product->variants->count();                    
+                    $totalStockIn = $product->stock_in;
+                    $totalStockOut = $product->stock_out;
+                    if($variantCount > 0) {
+                        $totalStockIn = $product->variants->sum('stock_in');
+                        $totalStockOut = $product->variants->sum('stock_out');
+                    }
+                    $totalStock = $totalStockIn = $totalStockOut;
+                    $minPrice = min($product->variants->min('selling_price'), $product->selling_price);
+                    $maxPrice = max($product->variants->max('selling_price'), $product->selling_price);
+                    $lowStockQty = $product->low_stock_quantity;
+                ?>
             <tr>
-                <td class="small">{{ $product->sku }}</td>
                 <td>
                     <div class="d-flex align-items-center">
                         <img src="{{ $product->imageUrl }}" class="rounded me-2"
@@ -49,10 +54,24 @@
                     </div>
                 </td>
 
+                <td class="small">{{ $product->sku }}</td>
+
                 <td><span>{{ money($minPrice) }}</span>
                     @if ($maxPrice != $minPrice)
                     - {{ money($maxPrice) }}
                     @endif
+                </td>
+                
+                <td class="text-center">    
+                    <span class="badge 
+                        @if($totalStock <= $lowStockQty)
+                            bg-danger text-white
+                        @else
+                            bg-light border text-dark
+                        @endif
+                        px-2 py-1 rounded-3">
+                        {{ $totalStock }} {{ $product->unit->short_name }}
+                    </span>
                 </td>
 
                 <td>
@@ -67,7 +86,7 @@
                     @endif
                 </td>
 
-                <td class="small">{{ $product->created_at->format('d/m/Y h:ia') }}</td>
+                <td>{{ $product->created_at->format('d/m/Y h:ia') }}</td>
 
                 <td>
                     <div class="d-flex text-nowrap">
