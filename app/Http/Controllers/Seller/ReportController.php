@@ -455,6 +455,7 @@ class ReportController extends Controller
     public function customers(Request $request)
     {
         $filter = $request->get('filter', null);
+        $seller_id = get_seller_id();
 
         if ($filter) {
             $dates = $this->getDateRange($filter);
@@ -469,17 +470,17 @@ class ReportController extends Controller
             $lastEnd = null;
         }
 
-        $allTimeTotalCustomers = Order::get(['user_id', 'customer_id'])
+        $allTimeTotalCustomers = Order::where('seller_id',$seller_id)->get(['user_id', 'customer_id'])
             ->unique(fn($item) => $item->user_id . '-' . $item->customer_id)
             ->count();
 
-        $newCustomersCurrent = Order::whereBetween('created_at', [$currentStart, $currentEnd->toDateString()])
+        $newCustomersCurrent = Order::where('seller_id',$seller_id)->whereBetween('created_at', [$currentStart, $currentEnd->toDateString()])
             ->get(['user_id', 'customer_id'])
             ->unique(fn($item) => $item->user_id . '-' . $item->customer_id)
             ->count();
 
         $newCustomersLast = $lastStart && $lastEnd
-            ? Order::whereBetween('created_at', [$lastStart, $lastEnd->toDateString()])
+            ? Order::where('seller_id',$seller_id)->whereBetween('created_at', [$lastStart, $lastEnd->toDateString()])
                 ->get(['user_id', 'customer_id'])
                 ->unique(fn($item) => $item->user_id . '-' . $item->customer_id)
                 ->count()
@@ -491,13 +492,13 @@ class ReportController extends Controller
             ? round(($returningCustomersCurrent / $allTimeTotalCustomers) * 100, 1)
             : 0;
 
-        $avgClvCurrent = Order::whereBetween('created_at', [$currentStart, $currentEnd->toDateString()])->avg('total') ?? 0;
+        $avgClvCurrent = Order::where('seller_id',$seller_id)->whereBetween('created_at', [$currentStart, $currentEnd->toDateString()])->avg('total') ?? 0;
         $avgClvLast = $lastStart && $lastEnd
             ? Order::whereBetween('created_at', [$lastStart, $lastEnd])->avg('total') ?? 0
             : 0;
 
 
-        $totalOrdersCurrent = Order::whereBetween('created_at', [$currentStart, $currentEnd->toDateString()])->count();
+        $totalOrdersCurrent = Order::where('seller_id',$seller_id)->whereBetween('created_at', [$currentStart, $currentEnd->toDateString()])->count();
         $totalOrdersLast = $lastStart && $lastEnd
             ? Order::whereBetween('created_at', [$lastStart, $lastEnd])->count()
             : 0;
@@ -538,12 +539,12 @@ class ReportController extends Controller
             $monthStart = $month->copy()->startOfMonth();
             $monthEnd = $month->copy()->endOfMonth();
 
-            $monthlyTotal = Order::whereBetween('created_at', [$monthStart, $monthEnd])
+            $monthlyTotal = Order::where('seller_id',$seller_id)->whereBetween('created_at', [$monthStart, $monthEnd])
                 ->get(['user_id', 'customer_id'])
                 ->unique(fn($item) => $item->user_id . '-' . $item->customer_id)
                 ->count();
 
-            $previousTotal = Order::where('created_at', '<', $monthStart)
+            $previousTotal = Order::where('seller_id',$seller_id)->where('created_at', '<', $monthStart)
                 ->get(['user_id', 'customer_id'])
                 ->unique(fn($item) => $item->user_id . '-' . $item->customer_id)
                 ->count();
@@ -563,7 +564,7 @@ class ReportController extends Controller
         }
 
 
-        $topCustomers = Order::with(['user:id,name', 'customer:id,name'])
+        $topCustomers = Order::where('seller_id',$seller_id)->with(['user:id,name', 'customer:id,name'])
             ->whereBetween('created_at', [$currentStart, $currentEnd->toDateString()])   // ← your filter applied
             ->selectRaw("
                     user_id,
@@ -576,8 +577,6 @@ class ReportController extends Controller
             ->take(5)
             ->get()
             ->map(function ($row) {
-
-                // Determine customer name
                 if ($row->user_id && $row->user) {
                     $name = $row->user->name;
                 } elseif ($row->customer_id && $row->customer) {

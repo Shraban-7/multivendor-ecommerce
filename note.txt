@@ -40,3 +40,7 @@ seller registration password toggle not working
  order details not dynamic fully
  stock check when quantity update on cart details
  selling price show on cart details
+
+ 27/11/25
+
+ seller panel overview report returning user and highlights not dynamic
