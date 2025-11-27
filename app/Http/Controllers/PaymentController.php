@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
-use App\Models\Payment;
 use App\Models\Seller;
-use App\Services\AamarpayService;
+use App\Models\Payment;
 use Illuminate\Http\Request;
+use App\Services\AamarpayService;
+use App\Services\AffiliateService;
+use App\Models\AffiliateCommission;
 use Illuminate\Support\Facades\Auth;
 
 class PaymentController extends Controller
@@ -23,43 +25,43 @@ class PaymentController extends Controller
         $tran_id = uniqid('SM');
 
         $request->validate([
-            'amount'    => 'required|numeric|min:10',
-            'cus_name'  => 'required|string',
+            'amount' => 'required|numeric|min:10',
+            'cus_name' => 'required|string',
             'cus_email' => 'required|email',
             'cus_phone' => 'required|string',
         ]);
 
         Payment::create([
-            'gateway'        => 'aamarpay',
-            'user_id'        => Auth::id(),
+            'gateway' => 'aamarpay',
+            'user_id' => Auth::id(),
             'transaction_id' => $tran_id,
-            'status'         => Payment::PENDING,
-            'amount'         => $request->amount,
-            'currency'       => 'BDT',
-            'customer_name'  => $request->cus_name,
+            'status' => Payment::PENDING,
+            'amount' => $request->amount,
+            'currency' => 'BDT',
+            'customer_name' => $request->cus_name,
             'customer_email' => $request->cus_email,
             'customer_phone' => $request->cus_phone,
         ]);
 
         try {
             $response = $this->aamarpay->initiate([
-                'tran_id'      => $tran_id,
-                'success_url'  => route('payment.success'),
-                'fail_url'     => route('payment.cancel'),
-                'cancel_url'   => route('payment.cancel'),
-                'amount'       => $request->amount,
-                'desc'         => 'Test Payment',
-                'cus_name'     => $request->cus_name,
-                'cus_email'    => $request->cus_email,
-                'cus_add1'     => '',
-                'cus_add2'     => '',
-                'cus_city'     => '',
-                'cus_state'    => '',
+                'tran_id' => $tran_id,
+                'success_url' => route('payment.success'),
+                'fail_url' => route('payment.cancel'),
+                'cancel_url' => route('payment.cancel'),
+                'amount' => $request->amount,
+                'desc' => 'Test Payment',
+                'cus_name' => $request->cus_name,
+                'cus_email' => $request->cus_email,
+                'cus_add1' => '',
+                'cus_add2' => '',
+                'cus_city' => '',
+                'cus_state' => '',
                 'cus_postcode' => '',
-                'cus_country'  => 'Bangladesh',
-                'cus_phone'    => $request->cus_phone,
-                'opt_a'        => base64_encode(json_encode([
-                    'user_id'    => Auth::id(),
+                'cus_country' => 'Bangladesh',
+                'cus_phone' => $request->cus_phone,
+                'opt_a' => base64_encode(json_encode([
+                    'user_id' => Auth::id(),
                     'return_url' => route('cart.details'),
                 ])),
             ]);
@@ -84,9 +86,9 @@ class PaymentController extends Controller
 
         if ($payment) {
             $payment->update([
-                'status'        => Payment::SUCCESSFUL,
+                'status' => Payment::SUCCESSFUL,
                 'gateway_trxid' => $request->input('pg_txnid'),
-                'response'      => $request->all(),
+                'response' => $request->all(),
             ]);
 
             $this->updateOrder($payment);
@@ -110,7 +112,7 @@ class PaymentController extends Controller
 
         if ($payment) {
             $payment->update([
-                'status'   => Payment::FAILED,
+                'status' => Payment::FAILED,
                 'response' => $request->all(),
             ]);
 
@@ -131,15 +133,15 @@ class PaymentController extends Controller
         \Log::info('AamarPay IPN Received', $request->all());
 
         $transactionId = $request->mer_txnid;
-        $status        = $request->pay_status;
+        $status = $request->pay_status;
 
         $payment = Payment::where('transaction_id', $transactionId)->first();
 
         if ($payment) {
             $payment->update([
-                'status'        => $status === Payment::SUCCESSFUL ? $status : Payment::FAILED,
+                'status' => $status === Payment::SUCCESSFUL ? $status : Payment::FAILED,
                 'gateway_trxid' => $request->pg_txnid,
-                'response'      => $request->all(),
+                'response' => $request->all(),
             ]);
 
             $this->updateOrder($payment);
@@ -167,9 +169,11 @@ class PaymentController extends Controller
         $order = Order::where('invoice_id', $payment->transaction_id)->first();
 
         $due = $order->due;
+        $paid = $order->paid;
 
         if ($due > 0 && $payment->status === Payment::SUCCESSFUL) {
             $due = $due - $payment->amount;
+            $paid = $payment->amount;
             $seller = Seller::find($order->seller_id);
 
             $balance = $seller->balance + $order->seller_earnings;
@@ -177,11 +181,15 @@ class PaymentController extends Controller
             $seller->update([
                 'balance' => $balance
             ]);
+
+            app(AffiliateService::class)
+                ->approveCommission( $order);
         }
 
         $order->update([
             'payment_id' => $payment->id,
-            'due'        => $due,
+            'due' => $due,
+            'paid' => $paid,
         ]);
     }
 }

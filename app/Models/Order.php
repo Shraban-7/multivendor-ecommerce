@@ -27,7 +27,7 @@ class Order extends Model
     public const ORDER_TYPE_CUSTOMER = 'C';
     public const ORDER_TYPE_POS = 'P';
 
-    public function billing_address() : HasOne
+    public function billing_address(): HasOne
     {
         return $this->hasOne(OrderBillingAddress::class);
     }
@@ -127,18 +127,37 @@ class Order extends Model
         return $invoiceId;
     }
 
-    public static function getPaymentType($product)
+    public static function getPaymentType($products)
     {
-        if (!$product || !$product->payment_type) {
-            return PaymentType::COD_ONLY->value;
+        $hasFullPayment = false;
+        $hasCodWithDeliveryCharge = false;
+
+        foreach ($products as $product) {
+
+            if (!$product || !$product->payment_type) {
+                continue;
+            }
+
+            $type = $product->payment_type->value;
+
+            if ($type === PaymentType::FULL_PAYMENT->value) {
+                $hasFullPayment = true;
+            } elseif ($type === PaymentType::COD_WITH_DELIVERY_CHARGE->value) {
+                $hasCodWithDeliveryCharge = true;
+            }
         }
 
-        return match ($product->payment_type->value) {
-            PaymentType::FULL_PAYMENT->value => PaymentType::FULL_PAYMENT->value,
-            PaymentType::COD_WITH_DELIVERY_CHARGE->value => PaymentType::COD_WITH_DELIVERY_CHARGE->value,
-            default => PaymentType::COD_ONLY->value,
-        };
+        if ($hasFullPayment) {
+            return PaymentType::FULL_PAYMENT->value;
+        }
+
+        if ($hasCodWithDeliveryCharge) {
+            return PaymentType::COD_WITH_DELIVERY_CHARGE->value;
+        }
+
+        return PaymentType::COD_ONLY->value;
     }
+
 
     public static function calculatePaymentAmounts($product, $payable, $shipping_fee = 0)
     {
@@ -147,22 +166,22 @@ class Order extends Model
         if ($payment_type === PaymentType::FULL_PAYMENT->value) {
             return [
                 'paid' => $payable,
-                'due'  => 0,
+                'due' => 0,
             ];
         } elseif ($payment_type === PaymentType::COD_WITH_DELIVERY_CHARGE->value) {
             return [
                 'paid' => $shipping_fee,
-                'due'  => $payable - $shipping_fee,
+                'due' => $payable - $shipping_fee,
             ];
         } else {
             return [
                 'paid' => 0,
-                'due'  => $payable,
+                'due' => $payable,
             ];
         }
     }
 
-    public  function addSellerEarningToBalance($commission = 0)
+    public function addSellerEarningToBalance($commission = 0)
     {
         if ($this->status->value != OrderStatus::DELIVERED->value || $this->seller_earning_added ?? false) {
             return;

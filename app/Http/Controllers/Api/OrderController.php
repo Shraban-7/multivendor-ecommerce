@@ -81,9 +81,10 @@ class OrderController extends Controller
         $shipping_fee = $seller->shipping_cost;
 
         $payment_type = PaymentType::COD_ONLY->value;
-
+        $cartProducts = [];
         foreach ($cart->cart_items as $cartItem) {
             $product = $cartItem->product;
+            $cartProducts [] = $product;
             $variant = $cartItem->variant;
             $unitPrice = $cartItem->price;
             $itemTotal = $cartItem->quantity * $unitPrice;
@@ -126,6 +127,8 @@ class OrderController extends Controller
         $sellerEarning = $sub_total - $total_commission;
 
         $billingAddress = BillingAddress::find($request->billing_address_id);
+
+        $payment_type = Order::getPaymentType($cartProducts);
 
         try {
             DB::beginTransaction();

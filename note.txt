@@ -42,5 +42,6 @@ seller registration password toggle not working
  selling price show on cart details
 
  27/11/25
-
  seller panel overview report returning user and highlights not dynamic
+ frontend and api checkout calculation mismatch
+

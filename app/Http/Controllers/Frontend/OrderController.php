@@ -22,6 +22,7 @@ use App\Models\BillingAddress;
 use App\Models\PaymentGateway;
 use App\Models\ProductVariant;
 use App\Services\AamarpayService;
+use App\Services\AffiliateService;
 use App\Models\AffiliateCommission;
 use App\Models\OrderBillingAddress;
 use App\Http\Controllers\Controller;
@@ -30,6 +31,13 @@ use Illuminate\Support\Facades\Cookie;
 
 class OrderController extends Controller
 {
+    protected $affiliateService;
+
+    public function __construct(AffiliateService $affiliateService)
+    {
+        $this->affiliateService = $affiliateService;
+    }
+
     const AFFILIATE_COMMISSION_PERCENTAGE = 0.05;
     public function index(Request $request)
     {
@@ -115,8 +123,10 @@ class OrderController extends Controller
 
         // $payment_type = PaymentType::COD_ONLY->value;
         $allCod = true;
+        $cartProducts = [];
         foreach ($cart->cart_items as $cartItem) {
             $product = $cartItem->product;
+            $cartProducts[] = $product;
             $variant = $cartItem->variant;
             $unitPrice = $cartItem->price;
             $sellingPrice = $variant ? $variant->selling_price : $product->selling_price;
@@ -128,8 +138,6 @@ class OrderController extends Controller
             $discount += $itemDiscount;
             $grand_total = $sub_total + $discount;
             $sku = $variant ? $variant->sku : $product->sku;
-
-            $payment_type = Order::getPaymentType($product);
 
             $orderItems[] = [
                 'product_id' => $product->id,
@@ -158,7 +166,7 @@ class OrderController extends Controller
             $billingAddresses = BillingAddress::where('user_id', $user->id)
                 ->latest()
                 ->get();
-            return view('frontend.pages.checkout', compact('user', 'selectedSellerId', 'sub_total', 'discount', 'shipping_fee', 'payment_gateways', 'grand_total', 'divisions', 'districts', 'billingAddresses', 'total','allCod'));
+            return view('frontend.pages.checkout', compact('user', 'selectedSellerId', 'sub_total', 'discount', 'shipping_fee', 'payment_gateways', 'grand_total', 'divisions', 'districts', 'billingAddresses', 'total', 'allCod'));
         }
 
         $billingData = collect($validated)->except('seller_id')->toArray();
@@ -176,10 +184,10 @@ class OrderController extends Controller
         $invoiceId = Order::generateInvoiceID($selectedSellerId);
         $payableAmount = $total + $shipping_fee;
 
-        $payment = Order::calculatePaymentAmounts($product, $payableAmount, $shipping_fee);
+        $payment_type = Order::getPaymentType($cartProducts);
 
-        $paid_amount = $payment['paid'];
-        $due_amount = $payment['due'];
+        $paid_amount = 0;
+        $due_amount = $payableAmount;
 
         $order = Order::create([
             'user_id' => $user->id,
@@ -244,6 +252,14 @@ class OrderController extends Controller
             $payableAmount = $shipping_fee;
         }
 
+        $this->affiliateService->processCommissions(
+            $order->items,
+            $user,
+            $order->invoice_id
+        );
+
+        $this->affiliateService->updateOrderAffiliateId($order);
+
         if ($payment_type == PaymentType::COD_ONLY->value) {
             $paymentGateway = [
                 'message' => 'Order placed successfully',
@@ -255,17 +271,17 @@ class OrderController extends Controller
                 $invoiceId,
                 $payableAmount,
                 $orderBillingAddress->customer_name,
-                $orderBillingAddress->customer_phone
+                $orderBillingAddress->customer_phone,
             );
         }
 
-        $this->processAffiliateCommissions($order->items, auth()->user(), $order->id);
+        // $this->processAffiliateCommissions($order->items, auth()->user(), $order->id);
 
-        $affiliate = AffiliateCommission::where('order_id', $order->id)->first();
+        // $affiliate = AffiliateCommission::where('order_id', $order->id)->first();
 
-        $order->affiliate_id = $affiliate->affiliate_id ?? null;
+        // $order->affiliate_id = $affiliate->affiliate_id ?? null;
 
-        $order->save();
+        // $order->save();
 
         notify_user(
             $user->id,
@@ -291,50 +307,11 @@ class OrderController extends Controller
         ]);
     }
 
-    private function processAffiliateCommissions($orderItems, $user, $invoiceId)
-    {
-        $cookieValue = Cookie::get('affiliate_refs');
-        $affiliateRefs = json_decode($cookieValue, true) ?: [];
-
-        foreach ($orderItems as $item) {
-
-            if (!isset($item->product) || !isset($item->product->slug)) {
-                continue;
-            }
-
-            $productSlug = $item->product->slug;
-
-            if (isset($affiliateRefs[$productSlug])) {
-                $referralCodes = $affiliateRefs[$productSlug];
-
-                foreach ($referralCodes as $refCode) {
-                    $affiliateUser = User::where('referral_code', $refCode)->first();
-
-                    if (!$affiliateUser || $affiliateUser->id === $user->id) {
-                        continue;
-                    }
-
-                    $commissionAmount = $item->unit_price * $item->quantity * self::AFFILIATE_COMMISSION_PERCENTAGE;
-
-                    AffiliateCommission::create([
-                        'user_id' => $user->id,
-                        'order_id' => $invoiceId,
-                        'product_id' => $item->product_id,
-                        'affiliate_id' => $affiliateUser->id,
-                        'commission_amount' => $commissionAmount,
-                        'commission_date' => now(),
-                    ]);
-                }
-            }
-        }
-
-
-        Cookie::queue(Cookie::forget('affiliate_refs'));
-    }
 
     private function initiatePaymentGateway($user, $invoiceId, $amount, $customerName, $customerPhone)
     {
         $payment = Payment::where('transaction_id', $invoiceId)->first();
+        $order = Order::where('invoice_id', $invoiceId)->first();
 
         if (!$payment) {
             $payment = Payment::create([
@@ -355,6 +332,9 @@ class OrderController extends Controller
         }
 
         if ($payment->status == Payment::FAILED) {
+            $order->paid = 0;
+            $order->due = $amount;
+            $order->save();
             $payment->update(['status' => Payment::PENDING]);
         }
 
@@ -467,20 +447,48 @@ class OrderController extends Controller
         return response()->json($districts);
     }
 
+    // public function payNow(Order $order)
+    // {
+    //     $orderBillingAddress = OrderBillingAddress::where('order_id', $order->id)->first();
+
+    //     $paymentGateway = $this->initiatePaymentGateway(
+    //         $order->user,
+    //         $order->invoice_id,
+    //         $order->payable,
+    //         $orderBillingAddress->customer_name,
+    //         $orderBillingAddress->customer_phone,
+    //     );
+
+    //     $this->processAffiliateCommissions($order->items, auth()->user(), $order->id);
+
+    //     return redirect()->away($paymentGateway['payment_url']);
+    // }
+
     public function payNow(Order $order)
     {
         $orderBillingAddress = OrderBillingAddress::where('order_id', $order->id)->first();
 
+        if (!$orderBillingAddress) {
+            return back()->with('error', 'Billing address not found.');
+        }
+
+        if ($order->due <= 0) {
+            return back()->with('success', 'This order is already paid.');
+        }
+
         $paymentGateway = $this->initiatePaymentGateway(
             $order->user,
             $order->invoice_id,
-            $order->payable,
+            $order->due,
             $orderBillingAddress->customer_name,
-            $orderBillingAddress->customer_phone,
+            $orderBillingAddress->customer_phone
         );
 
-        $this->processAffiliateCommissions($order->items, auth()->user(), $order->id);
+        if (empty($paymentGateway['payment_url'])) {
+            return back()->with('error', $paymentGateway['message'] ?? 'Unable to initiate payment.');
+        }
 
         return redirect()->away($paymentGateway['payment_url']);
     }
+
 }
