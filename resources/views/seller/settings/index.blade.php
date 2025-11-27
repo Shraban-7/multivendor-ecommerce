@@ -154,7 +154,7 @@ $(function () {
             processData: false,
             contentType: false,
             success: function (res) {
-                toastr.success(res.message || "Settings updated successfully!");
+                showSuccessToast(res.message || "Settings updated successfully!");
                 $submitBtn.prop("disabled", false).text("Save Changes");
             },
             error: function (xhr) {
@@ -166,9 +166,9 @@ $(function () {
                         const name = field.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
                         msg.push(`<strong>${name}:</strong> ${arr.join(', ')}`);
                     });
-                    toastr.error(msg.join('<br>'));
+                    showErrorToast(msg.join('<br>'))
                 } else {
-                    toastr.error("Something went wrong!");
+                    showErrorToast("Something went wrong!");
                 }
             }
         });

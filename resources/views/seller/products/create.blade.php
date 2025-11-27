@@ -237,7 +237,7 @@
                     $('#submitBtn').attr('disabled', true).text('Saving...');
                 },
                 success: function(response) {
-                    showSuccess(response.message);
+                    showSuccessToast(response.message);
                     setTimeout(() => window.location.href = "{{ route('seller.products.index') }}", 1500);
                 },
                 error: function(xhr) {
@@ -246,9 +246,9 @@
                         let errors = xhr.responseJSON.errors;
                         let messages = Object.values(errors).map(item => item[0]).join(
                             '<br>');
-                        showError(messages);
+                        showErrorToast(messages);
                     } else {
-                        showError('Something went wrong. Please try again.');
+                        showErrorToast('Something went wrong. Please try again.');
                     }
                 }
             });
