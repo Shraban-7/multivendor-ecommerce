@@ -121,7 +121,7 @@
                         </div>
                         <small class="text-success fw-semibold"><i
                                 class="fas fa-arrow-up me-1"></i>{{ $calculateMetrics['sales_growth'] }}%</small>
-                        <small class="text-muted small">vs last period</small>
+                        <small class="text-muted small">vs last {{ request('range') }}</small>
                     </div>
                 </div>
             </div>
@@ -142,7 +142,7 @@
                         </div>
                         <small class="text-success fw-semibold"><i
                                 class="fas fa-arrow-up me-1"></i>{{ $calculateMetrics['orders_growth'] }}%</small>
-                        <small class="text-muted small">vs last period</small>
+                        <small class="text-muted small">vs last {{ request('range') }}</small>
                     </div>
                 </div>
             </div>
@@ -163,7 +163,7 @@
                         </div>
                         <small class="text-success fw-semibold"><i
                                 class="fas fa-arrow-up me-1"></i>{{ $calculateMetrics['profit_growth'] }}%</small>
-                        <small class="text-muted small">vs last month</small>
+                        <small class="text-muted small">vs last {{ request('range') }}</small>
                     </div>
                 </div>
             </div>
@@ -173,16 +173,9 @@
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
                             <p class="text-muted text-uppercase mb-1 small fw-semibold">Ret. Customers</p>
-                            <span class="kpi-value text-warning">38%</span>
+                            <span class="kpi-value text-warning">{{ number_format($quickFacts['returning_customers_percent'] ,2)}}%</span>
                         </div>
                         <i class="fas fa-users-viewfinder kpi-icon text-warning-emphasis"></i>
-                    </div>
-                    <div class="mt-2">
-                        <div class="progress mb-1" style="height: 3px;">
-                            <div class="progress-bar bg-danger" style="width: 45%"></div>
-                        </div>
-                        <small class="text-danger fw-semibold"><i class="fas fa-arrow-down me-1"></i>-5%</small>
-                        <small class="text-muted small">vs last month</small>
                     </div>
                 </div>
             </div>
@@ -203,7 +196,7 @@
                         </div>
                         <small class="text-success fw-semibold"><i
                                 class="fas fa-arrow-up me-1"></i>{{ $calculateMetrics['aov_growth'] }}%</small>
-                        <small class="text-muted small">vs last month</small>
+                        <small class="text-muted small">vs last {{ request('range') }}</small>
                     </div>
                 </div>
             </div>

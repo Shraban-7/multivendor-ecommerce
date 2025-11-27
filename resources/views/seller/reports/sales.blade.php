@@ -185,7 +185,7 @@
                         </div>
                         <i class="fas fa-chart-line fa-2x text-secondary opacity-50"></i>
                     </div>
-                    <small class="text-success fw-semibold mt-2">vs previous month</small>
+                    <small class="text-success fw-semibold mt-2">vs previous {{ request('range') }}</small>
                 </div>
             </div>
 

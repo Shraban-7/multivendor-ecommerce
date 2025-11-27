@@ -422,7 +422,7 @@
                     },
                     success: function(response) {
                         if (response.status) {
-                            toastr.success(response.message || "Order deleted successfully!");
+                            showSuccessToast(response.message || "Order deleted successfully!");
                             $('#deleteConfirmModal').modal('hide');
 
                             setTimeout(() => {
@@ -431,11 +431,11 @@
 
                             deleteOrderId = null;
                         } else {
-                            toastr.error(response.message || "Failed to delete order!");
+                            showErrorToast(response.message || "Failed to delete order!");
                         }
                     },
                     error: function(xhr) {
-                        toastr.error("Something went wrong!");
+                        showErrorToast("Something went wrong!");
                     }
                 });
             });

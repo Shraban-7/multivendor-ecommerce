@@ -137,6 +137,7 @@ class PosController extends Controller
         }
 
         $orders = Order::where('seller_id', $seller->id)
+            ->whereNull('user_id')
             ->whereDate('created_at', Carbon::today())
             ->with(['items.variant.product', 'items.product'])
             ->latest('id')

@@ -281,10 +281,10 @@
                                 <canvas id="profitChart" class="w-100" style="max-height: 300px;"></canvas>
                             </div>
                             <div class="alert 
-                    {{ $currentMetrics['profit_margin'] >= 30 ? 'alert-success' : 'alert-danger' }} 
+                    {{ $currentMetrics['profit_margin'] >= 0 ? 'alert-success' : 'alert-danger' }} 
                     mt-3 fw-bold text-center"
                                 role="alert">
-                                Net Profit Margin: {{ number_format($currentMetrics['profit_margin'], 2) }}% (Target: 30%)
+                                Net Profit Margin: {{ number_format($currentMetrics['profit_margin'], 2) }}%
                             </div>
                         </div>
                     </div>
@@ -345,7 +345,7 @@
 
                             <!-- Profit Margin Card -->
                             <div
-                                class="card {{ $currentMetrics['profit_margin'] >= 30 ? 'bg-success' : 'bg-danger' }} text-white p-3 mt-3 border-0">
+                                class="card {{ $currentMetrics['profit_margin'] >= 0 ? 'bg-success' : 'bg-danger' }} text-white p-3 mt-3 border-0">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <span class="fw-bold fs-6">Current Profit Margin</span>
                                     <span

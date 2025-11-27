@@ -37,7 +37,6 @@ class ReportController extends Controller
         } elseif ($filter === 'custom') {
             $currentStart = Carbon::parse($dateFrom)->startOfDay();
             $currentEnd = Carbon::parse($dateTo)->endOfDay();
-
             $days = Carbon::parse($dateFrom)->diffInDays($dateTo) + 1;
             $lastEnd = Carbon::parse($dateFrom)->subDay()->endOfDay();
             $lastStart = $lastEnd->copy()->subDays($days - 1)->startOfDay();
@@ -67,31 +66,14 @@ class ReportController extends Controller
         };
 
         $calculateMetrics = function ($sellerId, $start, $end) {
-            $orders = Order::where('seller_id', $sellerId)
-                ->whereBetween('created_at', [$start, $end])
-                ->get();
-
+            $orders = Order::where('seller_id', $sellerId)->whereBetween('created_at', [$start, $end])->get();
             $total_revenue = $orders->sum('seller_earnings');
-
-            $total_product_cost = OrderItem::whereHas('order', function ($q) use ($sellerId, $start, $end) {
-                $q->where('seller_id', $sellerId)
-                    ->whereBetween('created_at', [$start, $end]);
-            })->sum(DB::raw('buying_price * quantity'));
-
-            $total_selling_price = OrderItem::whereHas('order', function ($q) use ($sellerId, $start, $end) {
-                $q->where('seller_id', $sellerId)
-                    ->whereBetween('created_at', [$start, $end]);
-            })->sum(DB::raw('unit_price * quantity'));
-
+            $total_product_cost = OrderItem::whereHas('order', fn($q) => $q->where('seller_id', $sellerId)->whereBetween('created_at', [$start, $end]))->sum(DB::raw('buying_price * quantity'));
+            $total_selling_price = OrderItem::whereHas('order', fn($q) => $q->where('seller_id', $sellerId)->whereBetween('created_at', [$start, $end]))->sum(DB::raw('unit_price * quantity'));
             $gross_profit = $total_selling_price - $total_product_cost;
-
-            $total_expense = SellerExpense::where('seller_id', $sellerId)
-                ->whereBetween('created_at', [$start, $end])
-                ->sum('amount');
-
+            $total_expense = SellerExpense::where('seller_id', $sellerId)->whereBetween('created_at', [$start, $end])->sum('amount');
             $net_profit = $gross_profit - $total_expense;
             $profit_margin = $total_revenue > 0 ? ($net_profit / $total_revenue) * 100 : 0;
-
             return compact('total_revenue', 'total_product_cost', 'gross_profit', 'total_expense', 'net_profit', 'profit_margin');
         };
 
@@ -109,19 +91,12 @@ class ReportController extends Controller
             'expense' => $calculateChange($currentMetrics['total_expense'], $lastMetrics['total_expense']),
         ];
 
-        $inventory_value = Product::where('seller_id', $seller->id)
-            ->sum(DB::raw('buying_price * (stock_in - stock_out)'));
+        $inventory_value = Product::where('seller_id', $seller->id)->sum(DB::raw('buying_price * (stock_in - stock_out)'));
 
         $lowTurnoverDays = 90;
         $cutoffDate = now()->subDays($lowTurnoverDays);
-        $soldProductIds = OrderItem::whereHas('order', function ($q) use ($seller, $cutoffDate) {
-            $q->where('seller_id', $seller->id)
-                ->where('created_at', '>=', $cutoffDate);
-        })->pluck('product_id')->unique();
-
-        $lowTurnoverCount = Product::where('seller_id', $seller->id)
-            ->whereNotIn('id', $soldProductIds)
-            ->count();
+        $soldProductIds = OrderItem::whereHas('order', fn($q) => $q->where('seller_id', $seller->id)->where('created_at', '>=', $cutoffDate))->pluck('product_id')->unique();
+        $lowTurnoverCount = Product::where('seller_id', $seller->id)->whereNotIn('id', $soldProductIds)->count();
 
         if ($filter && $filter !== 'custom') {
             $dates = $this->getDateRange($filter);
@@ -136,9 +111,7 @@ class ReportController extends Controller
         }
 
         $inventoryByCategory = Product::where('seller_id', $seller->id)
-            ->whereHas('orderItems.order', function ($q) use ($startDate, $endDate) {
-                $q->whereBetween('created_at', [$startDate, $endDate]);
-            })
+            ->whereHas('orderItems.order', fn($q) => $q->whereBetween('created_at', [$startDate, $endDate]))
             ->select('category_id', DB::raw('COUNT(*) as sku_count'), DB::raw('SUM(buying_price * (stock_in - stock_out)) as stock_value'))
             ->groupBy('category_id')
             ->with('category')
@@ -150,41 +123,29 @@ class ReportController extends Controller
         $expenseTrend = $this->getExpenseTrend($seller->id, $filter, $dateFrom, $dateTo);
 
         $incomeSources = [
-            'Product Sales' => Order::where('seller_id', $seller->id)
-                ->whereBetween('created_at', [$startDate, $endDate])
-                ->sum('seller_earnings'),
-            'POS Sales' => Order::where('seller_id', $seller->id)
-                ->where('user_id', null)
-                ->whereBetween('created_at', [$startDate, $endDate])
-                ->sum('total'),
+            'Product Sales' => Order::where('seller_id', $seller->id)->whereBetween('created_at', [$startDate, $endDate])->sum('seller_earnings'),
+            'POS Sales' => Order::where('seller_id', $seller->id)->whereNull('user_id')->whereBetween('created_at', [$startDate, $endDate])->sum('total'),
         ];
 
         $totalIncome = array_sum($incomeSources);
 
-        $incomeData = collect($incomeSources)->map(function ($amount, $source) use ($totalIncome) {
-            $percentage = $totalIncome > 0 ? ($amount / $totalIncome) * 100 : 0;
-            $status = match ($source) {
+        $incomeData = collect($incomeSources)->map(fn($amount, $source) => [
+            'source' => $source,
+            'amount' => $amount,
+            'percentage' => $totalIncome > 0 ? ($amount / $totalIncome) * 100 : 0,
+            'status' => match ($source) {
                 'Product Sales' => 'Primary Source',
                 'POS Sales' => 'New Stream',
                 default => 'Other',
-            };
-            $badgeClass = match ($source) {
+            },
+            'badgeClass' => match ($source) {
                 'Product Sales' => 'bg-primary',
                 'POS Sales' => 'bg-info',
                 default => 'bg-dark',
-            };
-            return [
-                'source' => $source,
-                'amount' => $amount,
-                'percentage' => $percentage,
-                'status' => $status,
-                'badgeClass' => $badgeClass,
-            ];
-        });
+            }
+        ]);
 
-        $totalExpense = SellerExpense::where('seller_id', $seller->id)
-            ->whereBetween('created_at', [$currentStart, $currentEnd])
-            ->sum('amount');
+        $totalExpense = SellerExpense::where('seller_id', $seller->id)->whereBetween('created_at', [$currentStart, $currentEnd])->sum('amount');
 
         $expenseCategories = SellerExpense::where('seller_id', $seller->id)
             ->select('seller_expense_category_id', DB::raw('SUM(amount) as total'))
@@ -195,13 +156,9 @@ class ReportController extends Controller
 
         $highestExpense = $expenseCategories->sortByDesc('total')->first();
 
-        $lastTotalExpense = SellerExpense::where('seller_id', $seller->id)
-            ->whereBetween('created_at', [$lastStart, $lastEnd])
-            ->sum('amount');
+        $lastTotalExpense = SellerExpense::where('seller_id', $seller->id)->whereBetween('created_at', [$lastStart, $lastEnd])->sum('amount');
 
-        $expenseGrowth = $lastTotalExpense > 0
-            ? (($totalExpense - $lastTotalExpense) / $lastTotalExpense) * 100
-            : 100;
+        $expenseGrowth = $lastTotalExpense > 0 ? (($totalExpense - $lastTotalExpense) / $lastTotalExpense) * 100 : 100;
 
         return view('seller.reports.financial', compact(
             'currentMetrics',
@@ -226,13 +183,14 @@ class ReportController extends Controller
         ));
     }
 
+
     public function sales()
     {
         $seller = Seller::find(get_seller_id());
         $range = request('range', 'monthly');
 
         $ordersQuery = Order::where('seller_id', $seller->id);
-        $refundOrdersQuery = Order::where('seller_id', $seller->id)->where('status', 'refunded');
+        $refundOrdersQuery = Order::where('seller_id', $seller->id)->where('status', OrderStatus::REFUNDED->value);
 
         switch ($range) {
             case 'daily':
@@ -295,7 +253,6 @@ class ReportController extends Controller
         $prevTotalOrders = $previousOrders->count();
         $prevRefundOrders = $previousOrders->where('status', 'refunded')->count();
         $prev_refund_rate = $prevTotalOrders > 0 ? round(($prevRefundOrders / $prevTotalOrders) * 100, 2) : 0;
-
         $refundRateChange = round($refund_rate - $prev_refund_rate, 2);
 
         $bestSelling = OrderItem::whereHas('order', fn($q) => $q->where('seller_id', $seller->id)->whereBetween('created_at', [$from, $to]))
@@ -348,24 +305,15 @@ class ReportController extends Controller
         }
 
         $orderItems = OrderItem::whereHas('order', fn($q) => $q->where('seller_id', $seller->id)->whereBetween('created_at', [$from, $to]))->with('product.category')->get();
-
-        $prevOrderItems = OrderItem::whereHas(
-            'order',
-            fn($q) =>
-            $q->where('seller_id', $seller->id)
-                ->whereBetween('created_at', [$prevFrom, $prevTo])
-        )->with('product.category')->get();
+        $prevOrderItems = OrderItem::whereHas('order', fn($q) => $q->where('seller_id', $seller->id)->whereBetween('created_at', [$prevFrom, $prevTo]))->with('product.category')->get();
 
         $categoryData = $orderItems->groupBy(fn($item) => $item->product->category->name ?? 'Uncategorized')
             ->map(function ($items, $category) use ($prevOrderItems) {
                 $sales = $items->sum(fn($i) => $i->unit_price * $i->quantity);
                 $orders = $items->groupBy('order_id')->count();
-
                 $prevSales = $prevOrderItems->filter(fn($i) => ($i->product->category->name ?? 'Uncategorized') === $category)
                     ->sum(fn($i) => $i->unit_price * $i->quantity);
-
                 $growth = $prevSales > 0 ? round((($sales - $prevSales) / $prevSales) * 100, 2) : 0;
-
                 return [
                     'category' => $category,
                     'sales' => $sales,
@@ -373,7 +321,6 @@ class ReportController extends Controller
                     'growth' => $growth
                 ];
             })->values();
-
 
         $webOrders = $orders->whereNotNull('user_id');
         $posOrders = $orders->whereNull('user_id');
@@ -460,47 +407,58 @@ class ReportController extends Controller
         if ($filter) {
             $dates = $this->getDateRange($filter);
             $currentStart = $dates['currentStart'];
-            $currentEnd = $dates['currentEnd'];
+            $currentEnd = $dates['currentEnd']->copy()->endOfDay();
             $lastStart = $dates['lastStart'];
-            $lastEnd = $dates['lastEnd'];
+            $lastEnd = $dates['lastEnd'] ? $dates['lastEnd']->copy()->endOfDay() : null;
         } else {
-            $currentStart = Order::min('created_at');
-            $currentEnd = now();
+            $currentStart = Order::where('seller_id', $seller_id)->min('created_at');
+            $currentEnd = now()->endOfDay();
             $lastStart = null;
             $lastEnd = null;
         }
 
-        $allTimeTotalCustomers = Order::where('seller_id',$seller_id)->get(['user_id', 'customer_id'])
-            ->unique(fn($item) => $item->user_id . '-' . $item->customer_id)
-            ->count();
-
-        $newCustomersCurrent = Order::where('seller_id',$seller_id)->whereBetween('created_at', [$currentStart, $currentEnd->toDateString()])
+        $allTimeTotalCustomers = Order::where('seller_id', $seller_id)
             ->get(['user_id', 'customer_id'])
             ->unique(fn($item) => $item->user_id . '-' . $item->customer_id)
             ->count();
 
-        $newCustomersLast = $lastStart && $lastEnd
-            ? Order::where('seller_id',$seller_id)->whereBetween('created_at', [$lastStart, $lastEnd->toDateString()])
+        $newCustomersCurrent = Order::where('seller_id', $seller_id)
+            ->whereBetween('created_at', [$currentStart, $currentEnd])
+            ->get(['user_id', 'customer_id'])
+            ->unique(fn($item) => $item->user_id . '-' . $item->customer_id)
+            ->count();
+
+        $newCustomersLast = ($lastStart && $lastEnd)
+            ? Order::where('seller_id', $seller_id)
+                ->whereBetween('created_at', [$lastStart, $lastEnd])
                 ->get(['user_id', 'customer_id'])
                 ->unique(fn($item) => $item->user_id . '-' . $item->customer_id)
                 ->count()
             : 0;
 
         $returningCustomersCurrent = max($allTimeTotalCustomers - $newCustomersCurrent, 0);
-
         $returningPercentage = $allTimeTotalCustomers > 0
             ? round(($returningCustomersCurrent / $allTimeTotalCustomers) * 100, 1)
             : 0;
 
-        $avgClvCurrent = Order::where('seller_id',$seller_id)->whereBetween('created_at', [$currentStart, $currentEnd->toDateString()])->avg('total') ?? 0;
-        $avgClvLast = $lastStart && $lastEnd
-            ? Order::whereBetween('created_at', [$lastStart, $lastEnd])->avg('total') ?? 0
+        $avgClvCurrent = Order::where('seller_id', $seller_id)
+            ->whereBetween('created_at', [$currentStart, $currentEnd])
+            ->avg('total') ?? 0;
+
+        $avgClvLast = ($lastStart && $lastEnd)
+            ? Order::where('seller_id', $seller_id)
+                ->whereBetween('created_at', [$lastStart, $lastEnd])
+                ->avg('total') ?? 0
             : 0;
 
+        $totalOrdersCurrent = Order::where('seller_id', $seller_id)
+            ->whereBetween('created_at', [$currentStart, $currentEnd])
+            ->count();
 
-        $totalOrdersCurrent = Order::where('seller_id',$seller_id)->whereBetween('created_at', [$currentStart, $currentEnd->toDateString()])->count();
-        $totalOrdersLast = $lastStart && $lastEnd
-            ? Order::whereBetween('created_at', [$lastStart, $lastEnd])->count()
+        $totalOrdersLast = ($lastStart && $lastEnd)
+            ? Order::where('seller_id', $seller_id)
+                ->whereBetween('created_at', [$lastStart, $lastEnd])
+                ->count()
             : 0;
 
         $avgOrdersPerCustomerCurrent = $newCustomersCurrent > 0
@@ -523,75 +481,57 @@ class ReportController extends Controller
             ? round((($avgOrdersPerCustomerCurrent - $avgOrdersPerCustomerLast) / $avgOrdersPerCustomerLast) * 100, 1)
             : 0;
 
-
         $chartData = [
             'total' => ['labels' => [], 'data' => []],
             'new_vs_returning' => ['labels' => [], 'new' => [], 'returning' => []],
         ];
 
-        $months = collect();
         for ($i = 11; $i >= 0; $i--) {
-            $months->push(now()->copy()->subMonths($i));
-        }
-
-        foreach ($months as $month) {
-
+            $month = now()->copy()->subMonths($i);
             $monthStart = $month->copy()->startOfMonth();
             $monthEnd = $month->copy()->endOfMonth();
 
-            $monthlyTotal = Order::where('seller_id',$seller_id)->whereBetween('created_at', [$monthStart, $monthEnd])
+            $monthlyTotal = Order::where('seller_id', $seller_id)
+                ->whereBetween('created_at', [$monthStart, $monthEnd])
                 ->get(['user_id', 'customer_id'])
                 ->unique(fn($item) => $item->user_id . '-' . $item->customer_id)
                 ->count();
 
-            $previousTotal = Order::where('seller_id',$seller_id)->where('created_at', '<', $monthStart)
+            $previousTotal = Order::where('seller_id', $seller_id)
+                ->where('created_at', '<', $monthStart)
                 ->get(['user_id', 'customer_id'])
                 ->unique(fn($item) => $item->user_id . '-' . $item->customer_id)
                 ->count();
 
-            $newCustomers = $monthlyTotal > 0 ? max($monthlyTotal - $previousTotal, 0) : 0;
-
+            $newCustomers = max($monthlyTotal - $previousTotal, 0);
             $returningCustomers = max($monthlyTotal - $newCustomers, 0);
 
             $label = $month->format('M Y');
-
             $chartData['total']['labels'][] = $label;
             $chartData['total']['data'][] = $monthlyTotal;
-
             $chartData['new_vs_returning']['labels'][] = $label;
             $chartData['new_vs_returning']['new'][] = $newCustomers;
             $chartData['new_vs_returning']['returning'][] = $returningCustomers;
         }
 
-
-        $topCustomers = Order::where('seller_id',$seller_id)->with(['user:id,name', 'customer:id,name'])
-            ->whereBetween('created_at', [$currentStart, $currentEnd->toDateString()])   // ← your filter applied
+        $topCustomers = Order::where('seller_id', $seller_id)
+            ->whereBetween('created_at', [$currentStart, $currentEnd])
+            ->with(['user:id,name', 'customer:id,name'])
             ->selectRaw("
-                    user_id,
-                    customer_id,
-                    COUNT(id) as total_orders,
-                    SUM(total) as total_spent
-                ")
+                user_id,
+                customer_id,
+                COUNT(id) as total_orders,
+                SUM(COALESCE(total,0)) as total_spent
+            ")
             ->groupBy('user_id', 'customer_id')
             ->orderByDesc('total_spent')
             ->take(5)
             ->get()
-            ->map(function ($row) {
-                if ($row->user_id && $row->user) {
-                    $name = $row->user->name;
-                } elseif ($row->customer_id && $row->customer) {
-                    $name = $row->customer->name;
-                } else {
-                    $name = 'Guest Customer';
-                }
-
-                return [
-                    'name' => $name,
-                    'orders' => $row->total_orders,
-                    'spent' => $row->total_spent,
-                ];
-            });
-
+            ->map(fn($row) => [
+                'name' => $row->user->name ?? $row->customer->name ?? 'Guest Customer',
+                'orders' => $row->total_orders,
+                'spent' => $row->total_spent,
+            ]);
 
         return view('seller.reports.customers', compact(
             'filter',
@@ -1099,37 +1039,56 @@ class ReportController extends Controller
             ->orderByDesc('total_sales')
             ->first();
 
+        $allPreviousCustomerIds = Order::where('seller_id', $seller->id)
+            ->where('created_at', '<', $currentStart)
+            ->selectRaw('COALESCE(user_id, customer_id) as customer')
+            ->pluck('customer')
+            ->unique()
+            ->toArray();
+
+        $returningOrdersCount = Order::where('seller_id', $seller->id)
+            ->whereBetween('created_at', [$currentStart, $currentEnd])
+            ->whereIn(DB::raw('COALESCE(user_id, customer_id)'), $allPreviousCustomerIds)
+            ->count();
+
+        $returningCustomersPercent = $currentOrders > 0 ? round(($returningOrdersCount / $currentOrders) * 100, 2) : 0;
+
         $quickFacts = [
-            'total_orders' => $totalOrders,
+            'total_orders' => $currentOrders,
+            'returning_customers_percent' => $returningCustomersPercent,
             'refund_rate' => $refundRatePercent,
             'best_sales_day' => $bestSalesDay
                 ? Carbon::parse($bestSalesDay->order_date)->format('M d') . ' (' . money($bestSalesDay->total_sales) . ')'
                 : null,
         ];
 
-        $topProducts = OrderItem::with('product')
+        $topProducts = OrderItem::with('product', 'variant')
             ->whereHas('order', function ($q) use ($seller, $currentStart, $currentEnd) {
                 $q->where('seller_id', $seller->id)
                     ->whereBetween('created_at', [$currentStart, $currentEnd])
                     ->whereIn('status', [OrderStatus::DELIVERED->value, OrderStatus::COMPLETED->value]);
             })
-            ->selectRaw('product_id, SUM(quantity) as units_sold, SUM(unit_price * quantity) as total_sales')
-            ->groupBy('product_id')
+            ->selectRaw('product_id, product_variant_id, SUM(quantity) as units_sold, SUM(unit_price * quantity) as total_sales')
+            ->groupBy('product_id', 'product_variant_id')
             ->orderByDesc('units_sold')
             ->take(5)
             ->get()
             ->map(function ($item) {
+                $name = $item->variant?->fullName
+                    ? $item->product->name . ' ' . $item->variant->fullName
+                    : $item->product->name;
+                $stock = $item->variant
+                    ? ($item->variant->stock_in - $item->variant->stock_out)
+                    : ($item->product->stock_in - $item->product->stock_out ?? 0);
+
                 return [
-                    'name' => $item->product->name ?? 'N/A',
+                    'name' => $name,
                     'units_sold' => $item->units_sold,
                     'sales' => $item->total_sales,
-                    'stock' => ($item->product->stock_in -$item->product->stock_out) ?? 0,
+                    'stock' => $stock,
                 ];
             });
 
-        return view('seller.reports.overview', compact('calculateMetrics', 'chartData', 'quickFacts', 'filter','topProducts'));
+        return view('seller.reports.overview', compact('calculateMetrics', 'chartData', 'quickFacts', 'filter', 'topProducts'));
     }
-
-
-
 }
