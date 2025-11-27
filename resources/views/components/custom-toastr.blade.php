@@ -216,19 +216,24 @@ $containerId = 'toast-container';
         window.CustomToaster.info('Message:', '{{ session('message') }}');
         @endif
 
-        window.showSuccess = function(message, title = 'Success!', duration = {{ $defaultDuration }}, dismissible = true) {
+        @if ($errors->any())
+        const validationErrors = `{!! implode('<br>', $errors->all()) !!}`;
+        window.CustomToaster.error('Validation Errors', validationErrors);
+        @endif
+
+        window.showSuccessToast = function(message, title = 'Success!', duration = {{ $defaultDuration }}, dismissible = true) {
             window.CustomToaster.success(title, message, duration, dismissible);
         };
 
-        window.showError = function(message, title = 'Error!', duration = {{ $defaultDuration }}, dismissible = true) {
+        window.showErrorToast = function(message, title = 'Error!', duration = {{ $defaultDuration }}, dismissible = true) {
             window.CustomToaster.error(title, message, duration, dismissible);
         };
 
-        window.showWarning = function(message, title = 'Warning!', duration = {{ $defaultDuration }}, dismissible = true) {
+        window.showWarningToast = function(message, title = 'Warning!', duration = {{ $defaultDuration }}, dismissible = true) {
             window.CustomToaster.warning(title, message, duration, dismissible);
         };
 
-        window.showInfo = function(message, title = 'Info!', duration = {{ $defaultDuration }}, dismissible = true) {
+        window.showInfoToast = function(message, title = 'Info!', duration = {{ $defaultDuration }}, dismissible = true) {
             window.CustomToaster.info(title, message, duration, dismissible);
         };
 

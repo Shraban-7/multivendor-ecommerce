@@ -120,9 +120,6 @@
                 <input type="hidden" name="product_id" value="{{ $product->id }}">
 
                 <div class="modal-body">
-                    <!-- Alert Area -->
-                    <div id="uploadAlert" class="alert alert-danger d-none"></div>
-
                     <!-- Upload Zone -->
                     <div class="upload-zone text-center p-5 border-2 border-dashed rounded-3 bg-light cursor-pointer position-relative mb-3" id="dropZone">
                         <input type="file"
@@ -161,7 +158,6 @@
         const dropZone = document.getElementById('dropZone');
         const previewContainer = document.getElementById('previewContainer');
         const uploadBtn = document.getElementById('uploadBtn');
-        const alertBox = document.getElementById('uploadAlert');
 
         //use a DataTransfer object to manipulate the files associated with the input
         let dataTransfer = new DataTransfer();
@@ -207,13 +203,9 @@
             let hasErrors = false;
             let errorMsg = '';
 
-            // Clear alert
-            alertBox.classList.add('d-none');
-            alertBox.textContent = '';
-
             // Check if adding these files exceeds the limit
             if (dataTransfer.items.length + newFiles.length > MAX_FILES) {
-                showError(`You can only upload a maximum of ${MAX_FILES} images at a time.`);
+                showErrorToast(`You can only upload a maximum of ${MAX_FILES} images at a time.`);
                 return;
             }
 
@@ -240,7 +232,7 @@
             });
 
             if (hasErrors) {
-                showError(errorMsg);
+                showErrorToast(errorMsg);
             }
 
             // Update the actual input with the valid files
@@ -296,11 +288,6 @@
             if (el) el.remove();
 
             updateButtonState();
-        }
-
-        function showError(msg) {
-            alertBox.textContent = msg;
-            alertBox.classList.remove('d-none');
         }
 
         function updateButtonState() {
