@@ -1,632 +1,312 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<?php
-use Illuminate\Support\Facades\View;
-$settings = settings();
-$isDashboard = View::hasSection('dashboard');
-?>
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    @stack('meta')
-    <x-favicons />
-    <script src="{{ asset('assets/libs/jquery/jquery-3.7.1.min.js') }}"></script>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ env('APP_NAME') }} | eCommerce Marketplace</title>
 
-    @vite('resources/css/app.css')
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="{{ asset('assets/libs/swiper/css/swiper-bundle.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/libs/toastr/css/toastr.min.css') }}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <title>@yield('title')</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js for Interactions -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            500: '#f97316', // Orange-500
+                            600: '#ea580c', // Orange-600
+                            700: '#c2410c',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        body {
-            background-color: #f9f9f9;
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
         }
 
-        #main {
-            min-height: calc(100vh - 140px)
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f97316;
+        }
+
+        /* Hide scrollbar for smooth sliders but keep functionality */
+        .hide-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scroll {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        [x-cloak] {
+            display: none !important;
         }
     </style>
-
-    @stack('header')
 </head>
 
-<body>
-    <header class="header-section bg-persian-red text-white font-primary sticky top-0 z-50">
-        @include('frontend.layouts.top-nav')
+<body class="bg-gray-50 font-sans text-gray-800 antialiased" x-data="{ 
+    quickViewOpen: false, 
+    promoPopupOpen: true,
+    scrolled: false,
+    selectedProduct: null
+}" @scroll.window="scrolled = (window.pageYOffset > 100)">
+
+    <!-- ==================== 4. PROMOTIONAL POPUP MODAL ==================== -->
+    <div x-show="promoPopupOpen" x-transition.opacity class="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 backdrop-blur-sm" x-cloak>
+        <div class="relative bg-white rounded-2xl overflow-hidden shadow-2xl max-w-2xl w-[90%] md:flex animate-fade-in-up">
+            <button @click="promoPopupOpen = false" class="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center bg-white rounded-full shadow hover:text-primary-600 transition">
+                <i class="fa-solid fa-times"></i>
+            </button>
+            <div class="w-full md:w-1/2 h-64 md:h-auto bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1607083206968-13611e3d76db?q=80&w=600&auto=format&fit=crop');"></div>
+            <div class="w-full md:w-1/2 p-8 text-center flex flex-col justify-center bg-gradient-to-br from-white to-orange-50">
+                <span class="text-primary-600 font-bold tracking-wider text-sm mb-2">LIMITED TIME OFFER</span>
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-2">Winter <span class="text-primary-600">Sale</span></h2>
+                <p class="text-gray-600 mb-6 text-sm">Get flat <span class="font-bold text-gray-900">30% OFF</span> on your first order. Use code: <span class="bg-gray-200 px-2 py-1 rounded text-primary-600 font-mono">NEW30</span></p>
+                <div class="space-y-3">
+                    <button @click="promoPopupOpen = false" class="w-full bg-primary-600 text-white font-semibold py-3 rounded-lg hover:bg-primary-700 transition shadow-lg shadow-primary-500/30">Shop Now</button>
+                    <button @click="promoPopupOpen = false" class="text-gray-400 text-xs underline">No thanks, I'll pay full price</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 1. TOP NOTIFICATION BAR ==================== -->
+    <div class="bg-gray-900 text-white text-xs py-2 hidden md:block">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <div class="flex gap-4">
+                <span><i class="fas fa-phone-alt mr-1 text-primary-500"></i> +880 1700-000000</span>
+                <span><i class="fas fa-envelope mr-1 text-primary-500"></i> support@slashmart.com</span>
+            </div>
+            <div class="flex gap-4 items-center">
+                <span><i class="fas fa-truck mr-1 text-primary-500"></i> Free Shipping over ৳2000</span>
+                <span class="h-3 w-[1px] bg-gray-700"></span>
+                <a href="#" class="hover:text-primary-500 transition">Sell on SlashMart</a>
+                <span class="h-3 w-[1px] bg-gray-700"></span>
+                <div class="flex gap-1 cursor-pointer hover:text-primary-500">
+                    <span>English</span>
+                    <i class="fas fa-chevron-down mt-0.5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 2. HEADER & NAVIGATION ==================== -->
+    <header class="bg-white sticky top-0 z-40 shadow-sm border-b border-gray-100">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between gap-4 lg:gap-8">
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-2 group">
+                    <div class="bg-primary-500 text-white p-2 rounded-lg group-hover:rotate-3 transition duration-300">
+                        <i class="fas fa-shopping-bag text-2xl"></i>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-2xl font-extrabold tracking-tight text-gray-800 leading-none">Slash<span class="text-primary-600">Mart</span></span>
+                        <span class="text-[10px] font-medium text-gray-500 tracking-widest uppercase">Premium Store</span>
+                    </div>
+                </a>
+
+                <!-- Search Bar (Hidden on mobile) -->
+                <div class="hidden md:flex flex-1 max-w-2xl relative">
+                    <div class="flex w-full border-2 border-primary-100 rounded-full overflow-hidden hover:border-primary-300 transition-colors focus-within:border-primary-500 focus-within:ring-2 focus-within:ring-primary-200">
+                        <button class="px-4 bg-gray-50 text-gray-600 text-sm font-medium border-r border-gray-200 flex items-center gap-2 hover:bg-gray-100">
+                            All Categories <i class="fas fa-chevron-down text-xs"></i>
+                        </button>
+                        <input type="text" placeholder="Search for products, brands or shops..." class="w-full px-4 py-2.5 outline-none text-gray-700 placeholder-gray-400">
+                        <button class="bg-primary-500 hover:bg-primary-600 text-white px-6 font-medium transition">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Icons -->
+                <div class="flex items-center gap-4 lg:gap-6">
+                    <!-- Wishlist -->
+                    <a href="#" class="hidden md:flex flex-col items-center group relative">
+                        <div class="relative">
+                            <i class="far fa-heart text-xl text-gray-600 group-hover:text-primary-600 transition"></i>
+                            <span class="absolute -top-2 -right-2 bg-primary-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">2</span>
+                        </div>
+                        <span class="text-[10px] font-medium text-gray-500 mt-1">Wishlist</span>
+                    </a>
+
+                    <!-- Cart -->
+                    <a href="#" class="flex flex-col items-center group relative">
+                        <div class="relative">
+                            <i class="fas fa-shopping-cart text-xl text-gray-600 group-hover:text-primary-600 transition"></i>
+                            <span class="absolute -top-2 -right-2 bg-primary-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">5</span>
+                        </div>
+                        <span class="text-[10px] font-medium text-gray-500 mt-1 hidden md:block">Cart</span>
+                    </a>
+
+                    <!-- Account -->
+                    <a href="#" class="hidden md:flex flex-col items-center group">
+                        <i class="far fa-user text-xl text-gray-600 group-hover:text-primary-600 transition"></i>
+                        <span class="text-[10px] font-medium text-gray-500 mt-1">Login</span>
+                    </a>
+
+                    <!-- Vendor Button -->
+                    <a href="#" class="hidden lg:block bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition shadow-lg shadow-gray-500/20">
+                        Become a Seller
+                    </a>
+                </div>
+            </div>
+        </div>
     </header>
 
-    <div class="hidden md:block">
-        @include('frontend.layouts.bottom-nav')
-    </div>
+    @yield('content')
 
-    <div class="block md:hidden">
-        @include('frontend.layouts.mobile-dock')
-    </div>
+    <!-- ==================== 19. FOOTER ==================== -->
+    <footer class="bg-white pt-16 border-t border-gray-200">
+        <div class="container mx-auto px-4 pb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Company Info -->
+                <div>
+                    <a href="#" class="flex items-center gap-2 mb-4">
+                        <i class="fas fa-shopping-bag text-primary-600 text-2xl"></i>
+                        <span class="text-2xl font-bold text-gray-900">Slash<span class="text-primary-600">Mart</span></span>
+                    </a>
+                    <p class="text-gray-500 text-sm mb-4 leading-relaxed">
+                        The leading premium multi-vendor marketplace in Bangladesh. We connect buyers and sellers to create economic opportunity for all.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-9 h-9 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="w-9 h-9 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center hover:bg-pink-600 hover:text-white transition"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="w-9 h-9 rounded-full bg-red-100 text-red-600 flex items-center justify-center hover:bg-red-600 hover:text-white transition"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
 
-    @if (session('error') || session('success'))
-        <div id="alert-border"
-            class="fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 text-sm flex items-center gap-2
-            {{ session('error') ? 'text-red-700 bg-red-100 border-red-500' : 'text-green-700 bg-green-100 border-green-500' }}
-            border-l-4 rounded-md max-w-md w-[95%] sm:w-auto"
-            role="alert">
-            <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-            </svg>
-            <span class="flex-1">{{ session('error') ?? session('success') }}</span>
-            <button type="button" class="text-current hover:text-black" data-dismiss-target="#alert-border">
-                <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 14 14">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M1 1l6 6m0 0l6 6M7 7l6-6M7 7l-6 6" />
-                </svg>
-            </button>
-        </div>
-    @endif
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-gray-900 font-bold mb-4">Quick Links</h4>
+                    <ul class="space-y-2 text-sm text-gray-500">
+                        <li><a href="#" class="hover:text-primary-600 transition">About Us</a></li>
+                        <li><a href="#" class="hover:text-primary-600 transition">Contact Us</a></li>
+                        <li><a href="#" class="hover:text-primary-600 transition">Blog</a></li>
+                        <li><a href="#" class="hover:text-primary-600 transition">Flash Sales</a></li>
+                        <li><a href="#" class="hover:text-primary-600 transition">Vendor Registration</a></li>
+                    </ul>
+                </div>
 
-    @if (!$isDashboard)
-        <main class="max-w-7xl mx-auto mt-4 mb-15 md:mb-0" id="main">
-            @yield('content')
-        </main>
-    @endif
+                <!-- Customer Care -->
+                <div>
+                    <h4 class="text-gray-900 font-bold mb-4">Customer Care</h4>
+                    <ul class="space-y-2 text-sm text-gray-500">
+                        <li><a href="#" class="hover:text-primary-600 transition">Help Center</a></li>
+                        <li><a href="#" class="hover:text-primary-600 transition">How to Buy</a></li>
+                        <li><a href="#" class="hover:text-primary-600 transition">Returns & Refunds</a></li>
+                        <li><a href="#" class="hover:text-primary-600 transition">Terms & Conditions</a></li>
+                        <li><a href="#" class="hover:text-primary-600 transition">Privacy Policy</a></li>
+                    </ul>
+                </div>
 
-    @if (auth()->guard('web')->check() || auth()->guard('seller')->check() || auth()->guard('admin')->check())
-        <div class="block md:hidden">
-            @include('frontend.layouts.sidebar')
-        </div>
-    @endif
-
-    @if ($isDashboard)
-        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mb-10" id="main">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 items-start">
-                @include('frontend.layouts.sidebar')
-                <section class="md:col-span-3 space-y-6">
-                    @yield('dashboard')
-                </section>
+                <!-- Contact Info -->
+                <div>
+                    <h4 class="text-gray-900 font-bold mb-4">Contact Us</h4>
+                    <ul class="space-y-3 text-sm text-gray-500">
+                        <li class="flex gap-3">
+                            <i class="fas fa-map-marker-alt text-primary-500 mt-1"></i>
+                            <span>Level 4, Gulshan-1, Dhaka-1212, Bangladesh</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <i class="fas fa-envelope text-primary-500 mt-1"></i>
+                            <span>support@slashmart.com</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <i class="fas fa-phone text-primary-500 mt-1"></i>
+                            <span>+880 1712 345678</span>
+                        </li>
+                    </ul>
+                    <!-- Payment Methods (Placeholder Icons) -->
+                    <div class="mt-6">
+                        <h5 class="text-xs font-bold text-gray-900 mb-2">We Accept</h5>
+                        <div class="flex gap-2 text-2xl text-gray-400">
+                            <i class="fab fa-cc-visa hover:text-blue-900"></i>
+                            <i class="fab fa-cc-mastercard hover:text-red-600"></i>
+                            <i class="fab fa-cc-amex hover:text-blue-500"></i>
+                            <i class="fas fa-money-bill-wave hover:text-green-600"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </main>
-        <!-- Floating Sidebar Toggle Button (Mobile Only) -->
-        {{-- <button
-            class="fixed bottom-16 right-6 z-50 md:hidden bg-yellow-500 text-white p-4 rounded-full shadow-lg hover:bg-yellow-600 focus:outline-none"
-            id="sidebar-toggle">
-            <i class="fa-solid fa-bars"></i>
-        </button> --}}
-    @endif
 
-    <div class="hidden md:block">
-        @include('frontend.layouts.footer')
+            <div class="border-t border-gray-100 mt-10 pt-6 text-center text-sm text-gray-400">
+                <p>&copy; 2025 SlashMart. All Rights Reserved. Designed for Bangladesh.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==================== 20. MOBILE STICKY BOTTOM NAVIGATION ==================== -->
+    <div class="md:hidden fixed bottom-0 left-0 w-full bg-white shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] border-t border-gray-100 z-40 px-6 py-3 flex justify-between items-center text-gray-400">
+        <a href="#" class="flex flex-col items-center gap-1 text-primary-600">
+            <i class="fas fa-home text-lg"></i>
+            <span class="text-[10px] font-medium">Home</span>
+        </a>
+        <a href="#" class="flex flex-col items-center gap-1 hover:text-primary-600">
+            <i class="fas fa-th-large text-lg"></i>
+            <span class="text-[10px] font-medium">Cats</span>
+        </a>
+        <a href="#" class="flex flex-col items-center gap-1 hover:text-primary-600 relative">
+            <div class="relative">
+                <i class="fas fa-shopping-cart text-lg"></i>
+                <span class="absolute -top-2 -right-2 bg-primary-600 text-white text-[8px] w-3.5 h-3.5 rounded-full flex items-center justify-center">5</span>
+            </div>
+            <span class="text-[10px] font-medium">Cart</span>
+        </a>
+        <a href="#" class="flex flex-col items-center gap-1 hover:text-primary-600">
+            <i class="far fa-user text-lg"></i>
+            <span class="text-[10px] font-medium">Account</span>
+        </a>
     </div>
 
-    <script src="https://unpkg.com/feather-icons"></script>
-    <script>
-        function debounce(func, delay) {
-            let timer;
-            return function(...args) {
-                const context = this;
-                clearTimeout(timer);
-                timer = setTimeout(() => func.apply(context, args), delay);
-            };
-        }
-    </script>
-    <script>
-        feather.replace();
-    </script>
+    <!-- ==================== 21. BACK TO TOP BUTTON ==================== -->
+    <button
+        x-show="scrolled"
+        @click="window.scrollTo({top: 0, behavior: 'smooth'})"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 translate-y-10"
+        x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition ease-in duration-300"
+        x-transition:leave-start="opacity-100 translate-y-0"
+        x-transition:leave-end="opacity-0 translate-y-10"
+        class="fixed bottom-20 md:bottom-8 right-4 md:right-8 bg-primary-600 text-white w-10 h-10 md:w-12 md:h-12 rounded-full shadow-lg flex items-center justify-center hover:bg-primary-700 transition z-40"
+        x-cloak>
+        <i class="fas fa-arrow-up"></i>
+    </button>
 
-    @vite('resources/js/app.js')
-
-    <script src="{{ asset('assets/libs/swiper/js/swiper-bundle.min.js') }}"></script>
-    <script src="{{ asset('assets/frontend/js/swiperSliders.js') }}"></script>
-    <script src="{{ asset('assets/frontend/js/multipleProductsSwiper.js') }}"></script>
-    <script src="{{ asset('assets/libs/datatables/simple-datatables@9.0.3.js') }}"></script>
-    <script src="{{ asset('assets/libs/toastr/js/toastr.min.js') }}"></script>
-
-    <script>
-        $(function() {
-            function refreshCsrfToken() {
-                return $.get("{{ route('refresh.csrf') }}").then(function(data) {
-                    const newToken = data.token;
-                    $('meta[name="csrf-token"]').attr('content', newToken);
-
-                    $.ajaxSetup({
-                        headers: {
-                            'X-CSRF-TOKEN': newToken
-                        }
-                    });
-
-                    return newToken;
-                });
-            }
-
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
-            const $sidebarToggle = $("#sidebar-toggle");
-            const $mobileSidebar = $("#mobile-sidebar");
-            const $sidebarBackdrop = $("#sidebar-backdrop");
-
-            $sidebarToggle.on("click", function() {
-                const isOpen = !$mobileSidebar.hasClass("-translate-x-full");
-                if (isOpen) {
-                    $mobileSidebar.addClass("-translate-x-full");
-                    $sidebarBackdrop.addClass("hidden");
-                } else {
-                    $mobileSidebar.removeClass("-translate-x-full");
-                    $sidebarBackdrop.removeClass("hidden");
-                }
-            });
-
-            $sidebarBackdrop.on("click", function() {
-                $mobileSidebar.addClass("-translate-x-full");
-                $sidebarBackdrop.addClass("hidden");
-            });
-
-            window.togglePassword = function(inputId, button) {
-                const $input = $("#" + inputId);
-                const $button = $(button);
-                const $eye = $button.find(".fa-eye");
-                const $eyeSlash = $button.find(".fa-eye-slash");
-
-                if ($input.attr("type") === "password") {
-                    $input.attr("type", "text");
-                    $eye.hide();
-                    $eyeSlash.show();
-                } else {
-                    $input.attr("type", "password");
-                    $eye.show();
-                    $eyeSlash.hide();
-                }
-            };
-
-            $('body').on('click', '.addToCartBtn', function() {
-                var $btn = $(this);
-                var originalText = $btn.html();
-                $btn.html(
-                    `<svg class="animate-spin h-4 w-4 text-white inline-block mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
-                    </svg> Adding...`
-                ).prop('disabled', true);
-
-                var product_id = $btn.data('id');
-                var $product_content = $btn.closest("[id^='product-wrapper']");
-                var product = $product_content.data("product");
-
-                if (!product) {
-                    toastr.error("Product data not found!");
-                    $btn.html(originalText).prop('disabled', false);
-                    return;
-                }
-
-                const selectedOptions = collectSelectedOptions($product_content);
-                const variant = getSelectedVariant(product, selectedOptions);
-                var variantId = variant ? variant.id : null;
-
-                var product_price_text = $product_content.find('.product-price').text().replace(/[^0-9.]/g,
-                    '');
-                var product_price = parseFloat(product_price_text);
-                var qtyInput = $product_content.find('.quantity').val() || 1;
-
-                function addToCartRequest() {
-                    return $.ajax({
-                        url: "{{ route('cart.add') }}",
-                        type: "POST",
-                        data: {
-                            product_id: product_id,
-                            variant_id: variantId,
-                            quantity: qtyInput,
-                            price: product_price,
-                        },
-                        success: function(data) {
-                            if (data.success) {
-                                toastr.success(data.message);
-                                updateCartData();
-
-                                if ("{{ Route::currentRouteName() }}" === 'cart.details' &&
-                                    data.action === 'add_to_cart') {
-                                    window.location.reload();
-                                }
-                            } else if (data.error) {
-                                toastr.error(data.error);
-                            } else {
-                                toastr.error('Unexpected response!');
-                            }
-                        },
-                        error: async function(xhr) {
-                            if (xhr.status === 419) {
-                                await refreshCsrfToken();
-                                addToCartRequest();
-                            } else if (xhr.status === 401) {
-                                toastr.warning(xhr.responseJSON.error);
-                                setTimeout(() => {
-                                    window.location.href = "{{ route('login') }}";
-                                }, 1000); 
-                            } else if (xhr.status === 403) {
-                                toastr.warning(xhr.responseJSON.error);
-                            } else {
-                                toastr.error('Something went wrong!');
-                            }
-                        },
-                        complete: function() {
-                            $btn.html(originalText).prop('disabled', false);
-                        }
-                    });
-                }
-
-                addToCartRequest();
-            });
-
-            $('.buyNowBtn').click(function() {
-                var product_id = $(this).data('id');
-                var seller_id = $(this).data('seller');
-                var wishlistId = $(this).data('wishlist-id');
-                var variantSku = $('#variantSku').val();
-                var product_price_text = $('.product-price').text().replace(/[^0-9.]/g, '');
-                var product_price = parseFloat(product_price_text);
-                var $row = $(this).closest('.grid');
-
-                let selectedOptionIds = [];
-
-                $('.variant-option:checked').each(function() {
-                    selectedOptionIds.push($(this).val());
-                });
-
-                if (!product_id) {
-                    alert("No Product Selected!");
-                    return;
-                }
-                var qtyInput = $('#qtyInput' + product_id).val();
-
-                $.ajax({
-                    url: "{{ route('cart.add') }}",
-                    type: "POST",
-                    data: {
-                        product_id: product_id,
-                        seller_id: seller_id,
-                        variant_sku: variantSku,
-                        quantity: qtyInput,
-                        price: product_price,
-                        option_ids: selectedOptionIds,
-                    },
-                    success: function(data) {
-                        if (data.unauthorized) {
-                            window.location.href = "{{ route('login') }}";
-                        } else if (data.success) {
-                            $('button[data-modal-hide="quick-view-modal-' + product_id + '"]')
-                                .trigger('click');
-                            $row.fadeOut(300, function() {
-                                $(this).remove();
-                            });
-                            toastr.success(data.message);
-                            updateCartData();
-
-                            window.location.href = "{{ route('orders.checkout') }}" +
-                                "?seller_id=" + seller_id;
-                        } else {
-                            toastr.error(data.error);
-                        }
-                    },
-                    error: function(xhr) {
-                        if (xhr.status === 401) {
-                            window.location.href = "{{ route('login') }}";
-                        } else {
-                            toastr.error('Something went wrong!');
-                        }
-                    }
-                });
-            });
-
-            $('.wishlistBtn').click(function() {
-                var product_id = $(this).data('id');
-                if (!product_id) {
-                    alert("No Product Selected!");
-                    return;
-                }
-
-                $.ajax({
-                    url: "{{ route('wishlist.store') }}",
-                    type: "POST",
-                    data: {
-                        product_id: product_id,
-                    },
-                    success: function(data) {
-                        if (data.unauthorized) {
-                            window.location.href = "{{ route('login') }}";
-                        } else if (data.success) {
-                            toastr.success(data.message);
-                        } else {
-                            toastr.error(data.error);
-                        }
-                    },
-                    error: function(xhr) {
-                        if (xhr.status === 401) {
-                            window.location.href = "{{ route('login') }}";
-                        } else {
-                            toastr.error('Something went wrong!');
-                        }
-                    }
-                });
-            });
-
-            function updateCartData() {
-                $.ajax({
-                    url: "{{ route('cart.data') }}",
-                    type: "GET",
-                    success: function(data) {
-                        if (data.cartCount > 0) {
-                            $('#cartCount').removeClass('hidden')
-                            $('#totalPrice').removeClass('hidden')
-                        }
-                        $('#cartCount').text(data.cartCount);
-                        $('#totalPrice').text(data.totalPrice);
-                    },
-                    error: function() {
-                        toastr.error('Failed to update cart data.');
-                    }
-                });
-            }
-
-            $("[id^='product-wrapper']").each(function() {
-                initDefaultVariant($(this));
-            });
-
-            function storageURL(fileName) {
-                return "{{ url('/') }}" + '/storage/' + fileName;
-            }
-
-            function formatPrice(price, quantity) {
-                const total = Math.round(price * quantity * 100) / 100;
-                return total.toLocaleString('en-BD', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                });
-            }
-
-            function updateProductUI($wrapper, variant = null, quantity, isInitialLoad = false) {
-                const $qtyEl = $wrapper.find("input.quantity");
-                const $mainImage = $wrapper.find(".main-product-image");
-                const $priceEl = $wrapper.find(".product-price");
-                const $originalPriceEl = $wrapper.find(".original-price");
-                const $skuEl = $wrapper.find(".sku-text");
-                const $stockEl = $wrapper.find(".stock-text");
-                const $availability = $wrapper.find(".availability-text");
-                const $variantError = $wrapper.find(".variant-error");
-                const $addToCartBtn = $wrapper.find(".addToCartBtn");
-                const $variantIdInput = $wrapper.find("input.variantId");
-                const product = $wrapper.data("product");
-
-                if (variant) {
-                    const basePrice = parseFloat(variant.price) || 0;
-                    const discounted = variant.discounted_price !== null ? parseFloat(variant.discounted_price) :
-                        null;
-
-                    const price = discounted && discounted > 0 ? discounted : basePrice;
-
-                    if (!discounted || discounted == 0) {
-                        $originalPriceEl.addClass('hidden');
-                        $priceEl.text(`৳ ${formatPrice(basePrice, quantity)}`);
-                    } else {
-                        $originalPriceEl.removeClass('hidden');
-                        $priceEl.text(`৳ ${formatPrice(discounted, quantity)}`);
-                        $originalPriceEl.text(`৳ ${formatPrice(basePrice, quantity)}`);
-                    }
-
-                    $skuEl.text(variant.sku);
-                    $stockEl.text(variant.stock);
-                    $availability.text(variant.stock > 0 ? "In Stock" : "Out of Stock");
-                    $variantIdInput.val(variant.id);
-                    $qtyEl.val(quantity);
-                    $qtyEl.attr('value', parseInt($qtyEl.val()));
-                    $variantError.addClass("hidden");
-
-                    $addToCartBtn.prop("disabled", variant.stock <= 0).toggleClass("opacity-50 cursor-not-allowed",
-                        variant.stock <= 0);
-
-                    if (!isInitialLoad && variant.image) {
-                        const imageUrl = storageURL(variant.image);
-                        $mainImage.attr('src', imageUrl);
-                    }
-
-                } else {
-                    const basePrice = parseFloat(product.price) || 0;
-                    const discounted = product.discounted_price !== null ? parseFloat(product.discounted_price) :
-                        null;
-                    const price = discounted && discounted > 0 ? discounted : basePrice;
-
-                    if (!discounted || discounted == 0) {
-                        $originalPriceEl.addClass('hidden');
-                        $priceEl.text(`৳ ${formatPrice(basePrice, quantity)}`);
-                    } else {
-                        $originalPriceEl.removeClass('hidden');
-                        $priceEl.text(`৳ ${formatPrice(discounted, quantity)}`);
-                        $originalPriceEl.text(`৳ ${formatPrice(basePrice, quantity)}`);
-                    }
-
-                    $skuEl.text(product.sku || "N/A");
-                    $stockEl.text(product.stock || 0);
-                    $availability.text((product.stock || 0) > 0 ? "In Stock" : "Out of Stock");
-                    $qtyEl.val(quantity);
-                    $qtyEl.attr('value', parseInt($qtyEl.val()));
-                    $variantIdInput.val("");
-                    $variantError.addClass("hidden");
-                    $addToCartBtn.prop("disabled", false).removeClass("opacity-50 cursor-not-allowed");
-                }
-            }
-
-            function getSelectedVariant(product, selectedOptions) {
-                const selectedIds = Object.values(selectedOptions).map(Number).sort();
-                return (product.variants || []).find(v =>
-                    JSON.stringify([...v.value_ids].sort()) === JSON.stringify(selectedIds)
-                );
-            }
-
-            function collectSelectedOptions($wrapper) {
-                const selectedOptions = {};
-                $wrapper.find(".option-value-btn.bg-primary\\/10")
-                    .each(function() {
-                        const $btn = $(this);
-                        const optId = $btn.data("option-id");
-                        const valId = $btn.data("value-id");
-                        selectedOptions[optId] = parseInt(valId);
-                    });
-                return selectedOptions;
-            }
-
-            $(document).on("click", ".option-value-btn", function() {
-                const $btn = $(this);
-                const $wrapper = $btn.closest("[id^='product-wrapper']");
-                const product = $wrapper.data("product");
-                if (!product) return;
-
-                const optId = $btn.data("option-id");
-                const valId = $btn.data("value-id");
-
-                $wrapper.find(`.option-value-btn[data-option-id="${optId}"]`).removeClass(
-                    "bg-primary/10 text-primary border-primary"
-                ).addClass("bg-white text-gray-800 border-gray-300");
-
-                $btn.removeClass("bg-white text-gray-800 border-gray-300").addClass(
-                    "bg-primary/10 text-primary border-primary"
-                );
-
-                const selectedOptions = collectSelectedOptions($wrapper);
-
-                const variant = getSelectedVariant(product, selectedOptions);
-
-                const quantity = parseInt($wrapper.find(".quantity").val()) || 1;
-
-                updateProductUI($wrapper, variant, quantity);
-            });
-
-            $(document).on("click", ".thumb-img", function() {
-                const $img = $(this);
-                const full = $img.data("full");
-                const $wrapper = $img.closest("[id^='product-wrapper']");
-                const $mainImage = $wrapper.find(".main-product-image");
-                const $thumbWrapper = $wrapper.find(".thumbnailWrapper");
-
-                $mainImage.attr("src", full);
-                $thumbWrapper.find(".slide-thumb").removeClass("border-primary").addClass(
-                    "border-gray-200");
-                $img.closest(".slide-thumb").addClass("border-primary").removeClass("border-gray-200");
-            });
-
-            $(document).on("click", ".increaseBtn, .decreaseBtn", debounce(function() {
-                const $btn = $(this);
-                const $wrapper = $btn.closest("[id^='product-wrapper']");
-                const product = $wrapper.data("product");
-                if (!product) return;
-
-                const $qtyInput = $wrapper.find("input.quantity");
-                let quantity = parseInt($qtyInput.val()) || 1;
-
-                const selectedOptions = collectSelectedOptions($wrapper);
-                const variant = getSelectedVariant(product, selectedOptions);
-
-                const availableStock = variant ? variant.stock : product.stock;
-
-                if ($btn.hasClass("increaseBtn")) {
-                    if (quantity < availableStock) quantity += 1;
-                    else {
-                        quantity = availableStock;
-                        toastr.warning("Not enough stock!");
-                    }
-                } else {
-                    quantity -= 1;
-                    if (quantity < 1) quantity = 1;
-                }
-
-                updateProductUI($wrapper, variant, quantity);
-            }, 300));
-
-            $(document).on("input", ".quantity", function() {
-                const $input = $(this);
-                const $wrapper = $input.closest("[id^='product-wrapper']");
-                const product = $wrapper.data("product");
-                if (!product) return;
-
-                let quantity = parseInt($input.val()) || 1;
-                quantity = quantity > 0 ? quantity : 1;
-
-                const selectedOptions = collectSelectedOptions($wrapper);
-                const variant = getSelectedVariant(product, selectedOptions);
-
-                updateProductUI($wrapper, variant, quantity);
-            });
-
-            function initDefaultVariant($wrapper) {
-                if ($wrapper.data('variant-initialized')) return;
-
-                const product = $wrapper.data("product");
-                if (!product?.variants?.length) return;
-
-                const defaultVariant = product.variants.find(v => v.is_default);
-                if (!defaultVariant) return;
-
-                defaultVariant.value_ids.forEach(valId => {
-                    const $btn = $wrapper.find(`.option-value-btn[data-value-id="${valId}"]`);
-                    const optId = $btn.data("option-id");
-
-                    $wrapper.find(`.option-value-btn[data-option-id="${optId}"]`)
-                        .removeClass("bg-primary/10 text-primary border-primary")
-                        .addClass("bg-white text-gray-800 border-gray-300");
-
-                    $btn.removeClass("bg-white text-gray-800 border-gray-300")
-                        .addClass("bg-primary/10 text-primary border-primary");
-                });
-
-                const quantity = parseInt($wrapper.find(".quantity").val()) || 1;
-                updateProductUI($wrapper, defaultVariant, quantity, true);
-
-                $wrapper.data('variant-initialized', true);
-            }
-
-            document.addEventListener('modal:open', function(event) {
-                const modalEl = event.detail;
-                const $modal = $(modalEl);
-
-                $modal.find("[id^='product-wrapper']").each(function() {
-                    initDefaultVariant($(this));
-                });
-            });
-
-            function onLoadMoreProducts() {
-                $("[id^='product-wrapper']").each(function() {
-                    initDefaultVariant($(this));
-                });
-            }
-        });
-    </script>
-
-    @if (auth()->check() && auth()->user()->isAffiliate())
-        <script>
-            function copyReferralLink(button, referralCode, productUrl) {
-                // Append ?ref=referralCode to the product URL
-                const referralUrl = `${productUrl}?ref=${referralCode}`;
-
-                navigator.clipboard.writeText(referralUrl).then(() => {
-                    const tooltip = button.querySelector('.tooltip-text');
-                    tooltip.classList.remove('opacity-0');
-                    tooltip.classList.add('opacity-100');
-
-                    setTimeout(() => {
-                        tooltip.classList.remove('opacity-100');
-                        tooltip.classList.add('opacity-0');
-                    }, 2000);
-                });
-            }
-        </script>
-    @endif
-
-    @stack('scripts')
 </body>
 
 </html>

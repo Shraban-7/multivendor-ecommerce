@@ -70,19 +70,11 @@ class HomeController extends Controller
 
         $data['hero_banners'] = HeroBanner::active()->orderBy('position')->get();
 
-        $data['sellers'] = Seller::active()
-            ->with(['products.reviews'])
-            ->get()
-            ->map(function ($seller) {
-                $allReviews = $seller->products->flatMap->reviews;
-
-                $seller->avg_rating = round($allReviews->avg('rating'), 1); 
-                $seller->reviews_count = $allReviews->count();
-
-                return $seller;
-            });
+        $data['sellers'] = Seller::active()->limit(8)->get();
 
         $data['brands'] = Brand::where('status',1)->latest()->limit(12)->get();
+
+        return view('frontend.home', compact('data'));
 
         return view('frontend.pages.home', $data);
     }
