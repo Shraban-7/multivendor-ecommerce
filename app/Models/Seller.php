@@ -170,4 +170,11 @@ class Seller extends Authenticatable
             get: fn() => $completed
         );
     }
+
+    public function addRating($newRating)
+    {
+        $this->rating = (($this->rating * $this->rating_count) + $newRating) / ($this->rating_count + 1);
+        $this->rating_count += 1;
+        $this->save();
+    }
 }
