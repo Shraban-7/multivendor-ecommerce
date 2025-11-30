@@ -79,8 +79,6 @@ class OrderController extends Controller
 
         $order = Order::where('invoice_id', $invoice_id)->with('seller', 'payment', 'items.review')->first();
 
-        // return $order;
-
         $products = Product::latest('id')->limit(8)->get();
 
         return view('frontend.orders.details', compact('order', 'user', 'products'));

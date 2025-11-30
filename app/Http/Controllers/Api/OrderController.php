@@ -349,6 +349,10 @@ class OrderController extends Controller
             'description' => $request->description,
         ]);
 
+        $reviewedProductSeller = Seller::where('id',$review->product->seller_id)->first();
+
+        $reviewedProductSeller->addRating($review->rating);
+
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $file) {
                 ReviewImage::create([
