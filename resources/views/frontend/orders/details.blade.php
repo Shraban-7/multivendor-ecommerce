@@ -40,6 +40,20 @@
                             <div class="flex justify-between items-start">
                                 <h3 class="font-medium">{{ $item->product_name }}</h3>
                                 <p class="font-medium">{{ money($item->total) }}</p>
+                                @if ($item->is_reviewed == 0)
+                                    <button data-item="{{ $item->id }}"
+                                        class="open-review-modal text-xs px-3 py-1.5 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                                        Write Review
+                                    </button>
+                                @else
+                                    <div class="flex text-lg mt-1">
+                                        @for ($i = 1; $i <= 5; $i++)
+                                            <i
+                                                class="fa-solid fa-star {{ $i <= $item->review->rating ? 'text-yellow-400' : 'text-gray-300' }}"></i>
+                                        @endfor
+                                    </div>
+                                @endif
+
                             </div>
                             <div class="flex justify-between items-end mt-1">
                                 <div class="text-sm text-gray-500">
@@ -90,12 +104,12 @@
                 <button class="text-xs px-3 py-1.5 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
                     Report Issue
                 </button> --}}
-                    @if ($item->is_reviewed == 0)
+                    {{-- @if ($item->is_reviewed == 0)
                         <button id="open-review-modal"
                             class="text-xs px-3 py-1.5 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
                             Write Review
                         </button>
-                    @endif
+                    @endif --}}
                 </div>
             </div>
 
@@ -127,18 +141,21 @@
                             class="w-full space-y-6" id="review-form">
                             @csrf
 
-                            <input type="hidden" name="order_item_id" value="{{ $item->id }}">
-                            <!-- Star Rating -->
+                            {{-- <input type="hidden" name="order_item_id" value="{{ $item->id }}"> --}}
+                            <!-- Hidden input for the order item id -->
+                            <input type="hidden" name="order_item_id" id="review-item-id" value="">
+
+                            <!-- Stars in modal -->
                             <div id="stars-container" class="flex justify-center gap-2 mb-1">
                                 @for ($i = 1; $i <= 5; $i++)
-                                    <span class="review-star text-3xl cursor-pointer text-gray-300"
-                                        data-rating="{{ $i }}">
-                                        <i class="fa-solid fa-star"></i>
+                                    <span class="review-star text-3xl cursor-pointer" data-rating="{{ $i }}">
+                                        <!-- IMPORTANT: put the color class on the icon itself -->
+                                        <i class="fa-solid fa-star text-gray-300"></i>
                                     </span>
                                 @endfor
-
                             </div>
-                            <input type="hidden" name="rating" id="star-rating" value="3">
+                            <input type="hidden" name="rating" id="star-rating" value="0">
+
 
                             <!-- Review Text -->
                             <textarea id="feedback-text" name="description" required
@@ -229,40 +246,54 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            $('#open-review-modal').on('click', function() {
-                $('#review-modal').removeClass('hidden');
-            });
-
-            $('#close-review-modal, #cancel-review').on('click', function() {
-                $('#review-modal').addClass('hidden');
-            });
+            const $modal = $('#review-modal');
+            const $starContainer = $('#stars-container');
+            const $starRatingInput = $('#star-rating');
+            const $reviewItemId = $('#review-item-id');
 
             let currentRating = 0;
 
-            setStarState(currentRating);
+            $(document).on('click', '.open-review-modal', function() {
+                const itemId = $(this).data('item');
+                const existingRating = parseInt($(this).data('rating') || 0, 10);
 
-            $('#stars-container').on('click', '.review-star', function() {
-                currentRating = $(this).data('rating');
+                $reviewItemId.val(itemId);
+                currentRating = existingRating || 0;
+                $starRatingInput.val(currentRating);
+
                 setStarState(currentRating);
-                $('#star-rating').val(currentRating);
+                $modal.removeClass('hidden');
             });
 
-            $('#stars-container').on('mouseover', '.review-star', function() {
-                const hoverRating = $(this).data('rating');
-                setStarState(hoverRating, true);
+            $('#close-review-modal, #cancel-review').on('click', function() {
+                $modal.addClass('hidden');
             });
 
-            $('#stars-container').on('mouseout', function() {
+            $starContainer.on('click', '.review-star', function() {
+                const r = $(this).data('rating');
+                currentRating = parseInt(r, 10);
+                $starRatingInput.val(currentRating);
                 setStarState(currentRating);
+            });
+
+            $starContainer.on('mouseover', '.review-star', function() {
+                const hover = $(this).data('rating');
+                setStarState(parseInt(hover, 10), true);
+            });
+
+            $starContainer.on('mouseout', function() {
+                setStarState(currentRating, false);
             });
 
             function setStarState(rating, isHover = false) {
-                $('#stars-container .review-star').each(function() {
-                    const starRating = $(this).data('rating');
-                    if (isHover) {
-                        $(this).toggleClass('active', starRating <= rating);
+                $starContainer.find('.review-star').each(function() {
+                    const val = parseInt($(this).data('rating'), 10);
+                    const $icon = $(this).find('i.fa-star');
+
+                    if (val <= rating) {
+                        $icon.addClass('text-yellow-400').removeClass('text-gray-300');
                     } else {
-                        $(this).toggleClass('active', starRating <= rating);
+                        $icon.addClass('text-gray-300').removeClass('text-yellow-400');
                     }
                 });
             }
@@ -284,43 +315,47 @@
             $dropzone.on('drop', function(e) {
                 e.preventDefault();
                 $dropzone.removeClass('border-primary bg-gray-100');
-                const files = Array.from(e.originalEvent.dataTransfer.files);
-                selectedFiles = selectedFiles.concat(files);
+
+                selectedFiles = selectedFiles.concat([...e.originalEvent.dataTransfer.files]);
                 updateInputFiles();
                 showPreviews();
             });
 
             $input.on('change', function(e) {
-                const files = Array.from(e.target.files);
-                selectedFiles = selectedFiles.concat(files);
+                selectedFiles = selectedFiles.concat([...e.target.files]);
                 updateInputFiles();
                 showPreviews();
             });
 
             function showPreviews() {
                 $previewContainer.empty();
-                selectedFiles.forEach((file, index) => {
+
+                selectedFiles.forEach((file, i) => {
                     if (!file.type.startsWith('image/')) return;
 
                     const reader = new FileReader();
-                    reader.onload = function(e) {
+                    reader.onload = (e) => {
                         const $wrapper = $('<div class="relative group">');
                         const $img = $('<img>', {
                             src: e.target.result,
                             class: 'w-full h-24 object-cover rounded-lg border border-gray-200'
                         });
-                        const $removeBtn = $(
-                            `<button type="button" data-index="${index}" class="absolute top-1 right-1 bg-red-600 text-white rounded-full w-6 h-6 text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition">&times;</button>`
-                        );
 
-                        $removeBtn.on('click', function() {
-                            const idx = $(this).data('index');
-                            selectedFiles.splice(idx, 1);
+                        const $remove = $(`
+                            <button type="button" data-index="${i}"
+                                class="absolute top-1 right-1 bg-red-600 text-white rounded-full w-6 h-6 
+                                text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                                &times;
+                            </button>
+                        `);
+
+                        $remove.on('click', function() {
+                            selectedFiles.splice($(this).data('index'), 1);
                             updateInputFiles();
                             showPreviews();
                         });
 
-                        $wrapper.append($img).append($removeBtn);
+                        $wrapper.append($img, $remove);
                         $previewContainer.append($wrapper);
                     };
                     reader.readAsDataURL(file);
@@ -328,9 +363,9 @@
             }
 
             function updateInputFiles() {
-                const dataTransfer = new DataTransfer();
-                selectedFiles.forEach(file => dataTransfer.items.add(file));
-                $input[0].files = dataTransfer.files;
+                const dt = new DataTransfer();
+                selectedFiles.forEach(f => dt.items.add(f));
+                $input[0].files = dt.files;
             }
         });
     </script>
