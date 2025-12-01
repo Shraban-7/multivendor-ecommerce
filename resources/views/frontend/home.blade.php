@@ -216,7 +216,7 @@
 
             <!-- Scrollable Product List -->
             <div class="flex overflow-x-auto gap-4 pb-4 hide-scroll snap-x">
-                @foreach ($featured_products as $product)
+                @foreach ($products as $product)
                     <div
                         class="min-w-[200px] md:min-w-[240px] snap-start bg-white rounded-xl border border-gray-100 hover:border-primary-500 hover:shadow-xl transition-all duration-300 group relative">
                         <!-- Badges -->
@@ -227,7 +227,7 @@
                         <!-- Image Container -->
                         <div
                             class="relative h-48 w-full bg-gray-100 rounded-t-xl overflow-hidden p-4 flex items-center justify-center">
-                            <img src="{{ $product['thumbnail'] }}"
+                            <img src="{{ $product->thumbnail }}"
                                 class="max-h-full object-contain mix-blend-multiply group-hover:scale-110 transition duration-500">
 
                             <!-- Hover Actions -->
@@ -244,22 +244,24 @@
 
                         <!-- Content -->
                         <div class="p-3">
-                            <h3
-                                class="text-sm font-medium text-gray-800 line-clamp-2 hover:text-primary-600 cursor-pointer mb-1">
-                                {{ $product['name'] }}</h3>
+                            <a href="{{ route('products.details', $product->slug) }}">
+                                <h3
+                                    class="text-sm font-medium text-gray-800 line-clamp-2 hover:text-primary-600 cursor-pointer mb-1">
+                                    {{ $product->name }}</h3>
+                            </a>
                             <div class="flex items-center gap-1 mb-2">
                                 <i class="fas fa-star text-yellow-400 text-xs"></i>
                                 <span class="text-xs text-gray-400">(4.5)</span>
                             </div>
                             <div class="flex items-center gap-2">
-                                @if ($product['discounted_price'])
+                                @if ($product->discounted_price)
                                     <span
-                                        class="text-primary-600 font-bold text-lg">{{ money($product['discounted_price']) }}</span>
+                                        class="text-primary-600 font-bold text-lg">{{ money($product->discounted_price) }}</span>
                                     <span
-                                        class="text-gray-400 text-xs line-through">{{ money($product['selling_price']) }}</span>
+                                        class="text-gray-400 text-xs line-through">{{ money($product->selling_price) }}</span>
                                 @else
                                     <span
-                                        class="text-primary-600 font-bold text-lg">{{ money($product['selling_price']) }}</span>
+                                        class="text-primary-600 font-bold text-lg">{{ money($product->selling_price) }}</span>
                                 @endif
                             </div>
                         </div>
@@ -327,11 +329,11 @@
         <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">Featured <span
                 class="text-primary-600">Products</span></h2>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            @foreach ($featured_products as $product)
+            @foreach ($products as $product)
                 <div
                     class="bg-white rounded-xl border border-gray-100 hover:border-primary-500 hover:shadow-2xl transition-all duration-300 group overflow-hidden flex flex-col h-full relative">
                     <div class="relative h-48 w-full bg-gray-50 p-4 flex items-center justify-center overflow-hidden">
-                        <img src="{{ $product['thumbnail'] }}"
+                        <img src="{{ $product->thumbnail }}"
                             class="max-h-full object-contain hover:scale-105 transition duration-500 mix-blend-multiply z-0">
                         <div class="absolute top-2 right-2 z-10">
                             <button
@@ -352,19 +354,23 @@
                     <!-- Content Container -->
                     <div class="p-3 flex flex-col flex-1 relative z-20 bg-white">
                         <span
-                            class="text-[10px] text-gray-500 uppercase tracking-wide mb-1">{{ $product['category'] }}</span>
-                        <h3
-                            class="text-sm font-semibold text-gray-800 line-clamp-2 mb-auto hover:text-primary-600 transition cursor-pointer">
-                            {{ $product['name'] }}</h3>
+                            class="text-[10px] text-gray-500 uppercase tracking-wide mb-1">{{ $product->category->name }}</span>
+                        <a href="{{ route('products.details', $product->slug) }}">
+                            <h3
+                                class="text-sm font-semibold text-gray-800 line-clamp-2 mb-auto hover:text-primary-600 transition cursor-pointer">
+                                {{ $product->name }}</h3>
+                        </a>
 
                         <div class="mt-2 pt-2 border-t border-gray-50 flex items-center justify-between">
                             <div class="flex flex-col">
-                                @if ($product['discounted_price'])
+                                @if ($product->discounted_price)
                                     <span
-                                        class="text-xs text-gray-400 line-through">{{ money($product['discounted_price']) }}</span>
-                                    <span class="text-primary-600 font-bold">{{ money($product['selling_price']) }}</span>
+                                        class="text-xs text-gray-400 line-through">{{ money($product->selling_price) }}</span>
+                                    <span
+                                        class="text-primary-600 font-bold">{{ money($product->discounted_price) }}</span>
                                 @else
-                                    <span class="text-primary-600 font-bold">{{ money($product['selling_price']) }}</span>
+                                    <span
+                                        class="text-primary-600 font-bold">{{ money($product->selling_price) }}</span>
                                 @endif
                             </div>
                             <button
