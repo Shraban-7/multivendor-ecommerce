@@ -14,6 +14,13 @@ use Illuminate\Support\Facades\Cookie;
 
 class ProductController extends Controller
 {
+    public function index()
+    {
+        $products = Product::withDefaultRelations()->latest('id')->paginate(30);
+
+        return view('frontend.products.index', compact('products'));
+    }
+    
     public function details($slug, Request $request)
     {
         $limit = 10;

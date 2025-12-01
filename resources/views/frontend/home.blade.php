@@ -1,4 +1,5 @@
 @extends('frontend.layouts.app')
+@section('title', 'Slash Mart')
 @section('content')
     <!-- ==================== QUICK VIEW MODAL ==================== -->
     <div x-show="quickViewOpen" x-transition
