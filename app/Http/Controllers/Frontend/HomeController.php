@@ -76,9 +76,9 @@ class HomeController extends Controller
 
         $data['products'] = Product::withDefaultRelations()->active()->limit(10)->get();
 
-        return view('frontend.home', compact('data'));
+        return view('frontend.home', $data);
 
-        return view('frontend.pages.home', $data);
+        // return view('frontend.pages.home', $data);
     }
 
     public function category_details($slug)
