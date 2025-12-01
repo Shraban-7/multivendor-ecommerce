@@ -74,6 +74,8 @@ class HomeController extends Controller
 
         $data['brands'] = Brand::where('status',1)->latest()->limit(12)->get();
 
+        $data['products'] = Product::withDefaultRelations()->active()->limit(10)->get();
+
         return view('frontend.home', compact('data'));
 
         return view('frontend.pages.home', $data);
