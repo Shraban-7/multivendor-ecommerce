@@ -67,14 +67,11 @@ class HomeController extends Controller
         $data['hero_grid_three'] = HeroBanner::where('position', 3)->first();
         $data['hero_grid_four']  = HeroBanner::where('position', 4)->first();
         $data['hero_grid_five']  = HeroBanner::where('position', 5)->first();
-
+        
         $data['hero_banners'] = HeroBanner::active()->orderBy('position')->get();
-
         $data['sellers'] = Seller::active()->limit(8)->get();
-
-        $data['brands'] = Brand::where('status',1)->latest()->limit(12)->get();
-
-        $data['products'] = Product::withDefaultRelations()->active()->limit(10)->get();
+        $data['brands'] = Brand::where('status', 1)->orderBy('name')->limit(12)->get();
+        $data['products'] = Product::withDefaultRelations()->active()->limit(10)->latest('id')->get();
 
         return view('frontend.home', $data);
 
