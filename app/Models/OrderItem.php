@@ -42,4 +42,9 @@ class OrderItem extends Model
         }
         return $this->unit_price;
     }
+
+    public function review()
+    {
+        return $this->hasOne(Review::class, 'order_item_id');
+    }
 }

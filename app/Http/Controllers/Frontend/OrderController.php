@@ -77,7 +77,7 @@ class OrderController extends Controller
     {
         $user = Auth::user();
 
-        $order = Order::where('invoice_id', $invoice_id)->with('seller', 'payment', 'items')->first();
+        $order = Order::where('invoice_id', $invoice_id)->with('seller', 'payment', 'items.review')->first();
 
         $products = Product::latest('id')->limit(8)->get();
 
@@ -425,6 +425,10 @@ class OrderController extends Controller
             'rating' => $request->rating,
             'description' => $request->description,
         ]);
+
+        $reviewedProductSeller = Seller::where('id',$review->product->seller_id)->first();
+
+        $reviewedProductSeller->addRating($review->rating);
 
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $file) {
