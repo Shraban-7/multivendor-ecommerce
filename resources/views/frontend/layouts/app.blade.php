@@ -74,7 +74,7 @@
     $settings = settings();
 @endphp
 
-<body class="bg-gray-50 font-sans text-gray-800 antialiased">
+<body class="bg-gray-50 font-sans h-screen text-gray-800 antialiased">
     <div id="promoPopup" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 backdrop-blur-sm transition-opacity duration-300">
         <div class="relative bg-white rounded-2xl overflow-hidden shadow-2xl max-w-2xl w-[90%] md:flex">
             <button id="closePromoBtn" class="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center bg-white rounded-full shadow hover:text-primary-600 transition">
