@@ -45,7 +45,7 @@
 @section('content')
 
     <div class="flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-xl w-full max-w-4xl overflow-hidden flex flex-col h-full md:h-auto max-h-[800px]">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-4xl overflow-hidden flex flex-col">
             <!-- Progress Indicator -->
             <div class="bg-white p-6 border-b border-gray-200">
                 <div class="flex items-center justify-between">

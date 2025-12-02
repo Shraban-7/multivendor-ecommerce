@@ -4,11 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title') | Premium Multi-Vendor eCommerce</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>@yield('title') | eCommerce Marketplace</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="{{ asset('assets/libs/jquery/jquery-3.7.1.min.js') }}"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -71,10 +73,10 @@
 </head>
 
 @php
-    $settings = settings();
+$settings = settings();
 @endphp
 
-<body class="bg-gray-50 font-sans h-screen text-gray-800 antialiased">
+<body class="bg-gray-50 font-sans min-h-screen text-gray-800 antialiased">
     <div id="promoPopup" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 backdrop-blur-sm transition-opacity duration-300">
         <div class="relative bg-white rounded-2xl overflow-hidden shadow-2xl max-w-2xl w-[90%] md:flex">
             <button id="closePromoBtn" class="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center bg-white rounded-full shadow hover:text-primary-600 transition">
@@ -221,7 +223,7 @@
                     <a href="{{ route('seller.signup') }}" class="hidden lg:block bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition shadow-lg shadow-gray-500/20">
                         Become a Seller
                     </a>
-                    
+
                     @else
                     <a href="#" class="hidden md:flex flex-col items-center group relative">
                         <div class="relative">
@@ -242,21 +244,21 @@
                     <a href="{{ route('notifications.index') }}" class="hidden md:flex flex-col items-center group relative">
                         <div class="relative">
                             <i class="fa-regular fa-bell text-xl text-gray-700 group-hover:text-primary-600 transition"></i>
-                                @if ($notificationCount > 0)
-                                    <span
-                                        class="absolute -top-2 -right-2 bg-primary-600 text-white text-[10px] min-w-[16px] px-1 h-4 
+                            @if ($notificationCount > 0)
+                            <span
+                                class="absolute -top-2 -right-2 bg-primary-600 text-white text-[10px] min-w-[16px] px-1 h-4 
                                         rounded-full flex items-center justify-center leading-none font-bold shadow">
-                                        {{ $notificationCount }}
-                                    </span>
-                                @endif
+                                {{ $notificationCount }}
+                            </span>
+                            @endif
                         </div>
                         <span class="text-[11px] font-medium text-gray-500 mt-1">Notifications</span>
                     </a>
 
                     <a href="{{ auth('web')->check() ? route('orders.index') : route('seller.dashboard') }}" class="hidden lg:block bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition shadow-lg shadow-gray-500/20">
-                       Dashboard
+                        Dashboard
                     </a>
-                   @endif
+                    @endif
                 </div>
             </div>
         </div>
