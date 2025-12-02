@@ -6,10 +6,6 @@ $settings = settings();
 ?>
 
 @section('content')
-
-
-
-
     <!-- ==================== LOGIN SECTION ==================== -->
     <main class="flex-1 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-4xl overflow-hidden flex flex-col md:flex-row h-full md:h-auto max-h-[800px]">
@@ -21,13 +17,14 @@ $settings = settings();
                     <p class="text-gray-500 text-sm">Please enter your details to sign in.</p>
                 </div>
 
-                <form action="#" class="space-y-5">
+                <form action="{{ route('login') }}" method="POST" class="space-y-5">
+                    @csrf
                     <!-- Email Input -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
                         <div class="relative">
                             <span class="absolute left-4 top-3.5 text-gray-400"><i class="far fa-envelope"></i></span>
-                            <input type="email" placeholder="john@example.com" class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition text-sm">
+                            <input type="email" name="email" placeholder="john@example.com" class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition text-sm">
                         </div>
                     </div>
 
@@ -35,11 +32,11 @@ $settings = settings();
                     <div>
                         <div class="flex justify-between items-center mb-1">
                             <label class="block text-sm font-medium text-gray-700">Password</label>
-                            <a href="#" class="text-xs text-primary-600 hover:text-primary-700 font-medium">Forgot Password?</a>
+                            <a href="{{ route('password.forgot') }}" class="text-xs text-primary-600 hover:text-primary-700 font-medium">Forgot Password?</a>
                         </div>
                         <div class="relative">
                             <span class="absolute left-4 top-3.5 text-gray-400"><i class="fas fa-lock"></i></span>
-                            <input type="password" placeholder="••••••••" class="w-full pl-10 pr-12 py-3 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition text-sm" id="passwordInput">
+                            <input type="password" name="password" placeholder="••••••••" class="w-full pl-10 pr-12 py-3 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition text-sm" id="passwordInput">
                             <button type="button" class="absolute right-4 top-3.5 text-gray-400 hover:text-gray-600 cursor-pointer" onclick="togglePassword()">
                                 <i class="far fa-eye" id="eyeIcon"></i>
                             </button>
@@ -78,7 +75,7 @@ $settings = settings();
                 <!-- Sign Up Link -->
                 <p class="text-center text-sm text-gray-600 mt-8">
                     Don't have an account?
-                    <a href="#" class="text-primary-600 font-bold hover:underline">Create Account</a>
+                    <a href="{{ route('signup') }}" class="text-primary-600 font-bold hover:underline">Create Account</a>
                 </p>
             </div>
 
