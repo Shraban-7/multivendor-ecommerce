@@ -74,6 +74,7 @@
 
 @php
 $settings = settings();
+$notificationCount = notificationCount();
 @endphp
 
 <body class="bg-gray-50 font-sans min-h-screen text-gray-800 antialiased">
@@ -233,10 +234,12 @@ $settings = settings();
                         <span class="text-[10px] font-medium text-gray-500 mt-1">Wishlist</span>
                     </a>
 
-                    <a href="#" class="flex flex-col items-center group relative">
+                    <a href="{{ route('cart.details') }}" class="flex flex-col items-center group relative">
                         <div class="relative">
                             <i class="fas fa-shopping-cart text-xl text-gray-600 group-hover:text-primary-600 transition"></i>
-                            <span class="absolute -top-2 -right-2 bg-primary-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">5</span>
+                            @if ($cartCount > 0)
+                            <span class="absolute -top-2 -right-2 bg-primary-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">{{ $cartCount }}</span>
+                            @endif
                         </div>
                         <span class="text-[10px] font-medium text-gray-500 mt-1 hidden md:block">Cart</span>
                     </a>
