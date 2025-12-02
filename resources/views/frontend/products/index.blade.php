@@ -64,6 +64,28 @@
             border-bottom: 0px;
         }
 
+        .category-filter.active {
+            background-color: #fff7ed;
+            /* soft orange tint (orange-50) */
+            color: #ea580c;
+            /* orange-600 */
+            border-radius: 6px;
+            padding: 4px 8px;
+            transition: 0.2s;
+        }
+
+        .category-filter.active span {
+            color: #ea580c;
+            /* orange-600 */
+        }
+
+        .category-filter.active .count-badge {
+            background-color: #ffedd5;
+            /* orange-100 */
+            color: #ea580c;
+            /* orange-600 */
+        }
+
         @media (min-width: 640px) {
             .list-view-image {
                 width: 14rem;
@@ -128,8 +150,6 @@
                                     </a>
                                 </li>
                             @endforeach
-
-
                         </ul>
                     </div>
 
@@ -233,21 +253,61 @@
                 </div>
 
                 <!-- Active Filters Tags -->
-                <div class="flex flex-wrap gap-2 mb-6">
-                    <span
-                        class="bg-white border border-gray-200 text-gray-600 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-2 hover:border-primary-300 transition cursor-default">
-                        Headphones <button class="hover:text-red-500 text-gray-400 transition"><i
-                                class="fas fa-times"></i></button>
-                    </span>
-                    <span
-                        class="bg-white border border-gray-200 text-gray-600 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-2 hover:border-primary-300 transition cursor-default">
-                        Price: ৳500-15k <button class="hover:text-red-500 text-gray-400 transition"><i
-                                class="fas fa-times"></i></button>
-                    </span>
-                    <button
-                        class="text-xs text-red-500 hover:text-red-700 hover:underline font-medium ml-2 transition">Clear
-                        All</button>
+                <div class="flex flex-wrap gap-2 mb-6" id="active-filters">
+                    @if (!empty($selectedCategories))
+                        @foreach ($selectedCategories as $slug)
+                            @php
+                                $category = $categories->firstWhere('slug', $slug);
+                            @endphp
+                            @if ($category)
+                                <span
+                                    class="bg-white border border-gray-200 text-gray-600 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-2 transition">
+                                    {{ $category->name }}
+                                    <button class="remove-filter text-gray-400 hover:text-red-500" data-type="category"
+                                        data-slug="{{ $slug }}">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </span>
+                            @endif
+                        @endforeach
+                    @endif
+
+                    @if (!empty($selectedBrands))
+                        @foreach ($selectedBrands as $slug)
+                            @php
+                                $brand = $brands->firstWhere('slug', $slug);
+                            @endphp
+                            @if ($brand)
+                                <span
+                                    class="bg-white border border-gray-200 text-gray-600 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-2 transition">
+                                    {{ $brand->name }}
+                                    <button class="remove-filter text-gray-400 hover:text-red-500" data-type="brand"
+                                        data-slug="{{ $slug }}">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </span>
+                            @endif
+                        @endforeach
+                    @endif
+
+                    @if (!empty($selectedPrice ?? null))
+                        <span
+                            class="bg-white border border-gray-200 text-gray-600 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-2 transition">
+                            Price: ৳{{ $selectedPrice['min'] ?? '0' }}-{{ $selectedPrice['max'] ?? '∞' }}
+                            <button class="remove-filter text-gray-400 hover:text-red-500" data-type="price">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </span>
+                    @endif
+
+                    @if (!empty($selectedCategories) || !empty($selectedBrands) || !empty($selectedPrice ?? null))
+                        <button id="clear-all-filters"
+                            class="text-xs text-red-500 hover:text-red-700 hover:underline font-medium ml-2 transition">
+                            Clear All
+                        </button>
+                    @endif
                 </div>
+
 
                 <!-- Products Container -->
                 <div id="productsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -562,43 +622,85 @@
             let selectedCategories = [];
             let selectedBrands = [];
 
-            // Get selected category slugs
             document.querySelectorAll('.category-filter.active').forEach(el => {
                 selectedCategories.push(el.dataset.slug);
             });
 
-            // Get selected brand slugs
             document.querySelectorAll('.brand-filter:checked').forEach(el => {
                 selectedBrands.push(el.value);
             });
 
-            let params = new URLSearchParams();
+            const url = new URL(window.location.origin + '/products');
+            const params = new URLSearchParams();
 
             if (selectedCategories.length > 0) {
-                params.append("category", selectedCategories.join(','));
+                params.set('category', selectedCategories.join(','));
             }
 
             if (selectedBrands.length > 0) {
-                params.append("brand", selectedBrands.join(','));
+                params.set('brand', selectedBrands.join(','));
             }
 
-            window.location.href = "/products?" + params.toString();
+            url.search = params.toString(); 
+
+            window.location.href = url.toString();
         }
 
-        // Category click
+
+
+        // Category click — only one active at a time
         document.querySelectorAll('.category-filter').forEach(el => {
             el.addEventListener('click', function(e) {
                 e.preventDefault();
-                this.classList.toggle('active');
+
+                // Remove active from all categories
+                document.querySelectorAll('.category-filter').forEach(cat => cat.classList.remove(
+                    'active'));
+
+                // Add active to clicked category
+                this.classList.add('active');
+
                 updateUrl();
             });
         });
 
-        // Brand checkbox
+        // Brand checkbox change (multi-select allowed)
         document.querySelectorAll('.brand-filter').forEach(el => {
             el.addEventListener('change', function() {
                 updateUrl();
             });
+        });
+
+        // Remove single filter
+        document.querySelectorAll('.remove-filter').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const type = this.dataset.type;
+                const slug = this.dataset.slug;
+
+                const url = new URL(window.location.href);
+                const params = url.searchParams;
+
+                if (type === 'category') {
+                    params.delete('category'); // only one category allowed
+                } else if (type === 'brand') {
+                    let brands = params.get('brand')?.split(',') || [];
+                    brands = brands.filter(b => b !== slug);
+                    if (brands.length > 0) {
+                        params.set('brand', brands.join(','));
+                    } else {
+                        params.delete('brand');
+                    }
+                } else if (type === 'price') {
+                    params.delete('price');
+                }
+
+                window.location.href = url.pathname + '?' + params.toString();
+            });
+        });
+
+        // Clear All
+        document.getElementById('clear-all-filters')?.addEventListener('click', function() {
+            window.location.href = '/products';
         });
     </script>
 @endpush

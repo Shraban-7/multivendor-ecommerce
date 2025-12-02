@@ -49,8 +49,6 @@ class ProductController extends Controller
             'selectedBrands'
         ));
     }
-
-
     public function details($slug, Request $request)
     {
         $limit = 10;
