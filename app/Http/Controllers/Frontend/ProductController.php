@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Models\Brand;
+use App\Models\Category;
 use App\Models\User;
 use App\Models\Review;
 use App\Models\Seller;
@@ -14,18 +16,46 @@ use Illuminate\Support\Facades\Cookie;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::withDefaultRelations()->latest('id')->paginate(32);
+        $query = Product::withDefaultRelations()->latest('id');
 
-        return view('frontend.products.index', compact('products'));
+        $selectedCategories = $request->category ? explode(',', $request->category) : [];
+        $selectedBrands = $request->brand ? explode(',', $request->brand) : [];
+
+        if (!empty($selectedCategories)) {
+            $query->whereHas('category', function ($q) use ($selectedCategories) {
+                $q->whereIn('slug', $selectedCategories);
+            });
+        }
+
+        if (!empty($selectedBrands)) {
+            $query->whereHas('brand', function ($q) use ($selectedBrands) {
+                $q->whereIn('slug', $selectedBrands);
+            });
+        }
+
+        $products = $query->paginate(16)->appends($request->query());
+
+        $categories = Category::category()->withCount('products')->get();
+
+        $brands = Brand::all();
+
+        return view('frontend.products.index', compact(
+            'products',
+            'categories',
+            'brands',
+            'selectedCategories',
+            'selectedBrands'
+        ));
     }
-    
+
+
     public function details($slug, Request $request)
     {
         $limit = 10;
-        $page  = $request->get('page', 1);
-        $skip  = ($page - 1) * $limit;
+        $page = $request->get('page', 1);
+        $skip = ($page - 1) * $limit;
 
         $productModel = Product::where('slug', $slug)->withDefaultRelations()->firstOrFail();
 
@@ -49,10 +79,10 @@ class ProductController extends Controller
 
             AffiliateClick::create([
                 'affiliate_id' => $affiliateUser->id,
-                'product_id'   => $product['id'],
-                'ip_address'   => $request->ip(),
-                'user_agent'   => $request->userAgent(),
-                'clicked_at'   => now(),
+                'product_id' => $product['id'],
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+                'clicked_at' => now(),
             ]);
         }
 
@@ -72,7 +102,7 @@ class ProductController extends Controller
             ->pluck('count', 'rating')
             ->toArray();
 
-        $totalReviews  = array_sum($reviewStats);
+        $totalReviews = array_sum($reviewStats);
         $averageRating = $product['rating'];
 
         $ratings = collect(range(1, 5))->mapWithKeys(function ($star) use ($reviewStats) {
@@ -135,7 +165,7 @@ class ProductController extends Controller
     {
         if ($request->ajax()) {
             $productId = $request->product_id;
-            $page      = $request->page ?? 1;
+            $page = $request->page ?? 1;
 
             $reviews = Review::where('product_id', $productId)
                 ->latest()
@@ -148,9 +178,9 @@ class ProductController extends Controller
             $view = view('frontend.partials.review-card', compact('reviews'))->render();
 
             return response()->json([
-                'html'      => $view,
+                'html' => $view,
                 'next_page' => $reviews->currentPage() + 1,
-                'has_more'  => $reviews->hasMorePages(),
+                'has_more' => $reviews->hasMorePages(),
             ]);
         }
     }

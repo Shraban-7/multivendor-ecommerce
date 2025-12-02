@@ -114,34 +114,22 @@
                     <div class="mb-6 border-b border-gray-100 pb-5">
                         <h3 class="font-bold text-gray-800 mb-3 text-sm uppercase tracking-wider">Categories</h3>
                         <ul class="space-y-2 text-sm text-gray-600">
-                            <li>
-                                <a href="#" class="flex justify-between items-center group">
-                                    <span class="group-hover:text-primary-600 transition">Smartphones</span>
-                                    <span
-                                        class="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full group-hover:bg-primary-50 group-hover:text-primary-600 transition">120</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#"
-                                    class="flex justify-between items-center group font-medium text-primary-600">
-                                    <span>Headphones</span>
-                                    <span class="text-xs bg-primary-100 text-primary-600 px-2 py-0.5 rounded-full">45</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="flex justify-between items-center group">
-                                    <span class="group-hover:text-primary-600 transition">Laptops</span>
-                                    <span
-                                        class="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full group-hover:bg-primary-50 group-hover:text-primary-600 transition">32</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="flex justify-between items-center group">
-                                    <span class="group-hover:text-primary-600 transition">Accessories</span>
-                                    <span
-                                        class="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full group-hover:bg-primary-50 group-hover:text-primary-600 transition">85</span>
-                                </a>
-                            </li>
+                            @foreach ($categories as $category)
+                                <li>
+                                    <a href="#" data-slug="{{ $category->slug }}"
+                                        class="category-filter flex justify-between items-center group
+                                         @if (in_array($category->slug, $selectedCategories)) active @endif">
+
+                                        <span>{{ $category->name }}</span>
+
+                                        <span class="text-xs bg-gray-100 px-2 py-0.5 rounded-full">
+                                            {{ $category->products_count }}
+                                        </span>
+                                    </a>
+                                </li>
+                            @endforeach
+
+
                         </ul>
                     </div>
 
@@ -171,31 +159,13 @@
                     <div class="mb-6 border-b border-gray-100 pb-5">
                         <h3 class="font-bold text-gray-800 mb-3 text-sm uppercase tracking-wider">Brands</h3>
                         <div class="space-y-2 max-h-40 overflow-y-auto pr-2">
-                            <label class="flex items-center gap-3 cursor-pointer group">
-                                <input type="checkbox"
-                                    class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
-                                <span class="text-sm text-gray-600 group-hover:text-gray-900">Samsung</span>
-                            </label>
-                            <label class="flex items-center gap-3 cursor-pointer group">
-                                <input type="checkbox"
-                                    class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
-                                <span class="text-sm text-gray-600 group-hover:text-gray-900">Apple</span>
-                            </label>
-                            <label class="flex items-center gap-3 cursor-pointer group">
-                                <input type="checkbox" checked
-                                    class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
-                                <span class="text-sm text-gray-600 group-hover:text-gray-900">Sony</span>
-                            </label>
-                            <label class="flex items-center gap-3 cursor-pointer group">
-                                <input type="checkbox"
-                                    class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
-                                <span class="text-sm text-gray-600 group-hover:text-gray-900">Xiaomi</span>
-                            </label>
-                            <label class="flex items-center gap-3 cursor-pointer group">
-                                <input type="checkbox"
-                                    class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
-                                <span class="text-sm text-gray-600 group-hover:text-gray-900">Baseus</span>
-                            </label>
+                            @foreach ($brands as $brand)
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input type="checkbox" value="{{ $brand->slug }}" class="brand-filter w-4 h-4"
+                                        @if (in_array($brand->slug, $selectedBrands)) checked @endif>
+                                    <span class="text-sm text-gray-600">{{ $brand->name }}</span>
+                                </label>
+                            @endforeach
                         </div>
                     </div>
 
@@ -586,6 +556,49 @@
                 });
             });
 
+        });
+
+        function updateUrl() {
+            let selectedCategories = [];
+            let selectedBrands = [];
+
+            // Get selected category slugs
+            document.querySelectorAll('.category-filter.active').forEach(el => {
+                selectedCategories.push(el.dataset.slug);
+            });
+
+            // Get selected brand slugs
+            document.querySelectorAll('.brand-filter:checked').forEach(el => {
+                selectedBrands.push(el.value);
+            });
+
+            let params = new URLSearchParams();
+
+            if (selectedCategories.length > 0) {
+                params.append("category", selectedCategories.join(','));
+            }
+
+            if (selectedBrands.length > 0) {
+                params.append("brand", selectedBrands.join(','));
+            }
+
+            window.location.href = "/products?" + params.toString();
+        }
+
+        // Category click
+        document.querySelectorAll('.category-filter').forEach(el => {
+            el.addEventListener('click', function(e) {
+                e.preventDefault();
+                this.classList.toggle('active');
+                updateUrl();
+            });
+        });
+
+        // Brand checkbox
+        document.querySelectorAll('.brand-filter').forEach(el => {
+            el.addEventListener('change', function() {
+                updateUrl();
+            });
         });
     </script>
 @endpush
