@@ -18,10 +18,13 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::withDefaultRelations()->latest('id');
+        $query = Product::withDefaultRelations();
 
         $selectedCategories = $request->category ? explode(',', $request->category) : [];
         $selectedBrands = $request->brand ? explode(',', $request->brand) : [];
+        $sortFilter = $request->sort ?? 'popularity';
+        $priceMin = $request->price_min ?? 0;
+        $priceMax = $request->price_max ?? 50000;
 
         if (!empty($selectedCategories)) {
             $query->whereHas('category', function ($q) use ($selectedCategories) {
@@ -35,9 +38,35 @@ class ProductController extends Controller
             });
         }
 
+        if ($request->has('price_min') || $request->has('price_max')) {
+            $query->whereBetween('selling_price', [$priceMin, $priceMax]);
+        }
+
+        switch ($sortFilter) {
+
+            case 'newest':
+                $query->orderBy('created_at', 'desc');
+                break;
+
+            case 'low_high':
+                $query->orderBy('selling_price', 'asc');
+                break;
+
+            case 'high_low':
+                $query->orderBy('selling_price', 'desc');
+                break;
+
+            default:
+                $query->orderBy('stock_out', 'desc');
+                break;
+        }
+
         $products = $query->paginate(16)->appends($request->query());
 
-        $categories = Category::category()->withCount('products')->get();
+        $categories = Category::category()
+            ->withCount('products')
+            ->having('products_count', '>', 0)
+            ->get();
 
         $brands = Brand::all();
 
@@ -46,9 +75,11 @@ class ProductController extends Controller
             'categories',
             'brands',
             'selectedCategories',
-            'selectedBrands'
+            'selectedBrands',
+            'sortFilter'
         ));
     }
+
     public function details($slug, Request $request)
     {
         $limit = 10;

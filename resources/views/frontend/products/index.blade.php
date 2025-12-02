@@ -100,12 +100,11 @@
         <div class="container mx-auto px-4">
             <nav class="flex text-sm text-gray-500" aria-label="Breadcrumb">
                 <ol class="inline-flex items-center space-x-2">
-                    <li><a href="index.html" class="hover:text-primary-600 transition"><i class="fas fa-home mr-1"></i>
+                    <li><a href="{{ route('home') }}" class="hover:text-primary-600 transition"><i class="fas fa-home mr-1"></i>
                             Home</a></li>
                     <li><i class="fas fa-chevron-right text-[10px] text-gray-400"></i></li>
-                    <li><a href="#" class="hover:text-primary-600 transition">Electronics</a></li>
-                    <li><i class="fas fa-chevron-right text-[10px] text-gray-400"></i></li>
-                    <li class="font-medium text-gray-900" aria-current="page">Headphones & Audio</li>
+                    <li><a href="{{ route('products.index') }}" class="hover:text-primary-600 transition">Products</a></li>
+                
                 </ol>
             </nav>
         </div>
@@ -156,24 +155,34 @@
                     <!-- Price Range -->
                     <div class="mb-6 border-b border-gray-100 pb-5">
                         <h3 class="font-bold text-gray-800 mb-4 text-sm uppercase tracking-wider">Price Range</h3>
+
                         <div class="px-2">
-                            <input type="range" min="0" max="50000" value="15000"
+
+                            <!-- RANGE SLIDER -->
+                            <input id="priceRange" type="range" min="0" max="50000"
+                                value="{{ request('price_max', 50000) }}"
                                 class="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer mb-4">
+
                             <div class="flex items-center justify-between gap-2">
+                                <!-- MIN -->
                                 <div class="border border-gray-200 rounded px-3 py-1 bg-gray-50 w-24">
                                     <span class="text-xs text-gray-500 block">Min</span>
-                                    <input type="number" value="500"
+                                    <input id="priceMin" type="number" value="{{ request('price_min', 0) }}"
                                         class="w-full bg-transparent text-sm font-bold text-gray-800 outline-none p-0 border-none">
                                 </div>
+
                                 <span class="text-gray-400">-</span>
+
+                                <!-- MAX -->
                                 <div class="border border-gray-200 rounded px-3 py-1 bg-gray-50 w-24">
                                     <span class="text-xs text-gray-500 block">Max</span>
-                                    <input type="number" value="15000"
+                                    <input id="priceMax" type="number" value="{{ request('price_max', 50000) }}"
                                         class="w-full bg-transparent text-sm font-bold text-gray-800 outline-none p-0 border-none">
                                 </div>
                             </div>
                         </div>
                     </div>
+
 
                     <!-- Brands -->
                     <div class="mb-6 border-b border-gray-100 pb-5">
@@ -220,25 +229,39 @@
                 <div
                     class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
                     <p class="text-sm text-gray-500">
-                        Showing <span class="font-bold text-gray-900">1-16</span> of <span
-                            class="font-bold text-gray-900">45</span> results
+                        Showing
+                        <span class="font-bold text-gray-900">{{ $products->firstItem() }}</span>
+                        -
+                        <span class="font-bold text-gray-900">{{ $products->lastItem() }}</span>
+                        of
+                        <span class="font-bold text-gray-900">{{ $products->total() }}</span>
+                        results
                     </p>
+
 
                     <div class="flex items-center gap-3 w-full sm:w-auto">
                         <!-- Sort Select -->
                         <div class="relative flex-1 sm:flex-none group">
-                            <select
-                                class="w-full sm:w-48 appearance-none bg-gray-50 border border-gray-200 text-gray-700 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block p-2.5 pr-8 cursor-pointer hover:border-primary-300 transition">
-                                <option value="popularity">Sort by Popularity</option>
-                                <option value="newest">Newest Arrivals</option>
-                                <option value="low_high">Price: Low to High</option>
-                                <option value="high_low">Price: High to Low</option>
+                            <select name="sort"
+                                class="sort-filter w-full sm:w-48 appearance-none bg-gray-50 border border-gray-200 text-gray-700 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block p-2.5 pr-8 cursor-pointer hover:border-primary-300 transition">
+
+                                <option value="" {{ request('sort') == 'popularity' ? 'selected' : '' }}>Sort by
+                                    Popularity</option>
+                                <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Newest Arrivals
+                                </option>
+                                <option value="low_high" {{ request('sort') == 'low_high' ? 'selected' : '' }}>Price: Low
+                                    to
+                                    High</option>
+                                <option value="high_low" {{ request('sort') == 'high_low' ? 'selected' : '' }}>Price: High
+                                    to Low</option>
                             </select>
+
                             <div
                                 class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
                                 <i class="fas fa-chevron-down text-xs"></i>
                             </div>
                         </div>
+
 
                         <!-- View Toggles -->
                         <div class="flex bg-gray-100 p-1 rounded-lg shrink-0">
@@ -619,33 +642,57 @@
         });
 
         function updateUrl() {
-            let selectedCategories = [];
-            let selectedBrands = [];
+            let params = new URLSearchParams();
 
+            // Category
+            let selectedCategories = [];
             document.querySelectorAll('.category-filter.active').forEach(el => {
                 selectedCategories.push(el.dataset.slug);
             });
+            if (selectedCategories.length) {
+                params.append("category", selectedCategories.join(','));
+            }
 
+            // Brand
+            let selectedBrands = [];
             document.querySelectorAll('.brand-filter:checked').forEach(el => {
                 selectedBrands.push(el.value);
             });
-
-            const url = new URL(window.location.origin + '/products');
-            const params = new URLSearchParams();
-
-            if (selectedCategories.length > 0) {
-                params.set('category', selectedCategories.join(','));
+            if (selectedBrands.length) {
+                params.append("brand", selectedBrands.join(','));
             }
 
-            if (selectedBrands.length > 0) {
-                params.set('brand', selectedBrands.join(','));
+            // Sort
+            let sortValue = document.querySelector('.sort-filter')?.value;
+            if (sortValue) {
+                params.append("sort", sortValue);
             }
 
-            url.search = params.toString(); 
+            // Price
+            let min = document.getElementById("priceMin").value;
+            let max = document.getElementById("priceMax").value;
 
-            window.location.href = url.toString();
+            if (min) params.append("price_min", min);
+            if (max) params.append("price_max", max);
+
+            let query = params.toString();
+            window.location.href = query ? "/products?" + query : "/products";
         }
 
+        /* ---------- PRICE HANDLERS ---------- */
+        const priceMin = document.getElementById("priceMin");
+        const priceMax = document.getElementById("priceMax");
+        const priceRange = document.getElementById("priceRange");
+
+        // Slider updates max input
+        priceRange.addEventListener("input", function() {
+            priceMax.value = this.value;
+        });
+
+        // Apply filter when price inputs change
+        [priceMin, priceMax, priceRange].forEach(el => {
+            el.addEventListener("change", updateUrl);
+        });
 
 
         // Category click — only one active at a time
@@ -670,6 +717,11 @@
                 updateUrl();
             });
         });
+
+        document.querySelector('.sort-filter').addEventListener('change', function() {
+            updateUrl();
+        });
+
 
         // Remove single filter
         document.querySelectorAll('.remove-filter').forEach(btn => {
