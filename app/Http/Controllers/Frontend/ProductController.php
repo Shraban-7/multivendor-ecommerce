@@ -16,7 +16,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::withDefaultRelations()->latest('id')->paginate(30);
+        $products = Product::withDefaultRelations()->latest('id')->paginate(32);
 
         return view('frontend.products.index', compact('products'));
     }
