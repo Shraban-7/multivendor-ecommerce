@@ -424,11 +424,12 @@ class OrderController extends Controller
             'user_id' => $user->id,
             'rating' => $request->rating,
             'description' => $request->description,
+            'is_reviewed' => 1
         ]);
 
         $review->product->addRating($review->rating);
 
-        $reviewedProductSeller = Seller::where('id',$review->product->seller_id)->first();
+        $reviewedProductSeller = Seller::where('id', $review->product->seller_id)->first();
 
         $reviewedProductSeller->addRating($review->rating);
 

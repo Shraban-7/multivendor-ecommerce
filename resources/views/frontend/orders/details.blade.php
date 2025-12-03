@@ -182,7 +182,7 @@
                             <!-- Buttons -->
                             <div class="flex flex-col md:flex-row gap-3">
                                 <button type="submit"
-                                    class="w-full bg-primary text-white py-2 rounded-lg hover:bg-theme-dark transition">
+                                    class="w-full bg-primary-500 text-white py-2 rounded-lg hover:bg-theme-dark transition">
                                     Submit Review
                                 </button>
                                 <button type="button" id="cancel-review"

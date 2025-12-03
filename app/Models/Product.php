@@ -272,7 +272,7 @@ class Product extends Model
 
     public function addRating($newRating)
     {
-        $this->rating = (($this->rating * $this->rating_count) + $newRating) / ($this->rating_count + 1);
+        $this->avg_rating = (($this->avg_rating * $this->rating_count) + $newRating) / ($this->rating_count + 1);
         $this->rating_count += 1;
         $this->save();
     }
