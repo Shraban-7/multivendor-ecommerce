@@ -82,7 +82,7 @@
                                                     class="inline">
                                                     @csrf
                                                     <button type="submit"
-                                                        class="bg-primary text-white px-3 py-2 rounded text-xs hover:opacity-90 transition">
+                                                        class="bg-primary-500 text-white px-3 py-2 rounded text-xs hover:opacity-90 transition">
                                                         Pay Now
                                                     </button>
                                                 </form>

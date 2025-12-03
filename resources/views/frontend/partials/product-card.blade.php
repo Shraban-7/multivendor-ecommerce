@@ -30,8 +30,8 @@
 
         <!-- Quick View -->
         <button type="button" data-modal-target="quick-view-modal-{{ $product['id'] }}"
-            data-modal-toggle="quick-view-modal-{{ $product['id'] }}" data-action="quick-view"
-            class="absolute bottom-3 right-3 
+            data-modal-toggle="quick-view-modal-{{ $product['id'] }}" data-slug="{{ $product['slug'] }}" data-action="quick-view"
+            class="btn-quickview absolute bottom-3 right-3 
            opacity-100 md:opacity-0 md:group-hover:opacity-100 
            translate-y-0 md:translate-y-2 md:group-hover:translate-y-0
            px-3 py-1.5 text-xs font-medium text-gray-700 bg-white/90 rounded-full shadow-md
