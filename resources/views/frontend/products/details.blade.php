@@ -215,7 +215,7 @@
             <!-- Load More Btn -->
             <div class="mt-10 text-center load-more-btn">
                 <button data-page="1" data-type="products" data-url="{{ request()->url() }}" id="loadMoreProducts"
-                    class="inline-flex items-center gap-2 px-6 py-3 text-sm md:text-base font-medium text-white bg-primary rounded-lg shadow hover:bg-theme-dark transition"
+                    class="text-sm font-semibold text-primary-600 border border-primary-600 px-4 py-1.5 rounded-full hover:bg-primary-600 hover:text-white transition"
                     type="button">
                     <span>Load More</span>
                     <i class="text-sm fa-solid fa-chevron-down"></i>
