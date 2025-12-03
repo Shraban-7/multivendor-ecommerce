@@ -78,7 +78,7 @@
         <button id="loadMoreBtn" data-page="1"
             data-url="{{ route('sellers.shop', $seller->username) }}?sortBy={{ request()->sortBy }}"
             type="button"
-            class="bg-primary hover:bg-primary-dark text-white px-8 py-3 rounded-md text-base font-medium inline-flex gap-2 items-center shadow-sm hover:shadow-md hover:scale-105 transition-transform transition-shadow">
+            class="bg-primary-500 hover:bg-primary-dark text-white px-8 py-3 rounded-md text-base font-medium inline-flex gap-2 items-center shadow-sm hover:shadow-md hover:scale-105 transition-transform transition-shadow">
             <span>Load More</span>
             <i class="fa-solid fa-chevron-down text-sm"></i>
         </button>

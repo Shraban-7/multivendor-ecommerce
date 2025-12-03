@@ -54,9 +54,7 @@ class SellerController extends Controller
         $page  = $request->get('page', 1);
         $skip  = ($page - 1) * $limit;
 
-        $productQuery = Product::with('category')
-            ->active()
-            ->where('seller_id', $seller->id);
+        $productQuery = Product::where('seller_id', $seller->id)->withDefaultRelations()->active();
 
         if ($request->sortBy == 'best-selling') {
             $productQuery->where('best_selling', 1);
@@ -70,7 +68,7 @@ class SellerController extends Controller
 
         $shopProducts = $productQuery->skip($skip)->take($limit)->get();
 
-        $products = $shopProducts->map(fn($product) => $product->toDetailsArray());
+        $products = $shopProducts;
 
         $categoryIds = Product::with('category')
             ->where('seller_id', $seller->id)->pluck('category_id')->unique()->values()->all();
