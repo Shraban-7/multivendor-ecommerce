@@ -73,13 +73,17 @@
     @stack('header')
 </head>
 
-@php
+<?php
+
+use Illuminate\Support\Facades\View;
+
 $settings = settings();
 $notificationCount = notificationCount();
-@endphp
+$isDashboard = View::hasSection('dashboard');
+?>
 
 <body class="bg-gray-50 font-sans min-h-screen text-gray-800 antialiased">
-    <div id="promoPopup" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 backdrop-blur-sm transition-opacity duration-300">
+    <div id="promoPopup" class="hidden opacity-0 fixed inset-0 z-[60] flex items-center justify-center bg-black/70 backdrop-blur-sm transition-opacity duration-300">
         <div class="relative bg-white rounded-2xl overflow-hidden shadow-2xl max-w-2xl w-[90%] md:flex">
             <button id="closePromoBtn" class="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center bg-white rounded-full shadow hover:text-primary-600 transition">
                 <i class="fa-solid fa-times"></i>
@@ -268,9 +272,22 @@ $notificationCount = notificationCount();
         </div>
     </header>
 
+    @if (!$isDashboard)
     <div class="container mx-auto px-4">
         @yield('content')
     </div>
+    @endif
+
+    @if ($isDashboard)
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mb-10" id="main">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 items-start">
+            @include('frontend.layouts.sidebar')
+            <section class="md:col-span-3 space-y-6">
+                @yield('dashboard')
+            </section>
+        </div>
+    </main>
+    @endif
 
     <footer class="bg-white pt-16 border-t border-gray-200">
         <div class="container mx-auto px-4 pb-8">
@@ -366,8 +383,13 @@ $notificationCount = notificationCount();
     <script src="{{ asset('assets/libs/toastr/js/toastr.min.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const SHOW_PROMO_MODAL = "{{ request()-> routeIs('home') ? 1 : 0 }}";
             const promoPopup = document.getElementById('promoPopup');
             const closePromoBtns = document.querySelectorAll('#closePromoBtn, .close-promo-trigger');
+            if (SHOW_PROMO_MODAL == 1 && promoPopup) {
+                promoPopup.classList.remove('hidden');
+                setTimeout(() => promoPopup.style.opacity = '1', 10);
+            }
 
             if (promoPopup) {
                 closePromoBtns.forEach(btn => {
@@ -568,7 +590,7 @@ $notificationCount = notificationCount();
                                 toastr.warning(xhr.responseJSON.error);
                                 setTimeout(() => {
                                     window.location.href = "{{ route('login') }}";
-                                }, 1000); 
+                                }, 1000);
                             } else if (xhr.status === 403) {
                                 toastr.warning(xhr.responseJSON.error);
                             } else {
@@ -927,23 +949,23 @@ $notificationCount = notificationCount();
     </script>
 
     @if (auth()->check() && auth()->user()->isAffiliate())
-        <script>
-            function copyReferralLink(button, referralCode, productUrl) {
-                // Append ?ref=referralCode to the product URL
-                const referralUrl = `${productUrl}?ref=${referralCode}`;
+    <script>
+        function copyReferralLink(button, referralCode, productUrl) {
+            // Append ?ref=referralCode to the product URL
+            const referralUrl = `${productUrl}?ref=${referralCode}`;
 
-                navigator.clipboard.writeText(referralUrl).then(() => {
-                    const tooltip = button.querySelector('.tooltip-text');
-                    tooltip.classList.remove('opacity-0');
-                    tooltip.classList.add('opacity-100');
+            navigator.clipboard.writeText(referralUrl).then(() => {
+                const tooltip = button.querySelector('.tooltip-text');
+                tooltip.classList.remove('opacity-0');
+                tooltip.classList.add('opacity-100');
 
-                    setTimeout(() => {
-                        tooltip.classList.remove('opacity-100');
-                        tooltip.classList.add('opacity-0');
-                    }, 2000);
-                });
-            }
-        </script>
+                setTimeout(() => {
+                    tooltip.classList.remove('opacity-100');
+                    tooltip.classList.add('opacity-0');
+                }, 2000);
+            });
+        }
+    </script>
     @endif
 
     @stack('scripts')
