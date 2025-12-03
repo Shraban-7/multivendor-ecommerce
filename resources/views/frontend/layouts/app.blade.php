@@ -443,6 +443,7 @@ $isDashboard = View::hasSection('dashboard');
 
             $(document).on('click', '.btn-quickview', function() {
                 const slug = $(this).data('slug');
+                $('#quickViewModal .quickview-content').html('');
                 $.ajax({
                     url: "/products/" + slug + "/quick-view",
                     type: "GET",
@@ -468,6 +469,12 @@ $isDashboard = View::hasSection('dashboard');
             // Close on click outside
             quickViewModal.addEventListener('click', (e) => {
                 if (e.target === quickViewModal) {
+                    toggleQuickView(false);
+                }
+            });
+
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('#quickViewCloseBtn')) {
                     toggleQuickView(false);
                 }
             });
