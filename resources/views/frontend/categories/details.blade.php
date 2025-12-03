@@ -85,7 +85,7 @@
                 @if ($products->count() >= 16)
                     <div class="mt-5 text-center">
                         <button data-page="1" data-url="{{ route('category.details', $category->slug) }}" id="loadMoreBtn"
-                            class="inline-flex items-center gap-2 px-6 py-3 text-sm md:text-base font-medium text-white bg-primary rounded-lg shadow hover:bg-theme-dark transition">
+                            class="inline-flex items-center gap-2 px-6 py-3 text-sm md:text-base font-medium text-white bg-primary-500 rounded-lg shadow hover:bg-theme-dark transition">
                             <span>Load More</span>
                             <i class="fa-solid fa-chevron-down text-xs"></i>
                         </button>
