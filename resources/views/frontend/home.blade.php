@@ -79,7 +79,7 @@
     </div>
     <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-4">
         @foreach ($categories as $category)
-        <a href="{{ route('category.details',$category->slug) }}" class="group flex flex-col items-center gap-3 p-4 bg-white rounded-xl shadow-sm border border-transparent hover:border-primary-200 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+        <a href="{{ route('category.details', $category->slug) }}" class="group flex flex-col items-center gap-3 p-4 bg-white rounded-xl shadow-sm border border-transparent hover:border-primary-200 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
             <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-2xl text-gray-600 group-hover:bg-primary-50 group-hover:text-primary-600 transition">
                 <i class="{{ $category->icon }}"></i>
             </div>
@@ -104,7 +104,7 @@
                     <span class="bg-gray-800 p-1.5 rounded">45</span>
                 </div>
             </div>
-            <a href="{{ route('products.index') }}" class="text-sm font-semibold text-primary-600 border border-primary-600 px-4 py-1.5 rounded-full hover:bg-primary-600 hover:text-white transition">See All Products</a>
+            <a href="shop.html" class="text-sm font-semibold text-primary-600 border border-primary-600 px-4 py-1.5 rounded-full hover:bg-primary-600 hover:text-white transition">See All Products</a>
         </div>
 
         <div class="flex overflow-x-auto gap-4 pb-4 hide-scroll snap-x">

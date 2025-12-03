@@ -58,22 +58,20 @@ class CategoryController extends Controller
 
         if ($request->has('attributes')) {
             foreach ($request->attributes as $optionName => $values) {
-                dd("enter");
+
                 if (!empty($values) && !in_array('all', $values)) {
                     $ok =   $query->whereHas('variants.variantOptions.optionValue.option', function ($q) use ($optionName) {
                         $q->where('name', $optionName);
                     })->whereHas('variants.variantOptions.optionValue', function ($q) use ($values) {
                         $q->whereIn('value', (array) $values);
                     });
-                    dd($ok);
                 }
             }
         }
 
         $products = $query->skip($skip)
             ->take($limit)
-            ->get()
-            ->map(fn($product) => $product->toDetailsArray());
+            ->get();
 
         $optionIds = CategoryOption::where('category_id', $category->id)->pluck('option_id');
         $usedOptionValueIds = ProductVariantOption::distinct()->pluck('option_value_id');
@@ -85,7 +83,7 @@ class CategoryController extends Controller
                 }
             ])
             ->get();
-
+            
         if ($request->ajax()) {
             if ($products->isEmpty()) {
                 return '';

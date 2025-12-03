@@ -123,7 +123,7 @@ class ProductController extends Controller
             ->take($limit)
             ->get();
 
-        $products = $interest_products->map(fn($product) => $product->toDetailsArray());
+        $products = $interest_products;
 
         $reviewStats = Review::where('product_id', $product['id'])
             ->select('rating', DB::raw('count(*) as count'))
