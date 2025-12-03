@@ -2,7 +2,7 @@
 @section('title', 'Slash Mart')
 @section('content')
 <!-- ==================== 3. HERO BANNER AREA ==================== -->
-<section class="container mx-auto px-4 py-6">
+<section class="py-6">
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 h-auto lg:h-[450px]">
         <div class="lg:col-span-3 relative rounded-2xl overflow-hidden shadow-lg group">
             <div class="absolute inset-0 bg-gray-900/10 z-10 group-hover:bg-transparent transition"></div>
@@ -38,7 +38,7 @@
 </section>
 
 <!-- ==================== 15. WHY CHOOSE US ==================== -->
-<section class="container mx-auto px-4 py-8">
+<section class="py-8">
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
         <div class="flex items-center gap-4 p-2">
             <div class="bg-orange-50 w-12 h-12 rounded-full flex items-center justify-center text-primary-600 text-xl"><i class="fas fa-shipping-fast"></i></div>
@@ -72,7 +72,7 @@
 </section>
 
 <!-- ==================== 5. CATEGORY GRID SECTION ==================== -->
-<section class="container mx-auto px-4 py-8">
+<section class="py-8">
     <div class="flex justify-between items-end mb-6">
         <h2 class="text-2xl font-bold text-gray-900">Shop By <span class="text-primary-600">Category</span></h2>
         <a href="shop.html" class="text-sm font-medium text-primary-600 hover:text-primary-700">View All <i class="fas fa-arrow-right ml-1"></i></a>
@@ -90,7 +90,7 @@
 </section>
 
 <!-- ==================== 6. FLASH SALE SECTION ==================== -->
-<section class="container mx-auto px-4 py-8">
+<section class="py-8">
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         <!-- Header -->
         <div class="flex flex-col md:flex-row items-center justify-between border-b border-gray-100 pb-4 mb-6 gap-4">
@@ -148,7 +148,7 @@
 </section>
 
 <!-- ==================== 13. SPECIAL CAMPAIGN BANNER ==================== -->
-<section class="container mx-auto px-4 py-4">
+<section class="py-4">
     <div class="relative rounded-2xl overflow-hidden shadow-lg h-40 md:h-64 flex items-center bg-gray-900">
         <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1596462502278-27bfdd403348?q=80&w=1200')] bg-cover bg-center opacity-40"></div>
         <div class="relative z-10 p-8 md:pl-16">
@@ -159,7 +159,7 @@
     </div>
 </section>
 
-<section class="container mx-auto px-4 py-8">
+<section class="py-8">
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold text-gray-900">Top <span class="text-primary-600">Sellers</span></h2>
     </div>
@@ -188,7 +188,7 @@
 </section>
 
 <!-- ==================== 9. FEATURED PRODUCTS (GRID) ==================== -->
-<section class="container mx-auto px-4 py-8">
+<section class="py-8">
     <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">Featured <span class="text-primary-600">Products</span></h2>
 
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
@@ -233,7 +233,7 @@
 </section>
 
 <!-- ==================== 14. POPULAR BRANDS ==================== -->
-<section class="container mx-auto px-4 py-8 border-t border-gray-200">
+<section class="py-8 border-t border-gray-200">
     <h2 class="text-xl font-bold text-gray-900 mb-6">Popular <span class="text-primary-600">Brands</span></h2>
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
         @foreach ($brands as $brand)
@@ -249,7 +249,7 @@
 
 <!-- ==================== 16. TESTIMONIALS ==================== -->
 <section class="bg-orange-50 py-12">
-    <div class="container mx-auto px-4">
+    <div class="">
         <div class="text-center max-w-2xl mx-auto mb-10">
             <h2 class="text-3xl font-bold text-gray-900 mb-2">What Our Customers Say</h2>
             <p class="text-gray-500">Thousands of happy customers across Bangladesh</p>
@@ -321,7 +321,7 @@
 </section>
 
 <!-- ==================== 17 & 18. NEWSLETTER & APP DOWNLOAD ==================== -->
-<section class="container mx-auto px-4 py-12">
+<section class=" py-12">
     <div
         class="bg-gray-900 rounded-3xl p-8 md:p-12 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
         <!-- Decor Circles -->
