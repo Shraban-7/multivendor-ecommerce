@@ -104,7 +104,7 @@
                     <span class="bg-gray-800 p-1.5 rounded">45</span>
                 </div>
             </div>
-            <a href="shop.html" class="text-sm font-semibold text-primary-600 border border-primary-600 px-4 py-1.5 rounded-full hover:bg-primary-600 hover:text-white transition">See All Products</a>
+            <a href="{{ route('products.index') }}" class="text-sm font-semibold text-primary-600 border border-primary-600 px-4 py-1.5 rounded-full hover:bg-primary-600 hover:text-white transition">See All Products</a>
         </div>
 
         <div class="flex overflow-x-auto gap-4 pb-4 hide-scroll snap-x">
