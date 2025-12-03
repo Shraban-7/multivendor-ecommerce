@@ -9,11 +9,15 @@ use App\Models\Category;
 use App\Models\HeroBanner;
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
+use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $limit = 8;
+        $page = $request->get('page', 1);
+        $skip = ($page - 1) * $limit;
         $data['categories'] = Category::category()->get();
 
         //$data['special_category'] = Category::special()->with(['banners', 'products'])->first();
@@ -71,7 +75,23 @@ class HomeController extends Controller
         $data['hero_banners'] = HeroBanner::active()->orderBy('position')->get();
         $data['sellers'] = Seller::active()->limit(8)->get();
         $data['brands'] = Brand::where('status', 1)->orderBy('name')->limit(12)->get();
-        $data['products'] = Product::withDefaultRelations()->active()->limit(10)->latest('id')->get();
+        $data['products'] = Product::withDefaultRelations()
+            ->active()
+            ->latest()
+            ->skip($skip)
+            ->take($limit)
+            ->get();
+        $products = $data['products'];
+
+        if ($request->ajax()) {
+            if ($products->isEmpty()) {
+                return '';
+            }
+
+            return view('frontend.partials.product-card-load', [
+                'products' => $products,
+            ])->render();
+        }
 
         return view('frontend.home', $data);
 
