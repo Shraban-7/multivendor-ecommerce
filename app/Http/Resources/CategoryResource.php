@@ -9,10 +9,13 @@ class CategoryResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        $default = asset('assets/frontend/images/placeholder-img.jpg');
+        
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'image' => is_null($this->image) ? asset('assets/frontend/images/placeholder-img.jpg') : storage_url($this->image),
+            'icon' => is_null($this->app_icon) ? $default : storage_url($this->app_icon),
+            'image' => is_null($this->image) ? $default : storage_url($this->image),
             'subcategories' => CategoryResource::collection($this->whenLoaded('subcategories'))
         ];
     }
