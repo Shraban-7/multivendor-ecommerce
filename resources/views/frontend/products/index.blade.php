@@ -140,16 +140,17 @@
                     <ul class="space-y-2 text-sm text-gray-600">
                         @foreach ($categories as $category)
                         <li>
-                            <a href="#" data-slug="{{ $category->slug }}"
-                                class="category-filter flex justify-between items-center group
-                                         @if (in_array($category->slug, $selectedCategories)) active @endif">
-
+                            @if (in_array($category->slug, $selectedCategories))
+                            <a href="#" class="category-filter flex justify-between items-center group font-medium text-primary-600">
                                 <span>{{ $category->name }}</span>
-
-                                <span class="text-xs bg-gray-100 px-2 py-0.5 rounded-full">
-                                    {{ $category->products_count }}
-                                </span>
+                                <span class="text-xs bg-primary-100 text-primary-600 px-2 py-0.5 rounded-full"> {{ $category->products_count }}</span>
                             </a>
+                            @else
+                            <a href="#" data-slug="{{ $category->slug }}" class="category-filter flex justify-between items-center group">
+                                <span>{{ $category->name }}</span>
+                                <span class="text-xs bg-gray-100 px-2 py-0.5 rounded-full">{{ $category->products_count }}</span>
+                            </a>
+                            @endif
                         </li>
                         @endforeach
                     </ul>
@@ -279,8 +280,9 @@
             </div>
 
             <!-- Active Filters Tags -->
+            @if (!empty($selectedCategories))
             <div class="flex flex-wrap gap-2 mb-6" id="active-filters">
-                @if (!empty($selectedCategories))
+
                 @foreach ($selectedCategories as $slug)
                 @php
                 $category = $categories->firstWhere('slug', $slug);
@@ -331,9 +333,8 @@
                     class="text-xs text-red-500 hover:text-red-700 hover:underline font-medium ml-2 transition">
                     Clear All
                 </button>
-                @endif
             </div>
-
+            @endif
 
             <!-- Products Container -->
             <div id="productsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -705,11 +706,10 @@
             e.preventDefault();
 
             // Remove active from all categories
-            document.querySelectorAll('.category-filter').forEach(cat => cat.classList.remove(
-                'active'));
+            document.querySelectorAll('.category-filter').forEach(cat => cat.classList.remove('active'));
 
             // Add active to clicked category
-            this.classList.add('active');
+           this.classList.add('active');
 
             updateUrl();
         });
