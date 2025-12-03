@@ -101,7 +101,7 @@ $isDashboard = View::hasSection('dashboard');
         </div>
     </div>
 
-    <div id="quickViewModal" class="hidden-custom fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity duration-300">
+    <div id="quickViewModalMain" class="hidden-custom fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity duration-300">
         <!-- Modal Overlay Click Handler attached in JS -->
         <div id="quickViewContent" class="bg-white rounded-2xl w-[95%] max-w-4xl overflow-hidden shadow-2xl flex flex-col md:flex-row max-h-[90vh]">
             <!-- Image Side -->
@@ -167,6 +167,31 @@ $isDashboard = View::hasSection('dashboard');
             </div>
         </div>
     </div>
+
+    <div id="quickViewModal"
+        class="hidden-custom fixed inset-0 z-[60] flex items-center justify-center 
+            bg-black/60 backdrop-blur-sm transition-opacity duration-300 opacity-0">
+
+        <!-- Modal Box -->
+        <div class="relative bg-white rounded-2xl w-[95%] max-w-4xl 
+                overflow-hidden shadow-2xl flex flex-col">
+
+            <!-- Close Button -->
+            <button id="quickViewCloseBtn"
+                class="absolute top-3 right-3 w-9 h-9 flex items-center justify-center 
+                   rounded-full bg-white shadow hover:bg-gray-200 transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Scroll Container -->
+            <div id="quickViewContent"
+                class="quickview-content overflow-y-auto max-h-[80vh]">
+                <!-- AJAX will inject here -->
+            </div>
+
+        </div>
+    </div>
+
 
     <div class="bg-gray-900 text-white text-xs py-2 hidden md:block">
         <div class="container mx-auto px-4 flex justify-between items-center">
@@ -401,7 +426,7 @@ $isDashboard = View::hasSection('dashboard');
             }
 
             const quickViewModal = document.getElementById('quickViewModal');
-            const openQuickViewBtns = document.querySelectorAll('.open-quickview');
+            const openQuickViewBtns = document.querySelectorAll('.btn-quickview');
             const closeQuickViewBtns = document.querySelectorAll('.close-quickview');
             const quickViewContent = document.getElementById('quickViewContent');
 
@@ -416,13 +441,25 @@ $isDashboard = View::hasSection('dashboard');
                 }
             }
 
-            openQuickViewBtns.forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    toggleQuickView(true);
+            $(document).on('click', '.btn-quickview', function() {
+                const slug = $(this).data('slug');
+                $.ajax({
+                    url: "/products/" + slug + "/quick-view",
+                    type: "GET",
+                    success: function(response) {
+                        $('#quickViewModal .quickview-content').html(response);
+                        toggleQuickView(true);
+                    }
                 });
             });
+
+            // openQuickViewBtns.forEach(btn => {
+            //     btn.addEventListener('click', (e) => {
+            //         e.preventDefault();
+            //         e.stopPropagation();
+            //         toggleQuickView(true);
+            //     });
+            // });
 
             closeQuickViewBtns.forEach(btn => {
                 btn.addEventListener('click', () => toggleQuickView(false));
@@ -430,7 +467,7 @@ $isDashboard = View::hasSection('dashboard');
 
             // Close on click outside
             quickViewModal.addEventListener('click', (e) => {
-                if (!quickViewContent.contains(e.target)) {
+                if (e.target === quickViewModal) {
                     toggleQuickView(false);
                 }
             });

@@ -116,7 +116,7 @@
                 <div class="relative h-48 w-full bg-gray-100 rounded-t-xl overflow-hidden p-4 flex items-center justify-center">
                     <img src="{{ $product->imageUrl }}" class="max-h-full object-contain mix-blend-multiply group-hover:scale-110 transition duration-500">
                     <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center gap-2">
-                        <button class="open-quickview w-9 h-9 bg-white text-gray-600 rounded-full shadow-lg flex items-center justify-center hover:bg-primary-600 hover:text-white transform translate-y-4 group-hover:translate-y-0 transition delay-75"><i class="far fa-eye"></i></button>
+                        <button class="btn-quickview w-9 h-9 bg-white text-gray-600 rounded-full shadow-lg flex items-center justify-center hover:bg-primary-600 hover:text-white transform translate-y-4 group-hover:translate-y-0 transition delay-75" data-slug="{{ $product->slug }}"><i class="far fa-eye"></i></button>
                         <button class="w-9 h-9 bg-white text-gray-600 rounded-full shadow-lg flex items-center justify-center hover:bg-primary-600 hover:text-white transform translate-y-4 group-hover:translate-y-0 transition delay-100"><i class="far fa-heart"></i></button>
                     </div>
                 </div>
@@ -202,7 +202,7 @@
                     <button class="w-8 h-8 rounded-full bg-white text-gray-400 hover:text-red-500 shadow flex items-center justify-center transition"><i class="far fa-heart"></i></button>
                 </div>
                 <div class="absolute inset-0 bg-black/10 z-10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <button class="open-quickview bg-white text-gray-900 px-4 py-2 rounded-full text-xs font-bold hover:bg-primary-600 hover:text-white shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
+                    <button class="btn-quickview bg-white text-gray-900 px-4 py-2 rounded-full text-xs font-bold hover:bg-primary-600 hover:text-white shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-all duration-300" data-slug="{{ $product->slug }}">
                         <i class="far fa-eye mr-1"></i> Quick View
                     </button>
                 </div>
