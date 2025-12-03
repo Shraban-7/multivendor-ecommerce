@@ -37,7 +37,7 @@
                         <div class="max-h-[18rem] overflow-y-auto space-y-2 scrollbar-thin scrollbar-thumb-gray-300">
                             @foreach ($billingAddresses as $address)
                                 <label
-                                    class="flex items-start gap-3 p-3 border rounded-md cursor-pointer text-[13px] leading-snug hover:border-primary/70 hover:bg-primary/5 transition {{ $address->is_default ? 'border-primary bg-primary/5' : 'border-gray-200' }}">
+                                    class="flex items-start gap-3 p-3 border rounded-md cursor-pointer text-[13px] leading-snug hover:border-primary/70 hover:bg-primary-500/5 transition {{ $address->is_default ? 'border-primary bg-primary-500/5' : 'border-gray-200' }}">
                                     <input type="radio" name="billing_address_id" value="{{ $address->id }}"
                                         class="mt-1 w-4 h-4 text-primary focus:ring-primary"
                                         {{ $address->is_default ? 'checked' : '' }} />
@@ -122,7 +122,7 @@
                                     <label for="payment-cod"
                                         class="inline-flex flex-col items-center justify-center w-full p-4 text-gray-700
                             bg-white border border-gray-300 rounded-xl cursor-pointer transition
-                            hover:bg-gray-50 peer-checked:bg-primary/10 peer-checked:border-primary
+                            hover:bg-gray-50 peer-checked:bg-primary-500/10 peer-checked:border-primary
                             peer-checked:text-primary">
 
                                         <div class="flex items-center gap-2 mb-1">
@@ -142,7 +142,7 @@
                                     <label for="payment-{{ $gateway->slug }}"
                                         class="inline-flex flex-col items-center justify-center w-full p-4
                                     bg-white border border-gray-300 rounded-xl cursor-pointer transition
-                                    hover:bg-gray-50 peer-checked:bg-primary/10 peer-checked:border-primary
+                                    hover:bg-gray-50 peer-checked:bg-primary-500/10 peer-checked:border-primary
                                     peer-checked:text-primary">
 
                                         @if ($gateway->image)
@@ -163,7 +163,7 @@
                     </div>
 
                     <button id="continue-payment-btn" type="button" data-seller-id="{{ $selectedSellerId }}"
-                        class="mt-6 w-full py-3 bg-primary text-white text-sm font-semibold rounded-md hover:bg-primary/90 focus:ring-2 focus:ring-primary/40 transition">
+                        class="mt-6 w-full py-3 bg-primary-500 text-white text-sm font-semibold rounded-md hover:bg-primary-500/90 focus:ring-2 focus:ring-primary/40 transition">
                         Continue to Payment
                     </button>
                 </div>
@@ -256,7 +256,7 @@
                         <div class="flex justify-end gap-2 mt-4">
                             <button type="button" class="px-3 py-1 bg-gray-300 rounded"
                                 data-modal-hide="addAddressModal">Cancel</button>
-                            <button type="submit" class="px-3 py-1 bg-primary text-white rounded">Save</button>
+                            <button type="submit" class="px-3 py-1 bg-primary-500 text-white rounded">Save</button>
                         </div>
                     </form>
                 </div>
@@ -349,7 +349,7 @@
                             <div class="flex justify-end gap-2 mt-4">
                                 <button type="button" class="px-3 py-1 bg-gray-300 rounded"
                                     data-modal-hide="edit-address-modal-{{ $address->id }}">Cancel</button>
-                                <button type="submit" class="px-3 py-1 bg-primary text-white rounded">Save</button>
+                                <button type="submit" class="px-3 py-1 bg-primary-500 text-white rounded">Save</button>
                             </div>
                         </form>
                     </div>
@@ -388,7 +388,7 @@
                                 <h2 class="sm:text-lg font-semibold">Billing Information</h2>
                                 <button data-modal-target="add-billing-address-modal" type="button"
                                     data-modal-toggle="add-billing-address-modal"
-                                    class="text-white bg-primary hover:bg-primary/90 focus:ring-4 focus:outline-none focus:ring-primary/70 font-medium rounded-lg text-sm px-4 py-2">
+                                    class="text-white bg-primary-500 hover:bg-primary-500/90 focus:ring-4 focus:outline-none focus:ring-primary/70 font-medium rounded-lg text-sm px-4 py-2">
                                     + Add Billing Address
                                 </button>
                             </div>
@@ -400,7 +400,7 @@
                                     @foreach ($billingAddresses as $address)
                                         <label
                                             class="flex items-start gap-3 py-4 px-6 border rounded cursor-pointer hover:border-primary transition
-                                                {{ $address->is_default == 1 ? 'border-primary bg-primary/5' : 'border-gray-300' }}">
+                                                {{ $address->is_default == 1 ? 'border-primary bg-primary-500/5' : 'border-gray-300' }}">
 
                                             <input type="radio" name="billing_address_id"
                                                 value="{{ $address->id }}"
@@ -534,7 +534,7 @@
 
                         <!-- checkout btn -->
                         <button id="continue-payment-btn" type="button" data-seller-id="{{ $selectedSellerId }}"
-                            class="eq 2xl:text-2xl lg:text-xl text-lg w-full flex flex-col items-center bg-primary hover:bg-theme-dark text-white sm:py-4 py-3 rounded-full font-medium">
+                            class="eq 2xl:text-2xl lg:text-xl text-lg w-full flex flex-col items-center bg-primary-500 hover:bg-primary-600 text-white sm:py-4 py-3 rounded-full font-medium">
                             Continue Payment
                         </button>
                         <div class="text-davy-gray p-3 sm:p-4 protect-card-info">
@@ -649,7 +649,7 @@
                                     <button type="button" class="px-3 py-1 bg-gray-300 rounded"
                                         data-modal-hide="addAddressModal">Cancel</button>
                                     <button type="submit"
-                                        class="px-3 py-1 bg-primary text-white rounded">Save</button>
+                                        class="px-3 py-1 bg-primary-500 text-white rounded">Save</button>
                                 </div>
                             </form>
                         </div>

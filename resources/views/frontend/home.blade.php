@@ -121,10 +121,12 @@
                     </div>
                 </div>
                 <div class="p-3">
-                    <h3 class="text-sm font-medium text-gray-800 line-clamp-2 hover:text-primary-600 cursor-pointer mb-1">{{ $product->name }}</h3>
+                    <a href="{{ route('products.details',$product->slug) }}">
+                        <h3 class="text-sm font-medium text-gray-800 line-clamp-2 hover:text-primary-600 cursor-pointer mb-1">{{ $product->name }}</h3>
+                    </a>
                     <div class="flex items-center gap-1 mb-2">
                         <i class="fas fa-star text-yellow-400 text-xs"></i>
-                        <span class="text-xs text-gray-400">(4.5)</span>
+                        <span class="text-xs text-gray-400">({{ $product->avg_rating }})</span>
                     </div>
                     <div class="flex items-center gap-2">
                         @if ($product->discounted_price)
@@ -207,7 +209,9 @@
             </div>
             <div class="p-3 flex flex-col flex-1 relative z-20 bg-white">
                 <span class="text-[10px] text-gray-500 uppercase tracking-wide mb-1">{{ $product->category->name }}</span>
-                <h3 class="text-sm font-semibold text-gray-800 line-clamp-2 mb-auto hover:text-primary-600 transition cursor-pointer">{{ $product->name }}</h3>
+                <a href="{{ route('products.details',$product->slug) }}">
+                    <h3 class="text-sm font-semibold text-gray-800 line-clamp-2 mb-auto hover:text-primary-600 transition cursor-pointer">{{ $product->name }}</h3>
+                </a>
                 <div class="mt-2 pt-2 border-t border-gray-50 flex items-center justify-between">
                     <div class="flex flex-col">
                         @if ($product->discounted_price)

@@ -16,7 +16,7 @@
                             <p class="text-lg font-medium text-gray-600 mb-2">Your cart is empty</p>
                             <p class="text-gray-500 mb-6">Add some items to get started</p>
                             <a href="{{ route('home') }}"
-                                class="inline-flex items-center px-5 py-2.5 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors">
+                                class="inline-flex items-center px-5 py-2.5 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors">
                                 Continue Shopping
                             </a>
                         </div>
@@ -43,7 +43,7 @@
 
                                                     <div
                                                         class="w-6 h-6 flex items-center justify-center border-2 border-gray-300 rounded-md
-                                                     peer-checked:bg-primary peer-checked:border-primary transition-colors">
+                                                     peer-checked:bg-primary-500 peer-checked:border-primary-500 transition-colors">
                                                         <i class="fas fa-check text-white hidden peer-checked:block"></i>
                                                     </div>
                                                 </div>
@@ -228,7 +228,7 @@
                         <div class="mt-6 space-y-3">
                             <a href="{{ route('orders.checkout') }}" id="checkoutLink" class="block">
                                 <button id="checkoutBtn" type="button"
-                                    class="w-full py-3 bg-primary text-white text-sm font-semibold rounded-md hover:bg-primary/90 focus:ring-2 focus:ring-primary/40 transition">
+                                    class="w-full py-3 bg-primary-500 text-white text-sm font-semibold rounded-md hover:bg-primary-500/90 focus:ring-2 focus:ring-primary/40 transition">
                                     Checkout (0)
                                 </button>
                             </a>

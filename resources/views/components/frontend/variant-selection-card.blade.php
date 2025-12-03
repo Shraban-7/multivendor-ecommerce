@@ -22,7 +22,7 @@
                         <button type="button"
                             class="option-value-btn text-sm font-medium px-3 py-1 rounded-md border transition
                                 {{ $isActive
-                                    ? 'bg-primary/10 text-primary border-primary'
+                                    ? 'bg-primary/10 text-primary-500 border-primary-500'
                                     : 'bg-gray-50 text-gray-700 border-gray-300 hover:bg-primary/10 hover:text-primary' }}"
                             data-option-id="{{ $option['id'] }}" data-value-id="{{ $value['id'] }}">
                             {{ $value['value'] }}
@@ -53,7 +53,7 @@
 
             <div class="flex flex-1 flex-col sm:flex-row gap-2 w-full">
                 <button data-id="{{ $product['id'] }}" type="button"
-                    class="addToCartBtn flex-1 w-full bg-primary hover:bg-orange-500 text-white py-2 px-3 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-1">
+                    class="addToCartBtn flex-1 w-full bg-primary-500 hover:bg-orange-500 text-white py-2 px-3 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-1">
                     <i class="fas fa-shopping-cart text-xs"></i> Add to Cart
                 </button>
 

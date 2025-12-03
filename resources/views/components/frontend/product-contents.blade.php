@@ -138,7 +138,7 @@ $showProductDiscount = isset($product['discounted_price'], $product['price']) &&
                         Follow
                     </button>
                     <a href="{{ route('sellers.shop', $seller['username']) }}"
-                        class="flex-1 py-2 px-4 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors text-center text-sm font-medium">
+                        class="flex-1 py-2 px-4 bg-primary-500 text-white rounded-lg hover:bg-primary-dark transition-colors text-center text-sm font-medium">
                         Shop All Items
                     </a>
                 </div>

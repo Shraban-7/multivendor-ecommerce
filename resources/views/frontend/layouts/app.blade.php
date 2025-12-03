@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="{{ asset('assets/libs/jquery/jquery-3.7.1.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset('assets/libs/toastr/css/toastr.min.css') }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -362,6 +363,7 @@ $notificationCount = notificationCount();
         <i class="fas fa-arrow-up"></i>
     </button>
 
+    <script src="{{ asset('assets/libs/toastr/js/toastr.min.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const promoPopup = document.getElementById('promoPopup');
