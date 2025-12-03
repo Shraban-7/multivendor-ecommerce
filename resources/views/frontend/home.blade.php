@@ -2,7 +2,7 @@
 @section('title', 'Slash Mart')
 @section('content')
 <!-- ==================== 3. HERO BANNER AREA ==================== -->
-<section class="py-6">
+<section class="pb-6">
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 h-auto lg:h-[450px]">
         <div class="lg:col-span-3 relative rounded-2xl overflow-hidden shadow-lg group">
             <div class="absolute inset-0 bg-gray-900/10 z-10 group-hover:bg-transparent transition"></div>
