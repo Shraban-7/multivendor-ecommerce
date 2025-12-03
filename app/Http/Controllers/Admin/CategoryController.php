@@ -22,18 +22,21 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
+
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'cover_title' => 'required|string|max:255',
-            'cover_description' => 'required|string',
-            'cover_bg_color' => 'required|string',
-            'cover_text_color' => 'required|string',
-            'cover_button_color' => 'required|string',
+            'icon' => 'required|string|max:255',
+            // 'cover_title' => 'required|string|max:255',
+            // 'cover_description' => 'required|string',
+            // 'cover_bg_color' => 'required|string',
+            // 'cover_text_color' => 'required|string',
+            // 'cover_button_color' => 'required|string',
             'is_nav' => 'nullable|boolean',
             'is_special' => 'nullable|boolean',
             'is_slider' => 'nullable|boolean',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:4000',
-            'cover_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:4000',
+            // 'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:4000',
+            'app_icon' => 'required|image|mimes:png,svg|max:4000',
+            // 'cover_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:4000',
         ]);
 
         $data['slug'] = str_slug('categories','slug',$data['name']);
@@ -44,6 +47,13 @@ class CategoryController extends Controller
         }
 
         $data['image'] = $imagePath;
+
+        $imagePath = null;
+        if ($request->hasFile('app_icon')) {
+            $imagePath = upload_file($request->file('app_icon'), 'images/categories/icon');
+        }
+
+        $data['app_icon'] = $imagePath;
 
         $coverPath = null;
         if ($request->hasFile('cover_image')) {
@@ -66,16 +76,18 @@ class CategoryController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'cover_title' => 'required|string|max:255',
-            'cover_description' => 'required|string',
-            'cover_bg_color' => 'required|string',
-            'cover_text_color' => 'required|string',
-            'cover_button_color' => 'required|string',
+            'icon' => 'required|string|max:255',
+            // 'cover_title' => 'required|string|max:255',
+            // 'cover_description' => 'required|string',
+            // 'cover_bg_color' => 'required|string',
+            // 'cover_text_color' => 'required|string',
+            // 'cover_button_color' => 'required|string',
             'is_nav' => 'nullable|boolean',
             'is_special' => 'nullable|boolean',
             'is_slider' => 'nullable|boolean',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:4000',
-            'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:4000',
+            // 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:4000',
+            'app_icon' => 'nullable|image|mimes:png,svg|max:4000',
+            // 'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:4000',
         ]);
 
         $data['slug'] = str_slug('categories', 'slug', $data['name']);
@@ -86,6 +98,14 @@ class CategoryController extends Controller
             }
 
             $data['image'] = upload_file($request->file('image'), 'images/categories/base');
+        }
+
+        if ($request->hasFile('app_icon')) {
+            if ($category->app_icon != null) {
+                delete_file($category->app_icon);
+            }
+
+            $data['app_icon'] = upload_file($request->file('app_icon'), 'images/categories/icon');
         }
 
         if ($request->hasFile('cover_image')) {

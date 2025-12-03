@@ -8,14 +8,38 @@
     <div class="row">
         <div class="col-8">
             <div class="card card-body">
-                <form id="form" action="{{ route('admin.categories.update', $category->id) }}" method="POST" enctype="multipart/form-data">
+                <form id="form" action="{{ route('admin.categories.update', $category->id) }}" method="POST"
+                    enctype="multipart/form-data">
                     @csrf
                     <div class="row">
                         <div class="mb-3 col-md-6">
                             <label class="form-label">Name</label>
-                            <input name="name" type="text" value="{{ old('name', $category->name) }}" class="form-control" required>
+                            <input name="name" type="text" value="{{ old('name', $category->name) }}"
+                                class="form-control" required>
                         </div>
                         <div class="mb-3 col-md-6">
+                            <label class="form-label">Icon (FontAwesome)</label>
+
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i id="iconPreview"></i>
+                                </span>
+
+                                <input type="text" name="icon" id="iconInput" class="form-control"
+                                    placeholder="e.g. facebook" value="{{ $category->icon ?? '' }}" required>
+
+                                <!-- FontAwesome icon list link -->
+                                <a href="https://fontawesome.com/icons" target="_blank" class="btn btn-outline-secondary">
+                                    <i class="fa fa-external-link-alt"></i>
+                                </a>
+                            </div>
+
+                            <small class="text-muted">
+                                Example: <b>fa-facebook</b>, <b>fa-youtube</b>
+                            </small>
+                        </div>
+
+                        {{-- <div class="mb-3 col-md-6">
                             <label class="form-label">Cover Title</label>
                             <input name="cover_title" type="text" value="{{ old('cover_title', $category->cover_title) }}" class="form-control" required>
                         </div>
@@ -34,7 +58,7 @@
                         <div class="mb-3 col-md-4">
                             <label class="form-label">Cover Button Color</label>
                             <input name="cover_button_color" type="color" value="{{ old('cover_button_color', $category->cover_button_color) }}" class="form-control form-control-color" required>
-                        </div>
+                        </div> --}}
                         <div class="mb-3 col-md-12">
                             <div class="gap-3 d-flex align-items-center">
                                 <div class="form-check form-switch">
@@ -60,14 +84,19 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="mb-3 col-6">
+                        {{-- <div class="mb-3 col-4">
                             <label class="form-label">Image</label>
                             <x-image-input name="image" :image="storage_url($category->image)" />
+                        </div> --}}
+
+                        <div class="mb-3 col-4">
+                            <label class="form-label">App Icon <span class="small text-muted">(PNG,SVG)</span></label>
+                            <x-image-input name="app_icon" :image="storage_url($category->app_icon)" />
                         </div>
-                        <div class="mb-3 col-6">
+                        {{-- <div class="mb-3 col-4">
                             <label class="form-label">Cover Photo</label>
                             <x-image-input name="cover_image" :image="storage_url($category->cover_image)" />
-                        </div>
+                        </div> --}}
                     </div>
                     <button type="submit" id="submitBtn" class="btn btn-theme">Update</button>
                 </form>
@@ -77,7 +106,24 @@
 
     @push('scripts')
         <script>
+            function updateIconPreview(value) {
+                const preview = document.getElementById('iconPreview');
 
+                if (value.trim()) {
+                    preview.className = `fa ${value.trim().toLowerCase()}`;
+                } else {
+                    preview.className = 'fa fa-question-circle';
+                }
+            }
+
+            document.getElementById('iconInput').addEventListener('input', function() {
+                updateIconPreview(this.value);
+            });
+
+            document.addEventListener('DOMContentLoaded', function() {
+                const initialValue = document.getElementById('iconInput').value;
+                updateIconPreview(initialValue);
+            });
         </script>
     @endpush
 @endsection
