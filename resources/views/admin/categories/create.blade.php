@@ -8,7 +8,8 @@
     <div class="row">
         <div class="col-8">
             <div class="card card-body">
-                <form id="form" action="{{ route('admin.categories.store') }}" method="POST" enctype="multipart/form-data">
+                <form id="form" action="{{ route('admin.categories.store') }}" method="POST"
+                    enctype="multipart/form-data">
                     @CSRF
                     <div class="row">
                         <div class="mb-3 col-md-6">
@@ -16,8 +17,31 @@
                             <input name="name" type="text" value="" class="form-control" required>
                         </div>
                         <div class="mb-3 col-md-6">
+                            <label class="form-label">Icon (FontAwesome)</label>
+
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i id="iconPreview" class="fa fa-question-circle"></i>
+                                </span>
+
+                                <input type="text" name="icon" id="iconInput" class="form-control"
+                                    placeholder="e.g. fa-brands fa-facebook" required>
+
+                                <!-- FontAwesome Link Button -->
+                                <a href="https://fontawesome.com/icons" target="_blank" class="btn btn-outline-secondary">
+                                    <i class="fa fa-external-link-alt"></i>
+                                </a>
+                            </div>
+
+                            
+                            <small class="text-muted">
+                                Example: <b>fa-facebook</b>, <b>fa-youtube</b>
+                            </small>
+                        </div>
+
+                        {{-- <div class="mb-3 col-md-6">
                             <label class="form-label">Cover Title</label>
-                            <input name="cover_title" type="text" value="" class="form-control" required>
+                            <input name="cover_title" type="text" value="" class="form-control">
                         </div>
                         <div class="mb-3 col-md-12">
                             <label class="form-label">Cover Description</label>
@@ -25,16 +49,16 @@
                         </div>
                          <div class="mb-3 col-md-4">
                             <label class="form-label">Cover Background Color</label>
-                            <input name="cover_bg_color" type="color" value="" class="form-control form-control-color" required>
+                            <input name="cover_bg_color" type="color" value="" class="form-control form-control-color" >
                         </div>
                          <div class="mb-3 col-md-4">
                             <label class="form-label">Cover Text Color</label>
-                            <input name="cover_text_color" type="color" value="" class="form-control form-control-color" required>
+                            <input name="cover_text_color" type="color" value="" class="form-control form-control-color">
                         </div>
                          <div class="mb-3 col-md-4">
                             <label class="form-label">Cover Button Color</label>
-                            <input name="cover_button_color" type="color" value="" class="form-control form-control-color" required>
-                        </div>
+                            <input name="cover_button_color" type="color" value="" class="form-control form-control-color">
+                        </div> --}}
                         <div class="mb-3 col-md-12">
                             <div class="gap-3 d-flex align-items-center">
                                 <div class="form-check form-switch">
@@ -57,14 +81,18 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="mb-3 col-6">
+                        {{-- <div class="mb-3 col-4">
                             <label class="form-label">Image</label>
                             <x-image-input name="image" />
+                        </div> --}}
+                        <div class="mb-3 col-4">
+                            <label class="form-label">App Icon <span class="small text-muted">(PNG,SVG)</span> </label>
+                            <x-image-input name="app_icon" />
                         </div>
-                        <div class="mb-3 col-6">
+                        {{-- <div class="mb-3 col-4">
                             <label class="form-label">Cover Photo</label>
                             <x-image-input name="cover_image" />
-                        </div>
+                        </div> --}}
                     </div>
                     <button type="submit" id="submitBtn" class="btn btn-theme">Save</button>
                 </form>
@@ -74,7 +102,16 @@
 
     @push('scripts')
         <script>
+            document.getElementById('iconInput').addEventListener('input', function() {
+                const value = this.value.trim().toLowerCase();
+                const preview = document.getElementById('iconPreview');
 
+                if (value) {
+                    preview.className = `fa ${value}`;
+                } else {
+                    preview.className = 'fa fa-question-circle';
+                }
+            });
         </script>
     @endpush
 @endsection
