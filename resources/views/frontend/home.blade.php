@@ -173,8 +173,8 @@
                             </div>
                         </div>
                         <div class="p-3 pt-0">
-                            <button
-                                class="w-full py-2 rounded-lg bg-gray-100 text-gray-800 text-xs font-bold hover:bg-primary-600 hover:text-white transition group-hover:bg-primary-600 group-hover:text-white">Add
+                            <button data-slug="{{ $product->slug }}"
+                                class="btn-quickview w-full py-2 rounded-lg bg-gray-100 text-gray-800 text-xs font-bold hover:bg-primary-600 hover:text-white transition group-hover:bg-primary-600 group-hover:text-white">Add
                                 To Cart</button>
                         </div>
                     </div>
@@ -274,8 +274,8 @@
                                     <span class="text-primary-600 font-bold">{{ money($product->selling_price) }}</span>
                                 @endif
                             </div>
-                            <button
-                                class="bg-primary-100 text-primary-700 w-8 h-8 rounded-full hover:bg-primary-600 hover:text-white transition flex items-center justify-center"><i
+                            <button data-slug="{{ $product->slug }}"
+                                class="btn-quickview bg-primary-100 text-primary-700 w-8 h-8 rounded-full hover:bg-primary-600 hover:text-white transition flex items-center justify-center"><i
                                     class="fas fa-plus"></i></button>
                         </div>
                     </div>
