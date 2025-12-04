@@ -24,7 +24,7 @@ class DashboardController extends Controller
         $data['banners'] = HeroBannerResource::collection(HeroBanner::active()->orderBy('position')->get());
 
         $data['brands'] = BrandResource::collection(Brand::get());
-        $data['categories'] = CategoryResource::collection(Category::category()->get());
+        $data['categories'] = CategoryResource::collection(Category::category()->limit(8)->get());
 
         $newProducts = Product::withDefaultRelations()
             ->active()
