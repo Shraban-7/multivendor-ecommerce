@@ -48,6 +48,24 @@ class User extends Authenticatable
         return $code;
     }
 
+    public static function generateShortUsername(string $phone = null): string
+    {
+        $last4 = $phone ? substr($phone, -4) : rand(1000, 9999);
+
+        // 2 random letters
+        $random = substr(str_shuffle('abcdefghijklmnopqrstuvwxyz'), 0, 2);
+
+        $username = 'u' . $last4 . $random;
+        
+        while (self::where('username', $username)->exists()) {
+            $random = substr(str_shuffle('abcdefghijklmnopqrstuvwxyz'), 0, 2);
+            $username = 'u' . $last4 . $random;
+        }
+
+        return $username;
+    }
+
+
     public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);

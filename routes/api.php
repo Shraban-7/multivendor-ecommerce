@@ -18,17 +18,26 @@ use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\SellerChatController;
 use App\Http\Controllers\Seller\PaymentListnerController;
 
-Route::prefix('auth')->group(function () {
-    Route::prefix('password-reset')->group(function () {
-        Route::post('send-code', [AuthController::class, 'sendResetCode']);
-        Route::post('verify-code', [AuthController::class, 'verifyResetCode']);
-        Route::post('set-password', [AuthController::class, 'setPassword']);
-    });
+// Route::prefix('auth')->group(function () {
+//     Route::prefix('password-reset')->group(function () {
+//         Route::post('send-code', [AuthController::class, 'sendResetCode']);
+//         Route::post('verify-code', [AuthController::class, 'verifyResetCode']);
+//         Route::post('set-password', [AuthController::class, 'setPassword']);
+//     });
 
-    Route::prefix('email-verification')->group(function () {
-        Route::post('resend-code', [AuthController::class, 'resendCode']);
-        Route::post('verify-code', [AuthController::class, 'verifyEmailCode']);
-    });
+//     Route::prefix('email-verification')->group(function () {
+//         Route::post('resend-code', [AuthController::class, 'resendCode']);
+//         Route::post('verify-code', [AuthController::class, 'verifyEmailCode']);
+//     });
+// });
+
+
+use App\Http\Controllers\Auth\ApiAuthController;
+Route::prefix('auth')->controller(ApiAuthController::class)->group(function () {
+    Route::post('check-phone', 'checkPhone');
+    Route::post('verify-otp', 'verifyOtp');
+    Route::post('login', 'login');
+    Route::post('register', 'register');
 });
 
 Route::middleware('guest')->group(function () {
