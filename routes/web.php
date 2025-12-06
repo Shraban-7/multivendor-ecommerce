@@ -6,6 +6,14 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PaymentController;
 use App\Models\VerificationCode;
+use App\Http\Controllers\AuthController;
+
+Route::prefix('auth')->as('auth.')->group(function () {
+    Route::post('check-phone', [AuthController::class, 'checkPhone'])->name('checkPhone');
+    Route::post('verify-otp', [AuthController::class, 'verifyOtp'])->name('verifyOtp');
+    Route::post('login', [AuthController::class, 'login'])->name('login');
+    Route::post('register', [AuthController::class, 'register'])->name('register');
+});
 
 Route::get('mails/test', function () {
     $data['customerName'] = 'John Doe';

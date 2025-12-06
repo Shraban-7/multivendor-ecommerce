@@ -31,15 +31,6 @@ use App\Http\Controllers\Seller\PaymentListnerController;
 //     });
 // });
 
-
-use App\Http\Controllers\Auth\ApiAuthController;
-Route::prefix('auth')->controller(ApiAuthController::class)->group(function () {
-    Route::post('check-phone', 'checkPhone');
-    Route::post('verify-otp', 'verifyOtp');
-    Route::post('login', 'login');
-    Route::post('register', 'register');
-});
-
 Route::middleware('guest')->group(function () {
     Route::post('login', [AuthController::class, 'login']);
     Route::post('signup', [AuthController::class, 'signup']);

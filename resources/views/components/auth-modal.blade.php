@@ -41,12 +41,12 @@
                         <p id="phoneError" class="text-red-500 text-xs mt-1 ml-1 hidden"><i class="fas fa-exclamation-circle mr-1"></i> Please enter a valid 11-digit BD number</p>
                     </div>
 
-                    <button id="btnSendOtp" disabled class="w-full bg-gray-200 text-gray-400 font-bold py-3.5 rounded-xl transition-all duration-300 cursor-not-allowed flex justify-center items-center gap-2 shadow-sm">
+                    <button id="btnSendOtp" disabled class="w-full bg-gray-200 text-gray-400 py-3.5 rounded-xl transition-all duration-300 cursor-not-allowed flex justify-center items-center gap-2 shadow-sm">
                         <span>Continue</span>
                         <i class="fas fa-arrow-right text-sm"></i>
                     </button>
 
-                    <div class="relative flex py-2 items-center">
+                    {{--<div class="relative flex py-2 items-center">
                         <div class="flex-grow border-t border-gray-100"></div>
                         <span class="flex-shrink-0 mx-4 text-gray-300 text-xs">OR</span>
                         <div class="flex-grow border-t border-gray-100"></div>
@@ -59,7 +59,7 @@
                         <a href="" class="flex items-center justify-center gap-2 py-2.5 border border-gray-200 rounded-lg hover:bg-gray-50 transition text-sm font-medium text-gray-600">
                             <i class="fab fa-facebook text-blue-600"></i> Facebook
                         </a>
-                    </div>
+                    </div>--}}
                 </div>
             </div>
 
@@ -143,7 +143,7 @@
                     </div>
 
                     <button id="btnRegister" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3.5 rounded-xl transition-all duration-300 shadow-lg shadow-primary-500/30">
-                        Finish Setup
+                        Finish Registration
                     </button>
                 </div>
             </div>
@@ -160,26 +160,21 @@
 
 
 <script>
-    /**
-     * AUTHENTICATION CONTROLLER
-     * Handles modal states, validation, and Unified Auth Flow (Login/Register split)
-     */
     const API_ENDPOINTS = {
-        checkPhone: '/api/auth/check-phone',
-        sendOtp: '/api/auth/send-otp',
-        verifyOtp: '/api/auth/verify-otp',
-        login: '/api/auth/login',
-        register: '/api/auth/register',
+        checkPhone: "{{ route('auth.checkPhone') }}",
+        verifyOtp: "{{ route('auth.verifyOtp') }}",
+        login: "{{ route('auth.login') }}",
+        register: "{{ route('auth.register') }}",
     };
 
+    const PHONE_CODE = '+88';
+
     const auth = {
-        // --- CONFIGURATION ---
         modalId: 'authModal',
         contentId: 'authBox',
         steps: ['step-phone', 'step-otp', 'step-password', 'step-name'],
         currentPhone: '',
 
-        // --- INITIALIZATION ---
         init() {
             this.cacheDOM();
             this.bindEvents();
@@ -195,11 +190,8 @@
             this.otpInputs = document.querySelectorAll('.otp-input');
             this.btnVerifyOtp = document.getElementById('btnVerifyOtp');
 
-            // [NEW] Cache the final buttons
             this.btnLogin = document.getElementById('btnLogin');
             this.btnRegister = document.getElementById('btnRegister');
-
-            this.triggerBtns = document.querySelectorAll('a[href="#"]');
         },
 
         bindEvents() {
@@ -216,9 +208,8 @@
             });
             this.btnVerifyOtp.addEventListener('click', () => this.verifyOtp());
 
-            // [NEW] Bind final actions
             this.btnLogin.addEventListener('click', () => this.finalizeAuth(this.btnLogin, 'Logging in...', 'Login Successful!'));
-            this.btnRegister.addEventListener('click', () => this.finalizeAuth(this.btnRegister, 'Creating Account...', 'Setup Complete!'));
+            this.btnRegister.addEventListener('click', () => this.finalizeAuth(this.btnRegister, 'Creating Account...', 'Registration Complete!'));
         },
 
         goToStep(stepId) {
@@ -306,19 +297,24 @@
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                     },
                     body: JSON.stringify({
-                        phone: '+88' + this.currentPhone
+                        phone: this.currentPhone
                     }),
                 });
 
                 const data = await response.json();
 
                 if (response.ok) {
-                    document.getElementById('displayPhone').innerText = '+88' + this.currentPhone;
-                    this.goToStep('step-otp');
-                    setTimeout(() => this.otpInputs[0].focus(), 100);
+                    if (data.data.user_exists == true) {
+                        document.getElementById('welcomeUserPhone').innerText = PHONE_CODE + this.currentPhone;
+                        this.goToStep('step-password');
+                    } else {
+                        document.getElementById('displayPhone').innerText = PHONE_CODE + this.currentPhone;
+                        this.goToStep('step-otp');
+                        setTimeout(() => this.otpInputs[0].focus(), 100);
+                    }
                 } else {
                     // Handle server-side errors (e.g., rate limiting)
-                    this.phoneError.innerText = data.message || 'Error sending OTP. Please try again.';
+                    this.phoneError.innerText = data.data.message || 'Error sending OTP. Please try again.';
                     this.phoneError.classList.remove('hidden');
                 }
             } catch (error) {
@@ -366,7 +362,7 @@
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                     },
                     body: JSON.stringify({
-                        phone: '+88' + this.currentPhone,
+                        phone: this.currentPhone,
                         otp: otpCode
                     }),
                 });
@@ -375,15 +371,15 @@
 
                 if (response.ok) {
                     // Check the response from the server to determine the next step
-                    if (data.is_existing_user) {
-                        document.getElementById('welcomeUserPhone').innerText = '+88' + this.currentPhone;
+                    if (data.data.is_existing_user) {
+                        document.getElementById('welcomeUserPhone').innerText = PHONE_CODE + this.currentPhone;
                         this.goToStep('step-password');
                     } else {
                         this.goToStep('step-name');
                     }
                 } else {
                     // Handle invalid OTP
-                    alert(data.message || 'Invalid OTP. Please try again.');
+                    alert(data.data.message || 'Invalid OTP. Please try again.');
                     this.otpInputs.forEach(input => input.value = ''); // Clear OTP fields
                     this.otpInputs[0].focus();
                 }
@@ -431,7 +427,7 @@
 
             let url = btnElement.id === 'btnLogin' ? API_ENDPOINTS.login : API_ENDPOINTS.register;
             let payload = {
-                phone: '+88' + this.currentPhone
+                phone: this.currentPhone
             };
 
             if (btnElement.id === 'btnLogin') {
@@ -439,7 +435,7 @@
             } else { // Registration
                 payload.name = document.getElementById('newName').value;
                 payload.password = document.getElementById('newPassword').value;
-                payload.password_confirmation = document.getElementById('newPassword').value; // Laravel requires confirmation
+                payload.password_confirmation = document.getElementById('newPassword').value;
             }
 
             try {
@@ -455,7 +451,6 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    // Success State
                     btnElement.classList.remove('bg-primary-600', 'hover:bg-primary-700', 'shadow-primary-500/30');
                     btnElement.classList.add('bg-green-600', 'shadow-green-500/30', 'cursor-default');
                     btnElement.innerHTML = `<i class="fas fa-check-circle mr-2"></i> ${successText}`;
@@ -467,7 +462,7 @@
 
                 } else {
                     // Handle Login/Registration errors (e.g., wrong password, validation errors)
-                    alert(data.message || 'Authentication failed. Please check your credentials.');
+                    alert(data.data.message || 'Authentication failed. Please check your credentials.');
                     btnElement.disabled = false;
                     btnElement.innerHTML = originalText;
 
@@ -485,17 +480,13 @@
         }
     };
 
-    // Initialize logic
     document.addEventListener('DOMContentLoaded', () => {
         auth.init();
-
-        //Attach to Login buttons from header (find the nav link)
-        const headerLoginBtn = Array.from(document.querySelectorAll('a')).find(el => el.textContent.includes('Login'));
-        if (headerLoginBtn) {
-            headerLoginBtn.addEventListener('click', (e) => {
+        document.querySelectorAll('.auth-btn').forEach(btn => {
+            btn.addEventListener('click', e => {
                 e.preventDefault();
                 auth.toggleModal(true);
             });
-        }
+        });
     });
 </script>

@@ -123,6 +123,8 @@ $isDashboard = View::hasSection('dashboard');
         <i class="fas fa-arrow-up"></i>
     </button>
 
+    <x-auth-modal/>
+
     <script src="{{ asset('assets/libs/toastr/js/toastr.min.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {

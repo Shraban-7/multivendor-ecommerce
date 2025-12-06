@@ -56,7 +56,7 @@
                 </button>
                 @endif
                 @if (!auth('web')->check() && !auth()->guard('seller')->check())
-                <a href="{{ route('login') }}" class="hidden md:flex flex-col items-center group">
+                <a href="javascript:void(0)" class="auth-btn hidden md:flex flex-col items-center group">
                     <i class="far fa-user text-xl text-gray-600 group-hover:text-primary-600 transition"></i>
                     <span class="text-[10px] font-medium text-gray-500 mt-1">Login</span>
                 </a>
