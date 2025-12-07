@@ -1,10 +1,11 @@
 @extends('admin.layouts.app')
+@section('title','Banners')
 
 @section('content')
 <div class="container mt-4">
 
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Banners</h2>
+        <h3>Banners</h3>
         <!-- Add New Banner Button -->
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addBannerModal">
             <i class="bi bi-plus-circle"></i> Add Banner
@@ -15,8 +16,8 @@
     <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <table class="table table-bordered align-middle">
-        <thead class="table-light">
+    <table class="table bg-white table-bordered align-middle">
+        <thead class="table-white">
             <tr>
                 <th>#</th>
                 <th>Preview</th>
