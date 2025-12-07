@@ -267,6 +267,10 @@ $settings = settings();
                         <x-dashboard.nav-item-link :route="'admin.staticPages.index'">
                             Static Pages
                         </x-dashboard.nav-item-link>
+
+                        <x-dashboard.nav-item-link :route="'admin.banners.index'">
+                            Banners
+                        </x-dashboard.nav-item-link>
                     </ul>
                 </div>
             </li>

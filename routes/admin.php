@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CustomerController;
@@ -213,6 +214,10 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
         Route::put('/{slug}/update', 'update')->name('update');
     });
 
+    Route::prefix('banners')->as('banners.')->group(function () {
+        //Route::get('/', [BannerController::class, 'index'])->name('index');
+        Route::resource('/', BannerController::class);
+    });
 });
 
 Route::middleware('guest')->prefix('admin')->as('admin.')->group(function () {
