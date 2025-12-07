@@ -14,8 +14,7 @@ class CategoryResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            //'icon' => '0xe670',
-            'icon' => is_null($this->app_icon) ? $default : storage_url($this->app_icon),
+            'icon' => is_null($this->app_icon) ? asset('assets/frontend/images/category-placeholder.svg') : storage_url($this->app_icon),
             'image' => is_null($this->image) ? $default : storage_url($this->image),
             'subcategories' => CategoryResource::collection($this->whenLoaded('subcategories'))
         ];
