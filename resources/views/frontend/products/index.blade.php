@@ -122,7 +122,7 @@
 
 @section('content')
     <!-- ==================== MAIN SHOP LAYOUT ==================== -->
-    <section class="container mx-auto px-4 pb-8">
+    <section class="container mx-auto pb-8">
         <div class="flex flex-col lg:flex-row gap-8">
 
             <!-- ==================== SIDEBAR FILTERS ==================== -->
@@ -349,7 +349,7 @@
         @endif
 
         <!-- Products Container -->
-        <div id="productsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div id="productsContainer" class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
 
             @foreach ($products as $product)
                 <!-- Product Card 1 -->
