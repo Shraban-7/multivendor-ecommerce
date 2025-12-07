@@ -80,7 +80,7 @@ $infoLinks = [
                 </h4>
                 <ul class="space-y-4 text-sm">
                     <li class="flex gap-3 items-start">
-                        <i class="fas fa-map-marker-alt text-primary-500 mt-1 text-lg"></i>
+                        <i class="fas fa-map-marker-alt text-primary-500 text-lg"></i>
                         <span class="text-gray-400">{{ $settings->address ?? '' }}</span>
                     </li>
                     <li class="flex gap-3 items-center">
