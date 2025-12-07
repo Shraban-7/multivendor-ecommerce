@@ -85,6 +85,13 @@ $isDashboard = View::hasSection('dashboard');
 
 <body class="bg-gray-50 font-sans min-h-screen text-gray-800 antialiased">
 
+    <div class="hidden">
+        <!-- prevents navbar autocomplete -->
+        <input type="password" name="password" autocomplete="current-password" ...>
+        <input type="text" name="name" autocomplete="name" ...>
+        <input type="password" name="password" autocomplete="new-password" ...>
+    </div>    
+
     <x-frontend.promoModal />
 
     <x-frontend.quickviewModal />

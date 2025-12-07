@@ -129,7 +129,7 @@
                 <div class="space-y-4">
                     <div>
                         <label class="block text-xs font-semibold text-gray-700 mb-1.5 ml-1">Full Name</label>
-                        <input type="text" id="newName" name="name" autocomplete="name" class="w-full border border-gray-300 rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition outline-none text-gray-800" placeholder="e.g. Rafiqul Islam">
+                        <input type="text" id="newName" name="name" autocomplete="name" class="w-full border border-gray-300 rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition outline-none text-gray-800">
                     </div>
 
                     <div>

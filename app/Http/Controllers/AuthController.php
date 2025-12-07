@@ -50,10 +50,14 @@ class AuthController extends Controller
 
     public function verifyOtp(Request $request)
     {
-        $request->validate([
+        $validator = validateRequest($request, [
             'phone' => $this->phoneValidationRules(),
             'otp' => 'required|digits:6',
         ]);
+
+        if ($validator->fails()) {
+            return errorResponse($validator->errors()->first(), 422);
+        }
 
         $phone = $request->phone;
 
@@ -72,10 +76,14 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $request->validate([
+        $validator = validateRequest($request, [
             'phone' => $this->phoneValidationRules(),
             'password' => 'required|string|min:6',
         ]);
+
+        if ($validator->fails()) {
+            return errorResponse($validator->errors()->first(), 422);
+        }
 
         $credentials = [
             'phone' => $request->phone,
@@ -96,11 +104,15 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        $request->validate([
+        $validator = validateRequest($request, [
             'phone' => $this->phoneValidationRules(true),
             'name' => 'required|string|max:255',
             'password' => 'required|string|min:6|confirmed',
         ]);
+
+        if ($validator->fails()) {
+            return errorResponse($validator->errors()->first(), 422);
+        }
 
         $user = User::create([
             'name' => $request->name,

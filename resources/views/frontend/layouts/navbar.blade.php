@@ -36,10 +36,10 @@
             <div class="hidden md:flex flex-1 max-w-2xl relative">
                 <div
                     class="flex w-full border-2 border-primary-100 rounded-full overflow-hidden hover:border-primary-300 transition-colors focus-within:border-primary-500 focus-within:ring-2 focus-within:ring-primary-200">
-                    <button
+                    <!-- <button
                         class="px-4 bg-gray-50 text-gray-600 text-sm font-medium border-r border-gray-200 flex items-center gap-2 hover:bg-gray-100">
                         All Categories <i class="fas fa-chevron-down text-xs"></i>
-                    </button>
+                    </button> -->
                     <input type="text" placeholder="Search for products, brands or shops..."
                         class="w-full px-4 py-2.5 outline-none text-gray-700 placeholder-gray-400">
                     <button class="bg-primary-500 hover:bg-primary-600 text-white px-6 font-medium transition">
