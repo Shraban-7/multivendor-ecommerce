@@ -96,6 +96,7 @@ class AuthController extends Controller
         ]);
 
         return apiResponse([
+            'user' => (new UserResource($user)),
             'token' => $user->createToken("API TOKEN")->plainTextToken,
         ], 'Signup successful');
     }
