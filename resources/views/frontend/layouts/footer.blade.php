@@ -1,4 +1,48 @@
-<footer class="w-full">
+<footer class="footer bg-dark text-white pt-5 pb-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                <h6 class="text-uppercase fw-bold mb-4">Customer Care</h6>
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="{{ route('pages.show', 'help-center') }}" class="text-white-50 text-decoration-none">Help Center</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('pages.show', 'returns-refunds') }}" class="text-white-50 text-decoration-none">Returns & Refunds</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('pages.show', 'contact-us') }}" class="text-white-50 text-decoration-none">Contact Us</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                <h6 class="text-uppercase fw-bold mb-4">Information</h6>
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="{{ route('pages.show', 'about-us') }}" class="text-white-50 text-decoration-none">About Us</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('pages.show', 'privacy-policy') }}" class="text-white-50 text-decoration-none">Privacy Policy</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('pages.show', 'terms-and-conditions') }}" class="text-white-50 text-decoration-none">Terms and Conditions</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('pages.show', 'become-a-seller') }}" class="text-white-50 text-decoration-none">Become a Seller</a>
+                    </li>
+                </ul>
+            </div>
+            
+            </div>
+        <hr class="my-3 border-secondary">
+        <div class="text-center text-white-50">
+            &copy; {{ date('Y') }} Your Multi-Vendor E-commerce.
+        </div>
+    </div>
+</footer>
+
+<footer class="w-full hidden">
     @if (request()->is('/'))
     <!-- Newsletter Section -->
     <div class="newsletter-sec relative lg:px-16 md:px-10 -mb-20 z-[20]">
