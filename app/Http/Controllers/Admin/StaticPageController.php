@@ -42,13 +42,15 @@ class StaticPageController extends Controller
         return redirect()->route('admin.staticPages.index')->with('success', 'Static Page created successfully.');
     }
 
-    public function edit(StaticPage $page)
+    public function edit($slug)
     {
+        $page = StaticPage::where('slug',$slug)->first();
         return view('admin.static_pages.edit', compact('page'));
     }
 
-    public function update(Request $request, StaticPage $page)
+    public function update(Request $request, $slug)
     {
+        $page = StaticPage::where('slug',$slug)->first();
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'nullable|string',

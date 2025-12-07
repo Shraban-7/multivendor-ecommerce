@@ -205,9 +205,14 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
 
     // Route::get('/subscriptions', [SubscriptionPlanController::class, 'subscriptions'])->name('subscriptions.index');
 
-    Route::prefix('static-pages')->name('staticPages.')->group(function () {
-        Route::resource('/', StaticPageController::class)->except(['show', 'destroy']);
+    Route::prefix('static-pages')->name('staticPages.')->controller(StaticPageController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/create', 'create')->name('create');
+        Route::post('/store', 'store')->name('store');
+        Route::get('/{slug}/edit', 'edit')->name('edit');
+        Route::put('/{slug}/update', 'update')->name('update');
     });
+
 });
 
 Route::middleware('guest')->prefix('admin')->as('admin.')->group(function () {

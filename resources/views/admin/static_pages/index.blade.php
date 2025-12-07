@@ -43,7 +43,7 @@
                                         @endif
                                     </td>
                                     <td class="align-middle">
-                                        <a href="{{ route('admin.staticPages.edit', $page) }}" class="btn btn-sm btn-info text-white me-2" data-toggle="tooltip" title="Edit Page">
+                                        <a href="{{ route('admin.staticPages.edit', $page->slug) }}" class="btn btn-sm btn-info text-white me-2" data-toggle="tooltip" title="Edit Page">
                                             <i class="fas fa-edit"></i> Edit
                                         </a>
                                         {{-- Add Delete button here if needed --}}

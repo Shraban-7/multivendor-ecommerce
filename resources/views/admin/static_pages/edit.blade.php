@@ -14,7 +14,7 @@
 
                     {{-- Form setup for Create or Update --}}
                     @if (isset($page))
-                        <form action="{{ route('admin.staticPages.update', $page) }}" method="POST">
+                        <form action="{{ route('admin.staticPages.update', $page->slug) }}" method="POST">
                             @method('PUT')
                         @else
                             <form action="{{ route('admin.staticPages.store') }}" method="POST">
@@ -34,12 +34,18 @@
                     {{-- Content Field (Use a Rich Text Editor like TinyMCE/CKEditor for professionalism) --}}
                     <div class="mb-3">
                         <label for="content" class="form-label">Page Content</label>
-                        {{-- Assuming you'll initialize a JS editor on this textarea --}}
-                        <textarea class="form-control @error('content') is-invalid @enderror" id="content" name="content" rows="10">{{ old('content', $page->content ?? '') }}</textarea>
+
+                        <div id="content-editor" style="height: 300px;">
+                            {!! old('content', $page->content ?? '') !!}
+                        </div>
+
+                        <input type="hidden" name="content" id="content">
+
                         @error('content')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+
 
                     {{-- Status Checkbox --}}
                     <div class="form-check form-switch mb-4">
@@ -68,22 +74,15 @@
 
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                if (document.getElementById('content')) {
-                    var editor = new Quill('#content', {
-                        theme: 'snow',
-                    });
+                var quill = new Quill('#content-editor', {
+                    theme: 'snow'
+                });
 
-                    var quillEditor = document.getElementById('content');
-                    editor.root.innerHTML = {!! json_encode(old($value)) !!};
-
-                    editor.on('text-change', function() {
-                        quillEditor.value = editor.root.innerHTML;
-                    });
-
-                    quillEditor.addEventListener('input', function() {
-                        editor.root.innerHTML = quillEditor.value;
-                    });
-                }
+                document.getElementById('content').value = quill.root.innerHTML;
+                
+                quill.on('text-change', function() {
+                    document.getElementById('content').value = quill.root.innerHTML;
+                });
             });
         </script>
     @endpush
