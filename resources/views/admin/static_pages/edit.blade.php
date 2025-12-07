@@ -4,15 +4,12 @@
 @section('content')
 
     <div class="row">
-        <div class="col-xl-8 col-lg-10 mx-auto">
+        <div class="col-lg-10 mx-auto">
             <div class="card shadow mb-4">
-
                 <div class="card-body">
-
-                    <h4>{{ isset($page) ? 'Edit Static Page' : 'Add New Page' }}</h4>
+                    <h4>{{ isset($page) ? 'Edit ' . $page->title : 'Add New Page' }}</h4>
                     <hr>
 
-                    {{-- Form setup for Create or Update --}}
                     @if (isset($page))
                         <form action="{{ route('admin.staticPages.update', $page->slug) }}" method="POST">
                             @method('PUT')
@@ -21,7 +18,6 @@
                     @endif
                     @csrf
 
-                    {{-- Title Field --}}
                     <div class="mb-3">
                         <label for="title" class="form-label">Page Title</label>
                         <input type="text" class="form-control @error('title') is-invalid @enderror" id="title"
@@ -31,7 +27,6 @@
                         @enderror
                     </div>
 
-                    {{-- Content Field (Use a Rich Text Editor like TinyMCE/CKEditor for professionalism) --}}
                     <div class="mb-3">
                         <label for="content" class="form-label">Page Content</label>
 
@@ -46,8 +41,6 @@
                         @enderror
                     </div>
 
-
-                    {{-- Status Checkbox --}}
                     <div class="form-check form-switch mb-4">
                         <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1"
                             {{ old('is_active', $page->is_active ?? 1) ? 'checked' : '' }}>

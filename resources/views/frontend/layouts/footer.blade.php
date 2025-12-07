@@ -37,7 +37,7 @@
             </div>
         <hr class="my-3 border-secondary">
         <div class="text-center text-white-50">
-            &copy; {{ date('Y') }} Your Multi-Vendor E-commerce.
+            &copy; {{ date('Y') }}, {{ $settings->app_name }}
         </div>
     </div>
 </footer>
