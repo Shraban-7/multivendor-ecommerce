@@ -17,7 +17,7 @@ $settings = settings();
                     <p class="text-gray-500 text-sm">Please enter your details to sign in.</p>
                 </div>
 
-                <form action="{{ route('home') }}" method="POST" class="space-y-5">
+                <form action="{{ route('login') }}" method="POST" class="space-y-5">
                     @csrf
                     <!-- Email Input -->
                     <div>

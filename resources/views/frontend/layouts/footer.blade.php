@@ -39,15 +39,13 @@ $infoLinks = [
                     $hoverText = 'hover:text-white';
                     @endphp
 
-                    <a href="{{ $socialLink->link }}"
+                    {{-- <a href="{{ $socialLink->link }}"
                         class="w-9 h-9 rounded-full flex items-center justify-center transition {{ $bg }} {{ $text }} {{ $hoverBg }} {{ $hoverText }}">
-                        <i class="fa-brands {{ $socialLink->icon_name }}"></i>
+                        <i class="fa-brands {{ $socialLink->icon_name }}"></i> --}}
+                        <a href="{{ $socialLink->link }}" class="w-9 h-9 rounded-full bg-gray-800 flex items-center justify-center text-white {{ $hoverBg }} hover:-translate-y-1 transition duration-300"><i class="fab {{ $socialLink->icon_name }}"></i></a>
                     </a>
                     @endforeach
-                    <!-- <a href="#" class="w-9 h-9 rounded-full bg-gray-800 flex items-center justify-center text-white hover:bg-blue-600 hover:-translate-y-1 transition duration-300"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="w-9 h-9 rounded-full bg-gray-800 flex items-center justify-center text-white hover:bg-sky-500 hover:-translate-y-1 transition duration-300"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="w-9 h-9 rounded-full bg-gray-800 flex items-center justify-center text-white hover:bg-pink-600 hover:-translate-y-1 transition duration-300"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="w-9 h-9 rounded-full bg-gray-800 flex items-center justify-center text-white hover:bg-red-600 hover:-translate-y-1 transition duration-300"><i class="fab fa-youtube"></i></a> -->
+
                 </div>
             </div>
 
@@ -83,15 +81,15 @@ $infoLinks = [
                 <ul class="space-y-4 text-sm">
                     <li class="flex gap-3 items-start">
                         <i class="fas fa-map-marker-alt text-primary-500 mt-1 text-lg"></i>
-                        <span class="text-gray-400">{{ $settings->address }}</span>
+                        <span class="text-gray-400">{{ $settings->address ?? '' }}</span>
                     </li>
                     <li class="flex gap-3 items-center">
                         <i class="fas fa-envelope text-primary-500 text-lg"></i>
-                        <span class="text-gray-400 hover:text-white cursor-pointer">{{ $settings->email }}</span>
+                        <span class="text-gray-400 hover:text-white cursor-pointer">{{ $settings->email ?? '' }}</span>
                     </li>
                     <li class="flex gap-3 items-center">
                         <i class="fas fa-phone-alt text-primary-500 text-lg"></i>
-                        <span class="text-gray-400 font-bold hover:text-white cursor-pointer">{{ $settings->phone }}</span>
+                        <span class="text-gray-400 font-bold hover:text-white cursor-pointer">{{ $settings->phone ?? '' }}</span>
                     </li>
                 </ul>
                 <!-- <div class="mt-6">
