@@ -31,10 +31,17 @@ use App\Http\Controllers\Seller\PaymentListnerController;
 //     });
 // });
 
-Route::middleware('guest')->group(function () {
+Route::prefix('auth')->group(function () {
+    Route::post('check-phone', [AuthController::class, 'checkPhone']);
+    Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
     Route::post('login', [AuthController::class, 'login']);
-    Route::post('signup', [AuthController::class, 'signup']);
+    Route::post('register', [AuthController::class, 'register']);
 });
+
+// Route::middleware('guest')->group(function () {
+//     Route::post('login', [AuthController::class, 'login']);
+//     Route::post('signup', [AuthController::class, 'signup']);
+// });
 
 Route::get('settings', [SettingController::class, 'index']);
 Route::get('categories', [CategoryController::class, 'index']);

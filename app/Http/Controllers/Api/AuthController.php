@@ -9,11 +9,97 @@ use Illuminate\Validation\Rule;
 use App\Models\VerificationCode;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
+use App\Models\OtpLog;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    private function phoneValidationRules($unique = false)
+    {
+        return User::phoneValidationRules($unique);
+    }
+
+    public function checkPhone(Request $request)
+    {
+        $validator = validateRequest($request, [
+            'phone' => $this->phoneValidationRules()
+        ]);
+
+        if ($validator->fails()) {
+            return errorResponse($validator->errors()->first(), 422);
+        }
+
+        $phone = $request->phone;
+
+        $user = User::where('phone', $phone)->first();
+        if ($user) {
+            return apiResponse([
+                'user_exists' => true
+            ]);
+        }
+
+        OtpLog::generate($phone, OtpLog::TYPE_SIGNUP);
+
+        return apiResponse([
+            'user_exists' => false,
+        ], 'OTP sent successfully');
+    }
+
+    public function verifyOtp(Request $request)
+    {
+        $validator = validateRequest($request, [
+            'phone' => $this->phoneValidationRules(),
+            'otp' => 'required|digits:6',
+        ]);
+
+        if ($validator->fails()) {
+            return errorResponse($validator->errors()->first(), 422);
+        }
+
+        $phone = $request->phone;
+
+        $otpLog = OtpLog::verify($phone, $request->otp, OtpLog::TYPE_SIGNUP);
+        if (!$otpLog) {
+            return errorResponse('Invalid or expired verification code.');
+        }
+
+        $user = User::where('phone', $phone)->first();
+
+        return apiResponse([
+            'message' => 'OTP verified.',
+            'is_existing_user' => (bool)$user,
+        ]);
+    }
+
+    public function register(Request $request)
+    {
+        $validator = validateRequest($request, [
+            'phone' => $this->phoneValidationRules(true),
+            'name' => 'required|string|max:255',
+            'password' => 'required|string|min:6|confirmed',
+            'role' => ['nullable', Rule::in([
+                UserRole::AFFILIATE->label(),
+                UserRole::CUSTOMER->label(),
+            ])],
+        ]);
+
+        if ($validator->fails()) {
+            return errorResponse($validator->errors()->first(), 422);
+        }
+
+        $user = User::create([
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'username' => User::generateShortUsername($request->phone),
+            'password' => Hash::make($request->password),
+        ]);
+
+        return apiResponse([
+            'token' => $user->createToken("API TOKEN")->plainTextToken,
+        ], 'Signup successful');
+    }
+
     public function signup(Request $request)
     {
         $validator = validateRequest($request, [
@@ -52,7 +138,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $validator = validateRequest($request, [
-            'email' => 'required|email',
+            'phone' => 'required|email',
             'password' => 'required|string|min:6',
         ]);
 
@@ -60,15 +146,11 @@ class AuthController extends Controller
             return sendValidationError($validator->errors());
         }
 
-        $user = User::whereEmail($request->email)->first();
+        $user = User::where('phone', $request->phone)->first();
 
         if (!$user) {
-            return errorResponse("No account found with this email!");
+            return errorResponse("No account found with this phone!");
         }
-
-        // if (!$user->is_active) {
-        //     return errorResponse("Your account is not activated!");
-        // }
 
         if (!Hash::check($request->password, $user->password)) {
             return errorResponse('Incorrect password!');

@@ -12,14 +12,7 @@ class AuthController extends Controller
 {
     private function phoneValidationRules($unique = false)
     {
-        //'required|string|regex:/^\+8801[3-9]\d{8}$/|max:14',
-        $rules = 'required|string|regex:/^01[3-9]\d{8}$/|size:11';
-
-        if ($unique) {
-            $rules .= '|unique:users,phone';
-        }
-
-        return $rules;
+        return User::phoneValidationRules($unique);
     }
 
     public function checkPhone(Request $request)
