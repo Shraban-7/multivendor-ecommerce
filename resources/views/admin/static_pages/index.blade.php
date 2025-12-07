@@ -33,7 +33,7 @@
                                         <h6 class="mb-0 text-sm ps-3">{{ $page->title }}</h6>
                                     </td>
                                     <td>
-                                        <p class="text-xs font-weight-bold mb-0 text-muted">/info/{{ $page->slug }}</p>
+                                        <p class="text-xs font-weight-bold mb-0 text-muted">/pages/{{ $page->slug }}</p>
                                     </td>
                                     <td class="align-middle text-center text-sm">
                                         @if($page->is_active)
