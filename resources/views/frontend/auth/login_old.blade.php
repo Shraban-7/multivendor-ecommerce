@@ -63,7 +63,7 @@ $settings = settings();
                 </div>
 
                 <div class="login-form mt-3 sm:mt-5 lg:w-9/w-12 2xl:w-4/5">
-                    <form action="{{ route('login') }}" method="POST"
+                    <form action="{{ route('home') }}" method="POST"
                         class="w-full flex flex-col gap-4 sm:gap-5 mb-3 md:mb-4">
                         @csrf
                         <div class="form-ctrl space-y-1 sm:space-y-2">
@@ -107,7 +107,7 @@ $settings = settings();
                     <div class="text-center mt-6 space-y-2">
                         <p class="text-jet-gray/80">
                             New to our marketplace?
-                            <a href="{{ route('signup') }}" class="text-primary hover:underline">
+                            <a href="{{ route('home') }}" class="text-primary hover:underline">
                                 Sign Up Here
                             </a>
                         </p>
@@ -119,7 +119,7 @@ $settings = settings();
                         </p>
                         <p class="text-jet-gray/80">
                             Want to earn by referring people?
-                            <a href="{{ route('signup') }}?role={{ App\Enums\UserRole::AFFILIATE->label() }}" class="text-primary hover:underline">
+                            <a href="{{ route('home') }}?role={{ App\Enums\UserRole::AFFILIATE->label() }}" class="text-primary hover:underline">
                                 Become an Affiliator
                             </a>
                         </p>

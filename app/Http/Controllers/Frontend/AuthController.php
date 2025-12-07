@@ -237,16 +237,16 @@ class AuthController extends Controller
         if (Auth::guard('seller')->check()) {
             Auth::guard('seller')->logout();
 
-            return redirect()->route('login');
+            return redirect()->route('home');
         }
 
         if (Auth::guard('web')->check()) {
             Auth::guard('web')->logout();
 
-            return redirect()->route('login');
+            return redirect()->route('home');
         }
 
-        return redirect()->route('login');
+        return redirect()->route('home');
     }
 
     public function forgotPassword(Request $request)
@@ -333,7 +333,7 @@ class AuthController extends Controller
 
         $request->session()->forget('reset_email');
 
-        return redirect()->route('login')->with('success', 'Password reset successfully!');
+        return redirect()->route('home')->with('success', 'Password reset successfully!');
     }
 
     public function verify(Request $request)
@@ -342,18 +342,18 @@ class AuthController extends Controller
         $email = $request->session()->get('verify_email');
 
         if (!$email) {
-            return redirect()->route('login')->with('info', 'Please register first.');
+            return redirect()->route('home')->with('info', 'Please register first.');
         }
 
         $user = User::where('email', $email)->first() ?? Seller::where('email', $email)->first();
         if (!$user) {
             $request->session()->forget('verify_email');
-            return redirect()->route('login')->with('info', 'Please register first.');
+            return redirect()->route('home')->with('info', 'Please register first.');
         }
 
         if ($user->email_verified_at) {
             $request->session()->forget('verify_email');
-            return redirect()->route('login')->with('success', 'Your account is already verified. Please login.');
+            return redirect()->route('home')->with('success', 'Your account is already verified. Please login.');
         }
 
         $recent = VerificationCode::where('email', $email)
@@ -394,7 +394,7 @@ class AuthController extends Controller
 
         $request->session()->forget('verify_email');
 
-        return redirect()->route('login')->with('success', 'Your account has been verified successfully!');
+        return redirect()->route('home')->with('success', 'Your account has been verified successfully!');
     }
 
 

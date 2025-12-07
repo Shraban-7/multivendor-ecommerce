@@ -17,7 +17,7 @@ $settings = settings();
                     <p class="text-gray-500 text-sm">Please enter your details to sign in.</p>
                 </div>
 
-                <form action="{{ route('login') }}" method="POST" class="space-y-5">
+                <form action="{{ route('home') }}" method="POST" class="space-y-5">
                     @csrf
                     <!-- Email Input -->
                     <div>
@@ -75,7 +75,7 @@ $settings = settings();
                 <!-- Sign Up Link -->
                 <p class="text-center text-sm text-gray-600 mt-8">
                     Don't have an account?
-                    <a href="{{ route('signup') }}" class="text-primary-600 font-bold hover:underline">Create Account</a>
+                    <a href="{{ route('home') }}" class="text-primary-600 font-bold hover:underline">Create Account</a>
                 </p>
             </div>
 
@@ -125,7 +125,7 @@ $settings = settings();
 
             <x-frontend.flash-message />
 
-            <form action="{{ route('login') }}" method="POST" class="space-y-5">
+            <form action="{{ route('home') }}" method="POST" class="space-y-5">
                 @csrf
 
                 <div>
@@ -157,7 +157,7 @@ $settings = settings();
             <div class="text-center mb-4">
                 <p class="text-sm text-gray-600">
                     Don't have an account?
-                    <a href="{{ route('signup') }}" class="text-yellow-600 hover:underline font-medium">Sign up</a>
+                    <a href="{{ route('home') }}" class="text-yellow-600 hover:underline font-medium">Sign up</a>
                 </p>
             </div>
 
@@ -175,7 +175,7 @@ $settings = settings();
                 </a>
 
                 <a
-                    href="{{ route('signup') }}?role={{ App\Enums\UserRole::AFFILIATE->label() }}"
+                    href="{{ route('home') }}?role={{ App\Enums\UserRole::AFFILIATE->label() }}"
                     class="flex items-center justify-center gap-2 py-2.5 px-4
                            bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg text-sm
                            transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">

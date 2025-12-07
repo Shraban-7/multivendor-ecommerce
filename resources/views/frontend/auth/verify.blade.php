@@ -56,7 +56,7 @@
 
                 <!-- Footer -->
                 <div class="text-center text-sm text-gray-500 mt-6">
-                    <a href="{{ route('login') }}" class="text-yellow-600 font-medium hover:underline">
+                    <a href="{{ route('home') }}" class="text-yellow-600 font-medium hover:underline">
                         Back to Login
                     </a>
                 </div>
@@ -80,7 +80,7 @@
                     data: formData,
                     success: function(response) {
                         toastr.success(response.message || 'Account verified successfully!');
-                        window.location.href = "{{ route('login') }}";
+                        window.location.href = "{{ route('home') }}";
                     },
                     error: function(xhr) {
                         if (xhr.responseJSON && xhr.responseJSON.errors) {

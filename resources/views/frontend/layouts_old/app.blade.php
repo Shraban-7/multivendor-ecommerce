@@ -247,7 +247,7 @@ $isDashboard = View::hasSection('dashboard');
                             } else if (xhr.status === 401) {
                                 toastr.warning(xhr.responseJSON.error);
                                 setTimeout(() => {
-                                    window.location.href = "{{ route('login') }}";
+                                    window.location.href = "{{ route('home') }}";
                                 }, 1000); 
                             } else if (xhr.status === 403) {
                                 toastr.warning(xhr.responseJSON.error);
@@ -298,7 +298,7 @@ $isDashboard = View::hasSection('dashboard');
                     },
                     success: function(data) {
                         if (data.unauthorized) {
-                            window.location.href = "{{ route('login') }}";
+                            window.location.href = "{{ route('home') }}";
                         } else if (data.success) {
                             $('button[data-modal-hide="quick-view-modal-' + product_id + '"]')
                                 .trigger('click');
@@ -316,7 +316,7 @@ $isDashboard = View::hasSection('dashboard');
                     },
                     error: function(xhr) {
                         if (xhr.status === 401) {
-                            window.location.href = "{{ route('login') }}";
+                            window.location.href = "{{ route('home') }}";
                         } else {
                             toastr.error('Something went wrong!');
                         }
@@ -339,7 +339,7 @@ $isDashboard = View::hasSection('dashboard');
                     },
                     success: function(data) {
                         if (data.unauthorized) {
-                            window.location.href = "{{ route('login') }}";
+                            window.location.href = "{{ route('home') }}";
                         } else if (data.success) {
                             toastr.success(data.message);
                         } else {
@@ -348,7 +348,7 @@ $isDashboard = View::hasSection('dashboard');
                     },
                     error: function(xhr) {
                         if (xhr.status === 401) {
-                            window.location.href = "{{ route('login') }}";
+                            window.location.href = "{{ route('home') }}";
                         } else {
                             toastr.error('Something went wrong!');
                         }

@@ -27,7 +27,7 @@ class AuthController extends Controller
 
         Seller::create($data);
 
-        return redirect()->route('login')->with('success', 'Signup successful! Please log in.');
+        return redirect()->route('home')->with('success', 'Signup successful! Please log in.');
     }
 
     public function logout()
@@ -38,7 +38,7 @@ class AuthController extends Controller
             Auth::guard('employee')->logout();
         }
 
-        return redirect()->route('login');
+        return redirect()->route('home');
     }
 
 

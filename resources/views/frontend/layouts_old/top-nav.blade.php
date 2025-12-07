@@ -23,7 +23,7 @@ $searchPlaceholder = 'Search for products or shops..';
             </div>
 
             @if (!auth('web')->check() && !auth()->guard('seller')->check())
-                <a href="{{ route('login') }}" class="text-sm hover:text-light-yellow flex items-center gap-1">
+                <a href="{{ route('home') }}" class="text-sm hover:text-light-yellow flex items-center gap-1">
                     <i class="fa-regular fa-user"></i> <span>Sign In</span>
                 </a>
             @else
@@ -80,7 +80,7 @@ $searchPlaceholder = 'Search for products or shops..';
         <div class="flex justify-end items-center gap-5">
             @if (!auth('web')->check() && !auth()->guard('seller')->check())
                 <!-- Sign In -->
-                <a href="{{ route('login') }}" class="flex items-center gap-1 hover:text-light-yellow">
+                <a href="{{ route('home') }}" class="flex items-center gap-1 hover:text-light-yellow">
                     <i class="fa-regular fa-user"></i>
                     <span class="text-sm lg:text-base">Sign In</span>
                 </a>
