@@ -12,6 +12,9 @@ use App\Http\Controllers\Frontend\ContactUsController;
 use App\Http\Controllers\Frontend\NotificationController;
 use App\Http\Controllers\Frontend\BillingAddressController;
 use App\Http\Controllers\Frontend\SearchController;
+use App\Http\Controllers\Frontend\StaticPageController;
+
+Route::get('pages/{slug}', [StaticPageController::class, 'show'])->name('pages.show');
 
 Route::get('categories/{slug}', [CategoryController::class, 'details'])->name('category.details');
 

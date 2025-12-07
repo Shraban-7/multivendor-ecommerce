@@ -24,6 +24,7 @@ use App\Http\Controllers\Admin\SellerController;
 use App\Http\Controllers\Admin\SellerSubscriptionController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SocialLinkController;
+use App\Http\Controllers\Admin\StaticPageController;
 use App\Http\Controllers\Admin\SubcategoryController;
 use App\Http\Controllers\Admin\SubscriptionPlanController;
 use Illuminate\Support\Facades\Route;
@@ -203,6 +204,15 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
     });
 
     // Route::get('/subscriptions', [SubscriptionPlanController::class, 'subscriptions'])->name('subscriptions.index');
+
+    Route::prefix('static-pages')->name('staticPages.')->controller(StaticPageController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/create', 'create')->name('create');
+        Route::post('/store', 'store')->name('store');
+        Route::get('/{slug}/edit', 'edit')->name('edit');
+        Route::put('/{slug}/update', 'update')->name('update');
+    });
+
 });
 
 Route::middleware('guest')->prefix('admin')->as('admin.')->group(function () {
