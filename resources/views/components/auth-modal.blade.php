@@ -318,7 +318,7 @@
                     this.phoneError.classList.remove('hidden');
                 }
             } catch (error) {
-                this.phoneError.innerText = 'Network error. Please check your connection.';
+                this.phoneError.innerText = error;
                 this.phoneError.classList.remove('hidden');
             } finally {
                 this.btnSendOtp.innerHTML = 'Continue <i class="fas fa-arrow-right text-sm"></i>';

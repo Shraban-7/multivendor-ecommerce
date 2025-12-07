@@ -43,7 +43,9 @@ class AuthController extends Controller
 
         OtpLog::generate($phone, OtpLog::TYPE_SIGNUP);
 
-        return successResponse('OTP sent successfully');
+        return apiResponse([
+            'user_exists' => false,
+        ], 'OTP sent successfully');
     }
 
     public function verifyOtp(Request $request)
@@ -81,6 +83,11 @@ class AuthController extends Controller
         ];
 
         if (Auth::attempt($credentials)) {
+
+            $request->session()->regenerate();
+
+            session()->flash('success', 'Login successful');
+
             return successResponse('Login successful');
         }
 
@@ -103,6 +110,10 @@ class AuthController extends Controller
         ]);
 
         Auth::login($user);
+
+        $request->session()->regenerate();
+
+        session()->flash('success', 'Registration successful');
 
         return successResponse('Registration successful', 201);
     }
