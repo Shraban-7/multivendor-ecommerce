@@ -214,10 +214,8 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
         Route::put('/{slug}/update', 'update')->name('update');
     });
 
-    Route::prefix('banners')->as('banners.')->group(function () {
-        //Route::get('/', [BannerController::class, 'index'])->name('index');
-        Route::resource('/', BannerController::class);
-    });
+    Route::resource('banners', BannerController::class)->names('banners');
+
 });
 
 Route::middleware('guest')->prefix('admin')->as('admin.')->group(function () {

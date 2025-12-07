@@ -56,7 +56,7 @@
                     </button>
 
                     <!-- Delete Form -->
-                    <form action="{{ route('admin.banners.destroy', $banner) }}" method="POST" class="d-inline"
+                    <form action="{{ route('admin.banners.destroy', $banner->id) }}" method="POST"  class="d-inline"
                         onsubmit="return confirm('Delete this banner?')">
                         @csrf @method('DELETE')
                         <button class="btn btn-sm btn-danger">Delete</button>
@@ -69,7 +69,7 @@
                 aria-labelledby="bannerEditModalLabel{{ $banner->id }}" aria-hidden="true">
                 <div class="modal-dialog modal-lg modal-dialog-centered">
                     <div class="modal-content">
-                        <form action="{{ route('admin.banners.update', $banner) }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('admin.banners.update', $banner->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
 

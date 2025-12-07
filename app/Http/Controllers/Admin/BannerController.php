@@ -25,7 +25,7 @@ class BannerController extends Controller
             'section' => 'required|string|max:50',
             'button_text' => 'nullable|string|max:50',
             'button_link' => 'nullable|string|max:255',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|mimes:jpg,png,webp,svg,gif|max:2048',
             'is_active' => 'sometimes|boolean',
             'sort_order' => 'nullable|integer',
         ]);
@@ -48,7 +48,7 @@ class BannerController extends Controller
             'section' => 'required|string|max:50',
             'button_text' => 'nullable|string|max:50',
             'button_link' => 'nullable|string|max:255',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|mimes:jpg,png,webp,svg,gif|max:2048',
             'is_active' => 'sometimes|boolean',
             'sort_order' => 'nullable|integer',
         ]);
