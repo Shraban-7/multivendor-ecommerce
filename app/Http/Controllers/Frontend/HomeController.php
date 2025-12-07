@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\HeroBanner;
 use App\Http\Controllers\Controller;
+use App\Models\Banner;
 use App\Models\Brand;
 use Illuminate\Http\Request;
 
@@ -71,6 +72,8 @@ class HomeController extends Controller
         // $data['hero_grid_three'] = HeroBanner::where('position', 3)->first();
         // $data['hero_grid_four']  = HeroBanner::where('position', 4)->first();
         // $data['hero_grid_five']  = HeroBanner::where('position', 5)->first();
+
+        $data['banners'] = Banner::active()->orderBy('sort_order')->get();
 
         $data['hero_banners'] = HeroBanner::active()->orderBy('position')->get();
         $data['sellers'] = Seller::active()->limit(8)->get();

@@ -17,6 +17,11 @@ class Banner extends Model
     const SECTION_CATEGORY_TOP = 'category_top';
     const SECTION_FOOTER_BANNER = 'footer_banner';
 
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
     public function scopeSection($query, $section)
     {
         return $query->where('section', $section)
