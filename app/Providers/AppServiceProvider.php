@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Cart;
 use App\Models\CartItem;
+use App\Models\Wishlist;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
@@ -25,12 +26,17 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useBootstrap();
+
         View::composer('*', function ($view) {
+
             $cartCount = 0;
             $sub_total = 0;
             $grand_total = 0;
+            $wishlistCount = 0;
 
             if (Auth::check()) {
+
+                // Cart Calculation
                 $carts = Cart::where('user_id', Auth::id())
                     ->with('cart_items.product')
                     ->get();
@@ -43,11 +49,20 @@ class AppServiceProvider extends ServiceProvider
                         $cartCount++;
                     }
                 }
+
+                // Wishlist Count
+                $wishlistCount = Wishlist::where('user_id', Auth::id())->count();
+
             } else {
                 $carts = collect();
+                $wishlistCount = 0;
             }
 
-            $view->with('cartCount', $cartCount)->with('totalPrice', $grand_total)->with('subTotal', $sub_total);
+            $view->with('cartCount', $cartCount)
+                ->with('totalPrice', $grand_total)
+                ->with('subTotal', $sub_total)
+                ->with('wishlistCount', $wishlistCount);
         });
     }
+
 }

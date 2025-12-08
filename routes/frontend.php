@@ -68,6 +68,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [WishlistController::class, 'index'])->name('index');
         Route::post('/store', [WishlistController::class, 'store'])->name('store');
         Route::delete('{wishlist}/delete', [WishlistController::class, 'delete'])->name('delete');
+        Route::get('/data', [WishlistController::class, 'getLiveWishlistData'])->name('data');
     });
 
     Route::prefix('orders')->as('orders.')->group(function () {

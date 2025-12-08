@@ -41,20 +41,28 @@
                             </div>
 
                             <!-- Stock Info -->
-                            <div
-                                class="{{ $wishlist->product->stock_in > 0 ? 'text-green-600' : 'text-orange-600' }} font-medium">
-                                {{ $wishlist->product->stock_in > 0 ? 'IN STOCK' : 'STOCK OUT' }}
+                            @php
+                                $stock = $wishlist->product->stock_in - $wishlist->product->stock_out;
+                            @endphp
+                            <div class="{{ $stock > 0 ? 'text-green-600' : 'text-orange-600' }} font-medium">
+                                {{ $stock > 0 ? 'IN STOCK' : 'STOCK OUT' }}
                             </div>
 
                             <!-- Actions -->
                             <div class="flex items-center gap-3">
                                 <input type="hidden" name="quantity" class="qtyInputValue"
                                     id="qtyInput{{ $wishlist->product->id }}">
-                                <button type="button"
-                                    class="cartBtn px-3 py-2 text-xs sm:text-sm bg-orange-500 text-white rounded hover:bg-orange-600"
-                                    data-id="{{ $wishlist->product->id }}" data-wishlist-id="{{ $wishlist->id }}">
-                                    ADD TO CART
-                                </button>
+                                @if ($stock > 0)
+                                    {{-- <button type="button"
+                                        class="cartBtn px-3 py-2 text-xs sm:text-sm bg-orange-500 text-white rounded hover:bg-orange-600"
+                                        data-id="{{ $wishlist->product->id }}" data-wishlist-id="{{ $wishlist->id }}">
+                                        ADD TO CART
+                                    </button> --}}
+                                    <button data-slug="{{ $wishlist->product->slug }}" type="button"
+                                        class="btn-quickview bg-primary-500 hover:bg-orange-500 text-white py-2 px-3 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-1">
+                                        <i class="fas fa-shopping-cart text-xs"></i> 
+                                    </button>
+                                @endif
                                 <button type="button" class="wishlistRemoveBtn text-gray-400 hover:text-gray-600"
                                     data-id="{{ $wishlist->id }}">
                                     <i class="fas fa-x"></i>
@@ -68,39 +76,4 @@
 
         <!-- Track Order Main Section Ended -->
     </main>
-
-    @push('scripts')
-        <script>
-            $(document).ready(function() {
-                $('.wishlistRemoveBtn').on('click', function() {
-                    var wishlistId = $(this).data('id');
-                    var $row = $(this).closest('.grid');
-                    const wishlistDeleteRoute = "{{ route('wishlist.delete', ['wishlist' => '__id__']) }}";
-                    var url = wishlistDeleteRoute.replace('__id__', wishlistId);
-                    if (!wishlistId) return;
-
-                    $.ajax({
-                        url: url,
-                        type: 'DELETE',
-                        data: {
-                            wishlist: wishlistId
-                        },
-                        success: function(response) {
-                            if (response.success) {
-                                $row.fadeOut(300, function() {
-                                    $(this).remove();
-                                    toastr.success(response.message);
-                                });
-                            } else {
-                                alert(response.message || 'Failed to remove item');
-                            }
-                        },
-                        error: function() {
-                            alert('Something went wrong. Please try again.');
-                        }
-                    });
-                });
-            });
-        </script>
-    @endpush
 @endsection

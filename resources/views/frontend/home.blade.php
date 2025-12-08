@@ -109,8 +109,8 @@ $promoBanner = $banners->get(\App\Models\Banner::SECTION_PROMO_MODAL)?->first();
                         <button
                             class="btn-quickview w-9 h-9 bg-white text-gray-600 rounded-full shadow-lg flex items-center justify-center hover:bg-primary-600 hover:text-white transform translate-y-4 group-hover:translate-y-0 transition delay-75"
                             data-slug="{{ $product->slug }}"><i class="far fa-eye"></i></button>
-                        <button
-                            class="w-9 h-9 bg-white text-gray-600 rounded-full shadow-lg flex items-center justify-center hover:bg-primary-600 hover:text-white transform translate-y-4 group-hover:translate-y-0 transition delay-100"><i
+                        <button data-id="{{ $product->id }}"
+                            class="wishlistBtn w-9 h-9 bg-white text-gray-600 rounded-full shadow-lg flex items-center justify-center hover:bg-primary-600 hover:text-white transform translate-y-4 group-hover:translate-y-0 transition delay-100"><i
                                 class="far fa-heart"></i></button>
                     </div>
                 </div>
@@ -209,8 +209,8 @@ $promoBanner = $banners->get(\App\Models\Banner::SECTION_PROMO_MODAL)?->first();
                 <img src="{{ $product->imageUrl }}"
                     class="max-h-full object-contain hover:scale-105 transition duration-500 mix-blend-multiply z-0">
                 <div class="absolute top-2 right-2 z-10">
-                    <button
-                        class="w-8 h-8 rounded-full bg-white text-gray-400 hover:text-red-500 shadow flex items-center justify-center transition"><i
+                    <button data-id="{{ $product->id }}"
+                        class="wishlistBtn w-8 h-8 rounded-full bg-white text-gray-400 hover:text-red-500 shadow flex items-center justify-center transition"><i
                             class="far fa-heart"></i></button>
                 </div>
                 <div

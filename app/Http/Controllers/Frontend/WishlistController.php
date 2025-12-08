@@ -14,7 +14,7 @@ class WishlistController extends Controller
     {
         $wishlists = Wishlist::with('product')->get();
 
-        return view('frontend.pages.wishlist',compact('wishlists'));
+        return view('frontend.pages.wishlist', compact('wishlists'));
     }
 
     public function store(Request $request)
@@ -46,4 +46,18 @@ class WishlistController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Product Removed From Wishlist']);
     }
+
+    public function getLiveWishlistData()
+    {
+        $wishlistCount = 0;
+
+        if (Auth::check()) {
+            $wishlistCount = Wishlist::where('user_id', Auth::id())->count();
+        }
+
+        return response()->json([
+            'wishlistCount' => $wishlistCount,
+        ]);
+    }
+
 }

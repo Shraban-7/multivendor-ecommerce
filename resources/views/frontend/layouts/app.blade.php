@@ -90,37 +90,37 @@ $isDashboard = View::hasSection('dashboard');
         <input type="password" name="password" autocomplete="current-password" ...>
         <input type="text" name="name" autocomplete="name" ...>
         <input type="password" name="password" autocomplete="new-password" ...>
-    </div>    
+    </div>
 
     <x-frontend.quickviewModal />
 
     @include('frontend.layouts.navbar')
 
-    @if(View::hasSection('breadcrumbs'))
-    <div>
-        @yield('breadcrumbs')
-    </div>
+    @if (View::hasSection('breadcrumbs'))
+        <div>
+            @yield('breadcrumbs')
+        </div>
     @endif
 
     @if (!$isDashboard)
-    <div class="container mx-auto px-3 lg:px-4 py-4">
-        @yield('content')
-    </div>
+        <div class="container mx-auto px-3 lg:px-4 py-4">
+            @yield('content')
+        </div>
     @endif
 
     @if ($isDashboard)
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mb-10" id="main">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 items-start">
-            @include('frontend.layouts.sidebar')
-            <section class="md:col-span-3 space-y-6">
-                @yield('dashboard')
-            </section>
-        </div>
-    </main>
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mb-10" id="main">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 items-start">
+                @include('frontend.layouts.sidebar')
+                <section class="md:col-span-3 space-y-6">
+                    @yield('dashboard')
+                </section>
+            </div>
+        </main>
     @endif
 
     @include('frontend.layouts.footer')
-    
+
     @include('frontend.layouts.mobile-nav')
 
     <button id="backToTop"
@@ -128,7 +128,7 @@ $isDashboard = View::hasSection('dashboard');
         <i class="fas fa-arrow-up"></i>
     </button>
 
-    <x-auth-modal/>
+    <x-auth-modal />
 
     <script src="{{ asset('assets/libs/toastr/js/toastr.min.js') }}"></script>
     <script>
@@ -436,6 +436,7 @@ $isDashboard = View::hasSection('dashboard');
                             window.location.href = "{{ route('home') }}";
                         } else if (data.success) {
                             toastr.success(data.message);
+                            updateWishlistData();
                         } else {
                             toastr.error(data.error);
                         }
@@ -446,6 +447,36 @@ $isDashboard = View::hasSection('dashboard');
                         } else {
                             toastr.error('Something went wrong!');
                         }
+                    }
+                });
+            });
+
+            $('.wishlistRemoveBtn').on('click', function() {
+                var wishlistId = $(this).data('id');
+                var $row = $(this).closest('.grid');
+                const wishlistDeleteRoute = "{{ route('wishlist.delete', ['wishlist' => '__id__']) }}";
+                var url = wishlistDeleteRoute.replace('__id__', wishlistId);
+                if (!wishlistId) return;
+
+                $.ajax({
+                    url: url,
+                    type: 'DELETE',
+                    data: {
+                        wishlist: wishlistId
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            $row.fadeOut(300, function() {
+                                $(this).remove();
+                                toastr.success(response.message);
+                                updateWishlistData();
+                            });
+                        } else {
+                            alert(response.message || 'Failed to remove item');
+                        }
+                    },
+                    error: function() {
+                        alert('Something went wrong. Please try again.');
                     }
                 });
             });
@@ -467,6 +498,24 @@ $isDashboard = View::hasSection('dashboard');
                     }
                 });
             }
+
+            function updateWishlistData() {
+                $.ajax({
+                    url: "{{ route('wishlist.data') }}",
+                    type: "GET",
+                    success: function(data) {
+                        if (data.wishlistCount > 0) {
+                            $('#wishlistCount').removeClass('hidden');
+                        }
+
+                        $('#wishlistCount').text(data.wishlistCount);
+                    },
+                    error: function() {
+                        toastr.error('Failed to update wishlist data.');
+                    }
+                });
+            }
+
 
             $("[id^='product-wrapper']").each(function() {
                 initDefaultVariant($(this));
@@ -701,23 +750,23 @@ $isDashboard = View::hasSection('dashboard');
     </script>
 
     @if (auth()->check() && auth()->user()->isAffiliate())
-    <script>
-        function copyReferralLink(button, referralCode, productUrl) {
-            // Append ?ref=referralCode to the product URL
-            const referralUrl = `${productUrl}?ref=${referralCode}`;
+        <script>
+            function copyReferralLink(button, referralCode, productUrl) {
+                // Append ?ref=referralCode to the product URL
+                const referralUrl = `${productUrl}?ref=${referralCode}`;
 
-            navigator.clipboard.writeText(referralUrl).then(() => {
-                const tooltip = button.querySelector('.tooltip-text');
-                tooltip.classList.remove('opacity-0');
-                tooltip.classList.add('opacity-100');
+                navigator.clipboard.writeText(referralUrl).then(() => {
+                    const tooltip = button.querySelector('.tooltip-text');
+                    tooltip.classList.remove('opacity-0');
+                    tooltip.classList.add('opacity-100');
 
-                setTimeout(() => {
-                    tooltip.classList.remove('opacity-100');
-                    tooltip.classList.add('opacity-0');
-                }, 2000);
-            });
-        }
-    </script>
+                    setTimeout(() => {
+                        tooltip.classList.remove('opacity-100');
+                        tooltip.classList.add('opacity-0');
+                    }, 2000);
+                });
+            }
+        </script>
     @endif
 
     @stack('scripts')

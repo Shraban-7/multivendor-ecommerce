@@ -71,11 +71,11 @@
                         Become a Seller
                     </a>
                 @else
-                    <a href="#" class="hidden md:flex flex-col items-center group relative">
+                    <a href="{{ route('wishlist.index') }}" class="hidden md:flex flex-col items-center group relative">
                         <div class="relative">
                             <i class="far fa-heart text-xl text-gray-600 group-hover:text-primary-600 transition"></i>
-                            <span
-                                class="absolute -top-2 -right-2 bg-primary-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">2</span>
+                            <span id="wishlistCount"
+                                class="{{ $wishlistCount > 0 ? '' : 'hidden' }} absolute -top-2 -right-2 bg-primary-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">{{ $wishlistCount }}</span>
                         </div>
                         <span class="text-[10px] font-medium text-gray-500 mt-1">Wishlist</span>
                     </a>
