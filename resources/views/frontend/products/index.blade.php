@@ -121,7 +121,7 @@
 @endsection
 
 @section('content')
-    <section class="container mx-auto pb-8">
+    <section class="container mx-auto pb-20 lg:pb-8">
         <div class="flex flex-col lg:flex-row gap-8">
 
             <!-- ==================== SIDEBAR FILTERS ==================== -->
@@ -479,7 +479,6 @@
         </main>
         </div>
     </section>
-
 @endsection
 
 @push('scripts')
