@@ -112,7 +112,7 @@ class CartController extends Controller
             }
         }
 
-        $similarProducts = Product::query()
+        $products = Product::query()
             ->withDefaultRelations()
             ->whereNotIn('id', $addedItemIds)
             ->where(function ($query) use ($categoryIds, $subcategoryIds, $brandIds) {
@@ -136,11 +136,10 @@ class CartController extends Controller
             ->take(16)
             ->values();
 
+
         $discount = $sub_total - $grand_total;
 
         $total_products_count = $carts->flatten()->pluck('cart_items')->flatten()->count();
-
-        $products = $similarProducts->map(fn($product) => $product->toDetailsArray());
 
         return view('frontend.cart.details', compact('carts', 'grand_total', 'total_products_count', 'sub_total', 'discount', 'products'));
     }
