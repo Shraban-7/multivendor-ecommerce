@@ -1,5 +1,5 @@
 <div class="row g-3">
-    <!-- <div class="col-md-6">
+    <div class="col-md-6">
         <label class="form-label">Title</label>
         <input type="text" name="title" value="{{ old('title', $banner->title ?? '') }}" class="form-control">
     </div>
@@ -12,7 +12,7 @@
     <div class="col-md-12">
         <label class="form-label">Description</label>
         <textarea name="description" class="form-control" rows="2">{{ old('description', $banner->description ?? '') }}</textarea>
-    </div> -->
+    </div>
 
     <div class="col-12">
         <label class="form-label">Image</label>

@@ -16,6 +16,7 @@ class Banner extends Model
     const SECTION_FLASH_SALE = 'flash_sale';
     const SECTION_CATEGORY_TOP = 'category_top';
     const SECTION_FOOTER_BANNER = 'footer_banner';
+    const SECTION_PROMO_MODAL = 'promo_modal';
 
     public static function sections(): array
     {
@@ -25,6 +26,7 @@ class Banner extends Model
             self::SECTION_FLASH_SALE,
             self::SECTION_CATEGORY_TOP,
             self::SECTION_FOOTER_BANNER,
+            self::SECTION_PROMO_MODAL,
         ];
     }
 

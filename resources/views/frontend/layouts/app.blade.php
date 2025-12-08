@@ -92,8 +92,6 @@ $isDashboard = View::hasSection('dashboard');
         <input type="password" name="password" autocomplete="new-password" ...>
     </div>    
 
-    <x-frontend.promoModal />
-
     <x-frontend.quickviewModal />
 
     @include('frontend.layouts.navbar')
@@ -135,23 +133,6 @@ $isDashboard = View::hasSection('dashboard');
     <script src="{{ asset('assets/libs/toastr/js/toastr.min.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const SHOW_PROMO_MODAL = "{{ request()->routeIs('home') ? 1 : 0 }}";
-            const promoPopup = document.getElementById('promoPopup');
-            const closePromoBtns = document.querySelectorAll('#closePromoBtn, .close-promo-trigger');
-            if (SHOW_PROMO_MODAL == 1 && promoPopup) {
-                promoPopup.classList.remove('hidden');
-                setTimeout(() => promoPopup.style.opacity = '1', 10);
-            }
-
-            if (promoPopup) {
-                closePromoBtns.forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        promoPopup.style.opacity = '0';
-                        setTimeout(() => promoPopup.remove(), 300);
-                    });
-                });
-            }
-
             const quickViewModal = document.getElementById('quickViewModal');
             const openQuickViewBtns = document.querySelectorAll('.btn-quickview');
             const closeQuickViewBtns = document.querySelectorAll('.close-quickview');
