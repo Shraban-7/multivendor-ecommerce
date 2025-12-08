@@ -40,13 +40,18 @@
                         class="px-4 bg-gray-50 text-gray-600 text-sm font-medium border-r border-gray-200 flex items-center gap-2 hover:bg-gray-100">
                         All Categories <i class="fas fa-chevron-down text-xs"></i>
                     </button> -->
-                    <input type="text" placeholder="Search for products, brands or shops..."
+                    <input type="text" id="searchInput" placeholder="Search for products, brands or shops..."
                         class="w-full px-4 py-2.5 outline-none text-gray-700 placeholder-gray-400">
                     <button class="bg-primary-500 hover:bg-primary-600 text-white px-6 font-medium transition">
                         <i class="fas fa-search"></i>
                     </button>
+                    <!-- Suggestions -->
+                    <div id="suggestionsBox"
+                        class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-md shadow-lg hidden max-h-80 overflow-y-auto z-50">
+                    </div>
                 </div>
             </div>
+
 
             <!-- Right Icons -->
             <div class="flex items-center gap-4 lg:gap-6">
@@ -79,10 +84,10 @@
                         <div class="relative">
                             <i
                                 class="fas fa-shopping-cart text-xl text-gray-600 group-hover:text-primary-600 transition"></i>
-                            @if ($cartCount > 0)
-                                <span
-                                    class="absolute -top-2 -right-2 bg-primary-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">{{ $cartCount }}</span>
-                            @endif
+
+                                <span id="cartCount"
+                                    class="{{ $cartCount > 0 ? '' : 'hidden' }} absolute -top-2 -right-2 bg-primary-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">{{ $cartCount }}</span>
+
                         </div>
                         <span class="text-[10px] font-medium text-gray-500 mt-1 hidden md:block">Cart</span>
                     </a>
@@ -121,3 +126,46 @@
         </div>
     </div>
 </header>
+
+<script>
+    function setupSearch(inputId, boxId) {
+        const input = document.getElementById(inputId);
+        const box = document.getElementById(boxId);
+        let timer;
+
+        input.addEventListener('input', function() {
+            clearTimeout(timer);
+            const query = this.value.trim();
+            console.log(query);
+
+            if (query.length < 2) {
+                box.classList.add('hidden');
+                box.innerHTML = '';
+                return;
+            }
+
+            timer = setTimeout(() => {
+                fetch(`{{ route('search.suggestions') }}?q=${encodeURIComponent(query)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.html.trim() !== '') {
+                            box.innerHTML = data.html;
+                            box.classList.remove('hidden');
+                        } else {
+                            box.classList.add('hidden');
+                            box.innerHTML = '';
+                        }
+                    });
+            }, 300);
+        });
+
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest(`#${inputId}`) &&
+                !event.target.closest(`#${boxId}`)) {
+                box.classList.add('hidden');
+            }
+        });
+    }
+    setupSearch('searchInput', 'suggestionsBox');
+    setupSearch('searchInputMobile', 'suggestionsBoxMobile');
+</script>

@@ -163,5 +163,5 @@ $searchPlaceholder = 'Search for products or shops..';
         });
     }
     setupSearch('searchInput', 'suggestionsBox');
-    setupSearch('searchInputMobile', 'suggestionsBoxMobile');
+    // setupSearch('searchInputMobile', 'suggestionsBoxMobile');
 </script>

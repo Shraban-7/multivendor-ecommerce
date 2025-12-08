@@ -10,10 +10,8 @@
     <a href="#" class="flex flex-col items-center gap-1 hover:text-primary-600 relative">
         <div class="relative">
             <i class="fas fa-shopping-cart text-lg"></i>
-            @if ($cartCount > 0)
-            <span
-                class="absolute -top-2 -right-2 bg-primary-600 text-white text-[8px] w-3.5 h-3.5 rounded-full flex items-center justify-center">{{ $cartCount }}</span>
-            @endif
+            <span id="cartCount"
+                class="{{ $cartCount > 0 ? '' : 'hidden' }} absolute -top-2 -right-2 bg-primary-600 text-white text-[8px] w-3.5 h-3.5 rounded-full flex items-center justify-center">{{ $cartCount }}</span>
         </div>
         <span class="text-[10px] font-medium">Cart</span>
     </a>
