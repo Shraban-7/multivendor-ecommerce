@@ -71,16 +71,16 @@
                         Become a Seller
                     </a>
                 @else
-                    <a href="{{ route('wishlist.index') }}" class="hidden md:flex flex-col items-center group relative">
+                    <a href="{{ route('wishlist.index') }}" class="flex flex-col items-center group relative">
                         <div class="relative">
                             <i class="far fa-heart text-xl text-gray-600 group-hover:text-primary-600 transition"></i>
                             <span id="wishlistCount"
                                 class="{{ $wishlistCount > 0 ? '' : 'hidden' }} absolute -top-2 -right-2 bg-primary-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">{{ $wishlistCount }}</span>
                         </div>
-                        <span class="text-[10px] font-medium text-gray-500 mt-1">Wishlist</span>
+                        <span class="text-[10px] font-medium text-gray-500 mt-1 hidden md:block">Wishlist</span>
                     </a>
 
-                    <a href="{{ route('cart.details') }}" class="flex flex-col items-center group relative">
+                    <a href="{{ route('cart.details') }}" class="hidden md:flex flex flex-col items-center group relative">
                         <div class="relative">
                             <i
                                 class="fas fa-shopping-cart text-xl text-gray-600 group-hover:text-primary-600 transition"></i>
@@ -93,19 +93,18 @@
                     </a>
 
                     <a href="{{ route('notifications.index') }}"
-                        class="hidden md:flex flex-col items-center group relative">
+                        class="flex flex-col items-center group relative">
                         <div class="relative">
                             <i
-                                class="fa-regular fa-bell text-xl text-gray-700 group-hover:text-primary-600 transition"></i>
+                                class="fa-regular fa-bell text-xl text-gray-600 group-hover:text-primary-600 transition"></i>
                             @if ($notificationCount > 0)
                                 <span
-                                    class="absolute -top-2 -right-2 bg-primary-600 text-white text-[10px] min-w-[16px] px-1 h-4 
-                                        rounded-full flex items-center justify-center leading-none font-bold shadow">
+                                    class="absolute -top-2 -right-2 bg-primary-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
                                     {{ $notificationCount }}
                                 </span>
                             @endif
                         </div>
-                        <span class="text-[11px] font-medium text-gray-500 mt-1">Notifications</span>
+                        <span class="text-[10px] font-medium text-gray-500 mt-1 hidden md:block">Notifications</span>
                     </a>
 
                     <a href="
