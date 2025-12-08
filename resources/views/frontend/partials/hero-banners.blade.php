@@ -9,68 +9,47 @@ if (isset($banners[Banner::SECTION_CATEGORY_TOP])) {
 }
 ?>
 
-<section class="container mx-auto px-4">
-    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[350px] md:h-[450px] lg:h-[500px]">
-        <div class="lg:col-span-3 relative rounded-2xl overflow-hidden shadow-lg group bg-gray-900" id="hero-slider">
-
+<section class="container mx-auto">
+    <div
+        class="grid grid-cols-1 lg:grid-cols-4 gap-4 md:gap-6 auto-rows-[minmax(200px,auto)] h-auto lg:h-[500px]">
+        <!-- HERO SLIDER -->
+        <div
+            class="col-span-1 lg:col-span-3 relative rounded-md overflow-hidden shadow-lg group bg-gray-900 h-[200px] sm:h-[320px] md:h-[400px] lg:h-full"
+            id="hero-slider">
             @foreach($heroBanners as $index => $banner)
-            <div class="absolute inset-0 transition-opacity duration-700 ease-in-out hero-slide {{ $index === 0 ? 'opacity-100 z-20' : 'opacity-0 z-10' }}" data-index="{{ $index }}">
-                <img src="{{ storage_url($banner->image) }}" alt="{{ $banner->title }}" class="w-full h-full object-cover opacity-80">
-                <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent"></div>
-
-                <div class="absolute inset-0 flex flex-col justify-center px-8 lg:px-16 z-30">
-                    @if($banner->subtitle)
-                    <span class="text-primary-500 font-bold tracking-[0.2em] uppercase mb-3 animate-fade-in-up">
-                        {{ $banner->subtitle }}
-                    </span>
-                    @endif
-
-                    @if($banner->title)
-                    <h1 class="text-4xl lg:text-6xl font-extrabold text-white mb-4 leading-tight max-w-2xl animate-fade-in-up delay-100">
-                        {!! nl2br(e($banner->title)) !!}
-                    </h1>
-                    @endif
-
-                    @if($banner->description)
-                    <p class="text-gray-200 mb-8 max-w-lg text-lg animate-fade-in-up delay-200">
-                        {{ $banner->description }}
-                    </p>
-                    @endif
-
-                    @if($banner->button_link)
-                    <a href="{{ $banner->button_link }}" class="w-fit bg-primary-600 hover:bg-primary-700 text-white px-8 py-3.5 rounded-full font-bold transition shadow-lg shadow-primary-600/40 flex items-center gap-2 transform hover:-translate-y-1 animate-fade-in-up delay-300">
-                        {{ $banner->button_text ?? 'Shop Now' }}
-                        <i class="fas fa-arrow-right"></i>
-                    </a>
-                    @endif
-                </div>
+            <div
+                class="absolute inset-0 transition-opacity duration-700 ease-in-out hero-slide {{ $index === 0 ? 'opacity-100 z-20' : 'opacity-0 z-10' }}"
+                data-index="{{ $index }}">
+                <img
+                    src="{{ storage_url($banner->image) }}"
+                    alt="{{ $banner->title }}"
+                    class="w-full h-full object-cover">
+                {{-- overlay/text intentionally commented out --}}
             </div>
             @endforeach
 
             @if(count($heroBanners) > 1)
-            <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex items-center gap-2 z-40">
+            <div
+                class="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 z-40">
                 @foreach($heroBanners as $index => $banner)
-                <button onclick="goToSlide({{ $index }})"
-                    class="slider-dot transition-all duration-300 rounded-full {{ $index === 0 ? 'bg-primary-500 w-6 h-3' : 'bg-white/40 hover:bg-white/70 w-3 h-3' }}">
-                </button>
+                <button
+                    onclick="goToSlide({{ $index }})"
+                    class="slider-dot transition-all duration-300 rounded-full {{ $index === 0 ? 'bg-primary-500 w-6 h-3' : 'bg-white/40 hover:bg-white/70 w-3 h-3' }}"></button>
                 @endforeach
             </div>
             @endif
         </div>
 
+        <!-- CATEGORY BANNERS (hidden on smaller screens) -->
         <div class="hidden lg:flex flex-col gap-6 h-full">
             @foreach($categoryBanners as $banner)
-            <div class="relative rounded-2xl overflow-hidden h-1/2 shadow-md group">
-                <img src="{{ asset('storage/' . $banner->image) }}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" alt="{{ $banner->title }}">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent p-6 flex flex-col justify-end">
-                    <h3 class="text-white text-xl font-bold mb-1">{{ $banner->title }}</h3>
-                    @if($banner->subtitle)
-                    <p class="text-gray-300 text-xs mb-2">{{ $banner->subtitle }}</p>
-                    @endif
-                    <a href="{{ $banner->button_link ?? '#' }}" class="text-primary-400 text-sm font-semibold hover:text-white transition flex items-center gap-1">
-                        {{ $banner->button_text ?? 'Discover' }} <i class="fas fa-angle-right"></i>
-                    </a>
-                </div>
+            <div
+                class="relative rounded-md overflow-hidden h-1/2 shadow-md group">
+                <img
+                    src="{{ asset('storage/' . $banner->image) }}"
+                    class="w-full h-full object-cover group-hover:scale-110 transition duration-700"
+                    alt="{{ $banner->title }}">
+                {{-- overlay/text intentionally commented out --}}
             </div>
             @endforeach
         </div>

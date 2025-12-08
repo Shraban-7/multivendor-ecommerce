@@ -1,5 +1,5 @@
 <div class="row g-3">
-    <div class="col-md-6">
+    <!-- <div class="col-md-6">
         <label class="form-label">Title</label>
         <input type="text" name="title" value="{{ old('title', $banner->title ?? '') }}" class="form-control">
     </div>
@@ -12,20 +12,9 @@
     <div class="col-md-12">
         <label class="form-label">Description</label>
         <textarea name="description" class="form-control" rows="2">{{ old('description', $banner->description ?? '') }}</textarea>
-    </div>
+    </div> -->
 
-    <div class="col-md-6">
-        <label class="form-label">Section</label>
-        <select name="section" class="form-select" required>
-            @foreach(\App\Models\Banner::sections() as $section)
-            <option value="{{ $section }}" {{ old('section', $banner->section ?? '') == $section ? 'selected' : '' }}>
-                {{ ucfirst(str_replace('_', ' ', $section)) }}
-            </option>
-            @endforeach
-        </select>
-    </div>
-
-    <div class="col-md-6">
+    <div class="col-12">
         <label class="form-label">Image</label>
         <input type="file" name="image" class="form-control">
         @if($banner && $banner->image)
@@ -41,6 +30,17 @@
     <div class="col-md-6">
         <label class="form-label">Button Link</label>
         <input type="text" name="button_link" value="{{ old('button_link', $banner->button_link ?? '') }}" class="form-control">
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Section</label>
+        <select name="section" class="form-select" required>
+            @foreach(\App\Models\Banner::sections() as $section)
+            <option value="{{ $section }}" {{ old('section', $banner->section ?? '') == $section ? 'selected' : '' }}>
+                {{ ucfirst(str_replace('_', ' ', $section)) }}
+            </option>
+            @endforeach
+        </select>
     </div>
 
     <div class="col-md-6">

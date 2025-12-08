@@ -17,7 +17,7 @@
             <tr>
                 <th>#</th>
                 <th>Preview</th>
-                <th>Title</th>
+                <!-- <th>Title</th> -->
                 <th>Section</th>
                 <th>Status</th>
                 <th>Sort</th>
@@ -35,7 +35,7 @@
                     <span class="text-muted">No Image</span>
                     @endif
                 </td>
-                <td>{{ $banner->title ?? '—' }}</td>
+                <!-- <td>{{ $banner->title ?? '—' }}</td> -->
                 <td><span class="badge bg-secondary">{{ $banner->section }}</span></td>
                 <td>
                     @if($banner->is_active)
