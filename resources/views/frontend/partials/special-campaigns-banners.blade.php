@@ -8,7 +8,7 @@ if (isset($banners[Banner::SECTION_MID_PROMO]) && $banners[Banner::SECTION_MID_P
 ?>
 
 @if($midBanner)
-<section class="container mx-auto px-4 py-4">
+<section class="container mx-auto pb-5">
     <div class="relative rounded-2xl overflow-hidden shadow-xl h-44 md:h-80 flex items-center group">
         <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
             style="background-image: url('{{ storage_url($midBanner->image) }}');">

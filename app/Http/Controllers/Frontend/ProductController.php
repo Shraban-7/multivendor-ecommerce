@@ -61,7 +61,7 @@ class ProductController extends Controller
                 break;
         }
 
-        $products = $query->paginate(16)->appends($request->query());
+        $products = $query->simplePaginate(16)->appends($request->query());
 
         $categories = Category::category()
             ->withCount('products')

@@ -13,7 +13,7 @@ $promoBanner = $banners->get(\App\Models\Banner::SECTION_PROMO_MODAL)?->first();
 @include('frontend.partials.hero-banners')
 
 <!-- ==================== 15. WHY CHOOSE US ==================== -->
-<section class="py-8">
+<section class="py-5">
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
         <div class="flex items-center gap-4 p-2">
             <div class="bg-orange-50 w-12 h-12 rounded-full flex items-center justify-center text-primary-600 text-xl">
@@ -52,7 +52,7 @@ $promoBanner = $banners->get(\App\Models\Banner::SECTION_PROMO_MODAL)?->first();
 </section>
 
 <!-- ==================== 5. CATEGORY GRID SECTION ==================== -->
-<section class="py-8">
+<section class="pb-5">
     <div class="flex justify-between items-end mb-6">
         <h2 class="text-2xl font-bold text-gray-900">Shop By <span class="text-primary-600">Category</span></h2>
         <a href="shop.html" class="text-sm font-medium text-primary-600 hover:text-primary-700">View All <i
@@ -74,7 +74,7 @@ $promoBanner = $banners->get(\App\Models\Banner::SECTION_PROMO_MODAL)?->first();
 </section>
 
 <!-- ==================== 6. FLASH SALE SECTION ==================== -->
-<section class="py-8">
+<section class="pb-5">
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         <!-- Header -->
         <div class="flex flex-col md:flex-row items-center justify-between border-b border-gray-100 pb-4 mb-6 gap-4">
@@ -165,9 +165,10 @@ $promoBanner = $banners->get(\App\Models\Banner::SECTION_PROMO_MODAL)?->first();
                     Offers</a>
             </div>
         </div>
-    </section>--}}
+</section>--}}
 
-<section class="py-8">
+
+<section class="pb-5">
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold text-gray-900">Top <span class="text-primary-600">Sellers</span></h2>
     </div>
@@ -196,7 +197,7 @@ $promoBanner = $banners->get(\App\Models\Banner::SECTION_PROMO_MODAL)?->first();
 </section>
 
 <!-- ==================== 9. FEATURED PRODUCTS (GRID) ==================== -->
-<section class="py-8">
+<section class="pb-5">
     <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">Featured <span
             class="text-primary-600">Products</span></h2>
 
@@ -268,7 +269,7 @@ $promoBanner = $banners->get(\App\Models\Banner::SECTION_PROMO_MODAL)?->first();
 </section>
 
 <!-- ==================== 14. POPULAR BRANDS ==================== -->
-<section class="py-8 border-t border-gray-200">
+<section class="pb-5 border-t border-gray-200">
     <h2 class="text-xl font-bold text-gray-900 mb-6">Popular <span class="text-primary-600">Brands</span></h2>
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
         @foreach ($brands as $brand)

@@ -121,7 +121,6 @@
 @endsection
 
 @section('content')
-    <!-- ==================== MAIN SHOP LAYOUT ==================== -->
     <section class="container mx-auto pb-8">
         <div class="flex flex-col lg:flex-row gap-8">
 
@@ -244,7 +243,8 @@
                 <!-- Toolbar -->
                 <div
                     class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-                    <p class="text-sm text-gray-500">
+                    <p></p>
+                    {{--<p class="text-sm text-gray-500">
                         Showing
                         <span class="font-bold text-gray-900">{{ $products->firstItem() }}</span>
                         -
@@ -252,7 +252,7 @@
                         of
                         <span class="font-bold text-gray-900">{{ $products->total() }}</span>
                         results
-                    </p>
+                    </p>--}}
 
 
                     <div class="flex items-center gap-3 w-full sm:w-auto">
@@ -348,11 +348,9 @@
         </div>
         @endif
 
-        <!-- Products Container -->
-        <div id="productsContainer" class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div id="productsContainer" class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 lg:gap-4">
 
             @foreach ($products as $product)
-                <!-- Product Card 1 -->
                 <div
                     class="product-card bg-white rounded-xl border border-gray-100 hover:border-primary-500 hover:shadow-xl transition-all duration-300 group overflow-hidden flex flex-col h-full relative">
                     <div class="absolute top-3 left-3 z-10 flex flex-col gap-1">
@@ -446,7 +444,7 @@
 
         <!-- Pagination -->
         @if ($products->hasPages())
-            <div class="mt-12 flex flex-col items-center">
+            <div class="mt-5 flex flex-col items-center">
 
                 <div class="flex justify-center gap-2">
                     <a href="{{ $products->previousPageUrl() }}"
