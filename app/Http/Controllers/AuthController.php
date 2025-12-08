@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\OtpLog;
 use App\Models\User;
+use App\Models\Admin;
+use App\Models\OtpLog;
+use App\Models\Seller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use App\Models\SellerEmployee;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -27,11 +31,21 @@ class AuthController extends Controller
 
         $phone = $request->phone;
 
-        $user = User::where('phone', $phone)->first();
-        if ($user) {
-            return apiResponse([
-                'user_exists' => true
-            ]);
+        $models = [
+            Admin::class,
+            User::class,
+            Seller::class,
+            SellerEmployee::class,
+        ];
+
+        foreach ($models as $model) {
+            $user = $model::where('phone', $phone)->first();
+
+            if ($user) {
+                return apiResponse([
+                    'user_exists' => true,
+                ]);
+            }
         }
 
         OtpLog::generate($phone, OtpLog::TYPE_SIGNUP);
@@ -40,6 +54,7 @@ class AuthController extends Controller
             'user_exists' => false,
         ], 'OTP sent successfully');
     }
+
 
     public function verifyOtp(Request $request)
     {
@@ -63,7 +78,7 @@ class AuthController extends Controller
 
         return apiResponse([
             'message' => 'OTP verified.',
-            'is_existing_user' => (bool)$user,
+            'is_existing_user' => (bool) $user,
         ]);
     }
 
@@ -83,17 +98,66 @@ class AuthController extends Controller
             'password' => $request->password,
         ];
 
-        if (Auth::attempt($credentials)) {
+        $userTypes = [
+            'admin' => [
+                'model' => Admin::class,
+                'guard' => 'admin',
+                'check' => fn($admin) => true,
+            ],
+            'user' => [
+                'model' => User::class,
+                'guard' => 'web',
+                'check' => fn($user) => true,
+            ],
+            'seller' => [
+                'model' => Seller::class,
+                'guard' => 'seller',
+                'check' => fn($seller) => $seller->status == Seller::ACTIVE,
+                'inactiveMessage' => "Your account is inactive, contact with admin",
+            ],
+            'employee' => [
+                'model' => SellerEmployee::class,
+                'guard' => 'employee',
+                'check' => fn($employee) => $employee->is_active == 1,
+                'inactiveMessage' => 'Your account is inactive, contact with seller',
+            ],
+            
+        ];
 
-            $request->session()->regenerate();
+        foreach ($userTypes as $type => $config) {
+            $model = $config['model'];
 
-            session()->flash('success', 'Login successful');
+            $user = $model::where('phone', $request->phone)->first();
+            if (!$user) {
+                continue;
+            }
+            
+
+            if ($type === 'seller') {
+                if ($user->status == Seller::BLOCKED) {
+                    return errorResponse("Your account has been blocked. Contact admin.", 403);
+                }
+
+                if ($user->status != Seller::ACTIVE) {
+                    return errorResponse("Your account is pending approval.", 403);
+                }
+            }
+
+            
+            if (!($config['check'])($user)) {
+                return errorResponse($config['inactiveMessage'] ?? 'Account inactive', 403);
+            }
+
+            if (!Auth::guard($config['guard'])->attempt($credentials)) {
+                return errorResponse('Incorrect password!');
+            }
 
             return successResponse('Login successful');
         }
 
         return errorResponse('Incorrect password!');
     }
+
 
     public function register(Request $request)
     {
