@@ -11,9 +11,11 @@ $infoLinks = [
     ['title' => 'Terms and Conditions', 'route' => route('pages.show', 'terms-and-conditions')],
     ['title' => 'Become a Seller', 'route' => route('pages.show', 'become-a-seller')],
 ];
+
+$hideFooter = request()->is('/') ? '' : 'hidden md:block';
 ?>
 
-<footer class="bg-gray-900 text-gray-300 pt-16 relative overflow-hidden">
+<footer class="bg-gray-900 text-gray-300 pt-16 relative overflow-hidden {{ $hideFooter }}">
     <!-- Decorative Top Border -->
     <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-600 via-orange-400 to-primary-600"></div>
 
