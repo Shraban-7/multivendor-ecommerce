@@ -33,9 +33,9 @@
                                 </a>
                             </div>
 
-                            
+
                             <small class="text-muted">
-                                Example: <b>fa-facebook</b>, <b>fa-youtube</b>
+                                Example: <b>fas fa-facebook</b>, <b>fas fa-youtube</b>
                             </small>
                         </div>
 
@@ -86,7 +86,12 @@
                             <x-image-input name="image" />
                         </div> --}}
                         <div class="mb-3 col-4">
-                            <label class="form-label">App Icon <span class="small text-muted">(PNG,SVG)</span> </label>
+                            <label class="form-label fw-semibold mb-1">
+                                App Icon
+                                <span class="text-danger">*</span>
+                                <small class="text-muted">(Supported formats: PNG, SVG)</small>
+                            </label>
+
                             <x-image-input name="app_icon" />
                         </div>
                         {{-- <div class="mb-3 col-4">
@@ -107,7 +112,7 @@
                 const preview = document.getElementById('iconPreview');
 
                 if (value) {
-                    preview.className = `fa ${value}`;
+                    preview.className = `${value}`;
                 } else {
                     preview.className = 'fa fa-question-circle';
                 }

@@ -26,7 +26,7 @@
                                 </span>
 
                                 <input type="text" name="icon" id="iconInput" class="form-control"
-                                    placeholder="e.g. facebook" value="{{ $category->icon ?? '' }}" required>
+                                    value="{{ $category->icon ?? '' }}" required>
 
                                 <!-- FontAwesome icon list link -->
                                 <a href="https://fontawesome.com/icons" target="_blank" class="btn btn-outline-secondary">
@@ -35,7 +35,7 @@
                             </div>
 
                             <small class="text-muted">
-                                Example: <b>fa-facebook</b>, <b>fa-youtube</b>
+                                Example: <b>fas fa-facebook</b>, <b>fas fa-youtube</b>
                             </small>
                         </div>
 
@@ -90,7 +90,12 @@
                         </div> --}}
 
                         <div class="mb-3 col-4">
-                            <label class="form-label">App Icon <span class="small text-muted">(PNG,SVG)</span></label>
+                            <label class="form-label fw-semibold mb-1">
+                                App Icon
+                                <span class="text-danger">*</span>
+                                <small class="text-muted">(Supported formats: PNG, SVG)</small>
+                            </label>
+
                             <x-image-input name="app_icon" :image="storage_url($category->app_icon)" />
                         </div>
                         {{-- <div class="mb-3 col-4">
@@ -110,7 +115,7 @@
                 const preview = document.getElementById('iconPreview');
 
                 if (value.trim()) {
-                    preview.className = `fa ${value.trim().toLowerCase()}`;
+                    preview.className = `${value.trim().toLowerCase()}`;
                 } else {
                     preview.className = 'fa fa-question-circle';
                 }
