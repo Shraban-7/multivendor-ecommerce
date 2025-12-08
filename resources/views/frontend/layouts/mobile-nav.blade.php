@@ -15,7 +15,7 @@
         </div>
         <span class="text-[10px] font-medium">Cart</span>
     </a>
-    <a href="{{ route('home') }}" class="flex flex-col items-center gap-1 hover:text-primary-600">
+    <a href="javascript:void(0)" class="auth-btn flex flex-col items-center gap-1 hover:text-primary-600">
         <i class="far fa-user text-lg"></i>
         <span class="text-[10px] font-medium">Account</span>
     </a>
