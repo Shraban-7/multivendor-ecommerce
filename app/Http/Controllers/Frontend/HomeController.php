@@ -6,7 +6,6 @@ use App\Models\Review;
 use App\Models\Seller;
 use App\Models\Product;
 use App\Models\Category;
-use App\Models\HeroBanner;
 use App\Http\Controllers\Controller;
 use App\Models\Banner;
 use App\Models\Brand;
@@ -67,18 +66,13 @@ class HomeController extends Controller
 
         // $data['featured_products'] = $featured_products->map(fn($product) => $product->toDetailsArray());
 
-        // $data['hero_grid_one']   = HeroBanner::where('position', 1)->first();
-        // $data['hero_grid_two']   = HeroBanner::where('position', 2)->first();
-        // $data['hero_grid_three'] = HeroBanner::where('position', 3)->first();
-        // $data['hero_grid_four']  = HeroBanner::where('position', 4)->first();
-        // $data['hero_grid_five']  = HeroBanner::where('position', 5)->first();
+
 
         $data['banners'] = Banner::where('is_active', true)
             ->orderBy('sort_order', 'asc')
             ->get()
             ->groupBy('section');
 
-        $data['hero_banners'] = HeroBanner::active()->orderBy('position')->get();
         $data['sellers'] = Seller::active()->limit(8)->get();
         $data['brands'] = Brand::where('status', 1)->orderBy('name')->limit(12)->get();
         $data['products'] = Product::withDefaultRelations()

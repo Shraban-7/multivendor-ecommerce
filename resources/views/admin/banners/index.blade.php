@@ -12,10 +12,6 @@
         </button>
     </div>
 
-    @if(session('success'))
-    <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-
     <table class="table bg-white table-bordered align-middle">
         <thead class="table-white">
             <tr>

@@ -228,24 +228,6 @@ $settings = settings();
                 <div id="navSettings" class="collapse {{ request()->routeIs('admin.settings.*') ? 'show' : '' }}"
                     data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
-                        @if (hasPermission('admin.settings.hero.index'))
-                            <x-dashboard.nav-item-link :route="'admin.settings.hero.index'">
-                                Hero Banners
-                            </x-dashboard.nav-item-link>
-                        @endif
-
-                        @if (hasPermission('admin.settings.banners.index'))
-                            <x-dashboard.nav-item-link :route="'admin.settings.banners.index'">
-                                Home Mid Banners
-                            </x-dashboard.nav-item-link>
-                        @endif
-
-                        @if (hasPermission('admin.settings.posters.index'))
-                            <x-dashboard.nav-item-link :route="'admin.settings.posters.index'">
-                                Promo Posters
-                            </x-dashboard.nav-item-link>
-                        @endif
-
                         @if (hasPermission('admin.settings.socialLinks.index'))
                             <x-dashboard.nav-item-link :route="'admin.settings.socialLinks.index'">
                                 Social Links

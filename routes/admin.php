@@ -7,7 +7,6 @@ use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\HeroBannerController;
 use App\Http\Controllers\Admin\HomeMidController;
 use App\Http\Controllers\Admin\ImageController;
 use App\Http\Controllers\Admin\ManualPaymentMethodController;
@@ -19,7 +18,6 @@ use App\Http\Controllers\Admin\PaymentOptionController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProfileController;
-use App\Http\Controllers\Admin\PromoPosterController;
 use App\Http\Controllers\Admin\ReviewsController;
 use App\Http\Controllers\Admin\SellerController;
 use App\Http\Controllers\Admin\SellerSubscriptionController;
@@ -136,25 +134,6 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
     });
 
     Route::prefix('settings')->as('settings.')->group(function () {
-        Route::prefix('hero')->as('hero.')->group(function () {
-            Route::get('/', [HeroBannerController::class, 'index'])->name('index');
-            Route::post('/store', [HeroBannerController::class, 'store'])->name('store');
-            Route::post('/update/{heroBanner}', [HeroBannerController::class, 'update'])->name('update');
-            Route::post('/destroy/{heroBanner}', [HeroBannerController::class, 'destroy'])->name('destroy');
-        });
-
-        Route::prefix('banners')->as('banners.')->group(function () {
-            Route::get('/', [HomeMidController::class, 'index'])->name('index');
-            Route::post('/store', [HomeMidController::class, 'store'])->name('store');
-            Route::post('/update/{banner}', [HomeMidController::class, 'update'])->name('update');
-        });
-
-        Route::prefix('posters')->as('posters.')->group(function () {
-            Route::get('/', [PromoPosterController::class, 'index'])->name('index');
-            Route::post('/store', [PromoPosterController::class, 'store'])->name('store');
-            Route::post('/update/{poster}', [PromoPosterController::class, 'update'])->name('update');
-        });
-
         Route::prefix('social-links')->as('socialLinks.')->group(function () {
             Route::get('/', [SocialLinkController::class, 'index'])->name('index');
             Route::post('/store', [SocialLinkController::class, 'store'])->name('store');
