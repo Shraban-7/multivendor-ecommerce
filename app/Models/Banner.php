@@ -17,6 +17,17 @@ class Banner extends Model
     const SECTION_CATEGORY_TOP = 'category_top';
     const SECTION_FOOTER_BANNER = 'footer_banner';
 
+    public static function sections(): array
+    {
+        return [
+            self::SECTION_HERO,
+            self::SECTION_MID_PROMO,
+            self::SECTION_FLASH_SALE,
+            self::SECTION_CATEGORY_TOP,
+            self::SECTION_FOOTER_BANNER,
+        ];
+    }
+
     public function scopeActive($query)
     {
         return $query->where('is_active', true);

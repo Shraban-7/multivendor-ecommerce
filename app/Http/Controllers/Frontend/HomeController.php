@@ -73,7 +73,10 @@ class HomeController extends Controller
         // $data['hero_grid_four']  = HeroBanner::where('position', 4)->first();
         // $data['hero_grid_five']  = HeroBanner::where('position', 5)->first();
 
-        $data['banners'] = Banner::active()->orderBy('sort_order')->get();
+        $data['banners'] = Banner::where('is_active', true)
+            ->orderBy('sort_order', 'asc')
+            ->get()
+            ->groupBy('section');
 
         $data['hero_banners'] = HeroBanner::active()->orderBy('position')->get();
         $data['sellers'] = Seller::active()->limit(8)->get();

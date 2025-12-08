@@ -1,52 +1,10 @@
 @extends('frontend.layouts.app')
 @section('title', 'Slash Mart')
+
+
+
 @section('content')
-    <!-- ==================== 3. HERO BANNER AREA ==================== -->
-    <section class="pb-6">
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 h-auto lg:h-[450px]">
-            <div class="lg:col-span-3 relative rounded-2xl overflow-hidden shadow-lg group">
-                <div class="absolute inset-0 bg-gray-900/10 z-10 group-hover:bg-transparent transition"></div>
-                <img src="https://images.unsplash.com/photo-1607082349566-187342175e2f?q=80&w=1200&auto=format&fit=crop"
-                    class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700"
-                    alt="Hero Banner">
-
-                <div
-                    class="absolute inset-0 flex flex-col justify-center px-8 lg:px-16 z-20 bg-gradient-to-r from-black/60 to-transparent">
-                    <span class="text-primary-500 font-bold tracking-widest uppercase mb-2 animate-bounce">Exclusive
-                        Offer</span>
-                    <h1 class="text-4xl lg:text-6xl font-bold text-white mb-4 leading-tight">Eid Collection <br> <span
-                            class="text-primary-400">Up to 70% Off</span></h1>
-                    <p class="text-gray-200 mb-8 max-w-md text-sm lg:text-base">Discover the latest trends in fashion,
-                        electronics, and lifestyle with our exclusive Eid Mega Sale.</p>
-                    <a href="shop.html"
-                        class="w-fit bg-primary-600 hover:bg-primary-700 text-white px-8 py-3 rounded-full font-semibold transition shadow-lg shadow-primary-500/50 flex items-center gap-2">
-                        Shop Now <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
-
-            <div class="hidden lg:flex flex-col gap-6 h-full">
-                <div class="relative rounded-2xl overflow-hidden h-1/2 shadow-md group">
-                    <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=400&auto=format&fit=crop"
-                        class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
-                    <div class="absolute inset-0 bg-black/30 p-6 flex flex-col justify-end">
-                        <h3 class="text-white text-xl font-bold">New Gadgets</h3>
-                        <a href="shop.html" class="text-primary-400 text-sm font-semibold hover:underline mt-1">Discover <i
-                                class="fas fa-angle-right"></i></a>
-                    </div>
-                </div>
-                <div class="relative rounded-2xl overflow-hidden h-1/2 shadow-md group">
-                    <img src="https://images.unsplash.com/photo-1596462502278-27bfdd403348?q=80&w=400&auto=format&fit=crop"
-                        class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
-                    <div class="absolute inset-0 bg-black/30 p-6 flex flex-col justify-end">
-                        <h3 class="text-white text-xl font-bold">Beauty Picks</h3>
-                        <a href="shop.html" class="text-primary-400 text-sm font-semibold hover:underline mt-1">Shop Now <i
-                                class="fas fa-angle-right"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    @include('frontend.partials.hero-banners')
 
     <!-- ==================== 15. WHY CHOOSE US ==================== -->
     <section class="py-8">
@@ -184,7 +142,8 @@
     </section>
 
     <!-- ==================== 13. SPECIAL CAMPAIGN BANNER ==================== -->
-    <section class="py-4">
+     @include('frontend.partials.special-campaigns-banners')
+    {{--<section class="py-4">
         <div class="relative rounded-2xl overflow-hidden shadow-lg h-40 md:h-64 flex items-center bg-gray-900">
             <div
                 class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1596462502278-27bfdd403348?q=80&w=1200')] bg-cover bg-center opacity-40">
@@ -199,7 +158,7 @@
                     Offers</a>
             </div>
         </div>
-    </section>
+    </section>--}}
 
     <section class="py-8">
         <div class="flex justify-between items-center mb-6">
@@ -494,5 +453,7 @@
                 });
             });
         </script>
+
+        
     @endpush
 @endsection
