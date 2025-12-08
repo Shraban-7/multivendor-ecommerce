@@ -51,63 +51,71 @@
             <!-- Right Icons -->
             <div class="flex items-center gap-4 lg:gap-6">
                 @if (request()->routeIs('products.index'))
-                <button id="openMobileFilter" class="lg:hidden text-gray-600 hover:text-primary-600">
-                    <i class="fas fa-filter text-xl"></i>
-                </button>
+                    <button id="openMobileFilter" class="lg:hidden text-gray-600 hover:text-primary-600">
+                        <i class="fas fa-filter text-xl"></i>
+                    </button>
                 @endif
-                @if (!auth('web')->check() && !auth()->guard('seller')->check())
-                <a href="javascript:void(0)" class="auth-btn hidden md:flex flex-col items-center group">
-                    <i class="far fa-user text-xl text-gray-600 group-hover:text-primary-600 transition"></i>
-                    <span class="text-[10px] font-medium text-gray-500 mt-1">Login</span>
-                </a>
+                @if (!auth('web')->check() && !auth()->guard('seller')->check() && !auth()->guard('admin')->check())
+                    <a href="javascript:void(0)" class="auth-btn hidden md:flex flex-col items-center group">
+                        <i class="far fa-user text-xl text-gray-600 group-hover:text-primary-600 transition"></i>
+                        <span class="text-[10px] font-medium text-gray-500 mt-1">Login</span>
+                    </a>
 
-                <a href="{{ route('seller.signup') }}"
-                    class="hidden lg:block bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition shadow-lg shadow-gray-500/20">
-                    Become a Seller
-                </a>
+                    <a href="{{ route('seller.signup') }}"
+                        class="hidden lg:block bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition shadow-lg shadow-gray-500/20">
+                        Become a Seller
+                    </a>
                 @else
-                <a href="#" class="hidden md:flex flex-col items-center group relative">
-                    <div class="relative">
-                        <i
-                            class="far fa-heart text-xl text-gray-600 group-hover:text-primary-600 transition"></i>
-                        <span
-                            class="absolute -top-2 -right-2 bg-primary-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">2</span>
-                    </div>
-                    <span class="text-[10px] font-medium text-gray-500 mt-1">Wishlist</span>
-                </a>
+                    <a href="#" class="hidden md:flex flex-col items-center group relative">
+                        <div class="relative">
+                            <i class="far fa-heart text-xl text-gray-600 group-hover:text-primary-600 transition"></i>
+                            <span
+                                class="absolute -top-2 -right-2 bg-primary-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">2</span>
+                        </div>
+                        <span class="text-[10px] font-medium text-gray-500 mt-1">Wishlist</span>
+                    </a>
 
-                <a href="{{ route('cart.details') }}" class="flex flex-col items-center group relative">
-                    <div class="relative">
-                        <i
-                            class="fas fa-shopping-cart text-xl text-gray-600 group-hover:text-primary-600 transition"></i>
-                        @if ($cartCount > 0)
-                        <span
-                            class="absolute -top-2 -right-2 bg-primary-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">{{ $cartCount }}</span>
-                        @endif
-                    </div>
-                    <span class="text-[10px] font-medium text-gray-500 mt-1 hidden md:block">Cart</span>
-                </a>
+                    <a href="{{ route('cart.details') }}" class="flex flex-col items-center group relative">
+                        <div class="relative">
+                            <i
+                                class="fas fa-shopping-cart text-xl text-gray-600 group-hover:text-primary-600 transition"></i>
+                            @if ($cartCount > 0)
+                                <span
+                                    class="absolute -top-2 -right-2 bg-primary-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">{{ $cartCount }}</span>
+                            @endif
+                        </div>
+                        <span class="text-[10px] font-medium text-gray-500 mt-1 hidden md:block">Cart</span>
+                    </a>
 
-                <a href="{{ route('notifications.index') }}"
-                    class="hidden md:flex flex-col items-center group relative">
-                    <div class="relative">
-                        <i
-                            class="fa-regular fa-bell text-xl text-gray-700 group-hover:text-primary-600 transition"></i>
-                        @if ($notificationCount > 0)
-                        <span
-                            class="absolute -top-2 -right-2 bg-primary-600 text-white text-[10px] min-w-[16px] px-1 h-4 
+                    <a href="{{ route('notifications.index') }}"
+                        class="hidden md:flex flex-col items-center group relative">
+                        <div class="relative">
+                            <i
+                                class="fa-regular fa-bell text-xl text-gray-700 group-hover:text-primary-600 transition"></i>
+                            @if ($notificationCount > 0)
+                                <span
+                                    class="absolute -top-2 -right-2 bg-primary-600 text-white text-[10px] min-w-[16px] px-1 h-4 
                                         rounded-full flex items-center justify-center leading-none font-bold shadow">
-                            {{ $notificationCount }}
-                        </span>
-                        @endif
-                    </div>
-                    <span class="text-[11px] font-medium text-gray-500 mt-1">Notifications</span>
-                </a>
+                                    {{ $notificationCount }}
+                                </span>
+                            @endif
+                        </div>
+                        <span class="text-[11px] font-medium text-gray-500 mt-1">Notifications</span>
+                    </a>
 
-                <a href="{{ auth('web')->check() ? route('orders.index') : route('seller.dashboard') }}"
-                    class="hidden lg:block bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition shadow-lg shadow-gray-500/20">
-                    Dashboard
-                </a>
+                    <a href="
+                                @if (auth('web')->check()) {{ route('orders.index') }}
+                                @elseif(auth('seller')->check())
+                                    {{ route('seller.dashboard') }}
+                                @elseif(auth('admin')->check())
+                                    {{ route('admin.dashboard') }}
+                                @else
+                                    {{ route('login') }} @endif
+                            "
+                        class="hidden lg:block bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition shadow-lg shadow-gray-500/20">
+                        Dashboard
+                    </a>
+
                 @endif
             </div>
         </div>

@@ -302,6 +302,7 @@
                 });
 
                 const data = await response.json();
+                
 
                 if (response.ok) {
                     if (data.data.user_exists == true) {
