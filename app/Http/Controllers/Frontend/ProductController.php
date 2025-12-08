@@ -22,7 +22,7 @@ class ProductController extends Controller
 
         $selectedCategories = $request->category ? explode(',', $request->category) : [];
         $selectedBrands = $request->brand ? explode(',', $request->brand) : [];
-        $sortFilter = $request->sort ?? 'popularity';
+        $sortFilter = $request->sort ?? 'newest';
         $priceMin = $request->price_min ?? 0;
         $priceMax = $request->price_max ?? 50000;
 
@@ -46,6 +46,10 @@ class ProductController extends Controller
 
             case 'newest':
                 $query->orderBy('created_at', 'desc');
+                break;
+
+            case 'popularity':
+                $query->orderBy('stock_out', 'desc');
                 break;
 
             case 'low_high':
