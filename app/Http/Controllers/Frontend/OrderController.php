@@ -422,6 +422,7 @@ class OrderController extends Controller
             'order_id' => $orderItem->order_id,
             'order_item_id' => $orderItem->id,
             'user_id' => $user->id,
+            'seller_id' => $orderItem->order->seller_id,
             'rating' => $request->rating,
             'description' => $request->description,
             'is_reviewed' => 1

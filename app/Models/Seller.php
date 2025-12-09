@@ -130,6 +130,11 @@ class Seller extends Authenticatable
         return $this->belongsToMany(Category::class);
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
     public function calculateEarning($total)
     {
         $total_commission = 0;

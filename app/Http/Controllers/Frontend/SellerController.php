@@ -87,18 +87,6 @@ class SellerController extends Controller
         $alreadyFollowed = SellerFollower::where('seller_id', $seller->id)
             ->where('user_id', $userId)->first();
 
-        $avgRating = Review::whereIn('product_id', function ($query) use ($seller) {
-            $query->select('id')
-                ->from('products')
-                ->where('seller_id', $seller->id);
-        })->avg('rating');
-
-        $totalReview = Review::whereIn('product_id', function ($query) use ($seller) {
-            $query->select('id')
-                ->from('products')
-                ->where('seller_id', $seller->id);
-        })->count();
-
         $totalItem = Product::where('seller_id', $seller->id)->count();
 
         return view('frontend.shops.details', compact(
@@ -106,9 +94,7 @@ class SellerController extends Controller
             'products',
             'categories',
             'alreadyFollowed',
-            'avgRating',
             'totalItem',
-            'totalReview'
         ));
     }
 
