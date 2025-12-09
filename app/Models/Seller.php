@@ -90,6 +90,16 @@ class Seller extends Authenticatable
         return $this->belongsTo(Country::class);
     }
 
+    public function district(): BelongsTo
+    {
+        return $this->belongsTo(District::class);
+    }
+
+    public function division(): BelongsTo
+    {
+        return $this->belongsTo(Division::class);
+    }
+
     public function getAvatarAttribute()
     {
         return is_null($this->attributes['image']) ? asset('assets/frontend/images/user-avatar-1.png') : storage_url($this->attributes['image']);
