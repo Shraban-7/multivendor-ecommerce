@@ -100,11 +100,12 @@ $(function () {
                         <div class="position-relative">
                             <img src="${e.target.result}" class="img-fluid rounded" alt="Preview">
                             <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2 remove-preview">
-                                <i class="ri-delete-bin-line"></i>
+                                <i data-feather="trash"></i>
                             </button>
                         </div>
                     </div>`;
                 $previewContainer.append(html);
+                feather.replace();
             };
             reader.readAsDataURL(file);
         });
@@ -132,11 +133,11 @@ $(function () {
                 $banner.css("opacity", "0.5");
             },
             success: function (res) {
-                toastr.success(res.message || "Image deleted successfully!");
+                showSuccessToast(res.message || "Image deleted successfully!");
                 $banner.fadeOut(300, function () { $(this).remove(); });
             },
             error: function () {
-                toastr.error("Something went wrong while deleting image.");
+                showErrorToast("Something went wrong while deleting image.");
                 $banner.css("opacity", "1");
             }
         });
