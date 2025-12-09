@@ -51,8 +51,7 @@
                     <div class="row">
                         <div class="col-12">
                             <label class="form-label">Banner Images</label>
-                            <input type="file" id="files" class="form-control mb-3" name="files[]" multiple
-                                accept="image/*">
+                            <input type="file" id="files" class="form-control mb-3" name="banner" accept="image/*">
 
                             {{-- Existing Banner Images --}}
                             <div class="row" id="banner-images">
@@ -93,30 +92,33 @@
 
 
             $fileInput.on("change", function() {
-                const files = this.files;
+                const file = this.files[0]; 
 
-                Array.from(files).forEach((file, index) => {
-                    const reader = new FileReader();
+                if (!file) return;
 
-                    reader.onload = function(e) {
-                        const html = `
-                <div class="col-md-3 mb-3 preview-item">
-                    <div class="position-relative">
-                        <img src="${e.target.result}" class="img-fluid rounded" alt="Preview">
-                        <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2 remove-preview">
-                            <i data-feather="trash"></i>
-                        </button>
-                    </div>
-                </div>`;
+                $previewContainer.empty();
 
-                        $previewContainer.append(html);
-                        feather.replace();
-                    };
+                const reader = new FileReader();
 
-                    reader.readAsDataURL(file);
-                });
+                reader.onload = function(e) {
+                    const html = `
+                        <div class="col-md-3 mb-3 preview-item">
+                            <div class="position-relative">
+                                <img src="${e.target.result}" class="img-fluid rounded" alt="Preview">
+                                <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2 remove-preview">
+                                    <i data-feather="trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+
+                    $previewContainer.append(html);
+
+                    feather.replace();
+                };
+
+                reader.readAsDataURL(file);
             });
-
 
             $(document).on("click", ".remove-preview", function() {
                 const index = $(this).closest(".preview-item").data("index");

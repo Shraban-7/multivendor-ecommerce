@@ -15,7 +15,7 @@ class SettingController extends Controller
     {
         $seller = Seller::find(get_seller_id());
         $countries = Country::orderBy('name', 'ASC')->get();
-        $states    = State::orderBy('name', 'ASC')->get();
+        $states = State::orderBy('name', 'ASC')->get();
         return view('seller.settings.index', compact('seller', 'countries', 'states'));
     }
 
@@ -24,11 +24,12 @@ class SettingController extends Controller
         $seller = Seller::find(get_seller_id());
 
         $data = $request->validate([
-            'business_name'    => 'required|string|max:255',
-            'business_logo'    => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
-            'business_email'   => 'required|string|email|max:255|unique:sellers,business_email,' . $seller->id,
+            'business_name' => 'required|string|max:255',
+            'business_logo' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
+            'business_email' => 'required|string|email|max:255|unique:sellers,business_email,' . $seller->id,
             'business_address' => 'required|string|max:1000',
-            'shipping_cost'    => 'nullable|numeric',
+            'shipping_cost' => 'nullable|numeric',
+            'banner' => 'nullable|mimes:jpg,png,webp,svg,jpeg,avif,gif|max:4096'
         ]);
 
         $username = $seller->username;
@@ -44,14 +45,16 @@ class SettingController extends Controller
 
         $seller->update($data);
 
-        // Handle new banner uploads
-        if ($request->hasFile('files')) {
-            foreach ($request->file('files') as $file) {
-                SellerBannerImage::create([
-                    'seller_id' => $seller->id,
-                    'image'     => upload_file($file, "images/{$username}/banners"),
-                ]);
+        $exist_banner = SellerBannerImage::where('seller_id',$seller->id)->first();
+
+        if ($data['banner']) {
+            if ($exist_banner) {
+                delete_file($exist_banner);
             }
+            SellerBannerImage::create([
+                'seller_id' => $seller->id,
+                'image' => upload_file($data['banner'], "images/{$username}/banners"),
+            ]);
         }
 
         return redirect()->route('seller.settings.index')->with('success', 'Settings updated successfully');
@@ -64,7 +67,7 @@ class SettingController extends Controller
         $image->delete();
 
         return response()->json([
-            'status'  => 'success',
+            'status' => 'success',
             'message' => 'Banner image deleted successfully!'
         ]);
     }
