@@ -18,8 +18,8 @@ class FlashSaleController extends Controller
         $flashSales = FlashSale::active()
             ->orderBy('start_time', 'asc')
             ->get();
-
-        $sellerFlashSales = FlashSale::whereHas('products', function ($q) use ($seller) {
+        
+        $sellerFlashSales = FlashSale::whereHas('flashSaleProducts.product', function ($q) use ($seller) {
             $q->where('seller_id', $seller->id);
         })->get();
 
@@ -44,13 +44,10 @@ class FlashSaleController extends Controller
     public function submit(Request $request, $id)
     {
         $flashSale = FlashSale::findOrFail($id);
-        $seller = Auth::user()->seller;
+        $seller = Seller::find(get_seller_id());
 
         $request->validate([
             'product_id'    => 'required|exists:products,id',
-            'discount_type' => 'required|in:percentage,fixed',
-            'discount_value' => 'required|numeric|min:1',
-            'qty'           => 'required|integer|min:1',
         ]);
 
         $product = $seller->products()->findOrFail($request->product_id);

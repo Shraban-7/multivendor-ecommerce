@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->foreignId('seller_id')->constrained('sellers')->onDelete('cascade');
 
-            $table->decimal('flash_price', 10, 2);
+            $table->decimal('flash_price', 10, 2)->nullable();
             $table->integer('flash_stock')->default(0);
             $table->integer('sold')->default(0);
             

@@ -70,7 +70,10 @@ $route = request()->route()->getName();
                 </a>
 
                 @php
-                    $productMenuOpen = (request()->routeIs('seller.products.*') || request()->routeIs('seller.stock.index')) ? true : false;
+                    $productMenuOpen =
+                        request()->routeIs('seller.products.*') || request()->routeIs('seller.stock.index')
+                            ? true
+                            : false;
                 @endphp
 
                 <div id="navProducts" class="collapse {{ $productMenuOpen ? 'show' : '' }}"
@@ -106,36 +109,10 @@ $route = request()->route()->getName();
                 </div>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center" href="#!"
-                    data-bs-toggle="collapse" data-bs-target="#navCampaigns"
-                    aria-expanded="{{ request()->routeIs('seller.campaigns.*') ? 'true' : 'false' }}"
-                    aria-controls="navCampaigns">
+            <x-dashboard.nav-item-link :route="'seller.flash-sales.index'">
+                <i data-feather="zap" class="nav-icon icon-xs me-2"></i> Flash Sales
+            </x-dashboard.nav-item-link>
 
-                    <div>
-                        <i data-feather="image" class="nav-icon icon-xs me-2"></i>
-                        Manage Campaigns
-                    </div>
-
-                    <i data-feather="chevron-right" class="chevron-icon transition"></i>
-                </a>
-
-                <div id="navCampaigns" class="collapse {{ request()->routeIs('seller.campaigns.*') ? 'show' : '' }}"
-                    data-bs-parent="#sideNavbar">
-                    <ul class="nav flex-column">
-                        @if ($seller || $employee->hasPermission('seller.campaigns.index'))
-                            <x-dashboard.nav-item-link :route="'seller.campaigns.index'">
-                                All Campaigns
-                            </x-dashboard.nav-item-link>
-                        @endif
-                        @if ($seller || $employee->hasPermission('seller.campaigns.create'))
-                            <x-dashboard.nav-item-link :route="'seller.campaigns.create'">
-                                Add Campaign
-                            </x-dashboard.nav-item-link>
-                        @endif
-                    </ul>
-                </div>
-            </li>
 
             <li class="nav-item">
                 <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center" href="#!"
@@ -262,6 +239,6 @@ $route = request()->route()->getName();
             <x-dashboard.nav-item-link :route="'seller.plans.index'">
                 <i data-feather="trending-up" class="nav-icon icon-xs me-2"></i> Upgrade Plan
             </x-dashboard.nav-item-link>
-        </ul>       
+        </ul>
     </div>
 </nav>
