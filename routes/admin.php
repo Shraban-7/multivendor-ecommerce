@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\FlashSaleController;
 use App\Http\Controllers\Admin\HomeMidController;
 use App\Http\Controllers\Admin\ImageController;
 use App\Http\Controllers\Admin\ManualPaymentMethodController;
@@ -195,6 +196,13 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
 
     Route::resource('banners', BannerController::class)->names('banners');
 
+    Route::get('/flash-sales', [FlashSaleController::class, 'index'])->name('flash-sales.index');
+    Route::get('/flash-sales/create', [FlashSaleController::class, 'create'])->name('flash-sales.create');
+    Route::post('/flash-sales/store', [FlashSaleController::class, 'store'])->name('flash-sales.store');
+    Route::get('/flash-sales/{id}/edit', [FlashSaleController::class, 'edit'])->name('flash-sales.edit');
+    Route::put('/flash-sales/{id}/update', [FlashSaleController::class, 'update'])->name('flash-sales.update');
+    Route::get('/flash-sales/{id}', [FlashSaleController::class, 'show'])->name('flash-sales.show');
+    Route::delete('/flash-sales/{id}', [FlashSaleController::class, 'destroy'])->name('flash-sales.delete');
 });
 
 Route::middleware('guest')->prefix('admin')->as('admin.')->group(function () {
