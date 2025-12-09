@@ -31,7 +31,7 @@
                         <td>{{ $sale->title }}</td>
                         <td>
                             @if($sale->image)
-                            <img src="{{ asset('uploads/flash_sale/'.$sale->image) }}" width="60">
+                            <img src="{{ storage_url($sale->image) }}" width="60">
                             @endif
                         </td>
                         <td>{{ $sale->start_time }}</td>

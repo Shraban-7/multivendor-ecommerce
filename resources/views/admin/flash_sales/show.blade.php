@@ -3,7 +3,7 @@
 
 @section('content')
 
-<div class="container mt-4">
+
     <h4>Flash Sale Details</h4>
 
     <div class="card mt-3">
@@ -12,7 +12,7 @@
             <h5>{{ $sale->title }}</h5>
 
             @if($sale->image)
-            <img src="{{ asset('uploads/flash_sale/'.$sale->image) }}" class="img-fluid mb-3" style="max-height: 250px;">
+            <img src="{{ storage_url($sale->image) }}" class="img-fluid mb-3" style="max-height: 250px;">
             @endif
 
             <p>{{ $sale->description }}</p>
@@ -76,5 +76,5 @@
         </div>
     </div>
 
-</div>
+
 @endsection

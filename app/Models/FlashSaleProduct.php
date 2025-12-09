@@ -14,4 +14,14 @@ class FlashSaleProduct extends Model
     const STATUS_PENDING = 0;
     const STATUS_APPROVED = 1;
     const STATUS_REJECTED = 2;
+
+    public function vendor()
+    {
+        return $this->belongsTo(Seller::class,'seller_id');
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
 }

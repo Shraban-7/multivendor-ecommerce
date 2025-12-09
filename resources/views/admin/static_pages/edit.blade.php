@@ -62,9 +62,6 @@
     </div>
 
     @push('scripts')
-        <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
-        <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
-
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 var quill = new Quill('#content-editor', {
