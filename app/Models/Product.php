@@ -116,13 +116,6 @@ class Product extends Model
         return $this->hasMany(OrderItem::class);
     }
 
-    public function sellerCampaigns()
-    {
-        return $this->belongsToMany(SellerCampaign::class, 'seller_campaign_product')
-            ->using(SellerCampaignProduct::class)
-            ->withTimestamps();
-    }
-
     public function stock_history()
     {
         return $this->hasMany(StockHistory::class, 'product_id');

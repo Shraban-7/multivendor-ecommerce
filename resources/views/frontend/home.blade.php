@@ -148,8 +148,7 @@ $promoBanner = $banners->get(\App\Models\Banner::SECTION_PROMO_MODAL)?->first();
     </div>
 </section>
 
-<!-- ==================== 13. SPECIAL CAMPAIGN BANNER ==================== -->
-@include('frontend.partials.special-campaigns-banners')
+
 {{--<section class="py-4">
         <div class="relative rounded-2xl overflow-hidden shadow-lg h-40 md:h-64 flex items-center bg-gray-900">
             <div

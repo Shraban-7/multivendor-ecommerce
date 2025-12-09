@@ -231,7 +231,6 @@ class SellerController extends Controller
             $seller->banner_images()->delete();
             $seller->followers()->delete();
             $seller->followerUsers()->delete();
-            $seller->campaigns()->delete();
             $seller->chats()->delete();
             $seller->expenses()->delete();
             $seller->seller_expense_categories()->delete();

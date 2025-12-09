@@ -56,14 +56,6 @@
                                     </span>
                                 @endif
 
-                                @if ($seller->campaigns && $seller->campaigns->where('end_date', '>=', now())->count())
-                                    @foreach ($seller->campaigns as $campaign)
-                                        <a href="{{ route('campaigns.campaign_products', $campaign->slug) }}"
-                                            class="bg-primary text-white text-xs px-3 py-1.5 rounded-lg hover:bg-primary-dark transition">
-                                            {{ $campaign->title }}
-                                        </a>
-                                    @endforeach
-                                @endif
                             </div>
                         </div>
                     </div>

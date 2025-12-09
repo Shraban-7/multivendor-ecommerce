@@ -44,10 +44,6 @@ Route::prefix('sellers')->as('sellers.')->group(function () {
     Route::post('/reviews/report', [SellerController::class, 'reviewReport'])->name('reviews.report');
 });
 
-Route::prefix('campaigns')->as('campaigns.')->group(function () {
-    Route::get('{slug}/products', [SellerController::class, 'campaign_products'])->name('campaign_products');
-});
-
 Route::get('/get-districts/{divisionId}', [OrderController::class, 'getDistricts']);
 
 Route::post('cart/add', [CartController::class, 'add'])->name('cart.add');

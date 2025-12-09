@@ -120,11 +120,6 @@ class Seller extends Authenticatable
         return $this->belongsToMany(User::class, 'seller_followers', 'seller_id', 'user_id');
     }
 
-    public function campaigns()
-    {
-        return $this->hasMany(SellerCampaign::class);
-    }
-
     public function categories()
     {
         return $this->belongsToMany(Category::class);

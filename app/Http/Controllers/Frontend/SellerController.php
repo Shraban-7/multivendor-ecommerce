@@ -8,7 +8,7 @@ use App\Models\Product;
 use App\Models\ReportReview;
 use App\Models\Review;
 use App\Models\Seller;
-use App\Models\SellerCampaign;
+
 use App\Models\SellerFollower;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -48,7 +48,7 @@ class SellerController extends Controller
 
     public function shop($username, Request $request)
     {
-        $seller = Seller::with('campaigns')->where('username', $username)->firstOrFail();
+        $seller = Seller::where('username', $username)->firstOrFail();
 
         $limit = 20;
         $page  = $request->get('page', 1);
@@ -197,14 +197,5 @@ class SellerController extends Controller
         }
 
         return response()->json(['message' => 'Review reported successfully.']);
-    }
-
-    public function campaign_products($slug)
-    {
-        $campaign = SellerCampaign::with(['products.reviews'])->where('slug', $slug)->firstOrFail();
-
-        $products = $campaign->products->map(fn($product) => $product->toDetailsArray());
-
-        return view('frontend.shops.campaign', compact('campaign', 'products'));
     }
 }
