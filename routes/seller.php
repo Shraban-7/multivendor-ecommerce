@@ -179,7 +179,10 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::get('/overview', [ReportController::class, 'overview'])->name('overview');
     });
 
-    Route::get('/flash-sales', [FlashSaleController::class, 'index'])->name('flash-sales.index');
-    Route::get('/flash-sales/{id}', [FlashSaleController::class, 'details'])->name('flash-sales.details');
-    Route::post('/flash-sales/{id}/submit', [FlashSaleController::class, 'submit'])->name('flash-sales.submit');
+    Route::prefix('flash-sales')->as('flash-sales.')->group(function () {
+        Route::get('/', [FlashSaleController::class, 'index'])->name('index');
+        Route::get('/{id}', [FlashSaleController::class, 'details'])->name('details');
+        Route::post('/{id}/submit', [FlashSaleController::class, 'submit'])->name('submit');
+    });
+
 });

@@ -196,13 +196,15 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
 
     Route::resource('banners', BannerController::class)->names('banners');
 
-    Route::get('/flash-sales', [FlashSaleController::class, 'index'])->name('flash-sales.index');
-    Route::get('/flash-sales/create', [FlashSaleController::class, 'create'])->name('flash-sales.create');
-    Route::post('/flash-sales/store', [FlashSaleController::class, 'store'])->name('flash-sales.store');
-    Route::get('/flash-sales/{id}/edit', [FlashSaleController::class, 'edit'])->name('flash-sales.edit');
-    Route::put('/flash-sales/{id}/update', [FlashSaleController::class, 'update'])->name('flash-sales.update');
-    Route::get('/flash-sales/{id}', [FlashSaleController::class, 'show'])->name('flash-sales.show');
-    Route::delete('/flash-sales/{id}', [FlashSaleController::class, 'destroy'])->name('flash-sales.delete');
+    Route::prefix('flash-sales')->as('flash-sales.')->group(function () {
+        Route::get('/', [FlashSaleController::class, 'index'])->name('index');
+        Route::get('/create', [FlashSaleController::class, 'create'])->name('create');
+        Route::post('/store', [FlashSaleController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [FlashSaleController::class, 'edit'])->name('edit');
+        Route::put('/{id}/update', [FlashSaleController::class, 'update'])->name('update');
+        Route::get('/{id}', [FlashSaleController::class, 'show'])->name('show');
+        Route::delete('/{id}', [FlashSaleController::class, 'destroy'])->name('delete');
+    });
 });
 
 Route::middleware('guest')->prefix('admin')->as('admin.')->group(function () {
