@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -62,6 +63,15 @@ class Category extends Model
 
     public function options()
     {
-        return $this->belongsToMany(Option::class,'category_options');
+        return $this->belongsToMany(Option::class, 'category_options');
+    }
+
+    public function iconUrl(): Attribute
+    {
+        $url = is_null($this->app_icon) ? asset('assets/frontend/images/category-placeholder.svg') : storage_url($this->app_icon);
+
+        return Attribute::make(
+            get: fn() => $url
+        );
     }
 }
