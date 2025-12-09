@@ -14,6 +14,7 @@ use App\Http\Controllers\Seller\ProductController;
 use App\Http\Controllers\Seller\SettingController;
 use App\Http\Controllers\Seller\CustomerController;
 use App\Http\Controllers\Seller\DashboardController;
+use App\Http\Controllers\Seller\FlashSaleController;
 use App\Http\Controllers\Seller\SellerChatController;
 use App\Http\Controllers\Seller\NotificationController;
 use App\Http\Controllers\Seller\PaymentListnerController;
@@ -177,4 +178,8 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::get('/customers', [ReportController::class, 'customers'])->name('customers');
         Route::get('/overview', [ReportController::class, 'overview'])->name('overview');
     });
+
+    Route::get('/flash-sales', [FlashSaleController::class, 'index'])->name('flash-sales.index');
+    Route::get('/flash-sales/{id}', [FlashSaleController::class, 'details'])->name('flash-sales.details');
+    Route::post('/flash-sales/{id}/submit', [FlashSaleController::class, 'submit'])->name('flash-sales.submit');
 });
