@@ -2,8 +2,6 @@
 @section('title','flash sale')
 
 @section('content')
-
-
     <h4>Flash Sale Details</h4>
 
     <div class="card mt-3">
@@ -75,6 +73,4 @@
             </table>
         </div>
     </div>
-
-
 @endsection

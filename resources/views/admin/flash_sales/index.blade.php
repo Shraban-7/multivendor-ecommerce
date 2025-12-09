@@ -2,7 +2,6 @@
 @section('title','flash sales')
 
 @section('content')
-<div>
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4>Flash Sales</h4>
         <a href="{{ route('admin.flash-sales.create') }}" class="btn btn-primary">
@@ -12,8 +11,8 @@
 
     <div class="card">
         <div class="card-body p-0">
-            <table class="table table-hover mb-0">
-                <thead class="table-light">
+            <table class="table bg-white table-hover mb-0">
+                <thead>
                     <tr>
                         <th>ID</th>
                         <th>Title</th>
@@ -57,6 +56,4 @@
             </table>
         </div>
     </div>
-</div>
-
 @endsection
