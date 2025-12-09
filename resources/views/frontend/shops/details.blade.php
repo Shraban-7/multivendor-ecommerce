@@ -304,7 +304,7 @@ class="w-full h-full object-cover">
                 </p>
                 <ul class="list-disc list-inside space-y-1 pt-4 text-gray-700">
                     <li>**Joined:** <span class="font-medium">{{ $seller->created_at->format('M d, Y') }}</span></li>
-                    <li>**Location:** <span class="font-medium">{{ $seller->business_address ?? 'N/A' }}</span></li>
+                    <li>**Location:** <span class="font-medium">{{ optional($seller->district)->name}} , {{ optional($seller->division)->name  }}</span></li>
                     <li>**Total Items:** <span class="font-medium">{{ $totalItem }}</span></li>
                 </ul>
             </div>

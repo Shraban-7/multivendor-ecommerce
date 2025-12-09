@@ -375,10 +375,12 @@
                     <div class="p-3 sm:p-4 flex flex-col flex-1">
                         <span
                             class="text-[10px] text-gray-400 uppercase tracking-wide mb-1 font-medium">{{ $product->category->name }}</span>
-                        <h3
-                            class="text-sm font-semibold text-gray-800 line-clamp-2 mb-2 hover:text-primary-600 transition cursor-pointer">
-                            {{ $product->name }}
-                        </h3>
+                            <a href="{{ route('products.details',$product->slug) }}">
+                                <h3
+                                    class="text-sm font-semibold text-gray-800 line-clamp-2 mb-2 hover:text-primary-600 transition cursor-pointer">
+                                    {{ $product->name }}
+                                </h3>
+                            </a>
 
                         <div class="flex items-center gap-1 mb-2">
                             <div class="flex text-yellow-400 text-[10px] sm:text-xs">
