@@ -74,6 +74,7 @@ $promoBanner = $banners->get(\App\Models\Banner::SECTION_PROMO_MODAL)?->first();
 </section>
 
 <!-- ==================== 6. FLASH SALE SECTION ==================== -->
+ @if($flash_sale)
 <section class="pb-5">
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         <!-- Header -->
@@ -94,7 +95,7 @@ $promoBanner = $banners->get(\App\Models\Banner::SECTION_PROMO_MODAL)?->first();
         </div>
 
         <div class="flex overflow-x-auto gap-4 pb-4 hide-scroll snap-x">
-            @foreach ($products as $product)
+            @foreach ($flash_sale->products as $product)
             <div
                 class="min-w-[200px] md:min-w-[240px] snap-start bg-white rounded-xl border border-gray-100 hover:border-primary-500 hover:shadow-xl transition-all duration-300 group relative">
                 <div class="absolute top-2 left-2 z-10 flex flex-col gap-1">
@@ -147,6 +148,7 @@ $promoBanner = $banners->get(\App\Models\Banner::SECTION_PROMO_MODAL)?->first();
         </div>
     </div>
 </section>
+@endif
 
 
 {{--<section class="py-4">
