@@ -16,7 +16,7 @@ class FlashSale extends Model
         return $query->where('is_active', 1);
     }
 
-    public function flashSaleProducts()
+    public function products()
     {
         return $this->hasMany(FlashSaleProduct::class);
     }
