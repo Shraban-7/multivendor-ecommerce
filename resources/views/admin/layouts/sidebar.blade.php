@@ -72,7 +72,7 @@ $settings = settings();
             @endif
 
             <x-dashboard.nav-item-link :route="'admin.flash-sales.index'">
-                <i data-feather="users" class="nav-icon icon-xs me-2"></i> Flash Sales
+                <i data-feather="zap" class="nav-icon icon-xs me-2"></i> Flash Sales
             </x-dashboard.nav-item-link>
 
             @if (hasPermission('admin.sellers.index') ||

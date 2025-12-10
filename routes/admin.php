@@ -204,6 +204,8 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
         Route::put('/{id}/update', [FlashSaleController::class, 'update'])->name('update');
         Route::get('/{id}', [FlashSaleController::class, 'show'])->name('show');
         Route::delete('/{id}', [FlashSaleController::class, 'destroy'])->name('delete');
+        Route::post('/{id}/product/{productId}/review', [FlashSaleController::class, 'productReview'])->name('product.review');
+
     });
 });
 

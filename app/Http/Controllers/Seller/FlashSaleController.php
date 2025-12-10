@@ -19,7 +19,7 @@ class FlashSaleController extends Controller
             ->orderBy('start_time', 'asc')
             ->get();
         
-        $sellerFlashSales = FlashSale::whereHas('flashSaleProducts.product', function ($q) use ($seller) {
+        $sellerFlashSales = FlashSale::whereHas('products', function ($q) use ($seller) {
             $q->where('seller_id', $seller->id);
         })->get();
 
