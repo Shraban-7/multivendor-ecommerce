@@ -95,7 +95,7 @@ $promoBanner = $banners->get(\App\Models\Banner::SECTION_PROMO_MODAL)?->first();
         </div>
 
         <div class="flex overflow-x-auto gap-4 pb-4 hide-scroll snap-x">
-            @foreach ($flash_sale->products as $product)
+            @foreach ($flash_sale->products as $item)
             <div
                 class="min-w-[200px] md:min-w-[240px] snap-start bg-white rounded-xl border border-gray-100 hover:border-primary-500 hover:shadow-xl transition-all duration-300 group relative">
                 <div class="absolute top-2 left-2 z-10 flex flex-col gap-1">
@@ -103,43 +103,43 @@ $promoBanner = $banners->get(\App\Models\Banner::SECTION_PROMO_MODAL)?->first();
                 </div>
                 <div
                     class="relative h-48 w-full bg-gray-100 rounded-t-xl overflow-hidden p-4 flex items-center justify-center">
-                    <img src="{{ $product->imageUrl }}"
+                    <img src="{{ $item->product->imageUrl }}"
                         class="max-h-full object-contain mix-blend-multiply group-hover:scale-110 transition duration-500">
                     <div
                         class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center gap-2">
                         <button
                             class="btn-quickview w-9 h-9 bg-white text-gray-600 rounded-full shadow-lg flex items-center justify-center hover:bg-primary-600 hover:text-white transform translate-y-4 group-hover:translate-y-0 transition delay-75"
-                            data-slug="{{ $product->slug }}"><i class="far fa-eye"></i></button>
-                        <button data-id="{{ $product->id }}"
+                            data-slug="{{ $item->product->slug }}"><i class="far fa-eye"></i></button>
+                        <button data-id="{{ $item->product->id }}"
                             class="wishlistBtn w-9 h-9 bg-white text-gray-600 rounded-full shadow-lg flex items-center justify-center hover:bg-primary-600 hover:text-white transform translate-y-4 group-hover:translate-y-0 transition delay-100"><i
                                 class="far fa-heart"></i></button>
                     </div>
                 </div>
                 <div class="p-3">
-                    <a href="{{ route('products.details', $product->slug) }}">
+                    <a href="{{ route('products.details', $item->product->slug) }}">
                         <h3
                             class="text-sm font-medium text-gray-800 line-clamp-2 hover:text-primary-600 cursor-pointer mb-1">
-                            {{ $product->name }}
+                            {{ $item->product->name }}
                         </h3>
                     </a>
                     <div class="flex items-center gap-1 mb-2">
                         <i class="fas fa-star text-yellow-400 text-xs"></i>
-                        <span class="text-xs text-gray-400">({{ $product->avg_rating }})</span>
+                        <span class="text-xs text-gray-400">({{ $item->product->avg_rating }})</span>
                     </div>
                     <div class="flex items-center gap-2">
-                        @if ($product->discounted_price)
+                        @if ($item->product->discounted_price)
                         <span
-                            class="text-primary-600 font-bold text-lg">{{ money($product->discounted_price) }}</span>
+                            class="text-primary-600 font-bold text-lg">{{ money($item->product->discounted_price) }}</span>
                         <span
-                            class="text-gray-400 text-xs line-through">{{ money($product->selling_price) }}</span>
+                            class="text-gray-400 text-xs line-through">{{ money($item->product->selling_price) }}</span>
                         @else
                         <span
-                            class="text-primary-600 font-bold text-lg">{{ money($product->selling_price) }}</span>
+                            class="text-primary-600 font-bold text-lg">{{ money($item->product->selling_price) }}</span>
                         @endif
                     </div>
                 </div>
                 <div class="p-3 pt-0">
-                    <button data-slug="{{ $product->slug }}"
+                    <button data-slug="{{ $item->product->slug }}"
                         class="btn-quickview w-full py-2 rounded-lg bg-gray-100 text-gray-800 text-xs font-bold hover:bg-primary-600 hover:text-white transition group-hover:bg-primary-600 group-hover:text-white">Add
                         To Cart</button>
                 </div>
