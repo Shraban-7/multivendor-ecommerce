@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Http\Controllers\Controller;
 use App\Models\Banner;
 use App\Models\Brand;
+use App\Models\FlashSale;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -92,6 +93,8 @@ class HomeController extends Controller
                 'products' => $products,
             ])->render();
         }
+
+        $data['flash_sale'] = FlashSale::active()->with('products')->first();
 
         return view('frontend.home', $data);
 
