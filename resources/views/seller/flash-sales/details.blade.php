@@ -1,5 +1,5 @@
 @extends('seller.layouts.app')
-@section('title','Flash Sale Show')
+@section('title', 'Flash Sale Show')
 
 @section('content')
     <h3>{{ $flashSale->title }}</h3>
@@ -63,7 +63,7 @@
 
                     <div class="mb-3">
                         <label class="form-label">Select Product</label>
-                        <select name="product_id" class="form-select">
+                        <select name="product_id" class="form-select product-select">
                             @foreach ($myProducts as $p)
                                 @php
                                     $p->stock = $p->stock_in - $p->stock_out;
@@ -81,4 +81,14 @@
 
             </form>
         </div>
+
     @endsection
+
+    @push('scripts')
+        <script>
+            $('.product-select').select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#addProductModal')
+            });
+        </script>
+    @endpush
