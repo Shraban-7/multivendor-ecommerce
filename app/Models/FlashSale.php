@@ -25,4 +25,10 @@ class FlashSale extends Model
     {
         return $this->hasMany(FlashSaleProduct::class);
     }
+
+    public function approveProducts()
+    {
+        return $this->hasMany(FlashSaleProduct::class)->approved();
+    }
+
 }

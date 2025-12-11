@@ -21,6 +21,11 @@ class FlashSaleProduct extends Model
         self::STATUS_REJECTED => 'Rejected',
     ];
 
+    public function scopeApproved($query)
+    {
+        return $query->where('status', self::STATUS_APPROVED);
+    }
+
 
     public function seller()
     {
@@ -31,4 +36,6 @@ class FlashSaleProduct extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+
 }

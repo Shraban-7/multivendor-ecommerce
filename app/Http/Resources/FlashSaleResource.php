@@ -15,7 +15,7 @@ class FlashSaleResource extends JsonResource
             'image' => is_null($this->image) ? null : storage_url($this->image),
             'description' => $this->description,
             'end_time_ms' => time_to_ms($this->end_time),
-            'products' => FlashSaleProductResource::collection($this->whenLoaded('products'))
+            'products' => FlashSaleProductResource::collection($this->whenLoaded('approveProducts'))
         ];
     }
 }

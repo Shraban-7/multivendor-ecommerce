@@ -46,7 +46,7 @@ class DashboardController extends Controller
 
         $data['sellers'] = SellerResource::collection(Seller::limit(10)->get());
 
-        $flashSales = FlashSale::active()->with('products.product')->latest('id')->get();
+        $flashSales = FlashSale::active()->with('approveProducts.product')->latest('id')->get();
 
         $data['flash_sales'] = FlashSaleResource::collection($flashSales);
 

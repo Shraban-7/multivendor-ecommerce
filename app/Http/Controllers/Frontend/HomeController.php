@@ -94,7 +94,7 @@ class HomeController extends Controller
             ])->render();
         }
 
-        $data['flash_sale'] = FlashSale::active()->with('products')->first();
+        $data['flash_sale'] = FlashSale::active()->with('approveProducts')->first();
 
         return view('frontend.home', $data);
 
