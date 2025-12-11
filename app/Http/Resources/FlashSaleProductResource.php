@@ -11,7 +11,8 @@ class FlashSaleProductResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'sold' => $this->sold,
+            'stock_in' => $this->stock_in,
+            'stock_out' => $this->stock_out,
             'product' => ProductListResource::make($this->product)
         ];
     }

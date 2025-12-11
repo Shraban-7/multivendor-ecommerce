@@ -18,8 +18,11 @@ class FlashSale extends Model
 
     public function scopeActive($query)
     {
-        return $query->where('is_active', 1);
+        return $query->where('is_active', 1)
+            ->where('start_time', '<=', now())
+            ->where('end_time', '>', now());
     }
+
 
     public function products()
     {
