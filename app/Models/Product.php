@@ -263,6 +263,19 @@ class Product extends Model
         );
     }
 
+    public function totalStock(): Attribute
+    {
+        $totalStock = $this->attributes['availableStock'];
+
+        foreach ($this->variants as $variant) {
+            $stock += $variant->availableStock;
+        }
+
+        return Attribute::make(
+            get: fn() => $totalStock
+        );
+    }
+
     public function addRating($newRating)
     {
         $this->avg_rating = (($this->avg_rating * $this->rating_count) + $newRating) / ($this->rating_count + 1);
