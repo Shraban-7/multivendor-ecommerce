@@ -6,12 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\BannerResource;
 use App\Http\Resources\BrandResource;
 use App\Http\Resources\CategoryResource;
-
+use App\Http\Resources\FlashSaleResource;
 use App\Http\Resources\ProductListResource;
 use App\Http\Resources\SellerResource;
 use App\Models\Banner;
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\FlashSale;
 use App\Models\Product;
 use App\Models\Seller;
 
@@ -44,6 +45,10 @@ class DashboardController extends Controller
         );
 
         $data['sellers'] = SellerResource::collection(Seller::limit(10)->get());
+
+        $flashSales = FlashSale::active()->with('products')->latest('id')->get();
+
+        $data['flash_sales'] = FlashSaleResource::collection($flashSales);
 
         return apiResponse($data);
     }

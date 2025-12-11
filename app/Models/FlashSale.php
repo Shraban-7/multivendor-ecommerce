@@ -11,6 +11,11 @@ class FlashSale extends Model
 
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'start_time' => 'datetime',
+        'end_time' => 'datetime'
+    ];
+
     public function scopeActive($query)
     {
         return $query->where('is_active', 1);

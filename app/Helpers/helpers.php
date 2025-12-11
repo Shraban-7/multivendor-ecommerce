@@ -747,3 +747,13 @@ if (!function_exists('calculate_vat')) {
         return round(($vatPercentage / 100) * $price, 2);
     }
 }
+
+if (!function_exists('time_to_ms')) {
+    function time_to_ms($time)
+    {
+        $timestamp = strtotime($time);
+        $milliseconds = $timestamp * 1000;
+
+        return $milliseconds;
+    }
+}
