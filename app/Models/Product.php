@@ -265,12 +265,10 @@ class Product extends Model
 
     public function totalStock(): Attribute
     {
-        $totalStock = $this->attributes['availableStock'];
-
+        $totalStock = $this->availableStock;
         foreach ($this->variants as $variant) {
-            $stock += $variant->availableStock;
+            $totalStock += $variant->availableStock;
         }
-
         return Attribute::make(
             get: fn() => $totalStock
         );

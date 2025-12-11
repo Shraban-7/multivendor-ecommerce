@@ -32,7 +32,7 @@
                         $totalStockIn = $product->variants->sum('stock_in');
                         $totalStockOut = $product->variants->sum('stock_out');
                     }
-                    $totalStock = $totalStockIn = $totalStockOut;
+                    $totalStock = $product->totalStock;
                     $minPrice = min($product->variants->min('selling_price'), $product->selling_price);
                     $maxPrice = max($product->variants->max('selling_price'), $product->selling_price);
                     $lowStockQty = $product->low_stock_quantity;
