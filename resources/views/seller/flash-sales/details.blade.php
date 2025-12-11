@@ -65,10 +65,7 @@
                         <label class="form-label">Select Product</label>
                         <select name="product_id" class="form-select product-select">
                             @foreach ($myProducts as $p)
-                                @php
-                                    $p->stock = $p->stock_in - $p->stock_out;
-                                @endphp
-                                <option value="{{ $p->id }}">{{ $p->name }} (Stock: {{ $p->stock }})
+                                <option value="{{ $p->id }}">{{ $p->name }} (Stock: {{ $p->availableStock }})
                                 </option>
                             @endforeach
                         </select>

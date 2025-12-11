@@ -63,6 +63,8 @@ class FlashSaleController extends Controller
             'flash_sale_id' => $id,
             'seller_id' => $seller->id,
             'product_id' => $product->id,
+            'stock_in' => $product->availableStock,
+            'stock_out' => 0,
             'status' => FlashSaleProduct::STATUS_PENDING,
         ]);
 
