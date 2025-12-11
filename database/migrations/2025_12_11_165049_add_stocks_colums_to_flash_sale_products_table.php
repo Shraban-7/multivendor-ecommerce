@@ -16,7 +16,7 @@ return new class extends Migration {
                 $table->integer('stock_out')->default(0);
             });
 
-            $table->dropColumn('stock');
+            $table->dropColumn('sold');
         });
     }
 
