@@ -11,8 +11,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class Seller extends Authenticatable
 {
@@ -27,13 +28,58 @@ class Seller extends Authenticatable
 
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password'          => 'hashed',
+        'password' => 'hashed',
     ];
 
     const PENDING = 0;
     const ACTIVE = 1;
     const BLOCKED = 2;
     const DELETED = 4;
+
+    public static function generateSellerCode(string $sellerName): string
+    {
+        return DB::transaction(function () use ($sellerName) {
+
+            $clean = preg_replace('/[^A-Za-z\s]/', '', $sellerName);
+            $words = array_values(array_filter(preg_split('/\s+/', trim($clean))));
+
+            if (count($words) >= 2) {
+                // Multi-word: first letter of each word
+                $baseCode = '';
+                foreach ($words as $word) {
+                    $baseCode .= strtoupper($word[0]);
+                }
+            } else {
+                // Single-word: first 2 letters
+                $baseCode = strtoupper(substr($words[0], 0, 2));
+            }
+            
+            $baseCode = Str::substr($baseCode, 0, 4);
+            if (strlen($baseCode) < 2) {
+                $baseCode = str_pad($baseCode, 2, 'X');
+            }
+
+            $existing = DB::table('sellers')
+                ->where('code', 'like', $baseCode . '%')
+                ->pluck('code');
+
+            if ($existing->isEmpty()) {
+                return $baseCode;
+            }
+
+            $maxSuffix = 1;
+
+            foreach ($existing as $code) {
+                if ($code === $baseCode) {
+                    $maxSuffix = max($maxSuffix, 1);
+                } elseif (preg_match('/^' . preg_quote($baseCode) . '(\d+)$/', $code, $m)) {
+                    $maxSuffix = max($maxSuffix, (int) $m[1]);
+                }
+            }
+
+            return $baseCode . ($maxSuffix + 1);
+        });
+    }
 
     public function scopeActive($query)
     {

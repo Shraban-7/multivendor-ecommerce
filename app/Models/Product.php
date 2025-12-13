@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\DB;
 
 class Product extends Model
 {
@@ -279,5 +280,31 @@ class Product extends Model
         $this->avg_rating = (($this->avg_rating * $this->rating_count) + $newRating) / ($this->rating_count + 1);
         $this->rating_count += 1;
         $this->save();
+    }
+
+    public static function generateSku(int $sellerId): string
+    {
+        return DB::transaction(function () use ($sellerId) {
+
+            $seller = DB::table('sellers')
+                ->where('id', $sellerId)
+                ->lockForUpdate()
+                ->first();
+
+            $next = (int) $seller->sku_counter + 1;
+
+            DB::table('sellers')
+                ->where('id', $sellerId)
+                ->update(['sku_counter' => $next]);
+
+            $numericLength = 8 - strlen($seller->code);
+            if ($numericLength <= 0) {
+                throw new \Exception('Seller code too long for 8-char SKU');
+            }
+            
+            $sku = $seller->code . str_pad($next, $numericLength, '0', STR_PAD_LEFT);
+
+            return $sku;
+        });
     }
 }
