@@ -44,7 +44,7 @@ $hideFooter = request()->is('/') ? '' : 'hidden md:block';
                     {{-- <a href="{{ $socialLink->link }}"
                         class="w-9 h-9 rounded-full flex items-center justify-center transition {{ $bg }} {{ $text }} {{ $hoverBg }} {{ $hoverText }}">
                         <i class="fa-brands {{ $socialLink->icon_name }}"></i> --}}
-                        <a href="{{ $socialLink->link }}" class="w-9 h-9 rounded-full bg-gray-800 flex items-center justify-center text-white {{ $hoverBg }} hover:-translate-y-1 transition duration-300"><i class="fab {{ $socialLink->icon_name }}"></i></a>
+                        <a href="{{ $socialLink->link }}" target="_blank" class="w-9 h-9 rounded-full bg-gray-800 flex items-center justify-center text-white {{ $hoverBg }} hover:-translate-y-1 transition duration-300"><i class="fab {{ $socialLink->icon_name }}"></i></a>
                     </a>
                     @endforeach
 
