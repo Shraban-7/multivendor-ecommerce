@@ -134,7 +134,7 @@ $isDashboard = View::hasSection('dashboard');
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const quickViewModal = document.getElementById('quickViewModal');
-            const openQuickViewBtns = document.querySelectorAll('.btn-quickview');
+            // const openQuickViewBtns = document.querySelectorAll('.btn-quickview');
             const closeQuickViewBtns = document.querySelectorAll('.close-quickview');
             const quickViewContent = document.getElementById('quickViewContent');
 
@@ -149,18 +149,39 @@ $isDashboard = View::hasSection('dashboard');
                 }
             }
 
-            $(document).on('click', '.btn-quickview', function() {
-                const slug = $(this).data('slug');
+            $(document).on('click', '.btn-quickview', function(e) {
+                e.preventDefault();
+
+                const $btn = $(this);
+                const slug = $btn.data('slug');
+                const delay = 800;
+
+                $btn.find('.icon').addClass('hidden');
+                $btn.find('.spinner').removeClass('hidden');
+                $btn.prop('disabled', true);
+
                 $('#quickViewModal .quickview-content').html('');
-                $.ajax({
-                    url: "/products/" + slug + "/quick-view",
-                    type: "GET",
-                    success: function(response) {
-                        $('#quickViewModal .quickview-content').html(response);
-                        toggleQuickView(true);
-                    }
-                });
+
+                setTimeout(() => {
+                    $.ajax({
+                        url: `/products/${slug}/quick-view`,
+                        type: 'GET',
+
+                        success: function(response) {
+                            $('#quickViewModal .quickview-content').html(response);
+                            toggleQuickView(true);
+                        },
+
+                        complete: function() {
+                            $btn.find('.spinner').addClass('hidden');
+                            $btn.find('.icon').removeClass('hidden');
+                            $btn.prop('disabled', false);
+                        }
+                    });
+                }, delay);
             });
+
+
 
             // openQuickViewBtns.forEach(btn => {
             //     btn.addEventListener('click', (e) => {
