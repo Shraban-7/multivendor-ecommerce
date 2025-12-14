@@ -24,13 +24,22 @@
                             <label class="form-label">Favicon</label>
                             <input type="file" name="favicon" class="form-control mt-2" accept="image/*">
                         </div>
+                        <div class="mb-3 col-6">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control mt-2" value="{{ old('email',$setting->email) }}">
+                        </div>
+                        <div class="mb-3 col-6">
+                            <label class="form-label">Phone</label>
+                            <input type="text" name="phone" class="form-control mt-2" value="{{ old('phone',$setting->phone) }}">
+                        </div>
+                        <div class="mb-3 col-12">
+                            <label class="form-label">Address</label>
+                            <textarea name="address" class="form-control" id="">{{ old('address',$setting->address) }}</textarea>
+                        </div>
                         <div class="mb-3 col-12">
                             <label class="form-label">Footer Text</label>
                             <textarea name="footer_text" class="form-control" id="">{{ old('footer_text',$setting->footer_text) }}</textarea>
                         </div>
-
-
-
                         <div class="mb-3 col-12">
                             <label class="form-label">Logo</label>
                             <x-image-input name="logo" :image="storage_url($setting->logo)" />

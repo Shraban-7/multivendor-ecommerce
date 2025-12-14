@@ -21,7 +21,10 @@ class SettingController extends Controller
             'logo'       => 'nullable|image|mimes:png,jpg,jpeg,svg|max:2048',
             'logo_white' => 'nullable|image|mimes:png,jpg,jpeg,svg|max:2048',
             'favicon' => 'nullable|image|mimes:png,ico|max:512',
-            'footer_text' => 'required|string'
+            'footer_text' => 'required|string',
+            'email' => 'nullable|string',
+            'phone' => 'nullable|string',
+            'address' => 'nullable|string',
         ]);
 
         $setting = SystemSetting::first();
