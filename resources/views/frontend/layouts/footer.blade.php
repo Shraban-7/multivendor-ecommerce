@@ -114,8 +114,8 @@ $hideFooter = request()->is('/') ? '' : 'hidden md:block';
             class="border-t border-gray-800 mt-12 pt-6 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
             <p>&copy; {{ date('Y') }} SlashMart. All Rights Reserved.</p>
             <div class="flex gap-4 mt-2 md:mt-0">
-                <a href="#" class="hover:text-white transition">Terms</a>
-                <a href="#" class="hover:text-white transition">Privacy</a>
+                <a href="{{ route('pages.show','terms-and-conditions') }}" class="hover:text-white transition">Terms</a>
+                <a href="{{ route('pages.show','privacy-policy') }}" class="hover:text-white transition">Privacy</a>
                 <a href="#" class="hover:text-white transition">Cookies</a>
             </div>
         </div>
