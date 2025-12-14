@@ -124,6 +124,7 @@ class AuthController extends Controller
                 $allData = array_merge($step1, $step2, $sessionData);
 
                 $allData['username'] = str_slug('sellers', 'username', $allData['name']);
+                $allData['code'] = Seller::generateSellerCode($allData['name']);
                 $username = $allData['username'];
 
                 $destinationDir = "images/" . $username;

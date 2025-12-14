@@ -82,6 +82,7 @@ class SellerController extends Controller
         $data['password'] = Hash::make($request->password);
 
         $username = str_slug('sellers', 'username', $request->name);
+        $data['code'] = Seller::generateSellerCode($data['name']);
         $data['username'] = $username;
         $destinationDir = "images/{$username}";
         Storage::disk('public')->makeDirectory($destinationDir);
@@ -224,7 +225,6 @@ class SellerController extends Controller
     public function permanentDelete(Seller $seller)
     {
         DB::transaction(function () use ($seller) {
-            // Delete all related models
             $seller->orders()->delete();
             $seller->employees()->delete();
             $seller->products()->delete();

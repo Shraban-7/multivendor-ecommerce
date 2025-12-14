@@ -44,13 +44,11 @@ class Seller extends Authenticatable
             $words = array_values(array_filter(preg_split('/\s+/', trim($clean))));
 
             if (count($words) >= 2) {
-                // Multi-word: first letter of each word
                 $baseCode = '';
                 foreach ($words as $word) {
                     $baseCode .= strtoupper($word[0]);
                 }
             } else {
-                // Single-word: first 2 letters
                 $baseCode = strtoupper(substr($words[0], 0, 2));
             }
             

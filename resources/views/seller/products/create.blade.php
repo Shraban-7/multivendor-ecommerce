@@ -29,26 +29,6 @@
                             <label class="form-label">Product Name</label>
                             <input name="name" type="text" class="form-control" required>
                         </div>
-
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">SKU</label>
-                            <input name="sku" type="text" value="{{ \App\Models\ProductVariant::generate_sku() }}" class="form-control form-control-sm" required>
-                        </div>
-
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Unit Value</label>
-                            <input type="number" name="unit_value" class="form-control form-control-sm" placeholder="Enter value" required>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Unit</label>
-                            <select name="unit_id" class="form-select form-select-sm" required>
-                                <option disabled selected>--</option>
-                                @foreach ($units as $unit)
-                                <option value="{{ $unit->id }}">{{ $unit->short_name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Category</label>
                             <select id="categorySelect" name="category_id" class="form-select form-select-sm" required>
@@ -79,6 +59,20 @@
                                 <option disabled selected>-- Select Brand --</option>
                                 @foreach ($brands as $brand)
                                 <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Unit Value</label>
+                            <input type="number" name="unit_value" class="form-control form-control-sm" placeholder="Enter value" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Unit</label>
+                            <select name="unit_id" class="form-select form-select-sm" required>
+                                <option disabled selected>--</option>
+                                @foreach ($units as $unit)
+                                <option value="{{ $unit->id }}">{{ $unit->short_name }}</option>
                                 @endforeach
                             </select>
                         </div>

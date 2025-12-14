@@ -71,7 +71,6 @@ class ProductController extends Controller
             'category_id' => 'required|integer|exists:categories,id',
             'subcategory_id' => 'nullable|integer|exists:categories,id',
             'brand' => 'nullable',
-            'sku' => 'required',
             'name' => 'required|string|max:255',
             'buying_price' => 'required|numeric',
             'selling_price' => 'required|numeric',
@@ -113,6 +112,7 @@ class ProductController extends Controller
 
         $validated['seller_id'] = $seller->id;
         $validated['slug'] = str_slug('products', 'slug', trim($validated['name']));
+        $validated['sku'] = Product::generateSku($seller->id);
 
         $product = Product::create($validated);
 
@@ -126,7 +126,7 @@ class ProductController extends Controller
 
                 $variant = new ProductVariant();
                 $variant->product_id = $product->id;
-                $variant->sku = ProductVariant::generate_sku();
+                $variant->sku = Product::generateSku($seller->id);
                 $variant->buying_price = $v['buying_price'];
                 $variant->selling_price = $v['selling_price'];
                 $variant->stock_in = $v['stock'] ?? 0;
