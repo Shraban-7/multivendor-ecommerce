@@ -245,8 +245,8 @@
                         </div>
                     </div>
                     <div class="p-3 flex flex-col flex-1 relative z-20 bg-white">
-                        <span
-                            class="text-[10px] text-gray-500 uppercase tracking-wide mb-1">{{ $product->category->name }}</span>
+                        {{-- <span
+                            class="text-[10px] text-gray-500 uppercase tracking-wide mb-1">{{ $product->category->name }}</span> --}}
                         <a href="{{ route('products.details', $product->slug) }}">
                             <h3
                                 class="text-sm font-semibold text-gray-800 line-clamp-2 mb-auto hover:text-primary-600 transition cursor-pointer">
