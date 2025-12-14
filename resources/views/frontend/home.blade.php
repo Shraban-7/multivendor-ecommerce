@@ -311,7 +311,7 @@
     <!-- END HERE -->
 
     <!-- ==================== 16. TESTIMONIALS ==================== -->
-    <section class="bg-orange-50 py-12">
+    {{-- <section class="bg-orange-50 py-12">
         <div class="">
             <div class="text-center max-w-2xl mx-auto mb-10">
                 <h2 class="text-3xl font-bold text-gray-900 mb-2">What Our Customers Say</h2>
@@ -381,7 +381,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> --}}
 
     <!-- ==================== 17 & 18. NEWSLETTER & APP DOWNLOAD ==================== -->
     <section class=" py-12">
