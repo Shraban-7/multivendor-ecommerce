@@ -273,7 +273,7 @@
             <h2 class="mb-4 text-xl font-semibold text-gray-900">
                 You May Also Like
             </h2>
-            <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+            <div class="grid grid-cols-2 gap-2 md:gap-4 sm:grid-cols-3 lg:grid-cols-5">
                 @include('frontend.partials.product-card-load', ['products' => $products])
             </div>
         </div>
