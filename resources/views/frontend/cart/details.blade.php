@@ -2,11 +2,9 @@
 @section('title', 'Cart Details')
 
 @section('content')
-    <main class="pb-5 sm:pb-10">
+    <main class="pb-5 mb-12 md:mb-5">
         <div class="grid gap-6 xl:gap-8 2xl:gap-12 lg:grid-cols-3">
-            <!-- Cart Items Main Section -->
             <div class="lg:col-span-2">
-                <!-- Cart Items Container -->
                 <div id="cart-wrapper" class="bg-white rounded-xl shadow-sm p-4 sm:p-6">
                     @if ($carts->isEmpty())
                         <div class="py-16 text-center">
@@ -181,21 +179,8 @@
                             </div>
                         @endforeach
                     @endif
-                </div>
-
-                <!-- Recommendations section -->
-                <div class="pt-10 mt-10 border-t border-gray-200">
-                    <h2 class="mb-6 text-xl font-semibold text-gray-900">
-                        You May Also Like
-                    </h2>
-
-                    <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-                        @include('frontend.partials.product-card-load', ['products' => $products])
-                    </div>
-                </div>
+                </div>                
             </div>
-
-            <!-- Order Summary -->
             <div class="lg:col-span-1">
                 <div class="sticky top-6">
                     <div class="p-5 bg-white border border-gray-200 rounded-xl shadow-sm">
@@ -279,6 +264,17 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="border-t border-gray-200 my-5"></div>
+
+        <div>
+            <h2 class="mb-4 text-xl font-semibold text-gray-900">
+                You May Also Like
+            </h2>
+            <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+                @include('frontend.partials.product-card-load', ['products' => $products])
             </div>
         </div>
     </main>
