@@ -37,6 +37,7 @@ class DashboardController extends Controller
             ->active()
             ->trending()
             ->limit(16)
+            ->orderByDesc('id')
             ->get();
 
         $data['products'] = array(
