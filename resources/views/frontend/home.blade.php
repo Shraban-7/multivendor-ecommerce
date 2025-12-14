@@ -109,8 +109,17 @@
                                 <div
                                     class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center gap-2">
                                     <button
-                                        class="btn-quickview w-9 h-9 bg-white text-gray-600 rounded-full shadow-lg flex items-center justify-center hover:bg-primary-600 hover:text-white transform translate-y-4 group-hover:translate-y-0 transition delay-75"
-                                        data-slug="{{ $item->product->slug }}"><i class="far fa-eye"></i></button>
+                                        class="btn-quickview w-9 h-9 bg-white text-gray-600 rounded-full shadow-lg
+                                            flex items-center justify-center hover:bg-primary-600 hover:text-white
+                                            transform translate-y-4 group-hover:translate-y-0 transition delay-75"
+                                        data-slug="{{ $item->product->slug }}">
+
+                                        <i class="far fa-eye icon"></i>
+
+                                        <span class="spinner hidden w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin">
+                                        </span>
+                                    </button>
+
                                     <button data-id="{{ $item->product->id }}"
                                         class="wishlistBtn w-9 h-9 bg-white text-gray-600 rounded-full shadow-lg flex items-center justify-center hover:bg-primary-600 hover:text-white transform translate-y-4 group-hover:translate-y-0 transition delay-100"><i
                                             class="far fa-heart"></i></button>
@@ -224,13 +233,12 @@
                                         transition-all duration-300 flex items-center justify-center gap-1"
                                 data-slug="{{ $product->slug }}">
 
+                                <span
+                                    class="spinner hidden w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin">
+                                </span>
                                 <span class="btn-content flex items-center gap-1">
                                     <i class="far fa-eye icon"></i>
                                     <span>Quick View</span>
-                                </span>
-
-                                <span
-                                    class="spinner hidden w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin">
                                 </span>
                             </button>
 

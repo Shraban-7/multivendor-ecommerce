@@ -244,7 +244,7 @@
                 <div
                     class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
                     <p></p>
-                    {{--<p class="text-sm text-gray-500">
+                    {{-- <p class="text-sm text-gray-500">
                         Showing
                         <span class="font-bold text-gray-900">{{ $products->firstItem() }}</span>
                         -
@@ -252,7 +252,7 @@
                         of
                         <span class="font-bold text-gray-900">{{ $products->total() }}</span>
                         results
-                    </p>--}}
+                    </p> --}}
 
 
                     <div class="flex items-center gap-3 w-full sm:w-auto">
@@ -364,9 +364,18 @@
                         <!-- Hover Actions (Grid) -->
                         <div
                             class="grid-hover-actions absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center gap-2 backdrop-blur-[1px]">
-                            <button data-slug="{{ $product->slug }}"
-                                class="btn-quickview w-9 h-9 bg-white text-gray-600 rounded-full shadow-lg flex items-center justify-center hover:bg-primary-600 hover:text-white transform translate-y-4 group-hover:translate-y-0 transition delay-75"><i
-                                    class="far fa-eye"></i></button>
+                            <button
+                                class="btn-quickview w-9 h-9 bg-white text-gray-600 rounded-full shadow-lg
+                                flex items-center justify-center hover:bg-primary-600 hover:text-white
+                                transform translate-y-4 group-hover:translate-y-0 transition delay-75"
+                                data-slug="{{ $product->slug }}">
+
+                                <i class="far fa-eye icon"></i>
+
+                                <span class="spinner hidden w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin">
+                                </span>
+                            </button>
+
                             <button data-id="{{ $product->id }}"
                                 class="wishlistBtn w-9 h-9 bg-white text-gray-600 rounded-full shadow-lg flex items-center justify-center hover:bg-red-500 hover:text-white transform translate-y-4 group-hover:translate-y-0 transition delay-100"><i
                                     class="far fa-heart"></i></button>
@@ -375,12 +384,12 @@
                     <div class="p-3 sm:p-4 flex flex-col flex-1">
                         <span
                             class="text-[10px] text-gray-400 uppercase tracking-wide mb-1 font-medium">{{ $product->category->name }}</span>
-                            <a href="{{ route('products.details',$product->slug) }}">
-                                <h3
-                                    class="text-sm font-semibold text-gray-800 line-clamp-2 mb-2 hover:text-primary-600 transition cursor-pointer">
-                                    {{ $product->name }}
-                                </h3>
-                            </a>
+                        <a href="{{ route('products.details', $product->slug) }}">
+                            <h3
+                                class="text-sm font-semibold text-gray-800 line-clamp-2 mb-2 hover:text-primary-600 transition cursor-pointer">
+                                {{ $product->name }}
+                            </h3>
+                        </a>
 
                         <div class="flex items-center gap-1 mb-2">
                             <div class="flex text-yellow-400 text-[10px] sm:text-xs">

@@ -11,8 +11,19 @@
         <div
             class="grid-hover-actions absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center gap-2 backdrop-blur-[1px]">
             <button
-                class="btn-quickview w-9 h-9 bg-white text-gray-600 rounded-full shadow-lg flex items-center justify-center hover:bg-primary-600 hover:text-white transform translate-y-4 group-hover:translate-y-0 transition delay-75"
-                data-slug="{{ $product->slug }}"><i class="far fa-eye"></i></button>
+                class="btn-quickview w-9 h-9 bg-white text-gray-600 rounded-full shadow-lg
+                    flex items-center justify-center hover:bg-primary-600 hover:text-white
+                    transform translate-y-4 group-hover:translate-y-0 transition delay-75"
+                data-slug="{{ $product->slug }}">
+
+                <i class="far fa-eye icon"></i>
+
+                <span
+                    class="spinner hidden w-4 h-4 border-2 border-current
+               border-t-transparent rounded-full animate-spin">
+                </span>
+            </button>
+
             <button data-id="{{ $product->id }}"
                 class="wishlistBtn w-9 h-9 bg-white text-gray-600 rounded-full shadow-lg flex items-center justify-center hover:bg-red-500 hover:text-white transform translate-y-4 group-hover:translate-y-0 transition delay-100"><i
                     class="far fa-heart"></i></button>
@@ -22,10 +33,10 @@
         <span
             class="text-[10px] text-gray-400 uppercase tracking-wide mb-1 font-medium">{{ $product->category->name }}</span>
         <a href="{{ route('products.details', $product->slug) }}">
-        <h3
-            class="text-sm font-semibold text-gray-800 line-clamp-2 mb-2 hover:text-primary-600 transition cursor-pointer">
-            {{ $product->name }}
-        </h3>
+            <h3
+                class="text-sm font-semibold text-gray-800 line-clamp-2 mb-2 hover:text-primary-600 transition cursor-pointer">
+                {{ $product->name }}
+            </h3>
         </a>
         <div class="flex items-center gap-1 mb-2">
             <div class="flex text-yellow-400 text-[10px] sm:text-xs">
