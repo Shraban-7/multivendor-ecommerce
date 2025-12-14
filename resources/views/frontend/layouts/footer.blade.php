@@ -1,16 +1,7 @@
 <?php
-$contactLinks = [
-    ['title' => 'Help Center', 'route' => route('pages.show', 'help-center')],
-    ['title' => 'Returns & Refunds', 'route' => route('pages.show', 'returns-refunds')],
-    ['title' => 'Contact Us', 'route' => route('pages.show', 'contact-us')],
-];
+$contactLinks = [['title' => 'Help Center', 'route' => route('pages.show', 'help-center')], ['title' => 'Returns & Refunds', 'route' => route('pages.show', 'returns-refunds')], ['title' => 'Contact Us', 'route' => route('pages.show', 'contact-us')]];
 
-$infoLinks = [
-    ['title' => 'About Us', 'route' => route('pages.show', 'about-us')],
-    ['title' => 'Privacy Policy', 'route' => route('pages.show', 'privacy-policy')],
-    ['title' => 'Terms and Conditions', 'route' => route('pages.show', 'terms-and-conditions')],
-    ['title' => 'Become a Seller', 'route' => route('pages.show', 'become-a-seller')],
-];
+$infoLinks = [['title' => 'About Us', 'route' => route('pages.show', 'about-us')], ['title' => 'Privacy Policy', 'route' => route('pages.show', 'privacy-policy')], ['title' => 'Terms and Conditions', 'route' => route('pages.show', 'terms-and-conditions')], ['title' => 'Become a Seller', 'route' => route('pages.show', 'become-a-seller')]];
 
 $hideFooter = request()->is('/') ? '' : 'hidden md:block';
 ?>
@@ -33,19 +24,21 @@ $hideFooter = request()->is('/') ? '' : 'hidden md:block';
                 <p class="text-gray-400 text-sm mb-6 leading-relaxed">{{ $settings->footer_text }}</p>
                 <div class="flex gap-3">
                     @foreach (social_links() as $socialLink)
-                    @php
-                    $color = $socialLink->color;
-                    $bg = "bg-{$color}-100";
-                    $text = "text-{$color}-600";
-                    $hoverBg = "hover:bg-{$color}-600";
-                    $hoverText = 'hover:text-white';
-                    @endphp
+                        @php
+                            $color = $socialLink->color;
+                            $bg = "bg-{$color}-100";
+                            $text = "text-{$color}-600";
+                            $hoverBg = "hover:bg-{$color}-600";
+                            $hoverText = 'hover:text-white';
+                        @endphp
 
-                    {{-- <a href="{{ $socialLink->link }}"
+                        {{-- <a href="{{ $socialLink->link }}"
                         class="w-9 h-9 rounded-full flex items-center justify-center transition {{ $bg }} {{ $text }} {{ $hoverBg }} {{ $hoverText }}">
                         <i class="fa-brands {{ $socialLink->icon_name }}"></i> --}}
-                        <a href="{{ $socialLink->link }}" target="_blank" class="w-9 h-9 rounded-full bg-gray-800 flex items-center justify-center text-white {{ $hoverBg }} hover:-translate-y-1 transition duration-300"><i class="fab {{ $socialLink->icon_name }}"></i></a>
-                    </a>
+                        <a href="{{ $socialLink->link }}" target="_blank"
+                            class="w-9 h-9 rounded-full bg-gray-800 flex items-center justify-center text-white {{ $hoverBg }} hover:-translate-y-1 transition duration-300"><i
+                                class="fab {{ $socialLink->icon_name }}"></i></a>
+                        </a>
                     @endforeach
 
                 </div>
@@ -58,7 +51,9 @@ $hideFooter = request()->is('/') ? '' : 'hidden md:block';
                 </h4>
                 <ul class="space-y-3 text-sm">
                     @foreach ($infoLinks as $link)
-                    <li><a href="{{ $link['route'] }}" class="hover:text-primary-500 hover:pl-2 transition-all duration-300 block">{{ $link['title'] }}</a></li>
+                        <li><a href="{{ $link['route'] }}"
+                                class="hover:text-primary-500 hover:pl-2 transition-all duration-300 block">{{ $link['title'] }}</a>
+                        </li>
                     @endforeach
                 </ul>
             </div>
@@ -70,7 +65,9 @@ $hideFooter = request()->is('/') ? '' : 'hidden md:block';
                 </h4>
                 <ul class="space-y-3 text-sm">
                     @foreach ($contactLinks as $link)
-                    <li><a href="{{ $link['route'] }}" class="hover:text-primary-500 hover:pl-2 transition-all duration-300 block">{{ $link['title'] }}</a></li>
+                        <li><a href="{{ $link['route'] }}"
+                                class="hover:text-primary-500 hover:pl-2 transition-all duration-300 block">{{ $link['title'] }}</a>
+                        </li>
                     @endforeach
                 </ul>
             </div>
@@ -81,18 +78,25 @@ $hideFooter = request()->is('/') ? '' : 'hidden md:block';
                     <span class="absolute -bottom-2 left-0 w-10 h-1 bg-primary-500 rounded-full"></span>
                 </h4>
                 <ul class="space-y-4 text-sm">
-                    <li class="flex gap-3 items-start">
-                        <i class="fas fa-map-marker-alt text-primary-500 text-lg"></i>
-                        <span class="text-gray-400">{{ $settings->address ?? '' }}</span>
-                    </li>
-                    <li class="flex gap-3 items-center">
-                        <i class="fas fa-envelope text-primary-500 text-lg"></i>
-                        <span class="text-gray-400 hover:text-white cursor-pointer">{{ $settings->email ?? '' }}</span>
-                    </li>
-                    <li class="flex gap-3 items-center">
-                        <i class="fas fa-phone-alt text-primary-500 text-lg"></i>
-                        <span class="text-gray-400 font-bold hover:text-white cursor-pointer">{{ $settings->phone ?? '' }}</span>
-                    </li>
+                    @if ($settings->address)
+                        <li class="flex gap-3 items-start">
+                            <i class="fas fa-map-marker-alt text-primary-500 text-lg"></i>
+                            <span class="text-gray-400">{{ $settings->address }}</span>
+                        </li>
+                    @endif
+                    @if ($settings->email)
+                        <li class="flex gap-3 items-center">
+                            <i class="fas fa-envelope text-primary-500 text-lg"></i>
+                            <span class="text-gray-400 hover:text-white cursor-pointer">{{ $settings->email }}</span>
+                        </li>
+                    @endif
+                    @if ($settings->phone)
+                        <li class="flex gap-3 items-center">
+                            <i class="fas fa-phone-alt text-primary-500 text-lg"></i>
+                            <span
+                                class="text-gray-400 font-bold hover:text-white cursor-pointer">{{ $settings->phone }}</span>
+                        </li>
+                    @endif
                 </ul>
                 <!-- <div class="mt-6">
                     <h5 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Payment Methods</h5>
@@ -106,7 +110,8 @@ $hideFooter = request()->is('/') ? '' : 'hidden md:block';
         </div>
 
         <!-- Copyright -->
-        <div class="border-t border-gray-800 mt-12 pt-6 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+        <div
+            class="border-t border-gray-800 mt-12 pt-6 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
             <p>&copy; {{ date('Y') }} SlashMart. All Rights Reserved.</p>
             <div class="flex gap-4 mt-2 md:mt-0">
                 <a href="#" class="hover:text-white transition">Terms</a>

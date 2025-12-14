@@ -1,8 +1,12 @@
 <div class="bg-gray-900 text-white text-xs py-2 hidden md:block">
     <div class="container mx-auto px-4 flex justify-between items-center">
         <div class="flex gap-4">
-            <span><i class="fas fa-phone-alt mr-1 text-primary-500"></i> {{ $settings->phone }}</span>
-            <span><i class="fas fa-envelope mr-1 text-primary-500"></i> {{ $settings->email }}</span>
+            @if ($settings->phone)
+                <span><i class="fas fa-phone-alt mr-1 text-primary-500"></i> {{ $settings->phone }}</span>
+            @endif
+            @if ($settings->email)
+                <span><i class="fas fa-envelope mr-1 text-primary-500"></i> {{ $settings->email }}</span>
+            @endif
         </div>
         <div class="flex gap-4 items-center">
             <span><i class="fas fa-truck mr-1 text-primary-500"></i> Free Shipping over ৳2000</span>
@@ -80,20 +84,20 @@
                         <span class="text-[10px] font-medium text-gray-500 mt-1 hidden md:block">Wishlist</span>
                     </a>
 
-                    <a href="{{ route('cart.details') }}" class="hidden md:flex flex flex-col items-center group relative">
+                    <a href="{{ route('cart.details') }}"
+                        class="hidden md:flex flex flex-col items-center group relative">
                         <div class="relative">
                             <i
                                 class="fas fa-shopping-cart text-xl text-gray-600 group-hover:text-primary-600 transition"></i>
 
-                                <span id="cartCount"
-                                    class="{{ $cartCount > 0 ? '' : 'hidden' }} absolute -top-2 -right-2 bg-primary-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">{{ $cartCount }}</span>
+                            <span id="cartCount"
+                                class="{{ $cartCount > 0 ? '' : 'hidden' }} absolute -top-2 -right-2 bg-primary-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">{{ $cartCount }}</span>
 
                         </div>
                         <span class="text-[10px] font-medium text-gray-500 mt-1 hidden md:block">Cart</span>
                     </a>
 
-                    <a href="{{ route('notifications.index') }}"
-                        class="flex flex-col items-center group relative">
+                    <a href="{{ route('notifications.index') }}" class="flex flex-col items-center group relative">
                         <div class="relative">
                             <i
                                 class="fa-regular fa-bell text-xl text-gray-600 group-hover:text-primary-600 transition"></i>
