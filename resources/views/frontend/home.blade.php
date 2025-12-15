@@ -97,8 +97,8 @@
                 </div>
 
                 <div class="flex overflow-x-auto gap-4 pb-4 hide-scroll snap-x">
-                    @foreach ($flash_sale->approveProducts as $item)
-                        <div
+                    @foreach ($flash_sale->approveProducts as $productItem)
+                        {{-- <div
                             class="min-w-[200px] md:min-w-[240px] snap-start bg-white rounded-xl border border-gray-100 hover:border-primary-500 hover:shadow-xl transition-all duration-300 group relative">
                             <div class="absolute top-2 left-2 z-10 flex flex-col gap-1">
                                 <span class="bg-primary-600 text-white text-[10px] font-bold px-2 py-1 rounded">-40%</span>
@@ -154,7 +154,9 @@
                                     class="btn-quickview w-full py-2 rounded-lg bg-gray-100 text-gray-800 text-xs font-bold hover:bg-primary-600 hover:text-white transition group-hover:bg-primary-600 group-hover:text-white">Add
                                     To Cart</button>
                             </div>
-                        </div>
+                        </div> --}}
+
+                        <x-frontend.flash-sale-card :productItem="$productItem" />
                     @endforeach
                 </div>
             </div>
@@ -221,29 +223,23 @@
                     <div class="relative h-48 w-full bg-gray-50 p-4 flex items-center justify-center overflow-hidden">
                         <img src="{{ $product->imageUrl }}"
                             class="max-h-full object-contain hover:scale-105 transition duration-500 mix-blend-multiply z-0">
-                        <div class="absolute top-2 right-2 z-10">
-                            <button data-id="{{ $product->id }}"
-                                class="wishlistBtn w-8 h-8 rounded-full bg-white text-gray-400 hover:text-red-500 shadow flex items-center justify-center transition"><i
-                                    class="far fa-heart"></i></button>
-                        </div>
                         <div
-                            class="absolute inset-0 bg-black/10 z-10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center gap-2">
                             <button
-                                class="btn-quickview bg-white text-gray-900 px-4 py-2 rounded-full
-                                        text-xs font-bold hover:bg-primary-600 hover:text-white
-                                        shadow-lg transform translate-y-4 group-hover:translate-y-0
-                                        transition-all duration-300 flex items-center justify-center gap-1"
+                                class="btn-quickview w-9 h-9 bg-white text-gray-600 rounded-full shadow-lg
+                                    flex items-center justify-center hover:bg-primary-600 hover:text-white
+                                    transform translate-y-4 group-hover:translate-y-0 transition delay-75"
                                 data-slug="{{ $product->slug }}">
 
-                                <span
-                                    class="spinner hidden w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin">
-                                </span>
-                                <span class="btn-content flex items-center gap-1">
-                                    <i class="far fa-eye icon"></i>
-                                    <span>Quick View</span>
+                                <i class="far fa-eye icon"></i>
+
+                                <span class="spinner hidden w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin">
                                 </span>
                             </button>
 
+                            <button data-id="{{ $product->id }}"
+                                class="wishlistBtn w-9 h-9 bg-white text-gray-600 rounded-full shadow-lg flex items-center justify-center hover:bg-primary-600 hover:text-white transform translate-y-4 group-hover:translate-y-0 transition delay-100"><i
+                                    class="far fa-heart"></i></button>
                         </div>
                     </div>
                     <div class="p-3 flex flex-col flex-1 relative z-20 bg-white">
