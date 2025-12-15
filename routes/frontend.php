@@ -11,6 +11,7 @@ use App\Http\Controllers\Frontend\WishlistController;
 use App\Http\Controllers\Frontend\ContactUsController;
 use App\Http\Controllers\Frontend\NotificationController;
 use App\Http\Controllers\Frontend\BillingAddressController;
+use App\Http\Controllers\Frontend\FlashSaleController;
 use App\Http\Controllers\Frontend\SearchController;
 use App\Http\Controllers\Frontend\StaticPageController;
 
@@ -34,6 +35,11 @@ Route::get('/no-order', function () {
 Route::get('/tracking', function () {
     return view('frontend.orders.status_logs');
 })->name('tracking');
+
+Route::prefix('flash-sales')->as('flashSales.')->group(function () {
+    Route::get('/', [FlashSaleController::class, 'index'])->name('index');
+    Route::get('/{id}', [FlashSaleController::class, 'show'])->name('show');
+});
 
 Route::prefix('sellers')->as('sellers.')->group(function () {
     Route::get('/', [SellerController::class, 'index'])->name('index');
