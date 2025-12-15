@@ -121,7 +121,6 @@
 
                 <!-- Content -->
                 <div class="p-3 flex flex-col flex-1">
-                    <span class="text-[10px] text-gray-500 uppercase tracking-wide mb-1 truncate">{{ $product->category->name ?? 'Category' }}</span>
                     <h3 class="text-sm font-semibold text-gray-800 line-clamp-2 mb-2 hover:text-primary-600 transition cursor-pointer">
                         <a href="{{ route('products.details', $product->slug) }}">{{ $product->name }}</a>
                     </h3>
