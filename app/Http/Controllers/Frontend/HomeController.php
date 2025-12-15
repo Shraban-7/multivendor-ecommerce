@@ -17,18 +17,18 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         $limit = 8;
-        $page = $request->get('page', 1);
+        $page = $request->get("page", 1);
         $skip = ($page - 1) * $limit;
-        $data['categories'] = Category::category()->get();
+        $data["categories"] = Category::category()->get();
 
         //$data['special_category'] = Category::special()->with(['banners', 'products'])->first();
 
         $new_arrival_products = Product::withDefaultRelations()
             ->active()
-            ->withAvg('reviews', 'rating')
+            ->withAvg("reviews", "rating")
             // ->where('is_featured', 0)
-            ->withCount('reviews')
-            ->orderByDesc('id')
+            ->withCount("reviews")
+            ->orderByDesc("id")
             ->limit(16)
             ->get();
 
@@ -67,44 +67,49 @@ class HomeController extends Controller
 
         // $data['featured_products'] = $featured_products->map(fn($product) => $product->toDetailsArray());
 
-
-
-        $data['banners'] = Banner::where('is_active', true)
-            ->orderBy('sort_order', 'asc')
+        $data["banners"] = Banner::where("is_active", true)
+            ->orderBy("sort_order", "asc")
             ->get()
-            ->groupBy('section');
+            ->groupBy("section");
 
-        $data['sellers'] = Seller::active()->limit(8)->get();
-        $data['brands'] = Brand::where('status', 1)->orderBy('name')->limit(12)->get();
-        $data['products'] = Product::withDefaultRelations()
+        $data["sellers"] = Seller::active()->limit(8)->get();
+        $data["brands"] = Brand::where("status", 1)
+            ->orderBy("name")
+            ->limit(12)
+            ->get();
+        $data["products"] = Product::withDefaultRelations()
             ->active()
             ->latest()
             ->skip($skip)
             ->take($limit)
             ->get();
-        $products = $data['products'];
+        $products = $data["products"];
 
         if ($request->ajax()) {
             if ($products->isEmpty()) {
-                return '';
+                return "";
             }
 
-            return view('frontend.partials.product-card-load', [
-                'products' => $products,
+            return view("frontend.partials.product-card-load", [
+                "products" => $products,
             ])->render();
         }
 
-        $data['flash_sale'] = FlashSale::active()->with('approveProducts')->first();
+        $data["flash_sales"] = FlashSale::active()
+            ->withCount("approveProducts")
+            ->having("approve_products_count", ">", 0)
+            ->with("approveProducts")
+            ->get();
 
-        return view('frontend.home', $data);
+        return view("frontend.home", $data);
 
         // return view('frontend.pages.home', $data);
     }
 
     public function category_details($slug)
     {
-        $category = Category::where('slug', $slug)->first();
+        $category = Category::where("slug", $slug)->first();
 
-        return view('frontend.pages.category_detail', compact('category'));
+        return view("frontend.pages.category_detail", compact("category"));
     }
 }

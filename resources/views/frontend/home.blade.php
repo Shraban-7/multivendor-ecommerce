@@ -74,7 +74,8 @@
     </section>
 
     <!-- ==================== 6. FLASH SALE SECTION ==================== -->
-    @if ($flash_sale)
+    @if ($flash_sales)
+    @foreach ($flash_sales as $flash_sale)
         <section class="pb-5">
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                 <!-- Header -->
@@ -82,7 +83,7 @@
                     class="flex flex-col md:flex-row items-center justify-between border-b border-gray-100 pb-4 mb-6 gap-4">
                     <div class="flex items-center gap-4">
                         <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                            <i class="fas fa-bolt text-primary-500"></i> Flash <span class="text-primary-600">Sale</span>
+                            <i class="fas fa-bolt text-primary-500"></i><span class="text-primary-600">{{ $flash_sale->title }}</span>
                         </h2>
                         <div class="flex gap-2 items-center text-white text-xs font-bold">
                             <span class="bg-gray-800 p-1.5 rounded">05</span> :
@@ -90,7 +91,7 @@
                             <span class="bg-gray-800 p-1.5 rounded">45</span>
                         </div>
                     </div>
-                    <a href="{{ route('products.index') }}"
+                    <a href="{{ route('flashSales.show', $flash_sale->id) }}"
                         class="text-sm font-semibold text-primary-600 border border-primary-600 px-4 py-1.5 rounded-full hover:bg-primary-600 hover:text-white transition">See
                         All Products</a>
                 </div>
@@ -158,6 +159,7 @@
                 </div>
             </div>
         </section>
+    @endforeach
     @endif
 
 
