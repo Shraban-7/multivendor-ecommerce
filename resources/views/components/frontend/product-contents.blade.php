@@ -145,7 +145,7 @@ $showProductDiscount = isset($product['discounted_price'], $product['price']) &&
             </div>
         @endisset
 
-        <div class="mt-3 p-4 bg-gray-50 rounded-xl shadow-sm">
+        {{-- <div class="mt-3 p-4 bg-gray-50 rounded-xl shadow-sm">
             <span class="font-semibold text-gray-800">Our Commitments</span>
             <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div class="bg-gray-50 p-3 rounded-lg">
@@ -175,6 +175,6 @@ $showProductDiscount = isset($product['discounted_price'], $product['price']) &&
                     </ul>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 </div>
