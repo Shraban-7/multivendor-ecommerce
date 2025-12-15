@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -25,6 +26,14 @@ class SettingController extends Controller
             'email' => 'nullable|string',
             'phone' => 'nullable|string',
             'address' => 'nullable|string',
+
+            'facebook_pixel' => 'nullable|string|max:255',
+            'facebook_capi' => 'nullable|string|max:255',
+            'google_analytics' => 'nullable|string|max:255',
+            'google_tag_manager' => 'nullable|string|max:255',
+            'seo_title' => 'nullable|string|max:255',
+            'seo_description' => 'nullable|string|max:255',
+            'seo_keywords' => 'nullable|string|max:255',
         ]);
 
         $setting = SystemSetting::first();
@@ -66,5 +75,4 @@ class SettingController extends Controller
 
         return redirect()->back()->with('success', 'Settings updated successfully.');
     }
-
 }
