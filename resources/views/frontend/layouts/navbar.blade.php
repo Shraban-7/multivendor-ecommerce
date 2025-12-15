@@ -9,7 +9,17 @@
             @endif
         </div>
         <div class="flex gap-4 items-center">
-            <span><i class="fas fa-truck mr-1 text-primary-500"></i> Free Shipping over ৳2000</span>
+            @php
+            $flash_sales =  \App\Models\FlashSale::active()
+                ->withCount("approveProducts")
+                ->having("approve_products_count", ">", 0)
+                ->with("approveProducts")
+                ->get();
+            @endphp
+            @if($flash_sales)
+            <span><i class="fas fa-bolt text-primary-500"></i> <a href="{{ route('flashSales.index') }}" class="hover:text-primary-500 transition">Flash Sale</a></span>
+            @endif
+            {{-- <span><i class="fas fa-truck mr-1 text-primary-500"></i> Free Shipping over ৳2000</span> --}}
             <span class="h-3 w-[1px] bg-gray-700"></span>
             <a href="#" class="hover:text-primary-500 transition">Sell on SlashMart</a>
             <span class="h-3 w-[1px] bg-gray-700"></span>
