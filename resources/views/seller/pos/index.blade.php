@@ -1324,6 +1324,7 @@ foreach ($categories as $cat) {
                 if (calculatedDiscount > originalTotal) calculatedDiscount = originalTotal;
 
                 let totalDiscount = productDiscount + calculatedDiscount;
+
                 let newTotal = originalTotal - calculatedDiscount;
                 if (newTotal < 0) newTotal = 0;
 
@@ -1416,6 +1417,7 @@ foreach ($categories as $cat) {
                 });
 
                 let discountValue = parseFloat($('#discount-amount').val()) || 0;
+ 
                 let discountType = $('#discount-type').val();
                 let discountAmount = 0;
 
@@ -1432,6 +1434,8 @@ foreach ($categories as $cat) {
                 let discount = 0;
                 if (subtotal > total) {
                     discount = subtotal - grandTotal;
+                }else{
+                    discount = discountAmount;
                 }
 
                 $('#summary-subtotal').text(subtotal.toFixed(2));
