@@ -96,7 +96,7 @@
                         All Products</a>
                 </div>
 
-                <div class="flex overflow-x-auto gap-4 pb-4 hide-scroll snap-x">
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
                     @foreach ($flash_sale->approveProducts as $productItem)
                         {{-- <div
                             class="min-w-[200px] md:min-w-[240px] snap-start bg-white rounded-xl border border-gray-100 hover:border-primary-500 hover:shadow-xl transition-all duration-300 group relative">
