@@ -109,7 +109,7 @@
 
                 <!-- Product Image -->
                 <div class="relative h-48 w-full bg-gray-50 p-4 flex items-center justify-center overflow-hidden">
-                    <img src="{{ storage_url($product->thumbnail) }}" alt="{{ $product->name }}" class="max-h-full object-contain mix-blend-multiply group-hover:scale-110 transition duration-500">
+                    <img src="{{ $product->imageUrl }}" alt="{{ $product->name }}" class="max-h-full object-contain mix-blend-multiply group-hover:scale-110 transition duration-500">
 
                     <!-- Hover Actions -->
                     <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center gap-2">
