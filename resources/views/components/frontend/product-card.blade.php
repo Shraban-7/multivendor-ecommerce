@@ -78,9 +78,12 @@
             </div>
 
             <!-- Grid Button -->
-            <button
-                class="grid-view-btn w-8 h-8 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center hover:bg-primary-600 hover:text-white transition shadow-sm">
-                <i class="fas fa-shopping-cart text-xs"></i>
+            <button data-slug="{{ $product->slug }}"
+                class="btn-quickview grid-view-btn w-8 h-8 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center hover:bg-primary-600 hover:text-white transition shadow-sm">
+                <i class="fas fa-shopping-cart text-xs icon"></i>
+                <span
+                    class="spinner hidden w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin">
+                </span>
             </button>
 
             <!-- List Buttons -->
@@ -88,8 +91,8 @@
                 <button
                     class="w-9 h-9 border border-gray-200 rounded-lg flex items-center justify-center hover:border-red-300 hover:bg-red-50 hover:text-red-500 transition"><i
                         class="far fa-heart"></i></button>
-                <button
-                    class="px-4 py-2 bg-primary-600 text-white text-xs font-bold rounded-lg hover:bg-primary-700 shadow-lg shadow-primary-500/30 transition flex items-center gap-2">
+                <button data-slug="{{ $product->slug }}"
+                    class="btn-quickview px-4 py-2 bg-primary-600 text-white text-xs font-bold rounded-lg hover:bg-primary-700 shadow-lg shadow-primary-500/30 transition flex items-center gap-2">
                     <i class="fas fa-shopping-cart"></i> Add to Cart
                 </button>
             </div>
@@ -173,8 +176,8 @@
                 @endif
             </div>
             <!-- Grid Button -->
-            <button
-                class="grid-view-btn w-8 h-8 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center hover:bg-primary-600 hover:text-white transition shadow-sm">
+            <button data-slug="{{ $product->slug }}"
+                class="btn-quickview grid-view-btn w-8 h-8 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center hover:bg-primary-600 hover:text-white transition shadow-sm">
                 <i class="fas fa-shopping-cart text-xs"></i>
             </button>
             <!-- List Buttons -->

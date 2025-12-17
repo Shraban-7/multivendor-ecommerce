@@ -89,7 +89,7 @@
 
         <!-- Close Button -->
         <button id="quickViewCloseBtn"
-            class="absolute top-3 right-3 w-9 h-9 flex items-center justify-center 
+            class="close-quickview absolute top-3 right-3 w-9 h-9 flex items-center justify-center 
                    rounded-full bg-white shadow hover:bg-gray-200 transition">
             <i class="fa-solid fa-xmark"></i>
         </button>
