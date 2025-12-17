@@ -2,20 +2,31 @@
 @section('title', 'Flash Sale Show')
 
 @section('content')
-    <div class="d-flex justify-content-between align-items-center">
-        <div>
-            <h3>{{ $flashSale->title }}</h3>
-            <p class="text-muted">{{ $flashSale->start_time->format('d M Y, h:i A') }} to
-                {{ $flashSale->end_time->format('d M Y, h:i A') }}</p>
-        </div>
 
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
-           <i data-feather="plus"></i> Add Product
-        </button>
-
-    </div>
 
     <!-- Seller Submitted Products -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h3>{{ $flashSale->title }}</h3>
+                    <p class="text-muted mb-0">{{ $flashSale->start_time->format('d M Y, h:i A') }} to
+                        {{ $flashSale->end_time->format('d M Y, h:i A') }}</p>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button class="btn btn-light border" data-bs-toggle="modal" data-bs-target="#guidelineModal">
+                        <i data-feather="info" class="icon-xs"></i> See Guidelines
+                    </button>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                        <i data-feather="plus" class="icon-xs"></i> Add Product
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
     <h4 class="mb-3">My Products</h4>
 
     <table class="table bg-white table-bordered">
@@ -79,13 +90,34 @@
             </form>
         </div>
 
-    @endsection
+    </div>
 
-    @push('scripts')
-        <script>
-            $('.product-select').select2({
-                theme: 'bootstrap-5',
-                dropdownParent: $('#addProductModal')
-            });
-        </script>
-    @endpush
+    <div class="modal fade" id="guidelineModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Guidelines</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    {!! $flashSale->description !!}
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+@endsection
+
+@push('scripts')
+    <script>
+        $('.product-select').select2({
+            theme: 'bootstrap-5',
+            dropdownParent: $('#addProductModal')
+        });
+    </script>
+@endpush
