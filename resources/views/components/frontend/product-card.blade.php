@@ -29,7 +29,7 @@
         </div>
     </div>
 
-    <div class="p-3 sm:p-4 flex flex-col flex-1">
+    <div class="px-3 py-2 flex flex-col flex-1">
         <a href="{{ route('products.details', $product->slug) }}">
             <h3
                 class="text-[14px] sm:text-[15px] font-medium text-gray-800 truncate mb-2 hover:text-primary-600 transition cursor-pointer">
