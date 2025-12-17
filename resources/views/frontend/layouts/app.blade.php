@@ -656,11 +656,11 @@ $isDashboard = View::hasSection('dashboard');
                 const valId = $btn.data("value-id");
 
                 $wrapper.find(`.option-value-btn[data-option-id="${optId}"]`).removeClass(
-                    "bg-primary/10 text-primary border-primary"
+                    "text-primary-500 border-primary-500"
                 ).addClass("bg-white text-gray-800 border-gray-300");
 
                 $btn.removeClass("bg-white text-gray-800 border-gray-300").addClass(
-                    "bg-primary/10 text-primary border-primary"
+                    "text-primary-500 border-primary-500"
                 );
 
                 const selectedOptions = collectSelectedOptions($wrapper);
