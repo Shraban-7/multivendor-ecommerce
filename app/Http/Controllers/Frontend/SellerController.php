@@ -25,34 +25,43 @@ class SellerController extends Controller
 
     public function follow(Seller $seller)
     {
-        $userId          = Auth::id();
-        $alreadyFollowed = SellerFollower::where('seller_id', $seller->id)->where('user_id', $userId)->first();
+        $userId = auth()->id();
 
-        if ($alreadyFollowed) {
-            $alreadyFollowed->delete();
+        $follow = SellerFollower::where('seller_id', $seller->id)
+            ->where('user_id', $userId)
+            ->first();
+
+        if ($follow) {
+            $follow->delete();
             $seller->decrement('total_followers');
-            return redirect()->back()->with('success', "Unfollowed Successfully");
+
+            return apiResponse([
+                'following' => false,
+                'total_followers' => $seller->total_followers,
+            ], 'Unfollowed Successfully');
         }
 
         SellerFollower::create([
             'seller_id' => $seller->id,
-            'user_id'   => $userId,
+            'user_id' => $userId,
         ]);
 
-        $seller->update([
-            'total_followers' => $seller->total_followers + 1,
-        ]);
+        $seller->increment('total_followers');
 
-        return redirect()->back()->with('success', "Followed Successfully");
+        return apiResponse([
+            'following' => true,
+            'total_followers' => $seller->total_followers,
+        ], 'Followed Successfully');
     }
+
 
     public function shop($username, Request $request)
     {
         $seller = Seller::where('username', $username)->firstOrFail();
 
         $limit = 20;
-        $page  = $request->get('page', 1);
-        $skip  = ($page - 1) * $limit;
+        $page = $request->get('page', 1);
+        $skip = ($page - 1) * $limit;
 
         $productQuery = Product::where('seller_id', $seller->id)->withDefaultRelations()->active();
 
@@ -100,15 +109,15 @@ class SellerController extends Controller
 
     public function review(Seller $seller, Request $request)
     {
-        $userId          = Auth::id();
-        $totalItem       = Product::where('seller_id', $seller->id)->count();
+        $userId = Auth::id();
+        $totalItem = Product::where('seller_id', $seller->id)->count();
         $alreadyFollowed = SellerFollower::where('seller_id', $seller->id)
             ->where('user_id', $userId)->first();
         $categoryIds = Product::with('category')
             ->where('seller_id', $seller->id)->pluck('category_id')->unique()->values()->all();
 
         $categories = Category::whereIn('id', $categoryIds)->get();
-        $avgRating  = Review::whereIn('product_id', function ($query) use ($seller) {
+        $avgRating = Review::whereIn('product_id', function ($query) use ($seller) {
             $query->select('id')
                 ->from('products')
                 ->where('seller_id', $seller->id);
@@ -173,14 +182,14 @@ class SellerController extends Controller
 
         return response()->json([
             'message' => 'Marked as helpful!',
-            'count'   => $review->helpful_count,
+            'count' => $review->helpful_count,
         ]);
     }
 
     public function reviewReport(Request $request)
     {
         $seller = Seller::where('id', auth('seller')->id())->first();
-        $user   = User::where('id', auth()->id())->first();
+        $user = User::where('id', auth()->id())->first();
 
         if ($seller) {
             ReportReview::create([
@@ -189,7 +198,7 @@ class SellerController extends Controller
             ]);
         } elseif ($user) {
             ReportReview::create([
-                'user_id'   => $user->id,
+                'user_id' => $user->id,
                 'review_id' => $request->review_id,
             ]);
         } else {

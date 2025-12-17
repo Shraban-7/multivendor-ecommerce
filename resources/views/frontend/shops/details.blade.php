@@ -175,17 +175,21 @@ class="w-full h-full object-cover">
                                         Reviews</span>
                                     <span class="w-1 h-1 bg-gray-300 rounded-full"></span>
                                     <span><span
-                                            class="font-bold text-gray-900">{{ number_shorten_format($seller->total_followers) }}</span>
+                                            class="followers-count font-bold text-gray-900">{{ number_shorten_format($seller->total_followers) }}</span>
                                         Followers</span>
                                 </div>
                             </div>
 
                             {{-- Action Buttons --}}
                             <div class="flex items-center justify-center gap-3">
-                                <button
-                                    class="bg-primary-600 text-white px-6 py-2 rounded-full font-medium hover:bg-primary-700 transition shadow-sm text-sm">
-                                    Follow
-                                </button>
+                                @auth
+                                    <button data-seller="{{ $seller->username }}"
+                                        data-url="{{ route('sellers.follow', $seller->username) }}"
+                                        class="follow-btn bg-primary-600 text-white px-6 py-2 rounded-full font-medium hover:bg-primary-700 transition shadow-sm text-sm">
+                                        {{ $alreadyFollowed ? 'Unfollow' : 'Follow' }}
+                                    </button>
+
+                                @endauth
                                 <button
                                     class="border border-gray-300 text-gray-700 px-6 py-2 rounded-full font-medium hover:bg-gray-50 transition text-sm">
                                     Message
@@ -335,6 +339,39 @@ class="w-full h-full object-cover">
 @push('scripts')
     <script>
         $(document).ready(function() {
+            $(document).on('click', '.follow-btn', function() {
+                let btn = $(this);
+                let url = btn.data('url');
+
+                if (btn.prop('disabled')) return;
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    beforeSend: function() {
+                        btn.prop('disabled', true);
+                    },
+                    success: function(response) {
+                        if (response.data.following) {
+                            btn.text('Unfollow');
+                        } else {
+                            btn.text('Follow');
+                        }
+
+                        $('.followers-count').text(response.data.total_followers);
+                    },
+                    error: function(xhr) {
+                        alert(xhr.responseJSON?.message ?? 'Something went wrong');
+                    },
+                    complete: function() {
+                        btn.prop('disabled', false);
+                    }
+                });
+            });
+
             $('.more-toggle').on('click', function(e) {
                 e.preventDefault();
                 $(this).next('.dropdown-menu').toggle();
