@@ -80,7 +80,7 @@
             <!-- Grid Button -->
             <button
                 class="grid-view-btn w-8 h-8 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center hover:bg-primary-600 hover:text-white transition shadow-sm">
-                <i class="fas fa-plus text-xs"></i>
+                <i class="fas fa-shopping-cart text-xs"></i>
             </button>
 
             <!-- List Buttons -->
@@ -175,7 +175,7 @@
             <!-- Grid Button -->
             <button
                 class="grid-view-btn w-8 h-8 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center hover:bg-primary-600 hover:text-white transition shadow-sm">
-                <i class="fas fa-plus text-xs"></i>
+                <i class="fas fa-shopping-cart text-xs"></i>
             </button>
             <!-- List Buttons -->
             <div class="list-view-btns hidden flex gap-2">
