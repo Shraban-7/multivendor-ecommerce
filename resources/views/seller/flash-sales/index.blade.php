@@ -14,7 +14,9 @@
                         <p>{!! $sale->description !!}</p>
 
                         <p class="text-muted">
-                            {{ $sale->start_time }} to {{ $sale->end_time }}
+                            {{ $sale->start_time->format('d M Y, h:i A') }}
+                            to
+                            {{ $sale->end_time->format('d M Y, h:i A') }}
                         </p>
 
                         <a href="{{ route('seller.flash-sales.details', $sale->id) }}" class="btn btn-primary w-100">

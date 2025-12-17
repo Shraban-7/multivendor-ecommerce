@@ -2,19 +2,21 @@
 @section('title', 'Flash Sale Show')
 
 @section('content')
-    <h3>{{ $flashSale->title }}</h3>
-    <p class="text-muted">{{ $flashSale->start_time }} to {{ $flashSale->end_time }}</p>
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h3>{{ $flashSale->title }}</h3>
+            <p class="text-muted">{{ $flashSale->start_time->format('d M Y, h:i A') }} to
+                {{ $flashSale->end_time->format('d M Y, h:i A') }}</p>
+        </div>
 
-    <!-- Guidelines -->
-    <div class="alert alert-info">
-        <h5>Flash Sale Guidelines</h5>
-        {!! $flashSale->guidelines !!}
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
+           <i data-feather="plus"></i> Add Product
+        </button>
+
     </div>
 
-    <hr>
-
     <!-- Seller Submitted Products -->
-    <h4 class="mb-3">My Products in This Flash Sale</h4>
+    <h4 class="mb-3">My Products</h4>
 
     <table class="table bg-white table-bordered">
         <thead>
@@ -42,9 +44,7 @@
         </tbody>
     </table>
 
-    <button class="btn btn-primary mt-4" data-bs-toggle="modal" data-bs-target="#addProductModal">
-        Add Product to {{ $flashSale->title }}
-    </button>
+
 
     </div>
 
