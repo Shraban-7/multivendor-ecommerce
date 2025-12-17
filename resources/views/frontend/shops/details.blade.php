@@ -183,12 +183,22 @@ class="w-full h-full object-cover">
                             {{-- Action Buttons --}}
                             <div class="flex items-center justify-center gap-3">
                                 @auth
-                                    <button data-seller="{{ $seller->username }}"
-                                        data-url="{{ route('sellers.follow', $seller->username) }}"
-                                        class="follow-btn bg-primary-600 text-white px-6 py-2 rounded-full font-medium hover:bg-primary-700 transition shadow-sm text-sm">
-                                        {{ $alreadyFollowed ? 'Unfollow' : 'Follow' }}
-                                    </button>
+                                    <button data-url="{{ route('sellers.follow', $seller->username) }}"
+                                        class="follow-btn relative bg-primary-600 text-white px-6 py-2 rounded-full font-medium transition shadow-sm text-sm overflow-hidden">
 
+                                        <span class="btn-text">
+                                            {{ $alreadyFollowed ? 'Unfollow' : 'Follow' }}
+                                        </span>
+
+                                        <span class="btn-loader hidden absolute inset-0 flex items-center justify-center">
+                                            <svg class="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10"
+                                                    stroke="currentColor" stroke-width="4" fill="none" />
+                                                <path class="opacity-75" fill="currentColor"
+                                                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                                            </svg>
+                                        </span>
+                                    </button>
                                 @endauth
                                 <button
                                     class="border border-gray-300 text-gray-700 px-6 py-2 rounded-full font-medium hover:bg-gray-50 transition text-sm">
@@ -343,6 +353,9 @@ class="w-full h-full object-cover">
                 let btn = $(this);
                 let url = btn.data('url');
 
+                let text = btn.find('.btn-text');
+                let loader = btn.find('.btn-loader');
+
                 if (btn.prop('disabled')) return;
 
                 $.ajax({
@@ -351,22 +364,30 @@ class="w-full h-full object-cover">
                     data: {
                         _token: '{{ csrf_token() }}'
                     },
-                    beforeSend: function() {
+                    beforeSend() {
                         btn.prop('disabled', true);
+                        text.addClass('opacity-0');
+                        loader.removeClass('hidden');
                     },
-                    success: function(response) {
-                        if (response.data.following) {
-                            btn.text('Unfollow');
+                    success(res) {
+                        if (res.data.following) {
+                            text.text('Unfollow');
+                            btn.removeClass('bg-primary-600')
+                                .addClass('bg-gray-600');
                         } else {
-                            btn.text('Follow');
+                            text.text('Follow');
+                            btn.removeClass('bg-gray-600')
+                                .addClass('bg-primary-600');
                         }
 
-                        $('.followers-count').text(response.data.total_followers);
+                        $('.followers-count').text(res.data.total_followers);
                     },
-                    error: function(xhr) {
+                    error(xhr) {
                         alert(xhr.responseJSON?.message ?? 'Something went wrong');
                     },
-                    complete: function() {
+                    complete() {
+                        loader.addClass('hidden');
+                        text.removeClass('opacity-0');
                         btn.prop('disabled', false);
                     }
                 });
