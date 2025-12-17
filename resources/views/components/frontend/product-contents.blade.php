@@ -98,52 +98,29 @@ $showProductDiscount = isset($product['discounted_price'], $product['price']) &&
             @endif
         </div>
 
-        <x-frontend.variant-selection-card :product="$product" />
-
+        <x-frontend.variant-selection-card :product="$product" />      
+        
         @isset($seller)
-            <div class="mt-3 p-4 bg-gray-50 rounded-xl shadow-sm">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center gap-3">
-                        <a href="{{ route('sellers.shop', $seller['username']) }}"
-                            class="flex-shrink-0 w-12 h-12 overflow-hidden rounded-full">
-                            <img src="{{ storage_url($seller['business_logo']) }}" alt="{{ $seller['username'] }}"
-                                class="object-cover w-full h-full" />
-                        </a>
-                        <div>
-                            <h3 class="font-semibold text-lg">
-                                <a href="{{ route('sellers.shop', $seller['username']) }}"
-                                    class="hover:text-primary transition-colors mr-2">{{ $seller['business_name'] }}</a>
-                                @if ($product['seller']['best_seller'])
-                                    <span class="bg-leaf-green text-white text-xs px-2.5 py-1 rounded-full">Best
-                                        Seller</span>
-                                @endif
-                            </h3>
-                            <div class="flex items-center gap-4 text-sm text-gray-600">
-                                <span>{{ $seller['total_followers'] }}+ followers</span>
-                                <span class="flex items-center gap-1">
-                                    <i class="fa-solid fa-star text-yellow-400"></i>
-                                    {{ $seller['rating'] }}
-                                </span>
-                            </div>
-                        </div>
+        <div class="border-y border-gray-100 py-4 my-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <img src="{{ storage_url($seller['business_logo']) }}" class="w-10 h-10 rounded-full border border-gray-200 object-cover">
+                <div>
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-sm font-semibold text-gray-800">{{ $seller['business_name'] }}</span>
+                        <i class="fas fa-check-circle text-blue-500 text-[10px]" title="Verified Seller"></i>
                     </div>
-                    {{-- <button class="text-primary hover:text-primary-dark transition-colors">
-                        <i class="fa-regular fa-comment-dots text-xl"></i>
-                    </button> --}}
-                </div>
-                <div class="flex gap-2 mb-4">
-                    <button
-                        class="flex-1 py-2 px-4 border border-gray-300 rounded-lg hover:bg-primary hover:text-white hover:border-primary transition-all text-sm font-medium">
-                        <i class="fa-solid fa-store mr-2"></i>
-                        Follow
-                    </button>
-                    <a href="{{ route('sellers.shop', $seller['username']) }}"
-                        class="flex-1 py-2 px-4 bg-primary-500 text-white rounded-lg hover:bg-primary-dark transition-colors text-center text-sm font-medium">
-                        Shop All Items
-                    </a>
+                    <div class="flex items-center gap-2 text-[10px] text-gray-500">
+                        <span><i class="fas fa-star text-yellow-400"></i> {{ $seller['rating'] }} Rating</span>
+                        <span>•</span>
+                        <span>{{ $seller['total_followers'] }} followers</span>
+                    </div>
                 </div>
             </div>
-        @endisset
+            <a href="{{ route('sellers.shop', $seller['username']) }}" class="text-xs font-medium text-primary-600 border border-primary-100 bg-primary-50 px-3 py-1.5 rounded hover:bg-primary-500 hover:text-white hover:border-primary-500 transition-colors">
+                Visit Store
+            </a>
+        </div>
+        @endisset 
 
         {{-- <div class="mt-3 p-4 bg-gray-50 rounded-xl shadow-sm">
             <span class="font-semibold text-gray-800">Our Commitments</span>
