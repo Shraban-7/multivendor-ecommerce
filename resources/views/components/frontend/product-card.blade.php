@@ -7,7 +7,7 @@
     <div
         class="product-image-container h-56 w-full border-b border-gray-50 relative bg-white flex items-center justify-center overflow-hidden">
         <img src="{{ storage_url($product->thumbnail) }}"
-            class="max-h-full max-w-full object-contain mix-blend-multiply group-hover:scale-110 transition duration-500">
+            class="object-fit mix-blend-multiply group-hover:scale-110 transition duration-500">
 
         <!-- Hover Actions (Grid) -->
         <div
