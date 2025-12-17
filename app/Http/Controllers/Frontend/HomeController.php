@@ -16,7 +16,7 @@ class HomeController extends Controller
 {
     public function index(Request $request)
     {
-        $limit = 8;
+        $limit = 10;
         $page = $request->get("page", 1);
         $skip = ($page - 1) * $limit;
         $data["categories"] = Category::category()->get();
