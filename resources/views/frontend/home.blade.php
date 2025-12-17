@@ -216,16 +216,14 @@
         <h2 class="text-2xl font-bold text-gray-900 mb-6">Featured <span
                 class="text-primary-600">Products</span></h2>
 
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div id="product-wrapper" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             @foreach ($products as $product)
                 <x-frontend.product-card :product="$product"/>
             @endforeach
         </div>
 
         <div class="text-center mt-10">
-            {{-- <a href="{{ route('products.index') }}" class="text-sm font-semibold text-primary-600 border border-primary-600 px-4 py-1.5 rounded-full hover:bg-primary-600 hover:text-white transition">Load More Products</a> --}}
             @if ($products->count() >= 8)
-                <!-- Load More Btn -->
                 <div class="mt-10 text-center load-more-btn">
                     <button data-page="1" data-url="{{ url()->current() }}" id="loadMoreProducts"
                         class="text-sm font-semibold text-primary-600 border border-primary-600 px-4 py-1.5 rounded-full hover:bg-primary-600 hover:text-white transition"
@@ -233,7 +231,6 @@
                         <span>Load More</span>
                         <i class="text-sm fa-solid fa-chevron-down"></i>
                     </button>
-
                 </div>
             @endif
         </div>
@@ -415,6 +412,8 @@
                     );
                 },
                 success: function(response) {
+
+
                     if ($.trim(response) !== '') {
                         $('#product-wrapper').append(response);
 
