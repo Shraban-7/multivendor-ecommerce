@@ -212,65 +212,13 @@
     </section>
 
     <!-- ==================== 9. FEATURED PRODUCTS (GRID) ==================== -->
-    <section class="pb-5">
-        <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">Featured <span
+    <section class="py-5">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Featured <span
                 class="text-primary-600">Products</span></h2>
 
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             @foreach ($products as $product)
-                <div
-                    class="bg-white rounded-xl border border-gray-100 hover:border-primary-500 hover:shadow-2xl transition-all duration-300 group overflow-hidden flex flex-col h-full relative">
-                    <div class="relative h-48 w-full bg-gray-50 p-4 flex items-center justify-center overflow-hidden">
-                        <img src="{{ $product->imageUrl }}"
-                            class="max-h-full object-contain hover:scale-105 transition duration-500 mix-blend-multiply z-0">
-                        <div
-                            class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center gap-2">
-                            <button
-                                class="btn-quickview w-9 h-9 bg-white text-gray-600 rounded-full shadow-lg
-                                    flex items-center justify-center hover:bg-primary-600 hover:text-white
-                                    transform translate-y-4 group-hover:translate-y-0 transition delay-75"
-                                data-slug="{{ $product->slug }}">
-
-                                <i class="far fa-eye icon"></i>
-
-                                <span class="spinner hidden w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin">
-                                </span>
-                            </button>
-
-                            <button data-id="{{ $product->id }}"
-                                class="wishlistBtn w-9 h-9 bg-white text-gray-600 rounded-full shadow-lg flex items-center justify-center hover:bg-primary-600 hover:text-white transform translate-y-4 group-hover:translate-y-0 transition delay-100"><i
-                                    class="far fa-heart"></i></button>
-                        </div>
-                    </div>
-                    <div class="p-3 flex flex-col flex-1 relative z-20 bg-white">
-                        {{-- <span
-                            class="text-[10px] text-gray-500 uppercase tracking-wide mb-1">{{ $product->category->name }}</span> --}}
-                        <a href="{{ route('products.details', $product->slug) }}">
-                            <h3
-                                class="text-sm font-semibold text-gray-800 line-clamp-2 mb-auto hover:text-primary-600 transition cursor-pointer">
-                                {{ $product->name }}
-                            </h3>
-                        </a>
-                        <div class="mt-2 pt-2 border-t border-gray-50 flex items-center justify-between">
-                            <div class="flex flex-col">
-                                @if ($product->discounted_price)
-                                    <span
-                                        class="text-xs text-gray-400 line-through">{{ money($product->selling_price) }}</span>
-                                    <span
-                                        class="text-primary-600 font-bold">{{ money($product->discounted_price) }}</span>
-                                @else
-                                    <span class="text-primary-600 font-bold">{{ money($product->selling_price) }}</span>
-                                @endif
-                            </div>
-                            <button data-slug="{{ $product->slug }}"
-                                class="btn-quickview bg-primary-100 text-primary-700 w-8 h-8 rounded-full hover:bg-primary-600 hover:text-white transition flex items-center justify-center">
-                                <i class="fas fa-plus icon"></i>
-                                <span
-                                    class="spinner hidden w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <x-frontend.product-card :product="$product"/>
             @endforeach
         </div>
 
@@ -292,8 +240,8 @@
     </section>
 
     <!-- ==================== 14. POPULAR BRANDS ==================== -->
-    <section class="pb-5 border-t border-gray-200">
-        <h2 class="text-xl font-bold text-gray-900 mb-6">Popular <span class="text-primary-600">Brands</span></h2>
+    <section class="pb-5">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Popular <span class="text-primary-600">Brands</span></h2>
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
             @foreach ($brands as $brand)
                 <div
