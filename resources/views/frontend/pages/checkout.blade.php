@@ -25,9 +25,7 @@
                             Billing Information
                         </h2>
 
-                        <button type="button" data-modal-target="add-billing-address-modal"
-                            data-modal-toggle="add-billing-address-modal"
-                            class="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-sm font-medium text-primary border border-primary/50 rounded-md hover:bg-primary/5 hover:border-primary transition-colors duration-150">
+                        <button type="button" onclick="toggleModal('addBillingAddressModal')" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-sm font-medium text-primary border border-primary/50 rounded-md hover:bg-primary/5 hover:border-primary transition-colors duration-150">
                             <i class="fa-solid fa-plus text-[13px]"></i>
                             <span>Add New Address</span>
                         </button>
@@ -190,7 +188,7 @@
         </form>
     </div>
 
-    <div id="add-billing-address-modal" tabindex="-1" aria-hidden="true"
+    <div id="addBillingAddressModalOld" tabindex="-1" aria-hidden="true"
         class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
         <div class="relative p-4 w-full max-w-md max-h-full">
             <!-- Modal content -->
@@ -200,7 +198,7 @@
                     <h3 class="text-lg font-semibold mb-4">Add New Address</h3>
                     <button type="button"
                         class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center "
-                        data-modal-hide="add-billing-address-modal">
+                        data-modal-hide="addBillingAddressModal">
                         <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                             viewBox="0 0 14 14">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -373,6 +371,92 @@
 
 @endsection
 
+<div
+      id="addBillingAddressModal"
+      class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm"
+    >
+      <!-- Modal Box -->
+      <div
+        class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden transform transition-all"
+      >
+        <!-- Header -->
+        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+          <h3 class="text-xl font-bold text-gray-800">Add New Address</h3>
+          <button
+            onclick="toggleModal('infoModal')"
+            class="text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Body -->
+        <div class="p-6">
+          <form id="addAddressForm" method="POST" action="{{ route('billing_addresses.store') }}">
+                        @csrf
+                        <div class="space-y-3">
+                            <input type="text" name="customer_name" placeholder="Full Name"
+                                class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
+                            <input type="text" name="customer_phone" placeholder="Phone Number"
+                                class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
+                            <select name="division_id" id="division_id"
+                                class="division-select w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
+                                <option value="">Select Division</option>
+                                @foreach ($divisions as $division)
+                                    <option value="{{ $division->id }}">{{ $division->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+
+                            <select name="district_id" id="district_id"
+                                class="district-select w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
+                                <option value="">Select District</option>
+                            </select>
+
+                            <select name="type"
+                                class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
+                                <option value="{{ \App\Enums\AddressType::HOME->value }}">
+                                    {{ \App\Enums\AddressType::HOME->title() }}
+                                </option>
+                                <option value="{{ \App\Enums\AddressType::OFFICE->value }}">
+                                    {{ \App\Enums\AddressType::HOME->title() }}
+                                </option>
+                            </select>
+                            <textarea name="address" placeholder="Address"
+                                class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base"></textarea>
+                            <div class="flex items-start">
+                                <div class="flex items-center h-5">
+                                    <input id="remember" name="is_default" type="checkbox" value="1"
+                                        class="w-4 h-4 border border-gray-300 rounded-sm bg-gray-50 focus:ring-light-yellow focus:border-light-yellow "
+                                        required />
+                                </div>
+                                <label for="remember" class="ms-2 text-sm font-medium text-gray-900">Mark as
+                                    default</label>
+                            </div>
+                        </div>
+                        <div class="flex justify-end gap-2 mt-4">
+                            <button type="button" class="px-3 py-1 bg-gray-300 rounded"
+                                onclick="toggleModal('addBillingAddressModal')">Cancel</button>
+                            <button type="submit" class="px-3 py-1 bg-primary-500 text-white rounded">Save</button>
+                        </div>
+                    </form>
+        </div>
+      </div>
+    </div>
+
 @if (isset($oldDesign))
     <main class="cart-details-page pb-5 sm:pb-10">
         <!-- Checkout Main Section Starts -->
@@ -386,8 +470,8 @@
                             <!-- Title & Add Button in Same Row -->
                             <div class="flex items-center justify-between">
                                 <h2 class="sm:text-lg font-semibold">Billing Information</h2>
-                                <button data-modal-target="add-billing-address-modal" type="button"
-                                    data-modal-toggle="add-billing-address-modal"
+                                <button data-modal-target="addBillingAddressModal" type="button"
+                                    data-modal-toggle="addBillingAddressModal"
                                     class="text-white bg-primary-500 hover:bg-primary-500/90 focus:ring-4 focus:outline-none focus:ring-primary/70 font-medium rounded-lg text-sm px-4 py-2">
                                     + Add Billing Address
                                 </button>
@@ -581,7 +665,7 @@
             </form>
 
             <!-- Add Billing Address Modal modal -->
-            <div id="add-billing-address-modal" tabindex="-1" aria-hidden="true"
+            <div id="addBillingAddressModal" tabindex="-1" aria-hidden="true"
                 class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
                 <div class="relative p-4 w-full max-w-md max-h-full">
                     <!-- Modal content -->
@@ -591,7 +675,7 @@
                             <h3 class="text-lg font-semibold mb-4">Add New Address</h3>
                             <button type="button"
                                 class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center "
-                                data-modal-hide="add-billing-address-modal">
+                                data-modal-hide="addBillingAddressModal">
                                 <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                     fill="none" viewBox="0 0 14 14">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
