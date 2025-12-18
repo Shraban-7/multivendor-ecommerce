@@ -18,7 +18,10 @@ class SellerController extends Controller
 {
     public function index()
     {
-        $sellers = Seller::orderBy('name')->paginate(30);
+        $sellers = Seller::orderBy('name')
+            ->with('division', 'district', 'banner_images')
+            ->withCount('products')
+            ->simplePaginate(100);
 
         return view('frontend.shops.index', compact('sellers'));
     }
