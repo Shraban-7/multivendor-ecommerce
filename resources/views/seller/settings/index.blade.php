@@ -51,14 +51,12 @@
 
                     </div>
 
-                    <hr>
+                    {{-- <hr>
 
                     <div class="row">
                         <div class="col-12">
                             <label class="form-label">Banner Images</label>
                             <input type="file" id="files" class="form-control mb-3" name="banner" accept="image/*">
-
-                            {{-- Existing Banner Images --}}
                             <div class="row" id="banner-images">
                                 @foreach ($seller->banner_images as $banner)
                                     <div class="col-md-3 mb-3 banner-item" id="banner-{{ $banner->id }}">
@@ -75,10 +73,9 @@
                                 @endforeach
                             </div>
 
-                            {{-- Preview newly selected files --}}
                             <div class="row mt-3" id="new-banners"></div>
                         </div>
-                    </div>
+                    </div> --}}
 
                     <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
                 </form>
