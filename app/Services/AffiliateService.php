@@ -67,8 +67,10 @@ class AffiliateService
     {
         $affiliate = AffiliateCommission::where('order_id', $order->id)->first();
 
-        $affiliate->status = AffiliateCommission::APPROVED;
-
-        $affiliate->save();
+        if ($affiliate) {
+            $affiliate->status = AffiliateCommission::APPROVED;
+    
+            $affiliate->save();
+        }
     }
 }

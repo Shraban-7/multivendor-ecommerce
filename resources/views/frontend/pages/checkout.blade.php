@@ -25,7 +25,8 @@
                             Billing Information
                         </h2>
 
-                        <button type="button" onclick="toggleModal('addBillingAddressModal')" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-sm font-medium text-primary border border-primary/50 rounded-md hover:bg-primary/5 hover:border-primary transition-colors duration-150">
+                        <button type="button" onclick="toggleModal('addBillingAddressModal')"
+                            class="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-sm font-medium text-primary border border-primary/50 rounded-md hover:bg-primary/5 hover:border-primary transition-colors duration-150">
                             <i class="fa-solid fa-plus text-[13px]"></i>
                             <span>Add New Address</span>
                         </button>
@@ -50,10 +51,9 @@
                                                 </span>
                                             </span>
 
-                                            <button type="button"
-                                                data-modal-target="edit-address-modal-{{ $address->id }}"
-                                                data-modal-toggle="edit-address-modal-{{ $address->id }}"
-                                                class="text-gray-400 hover:text-primary transition" title="Edit address">
+                                            <button type="button" class="text-gray-400 hover:text-primary transition"
+                                                onclick="toggleModal('editBillingAddressModal-{{ $address->id }}')"
+                                                title="Edit address">
                                                 <i class="fa-solid fa-pen text-[13px]"></i>
                                             </button>
                                         </div>
@@ -102,7 +102,7 @@
 
                     <div class="flex justify-between items-center text-base font-semibold mb-2">
                         <span>Total</span>
-                        <span class="text-lg text-primary">{{ money($total+ $shipping_fee) }}</span>
+                        <span class="text-lg text-primary">{{ money($total + $shipping_fee) }}</span>
                     </div>
 
                     <!-- Payment Method -->
@@ -188,169 +188,85 @@
         </form>
     </div>
 
-    <div id="addBillingAddressModalOld" tabindex="-1" aria-hidden="true"
-        class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-        <div class="relative p-4 w-full max-w-md max-h-full">
-            <!-- Modal content -->
-            <div class="relative bg-white rounded-lg shadow-sm ">
-                <!-- Modal header -->
-                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t  border-gray-200">
-                    <h3 class="text-lg font-semibold mb-4">Add New Address</h3>
-                    <button type="button"
-                        class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center "
-                        data-modal-hide="addBillingAddressModal">
-                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                            viewBox="0 0 14 14">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+
+
+    @foreach ($billingAddresses as $address)
+        <div id="editBillingAddressModal-{{ $address->id }}"
+            class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm">
+            <!-- Modal Box -->
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden transform transition-all">
+                <!-- Header -->
+                <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+                    <h3 class="text-xl font-bold text-gray-800">Add New Address</h3>
+                    <button onclick="toggleModal('editBillingAddressModal-{{ $address->id }}')"
+                        class="text-gray-400 hover:text-gray-600 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
                         </svg>
-                        <span class="sr-only">Close modal</span>
                     </button>
                 </div>
-                <!--Add Billing Address Modal -->
-                <div class="p-4 md:p-5">
-                    <form id="addAddressForm" method="POST" action="{{ route('billing_addresses.store') }}">
+
+                <!-- Body -->
+                <div class="p-6">
+                    <form id="addAddressForm" method="POST" action="{{ route('billing_addresses.update',$address->id) }}">
                         @csrf
                         <div class="space-y-3">
-                            <input type="text" name="customer_name" placeholder="Full Name"
+                            <input type="text" name="customer_name" value="{{ $address->customer_name }}"
                                 class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
-                            <input type="text" name="customer_phone" placeholder="Phone Number"
+                            <input type="text" name="customer_phone" value="{{ $address->customer_phone }}"
                                 class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
-                            <select name="division_id" id="division_id"
-                                class="division-select w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
+                            <select name="division_id" id="division_id_{{ $address->id }}"
+                                class="division-select w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base"
+                                data-address-id="{{ $address->id }}">
                                 <option value="">Select Division</option>
                                 @foreach ($divisions as $division)
-                                    <option value="{{ $division->id }}">{{ $division->name }}
+                                    <option value="{{ $division->id }}"
+                                        {{ old('division_id.' . $address->id, $address->division_id) == $division->id ? 'selected' : '' }}>
+                                        {{ $division->name }}
                                     </option>
                                 @endforeach
                             </select>
 
-                            <select name="district_id" id="district_id"
+                            <select name="district_id" id="district_id_{{ $address->id }}"
                                 class="district-select w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
                                 <option value="">Select District</option>
                             </select>
 
                             <select name="type"
                                 class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
-                                <option value="{{ \App\Enums\AddressType::HOME->value }}">
+                                <option value="{{ \App\Enums\AddressType::HOME->value }}"
+                                    {{ old('type', $address->type) == \App\Enums\AddressType::HOME->value ? 'selected' : '' }}>
                                     {{ \App\Enums\AddressType::HOME->title() }}
                                 </option>
-                                <option value="{{ \App\Enums\AddressType::OFFICE->value }}">
-                                    {{ \App\Enums\AddressType::HOME->title() }}
+                                <option value="{{ \App\Enums\AddressType::OFFICE->value }}"
+                                    {{ old('type', $address->type) == \App\Enums\AddressType::OFFICE->value ? 'selected' : '' }}>
+                                    {{ \App\Enums\AddressType::OFFICE->title() }}
                                 </option>
                             </select>
+
                             <textarea name="address" placeholder="Address"
-                                class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base"></textarea>
+                                class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">{{ old('address', $address->address) }}</textarea>
+
                             <div class="flex items-start">
                                 <div class="flex items-center h-5">
-                                    <input id="remember" name="is_default" type="checkbox" value="1"
-                                        class="w-4 h-4 border border-gray-300 rounded-sm bg-gray-50 focus:ring-light-yellow focus:border-light-yellow "
-                                        required />
+                                    <input id="is_default_{{ $address->id }}" name="is_default" type="checkbox"
+                                        value="1"
+                                        class="w-4 h-4 border border-gray-300 rounded-sm bg-gray-50 focus:ring-light-yellow focus:border-light-yellow"
+                                        {{ old('is_default', $address->is_default) ? 'checked' : '' }} />
                                 </div>
-                                <label for="remember" class="ms-2 text-sm font-medium text-gray-900">Mark as
-                                    default</label>
+                                <label for="is_default_{{ $address->id }}"
+                                    class="ms-2 text-sm font-medium text-gray-900">Mark as default</label>
                             </div>
+
                         </div>
                         <div class="flex justify-end gap-2 mt-4">
                             <button type="button" class="px-3 py-1 bg-gray-300 rounded"
-                                data-modal-hide="addAddressModal">Cancel</button>
+                                onclick="toggleModal('editBillingAddressModal-{{ $address->id }}')">Cancel</button>
                             <button type="submit" class="px-3 py-1 bg-primary-500 text-white rounded">Save</button>
                         </div>
                     </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    @foreach ($billingAddresses as $address)
-        <div id="edit-address-modal-{{ $address->id }}" tabindex="-1" aria-hidden="true"
-            class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-            <div class="relative p-4 w-full max-w-md max-h-full">
-                <!-- Modal content -->
-                <div class="relative bg-white rounded-lg shadow-sm">
-                    <!-- Modal header -->
-                    <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-200">
-                        <h3 class="text-lg font-semibold mb-4">Edit Address</h3>
-                        <button type="button"
-                            class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
-                            data-modal-hide="edit-address-modal-{{ $address->id }}">
-                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                viewBox="0 0 14 14">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                            </svg>
-                            <span class="sr-only">Close modal</span>
-                        </button>
-                    </div>
-
-                    <!-- Edit Billing Address Modal -->
-                    <div class="p-4 md:p-5">
-                        <form id="editAddressForm-{{ $address->id }}" method="POST"
-                            action="{{ route('billing_addresses.update', $address->id) }}">
-                            @csrf
-
-
-                            <div class="space-y-3">
-                                <input type="text" name="customer_name" placeholder="Full Name"
-                                    value="{{ old('customer_name', $address->customer_name) }}"
-                                    class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
-
-                                <input type="text" name="customer_phone" placeholder="Phone Number"
-                                    value="{{ old('customer_phone', $address->customer_phone) }}"
-                                    class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
-
-                                <select name="division_id" id="division_id_{{ $address->id }}"
-                                    class="division-select w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base"
-                                    data-address-id="{{ $address->id }}">
-                                    <option value="">Select Division</option>
-                                    @foreach ($divisions as $division)
-                                        <option value="{{ $division->id }}"
-                                            {{ old('division_id.' . $address->id, $address->division_id) == $division->id ? 'selected' : '' }}>
-                                            {{ $division->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-
-                                <select name="district_id" id="district_id_{{ $address->id }}"
-                                    class="district-select w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
-                                    <option value="">Select District</option>
-                                    <!-- JS will populate -->
-                                </select>
-
-                                <select name="type"
-                                    class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
-                                    <option value="{{ \App\Enums\AddressType::HOME->value }}"
-                                        {{ old('type', $address->type) == \App\Enums\AddressType::HOME->value ? 'selected' : '' }}>
-                                        {{ \App\Enums\AddressType::HOME->title() }}
-                                    </option>
-                                    <option value="{{ \App\Enums\AddressType::OFFICE->value }}"
-                                        {{ old('type', $address->type) == \App\Enums\AddressType::OFFICE->value ? 'selected' : '' }}>
-                                        {{ \App\Enums\AddressType::OFFICE->title() }}
-                                    </option>
-                                </select>
-
-                                <textarea name="address" placeholder="Address"
-                                    class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">{{ old('address', $address->address) }}</textarea>
-
-                                <div class="flex items-start">
-                                    <div class="flex items-center h-5">
-                                        <input id="is_default_{{ $address->id }}" name="is_default" type="checkbox"
-                                            value="1"
-                                            class="w-4 h-4 border border-gray-300 rounded-sm bg-gray-50 focus:ring-light-yellow focus:border-light-yellow"
-                                            {{ old('is_default', $address->is_default) ? 'checked' : '' }} />
-                                    </div>
-                                    <label for="is_default_{{ $address->id }}"
-                                        class="ms-2 text-sm font-medium text-gray-900">Mark as default</label>
-                                </div>
-                            </div>
-
-                            <div class="flex justify-end gap-2 mt-4">
-                                <button type="button" class="px-3 py-1 bg-gray-300 rounded"
-                                    data-modal-hide="edit-address-modal-{{ $address->id }}">Cancel</button>
-                                <button type="submit" class="px-3 py-1 bg-primary-500 text-white rounded">Save</button>
-                            </div>
-                        </form>
-                    </div>
                 </div>
             </div>
         </div>
@@ -369,93 +285,77 @@
             ->toArray();
     @endphp
 
+    <div id="addBillingAddressModal"
+        class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm">
+        <!-- Modal Box -->
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden transform transition-all">
+            <!-- Header -->
+            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+                <h3 class="text-xl font-bold text-gray-800">Add New Address</h3>
+                <button onclick="toggleModal('addBillingAddressModal')"
+                    class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Body -->
+            <div class="p-6">
+                <form id="addAddressForm" method="POST" action="{{ route('billing_addresses.store') }}">
+                    @csrf
+                    <div class="space-y-3">
+                        <input type="text" name="customer_name" placeholder="Full Name"
+                            class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
+                        <input type="text" name="customer_phone" placeholder="Phone Number"
+                            class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
+                        <select name="division_id" id="division_id"
+                            class="division-select w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
+                            <option value="">Select Division</option>
+                            @foreach ($divisions as $division)
+                                <option value="{{ $division->id }}">{{ $division->name }}
+                                </option>
+                            @endforeach
+                        </select>
+
+                        <select name="district_id" id="district_id"
+                            class="district-select w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
+                            <option value="">Select District</option>
+                        </select>
+
+                        <select name="type"
+                            class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
+                            <option value="{{ \App\Enums\AddressType::HOME->value }}">
+                                {{ \App\Enums\AddressType::HOME->title() }}
+                            </option>
+                            <option value="{{ \App\Enums\AddressType::OFFICE->value }}">
+                                {{ \App\Enums\AddressType::HOME->title() }}
+                            </option>
+                        </select>
+                        <textarea name="address" placeholder="Address"
+                            class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base"></textarea>
+                        <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                                <input id="remember" name="is_default" type="checkbox" value="1"
+                                    class="w-4 h-4 border border-gray-300 rounded-sm bg-gray-50 focus:ring-light-yellow focus:border-light-yellow "
+                                    required />
+                            </div>
+                            <label for="remember" class="ms-2 text-sm font-medium text-gray-900">Mark as
+                                default</label>
+                        </div>
+                    </div>
+                    <div class="flex justify-end gap-2 mt-4">
+                        <button type="button" class="px-3 py-1 bg-gray-300 rounded"
+                            onclick="toggleModal('addBillingAddressModal')">Cancel</button>
+                        <button type="submit" class="px-3 py-1 bg-primary-500 text-white rounded">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 
-<div
-      id="addBillingAddressModal"
-      class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm"
-    >
-      <!-- Modal Box -->
-      <div
-        class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden transform transition-all"
-      >
-        <!-- Header -->
-        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
-          <h3 class="text-xl font-bold text-gray-800">Add New Address</h3>
-          <button
-            onclick="toggleModal('infoModal')"
-            class="text-gray-400 hover:text-gray-600 transition-colors"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-        </div>
-
-        <!-- Body -->
-        <div class="p-6">
-          <form id="addAddressForm" method="POST" action="{{ route('billing_addresses.store') }}">
-                        @csrf
-                        <div class="space-y-3">
-                            <input type="text" name="customer_name" placeholder="Full Name"
-                                class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
-                            <input type="text" name="customer_phone" placeholder="Phone Number"
-                                class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
-                            <select name="division_id" id="division_id"
-                                class="division-select w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
-                                <option value="">Select Division</option>
-                                @foreach ($divisions as $division)
-                                    <option value="{{ $division->id }}">{{ $division->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-
-                            <select name="district_id" id="district_id"
-                                class="district-select w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
-                                <option value="">Select District</option>
-                            </select>
-
-                            <select name="type"
-                                class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base">
-                                <option value="{{ \App\Enums\AddressType::HOME->value }}">
-                                    {{ \App\Enums\AddressType::HOME->title() }}
-                                </option>
-                                <option value="{{ \App\Enums\AddressType::OFFICE->value }}">
-                                    {{ \App\Enums\AddressType::HOME->title() }}
-                                </option>
-                            </select>
-                            <textarea name="address" placeholder="Address"
-                                class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base"></textarea>
-                            <div class="flex items-start">
-                                <div class="flex items-center h-5">
-                                    <input id="remember" name="is_default" type="checkbox" value="1"
-                                        class="w-4 h-4 border border-gray-300 rounded-sm bg-gray-50 focus:ring-light-yellow focus:border-light-yellow "
-                                        required />
-                                </div>
-                                <label for="remember" class="ms-2 text-sm font-medium text-gray-900">Mark as
-                                    default</label>
-                            </div>
-                        </div>
-                        <div class="flex justify-end gap-2 mt-4">
-                            <button type="button" class="px-3 py-1 bg-gray-300 rounded"
-                                onclick="toggleModal('addBillingAddressModal')">Cancel</button>
-                            <button type="submit" class="px-3 py-1 bg-primary-500 text-white rounded">Save</button>
-                        </div>
-                    </form>
-        </div>
-      </div>
-    </div>
 
 @if (isset($oldDesign))
     <main class="cart-details-page pb-5 sm:pb-10">
@@ -611,8 +511,7 @@
                             <div
                                 class="flex justify-between pt-3 mt-6 font-medium border-t-2 border-dashed total border-jet-gray/50">
                                 <span>Estimated Total</span>
-                                <span id="estimatedTotal"
-                                    class="text-xl">{{ money($total + $shipping_fee) }}</span>
+                                <span id="estimatedTotal" class="text-xl">{{ money($total + $shipping_fee) }}</span>
                             </div>
                         </div>
 
