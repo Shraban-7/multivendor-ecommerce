@@ -82,7 +82,7 @@
             </div>
             <div class="bg-gray-50 px-4 py-3 border-t text-xs text-gray-500 flex justify-between items-center group-hover:bg-primary-50 transition">
                 <span class="flex items-center gap-1">
-                    <i class="fa-solid fa-box"></i> {{ $seller->products_count }}+
+                    <i class="fa-solid fa-box"></i> {{ $seller->products_count }}+ Products
                 </span>
 
                 <a href="{{ route('sellers.shop', $seller->username) }}"
