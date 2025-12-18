@@ -377,9 +377,7 @@ $isDashboard = View::hasSection('dashboard');
                                 addToCartRequest();
                             } else if (xhr.status === 401) {
                                 toastr.warning(xhr.responseJSON.error);
-                                setTimeout(() => {
-                                    window.location.href = "{{ route('home') }}";
-                                }, 1000);
+                                auth.toggleModal(true);
                             } else if (xhr.status === 403) {
                                 toastr.warning(xhr.responseJSON.error);
                             } else {
