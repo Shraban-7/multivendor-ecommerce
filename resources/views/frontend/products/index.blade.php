@@ -22,10 +22,6 @@
             background: #f97316;
         }
 
-        .hidden-custom {
-            display: none !important;
-        }
-
         /* Custom Range Slider Styling */
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none;
@@ -128,7 +124,7 @@
             <aside id="sidebar" class="hidden lg:block lg:w-64 shrink-0 transition-all duration-300 z-30">
 
                 <!-- Overlay for Mobile -->
-                <div id="sidebarOverlay" class="fixed inset-0 bg-black/50 lg:hidden hidden-custom"></div>
+                <div id="sidebarOverlay" class="fixed inset-0 bg-black/50 lg:hidden hidden"></div>
 
                 <!-- Sidebar Content -->
                 <div id="sidebarContent"
@@ -508,7 +504,7 @@
                 if (show) {
                     sidebar.classList.remove('hidden');
                     sidebar.classList.add('fixed', 'inset-0', 'flex', 'z-50'); // Add z-50 here for mobile
-                    sidebarOverlay.classList.remove('hidden-custom');
+                    sidebarOverlay.classList.remove('hidden');
 
                     sidebarContent.classList.remove('sticky', 'top-24');
                     sidebarContent.classList.add('relative', 'w-80', 'max-w-[80%]', 'h-full', 'bg-white',
@@ -516,7 +512,7 @@
                 } else {
                     sidebar.classList.add('hidden');
                     sidebar.classList.remove('fixed', 'inset-0', 'flex', 'z-50'); // Remove z-50
-                    sidebarOverlay.classList.add('hidden-custom');
+                    sidebarOverlay.classList.add('hidden');
 
                     sidebarContent.classList.add('sticky', 'top-24');
                     sidebarContent.classList.remove('relative', 'w-80', 'max-w-[80%]', 'h-full', 'bg-white',
@@ -559,7 +555,7 @@
                             "product-image-container h-48 w-full border-b border-gray-50 relative bg-white p-4 flex items-center justify-center overflow-hidden";
                         // Actions hover
                         const hoverActions = card.querySelector('.grid-hover-actions');
-                        if (hoverActions) hoverActions.classList.remove('hidden-custom');
+                        if (hoverActions) hoverActions.classList.remove('hidden');
                         // Desc toggle
                         const desc = card.querySelector('.list-view-desc');
                         if (desc) desc.classList.add('hidden');
@@ -591,7 +587,7 @@
                             "product-image-container list-view-image relative bg-white p-4 flex items-center justify-center overflow-hidden";
                         // Actions hover (hide in list view)
                         const hoverActions = card.querySelector('.grid-hover-actions');
-                        if (hoverActions) hoverActions.classList.add('hidden-custom');
+                        if (hoverActions) hoverActions.classList.add('hidden');
                         // Desc toggle
                         const desc = card.querySelector('.list-view-desc');
                         if (desc) desc.classList.remove('hidden', 'sm:block'); // Ensure it shows
@@ -614,11 +610,11 @@
 
             function toggleQuickView(show) {
                 if (show) {
-                    quickViewModal.classList.remove('hidden-custom');
+                    quickViewModal.classList.remove('hidden');
                     setTimeout(() => quickViewModal.style.opacity = '1', 10);
                 } else {
                     quickViewModal.style.opacity = '0';
-                    setTimeout(() => quickViewModal.classList.add('hidden-custom'), 300);
+                    setTimeout(() => quickViewModal.classList.add('hidden'), 300);
                 }
             }
 
@@ -647,13 +643,13 @@
 
             window.addEventListener('scroll', () => {
                 if (window.scrollY > 100) {
-                    backToTopBtn.classList.remove('hidden-custom');
+                    backToTopBtn.classList.remove('hidden');
                     setTimeout(() => {
                         backToTopBtn.classList.remove('opacity-0', 'translate-y-10');
                     }, 10);
                 } else {
                     backToTopBtn.classList.add('opacity-0', 'translate-y-10');
-                    setTimeout(() => backToTopBtn.classList.add('hidden-custom'), 300);
+                    setTimeout(() => backToTopBtn.classList.add('hidden'), 300);
                 }
             });
 

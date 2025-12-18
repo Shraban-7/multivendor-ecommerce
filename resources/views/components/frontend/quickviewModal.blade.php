@@ -1,5 +1,5 @@
 <div id="quickViewModalMain"
-    class="hidden-custom fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity duration-300">
+    class="hidden fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity duration-300">
     <!-- Modal Overlay Click Handler attached in JS -->
     <div id="quickViewContent"
         class="bg-white rounded-2xl w-[95%] max-w-4xl overflow-hidden shadow-2xl flex flex-col md:flex-row max-h-[90vh]">
@@ -79,7 +79,7 @@
 </div>
 
 <div id="quickViewModal"
-    class="hidden-custom fixed inset-0 z-[60] flex items-center justify-center 
+    class="hidden fixed inset-0 z-[60] flex items-center justify-center 
             bg-black/60 backdrop-blur-sm transition-opacity duration-300 opacity-0">
 
     <!-- Modal Box -->

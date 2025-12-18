@@ -66,11 +66,6 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
-
-        /* Utility for hiding elements with JS */
-        .hidden-custom {
-            display: none !important;
-        }
     </style>
 
     @stack('header')
@@ -126,11 +121,30 @@ $isDashboard = View::hasSection('dashboard');
     @include('frontend.layouts.mobile-nav')
 
     <button id="backToTop"
-        class="hidden-custom fixed bottom-20 md:bottom-8 right-4 md:right-8 bg-primary-600 text-white w-10 h-10 md:w-12 md:h-12 rounded-full shadow-lg flex items-center justify-center hover:bg-primary-700 transition z-40 opacity-0 translate-y-10 transition-all duration-300">
+        class="hidden fixed bottom-20 md:bottom-8 right-4 md:right-8 bg-primary-600 text-white w-10 h-10 md:w-12 md:h-12 rounded-full shadow-lg flex items-center justify-center hover:bg-primary-700 transition z-40 opacity-0 translate-y-10 transition-all duration-300">
         <i class="fas fa-arrow-up"></i>
     </button>
 
     <x-auth-modal />
+
+    <script>
+        window.toggleModal = function (modalId) {
+            const modal = document.getElementById(modalId);
+            if (!modal) return;
+
+            const isHidden = modal.classList.contains("hidden");
+
+            if (isHidden) {            
+                modal.classList.remove("hidden");
+                modal.classList.add("flex");
+                document.body.style.overflow = "hidden";
+            } else {
+                modal.classList.add("hidden");
+                modal.classList.remove("flex");
+                document.body.style.overflow = "auto";
+            }
+        };
+    </script>
 
     <script src="{{ asset('assets/libs/toastr/js/toastr.min.js') }}"></script>
     <script>
@@ -142,12 +156,12 @@ $isDashboard = View::hasSection('dashboard');
 
             function toggleQuickView(show) {
                 if (show) {
-                    quickViewModal.classList.remove('hidden-custom');
+                    quickViewModal.classList.remove('hidden');
                     // Small delay to allow display:block to apply before changing opacity for transition
                     setTimeout(() => quickViewModal.style.opacity = '1', 10);
                 } else {
                     quickViewModal.style.opacity = '0';
-                    setTimeout(() => quickViewModal.classList.add('hidden-custom'), 300);
+                    setTimeout(() => quickViewModal.classList.add('hidden'), 300);
                 }
             }
 
@@ -215,14 +229,14 @@ $isDashboard = View::hasSection('dashboard');
 
             window.addEventListener('scroll', () => {
                 if (window.scrollY > 100) {
-                    backToTopBtn.classList.remove('hidden-custom');
+                    backToTopBtn.classList.remove('hidden');
                     setTimeout(() => {
                         backToTopBtn.classList.remove('opacity-0', 'translate-y-10');
                     }, 10);
                 } else {
                     backToTopBtn.classList.add('opacity-0', 'translate-y-10');
                     // Wait for transition to finish before hiding
-                    setTimeout(() => backToTopBtn.classList.add('hidden-custom'), 300);
+                    setTimeout(() => backToTopBtn.classList.add('hidden'), 300);
                 }
             });
 

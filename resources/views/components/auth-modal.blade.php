@@ -1,4 +1,4 @@
-<div id="authModal" class="hidden-custom fixed inset-0 z-[70] flex items-center justify-center transition-all duration-300 opacity-0">
+<div id="authModal" class="hidden fixed inset-0 z-[70] flex items-center justify-center transition-all duration-300 opacity-0">
     <div id="authOverlay" class="absolute inset-0 bg-gray-900/60 backdrop-blur-md transition-opacity duration-300"></div>
 
     <div class="relative bg-white w-[95%] max-w-[480px] rounded-2xl shadow-2xl overflow-hidden transform transition-all duration-300 scale-95 translate-y-4" id="authBox">
@@ -63,7 +63,7 @@
                 </div>
             </div>
 
-            <div id="step-otp" class="step-content hidden-custom transition-opacity duration-300">
+            <div id="step-otp" class="step-content hidden transition-opacity duration-300">
                 <div class="flex items-center gap-2 mb-2 cursor-pointer text-gray-400 hover:text-gray-800 transition w-fit" onclick="auth.goToStep('phone')">
                     <i class="fas fa-arrow-left text-xs"></i> <span class="text-xs font-medium">Change Number</span>
                 </div>
@@ -91,7 +91,7 @@
                 </div>
             </div>
 
-            <div id="step-password" class="step-content hidden-custom transition-opacity duration-300">
+            <div id="step-password" class="step-content hidden transition-opacity duration-300">
                 <div class="flex items-center gap-2 mb-4">
                     <div class="w-12 h-12 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center text-xl font-bold border border-primary-100">
                         <i class="fas fa-user-check"></i>
@@ -122,7 +122,7 @@
                 </div>
             </div>
 
-            <div id="step-name" class="step-content hidden-custom transition-opacity duration-300">
+            <div id="step-name" class="step-content hidden transition-opacity duration-300">
                 <h3 class="text-xl font-bold text-gray-900 mb-2">Create Account</h3>
                 <p class="text-sm text-gray-500 mb-6">Looks like you're new here! Let's get you set up.</p>
 
@@ -215,13 +215,13 @@
         goToStep(stepId) {
             // Hide all steps
             this.steps.forEach(id => {
-                document.getElementById(id).classList.add('hidden-custom');
+                document.getElementById(id).classList.add('hidden');
                 document.getElementById(id).classList.add('opacity-0');
             });
 
             // Show target step
             const target = document.getElementById(stepId === 'phone' ? 'step-phone' : stepId);
-            target.classList.remove('hidden-custom');
+            target.classList.remove('hidden');
 
             // Small delay for fade-in effect
             setTimeout(() => {
@@ -237,7 +237,7 @@
                 this.inputPhone.value = '';
                 this.validatePhone('');
 
-                this.modal.classList.remove('hidden-custom');
+                this.modal.classList.remove('hidden');
                 // Animation delay
                 setTimeout(() => {
                     this.modal.classList.remove('opacity-0');
@@ -249,7 +249,7 @@
                 this.content.classList.add('scale-95', 'translate-y-4');
                 this.content.classList.remove('scale-100', 'translate-y-0');
                 setTimeout(() => {
-                    this.modal.classList.add('hidden-custom');
+                    this.modal.classList.add('hidden');
                 }, 300);
             }
         },
