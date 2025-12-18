@@ -18,7 +18,7 @@ class SellerController extends Controller
 {
     public function index()
     {
-        $sellers = Seller::orderBy('name')->paginate(25);
+        $sellers = Seller::orderBy('name')->paginate(30);
 
         return view('frontend.shops.index', compact('sellers'));
     }
@@ -53,7 +53,6 @@ class SellerController extends Controller
             'total_followers' => $seller->total_followers,
         ], 'Followed Successfully');
     }
-
 
     public function shop($username, Request $request)
     {

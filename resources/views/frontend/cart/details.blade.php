@@ -45,7 +45,6 @@
                                                         <i class="fas fa-check text-white"></i>
                                                     </div>
                                                 </div>
-
                                             </label>
                                             <div>
                                                 <p class="font-medium text-gray-900">{{ $sellerName }}</p>
