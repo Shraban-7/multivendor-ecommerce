@@ -39,11 +39,16 @@
                         </div>
                     </div>
 
-                    <div class="d-flex mb-3">
-                        <div>
+                    <div class="row">
+                        <div class="col-md-6">
                             <label class="form-label">Business Logo</label>
                             <x-image-input name="business_logo" :image="storage_url($seller->business_logo)" />
                         </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Cover Photo</label>
+                            <x-image-input name="cover_image" :image="storage_url($seller->cover_image)" />
+                        </div>
+
                     </div>
 
                     <hr>
@@ -92,7 +97,7 @@
 
 
             $fileInput.on("change", function() {
-                const file = this.files[0]; 
+                const file = this.files[0];
 
                 if (!file) return;
 

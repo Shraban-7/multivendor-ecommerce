@@ -29,6 +29,7 @@ class SettingController extends Controller
             'business_email' => 'required|string|email|max:255|unique:sellers,business_email,' . $seller->id,
             'business_address' => 'required|string|max:1000',
             'shipping_cost' => 'nullable|numeric',
+            'cover_image' => 'nullable|mimes:jpg,png,webp,svg,jpeg,avif,gif|max:4096',
             'banner' => 'nullable|mimes:jpg,png,webp,svg,jpeg,avif,gif|max:4096'
         ]);
 
@@ -43,19 +44,35 @@ class SettingController extends Controller
             $data['business_logo'] = $seller->business_logo;
         }
 
+        if ($request->hasFile('cover_image')) {
+            if (!empty($seller->cover_image)) {
+                delete_file($seller->cover_image);
+            }
+            $data['cover_image'] = upload_file($request->file('cover_image'), "images/{$username}/cover_image");
+        } else {
+            $data['cover_image'] = $seller->cover_image;
+        }
+
         $seller->update($data);
 
-        $exist_banner = SellerBannerImage::where('seller_id',$seller->id)->first();
+        $existBanner = SellerBannerImage::where('seller_id', $seller->id)->first();
 
-        if ($data['banner']) {
-            if ($exist_banner) {
-                delete_file($exist_banner);
+        if ($request->hasFile('banner')) {
+
+            if ($existBanner && !empty($existBanner->image)) {
+                delete_file($existBanner->image);
+                $existBanner->delete();
             }
+
             SellerBannerImage::create([
                 'seller_id' => $seller->id,
-                'image' => upload_file($data['banner'], "images/{$username}/banners"),
+                'image' => upload_file(
+                    $request->file('banner'),
+                    "images/{$username}/banners"
+                ),
             ]);
         }
+
 
         return redirect()->route('seller.settings.index')->with('success', 'Settings updated successfully');
     }

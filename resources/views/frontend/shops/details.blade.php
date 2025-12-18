@@ -136,8 +136,8 @@ class="w-full h-full object-cover">
         <div class="bg-white shadow-sm border-b border-gray-200">
             {{-- Banner Image --}}
             <div class="relative w-full h-48 md:h-64 bg-gray-300 overflow-hidden group">
-                @if ($seller->banner_images->isNotEmpty())
-                    <img src="{{ storage_url($seller->banner_images->first()->image) }}" alt="Banner"
+                @if ($seller->cover_image)
+                    <img src="{{ storage_url($seller->cover_image) }}" alt="{{ $seller->name }} Banner"
                         class="w-full h-full object-cover">
                 @else
                     <div class="w-full h-full bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center">
