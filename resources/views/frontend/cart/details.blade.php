@@ -41,8 +41,8 @@
 
                                                     <div
                                                         class="w-6 h-6 flex items-center justify-center border-2 border-gray-300 rounded-md
-                                                     peer-checked:bg-primary-500 peer-checked:border-primary-500 transition-colors">
-                                                        <i class="fas fa-check text-white hidden peer-checked:block"></i>
+                                                     peer-checked:bg-primary-500  border-primary-500 transition-colors">
+                                                        <i class="fas fa-check text-white"></i>
                                                     </div>
                                                 </div>
 
