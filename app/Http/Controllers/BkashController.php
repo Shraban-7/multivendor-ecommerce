@@ -70,3 +70,25 @@ class BkashController extends Controller
         }
     }
 }
+
+//callback response:
+// {
+//     "message": "Payment Successful",
+//         "data": {
+//         "paymentID": "TR0011sqWQFWJ1766387377575",
+//         "trxID": "CLM50O2XV5",
+//         "transactionStatus": "Completed",
+//         "amount": "100",
+//         "currency": "BDT",
+//         "intent": "sale",
+//         "paymentExecuteTime": "2025-12-22T13:11:13:321 GMT+0600",
+//         "merchantInvoiceNumber": "SM-6948eeb160276",
+//         "payerType": "Customer",
+//         "payerReference": "SM-6948eeb160276",
+//         "customerMsisdn": "01770618575",
+//         "payerAccount": "01770618575",
+//         "maxRefundableAmount": "100",
+//         "statusCode": "0000",
+//         "statusMessage": "Successful"
+//     }
+// }
