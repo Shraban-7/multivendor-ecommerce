@@ -210,7 +210,8 @@
 
                 <!-- Body -->
                 <div class="p-6">
-                    <form id="addAddressForm" method="POST" action="{{ route('billing_addresses.update',$address->id) }}">
+                    <form id="addAddressForm" method="POST"
+                        action="{{ route('billing_addresses.update', $address->id) }}">
                         @csrf
                         <div class="space-y-3">
                             <input type="text" name="customer_name" value="{{ $address->customer_name }}"

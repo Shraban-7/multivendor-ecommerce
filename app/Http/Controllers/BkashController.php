@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\BkashService;
+use App\Models\Order;
+use App\Models\Seller;
+use App\Models\Payment;
 use Illuminate\Http\Request;
+use App\Services\BkashService;
+use App\Services\AffiliateService;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 
 class BkashController extends Controller
 {
@@ -54,6 +59,41 @@ class BkashController extends Controller
 
                     // TODO: Update your database marking the order as paid
                     // $trxID = $response['trxID'];
+
+                    $invoiceId = $response['merchantInvoiceNumber'];
+
+                    $payment = Payment::where('transaction_id', $invoiceId)->first();
+                    $order = Order::where('invoice_id', $invoiceId)->firstOrFail();
+
+                    $payment->update([
+                        'status' => Payment::SUCCESSFUL,
+                        'gateway_trxid' => $response['trxID'] ?? null,
+                        'response' => json_encode($response),
+                    ]);
+
+                    $due = $order->due;
+                    $paid = $order->paid;
+
+                    if ($due > 0 && $payment->status === Payment::SUCCESSFUL) {
+                        $due = $due - $payment->amount;
+                        $paid = $payment->amount;
+                        $seller = Seller::find($order->seller_id);
+
+                        $balance = $seller->balance + $order->seller_earnings;
+
+                        $seller->update([
+                            'balance' => $balance
+                        ]);
+
+                        app(AffiliateService::class)
+                            ->approveCommission($order);
+                    }
+
+                    $order->update([
+                        'payment_id' => $payment->id,
+                        'due' => $due,
+                        'paid' => $paid,
+                    ]);
 
                     return response()->json([
                         'message' => 'Payment Successful',

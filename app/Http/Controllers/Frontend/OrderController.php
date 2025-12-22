@@ -21,10 +21,12 @@ use App\Enums\CommissionType;
 use App\Models\BillingAddress;
 use App\Models\PaymentGateway;
 use App\Models\ProductVariant;
+use App\Services\BkashService;
 use App\Services\AamarpayService;
 use App\Services\AffiliateService;
 use App\Models\AffiliateCommission;
 use App\Models\OrderBillingAddress;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
@@ -265,8 +267,16 @@ class OrderController extends Controller
                 'message' => 'Order placed successfully',
                 'payment_url' => route('orders.index'),
             ];
-        } else {
-            $paymentGateway = $this->initiatePaymentGateway(
+        } else if ($request->payment == 'aamarpay') {
+            $paymentGateway = $this->initiateAmarpayGateway(
+                $user,
+                $invoiceId,
+                $payableAmount,
+                $orderBillingAddress->customer_name,
+                $orderBillingAddress->customer_phone,
+            );
+        } else if ($request->payment == 'bkash') {
+            $paymentGateway = $this->initiateBkashGateway(
                 $user,
                 $invoiceId,
                 $payableAmount,
@@ -274,6 +284,7 @@ class OrderController extends Controller
                 $orderBillingAddress->customer_phone,
             );
         }
+
 
         // $this->processAffiliateCommissions($order->items, auth()->user(), $order->id);
 
@@ -308,7 +319,7 @@ class OrderController extends Controller
     }
 
 
-    private function initiatePaymentGateway($user, $invoiceId, $amount, $customerName, $customerPhone)
+    private function initiateAmarpayGateway($user, $invoiceId, $amount, $customerName, $customerPhone)
     {
         $payment = Payment::where('transaction_id', $invoiceId)->first();
         $order = Order::where('invoice_id', $invoiceId)->first();
@@ -379,6 +390,71 @@ class OrderController extends Controller
             'message' => $message,
             'payment_url' => $paymentUrl,
         ];
+    }
+
+    private function initiateBkashGateway($user, $invoiceId, $amount, $customerName, $customerPhone)
+    {
+        $payment = Payment::where('transaction_id', $invoiceId)->first();
+        $order = Order::where('invoice_id', $invoiceId)->first();
+
+        if (!$payment) {
+            $payment = Payment::create([
+                'user_id' => $user->id,
+                'gateway' => 'bkash',
+                'transaction_id' => $invoiceId,
+                'status' => Payment::PENDING,
+                'amount' => $amount,
+                'currency' => 'BDT',
+                'customer_name' => $customerName,
+                'customer_email' => $user->email,
+                'customer_phone' => $customerPhone,
+            ]);
+        }
+
+        if ($payment->status === Payment::SUCCESSFUL) {
+            return [
+                'message' => 'Payment already completed.',
+                'payment_url' => null,
+            ];
+        }
+
+        if ($payment->status === Payment::FAILED) {
+            $order->update([
+                'paid' => 0,
+                'due' => $amount,
+            ]);
+
+            $payment->update(['status' => Payment::PENDING]);
+        }
+
+        try {
+            $bkash = app(BkashService::class);
+
+            $response = $bkash->createPayment(
+                $amount,
+                $invoiceId
+            );
+
+            if (!isset($response['bkashURL'])) {
+                throw new \Exception('bKash payment URL not found');
+            }
+
+            return [
+                'message' => 'Redirecting to bKash',
+                'payment_url' => $response['bkashURL'],
+            ];
+
+        } catch (\Exception $e) {
+            Log::error('bKash Init Error', [
+                'invoice' => $invoiceId,
+                'error' => $e->getMessage()
+            ]);
+
+            return [
+                'message' => $e->getMessage(),
+                'payment_url' => null,
+            ];
+        }
     }
 
     public function success($invoice_id)
