@@ -3,14 +3,16 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 
 class BkashService
 {
-    protected string $baseUrl;
-    protected string $appKey;
-    protected string $appSecret;
-    protected string $username;
-    protected string $password;
+    protected $baseUrl;
+    protected $appKey;
+    protected $appSecret;
+    protected $username;
+    protected $password;
 
     public function __construct()
     {
@@ -21,57 +23,125 @@ class BkashService
         $this->password = config('bkash.password');
     }
 
-    /*-----------------------------------
-     | 1. Get Token
-     -----------------------------------*/
-    public function getToken()
+    /**
+     * 1. Grant Token: Generates an access token required for other API calls.
+     */
+    public function grantToken()
     {
-        $response = Http::withHeaders([
+        $url = $this->baseUrl . '/tokenized/checkout/token/grant';
+
+        $headers = [
+            'Content-Type' => 'application/json',
             'username' => $this->username,
             'password' => $this->password,
-        ])->post($this->baseUrl . '/checkout/token/grant', [
+        ];
+
+        $body = [
             'app_key' => $this->appKey,
             'app_secret' => $this->appSecret,
-        ]);
+        ];
+
+        $response = Http::withHeaders($headers)->post($url, $body);
+
+        if ($response->successful()) {
+            $data = $response->json();
+            // Store token in session (expires in 3600 seconds typically)
+            Session::put('bkash_token', $data['id_token']);
+            return $data['id_token'];
+        }
+
+        Log::error('Bkash Grant Token Failed', ['response' => $response->body()]);
+        return null;
+    }
+
+    /**
+     * 2. Create Payment: Initializes the payment and returns the checkout URL.
+     */
+    public function createPayment($amount, $invoiceNumber)
+    {
+        $token = Session::get('bkash_token');
+
+        // If token doesn't exist or is expired, generate a new one
+        if (!$token) {
+            $token = $this->grantToken();
+        }
+
+        if (!$token) {
+            throw new \Exception('Failed to generate bKash access token.');
+        }
+
+        $url = $this->baseUrl . '/tokenized/checkout/create';
+
+        $headers = [
+            'Content-Type'  => 'application/json',
+            'Authorization' => $token,
+            'X-APP-Key'     => $this->appKey,
+        ];
+
+        $body = [
+            'mode'                  => '0011',
+            'payerReference'        => $invoiceNumber,
+            'callbackURL'           => config('bkash.callback_url'),
+            'amount'                => $amount,
+            'currency'              => 'BDT',
+            'intent'                => 'sale',
+            'merchantInvoiceNumber' => $invoiceNumber,
+        ];
+
+        $response = Http::withHeaders($headers)->post($url, $body);
 
         return $response->json();
     }
 
-    /*-----------------------------------
-     | 2. Create Payment
-     -----------------------------------*/
-    public function createPayment($token, $amount, $invoice)
+    /**
+     * 3. Execute Payment: Finalizes the payment after user enters PIN.
+     */
+    public function executePayment($paymentID)
     {
-        return Http::withToken($token)
-            ->withHeaders(['X-APP-Key' => $this->appKey])
-            ->post($this->baseUrl . '/checkout/payment/create', [
-                'amount' => number_format($amount, 2, '.', ''),
-                'currency' => 'BDT',
-                'intent' => 'sale',
-                'merchantInvoiceNumber' => $invoice,
-            ])
-            ->json();
+        $token = Session::get('bkash_token');
+
+        if (!$token) {
+            $token = $this->grantToken();
+        }
+
+        $url = $this->baseUrl . '/tokenized/checkout/execute';
+
+        $headers = [
+            'Content-Type'  => 'application/json',
+            'Authorization' => $token,
+            'X-APP-Key'     => $this->appKey,
+        ];
+
+        $body = [
+            'paymentID' => $paymentID,
+        ];
+
+        $response = Http::withHeaders($headers)->post($url, $body);
+
+        return $response->json();
     }
 
-    /*-----------------------------------
-     | 3. Execute Payment
-     -----------------------------------*/
-    public function executePayment($token, $paymentID)
+    /**
+     * 4. Query Payment: Check status of a payment (Optional but recommended)
+     */
+    public function queryPayment($paymentID)
     {
-        return Http::withToken($token)
-            ->withHeaders(['X-APP-Key' => $this->appKey])
-            ->post($this->baseUrl . '/checkout/payment/execute/' . $paymentID)
-            ->json();
-    }
+        $token = Session::get('bkash_token');
 
-    /*-----------------------------------
-     | 4. Query Payment (Optional)
-     -----------------------------------*/
-    public function queryPayment($token, $paymentID)
-    {
-        return Http::withToken($token)
-            ->withHeaders(['X-APP-Key' => $this->appKey])
-            ->get($this->baseUrl . '/checkout/payment/query/' . $paymentID)
-            ->json();
+        $url = $this->baseUrl . '/tokenized/checkout/payment/status';
+
+        $headers = [
+            'Content-Type'  => 'application/json',
+            'Authorization' => $token,
+            'X-APP-Key'     => $this->appKey,
+        ];
+
+        $body = [
+            'paymentID' => $paymentID,
+        ];
+
+        $response = Http::withHeaders($headers)->post($url, $body);
+
+        return $response->json();
     }
 }

@@ -555,7 +555,9 @@ Route::get('/refresh-csrf', function () {
     return response()->json(['token' => csrf_token()]);
 })->name('refresh.csrf');
 
-Route::post('/bkash/create', [BkashController::class, 'create']);
-Route::post('/bkash/execute', [BkashController::class, 'execute']);
-Route::get('/bkash/query/{transactionId}', [BkashController::class, 'query']);
+Route::get('/bkash/pay', [BkashController::class, 'pay'])->name('bkash.pay');
+Route::get('/bkash/callback', [BkashController::class, 'callback'])->name('bkash.callback');
 
+// Route::post('/bkash/create', [BkashController::class, 'create']);
+// Route::post('/bkash/execute', [BkashController::class, 'execute']);
+// Route::get('/bkash/query/{transactionId}', [BkashController::class, 'query']);

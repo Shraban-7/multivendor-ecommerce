@@ -2,113 +2,71 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Payment;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Services\BkashService;
-use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class BkashController extends Controller
 {
-    protected $bkash;
+    protected $bkashService;
 
-    public function __construct(BkashService $bkash)
+    public function __construct(BkashService $bkashService)
     {
-        $this->bkash = $bkash;
+        $this->bkashService = $bkashService;
     }
 
-    public function create(Request $request)
+    /**
+     * Entry point: User clicks "Pay with bKash"
+     */
+    public function pay(Request $request)
     {
-        $request->validate([
-            'amount' => 'required|numeric|min:1',
-            'customer_phone' => 'required|string',
-        ]);
+        $amount = 100;
+        $invoiceNumber = 'SM-' . uniqid();
 
-        $transactionId = uniqid('SM');
-        ;
+        try {
+            $response = $this->bkashService->createPayment($amount, $invoiceNumber);
 
-        // Get token
-        $tokenData = $this->bkash->getToken();
-
-        // Create bKash payment
-        $bkashPayment = $this->bkash->createPayment(
-            $tokenData['id_token'],
-            $request->amount,
-            $transactionId
-        );
-
-        // Save payment
-        Payment::create([
-            'user_id' => auth()->id(),
-            'gateway' => 'bkash',
-            'transaction_id' => $transactionId,
-            'gateway_trxid' => $bkashPayment['paymentID'],
-            'amount' => $request->amount,
-            'currency' => 'BDT',
-            'customer_phone' => $request->customer_phone,
-            'status' => Payment::PENDING,
-            'response' => [
-                'token' => $tokenData['id_token'],
-                'create_response' => $bkashPayment,
-            ],
-        ]);
-
-        return response()->json($bkashPayment);
-    }
-
-    public function execute(Request $request)
-    {
-        $request->validate([
-            'paymentID' => 'required|string',
-        ]);
-
-        $payment = Payment::where('gateway', 'bkash')
-            ->where('gateway_trxid', $request->paymentID)
-            ->where('status', Payment::PENDING)
-            ->firstOrFail();
-
-        $token = $payment->response['token'];
-
-        $result = $this->bkash->executePayment($token, $payment->gateway_trxid);
-
-        if ($result['statusCode'] === '0000') {
-
-            $payment->update([
-                'gateway_trxid' => $result['trxID'],
-                'status' => Payment::SUCCESSFUL,
-                'response' => array_merge($payment->response ?? [], [
-                    'execute_payment' => $result,
-                ]),
-            ]);
-
-            // ✅ Mark order paid here
-
-            return response()->json([
-                'message' => 'Payment successful',
-                'trx_id' => $result['trxID'],
-            ]);
+            if (isset($response['bkashURL'])) {
+                return redirect()->away($response['bkashURL']);
+            } else {
+                return response()->json(['error' => 'Payment Creation Failed', 'details' => $response], 400);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
         }
-
-        $payment->update([
-            'status' => Payment::FAILED,
-            'response' => array_merge($payment->response ?? [], [
-                'execute_payment' => $result,
-            ]),
-        ]);
-
-        return response()->json(['message' => 'Payment failed'], 400);
     }
 
-    public function verify($transactionId)
+    /**
+     * Callback: bKash redirects here after user interaction
+     */
+    public function callback(Request $request)
     {
-        $payment = Payment::where('transaction_id', $transactionId)
-            ->where('gateway', 'bkash')
-            ->firstOrFail();
+        $status = $request->input('status');
+        $paymentID = $request->input('paymentID');
 
-        $token = $payment->response['token'];
+        if ($status === 'success') {
+            try {
+                // Execute the payment to finalize it
+                $response = $this->bkashService->executePayment($paymentID);
 
-        $result = $this->bkash->queryPayment($token, $payment->gateway_trxid);
+                // If execute is successful (transaction status is Completed)
+                if (isset($response['statusCode']) && $response['statusCode'] === '0000' && $response['transactionStatus'] === 'Completed') {
 
-        return response()->json($result);
+                    // TODO: Update your database marking the order as paid
+                    // $trxID = $response['trxID'];
+
+                    return response()->json([
+                        'message' => 'Payment Successful',
+                        'data' => $response
+                    ]);
+                } else {
+                    return response()->json(['error' => 'Payment Execution Failed', 'details' => $response], 400);
+                }
+            } catch (\Exception $e) {
+                return response()->json(['error' => $e->getMessage()], 500);
+            }
+        } else {
+            return response()->json(['error' => 'Payment Failed or Cancelled', 'status' => $status], 400);
+        }
     }
 }

@@ -10,5 +10,6 @@ class VerifyCsrfToken extends Middleware
         'payment/success',
         'payment/cancel',
         'payment/notify',
+        'bkash/callback',
     ];
 }
