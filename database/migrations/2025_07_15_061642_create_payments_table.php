@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('customer_name')->nullable();
             $table->string('customer_email')->nullable();
             $table->string('customer_phone')->nullable();
-            $table->json('response')->nullable(); // raw response
+            $table->json('response')->nullable();
             $table->timestamps();
         });
     }

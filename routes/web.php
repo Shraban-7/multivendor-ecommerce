@@ -1,12 +1,13 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Frontend\HomeController;
-use App\Http\Controllers\InvoiceController;
-use App\Http\Controllers\LocationController;
-use App\Http\Controllers\PaymentController;
 use App\Models\VerificationCode;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BkashController;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\LocationController;
+use App\Http\Controllers\Frontend\HomeController;
 
 Route::prefix('auth')->as('auth.')->group(function () {
     Route::post('check-phone', [AuthController::class, 'checkPhone'])->name('checkPhone');
@@ -553,3 +554,8 @@ Route::as('static.')->group(function () {
 Route::get('/refresh-csrf', function () {
     return response()->json(['token' => csrf_token()]);
 })->name('refresh.csrf');
+
+Route::post('/bkash/create', [BkashController::class, 'create']);
+Route::post('/bkash/execute', [BkashController::class, 'execute']);
+Route::get('/bkash/query/{transactionId}', [BkashController::class, 'query']);
+
