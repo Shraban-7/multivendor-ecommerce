@@ -88,6 +88,7 @@ class OrderController extends Controller
 
     public function checkout(Request $request)
     {
+        // dd($request->all());
         $user = Auth::user();
 
         $validated = $request->validate([
@@ -363,7 +364,7 @@ class OrderController extends Controller
                 'amount' => $amount,
                 'desc' => 'Test Payment',
                 'cus_name' => $customerName,
-                'cus_email' => $user->email,
+                'cus_email' => 'user@gmail.com',
                 'cus_add1' => '',
                 'cus_add2' => '',
                 'cus_city' => '',
@@ -376,6 +377,8 @@ class OrderController extends Controller
                     'return_url' => route('orders.index'),
                 ])),
             ]);
+
+            // dd($response);
 
             if (isset($response['payment_url'])) {
                 $paymentUrl = $response['payment_url'];

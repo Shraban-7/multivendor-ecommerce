@@ -31,7 +31,7 @@
                                 @foreach ($billingAddresses as $address)
                                     <!-- Saved Address 1 (Active) -->
                                     <label class="relative block cursor-pointer group">
-                                        <input type="radio" name="address" class="peer sr-only"
+                                        <input type="radio" name="billing_address_id" value="{{ $address->id }}" class="peer sr-only"
                                             {{ $address->is_default ? 'checked' : '' }}>
                                         <div
                                             class="p-5 rounded-xl border-2 border-primary-100  peer-checked:border-primary-500 peer-checked:bg-white relative transition-all duration-200">
@@ -99,90 +99,50 @@
 
                         <div class="space-y-3 mb-4">
                             <!-- bKash -->
-                            <label
-                                class="group relative flex items-center p-4 border rounded-xl cursor-pointer hover:bg-gray-50 transition-all duration-200 has-[:checked]:border-primary-500 has-[:checked]:bg-primary-50/30 has-[:checked]:shadow-sm">
-                                <input name="payment" type="radio"
-                                    class="h-5 w-5 text-primary-600 border-gray-300 focus:ring-primary-500" checked>
-                                <div class="ml-4 flex-1">
-                                    <div class="flex items-center justify-between">
-                                        <span
-                                            class="block text-sm font-bold text-gray-900 group-has-[:checked]:text-primary-700">bKash
-                                            Payment</span>
-                                        <img src="https://freepnglogo.com/images/all_img/1701670291bkash-app-logo-png.png"
-                                            alt="bKash" class="h-8 w-auto object-contain">
-                                    </div>
-                                    <span class="block text-xs text-gray-500 mt-0.5">Pay securely using your bKash
-                                        wallet</span>
-                                </div>
-                            </label>
-
-                            <!-- COD -->
-                            <label
-                                class="group relative flex items-center p-4 border rounded-xl cursor-pointer hover:bg-gray-50 transition-all duration-200 has-[:checked]:border-primary-500 has-[:checked]:bg-primary-50/30 has-[:checked]:shadow-sm">
-                                <input name="payment" type="radio"
-                                    class="h-5 w-5 text-primary-600 border-gray-300 focus:ring-primary-500">
-                                <div class="ml-4 flex-1">
-                                    <div class="flex items-center justify-between">
-                                        <span
-                                            class="block text-sm font-bold text-gray-900 group-has-[:checked]:text-primary-700">Cash
-                                            on Delivery</span>
-                                        <div class="p-1.5 bg-gray-100 rounded text-gray-500">
-                                            <i data-lucide="banknote" class="w-5 h-5"></i>
-                                        </div>
-                                    </div>
-                                    <span class="block text-xs text-gray-500 mt-0.5">Pay only when you receive your
-                                        order</span>
-                                </div>
-                            </label>
-                        </div>
-
-                        <ul class="grid w-full gap-4 sm:grid-cols-3">
-                            @if ($allCod)
-                                <li>
-                                    <input type="radio" id="payment-cod" name="payment" value="cod"
-                                        class="hidden peer" {{ $allCod ? 'checked' : '' }} />
-
-                                    <label for="payment-cod"
-                                        class="inline-flex flex-col items-center justify-center w-full p-4 text-gray-700
-                            bg-white border border-gray-300 rounded-xl cursor-pointer transition
-                            hover:bg-gray-50 peer-checked:bg-primary-500/10 peer-checked:border-primary
-                            peer-checked:text-primary">
-
-                                        <div class="flex items-center gap-2 mb-1">
-                                            <i class="fa-solid fa-box-open text-xl"></i>
-                                            <span class="text-sm">Cash on Delivery</span>
-                                        </div>
-                                    </label>
-                                </li>
-                            @endif
-
                             @foreach ($payment_gateways as $gateway)
-                                <li>
-                                    <input type="radio" id="payment-{{ $gateway->slug }}" name="payment"
-                                        value="{{ $gateway->slug }}" class="hidden peer"
-                                        {{ !$allCod && $gateway->is_default ? 'checked' : '' }} />
+                                <label
+                                    class="group relative flex items-center p-4 border rounded-xl cursor-pointer hover:bg-gray-50 transition-all duration-200 has-[:checked]:border-primary-500 has-[:checked]:bg-primary-50/30 has-[:checked]:shadow-sm">
+                                    <input name="payment" id="payment-{{ $gateway->slug }}" type="radio" value="{{ $gateway->slug }}"
+                                        class="h-5 w-5 text-primary-600 border-gray-300 focus:ring-primary-500" {{ !$allCod && $gateway->is_default ? 'checked' : '' }}>
+                                    <div class="ml-4 flex-1">
+                                        <div class="flex items-center justify-between">
+                                            <span
+                                                class="block text-sm font-bold text-gray-900 group-has-[:checked]:text-primary-700">{{ $gateway->name }}</span>
 
-                                    <label for="payment-{{ $gateway->slug }}"
-                                        class="inline-flex flex-col items-center justify-center w-full p-4
-                                    bg-white border border-gray-300 rounded-xl cursor-pointer transition
-                                    hover:bg-gray-50 peer-checked:bg-primary-500/10 peer-checked:border-primary
-                                    peer-checked:text-primary">
-
-                                        @if ($gateway->image)
-                                            <img src="{{ storage_url($gateway->image) }}"
-                                                class="h-6 w-auto mb-1 object-contain" />
-                                        @else
-                                            <i class="fa-solid fa-credit-card text-xl mb-1"></i>
-                                        @endif
-
-                                        <span class="text-sm">
+                                            @if ($gateway->image)
+                                                <img src="{{ storage_url($gateway->image) }}" alt="{{ $gateway->name }}"
+                                                    class="h-8 w-auto object-contain">
+                                            @else
+                                                <i class="fa-solid fa-credit-card text-xl mb-1"></i>
+                                            @endif
+                                        </div>
+                                        <span class="block text-xs text-gray-500 mt-0.5">Pay securely using your
                                             {{ $gateway->name }}
-                                        </span>
-                                    </label>
-                                </li>
+                                            wallet</span>
+                                    </div>
+                                </label>
                             @endforeach
-
-                        </ul>
+                            <!-- COD -->
+                            @if ($allCod)
+                                <label
+                                    class="group relative flex items-center p-4 border rounded-xl cursor-pointer hover:bg-gray-50 transition-all duration-200 has-[:checked]:border-primary-500 has-[:checked]:bg-primary-50/30 has-[:checked]:shadow-sm">
+                                    <input name="payment" type="radio"
+                                        class="h-5 w-5 text-primary-600 border-gray-300 focus:ring-primary-500">
+                                    <div class="ml-4 flex-1">
+                                        <div class="flex items-center justify-between">
+                                            <span
+                                                class="block text-sm font-bold text-gray-900 group-has-[:checked]:text-primary-700">Cash
+                                                on Delivery</span>
+                                            <div class="p-1.5 bg-gray-100 rounded text-gray-500">
+                                                <i data-lucide="banknote" class="w-5 h-5"></i>
+                                            </div>
+                                        </div>
+                                        <span class="block text-xs text-gray-500 mt-0.5">Pay only when you receive your
+                                            order</span>
+                                    </div>
+                                </label>
+                            @endif
+                        </div>
                     </div>
 
                     <button id="continue-payment-btn" type="button" data-seller-id="{{ $selectedSellerId }}"
@@ -194,8 +154,6 @@
             </aside>
         </form>
     </div>
-
-
 
     @foreach ($billingAddresses as $address)
         <div id="editBillingAddressModal-{{ $address->id }}"
