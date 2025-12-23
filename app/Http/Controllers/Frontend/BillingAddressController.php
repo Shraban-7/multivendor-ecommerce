@@ -42,6 +42,7 @@ class BillingAddressController extends Controller
 
     public function update(Request $request, BillingAddress $address)
     {
+        // dd($request->all());
         $data = $request->validate([
             'customer_name' => 'required|string',
             'customer_phone' => 'required|string',
