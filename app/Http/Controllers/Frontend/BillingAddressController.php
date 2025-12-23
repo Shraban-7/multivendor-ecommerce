@@ -11,7 +11,7 @@ class BillingAddressController extends Controller
 {
     public function store(Request $request)
     {
-       $data = $request->validate([
+        $data = $request->validate([
             'customer_name' => 'required|string',
             'customer_phone' => 'required|string',
             'division_id' => 'required',
@@ -57,11 +57,15 @@ class BillingAddressController extends Controller
         $data['user_id'] = $user_id;
 
         if ($data['is_default'] == true) {
-            BillingAddress::where('user_id', $user_id)
-                ->where('is_default', true)
-                ->update([
-                    'is_default' => false
-                ]);
+            if ($data['is_default'] == $address->is_default) {
+                $data['is_default'] = true;
+            } else {
+                BillingAddress::where('user_id', $user_id)
+                    ->where('is_default', true)
+                    ->update([
+                        'is_default' => false
+                    ]);
+            }
         }
 
         $address->update($data);

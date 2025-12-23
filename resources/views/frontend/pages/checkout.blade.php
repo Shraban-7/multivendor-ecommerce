@@ -614,7 +614,7 @@
                                             {{ \App\Enums\AddressType::HOME->title() }}
                                         </option>
                                         <option value="{{ \App\Enums\AddressType::OFFICE->value }}">
-                                            {{ \App\Enums\AddressType::HOME->title() }}
+                                            {{ \App\Enums\AddressType::OFFICE->title() }}
                                         </option>
                                     </select>
                                     <textarea name="address" placeholder="Address"
@@ -786,9 +786,11 @@
 
                 let selectedDistrictId = $district.data('selected-district') || null;
 
-                if (addressId) {
+                if (typeof addressId !== 'undefined' && addressId) {
                     selectedDistrictId =
-                        '{{ old("district_id.' . $address->id . '", $address->district_id ?? '') }}';
+                        '{{ old("district_id.' . addressId . '", $address->district_id ?? '') }}';
+                } else {
+                    selectedDistrictId = '{{ old('district_id', '') }}';
                 }
 
                 if (divisionId) {
