@@ -125,14 +125,18 @@
                                                             <!-- Price -->
                                                             <div class="flex items-center cart-item gap-2"
                                                                 id="cart-item-{{ $item->id }}">
-                                                                @if (!empty($item->discounted_price))
+                                                                @php
+                                                                    $discountedPrice = $item->price;
+                                                                    $sellingPrice = $item->variant ? $item->variant->selling_price :$item->product->selling_price;
+                                                                @endphp
+                                                                @if ($discountedPrice!=$sellingPrice)
                                                                     <!-- Discounted item -->
                                                                     <span
                                                                         class="current-price text-lg font-bold text-primary">
                                                                         {{ money($item->price) }}
                                                                     </span>
                                                                     <span class="text-gray-500 line-through text-sm">
-                                                                        {{ $item->variant ? money($item->variant->selling_price) :money($item->product->selling_price) }}
+                                                                        {{ money($sellingPrice) }}
                                                                     </span>
                                                                 @else
                                                                     <!-- Regular item -->
