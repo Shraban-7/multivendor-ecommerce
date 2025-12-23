@@ -100,7 +100,7 @@ $isDashboard = View::hasSection('dashboard');
     @endif
 
     @if (!$isDashboard)
-        <div class="container mx-auto px-3 lg:px-4 py-4 min-h-screen">
+        <div class="container mx-auto px-3 lg:px-4 py-4 min-h-screen mb-20 md:lg-5">
             @yield('content')
         </div>
     @endif

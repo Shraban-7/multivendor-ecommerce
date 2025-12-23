@@ -20,7 +20,7 @@
                             <button type="button" onclick="toggleModal('addBillingAddressModal')"
                                 class="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-sm font-medium text-primary border border-primary/50 rounded-md hover:bg-primary/5 hover:border-primary transition-colors duration-150">
                                 <i class="fa-solid fa-plus text-[13px]"></i>
-                                <span>Add New Address</span>
+                                <span>Add New</span>
                             </button>
                         </div>
 
