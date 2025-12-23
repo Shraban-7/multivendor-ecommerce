@@ -296,16 +296,16 @@
                                 {{ \App\Enums\AddressType::HOME->title() }}
                             </option>
                             <option value="{{ \App\Enums\AddressType::OFFICE->value }}">
-                                {{ \App\Enums\AddressType::HOME->title() }}
+                                {{ \App\Enums\AddressType::OFFICE->title() }}
                             </option>
                         </select>
                         <textarea name="address" placeholder="Address"
                             class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base"></textarea>
                         <div class="flex items-start">
                             <div class="flex items-center h-5">
-                                <input id="remember" name="is_default" type="checkbox" value="1"
+                                <input id="remember" name="is_default" type="checkbox" value="1" {{ $billingAddresses->count()==0 ? 'checked' : '' }}
                                     class="w-4 h-4 border border-gray-300 rounded-sm bg-gray-50 focus:ring-light-yellow focus:border-light-yellow "
-                                    required />
+                                     />
                             </div>
                             <label for="remember" class="ms-2 text-sm font-medium text-gray-900">Mark as
                                 default</label>
