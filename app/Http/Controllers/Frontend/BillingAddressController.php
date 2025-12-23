@@ -42,7 +42,6 @@ class BillingAddressController extends Controller
 
     public function update(Request $request, BillingAddress $address)
     {
-        // dd($request->all());
         $data = $request->validate([
             'customer_name' => 'required|string',
             'customer_phone' => 'required|string',
@@ -50,7 +49,7 @@ class BillingAddressController extends Controller
             'district_id' => 'required',
             'address' => 'required|string',
             'type' => 'required|numeric|in:1,2',
-            'is_default' => 'required|boolean',
+            'is_default' => 'nullable|boolean',
         ]);
 
         $user_id = Auth::id();
