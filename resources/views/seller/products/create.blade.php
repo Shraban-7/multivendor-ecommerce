@@ -123,7 +123,7 @@
                     </div>
                     <label for="inputImage" class="text-primary text-decoration-underline" style="cursor:pointer;">Crop Image First</label>
                     <input type="file" id="inputImage" hidden accept="image/*" />
-                    <span class="text-muted small mt-2 text-center">NB: JPG/PNG/WEBP only, max 4MB</span>
+                    <span class="text-muted small mt-2 text-center">NB: JPG/PNG/WEBP only, max 10MB</span>
                 </div>
             </div>
         </div>

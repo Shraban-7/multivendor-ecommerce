@@ -20,6 +20,7 @@ use App\Models\CategoryOption;
 use App\Models\ProductVariant;
 use App\Http\Controllers\Controller;
 use App\Models\ProductVariantOption;
+use App\Services\ImageOptimizerService;
 
 class ProductController extends Controller
 {
@@ -80,7 +81,7 @@ class ProductController extends Controller
             'unit_id' => 'required|numeric',
             'unit_value' => 'required|string',
             'low_stock_quantity' => 'required|numeric',
-            'thumbnail' => 'nullable|image|max:4096',
+            'thumbnail' => 'nullable|image|max:10000',
             'variants' => 'nullable|string',
         ]);
 
@@ -105,9 +106,15 @@ class ProductController extends Controller
         $validated['brand_id'] = $brandId;
         unset($validated['brand']);
 
+        $imageService = new ImageOptimizerService;
+
         $imageFolder = "images/{$seller->username}/products";
         if ($request->hasFile('thumbnail')) {
-            $validated['thumbnail'] = upload_file($request->file('thumbnail'), "$imageFolder/thumb");
+            //$validated['thumbnail'] = upload_file($request->file('thumbnail'), "$imageFolder/thumb");
+            $validated['thumbnail'] = $imageService->uploadAndOptimize(
+                $request->file('thumbnail'),
+                "$imageFolder/thumb"
+            );
         }
 
         $validated['seller_id'] = $seller->id;
@@ -255,12 +262,7 @@ class ProductController extends Controller
             'unit_value' => 'required|string',
             'best_selling' => 'nullable',
             'is_featured' => 'nullable',
-            'thumbnail' => [
-                'nullable',
-                'image',
-                'max:4096',
-                // 'dimensions:ratio=1/1',
-            ],
+            'thumbnail' => 'nullable|image|max:10000',
             'video' => 'nullable|file',
             'files' => 'nullable|array',
             'files.*' => 'mimetypes:image/*',
@@ -312,7 +314,9 @@ class ProductController extends Controller
                 delete_file($product->thumbnail);
             }
 
-            $validated['thumbnail'] = upload_file($request->file('thumbnail'), "$imageFolder/thumb");
+            $imageService = new ImageOptimizerService;
+            $validated['thumbnail'] = $imageService->uploadAndOptimize($request->file('thumbnail'), "$imageFolder/thumb");
+            //$validated['thumbnail'] = upload_file($request->file('thumbnail'), "$imageFolder/thumb");
             //$validated['thumbnail'] = upload_with_watermark($request->file('thumbnail'), "$imageFolder/thumb");
         }
 
@@ -368,7 +372,6 @@ class ProductController extends Controller
 
     public function delete(Product $product)
     {
-
         if ($product->thumbnail != null) {
             delete_file($product->thumbnail);
         }

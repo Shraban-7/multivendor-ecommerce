@@ -161,7 +161,7 @@
                                         Image</button>
                                 </div>
                             </div>
-                            <span class="text-muted small mt-2">NB: JPG/PNG/WEBP only, max 4MB</span>
+                            <span class="text-muted small mt-2">NB: JPG/PNG/WEBP only, max 10MB</span>
                         </div>
                     </div>
 
