@@ -32,7 +32,7 @@
 </div>
 
 <header class="bg-white sticky top-0 z-40 shadow-sm border-b border-gray-100">
-    <div class="container mx-auto px-4 py-4">
+    <div class="container mx-auto max-w-7xl px-4 py-4">
         <div class="flex items-center justify-between gap-4 lg:gap-8">
             <a href="/" class="flex items-center gap-2 group">
                 <div class="bg-primary-500 text-white p-2 rounded-lg group-hover:rotate-3 transition duration-300">

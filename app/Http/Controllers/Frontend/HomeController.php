@@ -73,6 +73,7 @@ class HomeController extends Controller
             ->groupBy("section");
 
         $data["sellers"] = Seller::active()->limit(8)->get();
+        
         $data["brands"] = Brand::where("status", 1)
             ->orderBy("name")
             ->limit(12)

@@ -39,7 +39,7 @@
                 <div class="header">
                     @include('admin.layouts.navbar')
                 </div>
-                <div class="container-fluid my-3 px-sm-4">
+                <div class="container my-3">
                     <x-flash-message />
                     @yield('content')
                 </div>

@@ -52,24 +52,31 @@
     </section>
 
     <!-- ==================== 5. CATEGORY GRID SECTION ==================== -->
-    <section class="pb-5">
-        <div class="flex justify-between items-end mb-6">
-            <h2 class="text-2xl font-bold text-gray-900">Shop By <span class="text-primary-600">Category</span></h2>
-            <a href="shop.html" class="text-sm font-medium text-primary-600 hover:text-primary-700">View All <i
-                    class="fas fa-arrow-right ml-1"></i></a>
-        </div>
-        <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-4">
-            @foreach ($categories as $category)
-                <a href="{{ route('category.details', $category->slug) }}"
-                    class="group flex flex-col items-center gap-3 p-4 bg-white rounded-xl shadow-sm border border-transparent hover:border-primary-200 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
-                    <div
-                        class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-2xl text-gray-600 group-hover:bg-primary-50 group-hover:text-primary-600 transition">
-                        <i class="{{ $category->icon }}"></i>
-                    </div>
-                    <span
-                        class="text-xs font-semibold text-gray-700 text-center group-hover:text-primary-600">{{ $category->name }}</span>
-                </a>
-            @endforeach
+    <section class="mb-4">
+        <div class="bg-white p-6 rounded-2xl border border-gray-100">
+            <div class="flex justify-center items-center mb-6">
+                <h2 class="text-lg font-medium text-gray-800 tracking-tight">Shop by Category</h2>
+            </div>
+            <div class="flex flex-wrap justify-between md:justify-center gap-y-6 gap-x-4 sm:gap-x-8">
+                @foreach ($categories as $category)
+                    <a href="{{ route('category.details', $category->slug) }}" 
+                    class="group flex flex-col items-center gap-2 w-16 sm:w-20">
+                        <div class="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden bg-gray-50 border border-gray-100 group-hover:border-primary-400 transition-colors duration-300 flex items-center justify-center p-3">
+                            @if($category->image)
+                                <img src="{{ storage_url($category->image) }}"alt="{{ $category->name }}"
+                                    class="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-110">
+                            @else
+                                <div class="flex items-center justify-center h-full">
+                                    <i class="fas fa-tag text-gray-300 text-sm"></i>
+                                </div>
+                            @endif
+                        </div>
+                        <span class="text-[11px] sm:text-xs font-normal text-gray-600 text-center line-clamp-1 group-hover:text-primary-600 transition-colors">
+                            {{ $category->name }}
+                        </span>
+                    </a>
+                @endforeach
+            </div>
         </div>
     </section>
 
@@ -183,33 +190,55 @@
 </section> --}}
 
 
-    <section class="pb-5">
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-bold text-gray-900">Top <span class="text-primary-600">Sellers</span></h2>
-            <a href="{{ route('sellers.index') }}" class="text-sm font-medium text-primary-600 hover:text-primary-700">View All <i
-                    class="fas fa-arrow-right ml-1"></i></a>
-        </div>
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            <!-- Seller Card -->
-            @foreach ($sellers as $seller)
-                <div
-                    class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition text-center group cursor-pointer">
-                    <div class="w-16 h-16 mx-auto mb-3">
-                        <img src="{{ storage_url($seller->business_logo) }}"
-                            class="w-full h-full object-cover rounded-full border-2 border-gray-100 group-hover:border-primary-500">
+    <section class="mb-8">
+        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+            <div class="flex justify-between items-center mb-3 px-2">
+                <h2 class="text-lg font-medium text-gray-800 tracking-tight">Top Sellers</h2>
+                <a href="{{ route('sellers.index') }}" class="text-xs font-medium text-primary-600 hover:underline">
+                    View All
+                </a>
+            </div>
+            <div class="flex flex-wrap gap-4 sm:gap-6">
+                @foreach ($sellers as $seller)
+                    <div class="group flex flex-col items-center w-40 sm:w-44 bg-white border border-gray-100 rounded-xl p-4 transition-all duration-300 hover:border-primary-500">
+                        <div class="relative w-16 h-16 rounded-full bg-gray-50 border border-gray-50 flex items-center justify-center p-2 mb-3">
+                            <img src="{{ storage_url($seller->business_logo) }}" 
+                                alt="{{ $seller->business_name }}"
+                                class="max-w-full max-h-full object-contain">
+                            <div class="absolute -bottom-1 -right-0.5 text-blue-500 bg-white rounded-full">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="text-center w-full mb-4">
+                            <h3 class="text-sm font-semibold text-gray-800 line-clamp-1 mb-1">
+                                {{ $seller->business_name }}
+                            </h3>
+                            
+                            <div class="flex items-center justify-center gap-2 text-[10px] font-medium">
+                                <span class="flex items-center text-yellow-500">
+                                    <i class="fas fa-star mr-1"></i> {{ $seller->rating }}
+                                </span>
+                                <span class="text-gray-300">|</span>
+                                <span class="text-gray-500">
+                                    {{ number_format($seller->followers_count ?? 0) }} Followers
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex items-center w-full gap-2">
+                            <a href="{{ route('sellers.shop', $seller->username) }}" 
+                            class="flex-1 text-center py-1.5 bg-primary-100 text-primary-500 text-[11px] font-medium rounded-md hover:bg-primary-500 hover:text-white transition-colors">
+                                Visit Shop
+                            </a>
+                            <button title="Follow Store" 
+                                    class="flex items-center justify-center w-8 h-8 rounded-md border border-gray-200 text-gray-500 hover:border-primary-500 hover:text-primary-600 transition-all">
+                                <i class="fas fa-user-plus text-[10px]"></i>
+                            </button>
+                        </div>
                     </div>
-                    <h3 class="font-bold text-gray-800 text-sm mb-1 group-hover:text-primary-600">
-                        {{ $seller->business_name }}
-                    </h3>
-                    <div class="flex justify-center text-xs text-yellow-400 mb-2">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                            class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    </div>
-                    <a href="{{ route('sellers.shop', $seller->username) }}"
-                        class="text-xs font-medium text-primary-600 border border-primary-200 px-3 py-1 rounded-full group-hover:bg-primary-600 group-hover:text-white transition">Visit
-                        Store</a>
-                </div>
-            @endforeach
+                @endforeach
+            </div>
         </div>
     </section>
 
