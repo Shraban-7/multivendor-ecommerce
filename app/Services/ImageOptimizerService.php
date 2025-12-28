@@ -71,6 +71,7 @@ class ImageOptimizerService
         if ($overwrite) {
             // Replace original file
             $optimizedPath = preg_replace('/\.\w+$/', '.webp', $existingPath);
+            $disk->delete($existingPath);
         } else {
             // Save as new file
             $directory = $newPath ?? dirname($existingPath);
