@@ -204,12 +204,12 @@
                     $('#submitButton').attr('disabled', false).html('<i data-feather="save" class="me-2"></i>Register Seller');
                     feather.replace();
                     if (response.status) {
-                        toastr.success('Seller registered successfully!');
+                        showSuccessToast('Seller registered successfully!');
                         setTimeout(() => {
                             window.location.href = "{{ route('admin.sellers.index') }}";
                         }, 1500);
                     } else {
-                        toastr.error(response.message || 'Failed to register seller');
+                        showErrorToast(response.message || 'Failed to register seller');
                     }
                 },
                 error: function(xhr) {
@@ -219,9 +219,9 @@
                     if (xhr.status === 422) {
                         let errors = xhr.responseJSON.errors;
                         let message = Object.values(errors).map(err => err[0]).join('<br>');
-                        toastr.error(message);
+                        showErrorToast(message);
                     } else {
-                        toastr.error('Something went wrong. Please try again.');
+                        showErrorToast('Something went wrong. Please try again.');
                     }
                 }
             });

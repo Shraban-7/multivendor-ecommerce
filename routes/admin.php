@@ -122,7 +122,7 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
         Route::post('/store', [AdminController::class, 'store'])->name('store');
         Route::get('/{admin}/edit', [AdminController::class, 'edit'])->name('edit');
         Route::post('/{admin}/update', [AdminController::class, 'update'])->name('update');
-        Route::post('/{admin}/delete', [AdminController::class, 'delete'])->name('delete');
+        Route::delete('/{admin}/delete', [AdminController::class, 'delete'])->name('delete');
     });
 
     Route::prefix('payment-gateways')->as('paymentGateways.')->group(function () {

@@ -40,12 +40,16 @@
                     @include('admin.layouts.navbar')
                 </div>
                 <div class="container my-3">
-                    <x-flash-message />
+                    {{-- <x-flash-message /> --}}
                     @yield('content')
                 </div>
             </div>
         </div>
     </div>
+
+    <x-custom-toastr />
+    <x-delete-confirmation-modal />
+
 
     <script src="{{ asset('assets/dashboard/libs/jquery/dist/jquery.min.js') }}"></script>
     <script src="{{ asset('assets/dashboard/libs/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
@@ -75,7 +79,35 @@
     @stack('scripts')
 
     <script>
+        function confirmDelete(url) {
+            const modalEl = document.getElementById('globalDeleteModal');
+            const form = document.getElementById('globalDeleteForm');
+
+            if (!modalEl || !form) {
+                console.error('Delete modal not found');
+                return;
+            }
+
+            form.action = url;
+
+            const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            modal.show();
+        }
+    </script>
+
+
+    <script>
         $(document).ready(function() {
+            function confirmDelete(url) {
+                const form = document.getElementById('globalDeleteForm');
+                form.action = url;
+
+                const modal = new bootstrap.Modal(
+                    document.getElementById('globalDeleteModal')
+                );
+                modal.show();
+            }
+
             $(document).on("click", ".image-preview", function() {
                 $(this).closest(".form-group").find(".file-input").click();
             });

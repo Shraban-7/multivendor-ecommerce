@@ -206,21 +206,21 @@
                     success: function(res) {
                         deleteModal.hide();
                         if (res.status) {
-                            toastr.success(res.message);
+                            showSuccessToast(res.message);
                             setTimeout(() => location.reload(), 1000);
                         } else {
-                            toastr.error(res.message || 'Failed to delete plan.');
+                            showErrorToast(res.message || 'Failed to delete plan.');
                         }
                     },
                     error: function(xhr, status, error) {
                         if (xhr.responseJSON && xhr.responseJSON.errors) {
                             $.each(xhr.responseJSON.errors, function(key, value) {
-                                toastr.error(value[0]);
+                                showErrorToast(value[0]);
                             });
                         } else if (xhr.responseJSON && xhr.responseJSON.message) {
-                            toastr.error(xhr.responseJSON.message);
+                            showErrorToast(xhr.responseJSON.message);
                         } else {
-                            toastr.error(`Error: ${error || 'An unexpected error occurred.'}`);
+                            showErrorToast(`Error: ${error || 'An unexpected error occurred.'}`);
                         }
                     }
                 });
@@ -252,21 +252,21 @@
                     data: data,
                     success: function(res) {
                         if (res.status) {
-                            toastr.success(res.message);
+                            showSuccessToast(res.message);
                             setTimeout(() => location.reload(), 1000);
                         } else {
-                            toastr.error(res.message || 'Something went wrong!');
+                            showErrorToast(res.message || 'Something went wrong!');
                         }
                     },
                     error: function(xhr, status, error) {
-                        if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        if (xhr.responseJSON && xhr.responseJSON.errors) {  
                             $.each(xhr.responseJSON.errors, function(key, value) {
-                                toastr.error(value[0]);
+                                showErrorToast(value[0]);
                             });
                         } else if (xhr.responseJSON && xhr.responseJSON.message) {
-                            toastr.error(xhr.responseJSON.message);
+                            showErrorToast(xhr.responseJSON.message);
                         } else {
-                            toastr.error(`Error: ${error || 'An unexpected error occurred.'}`);
+                            showErrorToast(`Error: ${error || 'An unexpected error occurred.'}`);
                         }
                     }
                 });

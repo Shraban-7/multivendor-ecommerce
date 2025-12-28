@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title','Manual Payment Gateways')
+@section('title', 'Manual Payment Gateways')
 
 @section('content')
     <div class="container-fluid py-4">
@@ -57,15 +57,11 @@
                                             data-bs-target="#addEditModal" onclick="openEditModal({{ $method }})">
                                             <i class="bi bi-pencil"></i>
                                         </button>
-                                        <form action="{{ route('admin.manualGateways.delete', $method->id) }}"
-                                            method="POST" class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="btn btn-sm btn-outline-danger"
-                                                onclick="return confirm('Are you sure?')">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </form>
+                                        <button type="button" class="btn btn-sm btn-outline-danger"
+                                            onclick="confirmDelete('{{ route('admin.manualGateways.delete', $method->id) }}')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+
                                     </td>
                                 </tr>
                             @empty

@@ -261,12 +261,12 @@
                             '<i data-feather="save" class="me-2"></i>Update Seller');
                         feather.replace();
                         if (response.status) {
-                            toastr.success('Seller updated successfully!');
+                            showSuccessToast('Seller updated successfully!');
                             setTimeout(() => {
                                 window.location.href = response.data.redirect;
                             }, 1500);
                         } else {
-                            toastr.error(response.message || 'Failed to update seller');
+                            showErrorToast(response.message || 'Failed to update seller');
                         }
                     },
                     error: function(xhr) {
@@ -277,9 +277,9 @@
                         if (xhr.status === 422) {
                             let errors = xhr.responseJSON.errors;
                             let message = Object.values(errors).map(err => err[0]).join('<br>');
-                            toastr.error(message);
+                            showErrorToast(message);
                         } else {
-                            toastr.error('Something went wrong. Please try again.');
+                            showErrorToast('Something went wrong. Please try again.');
                         }
                     }
                 });

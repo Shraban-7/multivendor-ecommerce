@@ -14,7 +14,6 @@
                 <th scope="col">Phone</th>
                 <th scope="col">Email</th>
                 <th scope="col">Registration Date</th>
-                <th scope="col">Action</th>
             </tr>
         </thead>
 
@@ -27,18 +26,6 @@
                 <td> {{ $customer->phone }} </td>
                 <td> {{ $customer->email }} </td>
                 <td> {{ $customer->created_at->format('d/m/Y h:i A') }} </td>
-                <td>
-                    <div>
-                        <button class="btn btn-light border  btn-sm mb-1" data-bs-toggle="modal"
-                            data-bs-target=""><i data-feather="edit"
-                                class="icon-xs"></i> Edit
-                        </button>
-                        <button class="btn btn-danger border btn-sm me-1 mb-1" data-bs-toggle="modal"
-                            data-bs-target="">
-                            <i data-feather="trash" class="icon-xs"></i> Delete
-                        </button>
-                    </div>
-                </td>
             </tr>
             @endforeach
         </tbody>

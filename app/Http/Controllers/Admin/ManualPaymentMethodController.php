@@ -79,7 +79,7 @@ class ManualPaymentMethodController extends Controller
         $manualPayment->update($data);
 
         return redirect()
-            ->route('admin.manual-gateways.index')
+            ->route('admin.manualGateways.index')
             ->with('success', 'Manual payment method updated successfully');
     }
 

@@ -230,8 +230,6 @@
         const cards = document.querySelectorAll('.relative.cursor-pointer.group'); // Select only clickable cards
         cards.forEach(card => {
             card.addEventListener('click', (event) => {
-                // If the click was on an 'input[type="radio"]' (hidden), do nothing extra
-                // This check might not be necessary if the radio is truly hidden and not targetable.
                 if (event.target.type === 'radio') {
                     return;
                 }

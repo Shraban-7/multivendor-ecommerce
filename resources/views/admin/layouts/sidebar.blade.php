@@ -229,7 +229,7 @@ $settings = settings();
                     <i data-feather="chevron-right" class="chevron-icon transition"></i>
                 </a>
 
-                <div id="navSettings" class="collapse {{ request()->routeIs('admin.settings.*') ? 'show' : '' }}"
+                <div id="navSettings" class="collapse {{ request()->routeIs('admin.settings.*') || request()->routeIs('admin.staticPages.*')||request()->routeIs('admin.banners.*')  ? 'show' : '' }}"
                     data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
                         @if (hasPermission('admin.settings.socialLinks.index'))

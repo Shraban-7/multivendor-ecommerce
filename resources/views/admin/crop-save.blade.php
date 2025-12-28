@@ -151,7 +151,7 @@
                         })
                         .then(response => response.json())
                         .then(data => {
-                            alert('Image uploaded');
+                            showSuccessToast('Image uploaded');
                             console.log('Saved image:', data);
                         })
                         .catch(error => console.error('Upload failed:', error));
