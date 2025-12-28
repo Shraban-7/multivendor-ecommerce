@@ -11,27 +11,6 @@ use App\Http\Controllers\Frontend\HomeController;
 use App\Models\Product;
 use App\Services\ImageOptimizerService;
 
-Route::get('pd', function () {
-    $products = Product::with('variants')->get();
-
-    $img = new ImageOptimizerService;
-
-    foreach ($products as $product) {
-        if (!is_null($product->thumbnail)) {
-            $product->thumbnail = $img->optimizeExisting($product->thumbnail);
-            $product->save();
-        }
-
-        foreach ($product->variants as $variant) {
-            if (!is_null($variant->image)) {
-                $variant->image = $img->optimizeExisting($variant->image);
-                $variant->save();
-            }
-        }
-    }
-    //return $products;
-});
-
 Route::prefix('auth')->as('auth.')->group(function () {
     Route::post('check-phone', [AuthController::class, 'checkPhone'])->name('checkPhone');
     Route::post('verify-otp', [AuthController::class, 'verifyOtp'])->name('verifyOtp');
