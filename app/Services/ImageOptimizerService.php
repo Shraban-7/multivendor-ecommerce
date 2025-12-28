@@ -34,9 +34,51 @@ class ImageOptimizerService
         // Encode to WebP with 80-90% quality
         // WebP offers superior compression (30% smaller than JPEG) with comparable quality
         $encoded = $image->toWebp(quality: 85);
-        
+
         Storage::disk('public')->put($fullPath, (string) $encoded);
 
         return $fullPath;
+    }
+
+    /**
+     * Optimize an existing image in storage.
+     *
+     * @param string $existingPath Path relative to disk (e.g. 'products/image.jpg')
+     * @param string|null $newPath Optional new directory (defaults to same folder)
+     * @param int|null $width Max width
+     * @param int|null $height Max height
+     * @param bool $overwrite Whether to overwrite the original file
+     * @return string Path to optimized image
+     */
+    public function optimizeExisting(string $existingPath, ?string $newPath = null, ?int $width = 1200, ?int $height = null, bool $overwrite = true): string {
+        $disk = Storage::disk('public');
+
+        if (! $disk->exists($existingPath)) {
+            return $existingPath;
+            //throw new \InvalidArgumentException("Image does not exist: {$existingPath}");
+        }
+
+        $image = Image::read($disk->get($existingPath));
+
+        // Resize if needed
+        if ($width) {
+            $image->scaleDown(width: $width, height: $height);
+        }
+
+        // Encode to WebP
+        $encoded = $image->toWebp(quality: 85);
+
+        if ($overwrite) {
+            // Replace original file
+            $optimizedPath = preg_replace('/\.\w+$/', '.webp', $existingPath);
+        } else {
+            // Save as new file
+            $directory = $newPath ?? dirname($existingPath);
+            $optimizedPath = $directory . '/' . Str::uuid() . '.webp';
+        }
+
+        $disk->put($optimizedPath, (string) $encoded);
+
+        return $optimizedPath;
     }
 }
