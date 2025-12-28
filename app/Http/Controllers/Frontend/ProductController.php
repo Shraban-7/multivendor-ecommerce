@@ -74,6 +74,21 @@ class ProductController extends Controller
 
         $brands = Brand::all();
 
+        if ($request->ajax()) {
+            $html = view('components.frontend.products-page', compact(
+                'products',
+                'categories',
+                'brands',
+                'selectedCategories',
+                'selectedBrands',
+                'sortFilter'
+            ))->render();
+
+            return response()->json([
+                'html' => $html,
+            ]);
+        }
+
         return view('frontend.products.index', compact(
             'products',
             'categories',

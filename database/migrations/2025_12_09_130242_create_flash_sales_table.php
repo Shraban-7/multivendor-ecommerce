@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('title');
             $table->string('image')->nullable();
             $table->text('description')->nullable();
-            $table->timestamp('start_time');
-            $table->timestamp('end_time');
+            $table->dateTime('start_time');
+            $table->dateTime('end_time');
             $table->boolean('is_active')->default(1);
             $table->timestamps();
         });
