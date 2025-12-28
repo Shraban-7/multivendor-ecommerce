@@ -60,35 +60,43 @@
             border-bottom: 0px;
         }
 
+        /* =========================
+           CATEGORY FILTER – ACTIVE
+           ========================= */
+
         .category-filter.active {
-            /* soft orange tint (orange-50) */
+            color: #ea580c;
+            /* orange-600 */
+            font-weight: 500;
+            /* medium */
+        }
+
+        /* Active text (category name) */
+        .category-filter.active span:first-child {
             color: #ea580c;
             /* orange-600 */
         }
 
-        /* hover effect on the main text */
-        .category-filter:hover span:first-child {
-            color: #ea580c;
-        }
-
-        /* hover effect on badge */
-        .category-filter:hover .count-badge {
-            color: #ea580c;
-        }
-
-
-
-        .category-filter.active span {
-            color: #ea580c;
-            /* orange-600 */
-        }
-
+        /* Active badge */
         .category-filter.active .count-badge {
-            /* background-color: #ffedd5; */
+            background-color: #ffedd5;
             /* orange-100 */
             color: #ea580c;
             /* orange-600 */
         }
+
+        /* =========================
+           HOVER STATES (NON-ACTIVE)
+           ========================= */
+
+        .category-filter:not(.active):hover span:first-child {
+            color: #ea580c;
+        }
+
+        .category-filter:not(.active):hover .count-badge {
+            color: #ea580c;
+        }
+
 
         @media (min-width: 640px) {
             .list-view-image {
@@ -144,10 +152,11 @@
                             @foreach ($categories as $category)
                                 <li>
                                     @if (in_array($category->slug, $selectedCategories))
-                                        <a href="#"
-                                            class="category-filter hover:category-filter-hover flex justify-between items-center group font-medium text-primary-600">
+                                        <a href="#" data-slug="{{ $category->slug }}"
+                                            class="category-filter hover:category-filter-hover flex justify-between items-center group active">
                                             <span>{{ $category->name }}</span>
-                                            <span class="text-xs bg-primary-100 text-primary-600 px-2 py-0.5 rounded-full">
+                                            <span
+                                                class="text-xs bg-gray-100 px-2 py-0.5 rounded-full group-hover:text-orange-600 count-badge">
                                                 {{ $category->products_count }}</span>
                                         </a>
                                     @else
@@ -155,7 +164,7 @@
                                             class="category-filter hover:category-filter-hover flex justify-between items-center group">
                                             <span>{{ $category->name }}</span>
                                             <span
-                                                class="text-xs bg-gray-100 px-2 py-0.5 rounded-full group-hover:text-orange-600">{{ $category->products_count }}</span>
+                                                class="text-xs bg-gray-100 px-2 py-0.5 rounded-full group-hover:text-orange-600 count-badge">{{ $category->products_count }}</span>
                                         </a>
                                     @endif
                                 </li>
@@ -454,7 +463,9 @@
 
         function updateUrl() {
             const params = buildQueryParams();
+
             const queryString = params.toString();
+
             const url = queryString ? `/products?${queryString}` : '/products';
 
             // Update browser URL (without reload)
@@ -462,55 +473,19 @@
 
             // Fetch filtered products
             fetch(url, {
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('products-container').innerHTML = data.html;
-            })
-            .catch(error => {
-                console.error('Filter error:', error);
-            });
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('products-container').innerHTML = data.html;
+                })
+                .catch(error => {
+                    console.error('Filter error:', error);
+                });
 
             return;
-
-            // let params = new URLSearchParams();
-
-            // // Category
-            // let selectedCategories = [];
-            // document.querySelectorAll('.category-filter.active').forEach(el => {
-            //     selectedCategories.push(el.dataset.slug);
-            // });
-            // if (selectedCategories.length) {
-            //     params.append("category", selectedCategories.join(','));
-            // }
-
-            // // Brand
-            // let selectedBrands = [];
-            // document.querySelectorAll('.brand-filter:checked').forEach(el => {
-            //     selectedBrands.push(el.value);
-            // });
-            // if (selectedBrands.length) {
-            //     params.append("brand", selectedBrands.join(','));
-            // }
-
-            // // Sort
-            // let sortValue = document.querySelector('.sort-filter')?.value;
-            // if (sortValue) {
-            //     params.append("sort", sortValue);
-            // }
-
-            // // Price
-            // let min = document.getElementById("priceMin").value;
-            // let max = document.getElementById("priceMax").value;
-
-            // if (min) params.append("price_min", min);
-            // if (max) params.append("price_max", max);
-
-            // let query = params.toString();
-            // window.location.href = query ? "/products?" + query : "/products";
         }
 
         /* ---------- PRICE HANDLERS ---------- */
@@ -548,34 +523,62 @@
             updateUrl();
         });
 
-        document.querySelectorAll('.remove-filter').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const type = this.dataset.type;
-                const slug = this.dataset.slug;
+        document.addEventListener('click', function(e) {
+            const btn = e.target.closest('.remove-filter');
+            if (!btn) return;
 
-                const url = new URL(window.location.href);
-                const params = url.searchParams;
+            const type = btn.dataset.type;
+            const slug = btn.dataset.slug;
 
-                if (type === 'category') {
-                    params.delete('category');
-                } else if (type === 'brand') {
-                    let brands = params.get('brand')?.split(',') || [];
-                    brands = brands.filter(b => b !== slug);
-                    if (brands.length > 0) {
-                        params.set('brand', brands.join(','));
-                    } else {
-                        params.delete('brand');
+            /* ---- RESET UI STATE ---- */
+
+            if (type === 'category') {
+                document.querySelectorAll('.category-filter').forEach(el => {
+                    if (el.dataset.slug === slug) {
+                        el.classList.remove('active');
                     }
-                } else if (type === 'price') {
-                    params.delete('price');
-                }
+                });
+            }
 
-                window.location.href = url.pathname + '?' + params.toString();
+            if (type === 'brand') {
+                document.querySelectorAll('.brand-filter').forEach(el => {
+                    if (el.value === slug) {
+                        el.checked = false;
+                    }
+                });
+            }
+
+            if (type === 'price') {
+                document.getElementById('priceMin').value = '';
+                document.getElementById('priceMax').value = '';
+                document.getElementById('priceRange').value = '';
+            }
+
+            /* ---- REBUILD URL FROM UI ---- */
+            updateUrl();
+        });
+
+
+        function clearAll() {
+            document.querySelectorAll('.category-filter').forEach(el => {
+                el.classList.remove('active');
             });
-        });
 
-        document.getElementById('clear-all-filters')?.addEventListener('click', function() {
-            window.location.href = '/products';
-        });
+            document.querySelectorAll('.brand-filter').forEach(el => {
+                el.checked = false;
+            });
+
+            // Sort
+            const sort = document.querySelector('.sort-filter');
+            if (sort) sort.value = '';
+
+            // Price
+            document.getElementById('priceMin').value = '';
+            document.getElementById('priceMax').value = '';
+            document.getElementById('priceRange').value = '';
+
+            /* ---- REBUILD URL ---- */
+            updateUrl();
+        }
     </script>
 @endpush
