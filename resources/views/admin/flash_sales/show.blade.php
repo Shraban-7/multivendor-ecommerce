@@ -13,7 +13,7 @@
                 <img src="{{ storage_url($sale->image) }}" class="img-fluid mb-3" style="max-height: 250px;">
             @endif
 
-            <p>{{ $sale->description }}</p>
+            <p>{!! $sale->description !!}</p>
 
             <p><strong>Start:</strong> {{ $sale->start_time }}</p>
             <p><strong>End:</strong> {{ $sale->end_time }}</p>

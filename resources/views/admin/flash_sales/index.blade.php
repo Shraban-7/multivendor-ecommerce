@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title','flash sales')
+@section('title', 'flash sales')
 
 @section('content')
     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -24,33 +24,40 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($flashSales as $sale)
-                    <tr>
-                        <td>{{ $sale->id }}</td>
-                        <td>{{ $sale->title }}</td>
-                        <td>
-                            @if($sale->image)
-                            <img src="{{ storage_url($sale->image) }}" width="60">
-                            @endif
-                        </td>
-                        <td>{{ $sale->start_time }}</td>
-                        <td>{{ $sale->end_time }}</td>
-                        <td>
-                            @if($sale->is_active)
-                            <span class="badge bg-success">Active</span>
-                            @else
-                            <span class="badge bg-secondary">Inactive</span>
-                            @endif
-                        </td>
-                        <td>
-                            <a href="{{ route('admin.flash-sales.show', $sale->id) }}" class="btn btn-info btn-sm">
-                                View
-                            </a>
-                            <a href="{{ route('admin.flash-sales.edit', $sale->id) }}" class="btn btn-warning btn-sm">
-                                Edit
-                            </a>
-                        </td>
-                    </tr>
+                    @foreach ($flashSales as $sale)
+                        <tr>
+                            <td>{{ $sale->id }}</td>
+                            <td>{{ $sale->title }}</td>
+                            <td>
+                                @if ($sale->image)
+                                    <img src="{{ storage_url($sale->image) }}" width="60">
+                                @endif
+                            </td>
+                            <td>{{ $sale->start_time }}</td>
+                            <td>{{ $sale->end_time }}</td>
+                            <td>
+                                @if ($sale->is_active)
+                                    <span class="badge bg-success">Active</span>
+                                @else
+                                    <span class="badge bg-secondary">Inactive</span>
+                                @endif
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a href="{{ route('admin.flash-sales.show', $sale->id) }}" class="btn btn-info btn-sm">
+                                        View
+                                    </a>
+                                    <a href="{{ route('admin.flash-sales.edit', $sale->id) }}"
+                                        class="btn btn-warning btn-sm">
+                                        Edit
+                                    </a>
+                                    <button type="button" class="btn btn-danger btn-sm"
+                                        onclick="confirmDelete('{{ route('admin.flash-sales.delete', $sale->id) }}')">
+                                        Delete
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
                     @endforeach
                 </tbody>
             </table>
