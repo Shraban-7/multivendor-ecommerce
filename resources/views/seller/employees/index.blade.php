@@ -14,6 +14,7 @@
             <thead class="table-light">
                 <tr>
                     <th scope="col">Name</th>
+                    <th scope="col">Phone</th>
                     <th scope="col">Email</th>
                     <th scope="col">Status</th>
                     <th scope="col">Created At</th>
@@ -24,6 +25,7 @@
                 @foreach ($employees as $employee)
                     <tr>
                         <td>{{ $employee->name }}</td>
+                        <td>{{ $employee?->phone }}</td>
                         <td>{{ $employee->email }}</td>
                         <td>
                             @if ($employee->is_active)

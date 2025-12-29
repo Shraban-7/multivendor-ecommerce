@@ -14,6 +14,11 @@
                     <input type="text" name="name" value="{{ old('name', $employee->name) }}" class="form-control"
                         required>
                 </div>
+                <div class="mb-3">
+                    <label class="form-label">Phone</label>
+                    <input type="text" name="phone" value="{{ old('name', $employee->phone) }}" class="form-control"
+                        required>
+                </div>
 
                 <div class="mb-3">
                     <label class="form-label">Email</label>

@@ -27,6 +27,7 @@ class SellerEmployeeController extends Controller
     {
         $data = $request->validate([
             'name'     => 'required|string|max:255',
+            'phone'    => 'required|string|max:20',
             'email'    => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:5|confirmed',
         ]);
@@ -51,6 +52,7 @@ class SellerEmployeeController extends Controller
 
         $data = $request->validate([
             'name'     => 'required|string|max:255',
+            'phone'    => 'required|string|max:20',
             'email'    => 'required|string|email|max:255|unique:users,email,' . $employee->id,
             'password' => 'nullable|string|min:5|confirmed',
             'is_active' => 'required|in:0,1'
@@ -61,6 +63,7 @@ class SellerEmployeeController extends Controller
         }
 
         $employee->name  = $data['name'];
+        $employee->phone  = $data['phone'];
         $employee->email = $data['email'];
         $employee->is_active = $data['is_active'];
         $employee->seller_id = get_seller_id();
