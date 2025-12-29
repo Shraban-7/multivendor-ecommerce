@@ -352,15 +352,18 @@ class ProductController extends Controller
             //     delete_file($image->image);
             //     $image->delete();
             // });
+            foreach ($request->file('files') as $file) {
 
-            if ($request->hasFile('files')) {
-                foreach ($request->file('files') as $file) {
-                    ProductImage::create([
-                        'product_id' => $product->id,
-                        'image' => upload_file($file, $imageFolder),
-                    ]);
-                }
+                $prodImage = $imageService->uploadAndOptimize(
+                    $request->file($file),
+                    "$imageFolder"
+                );
+                ProductImage::create([
+                    'product_id' => $product->id,
+                    'image' => $prodImage,
+                ]);
             }
+
         }
 
         return response()->json([

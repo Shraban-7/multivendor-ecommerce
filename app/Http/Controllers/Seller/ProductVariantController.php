@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\Seller;
 
+use App\Models\Option;
 use App\Models\Seller;
 use App\Models\Product;
 use App\Models\CartItem;
+use App\Models\OptionValue;
 use App\Models\PosCartItem;
 use Illuminate\Http\Request;
 use App\Models\ProductVariant;
 use App\Http\Controllers\Controller;
-use App\Models\Option;
-use App\Models\OptionValue;
 use App\Models\ProductVariantOption;
+use App\Services\ImageOptimizerService;
 use Illuminate\Support\Facades\Validator;
 
 class ProductVariantController extends Controller
@@ -32,7 +33,7 @@ class ProductVariantController extends Controller
             'variants.*.selling_price' => 'required|numeric|min:0|gte:variants.*.buying_price',
             'variants.*.discount_type' => 'nullable|in:flat,percentage',
             'variants.*.discount_value' => 'nullable|numeric|min:0',
-            'variants.*.image' => 'nullable|file|image|max:2048',
+            'variants.*.image' => 'nullable|image|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -54,26 +55,28 @@ class ProductVariantController extends Controller
                 $variant = new ProductVariant();
                 $variant->product_id = $product->id;
                 $variant->sku = ProductVariant::generate_sku();
-                $variant->buying_price =  $v['buying_price'];
-                $variant->selling_price =  $v['selling_price'];
+                $variant->buying_price = $v['buying_price'];
+                $variant->selling_price = $v['selling_price'];
                 $variant->stock_in = $v['stock'] ?? 0;
 
                 $variant->discount_type = ($v['discount_type'] ?? 'none') !== 'none' ? $v['discount_type'] : null;
-                $variant->discount_value = !empty($v['discount_value']) ?  $v['discount_value'] : null;
+                $variant->discount_value = !empty($v['discount_value']) ? $v['discount_value'] : null;
                 $hasDiscount = !empty($variant->discount_type) && !empty($variant->discount_value);
 
                 $variant->discount_amount = $hasDiscount
-                    ? calculate_discount_amount($v['selling_price'], $variant->discount_type,  $variant->discount_value) : null;
+                    ? calculate_discount_amount($v['selling_price'], $variant->discount_type, $variant->discount_value) : null;
 
                 $variant->discounted_price = $hasDiscount
-                    ? calculate_discounted_price( $v['selling_price'], $variant->discount_type,  $variant->discount_value) : null;
+                    ? calculate_discounted_price($v['selling_price'], $variant->discount_type, $variant->discount_value) : null;
 
                 if (!$defaultExists) {
                     $variant->is_default = $index === 0 ? 1 : 0;
                 }
 
                 if (isset($v['image']) && $request->hasFile("variants.$index.image")) {
-                    $variant->image = upload_file($request->file("variants.$index.image"), "$imageFolder/variants");
+                    $imageService = new ImageOptimizerService;
+                    $variant->image = $imageService->uploadAndOptimize($request->file("variants.$index.image"), "$imageFolder/variants");
+                    // $variant->image = upload_file($request->file("variants.$index.image"), "$imageFolder/variants");
                 }
 
                 $variant->save();
@@ -82,7 +85,8 @@ class ProductVariantController extends Controller
                     foreach ($v['attributes'] as $key => $value) {
                         $key = trim($key);
                         $value = trim($value);
-                        if (!$key || !$value) continue;
+                        if (!$key || !$value)
+                            continue;
 
                         $option = Option::firstOrCreate(['name' => $key]);
 
@@ -117,7 +121,9 @@ class ProductVariantController extends Controller
 
         if ($request->hasFile('image')) {
             $imageFolder = "images/{$variant->product->seller->username}/products";
-            $variant->image = upload_file($request->file('image'), $imageFolder);
+            $imageService = new ImageOptimizerService;
+            $variant->image = $imageService->uploadAndOptimize($request->file("image"), "$imageFolder");
+            // $variant->image = upload_file($request->file('image'), $imageFolder);
         }
 
         if ($request->is_default && !$variant->is_default) {
@@ -125,7 +131,7 @@ class ProductVariantController extends Controller
         }
 
         $hasDiscount = !empty($request->discount_type) && !empty($request->discount_value);
-        
+
         $variant->is_default = $request->is_default ? 1 : 0;
         $variant->low_stock_quantity = $request->low_stock_quantity;
         $variant->buying_price = $request->buying_price;
