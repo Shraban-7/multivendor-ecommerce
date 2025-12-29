@@ -22,8 +22,7 @@ class OtpLog extends Model
 
     public static function generate(string $identifier, string $type, int $length = 6, int $validMinutes = 5): self
     {
-        //$code = str_pad(random_int(0, pow(10, $length) - 1), $length, '0', STR_PAD_LEFT);
-        $code = 123456;
+        $code = str_pad(random_int(0, pow(10, $length) - 1), $length, '0', STR_PAD_LEFT);
 
         return self::create([
             'identifier'  => $identifier,

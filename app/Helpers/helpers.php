@@ -773,3 +773,10 @@ if (! function_exists('format_bd_phone')) {
         return $number;
     }
 }
+
+if (! function_exists('send_sms')) {
+    function send_sms($message, $recipients)
+    {
+        return (new \App\Services\SmsService)->send($message, $recipients);
+    }
+}

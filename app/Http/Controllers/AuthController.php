@@ -48,7 +48,11 @@ class AuthController extends Controller
             }
         }
 
-        OtpLog::generate($phone, OtpLog::TYPE_SIGNUP);
+        $otpLog = OtpLog::generate($phone, OtpLog::TYPE_SIGNUP);
+
+        $otpMessage = "{$otpLog->code} is your Slash Mart verification code. Valid for 5 min";
+
+        send_sms($otpMessage, $phone);
 
         return apiResponse([
             'user_exists' => false,
@@ -121,7 +125,7 @@ class AuthController extends Controller
                 'check' => fn($employee) => $employee->is_active == 1,
                 'inactiveMessage' => 'Your account is inactive, contact with seller',
             ],
-            
+
         ];
 
         foreach ($userTypes as $type => $config) {
@@ -131,7 +135,7 @@ class AuthController extends Controller
             if (!$user) {
                 continue;
             }
-            
+
 
             if ($type === 'seller') {
                 if ($user->status == Seller::BLOCKED) {
@@ -143,7 +147,7 @@ class AuthController extends Controller
                 }
             }
 
-            
+
             if (!($config['check'])($user)) {
                 return errorResponse($config['inactiveMessage'] ?? 'Account inactive', 403);
             }
