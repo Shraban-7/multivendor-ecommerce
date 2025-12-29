@@ -757,3 +757,19 @@ if (!function_exists('time_to_ms')) {
         return $milliseconds;
     }
 }
+
+if (! function_exists('format_bd_phone')) {
+    function format_bd_phone($number)
+    {
+        // Remove white space and symbols
+        $number = preg_replace('/[\s\-\(\)]+/', '', $number);
+        if (strpos($number, '+880') === 0) {
+            $number = substr($number, 1); // Remove "+"
+        }
+        if (strpos($number, '01') === 0) {
+            $number = '880' . substr($number, 1); // Convert 01xxxxxxxxx to 8801xxxxxxxxx
+        }
+
+        return $number;
+    }
+}
