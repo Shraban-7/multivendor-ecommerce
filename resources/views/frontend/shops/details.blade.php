@@ -270,11 +270,11 @@ class="w-full h-full object-cover">
                                 </option>
 
                                 <option value="low-to-high" {{ request('sortBy') === 'low-to-high' ? 'selected' : '' }}>
-                                    Low to High
+                                    Price (Low to High)
                                 </option>
 
                                 <option value="high-to-low" {{ request('sortBy') === 'high-to-low' ? 'selected' : '' }}>
-                                    High to Low
+                                    Price (High to Low)
                                 </option>
                             </select>
                         </form>
