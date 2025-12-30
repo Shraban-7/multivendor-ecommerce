@@ -20,7 +20,7 @@ class SellerController extends Controller
         return apiResourceResponse(SellerResource::collection($sellers));
     }
 
-    public function show(Seller $seller)
+    public function show(Seller $seller, Request $request)
     {
         $data['seller'] = SellerResource::make($seller);
 
@@ -30,11 +30,24 @@ class SellerController extends Controller
             ->pluck('category_id')
             ->toArray();
 
-        $popularProducts = Product::where('seller_id', $seller->id)->limit(10)->get();
-        $newProducts = Product::where('seller_id', $seller->id)->latest('id')->get();
+        $productQuery = Product::where('seller_id', $seller->id)
+            ->withDefaultRelations()
+            ->active();
 
-        $data['popular_products'] = ProductListResource::collection($popularProducts);
-        $data['new_products'] = ProductListResource::collection($newProducts);
+        if ($request->sortBy === 'popular') {
+            $productQuery->orderBy('stock_out', 'desc');
+        } elseif ($request->sortBy === 'low-to-high') {
+            $productQuery->orderBy('selling_price', 'asc');
+        } elseif ($request->sortBy === 'high-to-low') {
+            $productQuery->orderBy('selling_price', 'desc');
+        } else {
+            $productQuery->latest();
+        }
+
+        $products = $productQuery->paginate(12);
+
+        $data['products'] = ProductListResource::collection($products);
+
         $data['categories'] = CategoryResource::collection(Category::whereIn('id', $category_ids)->get());
 
         return apiResponse($data);
