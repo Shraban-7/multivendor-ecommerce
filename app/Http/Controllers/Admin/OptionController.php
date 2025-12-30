@@ -23,8 +23,8 @@ class OptionController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name'      => 'required|string',
-            'values'     => 'required|array',
+            'name' => 'required|string',
+            'values' => 'required|array',
             'categories' => 'nullable|array'
         ]);
 
@@ -35,7 +35,7 @@ class OptionController extends Controller
         foreach ($data['values'] as $value) {
             OptionValue::create([
                 'option_id' => $option->id,
-                'value'     => $value,
+                'value' => $value,
             ]);
         }
 
@@ -52,8 +52,8 @@ class OptionController extends Controller
     public function update(Request $request, Option $option)
     {
         $data = $request->validate([
-            'name'       => 'required|string',
-            'values'     => 'required|array',
+            'name' => 'required|string',
+            'values' => 'required|array',
             'categories' => 'nullable|array',
         ]);
 
@@ -71,7 +71,7 @@ class OptionController extends Controller
             if (!in_array($value, $existingValues)) {
                 OptionValue::create([
                     'option_id' => $option->id,
-                    'value'     => $value,
+                    'value' => $value,
                 ]);
             }
         }
@@ -81,6 +81,20 @@ class OptionController extends Controller
         $option->categories()->sync($data['categories'] ?? []);
 
         return redirect()->back()->with('success', 'Option Updated Successfully!');
+    }
+
+    public function optionValueUpdate(Request $request,$id)
+    {
+        $request->validate([
+            'value' => 'required|string|max:255',
+        ]);
+
+        $optionValue = OptionValue::findOrFail($id);
+        $optionValue->update([
+            'value' => $request->value,
+        ]);
+
+        return redirect()->back()->with('success', 'Option value updated successfully');
     }
 
 
@@ -94,10 +108,10 @@ class OptionController extends Controller
     public function destroy(Option $option)
     {
         $optionValueIds = OptionValue::where('option_id', $option->id)->pluck('id')->toArray();
-        if(!empty($optionValueIds)) {
+        if (!empty($optionValueIds)) {
             ProductVariantOption::whereIn('option_value_id', $optionValueIds)->delete();
         }
-        
+
         $option->option_values()->delete();
 
         $option->categories()->detach();
