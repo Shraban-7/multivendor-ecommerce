@@ -257,13 +257,28 @@ class="w-full h-full object-cover">
                         {{-- Note: This form submission WILL cause a reload. You need JS to handle filtering without reload --}}
                         <form method="GET" action="{{ route('sellers.shop', $seller->username) }}">
                             <select name="sortBy" onchange="this.form.submit()"
-                                class="w-full sm:w-auto pl-3 pr-8 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-1 focus:ring-primary-500 cursor-pointer text-gray-700">
-                                <option value="" disabled selected>Sort By</option>
-                                <option value="relevance">Relevance</option>
-                                <option value="new-arrivals">Newest</option>
-                                <option value="best-selling">Best Selling</option>
+                                class="w-full sm:w-auto pl-3 pr-8 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg
+                                    focus:border-primary-500 focus:ring-1 focus:ring-primary-500 cursor-pointer text-gray-700">
+
+                                <option value="new-arrivals"
+                                    {{ request('sortBy', 'new-arrivals') === 'new-arrivals' ? 'selected' : '' }}>
+                                    Newest
+                                </option>
+
+                                <option value="popular" {{ request('sortBy') === 'popular' ? 'selected' : '' }}>
+                                    Popular
+                                </option>
+
+                                <option value="low-to-high" {{ request('sortBy') === 'low-to-high' ? 'selected' : '' }}>
+                                    Low to High
+                                </option>
+
+                                <option value="high-to-low" {{ request('sortBy') === 'high-to-low' ? 'selected' : '' }}>
+                                    High to Low
+                                </option>
                             </select>
                         </form>
+
                     </div>
                 </div>
 

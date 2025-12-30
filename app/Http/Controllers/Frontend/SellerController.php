@@ -65,17 +65,20 @@ class SellerController extends Controller
         $page = $request->get('page', 1);
         $skip = ($page - 1) * $limit;
 
-        $productQuery = Product::where('seller_id', $seller->id)->withDefaultRelations()->active();
+        $productQuery = Product::where('seller_id', $seller->id)
+            ->withDefaultRelations()
+            ->active();
 
-        if ($request->sortBy == 'best-selling') {
-            $productQuery->where('best_selling', 1);
-        } elseif ($request->sortBy == 'trending') {
-            $productQuery->where('is_trending', 1);
-        } elseif ($request->sortBy == 'new-arrivals') {
-            $productQuery->latest();
+        if ($request->sortBy === 'popular') {
+            $productQuery->orderBy('stock_out', 'desc');
+        } elseif ($request->sortBy === 'low-to-high') {
+            $productQuery->orderBy('selling_price', 'asc');
+        } elseif ($request->sortBy === 'high-to-low') {
+            $productQuery->orderBy('selling_price', 'desc');
         } else {
-            $productQuery->orderBy('id', 'asc');
+            $productQuery->latest();
         }
+
 
         $shopProducts = $productQuery->skip($skip)->take($limit)->get();
 
