@@ -15,9 +15,10 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $category_id    = $request->category_id ?? '';
+        $category_id = $request->category_id ?? '';
         $subcategory_id = $request->subcategory_id ?? '';
-        $name           = $request->name ?? '';
+        $name = $request->name ?? '';
+        $seller_id = $request->seller_id ?? '';
 
         $products = Product::query();
 
@@ -35,6 +36,10 @@ class ProductController extends Controller
                     ->orWhere('name', 'LIKE', "{$name}%")
                     ->orWhere('name', 'LIKE', "%{$name}%");
             });
+        }
+
+        if ($seller_id != '') {
+            $products->where('seller_id', $seller_id);
         }
 
         $products = $products->paginate(15)->appends($request->query());
