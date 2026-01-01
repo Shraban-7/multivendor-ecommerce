@@ -15,6 +15,7 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\Frontend\HomeController;
+use Illuminate\Support\Facades\Storage;
 
 Route::prefix('auth')->as('auth.')->group(function () {
     Route::post('check-phone', [AuthController::class, 'checkPhone'])->name('checkPhone');
@@ -571,6 +572,29 @@ Route::get('/bkash/callback', [BkashController::class, 'callback'])->name('bkash
 
 
 Route::get('/fix-product-images', function () {
+
+    $products = Product::with('seller')->get();
+
+    foreach($products as $product) {
+        if($product->thumbnail != null) {
+            if(Storage::disk('public')->exists($product->thumbnail)) {
+                $newPath = move_file($product->thumbnail, $product->seller->username.'/products');
+                //move file to: /storage/app/public/$product->seller->username/products/img.png
+                $product->thumbnail = $newPath;
+                $product->save();
+            } else {
+                $product->thumbnail = null;
+                $product->save();
+            }
+        }
+    }
+
+    // variants
+    // product images
+    // og images
+    // seller images
+
+    return;
 
     foreach (Seller::all() as $seller) {
 
