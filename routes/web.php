@@ -573,14 +573,19 @@ Route::get('/bkash/callback', [BkashController::class, 'callback'])->name('bkash
 
 Route::get('/fix-product-images', function () {
 
-    $products = Product::with('seller')->get();
+    $products = Product::with('seller')->whereNotNull('thumbnail')->get();
+    $product_images = ProductImage::with('product')->whereNotNull('image')->get();
+    $variants = ProductVariant::with('product')->whereNotNull('image')->get();
+    $seos = ProductSeo::with('product')->whereNotNull('og_image')->get();
+
+    // dd($seos);
+
+    // foreach ($seos as $seo) {
+    //     dd($seo->og_image);
+    // }
+    // dd($product_images);
 
     foreach ($products as $product) {
-
-        if (!$product->thumbnail || !$product->seller) {
-            continue;
-        }
-
         if (!Storage::disk('public')->exists($product->thumbnail)) {
             $product->thumbnail = null;
             $product->save();
@@ -598,6 +603,60 @@ Route::get('/fix-product-images', function () {
         $product->save();
     }
 
+    foreach ($product_images as $product_image) {
+        if (!Storage::disk('public')->exists($product_image->image)) {
+            $product_image->image = null;
+            $product_image->save();
+            continue;
+        }    
+        
+        $filename = basename($product_image->image);
+        $directory = $product_image->product->seller->username . '/products';
+        $newPath = $directory . '/' . $filename;
+
+        Storage::disk('public')->makeDirectory($directory);
+        Storage::disk('public')->move($product_image->image, $newPath);
+
+        $product_image->image = $newPath;
+        $product_image->save();
+    }
+
+    foreach ($variants as $variant) {
+        if (!Storage::disk('public')->exists($variant->image)) {
+            $variant->image = null;
+            $variant->save();
+            continue;
+        }    
+        
+        $filename = basename($variant->image);
+        $directory = $variant->product->seller->username . '/products';
+        $newPath = $directory . '/' . $filename;
+
+        Storage::disk('public')->makeDirectory($directory);
+        Storage::disk('public')->move($variant->image, $newPath);
+
+        $variant->image = $newPath;
+        $variant->save();
+    }
+
+    foreach ($seos as $seo) {
+        if (!Storage::disk('public')->exists($seo->og_image)) {
+            $seo->og_image = null;
+            $seo->save();
+            continue;
+        }    
+        
+        $filename = basename($seo->og_image);
+        $directory = $seo->product->seller->username . '/products';
+        $newPath = $directory . '/' . $filename;
+
+        Storage::disk('public')->makeDirectory($directory);
+        Storage::disk('public')->move($seo->og_image, $newPath);
+
+        $seo->og_image = $newPath;
+        $seo->save();
+    }
+
     // variants
     // product images
     // og images
@@ -605,92 +664,4 @@ Route::get('/fix-product-images', function () {
 
     return;
 
-    foreach (Seller::all() as $seller) {
-
-        // OLD storage folder: storage/app/public/images/{seller}/products
-        $oldBase = storage_path("app/public/images/{$seller->username}/products");
-
-        // NEW storage folder: storage/app/public/{seller}/products
-        $newBase = storage_path("app/public/{$seller->username}/products");
-        File::ensureDirectoryExists($newBase);
-
-        // Legacy inner folders inside oldBase
-        $legacyFolders = [
-            $oldBase . '/thumb',
-            $oldBase . '/variant-images',
-            $oldBase . '/og-images',
-        ];
-
-        // STEP 1: Update DB paths to {seller}/products/filename.jpg first
-        $dbPrefix = "{$seller->username}/products/";
-
-        Product::where('seller_id', $seller->id)->each(function ($p) use ($oldBase, $dbPrefix) {
-            if ($p->thumbnail && File::exists($oldBase . '/' . basename($p->thumbnail))) {
-                $p->update(['thumbnail' => $dbPrefix . basename($p->thumbnail)]);
-            }
-        });
-
-        ProductImage::whereIn(
-            'product_id',
-            Product::where('seller_id', $seller->id)->pluck('id')
-        )->each(function ($img) use ($oldBase, $dbPrefix) {
-            if ($img->image && File::exists($oldBase . '/' . basename($img->image))) {
-                $img->update(['image' => $dbPrefix . basename($img->image)]);
-            }
-        });
-
-        ProductVariant::whereIn(
-            'product_id',
-            Product::where('seller_id', $seller->id)->pluck('id')
-        )->each(function ($v) use ($oldBase, $dbPrefix) {
-            if ($v->image && File::exists($oldBase . '/' . basename($v->image))) {
-                $v->update(['image' => $dbPrefix . basename($v->image)]);
-            }
-        });
-
-        ProductSeo::whereIn(
-            'product_id',
-            Product::where('seller_id', $seller->id)->pluck('id')
-        )->each(function ($seo) use ($oldBase, $dbPrefix) {
-            if ($seo->og_image && File::exists($oldBase . '/' . basename($seo->og_image))) {
-                $seo->update(['og_image' => $dbPrefix . basename($seo->og_image)]);
-            }
-        });
-
-        // STEP 2: Flatten legacy folders → oldBase
-        foreach ($legacyFolders as $folder) {
-            if (!File::exists($folder)) continue;
-            foreach (File::files($folder) as $file) {
-                $target = $oldBase . '/' . $file->getFilename();
-                if (!File::exists($target)) {
-                    File::move($file->getPathname(), $target);
-                }
-            }
-        }
-
-        // STEP 3: Move all files from oldBase → newBase
-        if (File::exists($oldBase)) {
-            foreach (File::files($oldBase) as $file) {
-                $target = $newBase . '/' . $file->getFilename();
-                if (!File::exists($target)) {
-                    File::move($file->getPathname(), $target);
-                }
-            }
-        }
-
-        // STEP 4: Remove empty legacy folders
-        foreach ($legacyFolders as $folder) {
-            if (File::exists($folder) && count(File::allFiles($folder)) === 0) {
-                File::deleteDirectory($folder);
-            }
-        }
-
-        // STEP 5: Remove old images folder inside storage/app/public/images/{seller}
-        $oldSellerFolder = storage_path("app/public/images/{$seller->username}");
-        if (File::exists($oldSellerFolder)) {
-            File::deleteDirectory($oldSellerFolder);
-        }
-    }
-
-    return 'All product images DB updated first, files moved, and old images folder removed. DELETE THIS ROUTE after success.';
 });
