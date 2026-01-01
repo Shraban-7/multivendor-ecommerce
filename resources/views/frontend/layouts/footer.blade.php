@@ -15,7 +15,7 @@ $hideFooter = request()->is('/') ? '' : 'hidden md:block';
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <!-- Brand Column -->
             <div>
-                <a href="#" class="flex items-center gap-2 mb-6">
+                <a href="#" class="flex items-center gap-1 mb-6">
                     <div>
                         <img src="{{ asset('assets/frontend/images/sm-icon.png') }}" alt="" style="height: 36px;">
                     </div>
