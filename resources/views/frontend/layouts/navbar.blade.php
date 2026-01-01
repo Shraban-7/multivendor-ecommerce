@@ -35,14 +35,14 @@
     <div class="container mx-auto max-w-7xl px-4 py-4">
         <div class="flex items-center justify-between gap-4 lg:gap-8">
             <a href="/" class="flex items-center gap-2 group">
-                <div class="bg-primary-500 text-white p-2 rounded-lg group-hover:rotate-3 transition duration-300">
-                    <i class="fas fa-shopping-bag text-2xl"></i>
+                <div>
+                    <img src="{{ asset('assets/frontend/images/sm-icon.png') }}" alt="" style="height: 36px;">
                 </div>
                 <div class="flex flex-col">
                     <span class="text-2xl font-extrabold tracking-tight text-gray-800 leading-none">Slash<span
                             class="text-primary-600">Mart</span></span>
-                    <span class="text-[10px] font-medium text-gray-500 tracking-widest uppercase">Premium
-                        Store</span>
+                    <!-- <span class="text-[10px] font-medium text-gray-500 tracking-widest uppercase">Premium
+                        Store</span> -->
                 </div>
             </a>
 

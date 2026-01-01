@@ -16,8 +16,8 @@ $hideFooter = request()->is('/') ? '' : 'hidden md:block';
             <!-- Brand Column -->
             <div>
                 <a href="#" class="flex items-center gap-2 mb-6">
-                    <div class="bg-primary-500 text-white p-1.5 rounded group-hover:rotate-3 transition duration-300">
-                        <i class="fas fa-shopping-bag text-lg"></i>
+                    <div>
+                        <img src="{{ asset('assets/frontend/images/sm-icon.png') }}" alt="" style="height: 36px;">
                     </div>
                     <span class="text-2xl font-bold text-white">Slash<span class="text-primary-500">Mart</span></span>
                 </a>
