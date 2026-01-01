@@ -108,12 +108,12 @@ class ProductController extends Controller
 
         $imageService = new ImageOptimizerService;
 
-        $imageFolder = "images/{$seller->username}/products";
+        $imageFolder = "{$seller->username}/products";
         if ($request->hasFile('thumbnail')) {
             //$validated['thumbnail'] = upload_file($request->file('thumbnail'), "$imageFolder/thumb");
             $validated['thumbnail'] = $imageService->uploadAndOptimize(
                 $request->file('thumbnail'),
-                "$imageFolder/thumb"
+                "$imageFolder"
             );
         }
 
@@ -167,8 +167,8 @@ class ProductController extends Controller
                 $variant->is_default = $index === 0 ? 1 : 0;
 
                 if (isset($v['image']) && $request->hasFile("variants.$index.image")) {
-                    $variant->image = upload_file($request->file("variants.$index.image"), "$imageFolder/variants");
-                    $variant->image = upload_file($request->file("variants.$index.image"), "$imageFolder/variants");
+                    // $variant->image = upload_file($request->file("variants.$index.image"), "$imageFolder/variants");
+                    $variant->image = $imageService->uploadAndOptimize($request->file("variants.$index.image"), "$imageFolder");
                 }
 
                 $variant->save();
@@ -304,7 +304,7 @@ class ProductController extends Controller
 
         unset($validated['brand']);
 
-        $imageFolder = "images/{$seller->username}/products";
+        $imageFolder = "{$seller->username}/products";
 
         if ($validated['name'] && $validated['name'] !== $product->name) {
             $validated['slug'] = str_slug('products', 'slug', $validated['name']);
@@ -402,7 +402,7 @@ class ProductController extends Controller
         ]);
 
         $product = Product::find($request->product_id);
-        $imageFolder = $imageFolder = "images/{$product->seller->username}/products";
+        $imageFolder ="{$product->seller->username}/products";
 
         foreach ($request->file('images') as $file) {
             ProductImage::create([
@@ -533,13 +533,14 @@ class ProductController extends Controller
             ]
         ]);
 
-        $imageFolder = "images/{$seller->username}/products";
+        $imageFolder = "{$seller->username}/products";
 
         if ($request->hasFile('og_image')) {
             if ($product->seo && $product->seo->og_image) {
                 delete_file($product->seo->og_image);
             }
-            $validated['og_image'] = upload_file($request->file('og_image'), "$imageFolder/og_image");
+
+            $validated['og_image'] = upload_file($request->file('og_image'), "$imageFolder");
         }
 
         if ($product->seo) {

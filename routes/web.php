@@ -1,15 +1,20 @@
 <?php
 
+use App\Models\Seller;
+use App\Models\Product;
+use App\Models\ProductSeo;
+use App\Models\ProductImage;
+use App\Models\ProductVariant;
 use App\Models\VerificationCode;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
+use App\Services\ImageOptimizerService;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BkashController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\Frontend\HomeController;
-use App\Models\Product;
-use App\Services\ImageOptimizerService;
 
 Route::prefix('auth')->as('auth.')->group(function () {
     Route::post('check-phone', [AuthController::class, 'checkPhone'])->name('checkPhone');
@@ -549,7 +554,7 @@ Route::prefix('payment')->as('payment.')->group(function () {
     Route::get('/manual', [PaymentController::class, 'manual']);
 });
 
-Route::as('static.')->group(function () {
+Route:: as('static.')->group(function () {
     Route::get('seller-guide', fn() => view('static.seller-guide'))->name('sellerGuide');
 });
 
@@ -563,3 +568,121 @@ Route::get('/bkash/callback', [BkashController::class, 'callback'])->name('bkash
 // Route::post('/bkash/create', [BkashController::class, 'create']);
 // Route::post('/bkash/execute', [BkashController::class, 'execute']);
 // Route::get('/bkash/query/{transactionId}', [BkashController::class, 'query']);
+
+
+Route::get('/fix-all-product-images', function () {
+
+    foreach (Seller::all() as $seller) {
+
+        /*
+        |--------------------------------------------------------------------------
+        | STEP 1: FLATTEN images/{seller}/products/*
+        |--------------------------------------------------------------------------
+        */
+        $imagesBase = public_path("images/{$seller->username}/products");
+        dd(File::ensureDirectoryExists($imagesBase));
+
+        $innerFolders = [
+            $imagesBase . '/thumb',
+            $imagesBase . '/variant-images',
+            $imagesBase . '/og-images',
+        ];
+
+        foreach ($innerFolders as $folder) {
+            if (!File::exists($folder))
+                continue;
+
+            foreach (File::files($folder) as $file) {
+                $target = $imagesBase . '/' . $file->getFilename();
+                if (!File::exists($target)) {
+                    File::move($file->getPathname(), $target);
+                }
+            }
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | STEP 2: MOVE images/{seller}/products → {seller}/products
+        |--------------------------------------------------------------------------
+        */
+        $oldPath = $imagesBase;
+        $newPath = public_path("{$seller->username}/products");
+
+        File::ensureDirectoryExists($newPath);
+
+        if (File::exists($oldPath)) {
+            foreach (File::files($oldPath) as $file) {
+                $target = $newPath . '/' . $file->getFilename();
+                if (!File::exists($target)) {
+                    File::move($file->getPathname(), $target);
+                }
+            }
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | STEP 3: FIX DATABASE (store filename only)
+        |--------------------------------------------------------------------------
+        */
+        Product::where('seller_id', $seller->id)->each(function ($p) {
+            if ($p->thumbnail) {
+                $p->update(['thumbnail' => basename($p->thumbnail)]);
+            }
+        });
+
+        ProductImage::whereIn(
+            'product_id',
+            Product::where('seller_id', $seller->id)->pluck('id')
+        )->each(function ($img) {
+            if ($img->image) {
+                $img->update(['image' => basename($img->image)]);
+            }
+        });
+
+        ProductVariant::whereIn(
+            'product_id',
+            Product::where('seller_id', $seller->id)->pluck('id')
+        )->each(function ($v) {
+            if ($v->image) {
+                $v->update(['image' => basename($v->image)]);
+            }
+        });
+
+        ProductSeo::whereIn(
+            'product_id',
+            Product::where('seller_id', $seller->id)->pluck('id')
+        )->each(function ($seo) {
+            if ($seo->og_image) {
+                $seo->update(['og_image' => basename($seo->og_image)]);
+            }
+        });
+
+        /*
+        |--------------------------------------------------------------------------
+        | STEP 4: REMOVE BROKEN DB REFERENCES
+        |--------------------------------------------------------------------------
+        */
+        Product::where('seller_id', $seller->id)->each(function ($p) use ($newPath) {
+            if ($p->thumbnail && !File::exists($newPath . '/' . $p->thumbnail)) {
+                $p->update(['thumbnail' => null]);
+            }
+        });
+
+        /*
+        |--------------------------------------------------------------------------
+        | STEP 5: CLEAN UP EMPTY FOLDERS
+        |--------------------------------------------------------------------------
+        */
+        foreach ($innerFolders as $folder) {
+            if (File::exists($folder)) {
+                File::deleteDirectory($folder);
+            }
+        }
+
+        if (File::exists(public_path("images/{$seller->username}"))) {
+            File::deleteDirectory(public_path("images/{$seller->username}"));
+        }
+    }
+
+    return 'ALL product images fixed, flattened, and moved. REMOVE THIS ROUTE NOW.';
+});

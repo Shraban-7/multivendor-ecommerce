@@ -42,7 +42,8 @@ class ProductVariantController extends Controller
 
         $product = Product::find($request->product_id);
 
-        $imageFolder = "images/{$product->seller->username}/products";
+        // $imageFolder = "images/{$product->seller->username}/products";
+        $imageFolder = "{$product->seller->username}/products";
 
         $defaultExists = ProductVariant::where('product_id', $product->id)->where('is_default', 1)->exists();
 
@@ -75,7 +76,7 @@ class ProductVariantController extends Controller
 
                 if (isset($v['image']) && $request->hasFile("variants.$index.image")) {
                     $imageService = new ImageOptimizerService;
-                    $variant->image = $imageService->uploadAndOptimize($request->file("variants.$index.image"), "$imageFolder/variants");
+                    $variant->image = $imageService->uploadAndOptimize($request->file("variants.$index.image"), "$imageFolder");
                     // $variant->image = upload_file($request->file("variants.$index.image"), "$imageFolder/variants");
                 }
 
