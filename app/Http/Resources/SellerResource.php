@@ -12,6 +12,7 @@ class SellerResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->business_name,
+            'cover_image' => $this->cover_image ? storage_url($this->cover_image):null,
             'email' => $this->business_email,
             'address' => $this->business_address,
             'is_best_seller' => (bool) $this->is_best_seller,
