@@ -19,6 +19,14 @@ class SellerResource extends JsonResource
             'products_count' => (string) $this->total_items,
             'sales_count' => (string) $this->total_items,
             'followers_count' => (string) $this->total_followers,
+            'description' => $this->business_description ?? 'This seller has not provided a business description yet.',
+            'join_date' => $this->created_at->format('M d, Y'),
+            'location' => trim(
+                collect([
+                    optional($this->district)->name,
+                    optional($this->division)->name,
+                ])->filter()->implode(', ')
+            ),
         ];
     }
 }
