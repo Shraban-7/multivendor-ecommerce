@@ -127,7 +127,7 @@ class AuthController extends Controller
                 $allData['code'] = Seller::generateSellerCode($allData['name']);
                 $username = $allData['username'];
 
-                $destinationDir = "images/" . $username;
+                $destinationDir = $username;
                 if (!Storage::disk('public')->exists($destinationDir)) {
                     Storage::disk('public')->makeDirectory($destinationDir);
                 }

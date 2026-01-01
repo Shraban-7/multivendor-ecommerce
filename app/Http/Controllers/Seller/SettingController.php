@@ -39,7 +39,7 @@ class SettingController extends Controller
             if (!empty($seller->business_logo)) {
                 delete_file($seller->business_logo);
             }
-            $data['business_logo'] = upload_file($request->file('business_logo'), "images/{$username}/logo");
+            $data['business_logo'] = upload_file($request->file('business_logo'), "{$username}");
         } else {
             $data['business_logo'] = $seller->business_logo;
         }
@@ -48,7 +48,7 @@ class SettingController extends Controller
             if (!empty($seller->cover_image)) {
                 delete_file($seller->cover_image);
             }
-            $data['cover_image'] = upload_file($request->file('cover_image'), "images/{$username}/cover_image");
+            $data['cover_image'] = upload_file($request->file('cover_image'), "{$username}");
         } else {
             $data['cover_image'] = $seller->cover_image;
         }
@@ -68,7 +68,7 @@ class SettingController extends Controller
                 'seller_id' => $seller->id,
                 'image' => upload_file(
                     $request->file('banner'),
-                    "images/{$username}/banners"
+                    "{$username}"
                 ),
             ]);
         }

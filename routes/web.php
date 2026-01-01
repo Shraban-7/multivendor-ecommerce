@@ -555,7 +555,7 @@ Route::prefix('payment')->as('payment.')->group(function () {
     Route::get('/manual', [PaymentController::class, 'manual']);
 });
 
-Route::as('static.')->group(function () {
+Route:: as('static.')->group(function () {
     Route::get('seller-guide', fn() => view('static.seller-guide'))->name('sellerGuide');
 });
 
@@ -577,13 +577,7 @@ Route::get('/fix-product-images', function () {
     $product_images = ProductImage::with('product')->whereNotNull('image')->get();
     $variants = ProductVariant::with('product')->whereNotNull('image')->get();
     $seos = ProductSeo::with('product')->whereNotNull('og_image')->get();
-
-    // dd($seos);
-
-    // foreach ($seos as $seo) {
-    //     dd($seo->og_image);
-    // }
-    // dd($product_images);
+    $sellers = Seller::get();
 
     foreach ($products as $product) {
         if (!Storage::disk('public')->exists($product->thumbnail)) {
@@ -591,7 +585,7 @@ Route::get('/fix-product-images', function () {
             $product->save();
             continue;
         }
-        
+
         $filename = basename($product->thumbnail);
         $directory = $product->seller->username . '/products';
         $newPath = $directory . '/' . $filename;
@@ -608,8 +602,8 @@ Route::get('/fix-product-images', function () {
             $product_image->image = null;
             $product_image->save();
             continue;
-        }    
-        
+        }
+
         $filename = basename($product_image->image);
         $directory = $product_image->product->seller->username . '/products';
         $newPath = $directory . '/' . $filename;
@@ -626,8 +620,8 @@ Route::get('/fix-product-images', function () {
             $variant->image = null;
             $variant->save();
             continue;
-        }    
-        
+        }
+
         $filename = basename($variant->image);
         $directory = $variant->product->seller->username . '/products';
         $newPath = $directory . '/' . $filename;
@@ -644,8 +638,8 @@ Route::get('/fix-product-images', function () {
             $seo->og_image = null;
             $seo->save();
             continue;
-        }    
-        
+        }
+
         $filename = basename($seo->og_image);
         $directory = $seo->product->seller->username . '/products';
         $newPath = $directory . '/' . $filename;
@@ -657,11 +651,35 @@ Route::get('/fix-product-images', function () {
         $seo->save();
     }
 
-    // variants
-    // product images
-    // og images
-    // seller images
+    foreach ($sellers as $seller) {
+
+        $imageFields = [
+            'image',
+            'cover_image',
+            'nid_front_image',
+            'nid_back_image',
+            'business_logo',
+            'trade_license_image',
+            'shop_image',
+        ];
+        
+        foreach ($imageFields as $field) {
+            if (!$seller->$field) continue;
+
+            if (!Storage::disk('public')->exists($seller->$field)) {
+                $seller->$field = null;
+                $seller->save();
+                continue;
+            }
+            $directory = $seller->username;
+            $filename = basename($seller->$field);
+            $newPath = $directory . '/' . $filename;
+            Storage::disk('public')->makeDirectory($directory);
+            Storage::disk('public')->move($seller->$field, $newPath);
+            $seller->$field = $newPath;
+            $seller->save();
+        }
+    }
 
     return;
-
 });
