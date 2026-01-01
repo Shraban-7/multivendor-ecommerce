@@ -555,7 +555,7 @@ Route::prefix('payment')->as('payment.')->group(function () {
     Route::get('/manual', [PaymentController::class, 'manual']);
 });
 
-Route:: as('static.')->group(function () {
+Route::as('static.')->group(function () {
     Route::get('seller-guide', fn() => view('static.seller-guide'))->name('sellerGuide');
 });
 
@@ -575,18 +575,27 @@ Route::get('/fix-product-images', function () {
 
     $products = Product::with('seller')->get();
 
-    foreach($products as $product) {
-        if($product->thumbnail != null) {
-            if(Storage::disk('public')->exists($product->thumbnail)) {
-                $newPath = move_file($product->thumbnail, $product->seller->username.'/products');
-                //move file to: /storage/app/public/$product->seller->username/products/img.png
-                $product->thumbnail = $newPath;
-                $product->save();
-            } else {
-                $product->thumbnail = null;
-                $product->save();
-            }
+    foreach ($products as $product) {
+
+        if (!$product->thumbnail || !$product->seller) {
+            continue;
         }
+
+        if (!Storage::disk('public')->exists($product->thumbnail)) {
+            $product->thumbnail = null;
+            $product->save();
+            continue;
+        }
+        
+        $filename = basename($product->thumbnail);
+        $directory = $product->seller->username . '/products';
+        $newPath = $directory . '/' . $filename;
+
+        Storage::disk('public')->makeDirectory($directory);
+        Storage::disk('public')->move($product->thumbnail, $newPath);
+
+        $product->thumbnail = $newPath;
+        $product->save();
     }
 
     // variants
