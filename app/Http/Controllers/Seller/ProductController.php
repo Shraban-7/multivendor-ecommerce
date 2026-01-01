@@ -168,6 +168,7 @@ class ProductController extends Controller
 
                 if (isset($v['image']) && $request->hasFile("variants.$index.image")) {
                     $variant->image = upload_file($request->file("variants.$index.image"), "$imageFolder/variants");
+                    $variant->image = upload_file($request->file("variants.$index.image"), "$imageFolder/variants");
                 }
 
                 $variant->save();
@@ -315,7 +316,8 @@ class ProductController extends Controller
             }
 
             $imageService = new ImageOptimizerService;
-            $validated['thumbnail'] = $imageService->uploadAndOptimize($request->file('thumbnail'), "$imageFolder/thumb");
+            $validated['thumbnail'] = $imageService->uploadAndOptimize($request->file('thumbnail'), "$imageFolder");
+            // $validated['thumbnail'] = $imageService->uploadAndOptimize($request->file('thumbnail'), "$imageFolder/thumb");
             //$validated['thumbnail'] = upload_file($request->file('thumbnail'), "$imageFolder/thumb");
             //$validated['thumbnail'] = upload_with_watermark($request->file('thumbnail'), "$imageFolder/thumb");
         }
