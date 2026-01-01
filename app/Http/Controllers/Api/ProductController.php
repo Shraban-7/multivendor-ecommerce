@@ -42,7 +42,20 @@ class ProductController extends Controller
             $products->where('seller_id', $seller_id);
         }
 
-        $products = $products->paginate(15)->appends($request->query());
+        if ($request->sort_by === 'popular') {
+            $products->orderBy('stock_out', 'desc');
+        } elseif ($request->sort_by === 'low-to-high') {
+            $products->orderBy('selling_price', 'asc');
+        } elseif ($request->sort_by === 'high-to-low') {
+            $products->orderBy('selling_price', 'desc');
+        } else {
+            $products->latest();
+        }
+
+        $limit = $request->limit ?? 15;
+        if($request->limit > 100) $limit = 100;
+
+        $products = $products->paginate($limit)->appends($request->query());
 
         return apiResourceResponse(ProductListResource::collection($products));
     }
