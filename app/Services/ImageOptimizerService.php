@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 
 class ImageOptimizerService
 {
+    const IMAGE_QUALITY = 85;
     /**
      * Optimize and upload an image.
      *
@@ -33,11 +34,46 @@ class ImageOptimizerService
 
         // Encode to WebP with 80-90% quality
         // WebP offers superior compression (30% smaller than JPEG) with comparable quality
-        $encoded = $image->toWebp(quality: 85);
+        $encoded = $image->toWebp(quality: $this::IMAGE_QUALITY);
 
         Storage::disk('public')->put($fullPath, (string) $encoded);
 
         return $fullPath;
+    }
+
+    public function optimizeExistingImage(string $existingPath, bool $webp = false): null|string
+    {
+        $disk = Storage::disk('public');
+
+        if (! $disk->exists($existingPath)) {
+            return null;
+        }
+
+        $image = Image::read($disk->get($existingPath));
+        $extension = strtolower(pathinfo($existingPath, PATHINFO_EXTENSION));
+
+        if ($webp === true) {
+            $newPath = preg_replace('/\.[^.]+$/', '.webp', $existingPath);
+
+            $encoded = $image->toWebp($this::IMAGE_QUALITY);
+
+            $disk->put($newPath, (string) $encoded);
+            $disk->delete($existingPath);
+
+            return $newPath;
+        }
+
+        // Optimize in-place (same extension)
+        $encoded = match ($extension) {
+            'jpg', 'jpeg' => $image->toJpeg($this::IMAGE_QUALITY),
+            'png' => $image->toPng(),
+            'gif' => $image->toGif(),
+            default => throw new \Exception("Unsupported image type: {$extension}")
+        };
+
+        $disk->put($existingPath, (string) $encoded);
+
+        return $existingPath;
     }
 
     /**
@@ -50,7 +86,8 @@ class ImageOptimizerService
      * @param bool $overwrite Whether to overwrite the original file
      * @return string Path to optimized image
      */
-    public function optimizeExisting(string $existingPath, ?string $newPath = null, ?int $width = 1200, ?int $height = null, bool $overwrite = true): string {
+    public function optimizeExisting(string $existingPath, ?string $newPath = null, ?int $width = 1200, ?int $height = null, bool $overwrite = true): string
+    {
         $disk = Storage::disk('public');
 
         if (! $disk->exists($existingPath)) {
