@@ -149,7 +149,6 @@
         input.addEventListener('input', function() {
             clearTimeout(timer);
             const query = this.value.trim();
-            console.log(query);
 
             if (query.length < 2) {
                 box.classList.add('hidden');
