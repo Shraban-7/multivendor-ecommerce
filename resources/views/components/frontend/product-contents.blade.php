@@ -3,6 +3,7 @@ $reviewCount = $product['reviews']->count();
 $rating = $product['rating'];
 $seller = $product['seller'];
 $settings = settings();
+$defaultVariant = collect($product['variants'])->firstWhere('is_default', 1) ?? null;
 $publicProduct = [
     'name' => $product['name'],
     'price' => $product['default_variant']->selling_price ?? $product['selling_price'],
@@ -14,7 +15,6 @@ $publicProduct = [
 ];
 $breadCrumbs = [['label' => $product['category']], ['label' => $product['subcategory']]];
 
-$defaultVariant = $product['default_variant'] ?? null;
 $variantDiscountedPrice = $defaultVariant ? (is_array($defaultVariant) ? $defaultVariant['discounted_price'] ?? null : $defaultVariant->discounted_price ?? null) : null;
 $variantPrice = $defaultVariant ? (is_array($defaultVariant) ? $defaultVariant['selling_price'] ?? null : $defaultVariant->selling_price ?? null) : null;
 $showVariantDiscount = $variantDiscountedPrice !== null && $variantDiscountedPrice < $variantPrice;
@@ -72,7 +72,8 @@ $showProductDiscount = isset($product['discounted_price'], $product['price']) &&
                 </div>
 
                 <div class="flex flex-wrap items-center gap-3 text-sm text-gray-700">
-                    <div><strong>SKU:</strong> <span class="sku-text">{{ $defaultVariant->sku ?? $product['sku'] }}</span></div>
+                    <div><strong>SKU:</strong> <span
+                            class="sku-text">{{ $defaultVariant->sku ?? $product['sku'] }}</span></div>
 
                     @if (auth()->check() && auth()->user()->isAffiliate())
                         <button
@@ -98,29 +99,31 @@ $showProductDiscount = isset($product['discounted_price'], $product['price']) &&
             @endif
         </div>
 
-        <x-frontend.variant-selection-card :product="$product" />      
-        
+        <x-frontend.variant-selection-card :product="$product" />
+
         @isset($seller)
-        <div class="border-y border-gray-100 py-4 my-4 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <img src="{{ storage_url($seller['business_logo']) }}" class="w-10 h-10 rounded-full border border-gray-200 object-cover">
-                <div>
-                    <div class="flex items-center gap-1.5">
-                        <span class="text-sm font-semibold text-gray-800">{{ $seller['business_name'] }}</span>
-                        <i class="fas fa-check-circle text-blue-500 text-[10px]" title="Verified Seller"></i>
-                    </div>
-                    <div class="flex items-center gap-2 text-[10px] text-gray-500">
-                        <span><i class="fas fa-star text-yellow-400"></i> {{ $seller['rating'] }} Rating</span>
-                        <span>•</span>
-                        <span>{{ $seller['total_followers'] }} followers</span>
+            <div class="border-y border-gray-100 py-4 my-4 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <img src="{{ storage_url($seller['business_logo']) }}"
+                        class="w-10 h-10 rounded-full border border-gray-200 object-cover">
+                    <div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-sm font-semibold text-gray-800">{{ $seller['business_name'] }}</span>
+                            <i class="fas fa-check-circle text-blue-500 text-[10px]" title="Verified Seller"></i>
+                        </div>
+                        <div class="flex items-center gap-2 text-[10px] text-gray-500">
+                            <span><i class="fas fa-star text-yellow-400"></i> {{ $seller['rating'] }} Rating</span>
+                            <span>•</span>
+                            <span>{{ $seller['total_followers'] }} followers</span>
+                        </div>
                     </div>
                 </div>
+                <a href="{{ route('sellers.shop', $seller['username']) }}"
+                    class="text-xs font-medium text-primary-600 border border-primary-100 bg-primary-50 px-3 py-1.5 rounded hover:bg-primary-500 hover:text-white hover:border-primary-500 transition-colors">
+                    Visit Store
+                </a>
             </div>
-            <a href="{{ route('sellers.shop', $seller['username']) }}" class="text-xs font-medium text-primary-600 border border-primary-100 bg-primary-50 px-3 py-1.5 rounded hover:bg-primary-500 hover:text-white hover:border-primary-500 transition-colors">
-                Visit Store
-            </a>
-        </div>
-        @endisset 
+        @endisset
 
         {{-- <div class="mt-3 p-4 bg-gray-50 rounded-xl shadow-sm">
             <span class="font-semibold text-gray-800">Our Commitments</span>

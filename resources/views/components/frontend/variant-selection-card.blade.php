@@ -4,6 +4,7 @@
         $defaultPrice = $defaultVariant['selling_price'] ?? '';
         $defaultDiscounted = $defaultVariant['discounted_price'] ?? '';
         $defaultValueIds = $defaultVariant['value_ids'] ?? [];
+        // dd($product['options']);
     @endphp
 
     <!-- Use default variant price -->
@@ -22,7 +23,7 @@
                         <button type="button"
                             class="option-value-btn text-sm font-medium px-3 py-1 rounded-md border transition
                                 {{ $isActive
-                                    ? 'bg-primary/10 text-primary-500 border-primary-500'
+                                    ? 'bg-primary/10 text-primary-500 border-primary-500 active-option'
                                     : 'bg-gray-50 text-gray-700 border-gray-300 hover:bg-primary/10 hover:text-primary' }}"
                             data-option-id="{{ $option['id'] }}" data-value-id="{{ $value['id'] }}">
                             {{ $value['value'] }}

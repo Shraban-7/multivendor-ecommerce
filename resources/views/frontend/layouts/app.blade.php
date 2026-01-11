@@ -128,13 +128,13 @@ $isDashboard = View::hasSection('dashboard');
     <x-auth-modal />
 
     <script>
-        window.toggleModal = function (modalId) {
+        window.toggleModal = function(modalId) {
             const modal = document.getElementById(modalId);
             if (!modal) return;
 
             const isHidden = modal.classList.contains("hidden");
 
-            if (isHidden) {            
+            if (isHidden) {
                 modal.classList.remove("hidden");
                 modal.classList.add("flex");
                 document.body.style.overflow = "hidden";
@@ -646,15 +646,27 @@ $isDashboard = View::hasSection('dashboard');
                 );
             }
 
+            $(document).on('click', '.option-value-btn', function() {
+                const $btn = $(this);
+                $btn.closest('[data-option-id]')
+                    .find('.option-value-btn')
+                    .removeClass('active-option bg-primary/10 text-primary-500 border-primary-500')
+                    .addClass('bg-gray-50 text-gray-700 border-gray-300');
+                $btn
+                    .addClass('active-option bg-primary/10 text-primary-500 border-primary-500')
+                    .removeClass('bg-gray-50 text-gray-700 border-gray-300');
+            });
+
             function collectSelectedOptions($wrapper) {
                 const selectedOptions = {};
-                $wrapper.find(".option-value-btn.bg-primary\\/10")
+                $wrapper.find(".option-value-btn.active-option")
                     .each(function() {
                         const $btn = $(this);
                         const optId = $btn.data("option-id");
                         const valId = $btn.data("value-id");
                         selectedOptions[optId] = parseInt(valId);
                     });
+
                 return selectedOptions;
             }
 
