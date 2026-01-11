@@ -126,7 +126,7 @@
                             @if ($allCod)
                                 <label
                                     class="group relative flex items-center p-4 border rounded-xl cursor-pointer hover:bg-gray-50 transition-all duration-200 has-[:checked]:border-primary-500 has-[:checked]:bg-primary-50/30 has-[:checked]:shadow-sm">
-                                    <input name="payment" type="radio"
+                                    <input name="payment" type="radio" checked
                                         class="h-5 w-5 text-primary-600 border-gray-300 focus:ring-primary-500">
                                     <div class="ml-4 flex-1">
                                         <div class="flex items-center justify-between">
