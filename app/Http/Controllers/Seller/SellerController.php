@@ -7,6 +7,7 @@ use App\Models\Division;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class SellerController extends Controller
 {
@@ -80,13 +81,13 @@ class SellerController extends Controller
             $usernameForPath = $seller->username;
             if ($section === 'personal') {
                 $data = $request->validate([
-                    'name'  => 'required|string|max:255',
+                    'name' => 'required|string|max:255',
                     'email' => 'required|email|unique:sellers,email,' . $seller->id,
                     'phone' => 'required|string|max:20',
                     'nid_no' => 'nullable|string|max:100',
                     'image' => 'nullable|image|mimes:jpg,jpeg,png,svg|max:2048',
                     'nid_front_image' => 'nullable|image|mimes:jpg,jpeg,png,svg|max:2048',
-                    'nid_back_image'  => 'nullable|image|mimes:jpg,jpeg,png,svg|max:2048',
+                    'nid_back_image' => 'nullable|image|mimes:jpg,jpeg,png,svg|max:2048',
                 ]);
 
                 $data['username'] = $seller->username;
@@ -98,8 +99,7 @@ class SellerController extends Controller
                 $fileFields = ['image', 'nid_front_image', 'nid_back_image'];
                 foreach ($fileFields as $field) {
                     if ($request->hasFile($field)) {
-                        if($seller->$field)
-                        {
+                        if ($seller->$field) {
                             delete_file($seller->$field);
                         }
                         $data[$field] = upload_file($request->file($field), "images/{$usernameForPath}/profile");
@@ -109,23 +109,21 @@ class SellerController extends Controller
                 }
 
                 $seller->update($data);
-            }
-            elseif ($section === 'business') {
+            } elseif ($section === 'business') {
                 $data = $request->validate([
-                    'business_name'    => 'required|string|max:255',
-                    'business_email'   => 'nullable|email|max:255|unique:sellers,business_email,' . $seller->id,
+                    'business_name' => 'required|string|max:255',
+                    'business_email' => 'nullable|email|max:255|unique:sellers,business_email,' . $seller->id,
                     'business_address' => 'nullable|string|max:255',
-                    'division_id'      => 'required|integer',
-                    'district_id'      => 'required|integer',
-                    'business_logo'    => 'nullable|image|mimes:jpg,jpeg,png,svg|max:2048',
-                    'shop_image'       => 'nullable|image|mimes:jpg,jpeg,png,svg|max:2048',
+                    'division_id' => 'required|integer',
+                    'district_id' => 'required|integer',
+                    'business_logo' => 'nullable|image|mimes:jpg,jpeg,png,svg|max:2048',
+                    'shop_image' => 'nullable|image|mimes:jpg,jpeg,png,svg|max:2048',
                 ]);
 
                 $fileFields = ['business_logo', 'shop_image'];
                 foreach ($fileFields as $field) {
                     if ($request->hasFile($field)) {
-                        if($seller->$field!= null)
-                        {
+                        if ($seller->$field != null) {
                             delete_file($seller->$field);
                         }
 
@@ -137,16 +135,14 @@ class SellerController extends Controller
                 }
 
                 $seller->update($data);
-            }
-            elseif ($section === 'documents') {
+            } elseif ($section === 'documents') {
                 $data = $request->validate([
-                    'trade_license_no'   => 'nullable|string|max:255',
+                    'trade_license_no' => 'nullable|string|max:255',
                     'trade_license_image' => 'nullable|image|mimes:jpg,jpeg,png,svg|max:2048',
                 ]);
 
                 if ($request->hasFile('trade_license_image')) {
-                    if($seller->trade_license_image!= null)
-                    {
+                    if ($seller->trade_license_image != null) {
                         delete_file($seller->trade_license_image);
                     }
                     $data['trade_license_image'] = upload_file($request->file('trade_license_image'), "images/{$usernameForPath}/documents");
@@ -155,8 +151,25 @@ class SellerController extends Controller
                 }
 
                 $seller->update($data);
-            }
-            else {
+            } elseif ($section === 'password') {
+
+                $data = $request->validate([
+                    'current_password' => 'required|string',
+                    'password' => 'required|string|min:8|confirmed',
+                ]);
+
+                if (!Hash::check($request->current_password, $seller->password)) {
+                    return response()->json([
+                        'errors' => [
+                            'current_password' => ['Current password is incorrect.']
+                        ]
+                    ], 422);
+                }
+
+                $seller->update([
+                    'password' => Hash::make($request->password),
+                ]);
+            } else {
                 return errorResponse('Invalid section provided.');
             }
 

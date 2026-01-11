@@ -181,6 +181,47 @@
                     </div>
                 </form>
             </div>
+            <div class="col-md-6">
+                <form id="passwordForm">
+                    @csrf
+                    <input type="hidden" name="section" value="password">
+
+                    <div class="card shadow-sm border-0 mb-4">
+                        <div class="card-header bg-white border-bottom">
+                            <h5 class="fw-semibold text-dark mb-0">Update Password</h5>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="row g-3">
+
+                                <div class="col-md-12">
+                                    <label class="form-label">Current Password</label>
+                                    <input type="password" name="current_password" class="form-control">
+                                </div>
+
+                                <div class="col-md-12">
+                                    <label class="form-label">New Password</label>
+                                    <input type="password" name="password" class="form-control">
+                                </div>
+
+                                <div class="col-md-12">
+                                    <label class="form-label">Confirm Password</label>
+                                    <input type="password" name="password_confirmation" class="form-control">
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="text-end p-3 border-top bg-white">
+                            <button type="submit" class="btn btn-primary">
+                                Update Password
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+
         </div>
     </div>
 
@@ -214,10 +255,11 @@
             $('select[name="division_id"]').on('change', function() {
                 loadDistricts($(this).val());
             });
-            
+
             $(function() {
                 $('form').on('submit', function(e) {
                     e.preventDefault();
+
                     let form = $(this);
                     let formData = new FormData(this);
                     let btn = form.find('button[type=submit]');
@@ -234,16 +276,23 @@
                         },
                         success: function(res) {
                             btn.prop('disabled', false).html('Saved');
-                            toastr.success(res.message);
+                            showSuccessToast(res.message);
+
+                            if (form.find('input[name="section"]').val() === 'password') {
+                                form[0].reset();
+                            }
                         },
                         error: function(xhr) {
                             btn.prop('disabled', false).html('Save');
+
                             if (xhr.status === 422) {
                                 let errors = xhr.responseJSON.errors;
-                                let message = Object.values(errors).map(err => err[0]).join('<br>');
-                                toastr.error(message);
+                                let message = Object.values(errors)
+                                    .map(err => err[0])
+                                    .join('<br>');
+                                showErrorToast(message);
                             } else {
-                                toastr.error('Something went wrong!');
+                                showErrorToast('Something went wrong!');
                             }
                         }
                     });
