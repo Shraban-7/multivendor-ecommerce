@@ -173,24 +173,9 @@
                                         </div>
                                     @endif
                                 </td>
-                                <td class="text-center">
-                                    @if ($item->selling_price > $item->unit_price)
-                                        <span style="text-decoration: line-through;">
-                                            {{ money($item->selling_price) }}
-                                        </span>
-                                    @endif
-                                    {{ money($item->unit_price) }}  
-                                </td>
-
+                                <td class="text-center">{{ money($item->unit_price) }}</td>
                                 <td class="text-center">{{ $item->quantity }}</td>
-                                <td class="text-end">
-                                    @if ($item->selling_price > $item->unit_price)
-                                        <span style="text-decoration: line-through;">
-                                            {{ money($item->selling_price * $item->quantity) }}
-                                        </span>
-                                    @endif
-                                    {{ money($item->total) }}
-                                </td>
+                                <td class="text-end">{{ money($item->total) }}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -216,18 +201,12 @@
                         <tr>
                             <td class="text-end text-uppercase"><strong>SUB TOTAL:</strong></td>
                             <td class="text-end text-uppercase">
-                                {{ strtoupper(money($order->total + $order->discount)) }}</td>
+                                {{ strtoupper(money($order->total)) }}</td>
                         </tr>
                         <tr>
                             <td class="text-end text-uppercase"><strong>SHIPPING FEE:</strong></td>
                             <td class="text-end text-uppercase">{{ strtoupper(money($order->shipping_fee)) }}</td>
                         </tr>
-                        @if ($order->discount)
-                            <tr>
-                                <td class="text-end text-uppercase"><strong>DISCOUNT:</strong></td>
-                                <td class="text-end text-uppercase">{{ strtoupper(money($order->discount)) }}</td>
-                            </tr>
-                        @endif
                         <tr>
                             <td class="text-end text-uppercase"><strong>TOTAL:</strong></td>
                             <td class="text-end fw-bold text-uppercase">{{ strtoupper(money($order->payable)) }}</td>
