@@ -47,12 +47,12 @@
 
     <!-- Drawer Footer -->
     <div class="mt-auto p-4 border-t border-gray-100 bg-gray-50">
-        <a href="#" class="flex items-center gap-2 text-primary-600 font-bold mb-4">
+        <a href="#" class="auth-btn flex items-center gap-2 text-primary-600 font-bold mb-4">
             <i class="far fa-user"></i> Login / Register
         </a>
-        <div class="text-xs text-gray-400">
+        <!-- <div class="text-xs text-gray-400">
             <p>Call Us: +880 1700-000000</p>
             <p>Email: info@slashmart.com</p>
-        </div>
+        </div> -->
     </div>
 </div>
