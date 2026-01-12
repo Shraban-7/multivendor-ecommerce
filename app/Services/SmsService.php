@@ -28,9 +28,11 @@ class SmsService
         }, $numbers);
         $formattedRecipients = implode(',', $formattedNumbers);
 
+        $apiUrl =  $this->apiUrl . '/sendtext';
+
         try {
-            $response = Http::post(env('SMS_BYPASS_URL') . '/sendtext', [
-                'apiUrl' => $this->apiUrl,
+            $response = Http::post(env('SMS_BYPASS_URL'), [
+                'apiUrl' => $apiUrl,
                 'apikey' => $this->apiKey,
                 'secretkey' => $this->secretKey,
                 'callerID' => $this->callerId,
