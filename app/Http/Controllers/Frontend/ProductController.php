@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\OptionValue;
 use App\Models\User;
 use App\Models\Review;
 use App\Models\Seller;
@@ -16,7 +17,7 @@ use Illuminate\Support\Facades\Cookie;
 
 class ProductController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, $subcategory = null)
     {
         $query = Product::withDefaultRelations();
 
@@ -40,6 +41,17 @@ class ProductController extends Controller
 
         if ($request->has('price_min') || $request->has('price_max')) {
             $query->whereBetween('selling_price', [$priceMin, $priceMax]);
+        }
+
+        $subcategorySlug = $request->query('subcategory');
+
+        if (!empty($subcategorySlug)) {
+
+            $subcategory = Category::where('slug', $subcategorySlug)->first();
+
+            if ($subcategory) {
+                $query->where('subcategory_id', $subcategory->id);
+            }
         }
 
         switch ($sortFilter) {
@@ -71,6 +83,15 @@ class ProductController extends Controller
             ->withCount('products')
             ->having('products_count', '>', 0)
             ->get();
+
+        $optionValues = OptionValue::whereHas('variants')->with('option')->get();
+        $productOptions = [];
+        foreach ($optionValues as $optionValue) {
+            $productOptions[$optionValue->option->name][] = [
+                'id' => $optionValue->id,
+                'value' => $optionValue->value,
+            ];
+        }
 
         $brands = Brand::all();
 

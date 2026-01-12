@@ -260,11 +260,10 @@ if (! function_exists('nav_categories')) {
     }
 }
 
-if (! function_exists('all_department_categories')) {
-    function all_department_categories()
+if (! function_exists('dropdown_categories')) {
+    function dropdown_categories()
     {
-        $categories = Category::allDepartment()
-            ->category()
+        $categories = Category::category()
             ->orderBy('name', 'ASC')
             ->with('subcategories')
             ->get();
