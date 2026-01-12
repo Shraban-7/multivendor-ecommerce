@@ -14,7 +14,7 @@
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="{{ asset('assets/libs/jquery/jquery-3.7.1.min.js') }}"></script>
-    <link rel="stylesheet" href="{{ asset('assets/libs/toastr/css/toastr.min.css') }}">
+    {{-- <link rel="stylesheet" href="{{ asset('assets/libs/toastr/css/toastr.min.css') }}"> --}}
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -126,6 +126,7 @@ $isDashboard = View::hasSection('dashboard');
     </button>
 
     <x-auth-modal />
+    <x-frontend.custom-toastr />
 
     <script>
         window.toggleModal = function(modalId) {
@@ -146,7 +147,7 @@ $isDashboard = View::hasSection('dashboard');
         };
     </script>
 
-    <script src="{{ asset('assets/libs/toastr/js/toastr.min.js') }}"></script>
+    {{-- <script src="{{ asset('assets/libs/toastr/js/toastr.min.js') }}"></script> --}}
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const quickViewModal = document.getElementById('quickViewModal');
@@ -332,7 +333,7 @@ $isDashboard = View::hasSection('dashboard');
                 var product = $product_content.data("product");
 
                 if (!product) {
-                    toastr.error("Product data not found!");
+                    showErrorToast("Product data not found!");
                     $btn.html(originalText).prop('disabled', false);
                     return;
                 }
@@ -358,7 +359,7 @@ $isDashboard = View::hasSection('dashboard');
                         },
                         success: function(data) {
                             if (data.success) {
-                                toastr.success(data.message);
+                                showSuccessToast(data.message);
                                 updateCartData();
 
                                 if ("{{ Route::currentRouteName() }}" === 'cart.details' &&
@@ -366,9 +367,9 @@ $isDashboard = View::hasSection('dashboard');
                                     window.location.reload();
                                 }
                             } else if (data.error) {
-                                toastr.error(data.error);
+                                showErrorToast(data.error);
                             } else {
-                                toastr.error('Unexpected response!');
+                                showErrorToast('Unexpected response!');
                             }
                         },
                         error: async function(xhr) {
@@ -376,12 +377,12 @@ $isDashboard = View::hasSection('dashboard');
                                 await refreshCsrfToken();
                                 addToCartRequest();
                             } else if (xhr.status === 401) {
-                                toastr.warning(xhr.responseJSON.error);
+                                showWarningToast(xhr.responseJSON.error);
                                 auth.toggleModal(true);
                             } else if (xhr.status === 403) {
-                                toastr.warning(xhr.responseJSON.error);
+                                showWarningToast(xhr.responseJSON.error);
                             } else {
-                                toastr.error('Something went wrong!');
+                                showErrorToast('Something went wrong!');
                             }
                         },
                         complete: function() {
@@ -434,20 +435,20 @@ $isDashboard = View::hasSection('dashboard');
                             $row.fadeOut(300, function() {
                                 $(this).remove();
                             });
-                            toastr.success(data.message);
+                            showSuccessToast(data.message);
                             updateCartData();
 
                             window.location.href = "{{ route('orders.checkout') }}" +
                                 "?seller_id=" + seller_id;
                         } else {
-                            toastr.error(data.error);
+                            showErrorToast(data.error);
                         }
                     },
                     error: function(xhr) {
                         if (xhr.status === 401) {
                             window.location.href = "{{ route('home') }}";
                         } else {
-                            toastr.error('Something went wrong!');
+                            showErrorToast('Something went wrong!');
                         }
                     }
                 });
@@ -470,17 +471,17 @@ $isDashboard = View::hasSection('dashboard');
                         if (data.unauthorized) {
                             window.location.href = "{{ route('home') }}";
                         } else if (data.success) {
-                            toastr.success(data.message);
+                            showSuccessToast(data.message);
                             updateWishlistData();
                         } else {
-                            toastr.error(data.error);
+                            showErrorToast(data.error);
                         }
                     },
                     error: function(xhr) {
                         if (xhr.status === 401) {
                             window.location.href = "{{ route('home') }}";
                         } else {
-                            toastr.error('Something went wrong!');
+                            showErrorToast('Something went wrong!');
                         }
                     }
                 });
@@ -503,7 +504,7 @@ $isDashboard = View::hasSection('dashboard');
                         if (response.success) {
                             $row.fadeOut(300, function() {
                                 $(this).remove();
-                                toastr.success(response.message);
+                                showSuccessToast(response.message);
                                 updateWishlistData();
                             });
                         } else {
@@ -529,7 +530,7 @@ $isDashboard = View::hasSection('dashboard');
                         $('#totalPrice').text(data.totalPrice);
                     },
                     error: function() {
-                        toastr.error('Failed to update cart data.');
+                        showErrorToast('Failed to update cart data.');
                     }
                 });
             }
@@ -546,7 +547,7 @@ $isDashboard = View::hasSection('dashboard');
                         $('#wishlistCount').text(data.wishlistCount);
                     },
                     error: function() {
-                        toastr.error('Failed to update wishlist data.');
+                        showErrorToast('Failed to update wishlist data.');
                     }
                 });
             }
@@ -727,7 +728,7 @@ $isDashboard = View::hasSection('dashboard');
                     if (quantity < availableStock) quantity += 1;
                     else {
                         quantity = availableStock;
-                        toastr.warning("Not enough stock!");
+                        showWarningToast("Not enough stock!");
                     }
                 } else {
                     quantity -= 1;

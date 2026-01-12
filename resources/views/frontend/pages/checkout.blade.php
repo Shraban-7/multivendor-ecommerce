@@ -31,8 +31,8 @@
                                 @foreach ($billingAddresses as $address)
                                     <!-- Saved Address 1 (Active) -->
                                     <label class="relative block cursor-pointer group">
-                                        <input type="radio" name="billing_address_id" value="{{ $address->id }}" class="peer sr-only"
-                                            {{ $address->is_default ? 'checked' : '' }}>
+                                        <input type="radio" name="billing_address_id" value="{{ $address->id }}"
+                                            class="peer sr-only" {{ $address->is_default ? 'checked' : '' }}>
                                         <div
                                             class="p-5 rounded-xl border-2 border-primary-100  peer-checked:border-primary-500 peer-checked:bg-white relative transition-all duration-200">
                                             <div
@@ -102,8 +102,10 @@
                             @foreach ($payment_gateways as $gateway)
                                 <label
                                     class="group relative flex items-center p-4 border rounded-xl cursor-pointer hover:bg-gray-50 transition-all duration-200 has-[:checked]:border-primary-500 has-[:checked]:bg-primary-50/30 has-[:checked]:shadow-sm">
-                                    <input name="payment" id="payment-{{ $gateway->slug }}" type="radio" value="{{ $gateway->slug }}"
-                                        class="h-5 w-5 text-primary-600 border-gray-300 focus:ring-primary-500" {{ !$allCod && $gateway->is_default ? 'checked' : '' }}>
+                                    <input name="payment" id="payment-{{ $gateway->slug }}" type="radio"
+                                        value="{{ $gateway->slug }}"
+                                        class="h-5 w-5 text-primary-600 border-gray-300 focus:ring-primary-500"
+                                        {{ !$allCod && $gateway->is_default ? 'checked' : '' }}>
                                     <div class="ml-4 flex-1">
                                         <div class="flex items-center justify-between">
                                             <span
@@ -303,9 +305,9 @@
                             class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-light-yellow focus:border-light-yellow text-sm md:text-base"></textarea>
                         <div class="flex items-start">
                             <div class="flex items-center h-5">
-                                <input id="remember" name="is_default" type="checkbox" value="1" {{ $billingAddresses->count()==0 ? 'checked' : '' }}
-                                    class="w-4 h-4 border border-gray-300 rounded-sm bg-gray-50 focus:ring-light-yellow focus:border-light-yellow "
-                                     />
+                                <input id="remember" name="is_default" type="checkbox" value="1"
+                                    {{ $billingAddresses->count() == 0 ? 'checked' : '' }}
+                                    class="w-4 h-4 border border-gray-300 rounded-sm bg-gray-50 focus:ring-light-yellow focus:border-light-yellow " />
                             </div>
                             <label for="remember" class="ms-2 text-sm font-medium text-gray-900">Mark as
                                 default</label>
@@ -428,7 +430,7 @@
                     data: $.param(formData),
                     success: function(response) {
                         if (response.status === true) {
-                            toastr.success(response.message);
+                            showSuccessToast(response.message);
                             if (response.payment_url !== '') {
                                 window.location.href = response.payment_url;
                             }
@@ -440,7 +442,7 @@
                         $btn.html(originalText)
                             .attr('disabled', false)
                             .removeClass('opacity-60 cursor-not-allowed');
-                        toastr.error(xhr.message);
+                        showErrorToast(xhr.message);
 
                     }
                 });

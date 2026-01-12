@@ -66,7 +66,9 @@
                                     @foreach ($cartGroup as $key => $cart)
                                         @foreach ($cart->cart_items as $item)
                                             @php
-                                                $stock = $item->variant ? ($item->variant->stock_in - $item->variant->stock_out) : ($item->product->stock_in - $item->product->stock_out);
+                                                $stock = $item->variant
+                                                    ? $item->variant->stock_in - $item->variant->stock_out
+                                                    : $item->product->stock_in - $item->product->stock_out;
                                             @endphp
                                             <div class="p-4 bg-white border border-gray-200 rounded-lg cart-item"
                                                 data-price="{{ $item->original_price }}"
@@ -87,7 +89,8 @@
                                                         class="flex-shrink-0 w-20 h-20 overflow-hidden rounded-md sm:w-24 sm:h-24">
                                                         <a href="{{ route('products.details', $item->product->slug) }}">
                                                             <img src="{{ $item->product->imageUrl }}"
-                                                                alt="{{ $item->product->name }}" class="object-cover w-full h-full" />
+                                                                alt="{{ $item->product->name }}"
+                                                                class="object-cover w-full h-full" />
                                                         </a>
                                                     </div>
 
@@ -127,9 +130,11 @@
                                                                 id="cart-item-{{ $item->id }}">
                                                                 @php
                                                                     $discountedPrice = $item->price;
-                                                                    $sellingPrice = $item->variant ? $item->variant->selling_price :$item->product->selling_price;
+                                                                    $sellingPrice = $item->variant
+                                                                        ? $item->variant->selling_price
+                                                                        : $item->product->selling_price;
                                                                 @endphp
-                                                                @if ($discountedPrice!=$sellingPrice)
+                                                                @if ($discountedPrice != $sellingPrice)
                                                                     <!-- Discounted item -->
                                                                     <span
                                                                         class="current-price text-lg font-bold text-primary">
@@ -182,7 +187,7 @@
                             </div>
                         @endforeach
                     @endif
-                </div>                
+                </div>
             </div>
             <div class="lg:col-span-1">
                 <div class="sticky top-6">
@@ -205,8 +210,8 @@
 
                             <div class="pt-4 border-t border-dashed border-gray-300">
                                 <div class="flex justify-between text-lg">
-                                    <span>Total (<span
-                                            id="selectedItemsCount">{{ $total_products_count }}</span> Items)</span>
+                                    <span>Total (<span id="selectedItemsCount">{{ $total_products_count }}</span>
+                                        Items)</span>
                                     <span id="estimatedTotal"
                                         class="text-xl text-gray-900">{{ money($sub_total) }}</span>
                                 </div>
@@ -339,7 +344,7 @@
                         currentQuantity++;
                     } else {
                         currentQuantity = cartItemStock;
-                        toastr.warning("Not enough stock!");
+                        showWarningToast("Not enough stock!");
                         return false;
                     }
                 } else if ($(this).hasClass('decrease-qty') && currentQuantity > 1) {
@@ -397,15 +402,15 @@
 
                         if (response.success) {
                             updateOrderTotals(response);
-                            toastr.success(response.message);
+                            showSuccessToast(response.message);
                             updateCartData();
                             updateOrderSummary();
                         } else {
-                            toastr.error(response.message);
+                            showErrorToast(response.message);
                         }
                     },
                     error: function() {
-                        toastr.error('An error occurred while updating the cart.');
+                        showErrorToast('An error occurred while updating the cart.');
                     }
                 });
             }
@@ -419,14 +424,14 @@
                     },
                     success: function(response) {
                         if (response.success) {
-                            toastr.success(response.message);
+                            showSuccessToast(response.message);
                             location.reload();
                         } else {
-                            toastr.error(response.message);
+                            showErrorToast(response.message);
                         }
                     },
                     error: function() {
-                        toastr.error('An error occurred while deleting the product.');
+                        showErrorToast('An error occurred while deleting the product.');
                     }
                 });
             }
@@ -523,7 +528,7 @@
                         $('#totalPrice').text(data.totalPrice);
                     },
                     error: function() {
-                        toastr.error('Failed to update cart data.');
+                        showErrorToast('Failed to update cart data.');
                     }
                 });
             }

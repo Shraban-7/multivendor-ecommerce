@@ -497,7 +497,7 @@
 
                             if (response.success) {
                                 updateOrderTotals(response);
-                                toastr.success(response.message);
+                                showSuccessToast(response.message);
                                 updateCartData();
                                 updateOrderSummary();
                                 var priceElement = $('#cart-item-' + cartItemId +
@@ -506,11 +506,11 @@
                                     priceElement.text(response.updatedPrice);
                                 }
                             } else {
-                                toastr.error(response.message);
+                                showErrorToast(response.message);
                             }
                         },
                         error: function() {
-                            toastr.error('An error occurred while updating the cart.');
+                            showErrorToast('An error occurred while updating the cart.');
                         }
                     });
                 }
@@ -524,14 +524,14 @@
                         },
                         success: function(response) {
                             if (response.success) {
-                                toastr.success(response.message);
+                                showSuccessToast(response.message);
                                 location.reload();
                             } else {
-                                toastr.error(response.message);
+                                showErrorToast(response.message);
                             }
                         },
                         error: function() {
-                            toastr.error('An error occurred while deleting the product.');
+                            showErrorToast('An error occurred while deleting the product.');
                         }
                     });
                 }
@@ -627,7 +627,7 @@
                             $('#totalPrice').text(data.totalPrice);
                         },
                         error: function() {
-                            toastr.error('Failed to update cart data.');
+                            showErrorToast('Failed to update cart data.');
                         }
                     });
                 }

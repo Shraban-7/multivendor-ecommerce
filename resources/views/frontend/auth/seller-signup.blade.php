@@ -430,10 +430,10 @@
                         if (xhr.status === 422) {
                             let errors = xhr.responseJSON.errors;
                             if (errors.image) {
-                               toastr.error(errors.image[0]);
+                                showErrorToast(errors.image[0]);
                             }
                         } else {
-                            toastr.error('Upload failed, Please reupload image');
+                            showErrorToast('Upload failed, Please reupload image');
                             // console.error('Upload failed:', xhr);
                         }
                     }
@@ -531,7 +531,8 @@
                                 }
                             }
                         } else {
-                            toastr.error('Error: ' + (xhr.responseJSON?.message || 'Something went wrong'));
+                            showErrorToast('Error: ' + (xhr.responseJSON?.message ||
+                                'Something went wrong'));
                         }
                     },
                     complete: function() {

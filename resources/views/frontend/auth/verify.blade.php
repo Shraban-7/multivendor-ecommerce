@@ -79,16 +79,16 @@
                     type: 'POST',
                     data: formData,
                     success: function(response) {
-                        toastr.success(response.message || 'Account verified successfully!');
+                        showSuccessToast(response.message || 'Account verified successfully!');
                         window.location.href = "{{ route('home') }}";
                     },
                     error: function(xhr) {
                         if (xhr.responseJSON && xhr.responseJSON.errors) {
                             for (let key in xhr.responseJSON.errors) {
-                                toastr.error(xhr.responseJSON.errors[key][0]);
+                                showErrorToast(xhr.responseJSON.errors[key][0]);
                             }
                         } else {
-                            toastr.error(xhr.responseJSON?.message || 'Verification failed.');
+                            showErrorToast(xhr.responseJSON?.message || 'Verification failed.');
                         }
                     }
                 });
@@ -132,16 +132,17 @@
                             _token: "{{ csrf_token() }}"
                         },
                         success: function(response) {
-                            toastr.success(response.message || 'Verification code resent!');
+                            showSuccessToast(response.message || 'Verification code resent!');
                             startTimer(response.resend_seconds || 120);
                         },
                         error: function(xhr) {
                             if (xhr.status === 429 && xhr.responseJSON?.resend_seconds) {
                                 startTimer(xhr.responseJSON.resend_seconds);
-                                toastr.error(xhr.responseJSON.message ||
+                                showErrorToast(xhr.responseJSON.message ||
                                     'Please wait before requesting a new code.');
                             } else {
-                                toastr.error(xhr.responseJSON?.message || 'Something went wrong.');
+                                showErrorToast(xhr.responseJSON?.message ||
+                                    'Something went wrong.');
                             }
                         }
                     });

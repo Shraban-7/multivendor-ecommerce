@@ -59,10 +59,11 @@
             </div>
             <div class="flex flex-wrap justify-between md:justify-center gap-y-6 gap-x-4 sm:gap-x-8">
                 @foreach ($categories as $category)
-                    <a href="{{ route('category.details', $category->slug) }}" 
-                    class="group flex flex-col items-center gap-2 w-16 sm:w-20">
-                        <div class="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden bg-gray-50 border border-gray-100 group-hover:border-primary-400 transition-colors duration-300 flex items-center justify-center p-3">
-                            @if($category->image)
+                    <a href="{{ route('category.details', $category->slug) }}"
+                        class="group flex flex-col items-center gap-2 w-16 sm:w-20">
+                        <div
+                            class="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden bg-gray-50 border border-gray-100 group-hover:border-primary-400 transition-colors duration-300 flex items-center justify-center p-3">
+                            @if ($category->image)
                                 <img src="{{ storage_url($category->image) }}"alt="{{ $category->name }}"
                                     class="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-110">
                             @else
@@ -71,7 +72,8 @@
                                 </div>
                             @endif
                         </div>
-                        <span class="text-[11px] sm:text-xs font-normal text-gray-600 text-center line-clamp-1 group-hover:text-primary-600 transition-colors">
+                        <span
+                            class="text-[11px] sm:text-xs font-normal text-gray-600 text-center line-clamp-1 group-hover:text-primary-600 transition-colors">
                             {{ $category->name }}
                         </span>
                     </a>
@@ -82,30 +84,31 @@
 
     <!-- ==================== 6. FLASH SALE SECTION ==================== -->
     @if ($flash_sales)
-    @foreach ($flash_sales as $flash_sale)
-        <section class="pb-5">
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <!-- Header -->
-                <div
-                    class="flex flex-col md:flex-row items-center justify-between border-b border-gray-100 pb-4 mb-6 gap-4">
-                    <div class="flex items-center gap-4">
-                        <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                            <i class="fas fa-bolt text-primary-500"></i><span class="text-primary-600">{{ $flash_sale->title }}</span>
-                        </h2>
-                        <div class="flex gap-2 items-center text-white text-xs font-bold">
-                            <span class="bg-gray-800 p-1.5 rounded">05</span> :
-                            <span class="bg-primary-600 p-1.5 rounded">32</span> :
-                            <span class="bg-gray-800 p-1.5 rounded">45</span>
+        @foreach ($flash_sales as $flash_sale)
+            <section class="pb-5">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                    <!-- Header -->
+                    <div
+                        class="flex flex-col md:flex-row items-center justify-between border-b border-gray-100 pb-4 mb-6 gap-4">
+                        <div class="flex items-center gap-4">
+                            <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                                <i class="fas fa-bolt text-primary-500"></i><span
+                                    class="text-primary-600">{{ $flash_sale->title }}</span>
+                            </h2>
+                            <div class="flex gap-2 items-center text-white text-xs font-bold">
+                                <span class="bg-gray-800 p-1.5 rounded">05</span> :
+                                <span class="bg-primary-600 p-1.5 rounded">32</span> :
+                                <span class="bg-gray-800 p-1.5 rounded">45</span>
+                            </div>
                         </div>
+                        <a href="{{ route('flashSales.show', $flash_sale->id) }}"
+                            class="text-sm font-semibold text-primary-600 border border-primary-600 px-4 py-1.5 rounded-full hover:bg-primary-600 hover:text-white transition">See
+                            All Products</a>
                     </div>
-                    <a href="{{ route('flashSales.show', $flash_sale->id) }}"
-                        class="text-sm font-semibold text-primary-600 border border-primary-600 px-4 py-1.5 rounded-full hover:bg-primary-600 hover:text-white transition">See
-                        All Products</a>
-                </div>
 
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
-                    @foreach ($flash_sale->approveProducts as $productItem)
-                        {{-- <div
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+                        @foreach ($flash_sale->approveProducts as $productItem)
+                            {{-- <div
                             class="min-w-[200px] md:min-w-[240px] snap-start bg-white rounded-xl border border-gray-100 hover:border-primary-500 hover:shadow-xl transition-all duration-300 group relative">
                             <div class="absolute top-2 left-2 z-10 flex flex-col gap-1">
                                 <span class="bg-primary-600 text-white text-[10px] font-bold px-2 py-1 rounded">-40%</span>
@@ -163,12 +166,12 @@
                             </div>
                         </div> --}}
 
-                        <x-frontend.flash-sale-card :productItem="$productItem" />
-                    @endforeach
+                            <x-frontend.flash-sale-card :productItem="$productItem" />
+                        @endforeach
+                    </div>
                 </div>
-            </div>
-        </section>
-    @endforeach
+            </section>
+        @endforeach
     @endif
 
 
@@ -200,14 +203,17 @@
             </div>
             <div class="flex flex-wrap gap-4 sm:gap-6">
                 @foreach ($sellers as $seller)
-                    <div class="group flex flex-col items-center w-40 sm:w-44 bg-white border border-gray-100 rounded-xl p-4 transition-all duration-300 hover:border-primary-500">
-                        <div class="relative w-16 h-16 rounded-full bg-gray-50 border border-gray-50 flex items-center justify-center p-2 mb-3">
-                            <img src="{{ storage_url($seller->business_logo) }}" 
-                                alt="{{ $seller->business_name }}"
+                    <div
+                        class="group flex flex-col items-center w-40 sm:w-44 bg-white border border-gray-100 rounded-xl p-4 transition-all duration-300 hover:border-primary-500">
+                        <div
+                            class="relative w-16 h-16 rounded-full bg-gray-50 border border-gray-50 flex items-center justify-center p-2 mb-3">
+                            <img src="{{ storage_url($seller->business_logo) }}" alt="{{ $seller->business_name }}"
                                 class="max-w-full max-h-full object-contain">
                             <div class="absolute -bottom-1 -right-0.5 text-blue-500 bg-white rounded-full">
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path>
+                                    <path
+                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z">
+                                    </path>
                                 </svg>
                             </div>
                         </div>
@@ -215,7 +221,7 @@
                             <h3 class="text-sm font-semibold text-gray-800 line-clamp-1 mb-1">
                                 {{ $seller->business_name }}
                             </h3>
-                            
+
                             <div class="flex items-center justify-center gap-2 text-[10px] font-medium">
                                 <span class="flex items-center text-yellow-500">
                                     <i class="fas fa-star mr-1"></i> {{ $seller->rating }}
@@ -227,12 +233,12 @@
                             </div>
                         </div>
                         <div class="flex items-center w-full gap-2">
-                            <a href="{{ route('sellers.shop', $seller->username) }}" 
-                            class="flex-1 text-center py-1.5 bg-primary-100 text-primary-500 text-[11px] font-medium rounded-md hover:bg-primary-500 hover:text-white transition-colors">
+                            <a href="{{ route('sellers.shop', $seller->username) }}"
+                                class="flex-1 text-center py-1.5 bg-primary-100 text-primary-500 text-[11px] font-medium rounded-md hover:bg-primary-500 hover:text-white transition-colors">
                                 Visit Shop
                             </a>
-                            <button title="Follow Store" 
-                                    class="flex items-center justify-center w-8 h-8 rounded-md border border-gray-200 text-gray-500 hover:border-primary-500 hover:text-primary-600 transition-all">
+                            <button title="Follow Store"
+                                class="flex items-center justify-center w-8 h-8 rounded-md border border-gray-200 text-gray-500 hover:border-primary-500 hover:text-primary-600 transition-all">
                                 <i class="fas fa-user-plus text-[10px]"></i>
                             </button>
                         </div>
@@ -244,12 +250,11 @@
 
     <!-- ==================== 9. FEATURED PRODUCTS (GRID) ==================== -->
     <section class="py-5">
-        <h2 class="text-2xl font-bold text-gray-900 mb-6">Featured <span
-                class="text-primary-600">Products</span></h2>
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Featured <span class="text-primary-600">Products</span></h2>
 
         <div id="product-wrapper" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             @foreach ($products as $product)
-                <x-frontend.product-card :product="$product"/>
+                <x-frontend.product-card :product="$product" />
             @endforeach
         </div>
 
@@ -478,7 +483,7 @@
                 },
                 error: function() {
                     button.prop('disabled', false).text('Load More');
-                    toastr.error('Something went wrong. Please try again.');
+                    showErrorToast('Something went wrong. Please try again.');
                 }
             });
         });

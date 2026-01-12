@@ -139,7 +139,7 @@
                     <div class="comments-tags text-xs lg:text-sm text-davy-gray">
                         <h4>Item Reviews</h4>
                         <!-- review tags -->
-                     
+
 
                         <!-- User Reviews -->
                         <div id="reviews-wrapper"
@@ -197,13 +197,13 @@
                             review_id: reviewId
                         },
                         success: function(response) {
-                            toastr.success(response.message || 'Reported successfully!');
+                            showSuccessToast(response.message || 'Reported successfully!');
                         },
                         error: function(xhr) {
                             if (xhr.status === 401) {
-                                toastr.error('You must be logged in to report abuse.');
+                                showErrorToast('You must be logged in to report abuse.');
                             } else {
-                                toastr.error('Something went wrong. Please try again.');
+                                showErrorToast('Something went wrong. Please try again.');
                             }
                         }
                     });
