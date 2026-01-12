@@ -95,12 +95,11 @@
             </span>
         @endif
 
-        {{-- Product Options / Attributes --}}
+        {{-- Product Options --}}
         @foreach ($productOptionFilters ?? [] as $optionKey => $values)
             @php
                 $valueIds = is_array($values) ? $values : explode(',', $values);
 
-                // Convert key back to option name (color -> Color)
                 $optionName = ucwords(str_replace('_', ' ', $optionKey));
 
                 $optionValues = collect($productOptions[$optionName] ?? []);

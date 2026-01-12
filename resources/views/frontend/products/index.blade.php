@@ -223,14 +223,8 @@
                         @foreach ($productOptions as $optionName => $values)
                             @if (count($values) > 0)
                                 <div class="border-b border-gray-100 pb-3">
-                                    <!-- Accordion Header -->
-                                    <button type="button"
-                                        class="w-full flex justify-between items-center text-sm font-bold text-gray-800 uppercase tracking-wider cursor-pointer accordion-btn">
-                                        {{ $optionName }}
-                                    </button>
-
-                                    <!-- Accordion Body -->
-                                    <div class="mt-2 space-y-2 max-h-40 overflow-y-auto pr-2 accordion-body">
+                                    <h3 class="font-bold text-gray-800 mb-3 text-sm uppercase tracking-wider option-btn">{{ $optionName }}</h3>
+                                    <div class="mt-2 space-y-2 max-h-40 overflow-y-auto pr-2 ">
                                         @foreach ($values as $value)
                                             @php
                                                 $key = strtolower(str_replace(' ', '_', $optionName));
@@ -465,17 +459,14 @@
                 params.append("brand", selectedBrands.join(','));
             }
 
-
-            // Collect selected attributes
+            // Product options
             let selectedProductOptions = {};
 
             document.querySelectorAll('.attribute-filter:checked').forEach(el => {
-                // Find the parent .border-b div
                 const optionContainer = el.closest('.border-b');
                 if (!optionContainer) return;
 
-                // Find the button that has the option name
-                const optionNameEl = optionContainer.querySelector('button.accordion-btn');
+                const optionNameEl = optionContainer.querySelector('.option-btn');
                 if (!optionNameEl) return;
 
                 const optionName = optionNameEl.textContent.trim();
@@ -487,10 +478,8 @@
                 selectedProductOptions[optionName].push(el.value);
             });
 
-            // Append to URLSearchParams
             for (const [option, values] of Object.entries(selectedProductOptions)) {
                 if (values.length) {
-                    // Convert "Size" -> "size", "Color" -> "color"
                     const key = option.toLowerCase().replace(/\s+/g, '_');
                     params.append(key, values.join(','));
                 }
@@ -613,7 +602,6 @@
             }
 
             if (type === 'attribute') {
-                // slug format: optionKey|valueId (e.g. color|10)
                 const [optionKey, valueId] = slug.split('|');
 
                 document.querySelectorAll('.attribute-filter').forEach(el => {
@@ -638,7 +626,6 @@
                 el.checked = false;
             });
 
-            // Attributes / Product Options
             document.querySelectorAll('.attribute-filter').forEach(el => {
                 el.checked = false;
             });
