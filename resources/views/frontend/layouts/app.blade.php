@@ -82,6 +82,8 @@ $isDashboard = View::hasSection('dashboard');
 
 <body class="bg-gray-50 font-sans min-h-screen text-gray-800 antialiased">
 
+    @include('frontend.layouts.mobile-drawer')
+
     <div class="hidden">
         <!-- prevents navbar autocomplete -->
         <input type="password" name="password" autocomplete="current-password" ...>
