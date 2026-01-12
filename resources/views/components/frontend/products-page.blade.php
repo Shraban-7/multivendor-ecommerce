@@ -45,7 +45,7 @@
 </div>
 
 <!-- Active Filters -->
-@if (!empty($selectedCategories) || !empty($selectedBrands) || !empty($selectedPrice))
+@if (!empty($selectedCategories) || !empty($selectedBrands) || !empty($selectedPrice) || !empty($productOptionFilters))
     <div class="flex flex-wrap gap-2 mb-6" id="active-filters">
 
         {{-- Categories --}}
@@ -94,6 +94,39 @@
                 </button>
             </span>
         @endif
+
+        {{-- Product Options / Attributes --}}
+        @foreach ($productOptionFilters ?? [] as $optionKey => $values)
+            @php
+                $valueIds = is_array($values) ? $values : explode(',', $values);
+
+                // Convert key back to option name (color -> Color)
+                $optionName = ucwords(str_replace('_', ' ', $optionKey));
+
+                $optionValues = collect($productOptions[$optionName] ?? []);
+            @endphp
+
+            @foreach ($valueIds as $valueId)
+                @php
+                    $value = $optionValues->firstWhere('id', (int) $valueId);
+                @endphp
+
+                @if ($value)
+                    <span
+                        class="bg-white border border-gray-200 text-gray-600
+                       px-3 py-1 rounded-full text-xs font-medium
+                       flex items-center gap-2">
+                        {{ $optionName }}: {{ $value['value'] }}
+
+                        <button class="remove-filter text-gray-400 hover:text-red-500" data-type="attribute"
+                            data-slug="{{ $optionKey }}|{{ $valueId }}">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </span>
+                @endif
+            @endforeach
+        @endforeach
+
 
         <button type="button" onclick="clearAll()"
             class="text-xs text-red-500 hover:text-red-700

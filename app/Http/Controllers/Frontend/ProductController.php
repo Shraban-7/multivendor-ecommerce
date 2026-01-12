@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Cookie;
 
 class ProductController extends Controller
 {
-    public function index(Request $request, $subcategory = null)
+    public function index(Request $request)
     {
         $query = Product::withDefaultRelations();
 
@@ -53,6 +53,20 @@ class ProductController extends Controller
                 $query->where('subcategory_id', $subcategory->id);
             }
         }
+
+        // Collect all attribute filters from request
+        $productOptionFilters = $request->except(['category', 'brand', 'sort', 'price_min', 'price_max', 'subcategory']);
+
+        foreach ($productOptionFilters as $optionKey => $values) {
+            // Ensure values are in array form
+            $valuesArray = is_array($values) ? $values : explode(',', $values);
+
+            // Filter products by option_value IDs
+            $query->whereHas('variants.option_values', function ($q) use ($valuesArray) {
+                $q->whereIn('option_values.id', $valuesArray); // <-- specify table here
+            });
+        }
+
 
         switch ($sortFilter) {
 
@@ -102,9 +116,11 @@ class ProductController extends Controller
                 'products',
                 'categories',
                 'brands',
+                'productOptions',
                 'selectedCategories',
                 'selectedBrands',
-                'sortFilter'
+                'sortFilter',
+                'productOptionFilters'
             ))->render();
 
             return response()->json([
@@ -116,9 +132,11 @@ class ProductController extends Controller
             'products',
             'categories',
             'brands',
+            'productOptions',
             'selectedCategories',
             'selectedBrands',
-            'sortFilter'
+            'sortFilter',
+            'productOptionFilters'
         ));
     }
 

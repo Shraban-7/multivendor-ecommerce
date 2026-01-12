@@ -61,8 +61,8 @@
         }
 
         /* =========================
-           CATEGORY FILTER – ACTIVE
-           ========================= */
+                                                           CATEGORY FILTER – ACTIVE
+                                                           ========================= */
 
         .category-filter.active {
             color: #ea580c;
@@ -86,8 +86,8 @@
         }
 
         /* =========================
-           HOVER STATES (NON-ACTIVE)
-           ========================= */
+                                                           HOVER STATES (NON-ACTIVE)
+                                                           ========================= */
 
         .category-filter:not(.active):hover span:first-child {
             color: #ea580c;
@@ -219,21 +219,42 @@
                     </div>
 
                     <!-- Colors -->
-                    <div class="mb-6">
-                        <h3 class="font-bold text-gray-800 mb-3 text-sm uppercase tracking-wider">Color</h3>
-                        <div class="flex flex-wrap gap-2">
-                            <button
-                                class="w-6 h-6 rounded-full bg-black ring-2 ring-offset-2 ring-gray-300 hover:ring-primary-500 transition"></button>
-                            <button
-                                class="w-6 h-6 rounded-full bg-blue-600 hover:ring-2 hover:ring-offset-2 hover:ring-primary-500 transition"></button>
-                            <button
-                                class="w-6 h-6 rounded-full bg-red-500 hover:ring-2 hover:ring-offset-2 hover:ring-primary-500 transition"></button>
-                            <button
-                                class="w-6 h-6 rounded-full bg-gray-200 hover:ring-2 hover:ring-offset-2 hover:ring-primary-500 transition"></button>
-                            <button
-                                class="w-6 h-6 rounded-full bg-white border border-gray-300 hover:border-gray-400 hover:ring-2 hover:ring-offset-2 hover:ring-primary-500 transition"></button>
-                        </div>
+                    <div class="space-y-4" id="attribute-filters">
+                        @foreach ($productOptions as $optionName => $values)
+                            @if (count($values) > 0)
+                                <div class="border-b border-gray-100 pb-3">
+                                    <!-- Accordion Header -->
+                                    <button type="button"
+                                        class="w-full flex justify-between items-center text-sm font-bold text-gray-800 uppercase tracking-wider cursor-pointer accordion-btn">
+                                        {{ $optionName }}
+                                    </button>
+
+                                    <!-- Accordion Body -->
+                                    <div class="mt-2 space-y-2 max-h-40 overflow-y-auto pr-2 accordion-body">
+                                        @foreach ($values as $value)
+                                            @php
+                                                $key = strtolower(str_replace(' ', '_', $optionName));
+                                                $checkedValues = isset($productOptionFilters[$key])
+                                                    ? explode(',', $productOptionFilters[$key])
+                                                    : [];
+                                            @endphp
+                                            <label class="flex items-center gap-3 cursor-pointer group">
+                                                <input type="checkbox" value="{{ $value['id'] }}"
+                                                    class="attribute-filter w-4 h-4"
+                                                    @if (in_array($value['id'], $checkedValues)) checked @endif>
+                                                <span class="text-sm text-gray-600">{{ $value['value'] }}</span>
+                                            </label>
+                                        @endforeach
+
+                                    </div>
+
+                                </div>
+                            @endif
+                        @endforeach
                     </div>
+
+
+
 
                     <!-- Mobile Apply Button -->
                     <button id="applyFiltersBtn"
@@ -444,6 +465,38 @@
                 params.append("brand", selectedBrands.join(','));
             }
 
+
+            // Collect selected attributes
+            let selectedProductOptions = {};
+
+            document.querySelectorAll('.attribute-filter:checked').forEach(el => {
+                // Find the parent .border-b div
+                const optionContainer = el.closest('.border-b');
+                if (!optionContainer) return;
+
+                // Find the button that has the option name
+                const optionNameEl = optionContainer.querySelector('button.accordion-btn');
+                if (!optionNameEl) return;
+
+                const optionName = optionNameEl.textContent.trim();
+
+                if (!selectedProductOptions[optionName]) {
+                    selectedProductOptions[optionName] = [];
+                }
+
+                selectedProductOptions[optionName].push(el.value);
+            });
+
+            // Append to URLSearchParams
+            for (const [option, values] of Object.entries(selectedProductOptions)) {
+                if (values.length) {
+                    // Convert "Size" -> "size", "Color" -> "color"
+                    const key = option.toLowerCase().replace(/\s+/g, '_');
+                    params.append(key, values.join(','));
+                }
+            }
+
+
             // Sort
             let sortValue = document.querySelector('.sort-filter')?.value;
             if (sortValue) {
@@ -519,6 +572,11 @@
             });
         });
 
+        document.querySelectorAll('.attribute-filter').forEach(el => {
+            el.addEventListener('change', updateUrl);
+        });
+
+
         document.querySelector('.sort-filter').addEventListener('change', function() {
             updateUrl();
         });
@@ -554,9 +612,21 @@
                 document.getElementById('priceRange').value = '';
             }
 
+            if (type === 'attribute') {
+                // slug format: optionKey|valueId (e.g. color|10)
+                const [optionKey, valueId] = slug.split('|');
+
+                document.querySelectorAll('.attribute-filter').forEach(el => {
+                    if (el.value === valueId) {
+                        el.checked = false;
+                    }
+                });
+            }
+
             /* ---- REBUILD URL FROM UI ---- */
             updateUrl();
         });
+
 
 
         function clearAll() {
@@ -565,6 +635,11 @@
             });
 
             document.querySelectorAll('.brand-filter').forEach(el => {
+                el.checked = false;
+            });
+
+            // Attributes / Product Options
+            document.querySelectorAll('.attribute-filter').forEach(el => {
                 el.checked = false;
             });
 
