@@ -11,6 +11,7 @@ class SmsService
     protected $apiKey;
     protected $secretKey;
     protected $callerId;
+    protected $bypassUrl;
 
     public function __construct()
     {
@@ -18,6 +19,7 @@ class SmsService
         $this->apiKey = config('sms.api_key');
         $this->secretKey = config('sms.secret_key');
         $this->callerId = config('sms.caller_id');
+        $this->bypassUrl = config('sms.bypass_url');
     }
 
     public function send($message, $recipients)
@@ -31,7 +33,7 @@ class SmsService
         $apiUrl =  $this->apiUrl . '/sendtext';
 
         try {
-            $response = Http::post(env('SMS_BYPASS_URL'), [
+            $response = Http::post($this->bypassUrl, [
                 'apiUrl' => $apiUrl,
                 'apikey' => $this->apiKey,
                 'secretkey' => $this->secretKey,
