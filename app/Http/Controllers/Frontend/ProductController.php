@@ -93,7 +93,9 @@ class ProductController extends Controller
             ];
         }
 
-        $brands = Brand::all();
+        $brands = Brand::withCount('products')
+            ->having('products_count', '>', 0)
+            ->get();
 
         if ($request->ajax()) {
             $html = view('components.frontend.products-page', compact(
