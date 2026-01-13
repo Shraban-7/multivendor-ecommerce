@@ -108,7 +108,7 @@
 
 @section('breadcrumbs')
     <div class="bg-white border-b border-gray-200 py-3">
-        <div class="container mx-auto px-4">
+        <div class="container mx-auto max-w-7xl px-4">
             <nav class="flex text-sm text-gray-500" aria-label="Breadcrumb">
                 <ol class="inline-flex items-center space-x-2">
                     <li>

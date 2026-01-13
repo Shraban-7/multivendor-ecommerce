@@ -112,7 +112,7 @@
     </div>
 
     <div class="hidden lg:block border-t border-gray-100 bg-white">
-        <div class="container mx-auto px-4">
+        <div class="container mx-auto max-w-7xl px-4">
             <div class="flex items-center gap-8 relative">
 
                 <!-- MEGA MENU DROPDOWN PARENT -->

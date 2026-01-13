@@ -10,7 +10,7 @@ $hideFooter = request()->is('/') ? '' : 'hidden md:block';
     <!-- Decorative Top Border -->
     <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-600 via-orange-400 to-primary-600"></div>
 
-    <div class="container mx-auto px-4 pb-8">
+    <div class="container mx-auto max-w-7xl px-4 pb-8">
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <!-- Brand Column -->
