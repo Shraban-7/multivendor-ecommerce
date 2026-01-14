@@ -7,7 +7,8 @@
     <style>
         body {
             font-family: "Courier New", "OCR A Std", monospace;
-            font-size: 13px;
+            /* font-size: 13px; */
+            font-size: 16px;
             width: 302px;
             margin: 0 auto;
             font-weight: 600;
