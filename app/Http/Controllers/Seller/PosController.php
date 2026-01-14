@@ -386,8 +386,8 @@ class PosController extends Controller
             'paid' => 'required|numeric',
             'due' => 'nullable|numeric',
             'discount' => 'nullable',
-            'cash_receive' => 'nullable',
-            'cash_return' => 'nullable',
+            'cash_received' => 'nullable',
+            'cash_returned' => 'nullable',
             'items' => 'required|array',
         ]);
 
@@ -397,9 +397,9 @@ class PosController extends Controller
 
         $data['seller_id'] = $seller->id;
 
-        $cart = PosCart::where('seller_id', get_seller_id())->where('is_draft',0)->first();
+        $cart = PosCart::where('seller_id', get_seller_id())->where('is_draft', 0)->first();
         if (!is_null($draftId)) {
-            $cart = PosCart::where('seller_id', get_seller_id())->where('is_draft',1)->first();
+            $cart = PosCart::where('seller_id', get_seller_id())->where('is_draft', 1)->first();
         }
 
         if (!$cart) {
@@ -474,8 +474,8 @@ class PosController extends Controller
             'payable' => $payableAmount,
             'paid' => $data['paid'],
             'due' => $data['due'],
-            'cash_receive' => $data['cash_receive'],
-            'cash_return' => $data['cash_return'],
+            'cash_received' => $data['cash_received'],
+            'cash_returned' => $data['cash_returned'],
             'commission_type' => $seller->commission_type,
             'commission_amount' => $seller->commission_amount,
             'seller_earnings' => $sellerEarning,

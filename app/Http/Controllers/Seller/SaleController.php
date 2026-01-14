@@ -60,8 +60,8 @@ class SaleController extends Controller
             'customer_phone' => 'nullable|string|max:20|required_with:customer_name',
             'paid' => 'nullable|numeric|min:0',
             'due' => 'nullable|numeric|min:0',
-            'cash_receive' => 'nullable',
-            'cash_return' => 'nullable',
+            'cash_received' => 'nullable',
+            'cash_returned' => 'nullable',
             'items' => 'nullable|array',
             'items.*.id' => 'required|integer',
             'items.*.product_id' => 'required',
@@ -81,109 +81,108 @@ class SaleController extends Controller
         DB::beginTransaction();
 
         try {
-        if (!empty($data['customer_name']) && !empty($data['customer_phone'])) {
-            $customer = Customer::firstOrCreate([
-                'name' => $data['customer_name'],
-                'phone' => $data['customer_phone']
-            ], [
-                'seller_id' => $seller->id
-            ]);
-            $order->update(['customer_id' => $customer->id]);
-        }
+            if (!empty($data['customer_name']) && !empty($data['customer_phone'])) {
+                $customer = Customer::firstOrCreate([
+                    'name' => $data['customer_name'],
+                    'phone' => $data['customer_phone']
+                ], [
+                    'seller_id' => $seller->id
+                ]);
+                $order->update(['customer_id' => $customer->id]);
+            }
 
-        $items = $data['items'] ?? [];
+            $items = $data['items'] ?? [];
 
-        foreach ($items as $item) {
-            $orderItem = $order->items()->find($item['id']);
+            foreach ($items as $item) {
+                $orderItem = $order->items()->find($item['id']);
 
-            if (isset($item['variant_id']) && $item['variant_id']) {
-                $variant = ProductVariant::find($item['variant_id']);
-                if ($variant) {
-                    $product = $variant->product;
-                    $sellingPrice = $variant->selling_price;
-                    $unitPrice = $item['price'] ?? ($variant->discounted_price ?? $sellingPrice);
-                    $variantId = $variant->id;
-                    $sku = $variant->sku;
-                    $variantName = $variant->fullName;
+                if (isset($item['variant_id']) && $item['variant_id']) {
+                    $variant = ProductVariant::find($item['variant_id']);
+                    if ($variant) {
+                        $product = $variant->product;
+                        $sellingPrice = $variant->selling_price;
+                        $unitPrice = $item['price'] ?? ($variant->discounted_price ?? $sellingPrice);
+                        $variantId = $variant->id;
+                        $sku = $variant->sku;
+                        $variantName = $variant->fullName;
+                    }
+                } else {
+                    $product = Product::find($item['product_id']);
+                    $sellingPrice = $product->selling_price;
+                    $unitPrice = $item['price'] ?? $sellingPrice;
+                    $variantId = null;
+                    $sku = $product->sku;
+                    $variantName = null;
                 }
-            } else {
-                $product = Product::find($item['product_id']);
-                $sellingPrice = $product->selling_price;
-                $unitPrice = $item['price'] ?? $sellingPrice;
-                $variantId = null;
-                $sku = $product->sku;
-                $variantName = null;
+
+                $quantity = $item['quantity'];
+                $discount = max(0, $sellingPrice - $unitPrice) * $quantity;
+                $subTotal = $sellingPrice * $quantity;
+                $total = $unitPrice * $quantity;
+
+                if ($orderItem) {
+                    $orderItem->update([
+                        'quantity' => $quantity,
+                        'unit_price' => $unitPrice,
+                        'total' => $total,
+                        'discount' => $discount,
+                        'sub_total' => $subTotal,
+                    ]);
+                } else {
+                    $order->items()->create([
+                        'product_id' => $product->id,
+                        'product_variant_id' => $variantId,
+                        'sku' => $sku,
+                        'product_name' => $product->name,
+                        'variant_name' => $variantName,
+                        'selling_price' => $sellingPrice,
+                        'unit_price' => $unitPrice,
+                        'quantity' => $quantity,
+                        'sub_total' => $subTotal,
+                        'discount' => $discount,
+                        'total' => $total,
+                    ]);
+                }
             }
 
-            $quantity = $item['quantity'];
-            $discount = max(0, $sellingPrice - $unitPrice) * $quantity;
-            $subTotal = $sellingPrice * $quantity;
-            $total = $unitPrice * $quantity;
+            $subTotal = $order->items()->sum('sub_total');
+            $discount = $order->items()->sum('discount') + ($data['additional_discount'] ?? 0);
+            $total = $order->items()->sum('total') - ($data['additional_discount'] ?? 0);
+            $paid = min($data['paid'] ?? 0, $total);
+            $due = max($total - $paid, 0);
 
-            if ($orderItem) {
-                $orderItem->update([
-                    'quantity' => $quantity,
-                    'unit_price' => $unitPrice,
-                    'total' => $total,
-                    'discount' => $discount,
-                    'sub_total' => $subTotal,
-                ]);
-            } else {
-                $order->items()->create([
-                    'product_id' => $product->id,
-                    'product_variant_id' => $variantId,
-                    'sku' => $sku,
-                    'product_name' => $product->name,
-                    'variant_name' => $variantName,
-                    'selling_price' => $sellingPrice,
-                    'unit_price' => $unitPrice,
-                    'quantity' => $quantity,
-                    'sub_total' => $subTotal,
-                    'discount' => $discount,
-                    'total' => $total,
-                ]);
-            }
-        }
+            $commissionData = $seller->calculateEarning($total);
 
-        $subTotal = $order->items()->sum('sub_total');
-        $discount = $order->items()->sum('discount') + ($data['additional_discount'] ?? 0);
-        $total = $order->items()->sum('total') - ($data['additional_discount'] ?? 0);
-        $paid = min($data['paid'] ?? 0, $total);
-        $due = max($total - $paid, 0);
+            $order->update([
+                'sub_total' => $subTotal,
+                'discount' => $discount,
+                'additional_discount' => $data['additional_discount'] ?? 0,
+                'total' => $total,
+                'payable' => $total,
+                'paid' => $paid,
+                'due' => $due,
+                'cash_received' => $data['cash_received'],
+                'cash_returned' => $data['cash_returned'],
+                'total_commission' => $commissionData['total_commission'],
+                'seller_earnings' => $commissionData['seller_earning'],
+                'seller_employee_id' => $employee->id ?? $order->seller_employee_id,
+            ]);
 
-        $commissionData = $seller->calculateEarning($total);
+            DB::commit();
 
-        $order->update([
-            'sub_total' => $subTotal,
-            'discount' => $discount,
-            'additional_discount' => $data['additional_discount'] ?? 0,
-            'total' => $total,
-            'payable' => $total,
-            'paid' => $paid,
-            'due' => $due,
-            'cash_receive' => $data['cash_receive'],
-            'cash_return' => $data['cash_return'],
-            'total_commission' => $commissionData['total_commission'],
-            'seller_earnings' => $commissionData['seller_earning'],
-            'seller_employee_id' => $employee->id ?? $order->seller_employee_id,
-        ]);
+            $html = view('components.seller.pos-order-items', [
+                'orderItems' => $order->items()->with('variant.product')->get(),
+            ])->render();
 
-        DB::commit();
-
-        $html = view('components.seller.pos-order-items', [
-            'orderItems' => $order->items()->with('variant.product')->get(),
-        ])->render();
-
-        return apiResponse([
-            'invoice_id' => $order->invoice_id,
-            'html' => $html,
-            'subtotal' => $subTotal,
-            'discount' => $discount,
-            'total' => $total,
-            'paid' => $paid,
-            'due' => $due,
-        ], "Order updated successfully");
-
+            return apiResponse([
+                'invoice_id' => $order->invoice_id,
+                'html' => $html,
+                'subtotal' => $subTotal,
+                'discount' => $discount,
+                'total' => $total,
+                'paid' => $paid,
+                'due' => $due,
+            ], "Order updated successfully");
         } catch (\Throwable $e) {
             DB::rollBack();
             \Log::error($e->getMessage());
@@ -211,7 +210,6 @@ class SaleController extends Controller
                         $variant->update(['stock_out' => 0]);
                     }
                 }
-
             } else {
                 $product = Product::find($item->product_id);
 
@@ -411,5 +409,4 @@ class SaleController extends Controller
             'due' => $due,
         ], $message);
     }
-
 }

@@ -91,8 +91,8 @@ $showCurrency = false;
     </div>
 
     @if (!is_null($order->customer_id))
-        Customer: {{ $order->customer->name }}<br>
-        Phone: {{ $order->customer->phone }}
+    Customer: {{ $order->customer->name }}<br>
+    Phone: {{ $order->customer->phone }}
     @endif
     </p>
 
@@ -113,27 +113,27 @@ $showCurrency = false;
         </thead>
         <tbody>
             @foreach ($order->items as $item)
-                <tr>
-                    <td class="left">
-                        <div>{{ $item->product->name }}</div>
+            <tr>
+                <td class="left">
+                    <div>{{ $item->product->name }}</div>
 
-                        @if ($item->variant)
-                            <small class="text-muted d-block">
-                                {{ $item->variant->fullName }}
-                            </small>
-                        @endif
-                    </td>
+                    @if ($item->variant)
+                    <small class="text-muted d-block">
+                        {{ $item->variant->fullName }}
+                    </small>
+                    @endif
+                </td>
 
-                    <td class="center">{{ $item->quantity }}</td>
-                    <td class="right">
-                        @if ($item->selling_price > $item->unit_price)
-                            <span style="text-decoration: line-through;">
-                                {{ money($item->selling_price * $item->quantity, $showCurrency) }}
-                            </span>
-                        @endif
-                        {{ money($item->unit_price * $item->quantity, $showCurrency) }}
-                    </td>
-                </tr>
+                <td class="center">{{ $item->quantity }}</td>
+                <td class="right">
+                    @if ($item->selling_price > $item->unit_price)
+                    <span style="text-decoration: line-through;">
+                        {{ money($item->selling_price * $item->quantity, $showCurrency) }}
+                    </span>
+                    @endif
+                    {{ money($item->unit_price * $item->quantity, $showCurrency) }}
+                </td>
+            </tr>
             @endforeach
         </tbody>
     </table>
@@ -146,10 +146,10 @@ $showCurrency = false;
             <td class="right">{{ money($order->sub_total, $showCurrency) }}</td>
         </tr>
         @if ($order->discount > 0)
-            <tr>
-                <td class="left">DISCOUNT</td>
-                <td class="right">{{ money($order->discount, $showCurrency) }}</td>
-            </tr>
+        <tr>
+            <td class="left">DISCOUNT</td>
+            <td class="right">{{ money($order->discount, $showCurrency) }}</td>
+        </tr>
         @endif
         <!-- <tr>
             <td colspan="2">
@@ -162,26 +162,26 @@ $showCurrency = false;
         </tr>
         <tr class="totals">
             <td class="left"><strong>CASH RECEIVED</strong></td>
-            <td class="right"><strong>{{ money($order->cash_receive, $showCurrency) }}</strong></td>
+            <td class="right"><strong>{{ money($order->cash_received, $showCurrency) }}</strong></td>
         </tr>
         <tr class="totals">
             <td class="left"><strong>CASH RETURNED</strong></td>
-            <td class="right"><strong>{{ money($order->cash_return, $showCurrency) }}</strong></td>
+            <td class="right"><strong>{{ money($order->cash_returned, $showCurrency) }}</strong></td>
         </tr>
     </table>
 
     @if ($order->due > 0)
-        <div class="line"></div>
-        <table>
-            <tr>
-                <td class="left">Amount Paid</td>
-                <td class="right">{{ money($order->paid, $showCurrency) }}</td>
-            </tr>
-            <tr>
-                <td class="left"><strong>Amount Due</strong></td>
-                <td class="right"><strong>{{ money($order->due, $showCurrency) }}</strong></td>
-            </tr>
-        </table>
+    <div class="line"></div>
+    <table>
+        <tr>
+            <td class="left">Amount Paid</td>
+            <td class="right">{{ money($order->paid, $showCurrency) }}</td>
+        </tr>
+        <tr>
+            <td class="left"><strong>Amount Due</strong></td>
+            <td class="right"><strong>{{ money($order->due, $showCurrency) }}</strong></td>
+        </tr>
+    </table>
     @endif
 
     <div class="line"></div>

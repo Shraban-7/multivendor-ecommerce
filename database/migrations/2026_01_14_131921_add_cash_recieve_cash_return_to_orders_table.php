@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->decimal('cash_receive',10,2)->nullable()->after('due');
-            $table->decimal('cash_return',10,2)->nullable()->after('cash_receive');
+            $table->decimal('cash_received', 10, 2)->nullable()->after('due');
+            $table->decimal('cash_returned', 10, 2)->nullable()->after('cash_received');
         });
     }
 
