@@ -476,25 +476,6 @@ foreach ($categories as $cat) {
                             {{ request()->has('order_id') ? $due : $total }}
                         </span>
                     </div>
-                    <div class="d-flex justify-content-between mb-2 fw-bold align-items-center">
-                        <span>Cash Receive:</span>
-                        <div class="input-group" style="width: 75%;">
-                            <span class="input-group-text">{{ currency() }}</span>
-                            <input type="number" class="form-control text-end" id="cash-receive" data-due="0"
-                                placeholder="0">
-                        </div>
-                    </div>
-
-                    <div class="d-flex justify-content-between mb-2 fw-bold align-items-center">
-                        <span>Cash Return:</span>
-                        <div class="input-group" style="width: 75%;">
-                            <span class="input-group-text">{{ currency() }}</span>
-                            <input type="number" class="form-control text-end" id="cash-return" data-due="0"
-                                placeholder="0" readonly>
-                        </div>
-                    </div>
-
-
 
                     <div class="row g-2 mb-3">
                         <div class="col-12">
@@ -520,6 +501,18 @@ foreach ($categories as $cat) {
                                 <button class="btn btn-light border" type="button" id="set-full-paid"><i
                                         class="bi bi-hand-index-thumb"></i> Full Paid</button>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label>Cash Received: ({{ currency() }})</label>
+                            <input type="number" class="form-control text-end" id="cash-receive" data-due="0" placeholder="0">
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label>Cash Returned: ({{ currency() }})</label>
+                            <input type="number" class="form-control text-end" id="cash-return" data-due="0" placeholder="0" readonly>
                         </div>
                     </div>
 
