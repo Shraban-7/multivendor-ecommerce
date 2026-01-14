@@ -507,12 +507,12 @@ foreach ($categories as $cat) {
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label>Cash Received: ({{ currency() }})</label>
-                            <input type="number" class="form-control text-end" id="cash-receive" data-due="0" placeholder="0">
+                            <input type="number" class="form-control" id="cash-receive" data-due="0" placeholder="0">
                         </div>
 
                         <div class="col-md-6 mb-3">
                             <label>Cash Returned: ({{ currency() }})</label>
-                            <input type="number" class="form-control text-end" id="cash-return" data-due="0" placeholder="0" readonly>
+                            <input type="number" class="form-control" id="cash-return" data-due="0" placeholder="0" readonly>
                         </div>
                     </div>
 
