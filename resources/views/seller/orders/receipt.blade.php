@@ -160,6 +160,14 @@ $showCurrency = false;
             <td class="left"><strong>TOTAL</strong></td>
             <td class="right"><strong>{{ money($order->total, $showCurrency) }}</strong></td>
         </tr>
+        <tr class="totals">
+            <td class="left"><strong>CASH RECEIVED</strong></td>
+            <td class="right"><strong>{{ money($order->cash_receive, $showCurrency) }}</strong></td>
+        </tr>
+        <tr class="totals">
+            <td class="left"><strong>CASH RETURNED</strong></td>
+            <td class="right"><strong>{{ money($order->cash_return, $showCurrency) }}</strong></td>
+        </tr>
     </table>
 
     @if ($order->due > 0)

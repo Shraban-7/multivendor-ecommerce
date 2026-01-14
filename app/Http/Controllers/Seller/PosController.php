@@ -386,6 +386,8 @@ class PosController extends Controller
             'paid' => 'required|numeric',
             'due' => 'nullable|numeric',
             'discount' => 'nullable',
+            'cash_receive' => 'nullable',
+            'cash_return' => 'nullable',
             'items' => 'required|array',
         ]);
 
@@ -472,6 +474,8 @@ class PosController extends Controller
             'payable' => $payableAmount,
             'paid' => $data['paid'],
             'due' => $data['due'],
+            'cash_receive' => $data['cash_receive'],
+            'cash_return' => $data['cash_return'],
             'commission_type' => $seller->commission_type,
             'commission_amount' => $seller->commission_amount,
             'seller_earnings' => $sellerEarning,

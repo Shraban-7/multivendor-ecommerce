@@ -473,6 +473,25 @@ foreach ($categories as $cat) {
                                 {{ request()->has('order_id') ? $due : $total }}
                             </span>
                         </div>
+                        <div class="d-flex justify-content-between mb-2 fw-bold align-items-center">
+                            <span>Cash Receive:</span>
+                            <div class="input-group" style="width: 75%;">
+                                <span class="input-group-text">{{ currency() }}</span>
+                                <input type="number" class="form-control text-end" id="cash-receive" data-due="0"
+                                    placeholder="0">
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mb-2 fw-bold align-items-center">
+                            <span>Cash Return:</span>
+                            <div class="input-group" style="width: 75%;">
+                                <span class="input-group-text">{{ currency() }}</span>
+                                <input type="number" class="form-control text-end" id="cash-return" data-due="0"
+                                    placeholder="0" readonly>
+                            </div>
+                        </div>
+
+
 
                         <div class="row g-2 mb-3">
                             <div class="col-12">
@@ -878,6 +897,8 @@ foreach ($categories as $cat) {
                 let phone = $('#customerPhone').val().trim();
                 let paid = parseFloat($('#paid-amount').val()) || 0;
                 let due = parseFloat($('#due-amount').text().replace(/[^0-9.-]+/g, "")) || 0;
+                let cashReceive = parseFloat($('#cash-receive').val()) || 0;
+                let cashReturn = parseFloat($('#cash-return').val()) || 0;
 
                 if (paid < 0) {
                     showErrorToast("Paid amount cannot be negative.");
@@ -915,6 +936,8 @@ foreach ($categories as $cat) {
                         new_customer: !customerExists,
                         paid: paid,
                         due: due,
+                        cash_receive: cashReceive,
+                        cash_return: cashReturn,
                         discount: getTotalDiscount(),
                         items: getItemsFromCart(),
                         _token: "{{ csrf_token() }}"
@@ -930,6 +953,7 @@ foreach ($categories as $cat) {
                                 '0.00');
                             $('#discount-amount').val('');
                             $('#discount-type').val('flat');
+
 
                             customerExists = false
 
@@ -1103,6 +1127,8 @@ foreach ($categories as $cat) {
                 let total = parseFloat($('#summary-total').attr('data-total')) || 0;
                 let due = parseFloat($('#due-amount').attr('data-due')) || 0;
                 let paidInput = parseFloat($('#paid-amount').val()) || 0;
+                let cashReceive = parseFloat($('#cash-receive').val()) || 0;
+                let cashReturn = parseFloat($('#cash-return').val()) || 0;
 
                 if (paidInput < 0) {
                     showErrorToast("Paid amount cannot be negative.");
@@ -1136,6 +1162,8 @@ foreach ($categories as $cat) {
                         customer_phone: phone,
                         paid: paidInput,
                         due: due,
+                        cash_receive: cashReceive,
+                        cash_return: cashReturn,
                         subtotal: subtotal,
                         discount: discount,
                         total: total,
@@ -1417,7 +1445,7 @@ foreach ($categories as $cat) {
                 });
 
                 let discountValue = parseFloat($('#discount-amount').val()) || 0;
- 
+
                 let discountType = $('#discount-type').val();
                 let discountAmount = 0;
 
@@ -1434,7 +1462,7 @@ foreach ($categories as $cat) {
                 let discount = 0;
                 if (subtotal > total) {
                     discount = subtotal - grandTotal;
-                }else{
+                } else {
                     discount = discountAmount;
                 }
 
@@ -1443,6 +1471,23 @@ foreach ($categories as $cat) {
                 $('#summary-total').text(grandTotal.toFixed(2)).attr('data-total', grandTotal.toFixed(2));
                 $('#due-amount').text(due.toFixed(2)).data('due', due.toFixed(2));
             }
+        });
+
+        function calculateCashReturn() {
+            let total = parseFloat($('#summary-total').data('total')) || 0;
+            let cashReceive = parseFloat($('#cash-receive').val()) || 0;
+
+            let cashReturn = cashReceive - total;
+
+            if (cashReturn < 0) {
+                cashReturn = 0;
+            }
+
+            $('#cash-return').val(cashReturn.toFixed(2));
+        }
+
+        $('#cash-receive').on('input keyup change', function() {
+            calculateCashReturn();
         });
     </script>
 @endpush

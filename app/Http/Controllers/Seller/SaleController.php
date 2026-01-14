@@ -60,6 +60,8 @@ class SaleController extends Controller
             'customer_phone' => 'nullable|string|max:20|required_with:customer_name',
             'paid' => 'nullable|numeric|min:0',
             'due' => 'nullable|numeric|min:0',
+            'cash_receive' => 'nullable',
+            'cash_return' => 'nullable',
             'items' => 'nullable|array',
             'items.*.id' => 'required|integer',
             'items.*.product_id' => 'required',
@@ -68,6 +70,8 @@ class SaleController extends Controller
             'items.*.quantity' => 'required|numeric|min:1',
             'additional_discount' => 'nullable|numeric|min:0',
         ]);
+
+        // dd($data);
 
         $order = Order::where('invoice_id', $orderId)
             ->where('seller_id', $seller->id)
@@ -157,6 +161,8 @@ class SaleController extends Controller
             'payable' => $total,
             'paid' => $paid,
             'due' => $due,
+            'cash_receive' => $data['cash_receive'],
+            'cash_return' => $data['cash_return'],
             'total_commission' => $commissionData['total_commission'],
             'seller_earnings' => $commissionData['seller_earning'],
             'seller_employee_id' => $employee->id ?? $order->seller_employee_id,
