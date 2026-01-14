@@ -1470,7 +1470,8 @@ foreach ($categories as $cat) {
     });
 
     function calculateCashReturn() {
-        let total = parseFloat($('#summary-total').data('total')) || 0;
+        //let total = parseFloat($('#summary-total').data('total')) || 0;
+        let total = parseFloat($('#summary-total').text().trim()) || 0;
         let cashReceive = parseFloat($('#cash-receive').val()) || 0;
 
         let cashReturn = cashReceive - total;
