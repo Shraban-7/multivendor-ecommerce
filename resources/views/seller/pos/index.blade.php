@@ -480,7 +480,7 @@ foreach ($categories as $cat) {
                     <div class="row g-2 mb-3">
                         <div class="col-12">
                             <div class="input-group">
-                                <input type="number" min="0" step="0.01" class="form-control"
+                                <input type="number" min="0" class="form-control"
                                     id="discount-amount" style="width: 70%;" placeholder="Enter Discount"
                                     value="{{ $additionalDiscount }}">
                                 <select class="form-select" id="discount-type">
@@ -1279,26 +1279,26 @@ foreach ($categories as $cat) {
             total = parseFloat(summary.total) || 0;
             due = parseFloat(summary.due) || total;
 
-            $('#summary-subtotal').text(subtotal.toFixed(2));
+            $('#summary-subtotal').text(removeZeroDecimal(subtotal.toFixed(2)));
 
             $('#summary-discount')
                 .data('base', totalDiscount)
                 .attr('data-base', totalDiscount)
-                .text(totalDiscount.toFixed(2));
+                .text(removeZeroDecimal(totalDiscount.toFixed(2)));
 
             $('#summary-total')
                 .data('base', total)
                 .attr('data-base', total)
                 .data('total', total)
                 .attr('data-total', total)
-                .text(total.toFixed(2));
+                .text(removeZeroDecimal(total.toFixed(2)));
 
             $('#due-amount')
                 .data('base', due)
                 .attr('data-base', due)
                 .data('due', due)
                 .attr('data-due', due)
-                .text(due.toFixed(2));
+                .text(removeZeroDecimal(due.toFixed(2)));
         }
 
         $(document).on('click', '.filter-btn', function() {
@@ -1326,8 +1326,8 @@ foreach ($categories as $cat) {
             const total = parseFloat($('#summary-total').attr('data-total')) || 0;
             fullPaid = total;
 
-            $('#paid-amount').val(fullPaid.toFixed(2));
-            $('#due-amount').attr('data-due', 0).text('0.00');
+            $('#paid-amount').val(removeZeroDecimal(fullPaid.toFixed(2)));
+            $('#due-amount').attr('data-due', 0).text('0');
         });
 
 
@@ -1362,8 +1362,8 @@ foreach ($categories as $cat) {
             let newDue = newTotal - paidInput;
             if (newDue < 0) newDue = 0;
 
-            $('#summary-total').attr('data-total', newTotal).text(newTotal.toFixed(2));
-            $('#summary-discount').text(totalDiscount.toFixed(2));
+            $('#summary-total').attr('data-total', newTotal).text(removeZeroDecimal(newTotal.toFixed(2)));
+            $('#summary-discount').text(removeZeroDecimal(totalDiscount.toFixed(2)));
             $('#due-amount').attr('data-due', newDue).text(newDue.toFixed(2));
         }
 
@@ -1462,10 +1462,10 @@ foreach ($categories as $cat) {
                 discount = discountAmount;
             }
 
-            $('#summary-subtotal').text(subtotal.toFixed(2));
-            $('#summary-discount').text(discount.toFixed(2)).data('base', discount.toFixed(2));
-            $('#summary-total').text(grandTotal.toFixed(2)).attr('data-total', grandTotal.toFixed(2));
-            $('#due-amount').text(due.toFixed(2)).data('due', due.toFixed(2));
+            $('#summary-subtotal').text(removeZeroDecimal(subtotal.toFixed(2)));
+            $('#summary-discount').text(removeZeroDecimal(discount.toFixed(2))).data('base', discount.toFixed(2));
+            $('#summary-total').text(removeZeroDecimal(grandTotal.toFixed(2))).attr('data-total', grandTotal.toFixed(2));
+            $('#due-amount').text(removeZeroDecimal(due.toFixed(2))).data('due', due.toFixed(2));
         }
     });
 
@@ -1479,11 +1479,27 @@ foreach ($categories as $cat) {
             cashReturn = 0;
         }
 
-        $('#cash-return').val(cashReturn.toFixed(2));
+        $('#cash-return').val(removeZeroDecimal(cashReturn));
     }
 
     $('#cash-receive').on('input keyup change', function() {
         calculateCashReturn();
     });
+
+    function removeZeroDecimal(value) {
+        if (value === null || value === undefined || value === '') return value;
+
+        let number = parseFloat(value);
+        if (isNaN(number)) return value;
+
+        let formatted = number.toFixed(2);
+
+        if (formatted.endsWith('.00')) {
+            return formatted.slice(0, -3);
+        }
+
+        return formatted.replace(/(\.\d)0$/, '$1');
+    }
+
 </script>
 @endpush
