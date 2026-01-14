@@ -222,7 +222,7 @@
         </div>
 
         <div class="card-body">
-            <form id="productSeoForm" enctype="multipart/form-data">
+            <form id="productSeoForm" action="{{ route('seller.products.updateSeo',$product->slug) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <h5 class="mb-3">Meta Information (Search Engines)</h5>
 
@@ -296,7 +296,7 @@
                     </small>
                 </div>
                 <div>
-                    <button type="button" id="seoUpdateBtn" class="btn btn-primary">
+                    <button type="submit" id="seoUpdateBtn" class="btn btn-primary">
                         Save SEO Settings
                     </button>
                 </div>
