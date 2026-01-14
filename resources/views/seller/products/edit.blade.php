@@ -222,7 +222,7 @@
         </div>
 
         <div class="card-body">
-            <form id="productSeoForm" action="{{ route('seller.products.updateSeo',$product->slug) }}" method="POST" enctype="multipart/form-data">
+            <form id="productSeoForm" method="POST" enctype="multipart/form-data">
                 @csrf
                 <h5 class="mb-3">Meta Information (Search Engines)</h5>
 
@@ -296,7 +296,7 @@
                     </small>
                 </div>
                 <div>
-                    <button type="submit" id="seoUpdateBtn" class="btn btn-primary">
+                    <button type="button" id="seoUpdateBtn" class="btn btn-primary">
                         Save SEO Settings
                     </button>
                 </div>
@@ -458,6 +458,52 @@
                 }
             });
         });
+
+        $('#seoUpdateBtn').on('click', function (e) {
+            e.preventDefault();
+
+            let button = $(this);
+            let form = $('#productSeoForm')[0];
+            let formData = new FormData(form);
+
+            $.ajax({
+                url: "{{ route('seller.products.updateSeo', $product->slug) }}",
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+
+                beforeSend: function () {
+                    button.prop('disabled', true).text('Updating...');
+                },
+
+                success: function (response) {
+                    showSuccessToast(response.message);
+                    button.prop('disabled', false).text('Save SEO Settings');
+                },
+
+                error: function (xhr) {
+                    button.prop('disabled', false).text('Save SEO Settings');
+
+                    if (xhr.status === 422) {
+                        let errors = xhr.responseJSON.errors;
+                        let messages = Object.values(errors)
+                            .map(item => item[0])
+                            .join('<br>');
+                        showErrorToast(messages);
+                    } else {
+                        let errorMessage = 'Something went wrong. Please try again.';
+                        if (xhr.responseJSON?.message) {
+                            errorMessage = xhr.responseJSON.message;
+                        } else if (xhr.responseText) {
+                            errorMessage = xhr.responseText;
+                        }
+                        showErrorToast(errorMessage);
+                    }
+                }
+            });
+        });
+
     </script>
 
     <script src="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.js"></script>

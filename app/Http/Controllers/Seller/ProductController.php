@@ -550,8 +550,7 @@ class ProductController extends Controller
             ProductSeo::create($validated);
         }
 
-        return redirect()->back()->with('success','Product SEO Updated Successfully');
-        // return successResponse("Product SEO Updated Successfully");
+        return successResponse("Product SEO Updated Successfully");
     }
 
     public function stockHistory()
