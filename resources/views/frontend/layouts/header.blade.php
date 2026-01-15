@@ -127,7 +127,7 @@
                         class="invisible group-hover:visible opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 absolute top-full left-0 w-[800px] bg-white shadow-2xl rounded-b-xl border border-gray-100 z-50 flex overflow-hidden">
 
                         <!-- Sidebar (Main Categories) -->
-                        <div class="w-1/4 bg-gray-50 py-2 border-r border-gray-100">
+                        <div class="w-2/5 bg-gray-50 py-2 border-r border-gray-100">
                             <ul class="text-sm">
                                 @foreach (dropdown_categories() as $category)
                                     <li class="menu-item-hover hover:bg-white hover:text-primary-600 px-4 py-2 cursor-pointer flex justify-between items-center font-medium text-gray-700"
