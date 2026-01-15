@@ -235,17 +235,20 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+        if (Auth::guard('admin')->check()) {
+            Auth::guard('admin')->logout();
+        }
+
         if (Auth::guard('seller')->check()) {
             Auth::guard('seller')->logout();
-
-            return redirect()->route('home');
         }
 
-        if (Auth::guard('web')->check()) {
-            Auth::guard('web')->logout();
-
-            return redirect()->route('home');
+        if (Auth::guard('employee')->check()) {
+            Auth::guard('employee')->logout();
         }
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return redirect()->route('home');
     }
@@ -390,7 +393,7 @@ class AuthController extends Controller
         $verification->update(['used_at' => now()]);
 
         $user->update(['email_verified_at' => now()]);
-        
+
         $user->sendWelcomeMail();
 
         $request->session()->forget('verify_email');
