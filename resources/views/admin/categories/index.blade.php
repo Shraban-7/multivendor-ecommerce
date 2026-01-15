@@ -12,6 +12,7 @@
         <tr>
             <th>Image</th>
             <th>Name</th>
+            <th>Icon</th>
             <th>Status</th>
             <th>Actions</th>
         </tr>
@@ -21,6 +22,7 @@
         <tr>
             <td><img src="{{ storage_url($category->image) }}" width="50"></td>
             <td><strong>{{ $category->name }}</strong></td>
+            <td>{{ $category->icon }}</td>
             <td>@if($category->status)<span class="badge bg-primary">Active</span> @else <span class="badge bg-secondary">Inactive</span> @endif</td>
             <td>
                 <button class="btn btn-sm btn-light border" data-bs-toggle="modal" data-bs-target="#editModal{{ $category->id }}">

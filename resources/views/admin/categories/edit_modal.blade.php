@@ -13,6 +13,11 @@
                         <input type="text" name="name" class="form-control" value="{{ $category->name }}" required>
                     </div>
 
+                    <div class="mb-3">
+                        <label class="form-label">Icon</label>
+                        <input type="text" name="icon" class="form-control" value="{{ $category->icon }}" required>
+                    </div>
+
                     @if($category->category_id)
                     <div class="mb-3">
                         <label class="form-label">Parent Category (Optional)</label>

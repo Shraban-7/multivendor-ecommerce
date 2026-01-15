@@ -55,7 +55,8 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255',
             'category_id' => 'nullable|exists:categories,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:4000',
-            'status' => 'nullable'
+            'status' => 'nullable',
+            'icon' => 'nullable'
         ]);
 
         $data['slug'] = str_slug('categories', 'slug', $data['name']);
