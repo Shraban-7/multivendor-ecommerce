@@ -776,6 +776,10 @@ if (! function_exists('format_bd_phone')) {
 if (! function_exists('send_sms')) {
     function send_sms($message, $recipients)
     {
-        return (new \App\Services\SmsService)->send($message, $recipients);
+        if(app()->isProduction()) {
+            return (new \App\Services\SmsService)->send($message, $recipients);
+        }
+
+        return null;
     }
 }
