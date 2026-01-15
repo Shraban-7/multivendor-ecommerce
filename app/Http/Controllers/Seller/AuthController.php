@@ -30,13 +30,18 @@ class AuthController extends Controller
         return redirect()->route('home')->with('success', 'Signup successful! Please log in.');
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
         if (Auth::guard('seller')->check()) {
             Auth::guard('seller')->logout();
-        } elseif (Auth::guard('employee')->check()) {
+        }
+
+        if (Auth::guard('employee')->check()) {
             Auth::guard('employee')->logout();
         }
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return redirect()->route('home');
     }
