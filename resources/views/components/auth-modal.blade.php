@@ -58,7 +58,8 @@
                     </button>
 
                     <p class="text-center text-sm text-gray-600 mt-8">
-                        <a href="{{ route('login') }}" class="text-primary-600 font-semibold hover:underline">Login With Email</a>
+                        <a href="{{ route('login') }}" class="text-primary-600 font-semibold hover:underline">Login With
+                            Email</a>
                     </p>
 
                     {{-- <div class="relative flex py-2 items-center">
@@ -110,9 +111,14 @@
 
                     <div class="text-center">
                         <p class="text-xs text-gray-500">Didn't receive code?</p>
-                        <button class="text-xs font-bold text-primary-600 hover:text-primary-700 mt-1 transition">Resend
-                            OTP (30s)</button>
+
+                        <button id="resendOtpBtn"
+                            class="text-xs font-bold text-primary-600 hover:text-primary-700 mt-1 transition disabled:text-gray-400 disabled:cursor-not-allowed"
+                            disabled>
+                            Resend OTP (<span id="otpTimer">30</span>s)
+                        </button>
                     </div>
+
                 </div>
             </div>
 
@@ -195,7 +201,6 @@
     </div>
 </div>
 
-
 <script>
     const API_ENDPOINTS = {
         checkPhone: "{{ route('auth.checkPhone') }}",
@@ -211,6 +216,7 @@
         contentId: 'authBox',
         steps: ['step-phone', 'step-otp', 'step-password', 'step-name'],
         currentPhone: '',
+        otpTimerInterval: null,
 
         init() {
             this.cacheDOM();
@@ -226,13 +232,11 @@
             this.phoneCheck = document.getElementById('phoneCheck');
             this.otpInputs = document.querySelectorAll('.otp-input');
             this.btnVerifyOtp = document.getElementById('btnVerifyOtp');
-
             this.btnLogin = document.getElementById('btnLogin');
             this.btnRegister = document.getElementById('btnRegister');
         },
 
         bindEvents() {
-            // ... existing listeners (close, phone input, send otp, verify otp) ...
             document.getElementById('closeAuth').addEventListener('click', () => this.toggleModal(false));
             document.getElementById('authOverlay').addEventListener('click', () => this.toggleModal(false));
             this.inputPhone.addEventListener('input', (e) => this.validatePhone(e.target.value));
@@ -244,7 +248,6 @@
                 input.addEventListener('input', (e) => this.handleOtpInput(e, index));
             });
             this.btnVerifyOtp.addEventListener('click', () => this.verifyOtp());
-
             this.btnLogin.addEventListener('click', () => this.finalizeAuth(this.btnLogin, 'Logging in...',
                 'Login Successful!'));
             this.btnRegister.addEventListener('click', () => this.finalizeAuth(this.btnRegister,
@@ -252,32 +255,22 @@
         },
 
         goToStep(stepId) {
-            // Hide all steps
             this.steps.forEach(id => {
-                document.getElementById(id).classList.add('hidden');
-                document.getElementById(id).classList.add('opacity-0');
+                document.getElementById(id).classList.add('hidden', 'opacity-0');
             });
-
-            // Show target step
             const target = document.getElementById(stepId === 'phone' ? 'step-phone' : stepId);
             target.classList.remove('hidden');
-
-            // Small delay for fade-in effect
             setTimeout(() => {
                 target.classList.remove('opacity-0');
             }, 50);
         },
 
-        // --- MODAL CONTROLS ---
         toggleModal(show) {
             if (show) {
-                // Reset to start
                 this.goToStep('step-phone');
                 this.inputPhone.value = '';
                 this.validatePhone('');
-
                 this.modal.classList.remove('hidden');
-                // Animation delay
                 setTimeout(() => {
                     this.modal.classList.remove('opacity-0');
                     this.content.classList.remove('scale-95', 'translate-y-4');
@@ -294,13 +287,9 @@
         },
 
         validatePhone(value) {
-            // Remove non-numeric
             const cleanVal = value.replace(/\D/g, '');
             this.inputPhone.value = cleanVal;
-
-            // Regex: Starts with 01, followed by 3-9, and total 11 digits
             const isValid = /^01[3-9]\d{8}$/.test(cleanVal);
-
             if (isValid) {
                 this.btnSendOtp.disabled = false;
                 this.btnSendOtp.classList.remove('bg-gray-200', 'text-gray-400', 'cursor-not-allowed');
@@ -315,11 +304,7 @@
                 this.btnSendOtp.classList.remove('bg-primary-600', 'text-white', 'hover:bg-primary-700',
                     'shadow-lg', 'shadow-primary-500/30');
                 this.phoneCheck.classList.add('opacity-0');
-
-                // Only show error if length is close to 11 but invalid
-                if (cleanVal.length > 2 && !cleanVal.startsWith('01')) {
-                    this.phoneError.classList.remove('hidden');
-                } else if (cleanVal.length === 11 && !isValid) {
+                if ((cleanVal.length > 2 && !cleanVal.startsWith('01')) || (cleanVal.length === 11 && !isValid)) {
                     this.phoneError.classList.remove('hidden');
                 } else {
                     this.phoneError.classList.add('hidden');
@@ -329,23 +314,19 @@
 
         async sendOtp() {
             this.btnSendOtp.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-
             try {
                 const response = await fetch(API_ENDPOINTS.checkPhone, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
-                            'content'),
+                            'content')
                     },
                     body: JSON.stringify({
                         phone: this.currentPhone
-                    }),
+                    })
                 });
-
                 const data = await response.json();
-
-
                 if (response.ok) {
                     if (data.data.user_exists == true) {
                         document.getElementById('welcomeUserPhone').innerText = PHONE_CODE + this.currentPhone;
@@ -353,10 +334,12 @@
                     } else {
                         document.getElementById('displayPhone').innerText = PHONE_CODE + this.currentPhone;
                         this.goToStep('step-otp');
-                        setTimeout(() => this.otpInputs[0].focus(), 100);
+                        setTimeout(() => {
+                            this.otpInputs[0].focus();
+                        }, 100);
+                        if (data.data.remaining_otp_time > 0) this.startOtpTimer(data.data.remaining_otp_time);
                     }
                 } else {
-                    // Handle server-side errors (e.g., rate limiting)
                     this.phoneError.innerText = data.data.message || 'Error sending OTP. Please try again.';
                     this.phoneError.classList.remove('hidden');
                 }
@@ -368,53 +351,36 @@
             }
         },
 
-        // --- OTP HANDLING ---
         handleOtpInput(e, index) {
             const input = e.target;
-            const value = input.value;
-
-            // Ensure only number
-            input.value = value.replace(/[^0-9]/g, '');
-
-            if (input.value && index < this.otpInputs.length - 1) {
-                this.otpInputs[index + 1].focus();
-            }
-
+            input.value = input.value.replace(/[^0-9]/g, '');
+            if (input.value && index < this.otpInputs.length - 1) this.otpInputs[index + 1].focus();
             this.checkOtpComplete();
         },
 
         handleOtpKeydown(e, index) {
-            if (e.key === 'Backspace') {
-                if (!e.target.value && index > 0) {
-                    this.otpInputs[index - 1].focus();
-                }
-            }
+            if (e.key === 'Backspace' && !e.target.value && index > 0) this.otpInputs[index - 1].focus();
         },
 
         async verifyOtp() {
             let otpCode = '';
             this.otpInputs.forEach(input => otpCode += input.value);
-
             this.btnVerifyOtp.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
-
             try {
                 const response = await fetch(API_ENDPOINTS.verifyOtp, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
-                            'content'),
+                            'content')
                     },
                     body: JSON.stringify({
                         phone: this.currentPhone,
                         otp: otpCode
-                    }),
+                    })
                 });
-
                 const data = await response.json();
-
                 if (response.ok) {
-                    // Check the response from the server to determine the next step
                     if (data.data.is_existing_user) {
                         document.getElementById('welcomeUserPhone').innerText = PHONE_CODE + this.currentPhone;
                         this.goToStep('step-password');
@@ -422,9 +388,8 @@
                         this.goToStep('step-name');
                     }
                 } else {
-                    // Handle invalid OTP
                     alert(data.data.message || 'Invalid OTP. Please try again.');
-                    this.otpInputs.forEach(input => input.value = ''); // Clear OTP fields
+                    this.otpInputs.forEach(input => input.value = '');
                     this.otpInputs[0].focus();
                 }
             } catch (error) {
@@ -437,7 +402,6 @@
         checkOtpComplete() {
             let code = '';
             this.otpInputs.forEach(input => code += input.value);
-
             if (code.length === 6) {
                 this.btnVerifyOtp.disabled = false;
                 this.btnVerifyOtp.classList.remove('bg-gray-200', 'text-gray-400', 'cursor-not-allowed');
@@ -454,7 +418,6 @@
         togglePassword(fieldId) {
             const field = document.getElementById(fieldId);
             const icon = field.nextElementSibling.querySelector('i');
-
             if (field.type === "password") {
                 field.type = "text";
                 icon.classList.remove('fa-eye');
@@ -470,62 +433,89 @@
             btnElement.disabled = true;
             const originalText = btnElement.innerText;
             btnElement.innerHTML = `<i class="fas fa-circle-notch fa-spin mr-2"></i> ${loadingText}`;
-
             let url = btnElement.id === 'btnLogin' ? API_ENDPOINTS.login : API_ENDPOINTS.register;
             let payload = {
                 phone: this.currentPhone
             };
-
-            if (btnElement.id === 'btnLogin') {
-                payload.password = document.getElementById('loginPassword').value;
-            } else { // Registration
+            if (btnElement.id === 'btnLogin') payload.password = document.getElementById('loginPassword').value;
+            else {
                 payload.name = document.getElementById('newName').value;
                 payload.password = document.getElementById('newPassword').value;
                 payload.password_confirmation = document.getElementById('newPassword').value;
             }
-
             try {
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
-                            'content'),
+                            'content')
                     },
-                    body: JSON.stringify(payload),
+                    body: JSON.stringify(payload)
                 });
-
                 const data = await response.json();
-
                 if (response.ok) {
                     btnElement.classList.remove('bg-primary-600', 'hover:bg-primary-700',
                         'shadow-primary-500/30');
                     btnElement.classList.add('bg-green-600', 'shadow-green-500/30', 'cursor-default');
                     btnElement.innerHTML = `<i class="fas fa-check-circle mr-2"></i> ${successText}`;
-
-                    // Redirect or Reload to see the logged-in state
                     setTimeout(() => {
                         window.location.reload();
                     }, 1000);
-
                 } else {
-                    // Handle Login/Registration errors (e.g., wrong password, validation errors)
                     alert(data.data.message || 'Authentication failed. Please check your credentials.');
                     btnElement.disabled = false;
                     btnElement.innerHTML = originalText;
-
-                    // Re-apply primary style if needed (especially for login button)
-                    if (btnElement.id === 'btnLogin' || btnElement.id === 'btnRegister') {
-                        btnElement.classList.add('bg-primary-600', 'hover:bg-primary-700',
-                            'shadow-primary-500/30');
-                        btnElement.classList.remove('bg-green-600', 'shadow-green-500/30', 'cursor-default');
-                    }
+                    btnElement.classList.add('bg-primary-600', 'hover:bg-primary-700', 'shadow-primary-500/30');
+                    btnElement.classList.remove('bg-green-600', 'shadow-green-500/30', 'cursor-default');
                 }
             } catch (error) {
                 alert('A critical network error occurred.');
                 btnElement.disabled = false;
                 btnElement.innerHTML = originalText;
             }
+        },
+
+        startOtpTimer(seconds) {
+            const btn = document.getElementById('resendOtpBtn');
+            if (!btn) return;
+
+            if (this.otpTimerInterval) clearInterval(this.otpTimerInterval);
+
+            let remaining = parseInt(seconds, 10);
+            btn.disabled = true;
+
+            btn.textContent = `Resend OTP (${remaining}s)`;
+
+            this.otpTimerInterval = setInterval(() => {
+                remaining--;
+                if (remaining <= 0) {
+                    clearInterval(this.otpTimerInterval);
+                    this.otpTimerInterval = null;
+                    btn.disabled = false;
+                    btn.textContent = 'Resend OTP';
+                } else {
+                    btn.textContent = `Resend OTP (${remaining}s)`;
+                }
+            }, 1000);
+        },
+
+
+        resendOtp(phone) {
+            fetch(API_ENDPOINTS.checkPhone, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                        'content'),
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    phone
+                })
+            }).then(res => res.json()).then(data => {
+                if (data.data.remaining_otp_time > 0) this.startOtpTimer(data.data.remaining_otp_time);
+            }).catch(err => console.error('Resend OTP error:', err));
         }
     };
 
@@ -537,5 +527,13 @@
                 auth.toggleModal(true);
             });
         });
+
+        const resendBtn = document.getElementById('resendOtpBtn');
+        if (resendBtn) {
+            resendBtn.addEventListener('click', () => {
+                if (!resendBtn.disabled) auth.resendOtp(auth.currentPhone);
+            });
+        }
     });
 </script>
+

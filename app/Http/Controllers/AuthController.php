@@ -54,8 +54,14 @@ class AuthController extends Controller
 
         send_sms($otpMessage, $phone);
 
+        $remainingSeconds = max(
+            now()->diffInSeconds($otpLog->expires_at, false),
+            0
+        );
+
         return apiResponse([
             'user_exists' => false,
+            'remaining_otp_time' => $remainingSeconds
         ], 'OTP sent successfully');
     }
 
