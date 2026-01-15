@@ -68,7 +68,7 @@ class SellerController extends Controller
 
     public function profile(Request $request)
     {
-        $seller = Auth::guard('seller')->user();
+        $seller = Seller::find(get_seller_id());
         $divisions = Division::all();
 
         if ($request->isMethod('GET')) {
