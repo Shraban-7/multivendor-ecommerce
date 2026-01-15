@@ -61,8 +61,8 @@
         }
 
         /* =========================
-                                                           CATEGORY FILTER – ACTIVE
-                                                           ========================= */
+                                                                       CATEGORY FILTER – ACTIVE
+                                                                       ========================= */
 
         .category-filter.active {
             color: #ea580c;
@@ -86,8 +86,8 @@
         }
 
         /* =========================
-                                                           HOVER STATES (NON-ACTIVE)
-                                                           ========================= */
+                                                                       HOVER STATES (NON-ACTIVE)
+                                                                       ========================= */
 
         .category-filter:not(.active):hover span:first-child {
             color: #ea580c;
@@ -223,7 +223,8 @@
                         @foreach ($productOptions as $optionName => $values)
                             @if (count($values) > 0)
                                 <div class="border-b border-gray-100 pb-3">
-                                    <h3 class="font-bold text-gray-800 mb-3 text-sm uppercase tracking-wider option-btn">{{ $optionName }}</h3>
+                                    <h3 class="font-bold text-gray-800 mb-3 text-sm uppercase tracking-wider option-btn">
+                                        {{ $optionName }}</h3>
                                     <div class="mt-2 space-y-2 max-h-40 overflow-y-auto pr-2 ">
                                         @foreach ($values as $value)
                                             @php
@@ -279,7 +280,7 @@
             function toggleFilter(show) {
                 if (show) {
                     sidebar.classList.remove('hidden');
-                    sidebar.classList.add('fixed', 'inset-0', 'flex', 'z-50'); // Add z-50 here for mobile
+                    sidebar.classList.add('fixed', 'inset-0', 'flex', 'z-50');
                     sidebarOverlay.classList.remove('hidden');
 
                     sidebarContent.classList.remove('sticky', 'top-24');
@@ -287,7 +288,7 @@
                         'shadow-2xl', 'p-6');
                 } else {
                     sidebar.classList.add('hidden');
-                    sidebar.classList.remove('fixed', 'inset-0', 'flex', 'z-50'); // Remove z-50
+                    sidebar.classList.remove('fixed', 'inset-0', 'flex', 'z-50');
                     sidebarOverlay.classList.add('hidden');
 
                     sidebarContent.classList.add('sticky', 'top-24');
@@ -459,6 +460,12 @@
                 params.append("brand", selectedBrands.join(','));
             }
 
+            // Sort
+            let sortValue = document.querySelector('.sort-filter')?.value;
+            if (sortValue) {
+                params.append("sort", sortValue);
+            }
+
             // Product options
             let selectedProductOptions = {};
 
@@ -483,13 +490,6 @@
                     const key = option.toLowerCase().replace(/\s+/g, '_');
                     params.append(key, values.join(','));
                 }
-            }
-
-
-            // Sort
-            let sortValue = document.querySelector('.sort-filter')?.value;
-            if (sortValue) {
-                params.append("sort", sortValue);
             }
 
             // Price
@@ -565,10 +565,12 @@
             el.addEventListener('change', updateUrl);
         });
 
-
-        document.querySelector('.sort-filter').addEventListener('change', function() {
-            updateUrl();
+        document.addEventListener('change', function(e) {
+            if (e.target.classList.contains('sort-filter')) {
+                updateUrl();
+            }
         });
+
 
         document.addEventListener('click', function(e) {
             const btn = e.target.closest('.remove-filter');
