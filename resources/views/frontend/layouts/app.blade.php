@@ -82,6 +82,8 @@ $isDashboard = View::hasSection('dashboard');
 
 <body class="bg-gray-50 font-sans min-h-screen text-gray-800 antialiased">
 
+    @include('components.frontend.global-loader')
+
     @include('frontend.layouts.mobile-drawer')
 
     <div class="hidden">
@@ -818,6 +820,23 @@ $isDashboard = View::hasSection('dashboard');
             }
         </script>
     @endif
+
+    <script>
+        const globalLoader = document.getElementById('global-loader');
+        function showLoader() {
+            globalLoader.classList.remove('hidden');
+            globalLoader.classList.add('flex');            
+            // Disable scrolling on the body
+            document.body.classList.add('overflow-hidden');
+        }
+
+        function hideLoader() {
+            globalLoader.classList.add('hidden');
+            globalLoader.classList.remove('flex');            
+            // Re-enable scrolling
+            document.body.classList.remove('overflow-hidden');
+        }
+    </script>
 
     @stack('scripts')
 </body>

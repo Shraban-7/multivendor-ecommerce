@@ -513,6 +513,8 @@
             // Update browser URL (without reload)
             window.history.pushState({}, '', url);
 
+            showLoader();
+
             // Fetch filtered products
             fetch(url, {
                     headers: {
@@ -522,9 +524,11 @@
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('products-container').innerHTML = data.html;
+                    hideLoader();
                 })
                 .catch(error => {
                     console.error('Filter error:', error);
+                    hideLoader();
                 });
 
             return;
