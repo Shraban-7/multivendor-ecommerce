@@ -836,6 +836,40 @@ $isDashboard = View::hasSection('dashboard');
             // Re-enable scrolling
             document.body.classList.remove('overflow-hidden');
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.addEventListener('click', (e) => {
+                const link = e.target.closest('a');
+                if (link) {
+                    const href = link.getAttribute('href');
+                    const target = link.getAttribute('target');
+                    if (
+                        !href || 
+                        href.startsWith('#') || 
+                        href.startsWith('javascript:') || 
+                        target === '_blank' || 
+                        e.ctrlKey || 
+                        e.metaKey || 
+                        e.shiftKey
+                    ) {
+                        return;
+                    }
+
+                    if (href === window.location.href) {
+                        return;
+                    }
+
+                    //showLoader();
+                }
+            });
+
+            //"Stuck Loader" on Back/Forward Button navigation
+            window.addEventListener('pageshow', (event) => {
+                if (event.persisted) {
+                    hideLoader();
+                }
+            });
+        });
     </script>
 
     @stack('scripts')
