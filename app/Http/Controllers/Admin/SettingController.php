@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\SystemSetting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class SettingController extends Controller
 {
@@ -72,6 +73,8 @@ class SettingController extends Controller
 
         $setting->fill($data);
         $setting->save();
+
+        Cache::forget('system_settings');
 
         return redirect()->back()->with('success', 'Settings updated successfully.');
     }
