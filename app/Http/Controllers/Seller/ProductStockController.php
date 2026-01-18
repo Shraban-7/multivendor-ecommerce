@@ -28,16 +28,15 @@ class ProductStockController extends Controller
 
     public function products()
     {
-        $products = Product::select('id', 'name', 'stock_in', 'stock_out')
+        $products = Product::select('id', 'name','sku', 'stock_in', 'stock_out')
             ->where('seller_id', get_seller_id())
             ->get()
             ->map(function ($product) {
-                $product->current_stock = (int)$product->stock_in - (int)$product->stock_out;
                 return [
                     'id' => $product->id,
                     'name' => $product->name,
                     'sku' => $product->sku,
-                    'current_stock' => max($product->current_stock, 0),
+                    'current_stock' => max($product->totalStock, 0),
                 ];
             });
 
