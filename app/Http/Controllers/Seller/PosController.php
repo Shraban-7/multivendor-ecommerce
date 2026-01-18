@@ -41,6 +41,8 @@ class PosController extends Controller
         $due = null;
         $previousPaid = 0;
         $additionalDiscount = 0;
+        $cashReceived = 0;
+        $cashReturned = 0;
 
         if ($request->has('order_id')) {
 
@@ -111,7 +113,20 @@ class PosController extends Controller
                 $discount += (($selling - $discounted) * $item->quantity);
             }
 
-            $total = $subtotal - $discount;
+            $subtotal = $cart->sub_total;
+            $discount = $cart->discount;
+            $total = $cart->total;
+
+            $paid = $cart->paid;
+            $previousPaid = $cart->paid;
+            $due = $cart->due;
+            $additionalDiscount = $cart->additional_discount;
+            $cashReceived = $cart->cash_received;
+            $cashReturned = $cart->cash_returned;
+            if ($cart->customer_name || $cart->customer_phone) {
+                $customer_name = $cart->customer_name;
+                $customer_phone = $cart->customer_phone;
+            }
         } else {
 
             $cart = PosCart::where('seller_id', $seller->id)
@@ -164,7 +179,9 @@ class PosController extends Controller
             'customer_phone',
             'previousPaid',
             'additionalDiscount',
-            'draftCarts'
+            'draftCarts',
+            'cashReceived',
+            'cashReturned'
         ));
     }
 
@@ -380,6 +397,7 @@ class PosController extends Controller
     public function placeOrder(Request $request)
     {
         $draftId = $request->draft_id;
+
         $data = $request->validate([
             'customer_name' => 'nullable|string|max:255|required_with:customer_phone',
             'customer_phone' => 'nullable|string|max:20|required_with:customer_name',
@@ -569,6 +587,17 @@ class PosController extends Controller
     {
         $sellerId = get_seller_id();
 
+        $data = $request->validate([
+            'customer_name' => 'nullable|string|max:255|required_with:customer_phone',
+            'customer_phone' => 'nullable|string|max:20|required_with:customer_name',
+            'paid' => 'required|numeric',
+            'due' => 'nullable|numeric',
+            'discount' => 'nullable',
+            'cash_received' => 'nullable',
+            'cash_returned' => 'nullable',
+            'items' => 'required|array',
+        ]);
+
         $cart = PosCart::with('items.variant.product')
             ->where('seller_id', $sellerId)
             ->whereNull('order_id')
@@ -579,8 +608,50 @@ class PosController extends Controller
             return errorResponse("Cart is empty!");
         }
 
+        $cartItems = $cart->items()->with('variant.product')->get();
+
+        $sub_total = 0;
+        $total = 0;
+        $discount = 0;
+        $orderItems = [];
+
+        $itemsCollection = collect($request->items);
+
+        foreach ($cartItems as $item) {
+
+            $variant = $item->variant;
+            $product = $variant->product ?? $item->product;
+
+            $itemPrice = $variant->selling_price ?? $product->selling_price;
+
+            $unitPrice = $itemsCollection->firstWhere('id', $item->id)['price'];
+
+            $itemDiscount = $itemPrice > $unitPrice ? ($itemPrice - $unitPrice) : 0;
+            $itemDiscount = $itemDiscount * $item->quantity;
+            $discount += $itemDiscount;
+
+            $itemTotal = $item->quantity * $unitPrice;
+            $itemSubtotal = $item->quantity * $itemPrice;
+
+            $sub_total += $itemPrice * $item->quantity;
+        }
+
+        $total = $sub_total - ($discount + $data['discount']);
+        $payableAmount = $total;
+
         $cart->update([
             'is_draft' => true,
+            'customer_name' => $data['customer_name'],
+            'customer_phone' => $data['customer_phone'],
+            'sub_total' => $sub_total,
+            'discount' => $data['discount'] + $discount,
+            'additional_discount' => $data['discount'],
+            'total' => $total,
+            'payable' => $payableAmount,
+            'paid' => $data['paid'],
+            'due' => $data['due'],
+            'cash_received' => $data['cash_received'],
+            'cash_returned' => $data['cash_returned'],
         ]);
 
         $cartItems = $cart->items;
