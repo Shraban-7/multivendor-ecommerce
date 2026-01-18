@@ -86,7 +86,7 @@
                 <div class="col-sm-7">
                     @isset($settings->logo)
                         <a href="{{ route('home') }}">
-                            <img src="{{ storage_url($settings->logo) }}" height="100" alt="img" />
+                            <img src="{{ storage_url($settings->logo) }}" height="64px" alt="img" />
                         </a>
                     @endisset
                     <p class="mb-0">
