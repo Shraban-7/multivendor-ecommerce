@@ -52,7 +52,7 @@
                 <div class="col-sm-7 text-center text-sm-start">
                     @isset($settings->logo)
                         <a href="{{ route('home') }}">
-                            <img src="{{ storage_url($settings->logo) }}" height="100" alt="img" />
+                            <img src="{{ storage_url($settings->logo) }}" height="64px" alt="img" />
                         </a>
                     @endisset
                 </div>
