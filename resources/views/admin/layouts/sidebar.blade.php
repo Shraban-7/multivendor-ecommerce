@@ -16,8 +16,7 @@ $settings = settings();
 <nav class="navbar-vertical navbar">
     <div class="nav-scroller">
         <a class="navbar-brand d-flex" href="">
-            <img src="{{ storage_url($settings->logo) }}" alt="logo" />
-            {{-- <h5 class="text-white ms-5 ">Ecommerce</h5> --}}
+            <img src="{{ storage_url($settings->logo_white) }}" alt="logo" />
         </a>
         <ul class="navbar-nav flex-column" id="sideNavbar">
 
