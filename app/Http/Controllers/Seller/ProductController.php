@@ -599,7 +599,7 @@ class ProductController extends Controller
                 'quantity' => $request->quantity,
             ];
 
-            return view('seller.barcodes.print', compact('data'));
+            return view('seller.barcodes.print_new', compact('data'));
         }
 
         $product = Product::where('sku', $request->sku)->first();
@@ -613,7 +613,7 @@ class ProductController extends Controller
                 'quantity' => $request->quantity,
             ];
 
-            return view('seller.barcodes.print', compact('data'));
+            return view('seller.barcodes.print_new', compact('data'));
         }
 
         return redirect()->route('seller.products.printBarcode')->with('error', 'Product not found!');
