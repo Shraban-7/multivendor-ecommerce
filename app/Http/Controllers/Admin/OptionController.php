@@ -61,7 +61,7 @@ class OptionController extends Controller
             'name' => $data['name'],
         ]);
 
-        $existingValues = $option->options->pluck('value')->toArray();
+        $existingValues = $option->option_values->pluck('value')->toArray();
 
         OptionValue::where('option_id', $option->id)
             ->whereNotIn('value', $data['values'])
