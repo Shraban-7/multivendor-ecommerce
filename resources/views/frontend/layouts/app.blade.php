@@ -130,7 +130,7 @@ $isDashboard = View::hasSection('dashboard');
     </button>
 
     <x-auth-modal />
-    <x-frontend.custom-toastr />
+    @include('components.frontend.custom-toastr')
 
     <script>
         window.toggleModal = function(modalId) {
