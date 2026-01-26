@@ -14,7 +14,8 @@
         .label-container {
             width: 50mm;
             height: 25mm;
-            padding: 0.8mm 2mm;
+            /* padding: 0.8mm 2mm; */
+            padding: 1mm 2mm;
             border: 1px dashed #aaa;
             box-sizing: border-box;
             overflow: hidden;
@@ -31,7 +32,7 @@
             font-weight: 600;
             text-align: center;
             width: 100%;
-            line-height: 0.9;
+            line-height: 1.2;
             margin: 0;
             padding: 0;
         }
@@ -81,7 +82,8 @@
             .label-container {
                 border: none;
                 margin: 0;
-                padding: 0.8mm 2mm;
+                /* padding: 0.8mm 2mm; */
+                padding: 1mm 2mm;
                 page-break-after: always;
             }
 
@@ -176,7 +178,7 @@
                     JsBarcode(`#${barcodeElement.id}`, barcodeData, {
                         format: "CODE128",
                         displayValue: true,
-                        fontSize: 6,
+                        fontSize: 8,
                         height: 30,
                         margin: 0,
                         width: 1
