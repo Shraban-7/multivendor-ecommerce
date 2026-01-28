@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\DataController;
+use App\Http\Controllers\Api\MobipayController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\SellerChatController;
@@ -114,4 +115,9 @@ Route::prefix('payment-listener')->group(function () {
     Route::post('/check-device', [PaymentListnerController::class, 'checkDevice']);
     Route::post('/disconnect', [PaymentListnerController::class, 'disconnectDevice']);
     Route::post('/trigger', [PaymentListnerController::class, 'triggerSms']);
+});
+
+Route::prefix('mobipay')->group(function () {
+    Route::match(['get', 'post'], '/webhook', [MobipayController::class, 'webhook']);
+    Route::match(['get', 'post'], '/store', [MobipayController::class, 'storeSms']);
 });
