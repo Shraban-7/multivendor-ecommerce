@@ -14,11 +14,11 @@
             <thead>
                 <tr>
                     <th scope="col"># Order ID</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">Customer</th>
-                    <th scope="col">Employee</th>
+                    <th scope="col">Date</th>                   
                     <th scope="col">Subtotal</th>
                     <th scope="col">Due</th>
+                    <th scope="col">Customer</th>
+                    <th scope="col">Employee</th>
                     {{-- <th scope="col">Action</th> --}}
                 </tr>
             </thead>
@@ -38,16 +38,6 @@
                                 </p>
                             @endif
                         </td>
-                        <td>
-                            @if ($order->customer)
-                                {{ $order->customer->name }} ({{ $order->customer->phone }})
-                            @endif
-                        </td>
-                        <td>
-
-                                {{ $order->employee?->name }}
-
-                        </td>
                         <td> <span class="text-dark">{{ money($order->payable) }}</span> </td>
                         <td>
                             @if ($order->due > 0)
@@ -58,7 +48,12 @@
                                 </button>
                             @endif
                         </td>
-
+                        <td>
+                            @if ($order->customer)
+                                {{ $order->customer->name }} ({{ $order->customer->phone }})
+                            @endif
+                        </td>
+                        <td>{{ $order->employee?->name }}</td>
                         <!-- <td>
                             <a href="{{ route('seller.orders.details', $order->invoice_id) }}" title="Details"
                                 class="btn btn-light border btn-sm me-1">
