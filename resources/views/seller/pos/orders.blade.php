@@ -16,6 +16,7 @@
                     <th scope="col"># Order ID</th>
                     <th scope="col">Date</th>
                     <th scope="col">Customer</th>
+                    <th scope="col">Employee</th>
                     <th scope="col">Subtotal</th>
                     <th scope="col">Due</th>
                     {{-- <th scope="col">Action</th> --}}
@@ -41,6 +42,11 @@
                             @if ($order->customer)
                                 {{ $order->customer->name }} ({{ $order->customer->phone }})
                             @endif
+                        </td>
+                        <td>
+
+                                {{ $order->employee?->name }}
+
                         </td>
                         <td> <span class="text-dark">{{ money($order->payable) }}</span> </td>
                         <td>

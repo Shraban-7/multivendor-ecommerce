@@ -18,7 +18,7 @@ class SaleController extends Controller
 {
     public function index(Request $request)
     {
-        $orders = Order::where('seller_id', get_seller_id())
+        $orders = Order::where('seller_id', get_seller_id())->with('employee')
             ->whereNull('user_id');
 
         if ($request->filled('invoice_id')) {
