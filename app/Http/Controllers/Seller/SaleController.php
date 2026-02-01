@@ -53,8 +53,7 @@ class SaleController extends Controller
     {
         $orderId = $request->input('order_id', $request->query('order_id'));
         $seller = Seller::find(get_seller_id());
-        $employee = SellerEmployee::find(auth()->guard('employee')->id());
-
+        
         $data = $request->validate([
             'customer_name' => 'nullable|string|max:255|required_with:customer_phone',
             'customer_phone' => 'nullable|string|max:20|required_with:customer_name',
@@ -69,9 +68,10 @@ class SaleController extends Controller
             'items.*.price' => 'nullable|numeric|min:0',
             'items.*.quantity' => 'required|numeric|min:1',
             'additional_discount' => 'nullable|numeric|min:0',
+            'employee_id' => 'nullable'
         ]);
 
-        // dd($data);
+        $employee = SellerEmployee::find($data['employee_id']);
 
         $order = Order::where('invoice_id', $orderId)
             ->where('seller_id', $seller->id)

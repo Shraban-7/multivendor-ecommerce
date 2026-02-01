@@ -24,6 +24,8 @@ class PosController extends Controller
     {
         $seller = Seller::find(get_seller_id());
 
+        $employees = SellerEmployee::where('seller_id',$seller->id)->get();
+
         $products = Product::where('seller_id', $seller->id)
             ->with('variants.option_values', 'unit')
             ->get();
@@ -85,6 +87,9 @@ class PosController extends Controller
                 $additionalDiscount = $order->additional_discount;
 
                 $due = ($total > $paid) ? $total - $paid : $order->due;
+
+                $cashReceived = $order->cash_received;
+                $cashReturned = $order->cash_returned;
 
                 if ($order->customer_id) {
                     $customer_name = $order->customer->name;
@@ -181,7 +186,8 @@ class PosController extends Controller
             'additionalDiscount',
             'draftCarts',
             'cashReceived',
-            'cashReturned'
+            'cashReturned',
+            'employees'
         ));
     }
 
@@ -407,11 +413,12 @@ class PosController extends Controller
             'cash_received' => 'nullable',
             'cash_returned' => 'nullable',
             'items' => 'required|array',
+            'employee_id' => 'nullable'
         ]);
 
         $seller = Seller::find(get_seller_id());
 
-        $employee = SellerEmployee::find(auth()->guard('employee')->id());
+        $employee = SellerEmployee::find($data['employee_id']);
 
         $data['seller_id'] = $seller->id;
 
@@ -539,7 +546,6 @@ class PosController extends Controller
                 ];
             }
         }
-
 
         $cart->items()->delete();
         $cart->delete();

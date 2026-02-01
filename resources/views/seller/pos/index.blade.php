@@ -530,6 +530,32 @@ foreach ($categories as $cat) {
                             <input type="number" class="form-control" id="cash-returned" data-due="0" value="{{ $cashReturned }}"  placeholder="0" readonly>
                         </div>
                     </div>
+                    @if (request()->has('order_id'))
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <label for="employee_id">Add Employee</label>
+                                <select name="employee_id" id="employee_id" class="form-select">
+                                    <option value="" >--select employee--</option>
+                                    @foreach ($employees as $employee)
+                                        <option value="{{ $employee->id }}" @selected($employee->id==$order->seller_employee_id) >{{ $employee->name }}</option>        
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    @else
+                        
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <label for="employee_id">Add Employee</label>
+                            <select name="employee_id" id="employee_id" class="form-select">
+                                <option value="" >--select employee--</option>
+                                @foreach ($employees as $employee)
+                                    <option value="{{ $employee->id }}" @selected($employee->id==auth('employee')->id()) >{{ $employee->name }}</option>        
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    @endif
 
                     <!-- Payment Buttons -->
                     <div class="d-grid gap-2">
@@ -911,7 +937,7 @@ foreach ($categories as $cat) {
             let cashReceive = parseFloat($('#cash-received').val()) || 0;
             let cashReturn = parseFloat($('#cash-returned').val()) || 0;
             let draftId = $('#draft_id').val();
-
+            let employeeId = $('#employee_id').val();
 
             if (paid < 0) {
                 showErrorToast("Paid amount cannot be negative.");
@@ -954,6 +980,7 @@ foreach ($categories as $cat) {
                     discount: getTotalDiscount(),
                     items: getItemsFromCart(),
                     draft_id : draftId,
+                    employee_id :employeeId,
                     _token: "{{ csrf_token() }}"
                 },
                 success: function(response) {
@@ -1187,6 +1214,7 @@ foreach ($categories as $cat) {
             let paidInput = parseFloat($('#paid-amount').val()) || 0;
             let cashReceive = parseFloat($('#cash-received').val()) || 0;
             let cashReturn = parseFloat($('#cash-returned').val()) || 0;
+            let employeeId = $('#employee_id').val();
 
             if (paidInput < 0) {
                 showErrorToast("Paid amount cannot be negative.");
@@ -1227,6 +1255,7 @@ foreach ($categories as $cat) {
                     total: total,
                     items: allItems,
                     additional_discount: getAdditionalDiscount(),
+                    employee_id :employeeId,
                     _token: "{{ csrf_token() }}"
                 },
                 success: function(response) {
