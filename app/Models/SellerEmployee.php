@@ -22,5 +22,9 @@ class SellerEmployee extends Authenticatable
     {
         return in_array($routeName, $this->permissions);
     }
-}
 
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'seller_employee_id');
+    }
+}

@@ -53,6 +53,7 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::get('/', [SellerEmployeeController::class, 'index'])->name('index');
         Route::get('/create', [SellerEmployeeController::class, 'create'])->name('create');
         Route::post('/store', [SellerEmployeeController::class, 'store'])->name('store');
+        Route::get('/sales-report', [SellerEmployeeController::class, 'salesReport'])->name('salesReport');
         Route::get('{id}/edit', [SellerEmployeeController::class, 'edit'])->name('edit');
         Route::get('/profile', [SellerEmployeeController::class, 'profile'])->name('profile');
         Route::post('{id}/update', [SellerEmployeeController::class, 'update'])->name('update');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Seller;
 use App\Http\Controllers\Controller;
 use App\Models\SellerEmployee;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 
 class SellerEmployeeController extends Controller
@@ -15,7 +16,7 @@ class SellerEmployeeController extends Controller
 
         $permissions = get_seller_routes();
 
-        return view('seller.employees.index', compact('employees','permissions'));
+        return view('seller.employees.index', compact('employees', 'permissions'));
     }
 
     public function create()
@@ -124,5 +125,27 @@ class SellerEmployeeController extends Controller
         $employee->save();
 
         return redirect()->back()->with('success', 'Profile updated successfully!');
+    }
+
+    public function salesReport(Request $request)
+    {
+        $startDate = $request->start_date
+            ? Carbon::parse($request->start_date)->startOfDay()
+            : Carbon::now()->startOfMonth();
+
+        $endDate = $request->end_date
+            ? Carbon::parse($request->end_date)->endOfDay()
+            : Carbon::now()->endOfMonth();
+
+        $employees = SellerEmployee::where('seller_id', get_seller_id())
+            ->withSum(['orders as total_sales' => function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('created_at', [$startDate, $endDate]);
+            }], 'total')
+            ->withCount(['orders as total_orders' => function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('created_at', [$startDate, $endDate]);
+            }])
+            ->get();
+
+        return view('seller.employees.sales_report', compact('employees', 'startDate', 'endDate'));
     }
 }

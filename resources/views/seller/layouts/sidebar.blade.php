@@ -187,6 +187,11 @@ $route = request()->route()->getName();
                                 Add Employee
                             </x-dashboard.nav-item-link>
                         @endif
+                        @if ($seller || $employee->hasPermission('seller.employees.salesReport'))
+                            <x-dashboard.nav-item-link :route="'seller.employees.salesReport'">
+                                Sales Report
+                            </x-dashboard.nav-item-link>
+                        @endif
                     </ul>
                 </div>
             </li>
