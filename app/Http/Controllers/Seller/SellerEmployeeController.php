@@ -137,7 +137,7 @@ class SellerEmployeeController extends Controller
             ? Carbon::parse($request->end_date)->endOfDay()
             : Carbon::now()->endOfMonth();
 
-        $employees = SellerEmployee::where('seller_id', get_seller_id())
+        $employees = SellerEmployee::active()->where('seller_id', get_seller_id())
             ->withSum(['orders as total_sales' => function ($query) use ($startDate, $endDate) {
                 $query->whereBetween('created_at', [$startDate, $endDate]);
             }], 'total')

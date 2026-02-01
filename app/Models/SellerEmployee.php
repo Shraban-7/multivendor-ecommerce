@@ -18,6 +18,11 @@ class SellerEmployee extends Authenticatable
         'permissions' => 'array',
     ];
 
+    public function scopeActive($query)
+    {
+        return $query->where('is_active',1);
+    }
+
     public function hasPermission($routeName): bool
     {
         return in_array($routeName, $this->permissions);

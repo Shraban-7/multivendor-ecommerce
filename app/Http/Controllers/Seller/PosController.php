@@ -24,7 +24,7 @@ class PosController extends Controller
     {
         $seller = Seller::find(get_seller_id());
 
-        $employees = SellerEmployee::where('seller_id',$seller->id)->get();
+        $employees = SellerEmployee::active()->where('seller_id',$seller->id)->get();
 
         $products = Product::where('seller_id', $seller->id)
             ->with('variants.option_values', 'unit')
