@@ -418,8 +418,6 @@ class PosController extends Controller
 
         $seller = Seller::find(get_seller_id());
 
-        $employee = SellerEmployee::find($data['employee_id']);
-
         $data['seller_id'] = $seller->id;
 
         $cart = PosCart::where('seller_id', get_seller_id())->where('is_draft', 0)->first();
@@ -490,7 +488,7 @@ class PosController extends Controller
 
         $orderData = [
             'seller_id' => $seller->id,
-            'seller_employee_id' => $employee->id ?? null,
+            'seller_employee_id' => $data['employee_id'] ?? null,
             'invoice_id' => $invoiceId,
             'sub_total' => $sub_total,
             'discount' => $data['discount'] + $discount,
