@@ -29,7 +29,7 @@ class Order extends Model
 
     public function billing_address(): HasOne
     {
-        return $this->hasOne(OrderBillingAddress::class);
+        return $this->hasOne(OrderBillingAddress::class,'order_id');
     }
 
     public function statusLogs()
