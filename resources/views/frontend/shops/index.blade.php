@@ -3,12 +3,12 @@
 
 @section('content')
 
-    <div class="container mx-auto px-4 pb-10">
+    <div class=" ">
         <div class="mb-4">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <h2 class="text-2xl font-bold text-gray-900 text-center md:text-left">
+                <!-- <h2 class="text-2xl font-bold text-gray-900 text-center md:text-left">
                     Our <span class="text-primary-600">Sellers</span>
-                </h2>
+                </h2> -->
                 <form method="GET" action="#" class="relative w-full md:w-auto max-w-xl rounded-full">
                     <input type="text" name="name" placeholder="Search for shop name..."
                         class="w-full md:w-96 pl-6 pr-16 py-3 rounded-full border-none ring-1 ring-gray-200 focus:ring-2 focus:ring-primary-500 outline-none transition-all text-sm md:text-base">
