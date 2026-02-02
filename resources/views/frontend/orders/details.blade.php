@@ -1,15 +1,46 @@
 @extends('frontend.layouts.app')
 @section('title', 'Order Details')
+<?php
+use App\Enums\OrderStatus;
 
+?>
 @section('content')
     <main class="max-w-5xl mx-auto px-4 py-6">
         <div class="flex items-center justify-between mb-5">
             <div>
                 <div class="flex items-center space-x-3">
                     <h1 class="text-xl font-bold">Order #{{ $order->invoice_id }}</h1>
-                    <span class="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                        Delivered
-                    </span>
+
+                    @if ($order->status->label() == OrderStatus::PENDING->label())
+                        <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                            {{ OrderStatus::PENDING->label() }}
+                        </span>
+                    @elseif ($order->status->label() == OrderStatus::ACCEPTED->label())
+                        <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                            {{ OrderStatus::ACCEPTED->label() }}
+                        </span>
+                    @elseif ($order->status->label() == OrderStatus::SHIPPED->label())
+                        <span class="bg-purple-100 text-purple-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                            {{ OrderStatus::SHIPPED->label() }}
+                        </span>
+                    @elseif ($order->status->label() == OrderStatus::DELIVERED->label())
+                        <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                            {{ OrderStatus::DELIVERED->label() }}
+                        </span>
+                    @elseif ($order->status->label() == OrderStatus::CANCELLED->label())
+                        <span class="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                            {{ OrderStatus::CANCELLED->label() }}
+                        </span>
+                    @elseif ($order->status->label() == OrderStatus::RETURNED->label())
+                        <span class="bg-gray-200 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                            {{ OrderStatus::RETURNED->label() }}
+                        </span>
+                    @elseif ($order->status->label() == OrderStatus::REFUNDED->label())
+                        <span class="bg-cyan-100 text-cyan-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                            {{ OrderStatus::REFUNDED->label() }}
+                        </span>
+                    @endif
+
                 </div>
                 <p class="text-sm text-gray-500 mt-1">Placed on {{ $order->created_at->format('F d Y') }}</p>
             </div>
