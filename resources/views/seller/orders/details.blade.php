@@ -150,15 +150,12 @@
                     </div>
                     <div class="card-body">
                         <address class="mb-0">
-                            <h6 class="fw-bold">{{ $order->customer_name }}</h6>
-                            <p class="mb-1"><i data-feather="mail" class="icon-xs me-1"></i>
-                                {{ $order->customer_email }}
-                            </p>
+                            <h6 class="fw-bold">{{ $order->billing_address->customer_name }}</h6>
                             <p class="mb-1"><i data-feather="phone" class="icon-xs me-1"></i>
-                                {{ $order->customer_phone }}
+                                {{ $order->billing_address->customer_phone }}
                             </p>
                             <p class="mb-1"><i data-feather="home" class="icon-xs me-1"></i>
-                                {{ $order->customer_address }}
+                                {{ $order->billing_address->address }}
                             </p>
                         </address>
                     </div>
