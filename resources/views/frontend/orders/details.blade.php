@@ -105,7 +105,7 @@ use App\Enums\OrderStatus;
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                     <div>
                         <h3 class="text-xs font-medium text-gray-500 mb-1">Shipping Address</h3>
-                        <p class="text-gray-900">{{ $order->customer_name }}<br>{{ $order->customer_address }}</p>
+                        <p class="text-gray-900">{{ $order->billing_address->customer_name }}<br>{{ $order->billing_address->address }}</p>
                     </div>
 
                     <div>
@@ -123,7 +123,7 @@ use App\Enums\OrderStatus;
 
                     <div>
                         <h3 class="text-xs font-medium text-gray-500 mb-1">Contact</h3>
-                        <p class="text-gray-900">{{ $order->customer_email }}<br>{{ $order->customer_phone }}</p>
+                        <p class="text-gray-900">{{ $order->billing_address->customer_phone }}</p>
                     </div>
                 </div>
 
