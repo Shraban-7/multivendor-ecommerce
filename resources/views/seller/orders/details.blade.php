@@ -116,21 +116,16 @@
 
                             if ($order->user) {
                                 $userName = $order->user->name;
-                                $userEmail = $order->user->email;
                                 $userPhone = $order->user->phone;
 
                                 $createdAt = \Carbon\Carbon::parse($order->user->created_at)->format('M Y');
                             } elseif ($order->customer) {
                                 $createdAt = \Carbon\Carbon::parse($order->customer->created_at)->format('M Y');
                                 $userName = $order->customer->name;
-                                $userEmail = '';
                                 $userPhone = $order->customer->phone;
                             }
                         @endphp
                         <h6 class="fw-bold">{{ $userName }}</h6>
-                        <p class="mb-1"><i data-feather="mail" class="icon-xs me-1"></i>
-                            {{ $userEmail }}
-                        </p>
                         <p class="mb-1"><i data-feather="phone" class="icon-xs me-1"></i>
                             {{ $userPhone }}
                         </p>
