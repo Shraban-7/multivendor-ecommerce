@@ -56,9 +56,14 @@
 
                 <td class="small">{{ $product->sku }}</td>
 
-                <td><span>{{ money($minPrice) }}</span>
+                <td>
+                    @if($variantCount > 0)
+                    <span>{{ money($minPrice) }}</span>
                     @if ($maxPrice != $minPrice)
                     - {{ money($maxPrice) }}
+                    @endif
+                    @else
+                    {{ money($product->selling_price) }}
                     @endif
                 </td>
                 
