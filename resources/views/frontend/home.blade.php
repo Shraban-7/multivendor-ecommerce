@@ -423,9 +423,13 @@
         document.addEventListener('DOMContentLoaded', () => {
             const promoPopup = document.getElementById('promoPopup');
             const closePromoBtns = document.querySelectorAll('#closePromoBtn, .close-promo-trigger');
-            if (promoPopup) {
-                promoPopup.classList.remove('hidden');
-                setTimeout(() => promoPopup.style.opacity = '1', 10);
+
+            if (!sessionStorage.getItem('promoShown')) {
+                if (promoPopup) {
+                    promoPopup.classList.remove('hidden');
+                    setTimeout(() => promoPopup.style.opacity = '1', 10);
+                    sessionStorage.setItem('promoShown', 'true');
+                }
             }
 
             if (promoPopup) {
@@ -437,6 +441,7 @@
                 });
             }
         });
+        
         $(document).on('click', '#loadMoreProducts', function () {
             const button = $(this);
             let page = parseInt(button.data('page')) + 1;
