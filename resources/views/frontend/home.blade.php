@@ -5,7 +5,7 @@
 
     <?php
     $promoBanner = $banners->get(\App\Models\Banner::SECTION_PROMO_MODAL)?->first();
-    ?>
+        ?>
     @if ($promoBanner)
         <x-frontend.promoModal :banner="$promoBanner" />
     @endif
@@ -64,7 +64,7 @@
                         <div
                             class="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden bg-gray-50 border border-gray-100 group-hover:border-primary-400 transition-colors duration-300 flex items-center justify-center p-3">
                             @if ($category->image)
-                                <img src="{{ storage_url($category->image) }}"alt="{{ $category->name }}"
+                                <img src="{{ storage_url($category->image) }}" alt="{{ $category->name }}"
                                     class="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-110">
                             @else
                                 <div class="flex items-center justify-center h-full">
@@ -88,8 +88,7 @@
             <section class="pb-5">
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                     <!-- Header -->
-                    <div
-                        class="flex flex-col md:flex-row items-center justify-between border-b border-gray-100 pb-4 mb-6 gap-4">
+                    <div class="flex flex-col md:flex-row items-center justify-between border-b border-gray-100 pb-4 mb-6 gap-4">
                         <div class="flex items-center gap-4">
                             <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
                                 <i class="fas fa-bolt text-primary-500"></i><span
@@ -109,62 +108,62 @@
                     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
                         @foreach ($flash_sale->approveProducts as $productItem)
                             {{-- <div
-                            class="min-w-[200px] md:min-w-[240px] snap-start bg-white rounded-xl border border-gray-100 hover:border-primary-500 hover:shadow-xl transition-all duration-300 group relative">
-                            <div class="absolute top-2 left-2 z-10 flex flex-col gap-1">
-                                <span class="bg-primary-600 text-white text-[10px] font-bold px-2 py-1 rounded">-40%</span>
-                            </div>
-                            <div
-                                class="relative h-48 w-full bg-gray-100 rounded-t-xl overflow-hidden p-4 flex items-center justify-center">
-                                <img src="{{ $item->product->imageUrl }}"
-                                    class="max-h-full object-contain mix-blend-multiply group-hover:scale-110 transition duration-500">
+                                class="min-w-[200px] md:min-w-[240px] snap-start bg-white rounded-xl border border-gray-100 hover:border-primary-500 hover:shadow-xl transition-all duration-300 group relative">
+                                <div class="absolute top-2 left-2 z-10 flex flex-col gap-1">
+                                    <span class="bg-primary-600 text-white text-[10px] font-bold px-2 py-1 rounded">-40%</span>
+                                </div>
                                 <div
-                                    class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center gap-2">
-                                    <button
-                                        class="btn-quickview w-9 h-9 bg-white text-gray-600 rounded-full shadow-lg
-                                            flex items-center justify-center hover:bg-primary-600 hover:text-white
-                                            transform translate-y-4 group-hover:translate-y-0 transition delay-75"
-                                        data-slug="{{ $item->product->slug }}">
+                                    class="relative h-48 w-full bg-gray-100 rounded-t-xl overflow-hidden p-4 flex items-center justify-center">
+                                    <img src="{{ $item->product->imageUrl }}"
+                                        class="max-h-full object-contain mix-blend-multiply group-hover:scale-110 transition duration-500">
+                                    <div
+                                        class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center gap-2">
+                                        <button class="btn-quickview w-9 h-9 bg-white text-gray-600 rounded-full shadow-lg
+                                                            flex items-center justify-center hover:bg-primary-600 hover:text-white
+                                                            transform translate-y-4 group-hover:translate-y-0 transition delay-75"
+                                            data-slug="{{ $item->product->slug }}">
 
-                                        <i class="far fa-eye icon"></i>
+                                            <i class="far fa-eye icon"></i>
 
-                                        <span class="spinner hidden w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin">
-                                        </span>
-                                    </button>
+                                            <span
+                                                class="spinner hidden w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin">
+                                            </span>
+                                        </button>
 
-                                    <button data-id="{{ $item->product->id }}"
-                                        class="wishlistBtn w-9 h-9 bg-white text-gray-600 rounded-full shadow-lg flex items-center justify-center hover:bg-primary-600 hover:text-white transform translate-y-4 group-hover:translate-y-0 transition delay-100"><i
-                                            class="far fa-heart"></i></button>
+                                        <button data-id="{{ $item->product->id }}"
+                                            class="wishlistBtn w-9 h-9 bg-white text-gray-600 rounded-full shadow-lg flex items-center justify-center hover:bg-primary-600 hover:text-white transform translate-y-4 group-hover:translate-y-0 transition delay-100"><i
+                                                class="far fa-heart"></i></button>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="p-3">
-                                <a href="{{ route('products.details', $item->product->slug) }}">
-                                    <h3
-                                        class="text-sm font-medium text-gray-800 line-clamp-2 hover:text-primary-600 cursor-pointer mb-1">
-                                        {{ $item->product->name }}
-                                    </h3>
-                                </a>
-                                <div class="flex items-center gap-1 mb-2">
-                                    <i class="fas fa-star text-yellow-400 text-xs"></i>
-                                    <span class="text-xs text-gray-400">({{ $item->product->avg_rating }})</span>
+                                <div class="p-3">
+                                    <a href="{{ route('products.details', $item->product->slug) }}">
+                                        <h3
+                                            class="text-sm font-medium text-gray-800 line-clamp-2 hover:text-primary-600 cursor-pointer mb-1">
+                                            {{ $item->product->name }}
+                                        </h3>
+                                    </a>
+                                    <div class="flex items-center gap-1 mb-2">
+                                        <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                        <span class="text-xs text-gray-400">({{ $item->product->avg_rating }})</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        @if ($item->product->discounted_price)
+                                        <span class="text-primary-600 font-bold text-lg">{{ money($item->product->discounted_price)
+                                            }}</span>
+                                        <span class="text-gray-400 text-xs line-through">{{ money($item->product->selling_price)
+                                            }}</span>
+                                        @else
+                                        <span class="text-primary-600 font-bold text-lg">{{ money($item->product->selling_price)
+                                            }}</span>
+                                        @endif
+                                    </div>
                                 </div>
-                                <div class="flex items-center gap-2">
-                                    @if ($item->product->discounted_price)
-                                        <span
-                                            class="text-primary-600 font-bold text-lg">{{ money($item->product->discounted_price) }}</span>
-                                        <span
-                                            class="text-gray-400 text-xs line-through">{{ money($item->product->selling_price) }}</span>
-                                    @else
-                                        <span
-                                            class="text-primary-600 font-bold text-lg">{{ money($item->product->selling_price) }}</span>
-                                    @endif
+                                <div class="p-3 pt-0">
+                                    <button data-slug="{{ $item->product->slug }}"
+                                        class="btn-quickview w-full py-2 rounded-lg bg-gray-100 text-gray-800 text-xs font-bold hover:bg-primary-600 hover:text-white transition group-hover:bg-primary-600 group-hover:text-white">Add
+                                        To Cart</button>
                                 </div>
-                            </div>
-                            <div class="p-3 pt-0">
-                                <button data-slug="{{ $item->product->slug }}"
-                                    class="btn-quickview w-full py-2 rounded-lg bg-gray-100 text-gray-800 text-xs font-bold hover:bg-primary-600 hover:text-white transition group-hover:bg-primary-600 group-hover:text-white">Add
-                                    To Cart</button>
-                            </div>
-                        </div> --}}
+                            </div> --}}
 
                             <x-frontend.flash-sale-card :productItem="$productItem" />
                         @endforeach
@@ -190,7 +189,7 @@
                     Offers</a>
             </div>
         </div>
-</section> --}}
+    </section> --}}
 
 
     <section class="mb-8">
@@ -201,14 +200,16 @@
                     View All
                 </a>
             </div>
-            <div class="flex flex-wrap gap-4 sm:gap-6">
+            <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 sm:gap-6">
                 @foreach ($sellers as $seller)
                     <div
-                        class="group flex flex-col items-center w-40 sm:w-44 bg-white border border-gray-100 rounded-xl p-4 transition-all duration-300 hover:border-primary-500">
+                        class="group flex flex-col items-center bg-white border border-gray-100 rounded-xl p-4 transition-all duration-300 hover:border-primary-500">
+
                         <div
                             class="relative w-16 h-16 rounded-full bg-gray-50 border border-gray-50 flex items-center justify-center p-2 mb-3">
                             <img src="{{ storage_url($seller->business_logo) }}" alt="{{ $seller->business_name }}"
                                 class="max-w-full max-h-full object-contain">
+
                             <div class="absolute -bottom-1 -right-0.5 text-blue-500 bg-white rounded-full">
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                     <path
@@ -217,6 +218,7 @@
                                 </svg>
                             </div>
                         </div>
+
                         <div class="text-center w-full mb-4">
                             <h3 class="text-sm font-semibold text-gray-800 line-clamp-1 mb-1">
                                 {{ $seller->business_name }}
@@ -232,19 +234,23 @@
                                 </span>
                             </div>
                         </div>
+
                         <div class="flex items-center w-full gap-2">
                             <a href="{{ route('sellers.shop', $seller->username) }}"
                                 class="flex-1 text-center py-1.5 bg-primary-100 text-primary-500 text-[11px] font-medium rounded-md hover:bg-primary-500 hover:text-white transition-colors">
                                 Visit Shop
                             </a>
+
                             <button title="Follow Store"
                                 class="flex items-center justify-center w-8 h-8 rounded-md border border-gray-200 text-gray-500 hover:border-primary-500 hover:text-primary-600 transition-all">
                                 <i class="fas fa-user-plus text-[10px]"></i>
                             </button>
                         </div>
+
                     </div>
                 @endforeach
             </div>
+
         </div>
     </section>
 
@@ -431,7 +437,7 @@
                 });
             }
         });
-        $(document).on('click', '#loadMoreProducts', function() {
+        $(document).on('click', '#loadMoreProducts', function () {
             const button = $(this);
             let page = parseInt(button.data('page')) + 1;
             const url = button.data('url');
@@ -442,12 +448,12 @@
                 data: {
                     page: page,
                 },
-                beforeSend: function() {
+                beforeSend: function () {
                     button.prop('disabled', true).html(
                         '<i class="fa fa-spinner fa-spin"></i> Loading...'
                     );
                 },
-                success: function(response) {
+                success: function (response) {
 
 
                     if ($.trim(response) !== '') {
@@ -460,7 +466,7 @@
 
                         // Quickview JSON
                         const scriptTags = $(response).filter('script[data-quickview]');
-                        scriptTags.each(function() {
+                        scriptTags.each(function () {
                             try {
                                 const data = JSON.parse($(this).html());
                                 window.quickViewData = window.quickViewData || {};
@@ -481,7 +487,7 @@
                         button.hide();
                     }
                 },
-                error: function() {
+                error: function () {
                     button.prop('disabled', false).text('Load More');
                     showErrorToast('Something went wrong. Please try again.');
                 }
