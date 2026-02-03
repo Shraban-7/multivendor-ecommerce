@@ -385,10 +385,8 @@ $isDashboard = View::hasSection('dashboard');
                             } else if (xhr.status === 401) {
                                 showWarningToast(xhr.responseJSON.error);
                                 auth.toggleModal(true);
-                            } else if (xhr.status === 403) {
-                                showWarningToast(xhr.responseJSON.error);
-                            } else {
-                                showErrorToast('Something went wrong!');
+                            } else{
+                                showErrorToast(xhr.responseJSON.error);
                             }
                         },
                         complete: function () {
@@ -444,12 +442,9 @@ $isDashboard = View::hasSection('dashboard');
                             if (xhr.status === 401) {
                                 showWarningToast(xhr.responseJSON.error);
                                 auth.toggleModal(true);
+                            } else {
+                                showErrorToast(xhr.responseJSON.error);
                             }
-                            if (xhr.status === 403) {
-                                showWarningToast(xhr.responseJSON.error);
-                            }
-
-                            showErrorToast("Something went wrong!");
                         },
                         complete: function () {
                             // Restore icon and hide spinner
@@ -517,7 +512,7 @@ $isDashboard = View::hasSection('dashboard');
                         if (xhr.status === 401) {
                             window.location.href = "{{ route('home') }}";
                         } else {
-                            showErrorToast('Something went wrong!');
+                            showErrorToast(xhr.responseJSON.error);
                         }
                     }
                 });
@@ -550,7 +545,7 @@ $isDashboard = View::hasSection('dashboard');
                         if (xhr.status === 401) {
                             window.location.href = "{{ route('home') }}";
                         } else {
-                            showErrorToast('Something went wrong!');
+                            showErrorToast(xhr.responseJSON.error);
                         }
                     }
                 });
