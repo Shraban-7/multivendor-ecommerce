@@ -14,7 +14,8 @@
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="{{ asset('assets/libs/jquery/jquery-3.7.1.min.js') }}"></script>
-    {{-- <link rel="stylesheet" href="{{ asset('assets/libs/toastr/css/toastr.min.css') }}"> --}}
+    {{--
+    <link rel="stylesheet" href="{{ asset('assets/libs/toastr/css/toastr.min.css') }}"> --}}
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -133,7 +134,7 @@ $isDashboard = View::hasSection('dashboard');
     @include('components.frontend.custom-toastr')
 
     <script>
-        window.toggleModal = function(modalId) {
+        window.toggleModal = function (modalId) {
             const modal = document.getElementById(modalId);
             if (!modal) return;
 
@@ -151,7 +152,8 @@ $isDashboard = View::hasSection('dashboard');
         };
     </script>
 
-    {{-- <script src="{{ asset('assets/libs/toastr/js/toastr.min.js') }}"></script> --}}
+    {{--
+    <script src="{{ asset('assets/libs/toastr/js/toastr.min.js') }}"></script> --}}
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const quickViewModal = document.getElementById('quickViewModal');
@@ -170,7 +172,7 @@ $isDashboard = View::hasSection('dashboard');
                 }
             }
 
-            $(document).on('click', '.btn-quickview', function(e) {
+            $(document).on('click', '.btn-quickview', function (e) {
                 e.preventDefault();
 
                 const $btn = $(this);
@@ -188,12 +190,12 @@ $isDashboard = View::hasSection('dashboard');
                         url: `/products/${slug}/quick-view`,
                         type: 'GET',
 
-                        success: function(response) {
+                        success: function (response) {
                             $('#quickViewModal .quickview-content').html(response);
                             toggleQuickView(true);
                         },
 
-                        complete: function() {
+                        complete: function () {
                             $btn.find('.spinner').addClass('hidden');
                             $btn.find('.icon').removeClass('hidden');
                             $btn.prop('disabled', false);
@@ -223,7 +225,7 @@ $isDashboard = View::hasSection('dashboard');
                 }
             });
 
-            document.addEventListener('click', function(e) {
+            document.addEventListener('click', function (e) {
                 if (e.target.closest('#quickViewCloseBtn')) {
                     toggleQuickView(false);
                 }
@@ -257,15 +259,15 @@ $isDashboard = View::hasSection('dashboard');
     <script>
         function debounce(func, delay) {
             let timer;
-            return function(...args) {
+            return function (...args) {
                 const context = this;
                 clearTimeout(timer);
                 timer = setTimeout(() => func.apply(context, args), delay);
             };
         }
-        $(function() {
+        $(function () {
             function refreshCsrfToken() {
-                return $.get("{{ route('refresh.csrf') }}").then(function(data) {
+                return $.get("{{ route('refresh.csrf') }}").then(function (data) {
                     const newToken = data.token;
                     $('meta[name="csrf-token"]').attr('content', newToken);
 
@@ -289,7 +291,7 @@ $isDashboard = View::hasSection('dashboard');
             const $mobileSidebar = $("#mobile-sidebar");
             const $sidebarBackdrop = $("#sidebar-backdrop");
 
-            $sidebarToggle.on("click", function() {
+            $sidebarToggle.on("click", function () {
                 const isOpen = !$mobileSidebar.hasClass("-translate-x-full");
                 if (isOpen) {
                     $mobileSidebar.addClass("-translate-x-full");
@@ -300,12 +302,12 @@ $isDashboard = View::hasSection('dashboard');
                 }
             });
 
-            $sidebarBackdrop.on("click", function() {
+            $sidebarBackdrop.on("click", function () {
                 $mobileSidebar.addClass("-translate-x-full");
                 $sidebarBackdrop.addClass("hidden");
             });
 
-            window.togglePassword = function(inputId, button) {
+            window.togglePassword = function (inputId, button) {
                 const $input = $("#" + inputId);
                 const $button = $(button);
                 const $eye = $button.find(".fa-eye");
@@ -322,7 +324,7 @@ $isDashboard = View::hasSection('dashboard');
                 }
             };
 
-            $('body').on('click', '.addToCartBtn', function() {
+            $('body').on('click', '.addToCartBtn', function () {
                 var $btn = $(this);
                 var originalText = $btn.html();
                 $btn.html(
@@ -361,7 +363,7 @@ $isDashboard = View::hasSection('dashboard');
                             quantity: qtyInput,
                             price: product_price,
                         },
-                        success: function(data) {
+                        success: function (data) {
                             if (data.success) {
                                 showSuccessToast(data.message);
                                 updateCartData();
@@ -370,13 +372,13 @@ $isDashboard = View::hasSection('dashboard');
                                     data.action === 'add_to_cart') {
                                     window.location.reload();
                                 }
-                            } else if (data.error) {
-                                showErrorToast(data.error);
+                            } else if (data.warning) {
+                                showWarningToast(data.warning);
                             } else {
                                 showErrorToast('Unexpected response!');
                             }
                         },
-                        error: async function(xhr) {
+                        error: async function (xhr) {
                             if (xhr.status === 419) {
                                 await refreshCsrfToken();
                                 addToCartRequest();
@@ -389,7 +391,7 @@ $isDashboard = View::hasSection('dashboard');
                                 showErrorToast('Something went wrong!');
                             }
                         },
-                        complete: function() {
+                        complete: function () {
                             $btn.html(originalText).prop('disabled', false);
                         }
                     });
@@ -398,7 +400,70 @@ $isDashboard = View::hasSection('dashboard');
                 addToCartRequest();
             });
 
-            $('.buyNowBtn').click(function() {
+            $('body').on('click', '.addToCartNoVariant', function () {
+
+                let $btn = $(this);
+                let $icon = $btn.find('.icon');
+                let $spinner = $btn.find('.spinner');
+
+                $icon.addClass('hidden');
+                $spinner.removeClass('hidden');
+                $btn.prop('disabled', true);
+
+                let product_id = $btn.data('id');
+
+                function sendRequest() {
+                    return $.ajax({
+                        url: "{{ route('cart.add') }}",
+                        type: "POST",
+                        data: {
+                            product_id: product_id,
+                            variant_id: null,
+                            quantity: 1,
+                        },
+                        success: function (data) {
+                            if (data.success) {
+                                showSuccessToast(data.message);
+                                updateCartData();
+
+                                if ("{{ Route::currentRouteName() }}" === "cart.details" &&
+                                    data.action === "add_to_cart") {
+                                    window.location.reload();
+                                }
+                            } else if (data.warning) {
+                                showWarningToast(data.warning);
+                            } else {
+                                showErrorToast("Unexpected response!");
+                            }
+                        },
+                        error: async function (xhr) {
+                            if (xhr.status === 419) {
+                                await refreshCsrfToken();
+                                return sendRequest();
+                            }
+                            if (xhr.status === 401) {
+                                showWarningToast(xhr.responseJSON.error);
+                                auth.toggleModal(true);
+                            }
+                            if (xhr.status === 403) {
+                                showWarningToast(xhr.responseJSON.error);
+                            }
+
+                            showErrorToast("Something went wrong!");
+                        },
+                        complete: function () {
+                            // Restore icon and hide spinner
+                            $spinner.addClass('hidden');
+                            $icon.removeClass('hidden');
+                            $btn.prop('disabled', false);
+                        }
+                    });
+                }
+
+                sendRequest();
+            });
+
+            $('.buyNowBtn').click(function () {
                 var product_id = $(this).data('id');
                 var seller_id = $(this).data('seller');
                 var wishlistId = $(this).data('wishlist-id');
@@ -409,7 +474,7 @@ $isDashboard = View::hasSection('dashboard');
 
                 let selectedOptionIds = [];
 
-                $('.variant-option:checked').each(function() {
+                $('.variant-option:checked').each(function () {
                     selectedOptionIds.push($(this).val());
                 });
 
@@ -430,13 +495,13 @@ $isDashboard = View::hasSection('dashboard');
                         price: product_price,
                         option_ids: selectedOptionIds,
                     },
-                    success: function(data) {
+                    success: function (data) {
                         if (data.unauthorized) {
                             window.location.href = "{{ route('home') }}";
                         } else if (data.success) {
                             $('button[data-modal-hide="quick-view-modal-' + product_id + '"]')
                                 .trigger('click');
-                            $row.fadeOut(300, function() {
+                            $row.fadeOut(300, function () {
                                 $(this).remove();
                             });
                             showSuccessToast(data.message);
@@ -448,7 +513,7 @@ $isDashboard = View::hasSection('dashboard');
                             showErrorToast(data.error);
                         }
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         if (xhr.status === 401) {
                             window.location.href = "{{ route('home') }}";
                         } else {
@@ -458,7 +523,7 @@ $isDashboard = View::hasSection('dashboard');
                 });
             });
 
-            $('.wishlistBtn').click(function() {
+            $('.wishlistBtn').click(function () {
                 var product_id = $(this).data('id');
                 if (!product_id) {
                     alert("No Product Selected!");
@@ -471,7 +536,7 @@ $isDashboard = View::hasSection('dashboard');
                     data: {
                         product_id: product_id,
                     },
-                    success: function(data) {
+                    success: function (data) {
                         if (data.unauthorized) {
                             window.location.href = "{{ route('home') }}";
                         } else if (data.success) {
@@ -481,7 +546,7 @@ $isDashboard = View::hasSection('dashboard');
                             showErrorToast(data.error);
                         }
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         if (xhr.status === 401) {
                             window.location.href = "{{ route('home') }}";
                         } else {
@@ -491,7 +556,7 @@ $isDashboard = View::hasSection('dashboard');
                 });
             });
 
-            $('.wishlistRemoveBtn').on('click', function() {
+            $('.wishlistRemoveBtn').on('click', function () {
                 var wishlistId = $(this).data('id');
                 var $row = $(this).closest('.grid');
                 const wishlistDeleteRoute = "{{ route('wishlist.delete', ['wishlist' => '__id__']) }}";
@@ -504,9 +569,9 @@ $isDashboard = View::hasSection('dashboard');
                     data: {
                         wishlist: wishlistId
                     },
-                    success: function(response) {
+                    success: function (response) {
                         if (response.success) {
-                            $row.fadeOut(300, function() {
+                            $row.fadeOut(300, function () {
                                 $(this).remove();
                                 showSuccessToast(response.message);
                                 updateWishlistData();
@@ -515,7 +580,7 @@ $isDashboard = View::hasSection('dashboard');
                             alert(response.message || 'Failed to remove item');
                         }
                     },
-                    error: function() {
+                    error: function () {
                         alert('Something went wrong. Please try again.');
                     }
                 });
@@ -525,7 +590,7 @@ $isDashboard = View::hasSection('dashboard');
                 $.ajax({
                     url: "{{ route('cart.data') }}",
                     type: "GET",
-                    success: function(data) {
+                    success: function (data) {
                         if (data.cartCount > 0) {
                             $('#cartCount').removeClass('hidden')
                             $('#totalPrice').removeClass('hidden')
@@ -533,7 +598,7 @@ $isDashboard = View::hasSection('dashboard');
                         $('#cartCount').text(data.cartCount);
                         $('#totalPrice').text(data.totalPrice);
                     },
-                    error: function() {
+                    error: function () {
                         showErrorToast('Failed to update cart data.');
                     }
                 });
@@ -543,21 +608,21 @@ $isDashboard = View::hasSection('dashboard');
                 $.ajax({
                     url: "{{ route('wishlist.data') }}",
                     type: "GET",
-                    success: function(data) {
+                    success: function (data) {
                         if (data.wishlistCount > 0) {
                             $('#wishlistCount').removeClass('hidden');
                         }
 
                         $('#wishlistCount').text(data.wishlistCount);
                     },
-                    error: function() {
+                    error: function () {
                         showErrorToast('Failed to update wishlist data.');
                     }
                 });
             }
 
 
-            $("[id^='product-wrapper']").each(function() {
+            $("[id^='product-wrapper']").each(function () {
                 initDefaultVariant($(this));
             });
 
@@ -651,7 +716,7 @@ $isDashboard = View::hasSection('dashboard');
                 );
             }
 
-            $(document).on('click', '.option-value-btn', function() {
+            $(document).on('click', '.option-value-btn', function () {
                 const $btn = $(this);
                 $btn.closest('[data-option-id]')
                     .find('.option-value-btn')
@@ -665,7 +730,7 @@ $isDashboard = View::hasSection('dashboard');
             function collectSelectedOptions($wrapper) {
                 const selectedOptions = {};
                 $wrapper.find(".option-value-btn.active-option")
-                    .each(function() {
+                    .each(function () {
                         const $btn = $(this);
                         const optId = $btn.data("option-id");
                         const valId = $btn.data("value-id");
@@ -675,7 +740,7 @@ $isDashboard = View::hasSection('dashboard');
                 return selectedOptions;
             }
 
-            $(document).on("click", ".option-value-btn", function() {
+            $(document).on("click", ".option-value-btn", function () {
                 const $btn = $(this);
                 const $wrapper = $btn.closest("[id^='product-wrapper']");
                 const product = $wrapper.data("product");
@@ -701,7 +766,7 @@ $isDashboard = View::hasSection('dashboard');
                 updateProductUI($wrapper, variant, quantity);
             });
 
-            $(document).on("click", ".thumb-img", function() {
+            $(document).on("click", ".thumb-img", function () {
                 const $img = $(this);
                 const full = $img.data("full");
                 const $wrapper = $img.closest("[id^='product-wrapper']");
@@ -714,7 +779,7 @@ $isDashboard = View::hasSection('dashboard');
                 $img.closest(".slide-thumb").addClass("border-primary").removeClass("border-gray-200");
             });
 
-            $(document).on("click", ".increaseBtn, .decreaseBtn", debounce(function() {
+            $(document).on("click", ".increaseBtn, .decreaseBtn", debounce(function () {
                 const $btn = $(this);
                 const $wrapper = $btn.closest("[id^='product-wrapper']");
                 const product = $wrapper.data("product");
@@ -742,7 +807,7 @@ $isDashboard = View::hasSection('dashboard');
                 updateProductUI($wrapper, variant, quantity);
             }, 300));
 
-            $(document).on("input", ".quantity", function() {
+            $(document).on("input", ".quantity", function () {
                 const $input = $(this);
                 const $wrapper = $input.closest("[id^='product-wrapper']");
                 const product = $wrapper.data("product");
@@ -784,17 +849,17 @@ $isDashboard = View::hasSection('dashboard');
                 $wrapper.data('variant-initialized', true);
             }
 
-            document.addEventListener('modal:open', function(event) {
+            document.addEventListener('modal:open', function (event) {
                 const modalEl = event.detail;
                 const $modal = $(modalEl);
 
-                $modal.find("[id^='product-wrapper']").each(function() {
+                $modal.find("[id^='product-wrapper']").each(function () {
                     initDefaultVariant($(this));
                 });
             });
 
             function onLoadMoreProducts() {
-                $("[id^='product-wrapper']").each(function() {
+                $("[id^='product-wrapper']").each(function () {
                     initDefaultVariant($(this));
                 });
             }
@@ -825,14 +890,14 @@ $isDashboard = View::hasSection('dashboard');
         const globalLoader = document.getElementById('global-loader');
         function showLoader() {
             globalLoader.classList.remove('hidden');
-            globalLoader.classList.add('flex');            
+            globalLoader.classList.add('flex');
             // Disable scrolling on the body
             document.body.classList.add('overflow-hidden');
         }
 
         function hideLoader() {
             globalLoader.classList.add('hidden');
-            globalLoader.classList.remove('flex');            
+            globalLoader.classList.remove('flex');
             // Re-enable scrolling
             document.body.classList.remove('overflow-hidden');
         }
@@ -844,12 +909,12 @@ $isDashboard = View::hasSection('dashboard');
                     const href = link.getAttribute('href');
                     const target = link.getAttribute('target');
                     if (
-                        !href || 
-                        href.startsWith('#') || 
-                        href.startsWith('javascript:') || 
-                        target === '_blank' || 
-                        e.ctrlKey || 
-                        e.metaKey || 
+                        !href ||
+                        href.startsWith('#') ||
+                        href.startsWith('javascript:') ||
+                        target === '_blank' ||
+                        e.ctrlKey ||
+                        e.metaKey ||
                         e.shiftKey
                     ) {
                         return;

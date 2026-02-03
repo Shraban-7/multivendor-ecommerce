@@ -41,7 +41,11 @@ class CartController extends Controller
         $product = Product::find($data['product_id']);
 
         if (!$product) {
-            return response()->json(['success' => false, 'error' => 'Product not found']);
+            return response()->json(['success' => false, 'warning' => 'Product not found']);
+        }
+
+        if ($data['quantity']>$product->total_stock) {
+            return response()->json(['success' => false, 'warning' => 'Not Enough stock']);
         }
 
         $cart = Cart::firstOrCreate(
