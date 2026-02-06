@@ -41,7 +41,7 @@
             font-size: 7pt;
         }
         .text-xl {
-            font-size: 8.5pt;
+            font-size: 8pt;
         }
 
         .text-sm {
@@ -114,7 +114,7 @@
             }
 
             .text-xl {
-                font-size: 8.5pt;
+                font-size: 8pt;
             }
 
             .text-sm {
