@@ -130,7 +130,7 @@
             const sellerName = "{{ $data['sellerName'] }}";
             const productName = "{{ $data['productName'] }}";
             const price = "{{ $data['price'] }}";
-            const barcodeData = "SF000083";
+            const barcodeData = "{{ $data['sku'] }}";
             const variantName = "{{ $data['variantName'] }}"; // New variant name data
             const labelCount = parseInt("{{ $data['quantity'] }}");
             const printArea = document.getElementById("print-area");
