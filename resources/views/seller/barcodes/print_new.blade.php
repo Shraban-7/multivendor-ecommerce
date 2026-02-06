@@ -40,6 +40,9 @@
         .text-lg {
             font-size: 7pt;
         }
+        .text-xl {
+            font-size: 8pt;
+        }
 
         .text-sm {
             font-size: 5pt;
@@ -110,6 +113,10 @@
                 font-size: 7pt;
             }
 
+            .text-xl {
+                font-size: 8pt;
+            }
+
             .text-sm {
                 font-size: 5pt;
             }
@@ -156,7 +163,7 @@
                 }
 
                 const priceElement = document.createElement("div");
-                priceElement.className = "label-text fw-bold text-lg price-text";
+                priceElement.className = "label-text fw-bold text-xl price-text";
                 priceElement.textContent = 'Price: ' + price;
 
                 const barcodeElement = document.createElementNS("http://www.w3.org/2000/svg", "svg");
