@@ -145,9 +145,9 @@
                 <div class="col-sm-6 order-sm-0 mb-3">
                     <strong>Invoiced To:</strong>
                     <address class="mb-0">
-                        {{ $order->customer_name ?? $order->billing_address->customer_name ?? '' }} <br>
-                        {{ $order->customer_address ?? $order->billing_address->address ?? '' }} <br>
-                        {{ $order->customer_phone ?? $order->billing_address->customer_phone ?? '' }}
+                        {{ $order->customer->name ?? $order->billing_address->customer_name ?? '' }} <br>
+                        {{ $order->customer->phone ?? $order->billing_address->customer_phone ?? '' }} <br>
+                        {{ $order->billing_address->address ?? '' }}
                     </address>
                 </div>
             </div>
