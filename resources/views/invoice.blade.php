@@ -90,8 +90,12 @@
                         </a>
                     @endisset
                     <p class="mb-0">
-                        {{ $settings->address ?? '' }}<br>
-                        Phone: {{ $settings->phone ?? '' }}
+                        @if($settings->address)
+                        {{ $settings->address }}<br>
+                        @endif
+                        @if($settings->phone)
+                        Phone: {{ $settings->phone }}
+                        @endif
                     </p>
                 </div>
                 <div class="col-sm-5 text-end">
