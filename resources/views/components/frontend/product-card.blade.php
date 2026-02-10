@@ -12,7 +12,7 @@
     <!-- Product Image -->
     <div
         class="product-image-container aspect-[4/5] w-full border-b border-gray-50 relative bg-white flex items-center justify-center overflow-hidden">
-        <img src="{{ storage_url($product->thumbnail) }}" loading="lazy"
+        <img src="{{ $product->imageUrl }}" loading="lazy"
             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
 
         <!-- Hover Actions (Grid) -->
