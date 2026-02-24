@@ -9,8 +9,9 @@
             font-family: "Courier New", "OCR A Std", monospace;
             /* font-size: 13px; */
             font-size: 16px;
-            width: 302px;
+            width: 280px;
             margin: 0 auto;
+            padding: 0 4px;
             font-weight: 600;
             color: #000;
             -webkit-print-color-adjust: exact;
@@ -54,6 +55,9 @@
         }
 
         @media print {
+            @page {
+                margin: 0;
+            }
 
             body,
             td,
@@ -102,12 +106,11 @@ $showCurrency = false;
     <table>
         <thead>
             <tr>
-                <th class="left" style="width: 70%">Item</th>
-                <th class="center" style="width: 10%">Qty</th>
-                <th class="right" style="width: 20%">Total</th>
+                <th class="left" style="width: 65%">Item</th>
+                <th class="right" style="width: 35%">Total</th>
             </tr>
             <tr>
-                <td colspan="3">
+                <td colspan="2">
                     <div class="line"></div>
                 </td>
             </tr>
@@ -116,7 +119,7 @@ $showCurrency = false;
             @foreach ($order->items as $item)
             <tr>
                 <td class="left">
-                    <div>{{ $item->product->name }}</div>
+                    <div>{{ $item->product->name }} @if($item->quantity > 1) {{ $item->quantity }}@endif</div>
 
                     @if ($item->variant)
                     <small class="text-muted d-block">
@@ -125,7 +128,6 @@ $showCurrency = false;
                     @endif
                 </td>
 
-                <td class="center">{{ $item->quantity }}</td>
                 <td class="right">
                     @if ($item->selling_price > $item->unit_price)
                     <span style="text-decoration: line-through;">
