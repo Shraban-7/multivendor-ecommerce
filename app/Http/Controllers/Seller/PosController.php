@@ -572,6 +572,11 @@ class PosController extends Controller
                 $customer = $exist_customer;
             }
 
+            if($customer->phone && is_valid_number($customer->phone)){
+                $smsText = "Thank you for your purchase from {$seller->business_name}. We hope to see you again soon! Visit: www.slash-mart.com";
+               send_sms($smsText, format_bd_phone($customer->phone));
+            }
+
             $order->update([
                 'customer_id' => $customer->id
             ]);

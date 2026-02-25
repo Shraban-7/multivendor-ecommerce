@@ -773,6 +773,28 @@ if (! function_exists('format_bd_phone')) {
     }
 }
 
+if (!function_exists('is_valid_number')) {
+    /**
+     * Validate Bangladesh mobile number.
+     *
+     * Valid format:
+     * - Must start with 01
+     * - Third digit: 3-9
+     * - Total 11 digits
+     *
+     * Examples:
+     * 01712345678 ✅
+     * 01112345678 ❌
+     */
+    function is_valid_number(string $number): bool
+    {
+        // Remove spaces, dashes, etc.
+        $number = preg_replace('/\D/', '', $number);
+
+        return preg_match('/^01[3-9]\d{8}$/', $number) === 1;
+    }
+}
+
 if (! function_exists('send_sms')) {
     function send_sms($message, $recipients)
     {
