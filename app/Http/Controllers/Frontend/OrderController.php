@@ -30,6 +30,8 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class OrderController extends Controller
 {
@@ -88,7 +90,6 @@ class OrderController extends Controller
 
     public function checkout(Request $request)
     {
-        // dd($request->all());
         $user = Auth::user();
 
         $validated = $request->validate([
@@ -263,29 +264,56 @@ class OrderController extends Controller
 
         $this->affiliateService->updateOrderAffiliateId($order);
 
-        if ($payment_type == PaymentType::COD_ONLY->value) {
+        if ($request->payment_method == 'pay_now') {
+            $paymentData = $this->preparePaymentData($order);
+            $paymentGatewayResponse = Http::post(env('SLASHPAY_PAYMENT_URL'), $paymentData);
+            $jsonResponse = $paymentGatewayResponse->json();
+            if ($paymentGatewayResponse->successful()) {
+                $order->payment_id = $jsonResponse['payment_id'];
+                $order->save();
+
+                DB::commit();
+
+                return redirect()->away($jsonResponse['payment_url']);
+            } else {
+                DB::rollBack();
+                Log::error('Checkout error: Payment gateway response unsuccessful', [
+                    'order_id' => $order->id,
+                    'response' => $jsonResponse,
+                    'paymentData' => $paymentData,
+                ]);
+                return back()->withInput()->with('error', 'Payment gateway error. Please try again.');
+            }
+        } else {
+            DB::commit();
             $paymentGateway = [
                 'message' => 'Order placed successfully',
                 'payment_url' => route('orders.index'),
             ];
-        } else if ($request->payment == 'aamarpay') {
-            $paymentGateway = $this->initiateAmarpayGateway(
-                $user,
-                $invoiceId,
-                $payableAmount,
-                $orderBillingAddress->customer_name,
-                $orderBillingAddress->customer_phone,
-            );
-        } else if ($request->payment == 'bkash') {
-            $paymentGateway = $this->initiateBkashGateway(
-                $user,
-                $invoiceId,
-                $payableAmount,
-                $orderBillingAddress->customer_name,
-                $orderBillingAddress->customer_phone,
-            );
         }
 
+        // if ($payment_type == PaymentType::COD_ONLY->value) {
+        //     $paymentGateway = [
+        //         'message' => 'Order placed successfully',
+        //         'payment_url' => route('orders.index'),
+        //     ];
+        // } else if ($request->payment == 'aamarpay') {
+        //     $paymentGateway = $this->initiateAmarpayGateway(
+        //         $user,
+        //         $invoiceId,
+        //         $payableAmount,
+        //         $orderBillingAddress->customer_name,
+        //         $orderBillingAddress->customer_phone,
+        //     );
+        // } else if ($request->payment == 'bkash') {
+        //     $paymentGateway = $this->initiateBkashGateway(
+        //         $user,
+        //         $invoiceId,
+        //         $payableAmount,
+        //         $orderBillingAddress->customer_name,
+        //         $orderBillingAddress->customer_phone,
+        //     );
+        // }
 
         // $this->processAffiliateCommissions($order->items, auth()->user(), $order->id);
 
@@ -317,6 +345,22 @@ class OrderController extends Controller
             'payment_url' => $paymentGateway['payment_url'],
             'order' => $order,
         ]);
+    }
+
+    private function preparePaymentData(Order $order): array
+    {
+        return [
+            'api_key' => env('SLASHPAY_API_KEY'),
+            'order_id' => (string) $order->invoice_id,
+            'amount' => $order->total,
+            'cus_name' => $order->billing_address->customer_name,
+            'cus_email_mobile' => $order->shipping_phone,
+            'ipn_url' => route('payment.ipn'),
+            'cancel_url' => route('payment.cancelled'),
+            'success_url' => route('payment.success'),
+            'fail_url' => route('payment.failed'),
+            'currency' => 'BDT',
+        ];
     }
 
 
@@ -446,7 +490,6 @@ class OrderController extends Controller
                 'message' => 'Redirecting to bKash',
                 'payment_url' => $response['bkashURL'],
             ];
-
         } catch (\Exception $e) {
             Log::error('bKash Init Error', [
                 'invoice' => $invoiceId,
@@ -577,5 +620,4 @@ class OrderController extends Controller
 
         return redirect()->away($paymentGateway['payment_url']);
     }
-
 }

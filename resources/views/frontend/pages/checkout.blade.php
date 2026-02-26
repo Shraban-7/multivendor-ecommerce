@@ -91,15 +91,73 @@
                         <span class="text-lg text-primary">{{ money($total + $shipping_fee) }}</span>
                     </div>
 
-                    <!-- Payment Method -->
                     <div class="mt-5">
                         <h2 class="text-base font-semibold mb-4 text-gray-800">
                             Payment Method
                         </h2>
 
+                        <div class="max-w-md mx-auto space-y-4">
+                            @if ($allCod)
+                            <label class="relative block cursor-pointer">
+                                <input type="radio" name="payment_method" value="cod" class="peer sr-only" checked>
+                                
+                                <div class="flex items-center justify-between p-4 border rounded-xl
+                                            transition-all duration-200
+                                            peer-checked:border-orange-600
+                                            peer-checked:bg-orange-50
+                                            hover:border-gray-400">
+                                
+                                <div class="flex items-center gap-3">
+                                    <div class="w-5 h-5 rounded-full border-2 border-gray-400
+                                                flex items-center justify-center
+                                                peer-checked:border-orange-600">
+                                    <div class="w-2.5 h-2.5 bg-orange-600 rounded-full 
+                                                scale-0 peer-checked:scale-100 
+                                                transition-transform duration-200"></div>
+                                    </div>
+                                    <div>
+                                    <p class="font-semibold text-gray-800">Cash on Delivery</p>
+                                    <p class="text-sm text-gray-500">Pay when your order arrives</p>
+                                    </div>
+                                </div>
+
+                                <span class="text-sm font-medium text-gray-600">COD</span>
+                                </div>
+                            </label>
+                            @endif
+
+                            <!-- PAY NOW -->
+                            <label class="relative block cursor-pointer">
+                                <input type="radio" name="payment_method" value="pay_now" class="peer sr-only" @checked(!$allCod)>
+                                
+                                <div class="flex items-center justify-between p-4 border rounded-xl
+                                            transition-all duration-200
+                                            peer-checked:border-orange-600
+                                            peer-checked:bg-orange-50
+                                            hover:border-gray-400">
+                                
+                                <div class="flex items-center gap-3">
+                                    <div class="w-5 h-5 rounded-full border-2 border-gray-400
+                                                flex items-center justify-center
+                                                peer-checked:border-orange-600">
+                                    <div class="w-2.5 h-2.5 bg-orange-600 rounded-full 
+                                                scale-0 peer-checked:scale-100 
+                                                transition-transform duration-200"></div>
+                                    </div>
+                                    <div>
+                                    <p class="font-semibold text-gray-800">Pay Now</p>
+                                    <p class="text-sm text-gray-500">bKash / Nagad / Bank</p>
+                                    </div>
+                                </div>
+
+                                <span class="text-sm font-medium text-gray-600">Online</span>
+                                </div>
+                            </label>
+
+                        </div>
+
                         <div class="space-y-3 mb-4">
-                            <!-- bKash -->
-                            @foreach ($payment_gateways as $gateway)
+                            {{--@foreach ($payment_gateways as $gateway)
                                 <label
                                     class="group relative flex items-center p-4 border rounded-xl cursor-pointer hover:bg-gray-50 transition-all duration-200 has-[:checked]:border-primary-500 has-[:checked]:bg-primary-50/30 has-[:checked]:shadow-sm">
                                     <input name="payment" id="payment-{{ $gateway->slug }}" type="radio"
@@ -123,8 +181,8 @@
                                             wallet</span>
                                     </div>
                                 </label>
-                            @endforeach
-                            <!-- COD -->
+                            @endforeach--}}
+                            
                             @if ($allCod)
                                 <label
                                     class="group relative flex items-center p-4 border rounded-xl cursor-pointer hover:bg-gray-50 transition-all duration-200 has-[:checked]:border-primary-500 has-[:checked]:bg-primary-50/30 has-[:checked]:shadow-sm">

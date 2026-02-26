@@ -539,23 +539,23 @@ Route::get('/receipt/{invoice_id}', [InvoiceController::class, 'receipt'])->name
 
 Route::get('/get-districts/{divisionId}', [LocationController::class, 'getDistricts'])->name('get.districts');
 
-Route::prefix('payment')->as('payment.')->group(function () {
-    Route::get('/pay', [PaymentController::class, 'pay'])->name('pay');
-    Route::middleware('aamarpay')->group(function () {
-        Route::post('/success', [PaymentController::class, 'confirm'])->name('success');
-        Route::match(['get', 'post'], '/cancel', [PaymentController::class, 'cancel'])->name('cancel');
-        Route::post('/notify', [PaymentController::class, 'notify'])->name('notify');
-    });
-    Route::get('/test', function () {
-        return view('payment.test');
-    })->middleware('auth');
-    Route::get('/mail', function () {
-        return view('payment.mail');
-    });
-    Route::get('/manual', [PaymentController::class, 'manual']);
-});
+// Route::prefix('payment')->as('payment.')->group(function () {
+//     Route::get('/pay', [PaymentController::class, 'pay'])->name('pay');
+//     Route::middleware('aamarpay')->group(function () {
+//         Route::post('/success', [PaymentController::class, 'confirm'])->name('success');
+//         Route::match(['get', 'post'], '/cancel', [PaymentController::class, 'cancel'])->name('cancel');
+//         Route::post('/notify', [PaymentController::class, 'notify'])->name('notify');
+//     });
+//     Route::get('/test', function () {
+//         return view('payment.test');
+//     })->middleware('auth');
+//     Route::get('/mail', function () {
+//         return view('payment.mail');
+//     });
+//     Route::get('/manual', [PaymentController::class, 'manual']);
+// });
 
-Route:: as('static.')->group(function () {
+Route::as('static.')->group(function () {
     Route::get('seller-guide', fn() => view('static.seller-guide'))->name('sellerGuide');
 });
 
@@ -662,7 +662,7 @@ Route::get('/fix-product-images', function () {
             'trade_license_image',
             'shop_image',
         ];
-        
+
         foreach ($imageFields as $field) {
             if (!$seller->$field) continue;
 
@@ -682,4 +682,12 @@ Route::get('/fix-product-images', function () {
     }
 
     return;
+});
+
+
+Route::prefix('payment')->as('payment.')->group(function () {
+    Route::get('/success', [PaymentController::class, 'success'])->name('success');
+    Route::get('/cancelled', [PaymentController::class, 'cancelled'])->name('cancelled');
+    Route::get('/failed', [PaymentController::class, 'failed'])->name('failed');
+    Route::post('/ipn', [PaymentController::class, 'ipn'])->name('ipn');
 });

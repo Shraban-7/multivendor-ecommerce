@@ -2,194 +2,83 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\PaymentStatus;
 use App\Models\Order;
-use App\Models\Seller;
-use App\Models\Payment;
 use Illuminate\Http\Request;
-use App\Services\AamarpayService;
-use App\Services\AffiliateService;
-use App\Models\AffiliateCommission;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class PaymentController extends Controller
 {
-    protected $aamarpay;
-
-    public function __construct(AamarpayService $aamarpay)
+    public function ipn(Request $request)
     {
-        $this->aamarpay = $aamarpay;
-    }
+        Log::info('Received IPN:', $request->all());
 
-    public function pay(Request $request)
-    {
-        $tran_id = uniqid('SM');
+        $order = Order::where('invoice_id', $request->order_id)->first();
 
-        $request->validate([
-            'amount' => 'required|numeric|min:10',
-            'cus_name' => 'required|string',
-            'cus_email' => 'required|email',
-            'cus_phone' => 'required|string',
-        ]);
-
-        Payment::create([
-            'gateway' => 'aamarpay',
-            'user_id' => Auth::id(),
-            'transaction_id' => $tran_id,
-            'status' => Payment::PENDING,
-            'amount' => $request->amount,
-            'currency' => 'BDT',
-            'customer_name' => $request->cus_name,
-            'customer_email' => $request->cus_email,
-            'customer_phone' => $request->cus_phone,
-        ]);
-
-        try {
-            $response = $this->aamarpay->initiate([
-                'tran_id' => $tran_id,
-                'success_url' => route('payment.success'),
-                'fail_url' => route('payment.cancel'),
-                'cancel_url' => route('payment.cancel'),
-                'amount' => $request->amount,
-                'desc' => 'Test Payment',
-                'cus_name' => $request->cus_name,
-                'cus_email' => $request->cus_email,
-                'cus_add1' => '',
-                'cus_add2' => '',
-                'cus_city' => '',
-                'cus_state' => '',
-                'cus_postcode' => '',
-                'cus_country' => 'Bangladesh',
-                'cus_phone' => $request->cus_phone,
-                'opt_a' => base64_encode(json_encode([
-                    'user_id' => Auth::id(),
-                    'return_url' => route('cart.details'),
-                ])),
-            ]);
-
-            if (isset($response['payment_url'])) {
-                return redirect()->away($response['payment_url']);
-            }
-
-            return back()->with('error', 'Payment URL not received.');
-        } catch (\Exception $e) {
-            return back()->with('error', $e->getMessage());
-        }
-    }
-
-    public function confirm(Request $request)
-    {
-        $transactionId = $request->input('mer_txnid');
-
-        //call verify payment API here
-
-        $payment = Payment::where('transaction_id', $transactionId)->first();
-
-        if ($payment) {
-            $payment->update([
-                'status' => Payment::SUCCESSFUL,
-                'gateway_trxid' => $request->input('pg_txnid'),
-                'response' => $request->all(),
-            ]);
-
-            $this->updateOrder($payment);
+        if (!$order) {
+            Log::error('Order not found for IPN:', ['invoice_id' => $request->order_id]);
+            return response()->json(['status' => 'error', 'message' => 'Order not found'], 404);
         }
 
-        session()->flash('Payment Successful');
+        $order->payment_id = $request->payment_id;
+        $order->payment_status = $request->status;
+        $order->payment_method_name = $request->payment_method;
 
-        //return redirect($request->return_url);
-
-        $status = Payment::SUCCESSFUL;
-        $return_url = $request->return_url;
-
-        return view('payment.status', compact('status', 'return_url'));
-    }
-
-    public function cancel(Request $request)
-    {
-        $transactionId = $request->input('mer_txnid');
-
-        $payment = Payment::where('transaction_id', $transactionId)->first();
-
-        if ($payment) {
-            $payment->update([
-                'status' => Payment::FAILED,
-                'response' => $request->all(),
-            ]);
-
-            $this->updateOrder($payment);
+        if ($request->status == PaymentStatus::COMPLETED->value) {
+            $order->paid_at = now();
         }
 
-        session()->flash('Payment Failed');
-        //return redirect($request->return_url);
+        $order->save();
 
-        $status = Payment::FAILED;
-        $return_url = $request->return_url;
-
-        return view('payment.status', compact('status', 'return_url'));
+        return response()->json(['status' => 'success'], 200);
     }
 
-    public function notify(Request $request)
+    public function success(Request $request)
     {
-        \Log::info('AamarPay IPN Received', $request->all());
+        $order = Order::where('payment_id', $request->payment_id)->first();
 
-        $transactionId = $request->mer_txnid;
-        $status = $request->pay_status;
-
-        $payment = Payment::where('transaction_id', $transactionId)->first();
-
-        if ($payment) {
-            $payment->update([
-                'status' => $status === Payment::SUCCESSFUL ? $status : Payment::FAILED,
-                'gateway_trxid' => $request->pg_txnid,
-                'response' => $request->all(),
-            ]);
-
-            $this->updateOrder($payment);
+        if (!$order) {
+            Log::error('Order not found for success callback:', ['payment_id' => $request->payment_id]);
+            return view('errors.404');
         }
 
-        //update order status in DB
-        // $order = Order::where('transaction_id', $transactionId)->first();
-        // if ($order && $status === 'Successful') {
-        //     $order->status = 'paid';
-        //     $order->save();
-        // }
+        if ($order->user_id) {
+            Auth::loginUsingId($order->user_id);
+        }
 
-        return response('IPN received', 200);
+        return view('payment.success', compact('order'));
     }
 
-    public function manual(Request $request)
+    public function cancelled(Request $request)
     {
-        if ($request->isMethod("GET")) {
-            return view('payment.manual');
+        $order = Order::where('payment_id', $request->payment_id)->first();
+
+        if (!$order) {
+            Log::error('Order not found for cancelled callback:', ['payment_id' => $request->payment_id]);
+            return view('errors.404');
         }
+
+        if ($order->user_id) {
+            Auth::loginUsingId($order->user_id);
+        }
+
+        return view('payment.cancelled');
     }
 
-    private function updateOrder(Payment $payment)
+    public function failed(Request $request)
     {
-        $order = Order::where('invoice_id', $payment->transaction_id)->first();
+        $order = Order::where('payment_id', $request->payment_id)->first();
 
-        $due = $order->due;
-        $paid = $order->paid;
-
-        if ($due > 0 && $payment->status === Payment::SUCCESSFUL) {
-            $due = $due - $payment->amount;
-            $paid = $payment->amount;
-            $seller = Seller::find($order->seller_id);
-
-            $balance = $seller->balance + $order->seller_earnings;
-
-            $seller->update([
-                'balance' => $balance
-            ]);
-
-            app(AffiliateService::class)
-                ->approveCommission( $order);
+        if (!$order) {
+            Log::error('Order not found for failed callback:', ['payment_id' => $request->payment_id]);
+            return view('errors.404');
         }
 
-        $order->update([
-            'payment_id' => $payment->id,
-            'due' => $due,
-            'paid' => $paid,
-        ]);
+        if ($order->user_id) {
+            Auth::loginUsingId($order->user_id);
+        }
+
+        return view('payment.failed');
     }
 }
