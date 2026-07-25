@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
-
-/** @deprecated Use App\Domain\Order\Models\Coupon */
-class Coupon extends \App\Domain\Order\Models\Coupon {}
+class_alias(
+    \App\Domain\Order\Models\Coupon::class,
+    \App\Models\Coupon::class
+);

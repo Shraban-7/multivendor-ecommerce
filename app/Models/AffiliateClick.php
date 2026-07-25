@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
-
-/** @deprecated Use App\Domain\Affiliate\Models\AffiliateClick */
-class AffiliateClick extends \App\Domain\Affiliate\Models\AffiliateClick {}
+class_alias(
+    \App\Domain\Affiliate\Models\AffiliateClick::class,
+    \App\Models\AffiliateClick::class
+);

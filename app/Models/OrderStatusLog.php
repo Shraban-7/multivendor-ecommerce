@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
-
-/** @deprecated Use App\Domain\Order\Models\OrderStatusLog */
-class OrderStatusLog extends \App\Domain\Order\Models\OrderStatusLog {}
+class_alias(
+    \App\Domain\Order\Models\OrderStatusLog::class,
+    \App\Models\OrderStatusLog::class
+);
