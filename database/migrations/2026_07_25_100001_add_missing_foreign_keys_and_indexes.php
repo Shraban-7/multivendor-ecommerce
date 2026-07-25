@@ -39,27 +39,29 @@ return new class extends Migration
             return;
         }
 
-        Schema::table($table, function (Blueprint $blueprint) use ($columns, $index) {
-            try {
-                $blueprint->index($columns, $index);
-            } catch (Throwable $e) {
-                // Index may already exist
+        foreach ($columns as $column) {
+            if (! Schema::hasColumn($table, $column)) {
+                return;
             }
+        }
+
+        if (Schema::hasIndex($table, $index)) {
+            return;
+        }
+
+        Schema::table($table, function (Blueprint $blueprint) use ($columns, $index) {
+            $blueprint->index($columns, $index);
         });
     }
 
     private function dropIndexIfExists(string $table, string $index): void
     {
-        if (! Schema::hasTable($table)) {
+        if (! Schema::hasTable($table) || ! Schema::hasIndex($table, $index)) {
             return;
         }
 
-        try {
-            Schema::table($table, function (Blueprint $blueprint) use ($index) {
-                $blueprint->dropIndex($index);
-            });
-        } catch (Throwable) {
-            // ignore
-        }
+        Schema::table($table, function (Blueprint $blueprint) use ($index) {
+            $blueprint->dropIndex($index);
+        });
     }
 };

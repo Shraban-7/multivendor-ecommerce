@@ -12,8 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('sellers', function (Blueprint $table) {
-            $table->string('code', 10)->after('username');
-            $table->integer('sku_counter')->default(0)->after('status');
+            if (! Schema::hasColumn('sellers', 'code')) {
+                $table->string('code', 10)->after('username');
+            }
+
+            if (! Schema::hasColumn('sellers', 'sku_counter')) {
+                // Do not use after('status') — status is added in a later migration.
+                $table->integer('sku_counter')->default(0);
+            }
         });
     }
 
@@ -23,7 +29,13 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('sellers', function (Blueprint $table) {
-            //
+            if (Schema::hasColumn('sellers', 'sku_counter')) {
+                $table->dropColumn('sku_counter');
+            }
+
+            if (Schema::hasColumn('sellers', 'code')) {
+                $table->dropColumn('code');
+            }
         });
     }
 };

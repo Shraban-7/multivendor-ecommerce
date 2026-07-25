@@ -22,9 +22,6 @@ class ProductSeeder extends Seeder
 {
     public function run(): void
     {
-        Product::truncate();
-        Brand::truncate();
-
         $jsonPath = database_path('data/products.json');
 
         if (! File::exists($jsonPath)) {
@@ -43,21 +40,24 @@ class ProductSeeder extends Seeder
         }
 
         foreach ($data['products'] as $index => $productData) {
+            $categorySlug = Str::slug($productData['category']);
             $category = Category::firstOrCreate(
-                ['name' => $productData['category']],
-                ['slug' => Str::slug($productData['category'])]
+                ['slug' => $categorySlug],
+                ['name' => $productData['category']]
             );
 
+            $subcategorySlug = Str::slug($productData['subcategory']);
             $subcategory = Category::firstOrCreate(
-                ['name' => $productData['subcategory']],
-                ['slug' => Str::slug($productData['subcategory']), 'category_id' => $category->id]
+                ['slug' => $subcategorySlug],
+                ['name' => $productData['subcategory'], 'category_id' => $category->id]
             );
 
             $brand = null;
             if (! empty($productData['brand'])) {
+                $brandSlug = Str::slug($productData['brand']);
                 $brand = Brand::firstOrCreate(
-                    ['name' => $productData['brand']],
-                    ['slug' => Str::slug($productData['brand'])]
+                    ['slug' => $brandSlug],
+                    ['name' => $productData['brand']]
                 );
             }
 
@@ -69,7 +69,7 @@ class ProductSeeder extends Seeder
 
             $sellerSlug = Str::slug(strtolower($productData['seller'] ?? ''));
 
-            $seller = Seller::where('username', [$sellerSlug])->first();
+            $seller = Seller::where('username', $sellerSlug)->first();
 
             if (! $seller || ! $category || ! $subcategory) {
                 dump('Missing seller/category/subcategory/brand for: '.$productData['name']);
@@ -100,7 +100,6 @@ class ProductSeeder extends Seeder
                 'stock_in' => 10,
                 'stock_out' => 0,
                 'low_stock_quantity' => 5,
-                'tax' => 0,
                 'views' => 0,
             ]);
 
@@ -167,28 +166,6 @@ class ProductSeeder extends Seeder
                 }
             }
         }
-
-        // Attach attributes to all product variants
-        $attributes = Option::with('options')->take(3)->get();
-
-        if ($attributes->isEmpty()) {
-            $this->command->warn('No attributes found. Seed product_attributes and options first.');
-
-            return;
-        }
-
-        ProductVariant::chunk(50, function ($variants) use ($attributes) {
-            foreach ($variants as $variant) {
-                foreach ($attributes as $attribute) {
-                    $option = $attribute->options->random();
-
-                    ProductVariantOption::firstOrCreate([
-                        'product_variant_id' => $variant->id,
-                        'option_value_id' => $option->id,
-                    ]);
-                }
-            }
-        });
     }
 
     public function run_old(): void
@@ -269,7 +246,6 @@ class ProductSeeder extends Seeder
                             'is_trending' => rand(0, 1),
                             'best_selling' => rand(0, 1),
                             'is_featured' => rand(0, 1),
-                            'tax' => 10,
                             'views' => 0,
                             'video' => 'videos/products/'.$featuredVideos[($i - 1) % count($featuredVideos)],
                         ]);

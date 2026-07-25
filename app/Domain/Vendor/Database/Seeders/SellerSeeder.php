@@ -108,6 +108,8 @@ class SellerSeeder extends Seeder
         foreach ($sellers as $seller) {
             $username = Str::slug($seller['name']);
             $seller['username'] = $username;
+            $seller['code'] = Seller::generateSellerCode($seller['name']);
+            $seller['status'] = ($seller['is_active'] ?? 0) ? Seller::ACTIVE : 0;
             $seller['image'] = "images/{$username}/logo/{$seller['image']}";
             $seller['business_logo'] = "images/{$username}/logo/{$seller['business_logo']}";
 

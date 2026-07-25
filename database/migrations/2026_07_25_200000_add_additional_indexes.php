@@ -197,22 +197,30 @@ return new class extends Migration
 
     public function down(): void
     {
-        // Individual index drops omitted for brevity — would need 90+ dropIndex calls.
-        // In practice, roll back by running: php artisan migrate:rollback
+        // Indexes are additive; drop individually only when needed during targeted rollbacks.
     }
 
+    /**
+     * @param  array<int, string>  $columns
+     */
     private function addIndexIfMissing(string $table, array $columns, string $index): void
     {
         if (! Schema::hasTable($table)) {
             return;
         }
 
-        Schema::table($table, function (Blueprint $blueprint) use ($columns, $index) {
-            try {
-                $blueprint->index($columns, $index);
-            } catch (Throwable $e) {
-                // Index may already exist
+        foreach ($columns as $column) {
+            if (! Schema::hasColumn($table, $column)) {
+                return;
             }
+        }
+
+        if (Schema::hasIndex($table, $index)) {
+            return;
+        }
+
+        Schema::table($table, function (Blueprint $blueprint) use ($columns, $index) {
+            $blueprint->index($columns, $index);
         });
     }
 };

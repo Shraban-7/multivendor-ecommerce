@@ -13,12 +13,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('subscription_histories', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('seller_subscription_id')->constrained()->onDelete('cascade');
             $table->foreignId('old_plan_id')->nullable()->constrained('subscription_plans');
             $table->foreignId('new_plan_id')->constrained('subscription_plans');
             $table->enum('action', array_column(SubscriptionAction::cases(), 'value'));
             $table->foreignId('performed_by')->nullable()->constrained('admins');
             $table->text('notes')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -27,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('subscrption_histories');
+        Schema::dropIfExists('subscription_histories');
     }
 };
