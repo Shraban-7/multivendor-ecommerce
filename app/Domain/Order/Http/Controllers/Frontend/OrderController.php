@@ -142,11 +142,11 @@ class OrderController extends Controller
                 'order' => $order,
             ]);
         } catch (Exception $e) {
-            if ($request->payment_method === 'pay_now') {
-                return back()->withInput()->with('error', $e->getMessage());
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
             }
 
-            return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
+            return back()->withInput()->with('error', $e->getMessage());
         }
     }
 

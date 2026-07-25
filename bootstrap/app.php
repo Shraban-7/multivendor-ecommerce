@@ -52,6 +52,14 @@ return Application::configure(basePath: dirname(__DIR__))
             AffiliateReferralMiddleware::class,
         ]);
 
+        // External payment gateways POST to these callbacks without a CSRF token.
+        $middleware->validateCsrfTokens(except: [
+            'payment/success',
+            'payment/cancelled',
+            'payment/failed',
+            'payment/ipn',
+        ]);
+
         $middleware->alias([
             'seller' => SellerMiddleware::class,
             'admin' => AdminMiddleware::class,

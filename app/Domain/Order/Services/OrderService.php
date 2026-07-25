@@ -20,8 +20,6 @@ use App\Services\AamarpayService;
 use App\Services\AffiliateService;
 use Exception;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 
 class OrderService
 {
@@ -208,26 +206,23 @@ class OrderService
             $this->affiliateService->updateOrderAffiliateId($order);
 
             if ($paymentMethod === 'pay_now') {
-                $paymentData = $this->prepareSlashPayData($order);
-                $response = Http::post(env('SLASHPAY_PAYMENT_URL'), $paymentData);
-                $jsonResponse = $response->json();
+                $paymentGateway = $this->initiatePaymentGateway(
+                    $user,
+                    $order->invoice_id,
+                    $payableAmount,
+                    $billingAddress?->customer_name ?? $user->name ?? '',
+                    $billingAddress?->customer_phone ?? $user->phone ?? '',
+                );
 
-                if ($response->successful()) {
-                    $this->orderRepo->update($order, ['payment_id' => $jsonResponse['payment_id'] ?? null]);
-
-                    return [
-                        'order' => $order,
-                        'payment_url' => $jsonResponse['payment_url'] ?? null,
-                        'message' => 'Redirecting to payment gateway',
-                    ];
+                if (empty($paymentGateway['payment_url'])) {
+                    throw new Exception($paymentGateway['message'] ?? 'Payment gateway error. Please try again.');
                 }
 
-                Log::error('Checkout error: Payment gateway response unsuccessful', [
-                    'order_id' => $order->id,
-                    'response' => $jsonResponse,
-                ]);
-
-                throw new Exception('Payment gateway error. Please try again.');
+                return [
+                    'order' => $order,
+                    'payment_url' => $paymentGateway['payment_url'],
+                    'message' => $paymentGateway['message'] ?? 'Redirecting to payment gateway',
+                ];
             }
 
             return [
@@ -236,22 +231,6 @@ class OrderService
                 'message' => 'Order placed successfully',
             ];
         });
-    }
-
-    private function prepareSlashPayData(Order $order): array
-    {
-        return [
-            'api_key' => env('SLASHPAY_API_KEY'),
-            'order_id' => (string) $order->invoice_id,
-            'amount' => $order->payable,
-            'cus_name' => $order->billing_address->customer_name ?? '',
-            'cus_email_mobile' => $order->shipping_phone ?? '',
-            'ipn_url' => route('payment.ipn'),
-            'cancel_url' => route('payment.cancelled'),
-            'success_url' => route('payment.success'),
-            'fail_url' => route('payment.failed'),
-            'currency' => 'BDT',
-        ];
     }
 
     public function submitReview(User $user, array $data): Review

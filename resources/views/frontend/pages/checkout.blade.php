@@ -500,8 +500,8 @@
                         $btn.html(originalText)
                             .attr('disabled', false)
                             .removeClass('opacity-60 cursor-not-allowed');
-                        showErrorToast(xhr.message);
-
+                        const message = xhr.responseJSON?.message || 'Payment failed. Please try again.';
+                        showErrorToast(message);
                     }
                 });
             });

@@ -58,9 +58,10 @@ Route::middleware('web')->group(function () {
     Route::get('/bkash/callback', [BkashController::class, 'callback'])->name('bkash.callback');
 
     Route::prefix('payment')->as('payment.')->group(function () {
-        Route::get('/success', [PaymentController::class, 'success'])->name('success');
-        Route::get('/cancelled', [PaymentController::class, 'cancelled'])->name('cancelled');
-        Route::get('/failed', [PaymentController::class, 'failed'])->name('failed');
+        // Gateways (Aamarpay) POST back to these callback URLs.
+        Route::match(['get', 'post'], '/success', [PaymentController::class, 'success'])->name('success');
+        Route::match(['get', 'post'], '/cancelled', [PaymentController::class, 'cancelled'])->name('cancelled');
+        Route::match(['get', 'post'], '/failed', [PaymentController::class, 'failed'])->name('failed');
         Route::post('/ipn', [PaymentController::class, 'ipn'])->name('ipn');
     });
 });

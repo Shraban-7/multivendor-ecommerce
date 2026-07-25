@@ -34,6 +34,11 @@ return new class extends Migration
             $table->decimal('discount_amount', 8, 2)->nullable();
             $table->decimal('discounted_price', 10, 2)->nullable();
 
+            $table->decimal('weight', 10, 2)->nullable()->comment('in kg');
+            $table->decimal('height', 10, 2)->nullable()->comment('in cm');
+            $table->decimal('width', 10, 2)->nullable()->comment('in cm');
+            $table->decimal('length', 10, 2)->nullable()->comment('in cm');
+
             $table->unsignedBigInteger('unit_id')->nullable();
             $table->integer('unit_value')->nullable();
 

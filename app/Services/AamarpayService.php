@@ -28,6 +28,10 @@ class AamarpayService
 
     public function initiate(array $paymentData)
     {
+        if (empty($this->storeId) || empty($this->signatureKey)) {
+            throw new \Exception('AamarPay is not configured. Set AAMARPAY_STORE_ID and AAMARPAY_SIGNATURE_KEY in .env.');
+        }
+
         $fields = array_merge([
             'store_id' => $this->storeId,
             'signature_key' => $this->signatureKey,
