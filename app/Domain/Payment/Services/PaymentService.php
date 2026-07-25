@@ -4,6 +4,7 @@ namespace App\Domain\Payment\Services;
 
 use App\Domain\Order\Models\Order;
 use App\Domain\Payment\Models\Payment;
+use App\Domain\Payment\Repositories\Contracts\PaymentRepositoryInterface;
 use App\Domain\Vendor\Models\Seller;
 use App\Services\AffiliateService;
 use App\Services\BkashService;
@@ -16,6 +17,7 @@ class PaymentService
     public function __construct(
         protected BkashService $bkashService,
         protected AffiliateService $affiliateService,
+        private readonly PaymentRepositoryInterface $paymentRepo,
     ) {}
 
     /**
@@ -32,15 +34,23 @@ class PaymentService
 
         $invoiceNumber = $order->invoice_id;
 
-        Payment::updateOrCreate(
-            ['transaction_id' => $invoiceNumber],
-            [
+        $existing = $this->paymentRepo->findByTransactionId($invoiceNumber);
+        if ($existing) {
+            $this->paymentRepo->update($existing, [
                 'user_id' => $order->user_id,
                 'amount' => $amount,
                 'status' => Payment::PENDING,
                 'payment_method' => 'bkash',
-            ]
-        );
+            ]);
+        } else {
+            $this->paymentRepo->create([
+                'transaction_id' => $invoiceNumber,
+                'user_id' => $order->user_id,
+                'amount' => $amount,
+                'status' => Payment::PENDING,
+                'payment_method' => 'bkash',
+            ]);
+        }
 
         return $this->bkashService->createPayment($amount, $invoiceNumber);
     }
@@ -72,7 +82,7 @@ class PaymentService
 
         return DB::transaction(function () use ($response, $invoiceId, $query) {
             $order = Order::where('invoice_id', $invoiceId)->lockForUpdate()->firstOrFail();
-            $payment = Payment::where('transaction_id', $invoiceId)->lockForUpdate()->first();
+            $payment = $this->paymentRepo->findByTransactionId($invoiceId);
 
             if (! $payment) {
                 throw new RuntimeException('Payment record not found.');
@@ -87,7 +97,7 @@ class PaymentService
             $expected = (float) $payment->amount;
 
             if (abs($paidAmount - $expected) > 0.01) {
-                $payment->update([
+                $this->paymentRepo->update($payment, [
                     'status' => Payment::FAILED,
                     'response' => json_encode($response),
                 ]);
@@ -97,7 +107,7 @@ class PaymentService
                 );
             }
 
-            $payment->update([
+            $this->paymentRepo->update($payment, [
                 'status' => Payment::SUCCESSFUL,
                 'gateway_trxid' => $response['trxID'] ?? null,
                 'response' => json_encode($response),

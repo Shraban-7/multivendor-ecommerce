@@ -34,11 +34,17 @@ interface PaymentRepositoryInterface
 
     public function findListenerDeviceBySeller(int $sellerId): ?PaymentListenerDevice;
 
+    public function getListenerDevicesBySeller(int $sellerId): Collection;
+
     public function findListenerDeviceByPhone(string $phone): ?PaymentListenerDevice;
+
+    public function findListenerDeviceByCode(string $code): ?PaymentListenerDevice;
 
     public function createListenerPayment(array $data): PaymentListenerPayment;
 
     public function getListenerPayments(int $deviceId): Collection;
+
+    public function getListenerPaymentsBySeller(int $sellerId): Collection;
 
     public function createSubscriptionPayment(array $data): SubscriptionPayment;
 }

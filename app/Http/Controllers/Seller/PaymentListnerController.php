@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Seller;
 
 use App\Domain\Payment\Models\PaymentListenerDevice;
 use App\Domain\Payment\Models\PaymentListenerPayment;
+use App\Domain\Payment\Repositories\Contracts\PaymentRepositoryInterface;
 use App\Http\Controllers\Controller;
 use App\Services\FcmService;
 use Illuminate\Http\Request;
@@ -11,13 +12,17 @@ use Illuminate\Support\Str;
 
 class PaymentListnerController extends Controller
 {
+    public function __construct(
+        private readonly PaymentRepositoryInterface $paymentRepo,
+    ) {}
+
     public function index()
     {
         $seller_id = get_seller_id();
 
-        $devices = PaymentListenerDevice::where('seller_id', $seller_id)->get();
+        $devices = $this->paymentRepo->getListenerDevicesBySeller($seller_id);
 
-        $payments = PaymentListenerPayment::where('seller_id', $seller_id)->with('device')->latest('id')->limit(50)->get();
+        $payments = $this->paymentRepo->getListenerPaymentsBySeller($seller_id);
 
         return view('seller.payment-listener.index', compact('devices', 'payments'));
     }
@@ -26,10 +31,13 @@ class PaymentListnerController extends Controller
     {
         $seller_id = get_seller_id();
 
-        $device = PaymentListenerDevice::where('seller_id', $seller_id)->whereNull('device_name')->first();
+        $device = $this->paymentRepo->getListenerDevicesBySeller($seller_id)
+            ->whereNull('device_name')
+            ->first();
+
         if (! $device) {
             $device = PaymentListenerDevice::create([
-                'seller_id' => get_seller_id(),
+                'seller_id' => $seller_id,
                 'device_code' => strtoupper(Str::random(8)),
                 'status' => PaymentListenerDevice::STATUS_PENDING,
             ]);
@@ -67,14 +75,10 @@ class PaymentListnerController extends Controller
             return sendValidationError($validator->errors());
         }
 
-        $device = PaymentListenerDevice::where('device_code', $request->device_code)->first();
+        $device = $this->paymentRepo->findListenerDeviceByCode($request->device_code);
         if (! $device) {
             return errorResponse('Invalid device code!');
         }
-
-        // if (!is_null($device->device_name) && $device->status == PaymentListenerDevice::STATUS_ACTIVE) {
-        //     return errorResponse("This device code is already connected!");
-        // }
 
         if (! is_null($device->device_name) && $device->device_name != $request->device_name) {
             return errorResponse("Use this code for {$device->device_name}");
@@ -87,7 +91,6 @@ class PaymentListnerController extends Controller
         ]);
 
         $data['allowed_senders'] = PaymentListenerPayment::allowed_senders();
-
         $data['user'] = [
             'id' => $device->seller->id,
             'name' => $device->seller->name,
@@ -103,8 +106,6 @@ class PaymentListnerController extends Controller
             'device_code' => 'required|string',
             'sender' => 'required|string',
             'sender_number' => 'nullable|string',
-            // 'amount' => 'nullable|numeric',
-            // 'trx_id' => 'nullable|string',
             'full_sms' => 'required|string',
             'received_at' => 'required|string',
         ]);
@@ -113,12 +114,12 @@ class PaymentListnerController extends Controller
             return sendValidationError($validator->errors());
         }
 
-        $device = PaymentListenerDevice::where('device_code', $request->device_code)->first();
+        $device = $this->paymentRepo->findListenerDeviceByCode($request->device_code);
         if (! $device) {
             return errorResponse('Invalid device code!', 403);
         }
 
-        PaymentListenerPayment::create([
+        $this->paymentRepo->createListenerPayment([
             'seller_id' => $device->seller_id,
             'device_id' => $device->id,
             'sender' => $request->sender,
@@ -145,7 +146,7 @@ class PaymentListnerController extends Controller
             return errorResponse(sendValidationError($validator->errors()));
         }
 
-        $device = PaymentListenerDevice::where('device_code', $request->device_code)->first();
+        $device = $this->paymentRepo->findListenerDeviceByCode($request->device_code);
         if (! $device) {
             return errorResponse('Invalid device code!', 403);
         }
@@ -170,7 +171,7 @@ class PaymentListnerController extends Controller
             return sendValidationError($validator->errors());
         }
 
-        $device = PaymentListenerDevice::where('device_code', $request->device_code)->first();
+        $device = $this->paymentRepo->findListenerDeviceByCode($request->device_code);
         if (! $device) {
             return errorResponse('Invalid device code!');
         }

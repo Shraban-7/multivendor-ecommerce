@@ -35,4 +35,6 @@ interface OrderRepositoryInterface
     public function createStatusLog(Order $order, array $data): OrderStatusLog;
 
     public function createBillingAddress(array $data): OrderBillingAddress;
+
+    public function findBillingAddressByOrder(int $orderId): ?OrderBillingAddress;
 }

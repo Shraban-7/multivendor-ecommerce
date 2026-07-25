@@ -5,13 +5,17 @@ namespace App\Http\Controllers\Seller;
 use App\Domain\Affiliate\Models\AffiliateCommission;
 use App\Domain\Auth\Models\User;
 use App\Domain\Order\Models\Order;
-use App\Domain\Order\Models\OrderStatusLog;
+use App\Domain\Order\Repositories\Contracts\OrderRepositoryInterface;
 use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
+    public function __construct(
+        private readonly OrderRepositoryInterface $orderRepo,
+    ) {}
+
     public function index(Request $request)
     {
         $type = $request->segment(3);
@@ -50,14 +54,14 @@ class OrderController extends Controller
 
     public function details($invoice_id)
     {
-        $order = Order::where('invoice_id', $invoice_id)->first();
-        if (get_seller_id() == $order->seller_id) {
-            $order->load(['review', 'items']);
-
-            return view('seller.orders.details', compact('order'));
+        $order = $this->orderRepo->findByInvoiceId($invoice_id);
+        if (! $order || get_seller_id() != $order->seller_id) {
+            return redirect()->back();
         }
 
-        return redirect()->back();
+        $order->load(['review', 'items']);
+
+        return view('seller.orders.details', compact('order'));
     }
 
     public function updateStatus(Order $order, Request $request)
@@ -77,11 +81,8 @@ class OrderController extends Controller
             return redirect()->back()->with('success', 'Order status already '.$old_status->title());
         }
 
-        $order->status = $request->new_status;
-        $order->save();
-
-        OrderStatusLog::create([
-            'order_id' => $order->id,
+        $this->orderRepo->update($order, ['status' => $request->new_status]);
+        $this->orderRepo->createStatusLog($order, [
             'old_status' => $old_status->value,
             'new_status' => $request->new_status,
             'changed_by' => 'seller',
@@ -109,9 +110,9 @@ class OrderController extends Controller
 
     public function posInvoice($invoice_id)
     {
-        $order = Order::where('invoice_id', $invoice_id)->first();
+        $order = $this->orderRepo->findByInvoiceId($invoice_id);
 
-        if (get_seller_id() == $order->seller_id) {
+        if ($order && get_seller_id() == $order->seller_id) {
             return view('seller.orders.pos_invoice', compact('order'));
         }
 

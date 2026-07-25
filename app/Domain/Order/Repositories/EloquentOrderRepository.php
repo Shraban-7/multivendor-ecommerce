@@ -76,4 +76,9 @@ class EloquentOrderRepository implements OrderRepositoryInterface
     {
         return OrderBillingAddress::create($data);
     }
+
+    public function findBillingAddressByOrder(int $orderId): ?OrderBillingAddress
+    {
+        return OrderBillingAddress::where('order_id', $orderId)->first();
+    }
 }

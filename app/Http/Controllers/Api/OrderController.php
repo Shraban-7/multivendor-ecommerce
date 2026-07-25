@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Domain\Order\Models\BillingAddress;
-use App\Domain\Order\Models\Cart;
 use App\Domain\Order\Models\Order;
-use App\Domain\Order\Models\OrderBillingAddress;
 use App\Domain\Order\Models\OrderItem;
+use App\Domain\Order\Repositories\Contracts\CartRepositoryInterface;
+use App\Domain\Order\Repositories\Contracts\OrderRepositoryInterface;
 use App\Domain\Payment\Models\Payment;
+use App\Domain\Payment\Repositories\Contracts\PaymentRepositoryInterface;
 use App\Domain\Product\Models\ProductVariant;
 use App\Domain\Review\Models\Review;
 use App\Domain\Review\Models\ReviewImage;
@@ -27,6 +28,11 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
+    public function __construct(
+        private readonly OrderRepositoryInterface $orderRepo,
+        private readonly CartRepositoryInterface $cartRepo,
+        private readonly PaymentRepositoryInterface $paymentRepo,
+    ) {}
     public function index(Request $request)
     {
         $statusLabel = (string) $request->input('status', 'all');
@@ -62,10 +68,7 @@ class OrderController extends Controller
 
         $seller = Seller::findOrFail($selectedSellerId);
 
-        $cart = Cart::with('cart_items.product', 'cart_items.variant')
-            ->where('user_id', $user->id)
-            ->where('seller_id', $selectedSellerId)
-            ->first();
+        $cart = $this->cartRepo->findUserCartBySeller($user->id, $selectedSellerId)?->load('cart_items.product', 'cart_items.variant');
 
         if (! $cart || $cart->cart_items->isEmpty()) {
             return errorResponse('Cart is empty or not found for the selected seller.');
@@ -129,7 +132,7 @@ class OrderController extends Controller
         try {
             DB::beginTransaction();
 
-            $order = Order::create([
+            $order = $this->orderRepo->create([
                 'user_id' => $user->id,
                 'seller_id' => $selectedSellerId,
                 'invoice_id' => $invoiceId,
@@ -147,9 +150,9 @@ class OrderController extends Controller
                 'payment_type' => $payment_type,
             ]);
 
-            $order->items()->createMany($orderItems);
+            $this->orderRepo->createOrderItems($order, $orderItems);
 
-            $orderBillingAddress = OrderBillingAddress::create([
+            $orderBillingAddress = $this->orderRepo->createBillingAddress([
                 'order_id' => $order->id,
                 'customer_name' => $billingAddress->customer_name,
                 'customer_phone' => $billingAddress->customer_phone,
@@ -168,8 +171,8 @@ class OrderController extends Controller
                 }
             }
 
-            $cart->cart_items()->delete();
-            $cart->delete();
+            $this->cartRepo->clearCart($cart);
+            $this->cartRepo->delete($cart->id);
 
             $seller = Seller::find($selectedSellerId);
 
@@ -227,10 +230,10 @@ class OrderController extends Controller
 
     private function initiatePaymentGateway($user, $invoiceId, $amount, $customerName, $customerPhone): array
     {
-        $payment = Payment::where('transaction_id', $invoiceId)->first();
+        $payment = $this->paymentRepo->findByTransactionId($invoiceId);
 
         if (! $payment) {
-            $payment = Payment::create([
+            $payment = $this->paymentRepo->create([
                 'gateway' => 'aamarpay',
                 'transaction_id' => $invoiceId,
                 'status' => Payment::PENDING,
@@ -250,7 +253,7 @@ class OrderController extends Controller
         }
 
         if ($payment->status == Payment::FAILED) {
-            $payment->update(['status' => Payment::PENDING]);
+            $this->paymentRepo->update($payment, ['status' => Payment::PENDING]);
         }
 
         $aamarpay = (new AamarpayService);
@@ -305,7 +308,7 @@ class OrderController extends Controller
 
     public function tracking($invoice_id)
     {
-        $order = Order::withCount('items')->where('invoice_id', $invoice_id)->first();
+        $order = $this->orderRepo->findByInvoiceId($invoice_id)?->loadCount('items');
 
         if (! $order) {
             return response()->json([
@@ -374,7 +377,8 @@ class OrderController extends Controller
 
     public function payNow(Order $order)
     {
-        $orderBillingAddress = OrderBillingAddress::where('order_id', $order->id)->first();
+        $order->load('items');
+        $orderBillingAddress = $this->orderRepo->findBillingAddressByOrder($order->id);
 
         $paymentGateway = $this->initiatePaymentGateway(
             $order->user,

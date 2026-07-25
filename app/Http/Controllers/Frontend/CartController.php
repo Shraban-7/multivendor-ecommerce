@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Domain\Order\Models\Cart;
 use App\Domain\Order\Models\CartItem;
+use App\Domain\Order\Repositories\Contracts\CartRepositoryInterface;
 use App\Domain\Product\Models\Product;
 use App\Domain\Product\Models\ProductVariant;
 use App\Domain\Vendor\Models\Seller;
@@ -13,6 +14,9 @@ use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
+    public function __construct(
+        private readonly CartRepositoryInterface $cartRepo,
+    ) {}
     public function add(Request $request)
     {
         if (Auth::guard('seller')->check() || Auth::guard('admin')->check()) {
@@ -63,8 +67,7 @@ class CartController extends Controller
         if ($cartItem) {
             $cartItem->increment('quantity', $data['quantity']);
         } else {
-            CartItem::create([
-                'cart_id' => $cart->id,
+            $this->cartRepo->addItem($cart, [
                 'product_id' => $product->id,
                 'quantity' => $data['quantity'],
                 'price' => $price,
@@ -193,20 +196,19 @@ class CartController extends Controller
     {
         $cartItem = CartItem::where('id', $request->id)->first();
 
-        $cartId = $cartItem->cart_id;
-
-        if ($cartItem) {
-            $cartItem->delete();
-            $remainingItems = CartItem::where('cart_id', $cartId)->count();
-
-            if ($remainingItems === 0) {
-                Cart::where('id', $cartId)->delete();
-            }
-
-            return response()->json(['success' => true, 'message' => 'Product removed from cart']);
+        if (! $cartItem) {
+            return response()->json(['success' => false, 'message' => 'Product not found in cart']);
         }
 
-        return response()->json(['success' => false, 'message' => 'Product not found in cart']);
+        $cartId = $cartItem->cart_id;
+        $this->cartRepo->removeItem($cartItem->id);
+        $remainingItems = CartItem::where('cart_id', $cartId)->count();
+
+        if ($remainingItems === 0) {
+            $this->cartRepo->delete($cartId);
+        }
+
+        return response()->json(['success' => true, 'message' => 'Product removed from cart']);
     }
 
     public function getLiveCartData()
@@ -216,9 +218,7 @@ class CartController extends Controller
         $grand_total = 0;
 
         if (Auth::check()) {
-            $carts = Cart::where('user_id', Auth::id())
-                ->with('cart_items.product')
-                ->get();
+            $carts = $this->cartRepo->findByUserId(Auth::id())->load('cart_items.product');
 
             foreach ($carts as $cart) {
                 foreach ($cart->cart_items as $item) {
@@ -228,8 +228,6 @@ class CartController extends Controller
                     $cartCount++;
                 }
             }
-        } else {
-            $carts = collect();
         }
 
         return response()->json([

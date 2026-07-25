@@ -1,15 +1,15 @@
 <?php
 
+use App\Domain\Payment\Repositories\Contracts\PaymentRepositoryInterface;
 use App\Domain\Payment\Services\PaymentService;
 use App\Services\AffiliateService;
 use App\Services\BkashService;
-use InvalidArgumentException;
-
 test('payment service rejects mismatched gateway amount', function () {
     $bkash = Mockery::mock(BkashService::class);
     $affiliate = Mockery::mock(AffiliateService::class);
+    $paymentRepo = Mockery::mock(PaymentRepositoryInterface::class);
 
-    $service = new class($bkash, $affiliate) extends PaymentService
+    $service = new class($bkash, $affiliate, $paymentRepo) extends PaymentService
     {
         public function assertAmountMatch(float $paid, float $expected): void
         {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Domain\Order\Models\Cart;
 use App\Domain\Order\Models\CartItem;
+use App\Domain\Order\Repositories\Contracts\CartRepositoryInterface;
 use App\Domain\Product\Models\Product;
 use App\Domain\Product\Models\ProductVariant;
 use App\Http\Controllers\Controller;
@@ -14,6 +15,9 @@ use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
+    public function __construct(
+        private readonly CartRepositoryInterface $cartRepo,
+    ) {}
     public function index()
     {
         $carts = Cart::query()
@@ -113,8 +117,7 @@ class CartController extends Controller
         if ($cartItem) {
             $cartItem->increment('quantity', $data['quantity']);
         } else {
-            CartItem::create([
-                'cart_id' => $cart->id,
+            $this->cartRepo->addItem($cart, [
                 'product_id' => $product->id,
                 'quantity' => $data['quantity'],
                 'price' => $price,
@@ -123,7 +126,7 @@ class CartController extends Controller
         }
 
         return apiResponse([
-            'cart_count' => Cart::getCount($userId),
+            'cart_count' => $this->cartRepo->getCount($userId),
         ], 'Added to cart successfully');
     }
 
@@ -131,14 +134,14 @@ class CartController extends Controller
     {
         $cart = Cart::withCount('cart_items')->find($item->cart_id);
 
-        $item->delete();
+        $this->cartRepo->removeItem($item->id);
 
         if ($cart && ($cart->cart_items_count - 1) === 0) {
-            $cart->delete();
+            $this->cartRepo->delete($cart->id);
         }
 
         return apiResponse([
-            'cart_count' => Cart::getCount(),
+            'cart_count' => $this->cartRepo->getCount(Auth::id()),
         ], 'Item removed successfully');
     }
 
@@ -157,7 +160,7 @@ class CartController extends Controller
         ]);
 
         return apiResponse([
-            'cart_count' => Cart::getCount(),
+            'cart_count' => $this->cartRepo->getCount(Auth::id()),
         ], 'Cart updated successfully');
     }
 }

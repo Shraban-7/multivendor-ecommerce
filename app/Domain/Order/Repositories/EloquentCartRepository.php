@@ -61,7 +61,7 @@ class EloquentCartRepository implements CartRepositoryInterface
 
     public function getCount(int $userId): int
     {
-        return Cart::getCount($userId);
+        return Cart::where('user_id', $userId)->count();
     }
 
     public function getWishlistByUser(int $userId): Collection

@@ -9,8 +9,11 @@ use App\Domain\Order\Models\Cart;
 use App\Domain\Order\Models\Order;
 use App\Domain\Order\Models\OrderBillingAddress;
 use App\Domain\Order\Models\OrderItem;
+use App\Domain\Order\Repositories\Contracts\CartRepositoryInterface;
+use App\Domain\Order\Repositories\Contracts\OrderRepositoryInterface;
 use App\Domain\Payment\Models\Payment;
 use App\Domain\Payment\Models\PaymentGateway;
+use App\Domain\Payment\Repositories\Contracts\PaymentRepositoryInterface;
 use App\Domain\Product\Models\Product;
 use App\Domain\Product\Models\ProductVariant;
 use App\Domain\Review\Models\Review;
@@ -35,8 +38,12 @@ class OrderController extends Controller
 {
     protected $affiliateService;
 
-    public function __construct(AffiliateService $affiliateService)
-    {
+    public function __construct(
+        AffiliateService $affiliateService,
+        private readonly OrderRepositoryInterface $orderRepo,
+        private readonly CartRepositoryInterface $cartRepo,
+        private readonly PaymentRepositoryInterface $paymentRepo,
+    ) {
         $this->affiliateService = $affiliateService;
     }
 
@@ -48,15 +55,15 @@ class OrderController extends Controller
 
         $statusValue = OrderStatus::valueFromLabel($statusLabel);
 
-        $query = Order::with('seller')->withCount('items')
+        $orders = Order::with('seller')->withCount('items')
             ->where('user_id', Auth::user()->id)
-            ->where('invoice_id', '!=', null);
+            ->whereNotNull('invoice_id');
 
         if ($statusLabel !== 'all') {
-            $query->where('status', $statusValue);
+            $orders->where('status', $statusValue);
         }
 
-        $orders = $query->latest('id')->get();
+        $orders = $orders->latest('id')->get();
 
         $interest_products = Product::with([
             'category',
@@ -80,7 +87,7 @@ class OrderController extends Controller
     {
         $user = Auth::user();
 
-        $order = Order::where('invoice_id', $invoice_id)->with('seller', 'payment', 'items.review')->first();
+        $order = $this->orderRepo->findByInvoiceId($invoice_id)?->load('seller', 'payment', 'items.review');
 
         $products = Product::latest('id')->limit(8)->get();
 
@@ -101,10 +108,7 @@ class OrderController extends Controller
         $selectedSellerId = $validated['seller_id'];
 
         $seller = Seller::find($selectedSellerId);
-        $cart = Cart::where('user_id', $user->id)
-            ->where('seller_id', $selectedSellerId)
-            ->with('cart_items.product')
-            ->first();
+        $cart = $this->cartRepo->findUserCartBySeller($user->id, $selectedSellerId)?->load('cart_items.product');
 
         if (! $cart) {
             if ($request->ajax()) {
@@ -192,7 +196,7 @@ class OrderController extends Controller
         $paid_amount = 0;
         $due_amount = $payableAmount;
 
-        $order = Order::create([
+        $order = $this->orderRepo->create([
             'user_id' => $user->id,
             'seller_id' => $selectedSellerId,
             'invoice_id' => $invoiceId,
@@ -211,9 +215,9 @@ class OrderController extends Controller
             'payment_type' => $payment_type,
         ]);
 
-        $order->items()->createMany($orderItems);
+        $this->orderRepo->createOrderItems($order, $orderItems);
 
-        $orderBillingAddress = OrderBillingAddress::create([
+        $orderBillingAddress = $this->orderRepo->createBillingAddress([
             'order_id' => $order->id,
             'customer_name' => $billingAddress->customer_name,
             'customer_phone' => $billingAddress->customer_phone,
@@ -238,8 +242,8 @@ class OrderController extends Controller
             }
         }
 
-        $cart->cart_items()->delete();
-        $cart->delete();
+        $this->cartRepo->clearCart($cart);
+        $this->cartRepo->delete($cart->id);
 
         $seller = Seller::find($selectedSellerId);
 
@@ -365,11 +369,11 @@ class OrderController extends Controller
 
     private function initiateAmarpayGateway($user, $invoiceId, $amount, $customerName, $customerPhone)
     {
-        $payment = Payment::where('transaction_id', $invoiceId)->first();
-        $order = Order::where('invoice_id', $invoiceId)->first();
+        $payment = $this->paymentRepo->findByTransactionId($invoiceId);
+        $order = $this->orderRepo->findByInvoiceId($invoiceId);
 
         if (! $payment) {
-            $payment = Payment::create([
+            $payment = $this->paymentRepo->create([
                 'user_id' => $user->id,
                 'gateway' => 'aamarpay',
                 'transaction_id' => $invoiceId,
@@ -390,7 +394,7 @@ class OrderController extends Controller
             $order->paid = 0;
             $order->due = $amount;
             $order->save();
-            $payment->update(['status' => Payment::PENDING]);
+            $this->paymentRepo->update($payment, ['status' => Payment::PENDING]);
         }
 
         $aamarpay = (new AamarpayService);
@@ -440,11 +444,11 @@ class OrderController extends Controller
 
     private function initiateBkashGateway($user, $invoiceId, $amount, $customerName, $customerPhone)
     {
-        $payment = Payment::where('transaction_id', $invoiceId)->first();
-        $order = Order::where('invoice_id', $invoiceId)->first();
+        $payment = $this->paymentRepo->findByTransactionId($invoiceId);
+        $order = $this->orderRepo->findByInvoiceId($invoiceId);
 
         if (! $payment) {
-            $payment = Payment::create([
+            $payment = $this->paymentRepo->create([
                 'user_id' => $user->id,
                 'gateway' => 'bkash',
                 'transaction_id' => $invoiceId,
@@ -470,7 +474,7 @@ class OrderController extends Controller
                 'due' => $amount,
             ]);
 
-            $payment->update(['status' => Payment::PENDING]);
+            $this->paymentRepo->update($payment, ['status' => Payment::PENDING]);
         }
 
         try {
@@ -504,14 +508,14 @@ class OrderController extends Controller
 
     public function success($invoice_id)
     {
-        $order = Order::where('invoice_id', $invoice_id)->first();
+        $order = $this->orderRepo->findByInvoiceId($invoice_id);
 
         return view('frontend.orders.success', compact('order'));
     }
 
     public function tracking($invoice_id)
     {
-        $order = Order::withCount('items')->where('invoice_id', $invoice_id)->first();
+        $order = $this->orderRepo->findByInvoiceId($invoice_id)?->loadCount('items');
 
         return view('frontend.orders.tracking', compact('order'));
     }
@@ -598,7 +602,8 @@ class OrderController extends Controller
 
     public function payNow(Order $order)
     {
-        $orderBillingAddress = OrderBillingAddress::where('order_id', $order->id)->first();
+        $order->load('items');
+        $orderBillingAddress = $this->orderRepo->findBillingAddressByOrder($order->id);
 
         if (! $orderBillingAddress) {
             return back()->with('error', 'Billing address not found.');

@@ -68,9 +68,19 @@ class EloquentPaymentRepository implements PaymentRepositoryInterface
         return PaymentListenerDevice::where('seller_id', $sellerId)->first();
     }
 
+    public function getListenerDevicesBySeller(int $sellerId): Collection
+    {
+        return PaymentListenerDevice::where('seller_id', $sellerId)->get();
+    }
+
     public function findListenerDeviceByPhone(string $phone): ?PaymentListenerDevice
     {
         return PaymentListenerDevice::where('phone', $phone)->first();
+    }
+
+    public function findListenerDeviceByCode(string $code): ?PaymentListenerDevice
+    {
+        return PaymentListenerDevice::where('device_code', $code)->first();
     }
 
     public function createListenerPayment(array $data): PaymentListenerPayment
@@ -81,6 +91,11 @@ class EloquentPaymentRepository implements PaymentRepositoryInterface
     public function getListenerPayments(int $deviceId): Collection
     {
         return PaymentListenerPayment::where('device_id', $deviceId)->get();
+    }
+
+    public function getListenerPaymentsBySeller(int $sellerId): Collection
+    {
+        return PaymentListenerPayment::where('seller_id', $sellerId)->with('device')->latest('id')->limit(50)->get();
     }
 
     public function createSubscriptionPayment(array $data): SubscriptionPayment
