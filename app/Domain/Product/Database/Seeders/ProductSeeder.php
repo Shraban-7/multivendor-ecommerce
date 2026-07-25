@@ -105,6 +105,9 @@ class ProductSeeder extends Seeder
                 'stock_out' => 0,
                 'low_stock_quantity' => 5,
                 'views' => 0,
+                'is_trending' => rand(0, 1),
+                'best_selling' => rand(0, 1),
+                'is_featured' => rand(0, 1),
             ]);
 
             // Insert images (only for fashion category)
