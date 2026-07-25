@@ -2,19 +2,11 @@
 
 use App\Http\Controllers\Seller\AuthController;
 use App\Http\Controllers\Seller\CustomerController;
-use App\Http\Controllers\Seller\DashboardController;
 use App\Http\Controllers\Seller\NotificationController;
 use App\Http\Controllers\Seller\OrderController;
 use App\Http\Controllers\Seller\PaymentListnerController;
 use App\Http\Controllers\Seller\PosController;
-use App\Http\Controllers\Seller\ReportController;
 use App\Http\Controllers\Seller\SaleController;
-use App\Http\Controllers\Seller\SellerChatController;
-use App\Http\Controllers\Seller\SellerController;
-use App\Http\Controllers\Seller\SellerEmployeeController;
-use App\Http\Controllers\Seller\SellerExpenseController;
-use App\Http\Controllers\Seller\SettingController;
-use App\Http\Controllers\Seller\SubscriptionPlanController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () {
@@ -41,34 +33,9 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         });
     });
 
-    Route::prefix('employees')->as('employees.')->group(function () {
-        Route::get('/', [SellerEmployeeController::class, 'index'])->name('index');
-        Route::get('/create', [SellerEmployeeController::class, 'create'])->name('create');
-        Route::post('/store', [SellerEmployeeController::class, 'store'])->name('store');
-        Route::get('/sales-report', [SellerEmployeeController::class, 'salesReport'])->name('salesReport');
-        Route::get('{id}/edit', [SellerEmployeeController::class, 'edit'])->name('edit');
-        Route::get('/profile', [SellerEmployeeController::class, 'profile'])->name('profile');
-        Route::post('{id}/update', [SellerEmployeeController::class, 'update'])->name('update');
-        Route::post('/update-profile', [SellerEmployeeController::class, 'updateProfile'])->name('updateProfile');
-        Route::post('{id}/toggle-active', [SellerEmployeeController::class, 'toggleActive'])->name('toggle_active');
-        Route::post('{employee}/set-permissions', [SellerEmployeeController::class, 'setPermissions'])->name('set_permissions');
-    });
-
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-    Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
-    Route::match(['get', 'post'], '/profile', [SellerController::class, 'profile'])->name('profile');
-    Route::get('/profile-info/{username}', [SellerController::class, 'profileInfo'])->name('profileInfo');
-    Route::get('/profile-info/update', [SellerController::class, 'profileUpdate'])->name('profile.update');
 
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
-
-    Route::prefix('chat')->as('chat.')->group(function () {
-        Route::get('/list', [SellerChatController::class, 'chatList'])->name('list');
-        Route::get('/messages', [SellerChatController::class, 'messages'])->name('messages');
-        Route::post('/send', [SellerChatController::class, 'sendMessage'])->name('send');
-    });
-
-    Route::get('/customers', [CustomerController::class, 'index'])->name('customers');
 
     Route::prefix('orders')->as('orders.')->group(function () {
         Route::get('/', [OrderController::class, 'index'])->name('index');
@@ -83,24 +50,7 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::post('/{order}/update-status', [OrderController::class, 'updateStatus'])->name('updateStatus');
     });
 
-    Route::prefix('settings')->as('settings.')->group(function () {
-        Route::get('/', [SettingController::class, 'index'])->name('index');
-        Route::post('/update', [SettingController::class, 'update'])->name('update');
-    });
-
-    Route::prefix('expenses')->as('expenses.')->group(function () {
-        Route::get('/', [SellerExpenseController::class, 'index'])->name('index');
-        Route::post('/store', [SellerExpenseController::class, 'store'])->name('store');
-        Route::post('{expense}/update', [SellerExpenseController::class, 'update'])->name('update');
-        Route::post('{expense}/destroy', [SellerExpenseController::class, 'destroy'])->name('destroy');
-    });
-
-    Route::prefix('plans')->as('plans.')->group(function () {
-        Route::get('/', [SubscriptionPlanController::class, 'index'])->name('index');
-        Route::post('/{plan}/subscribe', [SubscriptionPlanController::class, 'subscribe'])->name('subscribe');
-    });
-
-    Route::post('banner-image/{image}/', [SettingController::class, 'deleteImage'])->name('bannerImages.delete');
+    Route::get('/customers', [CustomerController::class, 'index'])->name('customers');
 
     Route::prefix('payment-listener')->as('paymentListener.')->group(function () {
         Route::get('/', [PaymentListnerController::class, 'index'])->name('index');
@@ -110,13 +60,6 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
             Route::post('/{device}/check-payments', [PaymentListnerController::class, 'checkPayments'])->name('checkPayments');
         });
         Route::get('/payments', [PaymentListnerController::class, 'payments']);
-    });
-
-    Route::prefix('reports')->as('reports.')->group(function () {
-        Route::get('/financial', [ReportController::class, 'financial'])->name('financial');
-        Route::get('/sales', [ReportController::class, 'sales'])->name('sales');
-        Route::get('/customers', [ReportController::class, 'customers'])->name('customers');
-        Route::get('/overview', [ReportController::class, 'overview'])->name('overview');
     });
 
 });

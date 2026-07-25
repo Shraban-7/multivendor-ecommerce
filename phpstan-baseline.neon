@@ -538,13 +538,13 @@ parameters:
 			message: '#^Relation ''category'' is not found in App\\Models\\Product model\.$#'
 			identifier: larastan.relationExistence
 			count: 2
-			path: app/Http/Controllers/Frontend/SellerController.php
+			path: app/Domain/Vendor/Http/Controllers/Frontend/SellerController.php
 
 		-
 			message: '#^Relation ''user'' is not found in App\\Models\\Review model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Frontend/SellerController.php
+			path: app/Domain/Vendor/Http/Controllers/Frontend/SellerController.php
 
 		-
 			message: '#^Relation ''product'' is not found in App\\Models\\Wishlist model\.$#'
@@ -556,7 +556,7 @@ parameters:
 			message: '#^Relation ''product'' is not found in App\\Models\\ProductVariant model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Seller/DashboardController.php
+			path: app/Domain/Vendor/Http/Controllers/Seller/DashboardController.php
 
 		-
 			message: '#^Relation ''product'' is not found in App\\Models\\FlashSaleProduct model\.$#'
@@ -664,31 +664,31 @@ parameters:
 			message: '#^Relation ''category'' is not found in App\\Models\\Product model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Seller/ReportController.php
+			path: app/Domain/Vendor/Http/Controllers/Seller/ReportController.php
 
 		-
 			message: '#^Relation ''order'' is not found in App\\Models\\OrderBillingAddress model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Seller/ReportController.php
+			path: app/Domain/Vendor/Http/Controllers/Seller/ReportController.php
 
 		-
 			message: '#^Relation ''order'' is not found in App\\Models\\OrderItem model\.$#'
 			identifier: larastan.relationExistence
 			count: 14
-			path: app/Http/Controllers/Seller/ReportController.php
+			path: app/Domain/Vendor/Http/Controllers/Seller/ReportController.php
 
 		-
 			message: '#^Relation ''orderItems'' is not found in App\\Models\\Product model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Seller/ReportController.php
+			path: app/Domain/Vendor/Http/Controllers/Seller/ReportController.php
 
 		-
 			message: '#^Relation ''product'' is not found in App\\Models\\OrderItem model\.$#'
 			identifier: larastan.relationExistence
 			count: 4
-			path: app/Http/Controllers/Seller/ReportController.php
+			path: app/Domain/Vendor/Http/Controllers/Seller/ReportController.php
 
 		-
 			message: '#^Relation ''items'' is not found in App\\Models\\Order model\.$#'
@@ -748,7 +748,7 @@ parameters:
 			message: '#^Access to undefined constant App\\Models\\SellerSubscription\:\:ACTIVE\.$#'
 			identifier: classConstant.notFound
 			count: 2
-			path: app/Http/Controllers/Seller/SubscriptionPlanController.php
+			path: app/Domain/Vendor/Http/Controllers/Seller/SubscriptionPlanController.php
 
 		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\BannerResource\:\:\$id\.$#'
@@ -1540,109 +1540,109 @@ parameters:
 			message: '#^Access to an undefined property App\\Http\\Resources\\SellerChatMessageResource\:\:\$created_at\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/SellerChatMessageResource.php
+			path: app/Domain/Vendor/Http/Resources/SellerChatMessageResource.php
 
 		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\SellerChatMessageResource\:\:\$id\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/SellerChatMessageResource.php
+			path: app/Domain/Vendor/Http/Resources/SellerChatMessageResource.php
 
 		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\SellerChatMessageResource\:\:\$is_read\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/SellerChatMessageResource.php
+			path: app/Domain/Vendor/Http/Resources/SellerChatMessageResource.php
 
 		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\SellerChatMessageResource\:\:\$message\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/SellerChatMessageResource.php
+			path: app/Domain/Vendor/Http/Resources/SellerChatMessageResource.php
 
 		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\SellerChatMessageResource\:\:\$seller_id\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/SellerChatMessageResource.php
+			path: app/Domain/Vendor/Http/Resources/SellerChatMessageResource.php
 
 		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\SellerChatMessageResource\:\:\$user_id\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/SellerChatMessageResource.php
+			path: app/Domain/Vendor/Http/Resources/SellerChatMessageResource.php
 
 		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\SellerResource\:\:\$business_address\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/SellerResource.php
+			path: app/Domain/Vendor/Http/Resources/SellerResource.php
 
 		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\SellerResource\:\:\$business_email\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/SellerResource.php
+			path: app/Domain/Vendor/Http/Resources/SellerResource.php
 
 		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\SellerResource\:\:\$business_logo\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/SellerResource.php
+			path: app/Domain/Vendor/Http/Resources/SellerResource.php
 
 		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\SellerResource\:\:\$business_name\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/SellerResource.php
+			path: app/Domain/Vendor/Http/Resources/SellerResource.php
 
 		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\SellerResource\:\:\$cover_image\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/SellerResource.php
+			path: app/Domain/Vendor/Http/Resources/SellerResource.php
 
 		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\SellerResource\:\:\$created_at\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/SellerResource.php
+			path: app/Domain/Vendor/Http/Resources/SellerResource.php
 
 		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\SellerResource\:\:\$district\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/SellerResource.php
+			path: app/Domain/Vendor/Http/Resources/SellerResource.php
 
 		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\SellerResource\:\:\$division\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/SellerResource.php
+			path: app/Domain/Vendor/Http/Resources/SellerResource.php
 
 		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\SellerResource\:\:\$id\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/SellerResource.php
+			path: app/Domain/Vendor/Http/Resources/SellerResource.php
 
 		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\SellerResource\:\:\$is_best_seller\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/SellerResource.php
+			path: app/Domain/Vendor/Http/Resources/SellerResource.php
 
 		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\SellerResource\:\:\$total_followers\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/SellerResource.php
+			path: app/Domain/Vendor/Http/Resources/SellerResource.php
 
 		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\SellerResource\:\:\$total_items\.$#'
 			identifier: property.notFound
 			count: 2
-			path: app/Http/Resources/SellerResource.php
+			path: app/Domain/Vendor/Http/Resources/SellerResource.php
 
 		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\UserResource\:\:\$email\.$#'

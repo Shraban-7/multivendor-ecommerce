@@ -7,7 +7,6 @@ use App\Http\Controllers\Frontend\ContactUsController;
 use App\Http\Controllers\Frontend\NotificationController;
 use App\Http\Controllers\Frontend\OrderController;
 use App\Http\Controllers\Frontend\SearchController;
-use App\Http\Controllers\Frontend\SellerController;
 use App\Http\Controllers\Frontend\StaticPageController;
 use App\Http\Controllers\Frontend\WishlistController;
 use Illuminate\Support\Facades\Route;
@@ -23,15 +22,6 @@ Route::get('/no-order', function () {
 Route::get('/tracking', function () {
     return view('frontend.orders.status_logs');
 })->name('tracking');
-
-Route::prefix('sellers')->as('sellers.')->group(function () {
-    Route::get('/', [SellerController::class, 'index'])->name('index');
-    Route::get('{seller:username}', [SellerController::class, 'shop'])->name('shop');
-    Route::post('{seller:username}/follow', [SellerController::class, 'follow'])->middleware('auth')->name('follow');
-    Route::get('{seller:username}/reviews', [SellerController::class, 'review'])->name('reviews');
-    Route::post('/reviews/{review}/helpful', [SellerController::class, 'markHelpful'])->name('reviews.helpful');
-    Route::post('/reviews/report', [SellerController::class, 'reviewReport'])->name('reviews.report');
-});
 
 Route::get('/get-districts/{divisionId}', [OrderController::class, 'getDistricts']);
 

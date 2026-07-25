@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Frontend;
+namespace App\Domain\Vendor\Http\Controllers\Frontend;
 
 use App\Domain\Auth\Models\User;
 use App\Domain\Product\Models\Category;

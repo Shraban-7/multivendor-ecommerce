@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Domain\Vendor\Http\Controllers\Admin;
 
 use App\Domain\Vendor\Models\SellerSubscription;
 use App\Domain\Vendor\Models\SubscriptionPlan;

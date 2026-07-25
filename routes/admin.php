@@ -12,12 +12,9 @@ use App\Http\Controllers\Admin\PaymentGatewayController;
 use App\Http\Controllers\Admin\PaymentOptionController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ProfileController;
-use App\Http\Controllers\Admin\SellerController;
-use App\Http\Controllers\Admin\SellerSubscriptionController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SocialLinkController;
 use App\Http\Controllers\Admin\StaticPageController;
-use App\Http\Controllers\Admin\SubscriptionPlanController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
@@ -28,22 +25,6 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
         Route::get('/', [CustomerController::class, 'index'])->name('index');
         Route::post('/update', [CustomerController::class, 'update'])->name('update');
         Route::get('{customer:username}/profile', [CustomerController::class, 'profile'])->name('profile');
-    });
-
-    Route::prefix('sellers')->as('sellers.')->group(function () {
-        Route::get('/', [SellerController::class, 'index'])->name('index');
-        Route::get('/pending', [SellerController::class, 'pending'])->name('pending');
-        Route::get('/create', [SellerController::class, 'create'])->name('create');
-        Route::post('/store', [SellerController::class, 'store'])->name('store');
-        Route::get('{seller:username}/edit', [SellerController::class, 'edit'])->name('edit');
-        Route::post('{seller:username}/update', [SellerController::class, 'update'])->name('update');
-        Route::post('{seller}/update-status', [SellerController::class, 'updateStatus'])->name('updateStatus');
-        Route::post('{seller}/best-seller', [SellerController::class, 'best_seller'])->name('best_seller');
-        Route::post('{seller}/toggle-block', [SellerController::class, 'toggleBlock'])->name('toggleBlock');
-        Route::post('{seller}/delete', [SellerController::class, 'delete'])->name('delete');
-        Route::post('{seller}/restore', [SellerController::class, 'restore'])->name('restore');
-        Route::get('{seller:username}/profile', [SellerController::class, 'profile'])->name('profile');
-        Route::post('{seller}/permanent-delete', [SellerController::class, 'permanentDelete'])->name('permanent-delete');
     });
 
     Route::prefix('orders')->as('orders.')->group(function () {
@@ -112,26 +93,6 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
         Route::put('/{manualPayment}/update', [ManualPaymentMethodController::class, 'update'])->name('update');
         Route::delete('/{manualPayment}/delete', [ManualPaymentMethodController::class, 'delete'])->name('delete');
     });
-
-    Route::prefix('subscription-plans')->as('subscription-plans.')->group(function () {
-        Route::get('/', [SubscriptionPlanController::class, 'index'])->name('index');
-        Route::post('/', [SubscriptionPlanController::class, 'store'])->name('store');
-        Route::put('/{plan}', [SubscriptionPlanController::class, 'update'])->name('update');
-        Route::delete('/{plan}', [SubscriptionPlanController::class, 'delete'])->name('delete');
-    });
-
-    Route::prefix('subscriptions')->name('subscriptions.')->group(function () {
-        Route::get('/', [SellerSubscriptionController::class, 'index'])->name('index');
-        // Route::get('/{sellerSubscription}', [SellerSubscriptionController::class, 'show'])->name('show');
-        // Route::get('/{sellerSubscription}/edit', [SellerSubscriptionController::class, 'edit'])->name('edit');
-        // Route::put('/{sellerSubscription}', [SellerSubscriptionController::class, 'update'])->name('update');
-        // Route::post('/{sellerSubscription}/cancel', [SellerSubscriptionController::class, 'cancel'])->name('cancel');
-        // Route::post('/{sellerSubscription}/renew', [SellerSubscriptionController::class, 'renew'])->name('renew');
-        // Route::post('/{sellerSubscription}/suspend', [SellerSubscriptionController::class, 'suspend'])->name('suspend');
-        // Route::post('/{sellerSubscription}/activate', [SellerSubscriptionController::class, 'activate'])->name('activate');
-    });
-
-    // Route::get('/subscriptions', [SubscriptionPlanController::class, 'subscriptions'])->name('subscriptions.index');
 
     Route::prefix('static-pages')->name('staticPages.')->controller(StaticPageController::class)->group(function () {
         Route::get('/', 'index')->name('index');

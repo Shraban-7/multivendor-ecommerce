@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Seller;
+namespace App\Domain\Vendor\Http\Controllers\Seller;
 
 use App\Domain\Order\Models\Order;
 use App\Domain\Order\Models\OrderItem;
 use App\Domain\Product\Models\Product;
 use App\Domain\Vendor\Models\Seller;
 use App\Domain\Vendor\Models\SellerExpense;
+use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -25,8 +26,8 @@ class DashboardController extends Controller
         $cacheKey = "seller_dashboard:{$seller->id}:{$startDate}:{$endDate}";
 
         $data = Cache::remember($cacheKey, 300, function () use ($seller, $startDate, $endDate) {
-            $start = $startDate . ' 00:00:00';
-            $end = $endDate . ' 23:59:59';
+            $start = $startDate.' 00:00:00';
+            $end = $endDate.' 23:59:59';
 
             $ordersQuery = Order::where('seller_id', $seller->id)
                 ->whereBetween('created_at', [$start, $end]);
@@ -81,11 +82,11 @@ class DashboardController extends Controller
                 ->value('total');
 
             $statusCounts = (clone $ordersQuery)
-                ->selectRaw("COUNT(*) as total, SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as pending, SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as shipped, SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as cancelled, SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as delivered", [
-                    \App\Enums\OrderStatus::PENDING->value,
-                    \App\Enums\OrderStatus::SHIPPED->value,
-                    \App\Enums\OrderStatus::CANCELLED->value,
-                    \App\Enums\OrderStatus::COMPLETED->value,
+                ->selectRaw('COUNT(*) as total, SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as pending, SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as shipped, SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as cancelled, SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as delivered', [
+                    OrderStatus::PENDING->value,
+                    OrderStatus::SHIPPED->value,
+                    OrderStatus::CANCELLED->value,
+                    OrderStatus::COMPLETED->value,
                 ])
                 ->first();
 

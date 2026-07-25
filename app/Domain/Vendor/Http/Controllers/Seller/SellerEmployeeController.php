@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Seller;
+namespace App\Domain\Vendor\Http\Controllers\Seller;
 
 use App\Domain\Vendor\Models\SellerEmployee;
 use App\Domain\Vendor\Repositories\SellerEmployeeRepositoryInterface;

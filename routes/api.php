@@ -10,8 +10,6 @@ use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\SearchController;
-use App\Http\Controllers\Api\SellerChatController;
-use App\Http\Controllers\Api\SellerController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\ShopController;
 use App\Http\Controllers\Seller\PaymentListnerController;
@@ -46,9 +44,6 @@ Route::get('settings', [SettingController::class, 'index']);
 Route::get('dashboard', [DashboardController::class, 'index']);
 Route::post('search', [SearchController::class, 'search'])->middleware('throttle:30,1');
 
-Route::get('sellers', [SellerController::class, 'index']);
-Route::get('sellers/{seller}', [SellerController::class, 'show']);
-
 Route::get('shops', [ShopController::class, 'index']);
 
 Route::prefix('data')->group(function () {
@@ -61,11 +56,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/notifications/count', [NotificationController::class, 'notificationCount']);
     Route::get('/notifications', [NotificationController::class, 'index'])->middleware('markReadAuto');
-
-    Route::prefix('chat')->group(function () {
-        Route::get('/messages', [SellerChatController::class, 'messages']);
-        Route::post('/send', [SellerChatController::class, 'sendMessage']);
-    });
 
     Route::prefix('cart')->group(function () {
         Route::get('/', [CartController::class, 'index']);

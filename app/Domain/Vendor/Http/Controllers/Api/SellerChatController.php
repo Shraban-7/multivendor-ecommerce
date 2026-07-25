@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Domain\Vendor\Http\Controllers\Api;
 
+use App\Domain\Vendor\Http\Resources\SellerChatMessageResource;
 use App\Domain\Vendor\Models\SellerChat;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\SellerChatMessageResource;
 use Illuminate\Http\Request;
 
 class SellerChatController extends Controller

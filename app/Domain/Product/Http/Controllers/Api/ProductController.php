@@ -7,8 +7,8 @@ use App\Domain\Product\Http\Resources\ProductResource;
 use App\Domain\Product\Models\Product;
 use App\Domain\Review\Http\Resources\ReviewResource;
 use App\Domain\Review\Models\Review;
+use App\Domain\Vendor\Http\Resources\SellerResource;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\SellerResource;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller

@@ -16,6 +16,7 @@ use App\Domain\Shipping\Database\Seeders\DistrictSeeder;
 use App\Domain\Shipping\Database\Seeders\DivisionSeeder;
 use App\Domain\Shipping\Database\Seeders\UnionSeeder;
 use App\Domain\Shipping\Database\Seeders\UpazilaSeeder;
+use App\Domain\Vendor\Database\Seeders\SellerSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder

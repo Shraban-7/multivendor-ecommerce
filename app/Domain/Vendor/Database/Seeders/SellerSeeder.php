@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders;
+namespace App\Domain\Vendor\Database\Seeders;
 
 use App\Domain\Vendor\Models\Seller;
 use App\Enums\CommissionType;
