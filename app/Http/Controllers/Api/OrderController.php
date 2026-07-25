@@ -4,23 +4,16 @@ namespace App\Http\Controllers\Api;
 
 use App\Domain\Order\Models\BillingAddress;
 use App\Domain\Order\Models\Order;
-use App\Domain\Order\Models\OrderItem;
 use App\Domain\Order\Repositories\Contracts\CartRepositoryInterface;
 use App\Domain\Order\Repositories\Contracts\OrderRepositoryInterface;
-use App\Domain\Payment\Models\Payment;
+use App\Domain\Order\Services\OrderService;
 use App\Domain\Payment\Repositories\Contracts\PaymentRepositoryInterface;
-use App\Domain\Product\Models\ProductVariant;
-use App\Domain\Review\Models\Review;
-use App\Domain\Review\Models\ReviewImage;
 use App\Domain\Support\Models\Notification;
 use App\Domain\Vendor\Models\Seller;
-use App\Enums\CommissionType;
 use App\Enums\OrderStatus;
-use App\Enums\PaymentType;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\InvoiceResource;
 use App\Http\Resources\OrderResource;
-use App\Services\AamarpayService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -32,21 +25,23 @@ class OrderController extends Controller
         private readonly OrderRepositoryInterface $orderRepo,
         private readonly CartRepositoryInterface $cartRepo,
         private readonly PaymentRepositoryInterface $paymentRepo,
+        private readonly OrderService $orderService,
     ) {}
+
     public function index(Request $request)
     {
         $statusLabel = (string) $request->input('status', 'all');
         $statusValue = OrderStatus::valueFromLabel($statusLabel);
-
-        $query = Order::with(['seller', 'items.product', 'items.variant'])->withCount('items')
-            ->where('user_id', Auth::id())
-            ->whereNotNull('invoice_id');
-
+        $filters = [];
         if ($statusLabel !== 'all') {
-            $query->where('status', $statusValue);
+            $filters['status'] = $statusValue;
         }
 
-        $orders = $query->with('seller', 'items', 'billing_address')->latest('id')->paginate(15);
+        $orders = $this->orderRepo->searchUserOrders(
+            Auth::id(),
+            $filters,
+            ['seller', 'items.product', 'items.variant', 'billing_address'],
+        );
 
         return apiResourceResponse(OrderResource::collection($orders));
     }
@@ -63,9 +58,7 @@ class OrderController extends Controller
         }
 
         $user = Auth::user();
-
         $selectedSellerId = $request->input('seller_id');
-
         $seller = Seller::findOrFail($selectedSellerId);
 
         $cart = $this->cartRepo->findUserCartBySeller($user->id, $selectedSellerId)?->load('cart_items.product', 'cart_items.variant');
@@ -74,60 +67,16 @@ class OrderController extends Controller
             return errorResponse('Cart is empty or not found for the selected seller.');
         }
 
-        $sub_total = 0;
-        $discount = 0;
-        $orderItems = [];
-        $shipping_fee = $seller->shipping_cost;
+        [$subTotal, $discount, $orderItems] = $this->orderService->buildOrderItemsFromCart($cart);
 
-        $payment_type = PaymentType::COD_ONLY->value;
-        $cartProducts = [];
-        foreach ($cart->cart_items as $cartItem) {
-            $product = $cartItem->product;
-            $cartProducts[] = $product;
-            $variant = $cartItem->variant;
-            $unitPrice = $cartItem->price;
-            $itemTotal = $cartItem->quantity * $unitPrice;
-            $itemDiscount = $cartItem->quantity * ($cartItem->original_price - $cartItem->discounted_price);
-            $sub_total += $itemTotal;
-            $discount += $itemDiscount;
-            $grand_total = $sub_total + $discount;
+        $shippingFee = (float) $seller->shipping_cost;
+        $total = $subTotal + $shippingFee;
+        $payableAmount = $total;
 
-            if ($product->payment_type->value == PaymentType::FULL_PAYMENT->value) {
-                $payment_type = PaymentType::FULL_PAYMENT->value;
-            } elseif ($product->payment_type->value == PaymentType::COD_WITH_DELIVERY_CHARGE->value) {
-                $payment_type = PaymentType::COD_WITH_DELIVERY_CHARGE->value;
-            }
-
-            $orderItems[] = [
-                'product_id' => $product->id,
-                'product_variant_id' => $cartItem->product_variant_id ?? null,
-                'buying_price' => $variant ? $variant->buying_price : 0,
-                'unit_price' => $cartItem->price,
-                'quantity' => $cartItem->quantity,
-                'discount' => $itemDiscount,
-                'sub_total' => $itemTotal,
-            ];
-        }
-
-        $seller = Seller::where('id', $selectedSellerId)->first();
-
-        $total_commission = 0;
-
-        if ($seller->commission_amount != null && $seller->commission_type != null) {
-            if ($seller->commission_type === CommissionType::PERCENTAGE->value) {
-                $total_commission = ($sub_total) * ($seller->commission_amount / 100);
-            } elseif ($seller->commission_type === CommissionType::FLAT->value) {
-                $total_commission = $seller->commission_amount;
-            }
-        }
+        $commissionData = $this->orderService->calculateCommission($seller, $subTotal);
 
         $invoiceId = Order::generateInvoiceID($seller->id);
-        $payableAmount = $sub_total + $shipping_fee;
-        $sellerEarning = $sub_total - $total_commission;
-
-        $billingAddress = BillingAddress::find($request->billing_address_id);
-
-        $payment_type = Order::getPaymentType($cartProducts);
+        $paymentType = Order::getPaymentType($cart->cart_items->pluck('product')->filter());
 
         try {
             DB::beginTransaction();
@@ -136,23 +85,24 @@ class OrderController extends Controller
                 'user_id' => $user->id,
                 'seller_id' => $selectedSellerId,
                 'invoice_id' => $invoiceId,
-                'sub_total' => $sub_total,
-                'total' => $sub_total + $shipping_fee,
+                'sub_total' => $subTotal,
+                'total' => $total,
                 'discount' => $discount,
-                'shipping_fee' => $shipping_fee,
+                'shipping_fee' => $shippingFee,
                 'payable' => $payableAmount,
                 'due' => $payableAmount,
                 'commission_type' => $seller->commission_type,
                 'commission_amount' => $seller->commission_amount,
-                'seller_earnings' => $sellerEarning,
-                'total_commission' => $total_commission,
+                'seller_earnings' => $commissionData['seller_earning'],
+                'total_commission' => $commissionData['total_commission'],
                 'status' => OrderStatus::PENDING->value,
-                'payment_type' => $payment_type,
+                'payment_type' => $paymentType,
             ]);
 
             $this->orderRepo->createOrderItems($order, $orderItems);
 
-            $orderBillingAddress = $this->orderRepo->createBillingAddress([
+            $billingAddress = BillingAddress::find($request->billing_address_id);
+            $this->orderRepo->createBillingAddress([
                 'order_id' => $order->id,
                 'customer_name' => $billingAddress->customer_name,
                 'customer_phone' => $billingAddress->customer_phone,
@@ -161,40 +111,22 @@ class OrderController extends Controller
                 'address' => $billingAddress->address,
             ]);
 
-            $variantIds = $order->items->pluck('product_variant_id')->filter()->unique();
-            $variants = ProductVariant::whereIn('id', $variantIds)->get()->keyBy('id');
-
-            foreach ($order->items as $item) {
-                if (isset($item['product_variant_id']) && $variant = $variants->get($item['product_variant_id'])) {
-                    $variant->increment('stock_out', $item['quantity']);
-                }
-            }
-
+            $this->orderRepo->deductStock($order);
             $this->cartRepo->clearCart($cart);
             $this->cartRepo->delete($cart->id);
-
-            $seller = Seller::find($selectedSellerId);
-
-            $sellerOrderIds = Order::where('seller_id', $seller->id)->pluck('id');
-
-            $sellerOrderCount = OrderItem::whereIn('order_id', $sellerOrderIds)->count();
-
-            $seller->update([
-                'total_sold' => $sellerOrderCount,
-            ]);
+            $this->orderRepo->updateSellerTotalSold($selectedSellerId);
 
             DB::commit();
 
-            $paymentGateway = $this->initiatePaymentGateway(
+            $paymentGateway = $this->orderService->initiatePaymentGateway(
                 $user,
                 $invoiceId,
                 $payableAmount,
-                $orderBillingAddress->customer_name,
-                $orderBillingAddress->customer_phone
+                $billingAddress->customer_name,
+                $billingAddress->customer_phone,
             );
         } catch (Exception $e) {
             DB::rollBack();
-
             return errorResponse($e->getMessage());
         }
 
@@ -225,77 +157,6 @@ class OrderController extends Controller
             'fail_url' => route('payment.cancel'),
             'cancel_url' => route('payment.cancel'),
         ]);
-    }
-
-    private function initiatePaymentGateway($user, $invoiceId, $amount, $customerName, $customerPhone): array
-    {
-        $payment = $this->paymentRepo->findByTransactionId($invoiceId);
-
-        if (! $payment) {
-            $payment = $this->paymentRepo->create([
-                'gateway' => 'aamarpay',
-                'transaction_id' => $invoiceId,
-                'status' => Payment::PENDING,
-                'amount' => $amount,
-                'currency' => 'BDT',
-                'customer_name' => $customerName,
-                'customer_email' => $customerPhone,
-                'customer_phone' => $user->email,
-            ]);
-        }
-
-        if ($payment->status == Payment::SUCCESSFUL) {
-            return [
-                'message' => 'This payment is already complete!',
-                'payment_url' => null,
-            ];
-        }
-
-        if ($payment->status == Payment::FAILED) {
-            $this->paymentRepo->update($payment, ['status' => Payment::PENDING]);
-        }
-
-        $aamarpay = (new AamarpayService);
-
-        $message = 'Redirecting to payment gateway';
-        $paymentUrl = null;
-
-        try {
-            $response = $aamarpay->initiate([
-                'tran_id' => $invoiceId,
-                'success_url' => route('payment.success'),
-                'fail_url' => route('payment.cancel'),
-                'cancel_url' => route('payment.cancel'),
-                'amount' => $amount,
-                'desc' => 'order Payment',
-                'cus_name' => $customerName,
-                'cus_email' => $user->email,
-                'cus_add1' => '',
-                'cus_add2' => '',
-                'cus_city' => '',
-                'cus_state' => '',
-                'cus_postcode' => '',
-                'cus_country' => 'Bangladesh',
-                'cus_phone' => $customerPhone,
-                'opt_a' => base64_encode(json_encode([
-                    'user_id' => $user->id,
-                    'return_url' => route('orders.index'),
-                ])),
-            ]);
-
-            if (isset($response['payment_url'])) {
-                $paymentUrl = $response['payment_url'];
-            } else {
-                $message = 'Payment URL not received.';
-            }
-        } catch (Exception $e) {
-            $message = $e->getMessage();
-        }
-
-        return [
-            'message' => $message,
-            'payment_url' => $paymentUrl,
-        ];
     }
 
     public function show(Order $order)
@@ -333,38 +194,12 @@ class OrderController extends Controller
             return sendValidationError($validator->errors());
         }
 
-        $orderItem = OrderItem::find($request->order_item_id);
-
-        if ($orderItem->is_reviewed) {
-            return errorResponse('You have already reviewed this product.');
+        try {
+            $this->orderService->submitReview(Auth::user(), $request->all());
+            return successResponse('Review Submit Successfully');
+        } catch (Exception $e) {
+            return errorResponse($e->getMessage());
         }
-
-        $review = Review::create([
-            'product_id' => $orderItem->product_id,
-            'order_id' => $orderItem->order_id,
-            'order_item_id' => $orderItem->id,
-            'user_id' => Auth::id(),
-            'rating' => $request->rating,
-            'description' => $request->description,
-        ]);
-
-        $reviewedProductSeller = Seller::where('id', $review->product->seller_id)->first();
-
-        $reviewedProductSeller->addRating($review->rating);
-
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $file) {
-                ReviewImage::create([
-                    'review_id' => $review->id,
-                    'image' => upload_file($file, 'images/reviews'),
-                ]);
-            }
-        }
-
-        $orderItem->is_reviewed = 1;
-        $orderItem->save();
-
-        return successResponse('Review Submit Successfully');
     }
 
     public function invoice(Order $order)
@@ -379,7 +214,7 @@ class OrderController extends Controller
         $order->load('items');
         $orderBillingAddress = $this->orderRepo->findBillingAddressByOrder($order->id);
 
-        $paymentGateway = $this->initiatePaymentGateway(
+        $paymentGateway = $this->orderService->initiatePaymentGateway(
             $order->user,
             $order->invoice_id,
             $order->payable,

@@ -7,7 +7,10 @@ use App\Domain\Order\Models\OrderBillingAddress;
 use App\Domain\Order\Models\OrderItem;
 use App\Domain\Order\Models\OrderStatusLog;
 use App\Domain\Order\Repositories\Contracts\OrderRepositoryInterface;
+use App\Domain\Product\Models\Product;
+use App\Domain\Product\Models\ProductVariant;
 use App\Enums\OrderStatus;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 class EloquentOrderRepository implements OrderRepositoryInterface
@@ -47,6 +50,11 @@ class EloquentOrderRepository implements OrderRepositoryInterface
         return Order::with($relations)->where('seller_id', $sellerId)->get();
     }
 
+    public function getAllOrders(array $relations = []): Collection
+    {
+        return Order::with($relations)->get();
+    }
+
     public function getOrdersByStatus($status): Collection
     {
         return Order::where('status', $status)->get();
@@ -80,5 +88,82 @@ class EloquentOrderRepository implements OrderRepositoryInterface
     public function findBillingAddressByOrder(int $orderId): ?OrderBillingAddress
     {
         return OrderBillingAddress::where('order_id', $orderId)->first();
+    }
+
+    public function searchSellerOrders(int $sellerId, array $filters = [], array $relations = []): LengthAwarePaginator
+    {
+        $query = Order::with($relations)
+            ->where('seller_id', $sellerId)
+            ->whereNotNull('user_id')
+            ->latest('id');
+
+        if (! empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+        if (! empty($filters['invoice_id'])) {
+            $query->where('invoice_id', 'like', '%'.$filters['invoice_id'].'%');
+        }
+        if (! empty($filters['customer_name'])) {
+            $query->whereHas('user', fn ($q) => $q->where('name', 'like', '%'.$filters['customer_name'].'%'));
+        }
+        if (! empty($filters['customer_phone'])) {
+            $query->whereHas('user', fn ($q) => $q->where('phone', 'like', '%'.$filters['customer_phone'].'%'));
+        }
+        if (! empty($filters['date_from'])) {
+            $query->whereDate('created_at', '>=', $filters['date_from']);
+        }
+        if (! empty($filters['date_to'])) {
+            $query->whereDate('created_at', '<=', $filters['date_to']);
+        }
+
+        return $query->paginate($filters['per_page'] ?? 25);
+    }
+
+    public function searchUserOrders(int $userId, array $filters = [], array $relations = []): LengthAwarePaginator
+    {
+        $query = Order::with($relations)
+            ->where('user_id', $userId)
+            ->whereNotNull('invoice_id')
+            ->latest('id');
+
+        if (! empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        return $query->paginate($filters['per_page'] ?? 15);
+    }
+
+    public function getSellerOrderItemCount(int $sellerId): int
+    {
+        return OrderItem::whereIn(
+            'order_id',
+            Order::where('seller_id', $sellerId)->pluck('id')
+        )->count();
+    }
+
+    public function deductStock(Order $order): void
+    {
+        $order->loadMissing('items');
+
+        $variantIds = $order->items->pluck('product_variant_id')->filter()->unique();
+        $productIds = $order->items->pluck('product_id')->filter()->unique();
+
+        $variants = ProductVariant::whereIn('id', $variantIds)->get()->keyBy('id');
+        $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
+
+        foreach ($order->items as $item) {
+            if (! empty($item->product_variant_id) && $variant = $variants->get($item->product_variant_id)) {
+                $variant->increment('stock_out', $item->quantity);
+                $variant->product->increment('stock_out', $item->quantity);
+            } elseif ($product = $products->get($item->product_id)) {
+                $product->increment('stock_out', $item->quantity);
+            }
+        }
+    }
+
+    public function updateSellerTotalSold(int $sellerId): void
+    {
+        $count = $this->getSellerOrderItemCount($sellerId);
+        \App\Domain\Vendor\Models\Seller::where('id', $sellerId)->update(['total_sold' => $count]);
     }
 }

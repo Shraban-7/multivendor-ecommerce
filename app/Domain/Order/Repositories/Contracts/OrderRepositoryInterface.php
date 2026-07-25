@@ -24,6 +24,8 @@ interface OrderRepositoryInterface
 
     public function getOrdersBySeller(int $sellerId, array $relations = []): Collection;
 
+    public function getAllOrders(array $relations = []): Collection;
+
     public function getOrdersByStatus($status): Collection;
 
     public function getPendingOrders(): Collection;
@@ -37,4 +39,14 @@ interface OrderRepositoryInterface
     public function createBillingAddress(array $data): OrderBillingAddress;
 
     public function findBillingAddressByOrder(int $orderId): ?OrderBillingAddress;
+
+    public function searchSellerOrders(int $sellerId, array $filters = [], array $relations = []): \Illuminate\Contracts\Pagination\LengthAwarePaginator;
+
+    public function searchUserOrders(int $userId, array $filters = [], array $relations = []): \Illuminate\Contracts\Pagination\LengthAwarePaginator;
+
+    public function getSellerOrderItemCount(int $sellerId): int;
+
+    public function deductStock(Order $order): void;
+
+    public function updateSellerTotalSold(int $sellerId): void;
 }

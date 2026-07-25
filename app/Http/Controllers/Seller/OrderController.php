@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Seller;
 
-use App\Domain\Affiliate\Models\AffiliateCommission;
-use App\Domain\Auth\Models\User;
 use App\Domain\Order\Models\Order;
 use App\Domain\Order\Repositories\Contracts\OrderRepositoryInterface;
+use App\Domain\Order\Services\OrderService;
 use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -14,40 +13,30 @@ class OrderController extends Controller
 {
     public function __construct(
         private readonly OrderRepositoryInterface $orderRepo,
+        private readonly OrderService $orderService,
     ) {}
 
     public function index(Request $request)
     {
         $type = $request->segment(3);
-
         $statusValue = $type ? OrderStatus::valueFromLabel($type) : null;
 
         if ($type && $statusValue === null && $type != 'pos') {
             return redirect()->route('seller.dashboard');
         }
 
-        $orders = Order::where('seller_id', get_seller_id())
-            ->when($statusValue !== null, fn ($q) => $q->where('status', $statusValue))
-            ->whereNotNull('user_id')
-            ->latest('id');
-
-        if ($request->filled('invoice_id')) {
-            $orders->where('invoice_id', 'like', '%'.$request->invoice_id.'%');
-        }
-        if ($request->filled('customer_name')) {
-            $orders->whereHas('user', fn ($q) => $q->where('name', 'like', '%'.$request->customer_name.'%'));
-        }
-        if ($request->filled('customer_phone')) {
-            $orders->whereHas('user', fn ($q) => $q->where('phone', 'like', '%'.$request->customer_phone.'%'));
-        }
-        if ($request->filled('date_from')) {
-            $orders->whereDate('created_at', '>=', $request->date_from);
-        }
-        if ($request->filled('date_to')) {
-            $orders->whereDate('created_at', '<=', $request->date_to);
-        }
-
-        $orders = $orders->paginate(25);
+        $orders = $this->orderRepo->searchSellerOrders(
+            get_seller_id(),
+            [
+                'status' => $statusValue,
+                'invoice_id' => $request->invoice_id,
+                'customer_name' => $request->customer_name,
+                'customer_phone' => $request->customer_phone,
+                'date_from' => $request->date_from,
+                'date_to' => $request->date_to,
+            ],
+            [],
+        );
 
         return view('seller.orders.index', compact('orders', 'type'));
     }
@@ -75,34 +64,23 @@ class OrderController extends Controller
             'remarks' => 'nullable|string',
         ]);
 
-        $old_status = $order->status;
-
-        if ($old_status->value == $request->new_status) {
-            return redirect()->back()->with('success', 'Order status already '.$old_status->title());
+        $oldStatus = $order->status;
+        if ($oldStatus->value == $request->new_status) {
+            return redirect()->back()->with('success', 'Order status already '.$oldStatus->title());
         }
 
         $this->orderRepo->update($order, ['status' => $request->new_status]);
         $this->orderRepo->createStatusLog($order, [
-            'old_status' => $old_status->value,
+            'old_status' => $oldStatus->value,
             'new_status' => $request->new_status,
             'changed_by' => 'seller',
             'remarks' => $request->remarks,
         ]);
 
         $order->addSellerEarningToBalance();
+
         if ($order->status->value == OrderStatus::COMPLETED->value) {
-
-            $affiliate_commission = AffiliateCommission::where('order_id', $order->id)->first();
-            if ($affiliate_commission && $affiliate_commission->status != AffiliateCommission::APPROVED) {
-                $affiliate_commission->status = AffiliateCommission::APPROVED;
-                $affiliate_commission->save();
-
-                $user = User::find($affiliate_commission->affiliate_id);
-                if ($user) {
-                    $user->balance += $affiliate_commission->commission_amount;
-                    $user->save();
-                }
-            }
+            $this->orderService->approveAffiliateCommission($order);
         }
 
         return redirect()->back()->with('success', 'Order updated successfully');

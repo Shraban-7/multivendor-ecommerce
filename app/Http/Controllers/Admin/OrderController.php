@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Domain\Order\Models\Order;
+use App\Domain\Order\Repositories\Contracts\OrderRepositoryInterface;
 use App\Http\Controllers\Controller;
 
 class OrderController extends Controller
 {
+    public function __construct(
+        private readonly OrderRepositoryInterface $orderRepo,
+    ) {}
+
     public function index()
     {
-        $orders = Order::with('seller')->get();
+        $orders = $this->orderRepo->getAllOrders(['seller']);
 
         return view('admin.orders.index', compact('orders'));
     }
