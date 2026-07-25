@@ -5,6 +5,8 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Domain\Order\Database\Seeders\CouponSeeder;
 use App\Domain\Order\Database\Seeders\WishlistSeeder;
+use App\Domain\Payment\Database\Seeders\PaymentGatewaySeeder;
+use App\Domain\Payment\Database\Seeders\PaymentOptionSeeder;
 use App\Domain\Product\Database\Seeders\BrandSeeder;
 use App\Domain\Product\Database\Seeders\CategoryBannerSeeder;
 use App\Domain\Product\Database\Seeders\CategoryOptionSeeder;

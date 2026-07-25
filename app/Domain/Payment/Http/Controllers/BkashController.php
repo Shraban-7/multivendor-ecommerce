@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Domain\Payment\Http\Controllers;
 
 use App\Domain\Order\Models\Order;
 use App\Domain\Payment\Services\PaymentService;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use InvalidArgumentException;
 use RuntimeException;

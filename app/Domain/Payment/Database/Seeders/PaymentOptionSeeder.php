@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders;
+namespace App\Domain\Payment\Database\Seeders;
 
 use App\Domain\Payment\Models\PaymentOption;
 use Illuminate\Database\Seeder;

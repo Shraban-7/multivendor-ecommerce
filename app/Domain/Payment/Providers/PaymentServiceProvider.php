@@ -12,4 +12,10 @@ class PaymentServiceProvider extends ServiceProvider
     {
         $this->app->bind(PaymentRepositoryInterface::class, EloquentPaymentRepository::class);
     }
+
+    public function boot(): void
+    {
+        $this->loadRoutesFrom(__DIR__.'/../routes.php');
+        $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
+    }
 }

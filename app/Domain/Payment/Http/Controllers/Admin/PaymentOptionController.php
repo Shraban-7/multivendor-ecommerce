@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Domain\Payment\Http\Controllers\Admin;
 
 use App\Domain\Payment\Models\PaymentOption;
 use App\Http\Controllers\Controller;

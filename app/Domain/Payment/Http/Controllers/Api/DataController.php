@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Domain\Payment\Http\Controllers\Api;
 
+use App\Domain\Payment\Http\Resources\PaymentGatewayResource;
 use App\Domain\Payment\Models\PaymentGateway;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\PaymentGatewayResource;
 use Illuminate\Support\Facades\Cache;
 
 class DataController extends Controller

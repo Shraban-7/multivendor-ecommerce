@@ -2,14 +2,11 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DashboardController;
-use App\Http\Controllers\Api\DataController;
-use App\Http\Controllers\Api\MobipayController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\ShopController;
-use App\Http\Controllers\Seller\PaymentListnerController;
 use Illuminate\Support\Facades\Route;
 
 // Route::prefix('auth')->group(function () {
@@ -43,10 +40,6 @@ Route::post('search', [SearchController::class, 'search'])->middleware('throttle
 
 Route::get('shops', [ShopController::class, 'index']);
 
-Route::prefix('data')->group(function () {
-    Route::get('/payment-gateways', [DataController::class, 'paymentGateways']);
-});
-
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('logout', [AuthController::class, 'logout']);
@@ -60,16 +53,4 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [ProfileController::class, 'profile']);
         Route::post('/', [ProfileController::class, 'update']);
     });
-});
-
-Route::prefix('payment-listener')->group(function () {
-    Route::post('/connect', [PaymentListnerController::class, 'connectDevice']);
-    Route::post('/check-device', [PaymentListnerController::class, 'checkDevice']);
-    Route::post('/disconnect', [PaymentListnerController::class, 'disconnectDevice']);
-    Route::post('/trigger', [PaymentListnerController::class, 'triggerSms']);
-});
-
-Route::prefix('mobipay')->group(function () {
-    Route::match(['get', 'post'], '/webhook', [MobipayController::class, 'webhook']);
-    Route::match(['get', 'post'], '/store', [MobipayController::class, 'storeSms']);
 });

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Seller;
+namespace App\Domain\Payment\Http\Controllers\Seller;
 
 use App\Domain\Payment\Models\PaymentListenerDevice;
 use App\Domain\Payment\Models\PaymentListenerPayment;

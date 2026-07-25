@@ -7,9 +7,7 @@ use App\Domain\Product\Models\ProductSeo;
 use App\Domain\Product\Models\ProductVariant;
 use App\Domain\Vendor\Models\Seller;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\BkashController;
 use App\Http\Controllers\Frontend\HomeController;
-use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
@@ -537,9 +535,6 @@ Route::get('/refresh-csrf', function () {
     return response()->json(['token' => csrf_token()]);
 })->name('refresh.csrf');
 
-Route::get('/bkash/pay', [BkashController::class, 'pay'])->name('bkash.pay');
-Route::get('/bkash/callback', [BkashController::class, 'callback'])->name('bkash.callback');
-
 Route::get('/fix-product-images', function () {
 
     $products = Product::with('seller')->whereNotNull('thumbnail')->get();
@@ -657,11 +652,4 @@ Route::get('/fix-product-images', function () {
         }
     }
 
-});
-
-Route::prefix('payment')->as('payment.')->group(function () {
-    Route::get('/success', [PaymentController::class, 'success'])->name('success');
-    Route::get('/cancelled', [PaymentController::class, 'cancelled'])->name('cancelled');
-    Route::get('/failed', [PaymentController::class, 'failed'])->name('failed');
-    Route::post('/ipn', [PaymentController::class, 'ipn'])->name('ipn');
 });

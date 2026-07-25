@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Domain\Payment\Http\Controllers;
 
 use App\Domain\Order\Models\Order;
 use App\Domain\Order\Repositories\Contracts\OrderRepositoryInterface;
+use App\Domain\Payment\Enums\PaymentStatus;
 use App\Domain\Payment\Models\Payment;
 use App\Domain\Payment\Repositories\Contracts\PaymentRepositoryInterface;
-use App\Enums\PaymentStatus;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;

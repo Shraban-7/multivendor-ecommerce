@@ -574,7 +574,7 @@ parameters:
 			message: '#^Relation ''device'' is not found in App\\Models\\PaymentListenerPayment model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Seller/PaymentListnerController.php
+			path: app/Domain/Payment/Http/Controllers/Seller/PaymentListnerController.php
 
 		-
 			message: '#^Relation ''items'' is not found in App\\Models\\Order model\.$#'
@@ -1201,34 +1201,34 @@ parameters:
 			path: app/Domain/Order/Http/Resources/OrderResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\PaymentGatewayResource\:\:\$id\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Payment\\Http\\Resources\\PaymentGatewayResource\:\:\$id\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/PaymentGatewayResource.php
+			path: app/Domain/Payment/Http/Resources/PaymentGatewayResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\PaymentGatewayResource\:\:\$image\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Payment\\Http\\Resources\\PaymentGatewayResource\:\:\$image\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/PaymentGatewayResource.php
+			path: app/Domain/Payment/Http/Resources/PaymentGatewayResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\PaymentGatewayResource\:\:\$is_default\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Payment\\Http\\Resources\\PaymentGatewayResource\:\:\$is_default\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/PaymentGatewayResource.php
+			path: app/Domain/Payment/Http/Resources/PaymentGatewayResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\PaymentGatewayResource\:\:\$is_enabled\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Payment\\Http\\Resources\\PaymentGatewayResource\:\:\$is_enabled\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/PaymentGatewayResource.php
+			path: app/Domain/Payment/Http/Resources/PaymentGatewayResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\PaymentGatewayResource\:\:\$name\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Payment\\Http\\Resources\\PaymentGatewayResource\:\:\$name\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/PaymentGatewayResource.php
+			path: app/Domain/Payment/Http/Resources/PaymentGatewayResource.php
 
 		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\ProductListResource\:\:\$avg_rating\.$#'
