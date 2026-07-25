@@ -108,6 +108,7 @@ class ProductSeeder extends Seeder
                 'is_trending' => rand(0, 1),
                 'best_selling' => rand(0, 1),
                 'is_featured' => rand(0, 1),
+                'status' => Product::STATUS_ACTIVE,
             ]);
 
             // Insert images (only for fashion category)
@@ -194,7 +195,7 @@ class ProductSeeder extends Seeder
             'video-product-3.mp4',
         ];
 
-        DB::transaction(function () use ($majorCategories, $brandIds, $featuredVideos) {
+        DB::transaction(function () use ($majorCategories, $brandIds) {
 
             foreach ($majorCategories as $slug => $seller) {
                 $category = Category::where('slug', $slug)->with('subcategories')->first();
@@ -258,7 +259,7 @@ class ProductSeeder extends Seeder
                             'best_selling' => rand(0, 1),
                             'is_featured' => rand(0, 1),
                             'views' => 0,
-                            'status' => 1,
+                            'status' => Product::STATUS_ACTIVE,
                         ]);
 
                         if (! empty($productData['images'])) {

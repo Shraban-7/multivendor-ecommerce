@@ -25,10 +25,11 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Laravel\Sanctum\HasApiTokens;
 
 class Seller extends Authenticatable
 {
-    use HasFactory, HasSubscription, Notifiable, SoftDeletes;
+    use HasApiTokens, HasFactory, HasSubscription, Notifiable, SoftDeletes;
 
     protected $guarded = ['id'];
 
