@@ -8,6 +8,7 @@ use App\Domain\Payment\Repositories\Contracts\PaymentRepositoryInterface;
 use App\Http\Controllers\Controller;
 use App\Services\FcmService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class PaymentListnerController extends Controller
@@ -109,6 +110,8 @@ class PaymentListnerController extends Controller
             'sender' => 'required|string',
             'sender_number' => 'nullable|string',
             'full_sms' => 'required|string',
+            'amount' => 'nullable|numeric|min:0',
+            'trx_id' => 'nullable|string',
             'received_at' => 'required|string',
         ]);
 
@@ -121,12 +124,25 @@ class PaymentListnerController extends Controller
             return errorResponse('Invalid device code!', 403);
         }
 
+        $submittedAmount = (float) ($request->amount ?? 0);
+        $smsAmount = $this->extractAmountFromSms($request->full_sms);
+
+        if ($submittedAmount > 0 && $smsAmount > 0 && abs($submittedAmount - $smsAmount) > 0.01) {
+            Log::warning('SMS amount mismatch', [
+                'device_code' => $request->device_code,
+                'submitted' => $submittedAmount,
+                'extracted' => $smsAmount,
+            ]);
+        }
+
+        $finalAmount = $submittedAmount > 0 ? $submittedAmount : $smsAmount;
+
         $this->paymentRepo->createListenerPayment([
             'seller_id' => $device->seller_id,
             'device_id' => $device->id,
             'sender' => $request->sender,
             'sender_number' => $request->sender_number,
-            'amount' => $request->amount,
+            'amount' => $finalAmount,
             'trx_id' => $request->trx_id,
             'status' => 'pending',
             'received_at' => $request->received_at,
@@ -136,6 +152,15 @@ class PaymentListnerController extends Controller
         $device->update(['last_sync_at' => now()]);
 
         return successResponse('Payment received successfully');
+    }
+
+    private function extractAmountFromSms(string $sms): float
+    {
+        if (preg_match('/(?:Tk\.?\s*|BDT\s*|TK\s*|taka\s*)?(\d{1,6}(?:,\d{3})*(?:\.\d{1,2})?)\s*(?:Tk\.?|TK|BDT|taka)?/i', $sms, $matches)) {
+            return (float) str_replace(',', '', $matches[1]);
+        }
+
+        return 0.0;
     }
 
     public function checkDevice(Request $request)

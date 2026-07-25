@@ -36,4 +36,8 @@ return [
         'signature_key' => env('AAMARPAY_SIGNATURE_KEY'),
         'sandbox' => env('AAMARPAY_SANDBOX', true),
     ],
+
+    'payment' => [
+        'ipn_secret' => env('PAYMENT_IPN_SECRET'),
+    ],
 ];

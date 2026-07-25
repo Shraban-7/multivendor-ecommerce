@@ -240,7 +240,7 @@ class OrderService
         return [
             'api_key' => env('SLASHPAY_API_KEY'),
             'order_id' => (string) $order->invoice_id,
-            'amount' => $order->total,
+            'amount' => $order->payable,
             'cus_name' => $order->billing_address->customer_name ?? '',
             'cus_email_mobile' => $order->shipping_phone ?? '',
             'ipn_url' => route('payment.ipn'),
