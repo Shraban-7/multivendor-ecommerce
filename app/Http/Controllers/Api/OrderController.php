@@ -40,7 +40,7 @@ class OrderController extends Controller
         $orders = $this->orderRepo->searchUserOrders(
             Auth::id(),
             $filters,
-            ['seller', 'items.product', 'items.variant', 'billing_address'],
+            ['seller.district', 'seller.division', 'items.product', 'items.variant', 'billing_address', 'payment'],
         );
 
         return apiResourceResponse(OrderResource::collection($orders));
@@ -162,7 +162,7 @@ class OrderController extends Controller
 
     public function show(Order $order)
     {
-        $order->load('items.product');
+        $order->load(['items.product', 'items.variant', 'seller.district', 'seller.division', 'billing_address', 'payment']);
 
         return apiResponse(OrderResource::make($order));
     }
@@ -206,7 +206,7 @@ class OrderController extends Controller
 
     public function invoice(Order $order)
     {
-        $order->load('items.product', 'seller', 'user.country');
+        $order->load(['items.product', 'items.variant', 'seller.district', 'seller.division', 'billing_address', 'payment', 'user.country']);
 
         return apiResourceResponse(InvoiceResource::make($order));
     }

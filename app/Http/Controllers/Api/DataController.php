@@ -9,6 +9,7 @@ use App\Http\Resources\DistrictResource;
 use App\Http\Resources\DivisionResource;
 use App\Http\Resources\PaymentGatewayResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class DataController extends Controller
 {
@@ -38,7 +39,9 @@ class DataController extends Controller
 
     public function paymentGateways()
     {
-        $paymentGateways = PaymentGateway::where('is_enabled', true)->get();
+        $paymentGateways = Cache::remember('payment_gateways:enabled', 86400, function () {
+            return PaymentGateway::where('is_enabled', true)->get();
+        });
 
         return apiResourceResponse(PaymentGatewayResource::collection($paymentGateways));
     }

@@ -15,15 +15,25 @@ use App\Http\Resources\CategoryResource;
 use App\Http\Resources\FlashSaleResource;
 use App\Http\Resources\ProductListResource;
 use App\Http\Resources\SellerResource;
+use Illuminate\Support\Facades\Cache;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $banners = Banner::active()->where('section', Banner::SECTION_HERO)->get();
-        $data['banners'] = BannerResource::collection($banners);
-        $data['brands'] = BrandResource::collection(Brand::get());
-        $data['categories'] = CategoryResource::collection(Category::category()->limit(8)->get());
+        $data['banners'] = Cache::remember('dashboard.banners', 900, function () {
+            return BannerResource::collection(
+                Banner::active()->where('section', Banner::SECTION_HERO)->get()
+            );
+        });
+
+        $data['brands'] = Cache::remember('dashboard.brands', 900, function () {
+            return BrandResource::collection(Brand::get());
+        });
+
+        $data['categories'] = Cache::remember('dashboard.categories', 900, function () {
+            return CategoryResource::collection(Category::category()->limit(8)->get());
+        });
 
         $newProducts = Product::withDefaultRelations()
             ->active()
@@ -45,10 +55,11 @@ class DashboardController extends Controller
             'new' => ProductListResource::collection($newProducts),
         ];
 
-        $data['sellers'] = SellerResource::collection(Seller::limit(10)->get());
+        $data['sellers'] = SellerResource::collection(
+            Seller::with(['district', 'division'])->limit(10)->get()
+        );
 
         $flashSales = FlashSale::active()->with('approveProducts.product')->latest('id')->get();
-
         $data['flash_sales'] = FlashSaleResource::collection($flashSales);
 
         return apiResponse($data);

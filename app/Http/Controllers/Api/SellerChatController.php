@@ -18,7 +18,7 @@ class SellerChatController extends Controller
             'user_id' => $userId,
         ]);
 
-        $messages = $chat->messages()->orderBy('created_at')->get();
+        $messages = $chat->messages()->orderBy('created_at')->paginate(50);
 
         return apiResponse(SellerChatMessageResource::collection($messages));
     }

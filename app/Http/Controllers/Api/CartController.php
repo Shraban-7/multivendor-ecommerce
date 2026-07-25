@@ -23,7 +23,13 @@ class CartController extends Controller
     {
         $carts = Cart::query()
             ->where('user_id', Auth::id())
-            ->with('cart_items.product.category', 'cart_items.product.subcategory', 'seller')
+            ->with([
+                'cart_items.product.category',
+                'cart_items.product.subcategory',
+                'cart_items.variant',
+                'seller.district',
+                'seller.division',
+            ])
             ->get();
 
         return apiResourceResponse(CartResource::collection($carts));
@@ -31,25 +37,25 @@ class CartController extends Controller
 
     public function suggestions()
     {
-        $carts = Cart::query()
-            ->where('user_id', Auth::id())
-            ->with('cart_items.product.category', 'cart_items.product.subcategory', 'seller')
-            ->get();
+        $cartProductIds = CartItem::whereHas('cart', fn ($q) => $q->where('user_id', Auth::id()))
+            ->pluck('product_id')
+->unique()
+            ->values()
+            ->toArray();
 
-        $cartProductIds = [];
-        $categoryIds = [];
-        $subcategoryIds = [];
+        $categoryIds = Product::whereIn('id', $cartProductIds)
+            ->pluck('category_id')
+            ->filter()
+            ->unique()
+            ->values()
+            ->toArray();
 
-        foreach ($carts as $cart) {
-            foreach ($cart->cart_items as $item) {
-                $cartProductIds[] = $item->product->id;
-                $categoryIds[] = $item->product->category->id ?? null;
-                $subcategoryIds[] = $item->product->subcategory->id ?? null;
-            }
-        }
-
-        $categoryIds = array_filter(array_unique($categoryIds));
-        $subcategoryIds = array_filter(array_unique($subcategoryIds));
+        $subcategoryIds = Product::whereIn('id', $cartProductIds)
+            ->pluck('subcategory_id')
+            ->filter()
+            ->unique()
+            ->values()
+            ->toArray();
 
         $suggestedProducts = Product::query()
             ->whereNotIn('id', $cartProductIds)
@@ -57,7 +63,7 @@ class CartController extends Controller
                 $query->whereIn('category_id', $categoryIds)
                     ->orWhereIn('subcategory_id', $subcategoryIds);
             })
-            ->with('category', 'subcategory')
+            ->with(['category', 'subcategory', 'seller.district', 'seller.division'])
             ->paginate(15);
 
         return apiResourceResponse(ProductListResource::collection($suggestedProducts));

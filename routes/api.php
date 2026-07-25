@@ -33,10 +33,10 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::prefix('auth')->group(function () {
-    Route::post('check-phone', [AuthController::class, 'checkPhone']);
-    Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
-    Route::post('login', [AuthController::class, 'login']);
-    Route::post('register', [AuthController::class, 'register']);
+    Route::post('check-phone', [AuthController::class, 'checkPhone'])->middleware('throttle:5,1');
+    Route::post('verify-otp', [AuthController::class, 'verifyOtp'])->middleware('throttle:5,1');
+    Route::post('login', [AuthController::class, 'login'])->middleware('throttle:10,1');
+    Route::post('register', [AuthController::class, 'register'])->middleware('throttle:10,1');
 });
 
 // Route::middleware('guest')->group(function () {
@@ -47,10 +47,10 @@ Route::prefix('auth')->group(function () {
 Route::get('settings', [SettingController::class, 'index']);
 Route::get('categories', [CategoryController::class, 'index']);
 Route::get('dashboard', [DashboardController::class, 'index']);
-Route::post('search', [SearchController::class, 'search']);
+Route::post('search', [SearchController::class, 'search'])->middleware('throttle:30,1');
 
-Route::get('products', [ProductController::class, 'index']);
-Route::get('products/{product}', [ProductController::class, 'show']);
+Route::get('products', [ProductController::class, 'index'])->middleware('throttle:60,1');
+Route::get('products/{product}', [ProductController::class, 'show'])->middleware('throttle:60,1');
 
 Route::get('sellers', [SellerController::class, 'index']);
 Route::get('sellers/{seller}', [SellerController::class, 'show']);

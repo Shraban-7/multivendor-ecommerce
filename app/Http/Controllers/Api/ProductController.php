@@ -20,7 +20,7 @@ class ProductController extends Controller
         $name = $request->name ?? '';
         $seller_id = $request->seller_id ?? '';
 
-        $products = Product::query()->with(['variants', 'images', 'seller']);
+        $products = Product::query()->with(['category', 'subcategory', 'variants', 'images', 'seller.district', 'seller.division']);
 
         if ($category_id != '') {
             $products->where('category_id', $category_id);
@@ -64,12 +64,13 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        $product->load('images', 'category', 'subcategory');
+        $product->load(['images', 'category', 'subcategory', 'seller.district', 'seller.division']);
 
         $data['product'] = ProductResource::make($product);
         $data['seller'] = SellerResource::make($product->seller);
 
         $relatedProducts = Product::query()
+            ->with(['variants', 'images', 'seller'])
             ->where('id', '!=', $product->id)
             ->where('category_id', $product->category_id)
             ->limit(6)
@@ -77,7 +78,13 @@ class ProductController extends Controller
 
         $data['related_products'] = ProductListResource::collection($relatedProducts);
 
-        $data['reviews'] = ReviewResource::collection(Review::with(['user', 'images'])->where('product_id', $product->id)->get());
+        $data['reviews'] = ReviewResource::collection(
+            Review::with(['user', 'images'])
+                ->where('product_id', $product->id)
+                ->latest()
+                ->limit(10)
+                ->get()
+        );
 
         return apiResponse($data);
     }

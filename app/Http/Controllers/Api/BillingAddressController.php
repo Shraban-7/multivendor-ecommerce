@@ -12,7 +12,7 @@ class BillingAddressController extends Controller
 {
     public function index()
     {
-        $addresses = BillingAddress::where('user_id', Auth::id())->orderBy('is_default', 'DESC')->get();
+        $addresses = BillingAddress::where('user_id', Auth::id())->with(['division', 'district'])->orderBy('is_default', 'DESC')->get();
 
         return apiResourceResponse(BillingAddressResource::collection($addresses));
     }

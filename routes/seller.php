@@ -33,7 +33,7 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
         Route::post('/place-order', [PosController::class, 'placeOrder'])->name('place_order');
         Route::post('/save-draft', [PosController::class, 'saveDraft'])->name('save_draft');
         Route::post('/draft-clear/{draft}', [PosController::class, 'draftClear'])->name('draft_clear');
-        Route::get('/customers/search', [PosController::class, 'customerSearch'])->name('customers.search');
+        Route::get('/customers/search', [PosController::class, 'customerSearch'])->name('customers.search')->middleware('throttle:30,1');
 
         Route::prefix('sales')->as('sales.')->group(function () {
             Route::get('/', [SaleController::class, 'index'])->name('index');

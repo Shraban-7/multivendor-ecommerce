@@ -14,7 +14,7 @@ class SellerController extends Controller
 {
     public function index()
     {
-        $sellers = Seller::get();
+        $sellers = Seller::with(['district', 'division'])->paginate(15);
 
         return apiResourceResponse(SellerResource::collection($sellers));
     }

@@ -7,19 +7,24 @@ use App\Domain\Shipping\Models\Division;
 use App\Domain\Shipping\Models\Union;
 use App\Domain\Shipping\Models\Upazila;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class EloquentLocationRepository implements LocationRepositoryInterface
 {
     public function getAllDivisions(): Collection
     {
-        return Division::orderBy('name', 'ASC')->get();
+        return Cache::remember('divisions:all', 86400, function () {
+            return Division::orderBy('name', 'ASC')->get();
+        });
     }
 
     public function getDistrictsByDivisionId(int $divisionId): Collection
     {
-        return District::where('division_id', $divisionId)
-            ->orderBy('name', 'ASC')
-            ->get();
+        return Cache::remember("districts:division:$divisionId", 86400, function () use ($divisionId) {
+            return District::where('division_id', $divisionId)
+                ->orderBy('name', 'ASC')
+                ->get();
+        });
     }
 
     public function getUpazilasByDistrictId(int $districtId): Collection
