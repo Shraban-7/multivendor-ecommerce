@@ -79,6 +79,7 @@ class OrderController extends Controller
             if ($request->ajax()) {
                 return response()->json(['status' => false, 'message' => 'No cart found for the selected seller.'], 404);
             }
+
             return redirect()->route('home');
         }
 
@@ -144,6 +145,7 @@ class OrderController extends Controller
             if ($request->payment_method === 'pay_now') {
                 return back()->withInput()->with('error', $e->getMessage());
             }
+
             return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
         }
     }
@@ -151,12 +153,14 @@ class OrderController extends Controller
     public function success($invoice_id)
     {
         $order = $this->orderRepo->findByInvoiceId($invoice_id);
+
         return view('frontend.orders.success', compact('order'));
     }
 
     public function tracking($invoice_id)
     {
         $order = $this->orderRepo->findByInvoiceId($invoice_id)?->loadCount('items');
+
         return view('frontend.orders.tracking', compact('order'));
     }
 
@@ -178,6 +182,7 @@ class OrderController extends Controller
 
         try {
             $this->orderService->submitReview($user, $data);
+
             return redirect()->back()->with('success', 'Review submitted successfully.');
         } catch (Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
@@ -187,6 +192,7 @@ class OrderController extends Controller
     public function getDistricts($divisionId)
     {
         $districts = District::where('division_id', $divisionId)->pluck('name', 'id');
+
         return response()->json($districts);
     }
 

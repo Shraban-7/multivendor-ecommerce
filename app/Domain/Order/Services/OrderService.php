@@ -4,6 +4,8 @@ namespace App\Domain\Order\Services;
 
 use App\Domain\Affiliate\Models\AffiliateCommission;
 use App\Domain\Auth\Models\User;
+use App\Domain\Order\Models\BillingAddress;
+use App\Domain\Order\Models\Cart;
 use App\Domain\Order\Models\Order;
 use App\Domain\Order\Models\OrderItem;
 use App\Domain\Order\Repositories\Contracts\OrderRepositoryInterface;
@@ -38,6 +40,7 @@ class OrderService
             $this->orderRepo->createBillingAddress(array_merge($billing, [
                 'order_id' => $order->id,
             ]));
+
             return $order->fresh(['items', 'billing_address']);
         });
     }
@@ -49,6 +52,7 @@ class OrderService
             'status' => $status,
             'changed_by' => auth()->id(),
         ]);
+
         return $order->fresh();
     }
 
@@ -57,6 +61,7 @@ class OrderService
         if (method_exists($seller, 'calculateEarning')) {
             return $seller->calculateEarning($total);
         }
+
         return [
             'total_commission' => 0.0,
             'seller_earning' => $total,
@@ -176,7 +181,7 @@ class OrderService
 
             $this->orderRepo->createOrderItems($order, $orderItemsData['items'] ?? $orderItemsData);
 
-            $billingAddress = \App\Domain\Order\Models\BillingAddress::find($validated['billing_address_id']);
+            $billingAddress = BillingAddress::find($validated['billing_address_id']);
             if ($billingAddress) {
                 $this->orderRepo->createBillingAddress([
                     'order_id' => $order->id,
@@ -190,7 +195,7 @@ class OrderService
 
             $this->orderRepo->deductStock($order);
 
-            $cart = \App\Domain\Order\Models\Cart::where('user_id', $user->id)
+            $cart = Cart::where('user_id', $user->id)
                 ->where('seller_id', $seller->id)->first();
             if ($cart) {
                 $cart->cart_items()->delete();
@@ -209,6 +214,7 @@ class OrderService
 
                 if ($response->successful()) {
                     $this->orderRepo->update($order, ['payment_id' => $jsonResponse['payment_id'] ?? null]);
+
                     return [
                         'order' => $order,
                         'payment_url' => $jsonResponse['payment_url'] ?? null,
@@ -341,6 +347,7 @@ class OrderService
             if (isset($response['payment_url'])) {
                 return ['message' => 'Redirecting to payment gateway', 'payment_url' => $response['payment_url']];
             }
+
             return ['message' => 'Payment URL not received.', 'payment_url' => null];
         } catch (Exception $e) {
             return ['message' => $e->getMessage(), 'payment_url' => null];

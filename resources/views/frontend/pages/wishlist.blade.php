@@ -58,10 +58,10 @@
                                         data-id="{{ $wishlist->product->id }}" data-wishlist-id="{{ $wishlist->id }}">
                                         ADD TO CART
                                     </button> --}}
-                                    <button data-slug="{{ $wishlist->product->slug }}" type="button"
-                                        class="btn-quickview bg-primary-500 hover:bg-orange-500 text-white py-2 px-3 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-1">
+                                    <a href="{{ route('products.details', $wishlist->product->slug) }}"
+                                        class="bg-primary-500 hover:bg-orange-500 text-white py-2 px-3 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-1">
                                         <i class="fas fa-shopping-cart text-xs"></i> 
-                                    </button>
+                                    </a>
                                 @endif
                                 <button type="button" class="wishlistRemoveBtn text-gray-400 hover:text-gray-600"
                                     data-id="{{ $wishlist->id }}">

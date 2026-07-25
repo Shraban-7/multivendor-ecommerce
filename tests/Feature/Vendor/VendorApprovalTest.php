@@ -10,6 +10,7 @@
 
 use App\Domain\Vendor\Actions\ApproveVendorAction;
 use App\Domain\Vendor\Models\Seller;
+use App\Domain\Vendor\Repositories\SellerRepositoryInterface;
 use App\Domain\Vendor\Services\VendorService;
 use App\Enums\CommissionType;
 use Illuminate\Database\Eloquent\Builder;
@@ -28,7 +29,7 @@ it('ApproveVendorAction::execute merges ACTIVE status into the data array', func
     $seller->status = Seller::PENDING;
 
     $capturedData = null;
-    $repo = Mockery::mock(\App\Domain\Vendor\Repositories\SellerRepositoryInterface::class);
+    $repo = Mockery::mock(SellerRepositoryInterface::class);
     $repo->shouldReceive('update')
         ->once()
         ->withArgs(function ($s, $data) use (&$capturedData) {
@@ -55,7 +56,7 @@ it('ApproveVendorAction always forces status=ACTIVE regardless of caller input',
     $seller->id = 1;
 
     $capturedData = null;
-    $repo = Mockery::mock(\App\Domain\Vendor\Repositories\SellerRepositoryInterface::class);
+    $repo = Mockery::mock(SellerRepositoryInterface::class);
     $repo->shouldReceive('update')
         ->once()
         ->withArgs(function ($s, $data) use (&$capturedData) {

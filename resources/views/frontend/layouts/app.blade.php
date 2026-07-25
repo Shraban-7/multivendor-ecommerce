@@ -94,8 +94,6 @@ $isDashboard = View::hasSection('dashboard');
         <input type="password" name="password" autocomplete="new-password" ...>
     </div>
 
-    <x-frontend.quickviewModal />
-
     @include('frontend.layouts.navbar')
 
     @if (View::hasSection('breadcrumbs'))
@@ -156,81 +154,6 @@ $isDashboard = View::hasSection('dashboard');
     <script src="{{ asset('assets/libs/toastr/js/toastr.min.js') }}"></script> --}}
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const quickViewModal = document.getElementById('quickViewModal');
-            // const openQuickViewBtns = document.querySelectorAll('.btn-quickview');
-            const closeQuickViewBtns = document.querySelectorAll('.close-quickview');
-            const quickViewContent = document.getElementById('quickViewContent');
-
-            function toggleQuickView(show) {
-                if (show) {
-                    quickViewModal.classList.remove('hidden');
-                    // Small delay to allow display:block to apply before changing opacity for transition
-                    setTimeout(() => quickViewModal.style.opacity = '1', 10);
-                } else {
-                    quickViewModal.style.opacity = '0';
-                    setTimeout(() => quickViewModal.classList.add('hidden'), 300);
-                }
-            }
-
-            $(document).on('click', '.btn-quickview', function (e) {
-                e.preventDefault();
-
-                const $btn = $(this);
-                const slug = $btn.data('slug');
-                const delay = 800;
-
-                $btn.find('.icon').addClass('hidden');
-                $btn.find('.spinner').removeClass('hidden');
-                $btn.prop('disabled', true);
-
-                $('#quickViewModal .quickview-content').html('');
-
-                setTimeout(() => {
-                    $.ajax({
-                        url: `/products/${slug}/quick-view`,
-                        type: 'GET',
-
-                        success: function (response) {
-                            $('#quickViewModal .quickview-content').html(response);
-                            toggleQuickView(true);
-                        },
-
-                        complete: function () {
-                            $btn.find('.spinner').addClass('hidden');
-                            $btn.find('.icon').removeClass('hidden');
-                            $btn.prop('disabled', false);
-                        }
-                    });
-                }, delay);
-            });
-
-
-
-            // openQuickViewBtns.forEach(btn => {
-            //     btn.addEventListener('click', (e) => {
-            //         e.preventDefault();
-            //         e.stopPropagation();
-            //         toggleQuickView(true);
-            //     });
-            // });
-
-            closeQuickViewBtns.forEach(btn => {
-                btn.addEventListener('click', () => toggleQuickView(false));
-            });
-
-            // Close on click outside
-            quickViewModal.addEventListener('click', (e) => {
-                if (e.target === quickViewModal) {
-                    toggleQuickView(false);
-                }
-            });
-
-            document.addEventListener('click', function (e) {
-                if (e.target.closest('#quickViewCloseBtn')) {
-                    toggleQuickView(false);
-                }
-            });
-
             // --- Back to Top Button ---
             const backToTopBtn = document.getElementById('backToTop');
 
@@ -494,8 +417,6 @@ $isDashboard = View::hasSection('dashboard');
                         if (data.unauthorized) {
                             window.location.href = "{{ route('home') }}";
                         } else if (data.success) {
-                            $('button[data-modal-hide="quick-view-modal-' + product_id + '"]')
-                                .trigger('click');
                             $row.fadeOut(300, function () {
                                 $(this).remove();
                             });

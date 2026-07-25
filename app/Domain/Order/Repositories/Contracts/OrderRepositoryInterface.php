@@ -6,6 +6,7 @@ use App\Domain\Order\Models\Order;
 use App\Domain\Order\Models\OrderBillingAddress;
 use App\Domain\Order\Models\OrderItem;
 use App\Domain\Order\Models\OrderStatusLog;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 interface OrderRepositoryInterface
@@ -40,9 +41,9 @@ interface OrderRepositoryInterface
 
     public function findBillingAddressByOrder(int $orderId): ?OrderBillingAddress;
 
-    public function searchSellerOrders(int $sellerId, array $filters = [], array $relations = []): \Illuminate\Contracts\Pagination\LengthAwarePaginator;
+    public function searchSellerOrders(int $sellerId, array $filters = [], array $relations = []): LengthAwarePaginator;
 
-    public function searchUserOrders(int $userId, array $filters = [], array $relations = []): \Illuminate\Contracts\Pagination\LengthAwarePaginator;
+    public function searchUserOrders(int $userId, array $filters = [], array $relations = []): LengthAwarePaginator;
 
     public function getSellerOrderItemCount(int $sellerId): int;
 

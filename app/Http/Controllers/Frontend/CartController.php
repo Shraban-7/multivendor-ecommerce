@@ -17,6 +17,7 @@ class CartController extends Controller
     public function __construct(
         private readonly CartRepositoryInterface $cartRepo,
     ) {}
+
     public function add(Request $request)
     {
         if (Auth::guard('seller')->check() || Auth::guard('admin')->check()) {

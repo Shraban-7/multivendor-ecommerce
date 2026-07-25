@@ -108,6 +108,7 @@ class ProductVariantController extends Controller
 
         return successResponse('Variants added successfully');
     }
+
     public function update(ProductVariant $variant, Request $request)
     {
         $variant->loadMissing('product.seller');

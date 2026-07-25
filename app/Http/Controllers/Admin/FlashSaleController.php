@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Domain\Product\Models\FlashSale;
+use App\Domain\Product\Models\FlashSaleProduct;
 use App\Domain\Product\Repositories\Contracts\FlashSaleRepositoryInterface;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -101,7 +102,7 @@ class FlashSaleController extends Controller
             'status' => 'required|integer',
         ]);
 
-        $flashSale = \App\Domain\Product\Models\FlashSaleProduct::where('id', $id)->where('product_id', $productId)->first();
+        $flashSale = FlashSaleProduct::where('id', $id)->where('product_id', $productId)->first();
         $flashSale->update($data);
 
         return successResponse('Product Status Update Successfully');

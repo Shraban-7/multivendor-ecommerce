@@ -3,6 +3,8 @@
 use App\Domain\Review\Models\Review;
 use App\Domain\Review\Repositories\Contracts\ReviewRepositoryInterface;
 use App\Domain\Review\Repositories\EloquentReviewRepository;
+use App\Domain\Review\Services\ReviewService;
+use Illuminate\Database\Eloquent\Collection;
 use Tests\TestCase;
 
 uses(TestCase::class);
@@ -30,8 +32,8 @@ it('ReviewServiceProvider binds correct implementation', function (): void {
 });
 
 it('ReviewService is resolvable from container', function (): void {
-    expect(app(\App\Domain\Review\Services\ReviewService::class))
-        ->toBeInstanceOf(\App\Domain\Review\Services\ReviewService::class);
+    expect(app(ReviewService::class))
+        ->toBeInstanceOf(ReviewService::class);
 });
 
 it('can mock ReviewRepositoryInterface', function (): void {
@@ -54,7 +56,7 @@ it('averageRating returns float from repository mock', function (): void {
 it('getReportedReviews returns collection from repository mock', function (): void {
     $repo = Mockery::mock(ReviewRepositoryInterface::class);
 
-    $repo->shouldReceive('getReportedReviews')->once()->andReturn(new \Illuminate\Database\Eloquent\Collection);
+    $repo->shouldReceive('getReportedReviews')->once()->andReturn(new Collection);
 
-    expect($repo->getReportedReviews())->toBeInstanceOf(\Illuminate\Database\Eloquent\Collection::class);
+    expect($repo->getReportedReviews())->toBeInstanceOf(Collection::class);
 });

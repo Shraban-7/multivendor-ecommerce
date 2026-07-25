@@ -82,7 +82,7 @@ class CategoryController extends Controller
 
     public function toggleStatus(Category $category)
     {
-        $this->categoryRepo->update($category, ['status' => !$category->status]);
+        $this->categoryRepo->update($category, ['status' => ! $category->status]);
 
         return redirect()->route('admin.categories.index')->with('success', 'Category Status Updated Successfully');
     }

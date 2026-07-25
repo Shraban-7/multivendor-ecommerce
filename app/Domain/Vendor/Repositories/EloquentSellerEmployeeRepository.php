@@ -34,7 +34,7 @@ class EloquentSellerEmployeeRepository implements SellerEmployeeRepositoryInterf
 
     public function toggleActive(SellerEmployee $employee): bool
     {
-        return $employee->update(['is_active' => !$employee->is_active]);
+        return $employee->update(['is_active' => ! $employee->is_active]);
     }
 
     public function delete(SellerEmployee $employee): bool

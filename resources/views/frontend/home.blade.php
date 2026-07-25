@@ -469,23 +469,7 @@
                             '<span>Load More</span> <i class="fa-solid fa-chevron-down text-sm"></i>'
                         );
 
-                        // Quickview JSON
-                        const scriptTags = $(response).filter('script[data-quickview]');
-                        scriptTags.each(function () {
-                            try {
-                                const data = JSON.parse($(this).html());
-                                window.quickViewData = window.quickViewData || {};
-                                window.quickViewData[data.id] = {
-                                    product: data.product,
-                                    defaultVariant: data.defaultVariant
-                                };
-                            } catch (e) {
-                                console.error('Invalid quick view JSON', e);
-                            }
-                        });
-
                         if (typeof initFlowbite === 'function') initFlowbite();
-                        if (typeof initQuickViewModals === 'function') initQuickViewModals();
                         if (typeof initProductSwipers === 'function') initProductSwipers();
 
                     } else {

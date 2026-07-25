@@ -2,6 +2,7 @@
 
 namespace App\Domain\Review\Repositories;
 
+use App\Domain\Review\Models\ReportReview;
 use App\Domain\Review\Models\Review;
 use App\Domain\Review\Repositories\Contracts\ReviewRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
@@ -20,7 +21,7 @@ class EloquentReviewRepository implements ReviewRepositoryInterface
 
     public function getReportedReviews(): Collection
     {
-        $reportIds = \App\Domain\Review\Models\ReportReview::pluck('review_id');
+        $reportIds = ReportReview::pluck('review_id');
 
         return Review::with('user', 'images', 'product', 'reports')
             ->whereIn('id', $reportIds)
@@ -49,6 +50,6 @@ class EloquentReviewRepository implements ReviewRepositoryInterface
 
     public function getReportedReviewIds(): array
     {
-        return \App\Domain\Review\Models\ReportReview::pluck('review_id')->toArray();
+        return ReportReview::pluck('review_id')->toArray();
     }
 }

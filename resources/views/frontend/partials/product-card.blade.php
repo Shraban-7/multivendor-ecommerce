@@ -27,17 +27,6 @@
                 class="w-full h-full object-cover object-top 
                     transition-transform duration-500 group-hover:scale-105" />
         </a>
-
-        <!-- Quick View -->
-        <button type="button" data-modal-target="quick-view-modal-{{ $product['id'] }}"
-            data-modal-toggle="quick-view-modal-{{ $product['id'] }}" data-slug="{{ $product['slug'] }}" data-action="quick-view"
-            class="btn-quickview absolute bottom-3 right-3 
-           opacity-100 md:opacity-0 md:group-hover:opacity-100 
-           translate-y-0 md:translate-y-2 md:group-hover:translate-y-0
-           px-3 py-1.5 text-xs font-medium text-gray-700 bg-white/90 rounded-full shadow-md
-           hover:bg-primary hover:text-white transition-all duration-300">
-            <i class="fa-regular fa-eye mr-1"></i> Quick View
-        </button>
     </div>
 
     <!-- Product Info -->
@@ -78,32 +67,11 @@
 
             @auth
             <button type="button" data-id="{{ $product['id'] }}"
-                data-modal-target="quick-view-modal-{{ $product['id'] }}"
-                data-modal-toggle="quick-view-modal-{{ $product['id'] }}" data-action="add-to-cart"
-                class="w-8 h-8 flex items-center justify-center bg-primary hover:bg-theme-dark text-white text-xs rounded-full transition duration-200">
-                <i class="fa-solid fa-cart-plus"></i>
+                class="addToCartNoVariant w-8 h-8 flex items-center justify-center bg-primary hover:bg-theme-dark text-white text-xs rounded-full transition duration-200">
+                <i class="fa-solid fa-cart-plus icon"></i>
+                <span class="spinner hidden w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
             </button>
             @endauth
         </div>
     </div>
 </div>
-
-@push('scripts')
-<script>
-    $(document).on('click', '[data-modal-toggle^="quick-view-modal-"]', function() {
-        const action = $(this).data('action');
-        const productId = $(this).data('id') || $(this).closest('[data-id]').data('id');
-
-        if (action === 'add-to-cart') {
-            const modal = $('#quick-view-modal-' + productId);
-            modal.find('#quantity' + productId).val('01');
-            modal.find('.qtyInputValue').val(1);
-
-            modal.find('.addToCartBtn').get(0)?.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center'
-            });
-        }
-    });
-</script>
-@endpush

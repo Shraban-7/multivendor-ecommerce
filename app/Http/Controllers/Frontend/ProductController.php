@@ -246,13 +246,6 @@ class ProductController extends Controller
         ]);
     }
 
-    public function quickView(Product $product)
-    {
-        $product = $product->toDetailsArray();
-
-        return view('components.frontend.product-contents', compact('product'))->render();
-    }
-
     public function loadReview(Request $request)
     {
         if ($request->ajax()) {

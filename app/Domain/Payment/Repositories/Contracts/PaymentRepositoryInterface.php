@@ -2,7 +2,6 @@
 
 namespace App\Domain\Payment\Repositories\Contracts;
 
-use App\Domain\Payment\Models\ManualPaymentMethod;
 use App\Domain\Payment\Models\Payment;
 use App\Domain\Payment\Models\PaymentGateway;
 use App\Domain\Payment\Models\PaymentListenerDevice;

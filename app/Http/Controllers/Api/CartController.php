@@ -18,6 +18,7 @@ class CartController extends Controller
     public function __construct(
         private readonly CartRepositoryInterface $cartRepo,
     ) {}
+
     public function index()
     {
         $carts = Cart::query()

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Domain\Review\Models\Review;
 use App\Domain\Review\Repositories\Contracts\ReviewRepositoryInterface;
 use App\Http\Controllers\Controller;
 
@@ -18,7 +19,7 @@ class ReviewsController extends Controller
         return view('admin.reviews.index', compact('reviews'));
     }
 
-    public function destroy(\App\Domain\Review\Models\Review $review)
+    public function destroy(Review $review)
     {
         $this->reviewRepo->delete($review);
 

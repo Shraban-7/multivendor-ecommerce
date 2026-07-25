@@ -315,24 +315,7 @@ $settings = settings();
                                 '<span>Load More</span> <i class="fa-solid fa-chevron-down text-sm"></i>'
                             );
 
-                            const scriptTags = $(response).filter('script[data-quickview]');
-                            scriptTags.each(function() {
-                                const json = $(this).html();
-                                try {
-                                    const data = JSON.parse(json);
-                                    window.quickViewData = window.quickViewData || {};
-                                    window.quickViewData[data.id] = {
-                                        product: data.product,
-                                        defaultVariant: data.defaultVariant
-                                    };
-                                } catch (e) {
-                                    console.error('Invalid quick view JSON format', e);
-                                }
-                            });
-
                             if (typeof initFlowbite === 'function') initFlowbite();
-                            if (typeof initQuickViewModals === 'function')
-                                initQuickViewModals();
                             if (typeof initProductSwipers === 'function') initProductSwipers();
                         } else {
                             button.hide();

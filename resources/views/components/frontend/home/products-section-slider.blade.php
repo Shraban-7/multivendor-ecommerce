@@ -94,13 +94,11 @@
                                             </div>
 
                                             <!-- Add to Cart -->
-                                            <button type="button"
-                                                data-modal-target="quick-view-modal-{{ $product['id'] }}"
-                                                data-modal-toggle="quick-view-modal-{{ $product['id'] }}"
+                                            <a href="{{ route('products.details', $product['slug']) }}"
                                                 class="w-6 h-6 sm:w-8 sm:h-8 rounded-md flex items-center justify-center 
                                bg-primary text-white hover:bg-orange-600 transition duration-200">
                                                 <i class="fa-solid fa-cart-plus text-xs sm:text-sm"></i>
-                                            </button>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -179,12 +177,11 @@
                                     </div>
 
                                     <!-- Add to Cart -->
-                                    <button type="button" data-modal-target="quick-view-modal-{{ $product['id'] }}"
-                                        data-modal-toggle="quick-view-modal-{{ $product['id'] }}"
+                                    <a href="{{ route('products.details', $product['slug']) }}"
                                         class="w-6 h-6 sm:w-8 sm:h-8 rounded-md flex items-center justify-center 
                            bg-primary text-white hover:bg-orange-600 transition duration-200">
                                         <i class="fa-solid fa-cart-plus text-xs sm:text-sm"></i>
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -192,9 +189,5 @@
                 @endforeach
             </div>
         @endif
-
-        @foreach ($products as $product)
-            @include('frontend.partials.quick-view-modal', ['product' => $product])
-        @endforeach
     </div>
 </section>

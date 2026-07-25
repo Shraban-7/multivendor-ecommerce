@@ -1,8 +1,6 @@
 <?php
 
-use App\Domain\Product\Models\Brand;
 use App\Domain\Product\Models\Category;
-use App\Domain\Product\Models\FlashSale;
 use App\Domain\Product\Models\Product;
 use App\Domain\Product\Repositories\Contracts\BrandRepositoryInterface;
 use App\Domain\Product\Repositories\Contracts\CategoryRepositoryInterface;
@@ -14,6 +12,11 @@ use App\Domain\Product\Repositories\EloquentCategoryRepository;
 use App\Domain\Product\Repositories\EloquentFlashSaleRepository;
 use App\Domain\Product\Repositories\EloquentOptionRepository;
 use App\Domain\Product\Repositories\EloquentProductRepository;
+use App\Domain\Product\Services\CatalogService;
+use App\Domain\Product\Services\FlashSaleService;
+use App\Domain\Product\Services\ProductService;
+use App\Domain\Product\Services\StockManagerService;
+use Illuminate\Database\Eloquent\Collection;
 use Tests\TestCase;
 
 uses(TestCase::class);
@@ -133,7 +136,7 @@ it('can mock ProductRepositoryInterface', function (): void {
 
 it('can mock CategoryRepositoryInterface', function (): void {
     $repo = Mockery::mock(CategoryRepositoryInterface::class);
-    $categories = new \Illuminate\Database\Eloquent\Collection([
+    $categories = new Collection([
         new Category(['id' => 1, 'name' => 'Electronics']),
     ]);
 
@@ -145,9 +148,9 @@ it('can mock CategoryRepositoryInterface', function (): void {
 it('can mock BrandRepositoryInterface', function (): void {
     $repo = Mockery::mock(BrandRepositoryInterface::class);
 
-    $repo->shouldReceive('getAll')->once()->andReturn(new \Illuminate\Database\Eloquent\Collection);
+    $repo->shouldReceive('getAll')->once()->andReturn(new Collection);
 
-    expect($repo->getAll())->toBeInstanceOf(\Illuminate\Database\Eloquent\Collection::class);
+    expect($repo->getAll())->toBeInstanceOf(Collection::class);
 });
 
 it('can mock FlashSaleRepositoryInterface', function (): void {
@@ -159,21 +162,21 @@ it('can mock FlashSaleRepositoryInterface', function (): void {
 });
 
 it('CatalogService is resolvable from container', function (): void {
-    expect(app(\App\Domain\Product\Services\CatalogService::class))
-        ->toBeInstanceOf(\App\Domain\Product\Services\CatalogService::class);
+    expect(app(CatalogService::class))
+        ->toBeInstanceOf(CatalogService::class);
 });
 
 it('FlashSaleService is resolvable from container', function (): void {
-    expect(app(\App\Domain\Product\Services\FlashSaleService::class))
-        ->toBeInstanceOf(\App\Domain\Product\Services\FlashSaleService::class);
+    expect(app(FlashSaleService::class))
+        ->toBeInstanceOf(FlashSaleService::class);
 });
 
 it('ProductService is resolvable from container', function (): void {
-    expect(app(\App\Domain\Product\Services\ProductService::class))
-        ->toBeInstanceOf(\App\Domain\Product\Services\ProductService::class);
+    expect(app(ProductService::class))
+        ->toBeInstanceOf(ProductService::class);
 });
 
 it('StockManagerService is resolvable from container', function (): void {
-    expect(app(\App\Domain\Product\Services\StockManagerService::class))
-        ->toBeInstanceOf(\App\Domain\Product\Services\StockManagerService::class);
+    expect(app(StockManagerService::class))
+        ->toBeInstanceOf(StockManagerService::class);
 });

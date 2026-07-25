@@ -42,35 +42,31 @@ class EloquentCategoryRepository implements CategoryRepositoryInterface
 
     public function getParentCategories(): Collection
     {
-        return Cache::remember('categories.parents', 3600, fn () =>
-            Category::category()->orderBy('name')->get()
+        return Cache::remember('categories.parents', 3600, fn () => Category::category()->orderBy('name')->get()
         );
     }
 
     public function getSubcategories(int $parentId): Collection
     {
-        return Cache::remember('categories.sub.'.$parentId, 3600, fn () =>
-            Category::where('category_id', $parentId)->orderBy('name')->get()
+        return Cache::remember('categories.sub.'.$parentId, 3600, fn () => Category::where('category_id', $parentId)->orderBy('name')->get()
         );
     }
 
     public function getNavCategories(): Collection
     {
-        return Cache::remember('categories.nav', 3600, fn () =>
-            Category::with('subcategories')
-                ->nav()
-                ->orderBy('name')
-                ->get()
+        return Cache::remember('categories.nav', 3600, fn () => Category::with('subcategories')
+            ->nav()
+            ->orderBy('name')
+            ->get()
         );
     }
 
     public function getAllWithSubcategories(): Collection
     {
-        return Cache::remember('categories.all', 3600, fn () =>
-            Category::category()
-                ->with('subcategories')
-                ->orderBy('name')
-                ->get()
+        return Cache::remember('categories.all', 3600, fn () => Category::category()
+            ->with('subcategories')
+            ->orderBy('name')
+            ->get()
         );
     }
 

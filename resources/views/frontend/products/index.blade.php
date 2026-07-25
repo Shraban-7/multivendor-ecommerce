@@ -379,42 +379,6 @@
             }
 
 
-            // --- Quick View Modal (Duplicate logic from index but necessary for standalone file) ---
-            const quickViewModal = document.getElementById('quickViewModal');
-            const openQuickViewBtns = document.querySelectorAll('.open-quickview');
-            const closeQuickViewBtns = document.querySelectorAll('.close-quickview');
-            const quickViewContent = document.getElementById('quickViewContent');
-
-            function toggleQuickView(show) {
-                if (show) {
-                    quickViewModal.classList.remove('hidden');
-                    setTimeout(() => quickViewModal.style.opacity = '1', 10);
-                } else {
-                    quickViewModal.style.opacity = '0';
-                    setTimeout(() => quickViewModal.classList.add('hidden'), 300);
-                }
-            }
-
-            openQuickViewBtns.forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    toggleQuickView(true);
-                });
-            });
-
-            closeQuickViewBtns.forEach(btn => {
-                btn.addEventListener('click', () => toggleQuickView(false));
-            });
-
-            if (quickViewModal) {
-                quickViewModal.addEventListener('click', (e) => {
-                    if (!quickViewContent.contains(e.target)) {
-                        toggleQuickView(false);
-                    }
-                });
-            }
-
             // --- Back to Top Button ---
             const backToTopBtn = document.getElementById('backToTop');
 

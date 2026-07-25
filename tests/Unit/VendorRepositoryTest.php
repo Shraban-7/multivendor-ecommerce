@@ -6,7 +6,7 @@ use App\Domain\Vendor\Repositories\EloquentSellerEmployeeRepository;
 use App\Domain\Vendor\Repositories\EloquentSellerRepository;
 use App\Domain\Vendor\Repositories\SellerEmployeeRepositoryInterface;
 use App\Domain\Vendor\Repositories\SellerRepositoryInterface;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use App\Domain\Vendor\Services\VendorService;
 use Illuminate\Database\Eloquent\Collection;
 use Tests\TestCase;
 
@@ -54,9 +54,9 @@ it('SellerEmployeeRepositoryInterface defines all required methods', function ()
 });
 
 it('VendorService is resolvable with repository bindings', function (): void {
-    $service = app(\App\Domain\Vendor\Services\VendorService::class);
+    $service = app(VendorService::class);
 
-    expect($service)->toBeInstanceOf(\App\Domain\Vendor\Services\VendorService::class);
+    expect($service)->toBeInstanceOf(VendorService::class);
 });
 
 it('VendorServiceProvider binds correct implementations', function (): void {

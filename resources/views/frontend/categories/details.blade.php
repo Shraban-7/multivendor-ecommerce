@@ -250,7 +250,6 @@
                     },
                     success: function(response) {
                         $('#product-list').html(response);
-                        if (typeof initQuickViewModals === 'function') initQuickViewModals();
                         if (typeof initFlowbite === 'function') initFlowbite();
                     },
                     error: function() {
@@ -293,7 +292,6 @@
                             button.prop('disabled', false).html(
                                 '<span>Load More</span> <i class="fa-solid fa-chevron-down text-sm"></i>'
                             );
-                            if (typeof initQuickViewModals === 'function') initQuickViewModals();
                             if (typeof initFlowbite === 'function') initFlowbite();
                         } else {
                             button.hide();

@@ -23,7 +23,6 @@ Route::get('/contact-us', [ContactUsController::class, 'contactUs'])->name('cont
 
 Route::prefix('products')->as('products.')->group(function () {
     Route::get('/', [ProductController::class, 'index'])->name('index');
-    Route::get('{product:slug}/quick-view', [ProductController::class, 'quickView'])->name('quickView');
     Route::post('{slug}/get-variant', [ProductController::class, 'getVariant']);
     Route::get('{slug}', [ProductController::class, 'details'])->name('details');
 });

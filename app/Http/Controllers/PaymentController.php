@@ -25,6 +25,7 @@ class PaymentController extends Controller
         $secret = config('services.payment.ipn_secret');
         if ($secret && $request->input('secret') !== $secret) {
             Log::warning('IPN rejected: invalid secret', ['ip' => $request->ip()]);
+
             return response()->json(['status' => 'error', 'message' => 'Invalid secret'], 403);
         }
 
@@ -36,6 +37,7 @@ class PaymentController extends Controller
         $order = $this->orderRepo->findByInvoiceId($invoiceId);
         if (! $order) {
             Log::error('Order not found for IPN:', ['invoice_id' => $invoiceId]);
+
             return response()->json(['status' => 'error', 'message' => 'Order not found'], 404);
         }
 
@@ -50,6 +52,7 @@ class PaymentController extends Controller
                     'expected' => $expectedAmount,
                     'received' => $gatewayAmount,
                 ]);
+
                 return response()->json(['status' => 'error', 'message' => 'Amount mismatch'], 422);
             }
 
@@ -98,6 +101,7 @@ class PaymentController extends Controller
 
         if (! $order) {
             Log::error('Order not found for success callback', $request->all());
+
             return view('errors.404');
         }
 
@@ -121,6 +125,7 @@ class PaymentController extends Controller
 
         if (! $order) {
             Log::error('Order not found for cancelled callback', $request->all());
+
             return view('errors.404');
         }
 
@@ -146,6 +151,7 @@ class PaymentController extends Controller
 
         if (! $order) {
             Log::error('Order not found for failed callback', $request->all());
+
             return view('errors.404');
         }
 

@@ -9,6 +9,7 @@ use App\Domain\Order\Models\OrderStatusLog;
 use App\Domain\Order\Repositories\Contracts\OrderRepositoryInterface;
 use App\Domain\Product\Models\Product;
 use App\Domain\Product\Models\ProductVariant;
+use App\Domain\Vendor\Models\Seller;
 use App\Enums\OrderStatus;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -164,6 +165,6 @@ class EloquentOrderRepository implements OrderRepositoryInterface
     public function updateSellerTotalSold(int $sellerId): void
     {
         $count = $this->getSellerOrderItemCount($sellerId);
-        \App\Domain\Vendor\Models\Seller::where('id', $sellerId)->update(['total_sold' => $count]);
+        Seller::where('id', $sellerId)->update(['total_sold' => $count]);
     }
 }

@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Domain\Product\Models\Category;
+use App\Domain\Product\Models\CategoryOption;
+use App\Domain\Product\Models\Option;
+use App\Domain\Product\Models\OptionValue;
+use App\Domain\Product\Models\ProductVariantOption;
 use App\Domain\Product\Repositories\Contracts\CategoryRepositoryInterface;
 use App\Domain\Product\Repositories\Contracts\OptionRepositoryInterface;
 use App\Http\Controllers\Controller;
@@ -17,7 +20,7 @@ class OptionController extends Controller
 
     public function index()
     {
-        $options = \App\Domain\Product\Models\Option::with('categories', 'option_values')->paginate(15);
+        $options = Option::with('categories', 'option_values')->paginate(15);
         $categories = $this->categoryRepo->getParentCategories();
 
         return view('admin.options.index', compact('options', 'categories'));
@@ -41,7 +44,7 @@ class OptionController extends Controller
         }
 
         foreach ($data['categories'] as $category) {
-            \App\Domain\Product\Models\CategoryOption::create([
+            CategoryOption::create([
                 'category_id' => $category,
                 'option_id' => $option->id,
             ]);
@@ -50,7 +53,7 @@ class OptionController extends Controller
         return redirect()->back()->with('success', 'Option Added Successfully!');
     }
 
-    public function update(Request $request, \App\Domain\Product\Models\Option $option)
+    public function update(Request $request, Option $option)
     {
         $data = $request->validate([
             'name' => 'required|string',
@@ -62,7 +65,7 @@ class OptionController extends Controller
 
         $existingValues = $option->option_values->pluck('value')->toArray();
 
-        \App\Domain\Product\Models\OptionValue::where('option_id', $option->id)
+        OptionValue::where('option_id', $option->id)
             ->whereNotIn('value', $data['values'])
             ->delete();
 
@@ -75,7 +78,7 @@ class OptionController extends Controller
             }
         }
 
-        \App\Domain\Product\Models\CategoryOption::where('option_id', $option->id)->delete();
+        CategoryOption::where('option_id', $option->id)->delete();
 
         $option->categories()->sync($data['categories'] ?? []);
 
@@ -88,24 +91,24 @@ class OptionController extends Controller
             'value' => 'required|string|max:255',
         ]);
 
-        $optionValue = \App\Domain\Product\Models\OptionValue::findOrFail($id);
+        $optionValue = OptionValue::findOrFail($id);
         $optionValue->update(['value' => $request->value]);
 
         return redirect()->back()->with('success', 'Option value updated successfully');
     }
 
-    public function deleteValue(\App\Domain\Product\Models\OptionValue $value)
+    public function deleteValue(OptionValue $value)
     {
         $this->optionRepo->deleteValue($value);
 
         return redirect()->back()->with('success', 'Option value deleted successfully.');
     }
 
-    public function destroy(\App\Domain\Product\Models\Option $option)
+    public function destroy(Option $option)
     {
-        $optionValueIds = \App\Domain\Product\Models\OptionValue::where('option_id', $option->id)->pluck('id')->toArray();
+        $optionValueIds = OptionValue::where('option_id', $option->id)->pluck('id')->toArray();
         if (! empty($optionValueIds)) {
-            \App\Domain\Product\Models\ProductVariantOption::whereIn('option_value_id', $optionValueIds)->delete();
+            ProductVariantOption::whereIn('option_value_id', $optionValueIds)->delete();
         }
 
         $option->option_values()->delete();

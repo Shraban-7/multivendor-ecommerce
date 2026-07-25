@@ -127,6 +127,7 @@ class OrderController extends Controller
             );
         } catch (Exception $e) {
             DB::rollBack();
+
             return errorResponse($e->getMessage());
         }
 
@@ -196,6 +197,7 @@ class OrderController extends Controller
 
         try {
             $this->orderService->submitReview(Auth::user(), $request->all());
+
             return successResponse('Review Submit Successfully');
         } catch (Exception $e) {
             return errorResponse($e->getMessage());

@@ -5,7 +5,6 @@ namespace App\Jobs;
 use App\Domain\Affiliate\Models\AffiliateCommission;
 use App\Domain\Auth\Models\User;
 use App\Domain\Order\Models\Order;
-use App\Domain\Order\Models\OrderItem;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;

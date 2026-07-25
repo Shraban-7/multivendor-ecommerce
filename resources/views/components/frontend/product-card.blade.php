@@ -18,15 +18,12 @@
         <!-- Hover Actions (Grid) -->
         <div
             class="grid-hover-actions absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center gap-2 backdrop-blur-[1px]">
-            <button class="btn-quickview w-8 h-8 bg-white text-gray-600 rounded-full shadow-md
+            <a href="{{ route('products.details', $product->slug) }}"
+                class="w-8 h-8 bg-white text-gray-600 rounded-full shadow-md
                     flex items-center justify-center hover:bg-primary-600 hover:text-white
-                    transform translate-y-4 group-hover:translate-y-0 transition delay-75"
-                data-slug="{{ $product->slug }}">
+                    transform translate-y-4 group-hover:translate-y-0 transition delay-75">
                 <i class="far fa-eye icon text-xs"></i>
-                <span
-                    class="spinner hidden w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin">
-                </span>
-            </button>
+            </a>
 
             <button data-id="{{ $product->id }}"
                 class="wishlistBtn w-8 h-8 bg-white text-gray-600 rounded-full shadow-md flex items-center justify-center hover:bg-red-500 hover:text-white transform translate-y-4 group-hover:translate-y-0 transition delay-100">
@@ -78,12 +75,10 @@
             </div>
 
             @if ($product->variants->isNotEmpty())
-                <button data-slug="{{ $product->slug }}"
-                    class="btn-quickview grid-view-btn w-8 h-8 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center hover:bg-primary-600 hover:text-white transition shadow-sm">
+                <a href="{{ route('products.details', $product->slug) }}"
+                    class="grid-view-btn w-8 h-8 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center hover:bg-primary-600 hover:text-white transition shadow-sm">
                     <i class="fas fa-shopping-cart text-xs icon"></i>
-                    <span
-                        class="spinner hidden w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
-                </button>
+                </a>
             @else
                 <button data-id="{{ $product->id }}"
                     class="addToCartNoVariant grid-view-btn w-8 h-8 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center hover:bg-primary-600 hover:text-white transition shadow-sm">
@@ -112,16 +107,12 @@
             <!-- Hover Actions (Grid) -->
             <div
                 class="grid-hover-actions absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center gap-2 backdrop-blur-[1px]">
-                <button class="btn-quickview w-9 h-9 bg-white text-gray-600 rounded-full shadow-lg
-                                            flex items-center justify-center hover:bg-primary-600 hover:text-white
-                                            transform translate-y-4 group-hover:translate-y-0 transition delay-75"
-                    data-slug="{{ $product->slug }}">
-
+                <a href="{{ route('products.details', $product->slug) }}"
+                    class="w-9 h-9 bg-white text-gray-600 rounded-full shadow-lg
+                    flex items-center justify-center hover:bg-primary-600 hover:text-white
+                    transform translate-y-4 group-hover:translate-y-0 transition delay-75">
                     <i class="far fa-eye icon"></i>
-                    <span
-                        class="spinner hidden w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin">
-                    </span>
-                </button>
+                </a>
 
                 <button data-id="{{ $product->id }}"
                     class="wishlistBtn w-9 h-9 bg-white text-gray-600 rounded-full shadow-lg flex items-center justify-center hover:bg-red-500 hover:text-white transform translate-y-4 group-hover:translate-y-0 transition delay-100"><i
@@ -179,12 +170,10 @@
                 </div>
                 <!-- Grid Button -->
                 @if ($product->variants->isNotEmpty())
-                    <button data-slug="{{ $product->slug }}"
-                        class="btn-quickview grid-view-btn w-8 h-8 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center hover:bg-primary-600 hover:text-white transition shadow-sm">
+                    <a href="{{ route('products.details', $product->slug) }}"
+                        class="grid-view-btn w-8 h-8 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center hover:bg-primary-600 hover:text-white transition shadow-sm">
                         <i class="fas fa-shopping-cart text-xs icon"></i>
-                        <span
-                            class="spinner hidden w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
-                    </button>
+                    </a>
                 @else
                     <button data-id="{{ $product->id }}"
                         class="addToCartNoVariant grid-view-btn w-8 h-8 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center hover:bg-primary-600 hover:text-white transition shadow-sm">

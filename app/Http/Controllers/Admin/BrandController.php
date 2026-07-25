@@ -65,7 +65,7 @@ class BrandController extends Controller
 
     public function toggleStatus(Brand $brand)
     {
-        $this->brandRepo->update($brand, ['status' => !$brand->status]);
+        $this->brandRepo->update($brand, ['status' => ! $brand->status]);
 
         return redirect()->back()->with('success', 'Brand Status Updated Successfully');
     }

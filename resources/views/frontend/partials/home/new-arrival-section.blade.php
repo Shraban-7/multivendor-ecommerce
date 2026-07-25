@@ -82,27 +82,21 @@
                                              @endif
                                          </div>
 
-                                         <!-- Add to Cart -->
-                                         <div class="shrink-0">
-                                             <button type="button"
-                                                 data-modal-target="quick-view-modal-{{ $product['id'] }}"
-                                                 data-modal-toggle="quick-view-modal-{{ $product['id'] }}"
-                                                 class="flex items-center justify-center text-sm rounded w-8 h-8 sm:w-10 sm:h-10 bg-primary text-theme-light hover:bg-light-yellow eq">
-                                                 <i class="fa-solid fa-plus"></i>
-                                             </button>
-                                         </div>
-                                     </div>
-                                 </div>
+                                          <!-- Add to Cart -->
+                                          <div class="shrink-0">
+                                              <a href="{{ route('products.details', $product['slug']) }}"
+                                                  class="flex items-center justify-center text-sm rounded w-8 h-8 sm:w-10 sm:h-10 bg-primary text-theme-light hover:bg-light-yellow eq">
+                                                  <i class="fa-solid fa-plus"></i>
+                                              </a>
+                                          </div>
+                                      </div>
+                                  </div>
                              </div>
                          </div>
                      </div>
                  @endforeach
              </div>
          </div>
-
-         @foreach ($new_arrival_products as $product)
-             @include('frontend.partials.quick-view-modal', ['product' => $product])
-         @endforeach
 
 
          <!-- Become Sellers, Trending Products & Promo Poster -->

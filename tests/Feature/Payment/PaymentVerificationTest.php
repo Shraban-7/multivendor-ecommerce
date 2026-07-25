@@ -4,6 +4,7 @@ use App\Domain\Payment\Repositories\Contracts\PaymentRepositoryInterface;
 use App\Domain\Payment\Services\PaymentService;
 use App\Services\AffiliateService;
 use App\Services\BkashService;
+
 test('payment service rejects mismatched gateway amount', function () {
     $bkash = Mockery::mock(BkashService::class);
     $affiliate = Mockery::mock(AffiliateService::class);

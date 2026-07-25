@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Seller;
 
-use App\Domain\Product\Models\Brand;
 use App\Domain\Product\Models\Category;
 use App\Domain\Product\Models\CategoryOption;
 use App\Domain\Product\Models\Option;
