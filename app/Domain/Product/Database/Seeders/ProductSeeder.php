@@ -258,7 +258,7 @@ class ProductSeeder extends Seeder
                             'best_selling' => rand(0, 1),
                             'is_featured' => rand(0, 1),
                             'views' => 0,
-                            'video' => 'videos/products/'.$featuredVideos[($i - 1) % count($featuredVideos)],
+                            'status' => 1,
                         ]);
 
                         if (! empty($productData['images'])) {
