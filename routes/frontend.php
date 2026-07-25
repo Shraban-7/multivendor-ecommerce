@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Frontend\AffiliatorController;
 use App\Http\Controllers\Frontend\BillingAddressController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\ContactUsController;
@@ -59,11 +58,6 @@ Route::middleware('auth')->group(function () {
     Route::prefix('billing-addresses')->as('billing_addresses.')->group(function () {
         Route::post('/store', [BillingAddressController::class, 'store'])->name('store');
         Route::post('/{address}/update', [BillingAddressController::class, 'update'])->name('update');
-    });
-
-    Route::prefix('affiliator')->as('affiliator.')->group(function () {
-        Route::get('/dashboard', [AffiliatorController::class, 'dashboard'])->name('dashboard');
-        Route::match(['get', 'post'], '/withdraw', [AffiliatorController::class, 'withdraw'])->name('withdraw');
     });
 });
 

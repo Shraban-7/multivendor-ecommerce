@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Domain\Affiliate\Jobs;
 
 use App\Domain\Affiliate\Models\AffiliateCommission;
 use App\Domain\Auth\Models\User;

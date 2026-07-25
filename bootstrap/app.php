@@ -1,7 +1,7 @@
 <?php
 
+use App\Domain\Affiliate\Http\Middleware\AffiliateReferralMiddleware;
 use App\Http\Middleware\AdminMiddleware;
-use App\Http\Middleware\AffiliateReferralMiddleware;
 use App\Http\Middleware\AutoMarkNotificationsAsRead;
 use App\Http\Middleware\CheckSubscriptionFeature;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;

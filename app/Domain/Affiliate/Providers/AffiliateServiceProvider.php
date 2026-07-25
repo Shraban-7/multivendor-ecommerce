@@ -12,4 +12,10 @@ class AffiliateServiceProvider extends ServiceProvider
     {
         $this->app->bind(AffiliateRepositoryInterface::class, EloquentAffiliateRepository::class);
     }
+
+    public function boot(): void
+    {
+        $this->loadRoutesFrom(__DIR__.'/../routes.php');
+        $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
+    }
 }

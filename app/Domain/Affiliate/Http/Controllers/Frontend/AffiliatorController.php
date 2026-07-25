@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Frontend;
+namespace App\Domain\Affiliate\Http\Controllers\Frontend;
 
 use App\Domain\Affiliate\Models\AffiliateClick;
 use App\Domain\Affiliate\Models\AffiliateCommission;
