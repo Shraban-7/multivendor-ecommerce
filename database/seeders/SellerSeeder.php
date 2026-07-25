@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Domain\Vendor\Models\Seller;
 use App\Enums\CommissionType;
-use App\Models\Seller;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;

@@ -6,6 +6,7 @@ use App\Domain\Order\Services\PosCartService;
 use App\Domain\Product\Models\Category;
 use App\Domain\Product\Models\Product;
 use App\Domain\Product\Models\ProductVariant;
+use App\Domain\Vendor\Models\Seller;
 use App\Domain\Vendor\Models\SellerEmployee;
 use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
@@ -14,7 +15,6 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\PosCart;
 use App\Models\PosCartItem;
-use App\Models\Seller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 

@@ -453,7 +453,7 @@
                                     <tbody>
                                         @foreach ($expenseCategories ?? [] as $expense)
                                             @php
-                                                $lastAmount = \App\Models\SellerExpense::where(
+                                                $lastAmount = \App\Domain\Vendor\Models\SellerExpense::where(
                                                     'seller_id',
                                                     get_seller_id(),
                                                 )

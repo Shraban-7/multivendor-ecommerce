@@ -2,7 +2,7 @@
 
 namespace App\Domain\Vendor\Models;
 
-use App\Models\Order;
+use App\Domain\Order\Models\Order;
 use Database\Factories\SellerEmployeeFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;

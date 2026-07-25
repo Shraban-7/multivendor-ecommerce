@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Domain\Product\Models\Product;
+use App\Domain\Vendor\Models\Seller;
 use App\Http\Controllers\Controller;
-use App\Models\Seller;
 use Illuminate\Http\Request;
 
 class SearchController extends Controller

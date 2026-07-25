@@ -4,8 +4,8 @@ namespace App\Domain\Order\Services;
 
 use App\Domain\Order\Models\Order;
 use App\Domain\Order\Models\OrderBillingAddress;
+use App\Domain\Vendor\Models\Seller;
 use App\Enums\OrderStatus;
-use App\Models\Seller;
 use Illuminate\Support\Facades\DB;
 
 class OrderService

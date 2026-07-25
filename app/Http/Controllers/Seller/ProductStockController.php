@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Seller;
 use App\Domain\Product\Models\Product;
 use App\Domain\Product\Models\ProductVariant;
 use App\Domain\Product\Models\StockHistory;
+use App\Domain\Vendor\Models\Seller;
 use App\Enums\StockType;
 use App\Http\Controllers\Controller;
-use App\Models\Seller;
 use Illuminate\Http\Request;
 
 class ProductStockController extends Controller

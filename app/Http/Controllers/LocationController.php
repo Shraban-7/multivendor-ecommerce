@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Domain\Shipping\Models\District;
+use App\Domain\Shipping\Repositories\LocationRepositoryInterface;
 
 class LocationController extends Controller
 {
+    public function __construct(protected LocationRepositoryInterface $locationRepository) {}
+
     public function getDistricts($divisionId)
     {
-        $districts = District::where('division_id', $divisionId)
-            ->select('id', 'name')
-            ->get();
+        $districts = $this->locationRepository->getDistrictsByDivisionId((int) $divisionId)
+            ->map(fn ($district) => [
+                'id' => $district->id,
+                'name' => $district->name,
+            ]);
 
         return response()->json($districts);
     }

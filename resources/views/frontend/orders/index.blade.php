@@ -4,7 +4,7 @@
 @section('dashboard')
     <?php
     use App\Enums\OrderStatus;
-    use App\Models\Payment;
+    use App\Domain\Payment\Models\Payment;
     ?>
 
     <main>

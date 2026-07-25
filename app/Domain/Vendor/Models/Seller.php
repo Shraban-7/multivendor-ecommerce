@@ -2,6 +2,7 @@
 
 namespace App\Domain\Vendor\Models;
 
+use App\Domain\Order\Models\Order;
 use App\Domain\Product\Models\Category;
 use App\Domain\Product\Models\Product;
 use App\Domain\Review\Models\Review;
@@ -10,7 +11,6 @@ use App\Domain\Shipping\Models\Division;
 use App\Enums\CommissionType;
 use App\Mail\WelcomeMail;
 use App\Models\Country;
-use App\Models\Order;
 use App\Models\SubscriptionPlan;
 use App\Models\User;
 use App\Traits\HasSubscription;

@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Seller;
 
 use App\Domain\Shipping\Models\Division;
 use App\Domain\Vendor\Http\Requests\UpdateVendorProfileRequest;
+use App\Domain\Vendor\Models\Seller;
 use App\Domain\Vendor\Services\VendorService;
 use App\Http\Controllers\Controller;
-use App\Models\Seller;
 use Illuminate\Support\Facades\Hash;
 
 class SellerController extends Controller

@@ -3,7 +3,7 @@
 
 @section('content')
     @php
-        $deleted = \App\Models\Seller::DELETED;
+        $deleted = \App\Domain\Vendor\Models\Seller::DELETED;
     @endphp
     <div class="container-fluid">
         <div class="d-flex justify-content-between align-items-center mb-2">

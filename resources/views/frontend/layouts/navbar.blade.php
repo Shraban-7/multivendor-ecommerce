@@ -10,7 +10,7 @@
         </div>
         <div class="flex gap-4 items-center">
             @php
-            $flash_sales =  \App\Models\FlashSale::active()
+            $flash_sales =  \App\Domain\Product\Models\FlashSale::active()
                 ->withCount("approveProducts")
                 ->having("approve_products_count", ">", 0)
                 ->with("approveProducts")

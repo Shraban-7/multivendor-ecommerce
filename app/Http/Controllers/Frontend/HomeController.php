@@ -6,9 +6,9 @@ use App\Domain\Product\Models\Brand;
 use App\Domain\Product\Models\Category;
 use App\Domain\Product\Models\FlashSale;
 use App\Domain\Product\Models\Product;
+use App\Domain\Vendor\Models\Seller;
 use App\Http\Controllers\Controller;
 use App\Models\Banner;
-use App\Models\Seller;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller

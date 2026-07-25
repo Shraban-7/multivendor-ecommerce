@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Domain\Shipping\Models\Division;
+use App\Domain\Vendor\Models\Seller;
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Mail\Vendor\RegistrationPendingMail;
-use App\Models\Seller;
 use App\Models\User;
 use App\Models\VerificationCode;
 use Carbon\Carbon;

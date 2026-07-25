@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\PaymentOption;
+use App\Domain\Payment\Models\PaymentOption;
 use Illuminate\Database\Seeder;
 
 class PaymentOptionSeeder extends Seeder

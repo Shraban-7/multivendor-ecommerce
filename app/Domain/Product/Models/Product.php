@@ -3,9 +3,9 @@
 namespace App\Domain\Product\Models;
 
 use App\Domain\Review\Models\Review;
+use App\Domain\Vendor\Models\Seller;
 use App\Enums\PaymentType;
 use App\Models\OrderItem;
-use App\Models\Seller;
 use Database\Factories\ProductFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;

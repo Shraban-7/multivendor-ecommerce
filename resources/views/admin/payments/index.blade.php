@@ -2,7 +2,7 @@
 @section('title', 'Payments')
 
 @section('content')
-    <?php use App\Models\Payment; ?>
+    <?php use App\Domain\Payment\Models\Payment; ?>
     <div class="d-flex justify-content-between align-items-end mb-3">
         <h4 class="mb-4">Payments</h4>
         <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#userFilterCanvas">

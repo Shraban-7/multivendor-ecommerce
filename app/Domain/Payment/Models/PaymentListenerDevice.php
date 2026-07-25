@@ -2,7 +2,7 @@
 
 namespace App\Domain\Payment\Models;
 
-use App\Models\Seller;
+use App\Domain\Vendor\Models\Seller;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

@@ -5,7 +5,7 @@ namespace App\Domain\Product\Services;
 use App\Domain\Product\Models\FlashSale;
 use App\Domain\Product\Models\FlashSaleProduct;
 use App\Domain\Product\Models\Product;
-use App\Models\Seller;
+use App\Domain\Vendor\Models\Seller;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use RuntimeException;

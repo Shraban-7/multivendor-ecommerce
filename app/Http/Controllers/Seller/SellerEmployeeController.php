@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Seller;
 
+use App\Domain\Vendor\Models\Seller;
 use App\Domain\Vendor\Models\SellerEmployee;
 use App\Domain\Vendor\Services\VendorService;
 use App\Http\Controllers\Controller;
-use App\Models\Seller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;

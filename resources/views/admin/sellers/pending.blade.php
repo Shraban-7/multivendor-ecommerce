@@ -5,10 +5,10 @@
 <h3>Sellers</h3>
 
 <?php
-    $active = \App\Models\Seller::ACTIVE;
-    $pending = \App\Models\Seller::PENDING;
-    $blocked = \App\Models\Seller::BLOCKED;
-    $deleted = \App\Models\Seller::DELETED;
+    $active = \App\Domain\Vendor\Models\Seller::ACTIVE;
+    $pending = \App\Domain\Vendor\Models\Seller::PENDING;
+    $blocked = \App\Domain\Vendor\Models\Seller::BLOCKED;
+    $deleted = \App\Domain\Vendor\Models\Seller::DELETED;
 ?>
 
 <div class="card mb-3">

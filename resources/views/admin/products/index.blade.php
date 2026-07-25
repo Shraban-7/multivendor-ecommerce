@@ -93,20 +93,20 @@
                                                         Status</label>
                                                     <select class="form-select" id="status-{{ $product->id }}"
                                                         name="status">
-                                                        <option value="{{ \App\Models\Product::STATUS_PENDING_APPROVAL }}"
-                                                            {{ $product->status == \App\Models\Product::STATUS_PENDING_APPROVAL ? 'selected' : '' }}>
+                                                        <option value="{{ \App\Domain\Product\Models\Product::STATUS_PENDING_APPROVAL }}"
+                                                            {{ $product->status == \App\Domain\Product\Models\Product::STATUS_PENDING_APPROVAL ? 'selected' : '' }}>
                                                             Pending Approval
                                                         </option>
-                                                        <option value="{{ \App\Models\Product::STATUS_ACTIVE }}"
-                                                            {{ $product->status == \App\Models\Product::STATUS_ACTIVE ? 'selected' : '' }}>
+                                                        <option value="{{ \App\Domain\Product\Models\Product::STATUS_ACTIVE }}"
+                                                            {{ $product->status == \App\Domain\Product\Models\Product::STATUS_ACTIVE ? 'selected' : '' }}>
                                                             Active
                                                         </option>
-                                                        <option value="{{ \App\Models\Product::STATUS_INACTIVE }}"
-                                                            {{ $product->status == \App\Models\Product::STATUS_INACTIVE ? 'selected' : '' }}>
+                                                        <option value="{{ \App\Domain\Product\Models\Product::STATUS_INACTIVE }}"
+                                                            {{ $product->status == \App\Domain\Product\Models\Product::STATUS_INACTIVE ? 'selected' : '' }}>
                                                             Inactive
                                                         </option>
-                                                        <option value="{{ \App\Models\Product::STATUS_DELETED }}"
-                                                            {{ $product->status == \App\Models\Product::STATUS_DELETED ? 'selected' : '' }}>
+                                                        <option value="{{ \App\Domain\Product\Models\Product::STATUS_DELETED }}"
+                                                            {{ $product->status == \App\Domain\Product\Models\Product::STATUS_DELETED ? 'selected' : '' }}>
                                                             Deleted
                                                         </option>
                                                     </select>

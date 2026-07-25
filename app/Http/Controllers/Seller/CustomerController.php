@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Seller;
 
+use App\Domain\Vendor\Models\Seller;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\Order;
-use App\Models\Seller;
 use App\Models\User;
 use Illuminate\Http\Request;
 

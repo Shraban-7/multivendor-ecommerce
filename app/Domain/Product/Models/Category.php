@@ -2,8 +2,8 @@
 
 namespace App\Domain\Product\Models;
 
+use App\Domain\Vendor\Models\Seller;
 use App\Models\CategoryBanner;
-use App\Models\Seller;
 use Database\Factories\CategoryFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;

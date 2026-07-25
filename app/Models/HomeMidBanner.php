@@ -1,13 +1,6 @@
 <?php
 
-namespace App\Models;
-
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-
-class HomeMidBanner extends Model
-{
-    use HasFactory;
-
-    protected $guarded = ['id'];
-}
+class_alias(
+    \App\Domain\Product\Models\HomeMidBanner::class,
+    \App\Models\HomeMidBanner::class
+);

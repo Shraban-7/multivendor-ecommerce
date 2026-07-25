@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Domain\Shipping\Models\District;
-use App\Domain\Shipping\Models\Division;
+use App\Domain\Shipping\Repositories\LocationRepositoryInterface;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DistrictResource;
 use App\Http\Resources\DivisionResource;
@@ -13,9 +12,11 @@ use Illuminate\Http\Request;
 
 class DataController extends Controller
 {
+    public function __construct(protected LocationRepositoryInterface $locationRepository) {}
+
     public function divisions()
     {
-        $divisions = Division::orderBy('name', 'ASC')->get();
+        $divisions = $this->locationRepository->getAllDivisions();
 
         return apiResourceResponse(DivisionResource::collection($divisions));
     }
@@ -30,7 +31,7 @@ class DataController extends Controller
             return errorResponse($validator->errors()->first());
         }
 
-        $districts = District::where('division_id', $request->division_id)->orderBy('name', 'ASC')->get();
+        $districts = $this->locationRepository->getDistrictsByDivisionId((int) $request->division_id);
 
         return apiResourceResponse(DistrictResource::collection($districts));
     }

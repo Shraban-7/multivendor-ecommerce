@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Seller;
 
 use App\Domain\Product\Models\FlashSale;
 use App\Domain\Product\Models\FlashSaleProduct;
+use App\Domain\Vendor\Models\Seller;
 use App\Http\Controllers\Controller;
-use App\Models\Seller;
 use Illuminate\Http\Request;
 
 class FlashSaleController extends Controller

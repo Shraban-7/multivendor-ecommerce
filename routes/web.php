@@ -1,5 +1,6 @@
 <?php
 
+use App\Domain\Vendor\Models\Seller;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BkashController;
 use App\Http\Controllers\Frontend\HomeController;
@@ -10,7 +11,6 @@ use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductSeo;
 use App\Models\ProductVariant;
-use App\Models\Seller;
 use App\Models\VerificationCode;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;

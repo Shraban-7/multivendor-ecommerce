@@ -13,9 +13,9 @@ use App\Domain\Product\Models\ProductVariant;
 use App\Domain\Product\Models\StockHistory;
 use App\Domain\Product\Services\ProductService;
 use App\Domain\Product\Services\StockManagerService;
+use App\Domain\Vendor\Models\Seller;
 use App\Enums\StockType;
 use App\Http\Controllers\Controller;
-use App\Models\Seller;
 use Illuminate\Http\Request;
 use RuntimeException;
 

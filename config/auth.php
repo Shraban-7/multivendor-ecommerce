@@ -1,7 +1,7 @@
 <?php
 
+use App\Domain\Vendor\Models\Seller;
 use App\Models\Admin;
-use App\Models\Seller;
 use App\Models\SellerEmployee;
 use App\Models\User;
 

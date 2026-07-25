@@ -2,7 +2,7 @@
 
 namespace App\Domain\Review\Models;
 
-use App\Models\Seller;
+use App\Domain\Vendor\Models\Seller;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

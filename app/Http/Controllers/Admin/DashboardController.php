@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Domain\Product\Models\Product;
+use App\Domain\Vendor\Models\Seller;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
-use App\Models\Seller;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 

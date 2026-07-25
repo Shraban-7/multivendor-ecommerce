@@ -5,8 +5,8 @@ namespace Database\Factories;
 use App\Domain\Product\Models\Brand;
 use App\Domain\Product\Models\Category;
 use App\Domain\Product\Models\Product;
+use App\Domain\Vendor\Models\Seller;
 use App\Enums\PaymentType;
-use App\Models\Seller;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 

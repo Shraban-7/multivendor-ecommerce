@@ -6,6 +6,7 @@ use App\Domain\Product\Models\Brand;
 use App\Domain\Product\Models\Category;
 use App\Domain\Product\Models\FlashSale;
 use App\Domain\Product\Models\Product;
+use App\Domain\Vendor\Models\Seller;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BannerResource;
 use App\Http\Resources\BrandResource;
@@ -14,7 +15,6 @@ use App\Http\Resources\FlashSaleResource;
 use App\Http\Resources\ProductListResource;
 use App\Http\Resources\SellerResource;
 use App\Models\Banner;
-use App\Models\Seller;
 
 class DashboardController extends Controller
 {

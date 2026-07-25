@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\PaymentGateway;
+use App\Domain\Payment\Models\PaymentGateway;
 use Illuminate\Database\Seeder;
 
 class PaymentGatewaySeeder extends Seeder

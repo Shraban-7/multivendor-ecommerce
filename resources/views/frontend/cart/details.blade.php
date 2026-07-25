@@ -21,7 +21,7 @@
                     @else
                         @foreach ($carts as $sellerId => $cartGroup)
                             @php
-                                $seller = \App\Models\Seller::find($sellerId);
+                                $seller = \App\Domain\Vendor\Models\Seller::find($sellerId);
                                 $shippingCharge = $seller?->shipping_cost;
                                 $sellerName = $seller ? $seller->business_name : '';
                             @endphp
