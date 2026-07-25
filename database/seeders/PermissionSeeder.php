@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Domain\Auth\Models\Permission;
+use App\Domain\Auth\Models\Role;
+use App\Domain\Auth\Models\RoleHasPermission;
 use App\Enums\AdminRole;
-use App\Models\Permission;
-use App\Models\Role;
-use App\Models\RoleHasPermission;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Route;
 

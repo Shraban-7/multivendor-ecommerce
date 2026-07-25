@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Domain\Support\Models\StaticPage;
 use App\Http\Controllers\Controller;
-use App\Models\StaticPage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 

@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Seller;
 
+use App\Domain\Shipping\Models\Country;
 use App\Domain\Vendor\Models\Seller;
 use App\Http\Controllers\Controller;
-use App\Models\Country;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;

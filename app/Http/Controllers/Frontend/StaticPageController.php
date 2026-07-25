@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Domain\Support\Models\StaticPage;
 use App\Http\Controllers\Controller;
-use App\Models\StaticPage;
 
 class StaticPageController extends Controller
 {

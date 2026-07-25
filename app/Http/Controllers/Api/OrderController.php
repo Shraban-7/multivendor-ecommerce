@@ -2,9 +2,16 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Domain\Order\Models\BillingAddress;
+use App\Domain\Order\Models\Cart;
+use App\Domain\Order\Models\Order;
+use App\Domain\Order\Models\OrderBillingAddress;
+use App\Domain\Order\Models\OrderItem;
+use App\Domain\Payment\Models\Payment;
 use App\Domain\Product\Models\ProductVariant;
 use App\Domain\Review\Models\Review;
 use App\Domain\Review\Models\ReviewImage;
+use App\Domain\Support\Models\Notification;
 use App\Domain\Vendor\Models\Seller;
 use App\Enums\CommissionType;
 use App\Enums\OrderStatus;
@@ -12,13 +19,6 @@ use App\Enums\PaymentType;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\InvoiceResource;
 use App\Http\Resources\OrderResource;
-use App\Models\BillingAddress;
-use App\Models\Cart;
-use App\Models\Notification;
-use App\Models\Order;
-use App\Models\OrderBillingAddress;
-use App\Models\OrderItem;
-use App\Models\Payment;
 use App\Services\AamarpayService;
 use Exception;
 use Illuminate\Http\Request;

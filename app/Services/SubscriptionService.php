@@ -5,8 +5,8 @@ namespace App\Services;
 use App\Domain\Vendor\Models\Seller;
 use App\Domain\Vendor\Models\SellerSubscription;
 use App\Domain\Vendor\Models\SubscriptionHistory;
+use App\Domain\Vendor\Models\SubscriptionPlan;
 use App\Enums\SubscriptionStatus;
-use App\Models\SubscriptionPlan;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 

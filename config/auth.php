@@ -1,9 +1,9 @@
 <?php
 
+use App\Domain\Auth\Models\Admin;
+use App\Domain\Auth\Models\User;
 use App\Domain\Vendor\Models\Seller;
-use App\Models\Admin;
-use App\Models\SellerEmployee;
-use App\Models\User;
+use App\Domain\Vendor\Models\SellerEmployee;
 
 return [
     'defaults' => [

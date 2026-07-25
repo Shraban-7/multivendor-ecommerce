@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Domain\Product\Models\Banner;
 use App\Domain\Product\Models\Brand;
 use App\Domain\Product\Models\Category;
 use App\Domain\Product\Models\FlashSale;
@@ -14,7 +15,6 @@ use App\Http\Resources\CategoryResource;
 use App\Http\Resources\FlashSaleResource;
 use App\Http\Resources\ProductListResource;
 use App\Http\Resources\SellerResource;
-use App\Models\Banner;
 
 class DashboardController extends Controller
 {

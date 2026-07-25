@@ -2,10 +2,10 @@
 @section('title', 'Sellers')
 @section('content')
     @php
-        $active = \App\Models\Seller::ACTIVE;
-        $pending = \App\Models\Seller::PENDING;
-        $blocked = \App\Models\Seller::BLOCKED;
-        $deleted = \App\Models\Seller::DELETED;
+        $active = \App\Domain\Vendor\Models\Seller::ACTIVE;
+        $pending = \App\Domain\Vendor\Models\Seller::PENDING;
+        $blocked = \App\Domain\Vendor\Models\Seller::BLOCKED;
+        $deleted = \App\Domain\Vendor\Models\Seller::DELETED;
     @endphp
 
     <div class="d-flex justify-content-between align-items-end mb-3">

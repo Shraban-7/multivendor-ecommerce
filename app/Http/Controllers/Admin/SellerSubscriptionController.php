@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Domain\Vendor\Models\SellerSubscription;
+use App\Domain\Vendor\Models\SubscriptionPlan;
 use App\Enums\SubscriptionStatus;
 use App\Http\Controllers\Controller;
-use App\Models\SubscriptionPlan;
 use App\Services\SubscriptionService;
 use Illuminate\Http\Request;
 

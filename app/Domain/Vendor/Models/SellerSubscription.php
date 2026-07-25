@@ -4,7 +4,6 @@ namespace App\Domain\Vendor\Models;
 
 use App\Domain\Payment\Models\SubscriptionPayment;
 use App\Enums\SubscriptionStatus;
-use App\Models\SubscriptionPlan;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

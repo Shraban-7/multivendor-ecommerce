@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Domain\Auth\Models\OtpLog;
+use App\Domain\Auth\Models\User;
+use App\Domain\Auth\Models\VerificationCode;
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
-use App\Models\OtpLog;
-use App\Models\User;
-use App\Models\VerificationCode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;

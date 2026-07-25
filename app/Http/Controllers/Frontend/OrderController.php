@@ -2,26 +2,26 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Domain\Affiliate\Models\AffiliateCommission;
+use App\Domain\Auth\Models\User;
+use App\Domain\Order\Models\BillingAddress;
+use App\Domain\Order\Models\Cart;
+use App\Domain\Order\Models\Order;
+use App\Domain\Order\Models\OrderBillingAddress;
+use App\Domain\Order\Models\OrderItem;
+use App\Domain\Payment\Models\Payment;
+use App\Domain\Payment\Models\PaymentGateway;
 use App\Domain\Product\Models\Product;
 use App\Domain\Product\Models\ProductVariant;
 use App\Domain\Review\Models\Review;
 use App\Domain\Review\Models\ReviewImage;
 use App\Domain\Shipping\Models\District;
 use App\Domain\Shipping\Models\Division;
+use App\Domain\Support\Models\Notification;
 use App\Domain\Vendor\Models\Seller;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentType;
 use App\Http\Controllers\Controller;
-use App\Models\AffiliateCommission;
-use App\Models\BillingAddress;
-use App\Models\Cart;
-use App\Models\Notification;
-use App\Models\Order;
-use App\Models\OrderBillingAddress;
-use App\Models\OrderItem;
-use App\Models\Payment;
-use App\Models\PaymentGateway;
-use App\Models\User;
 use App\Services\AamarpayService;
 use App\Services\AffiliateService;
 use App\Services\BkashService;

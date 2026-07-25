@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Domain\Auth\Models\User;
+use App\Domain\Auth\Models\VerificationCode;
 use App\Domain\Shipping\Models\Division;
 use App\Domain\Vendor\Models\Seller;
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Mail\Vendor\RegistrationPendingMail;
-use App\Models\User;
-use App\Models\VerificationCode;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Domain\Auth\Models\User;
+use App\Domain\Order\Models\Order;
 use App\Http\Controllers\Controller;
-use App\Models\Order;
-use App\Models\User;
 
 class CustomerController extends Controller
 {

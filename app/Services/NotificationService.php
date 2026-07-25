@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Notification;
+use App\Domain\Support\Models\Notification;
 
 class NotificationService
 {

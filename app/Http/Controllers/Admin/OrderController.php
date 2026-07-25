@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Domain\Order\Models\Order;
 use App\Http\Controllers\Controller;
-use App\Models\Order;
 
 class OrderController extends Controller
 {

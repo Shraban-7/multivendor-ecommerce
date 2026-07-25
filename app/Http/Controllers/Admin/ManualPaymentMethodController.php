@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Domain\Payment\Models\ManualPaymentMethod;
 use App\Http\Controllers\Controller;
-use App\Models\ManualPaymentMethod;
 use Illuminate\Http\Request;
 
 class ManualPaymentMethodController extends Controller

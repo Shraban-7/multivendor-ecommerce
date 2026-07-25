@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Domain\Order\Models\BillingAddress;
 use App\Http\Controllers\Controller;
-use App\Models\BillingAddress;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Notification;
+use App\Domain\Support\Models\Notification;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;

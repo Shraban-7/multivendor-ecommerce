@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Seller;
 
+use App\Domain\Affiliate\Models\AffiliateCommission;
+use App\Domain\Auth\Models\User;
+use App\Domain\Order\Models\Order;
+use App\Domain\Order\Models\OrderStatusLog;
 use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
-use App\Models\AffiliateCommission;
-use App\Models\Order;
-use App\Models\OrderStatusLog;
-use App\Models\User;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller

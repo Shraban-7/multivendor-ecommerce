@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Seller;
 
+use App\Domain\Payment\Models\PaymentListenerDevice;
+use App\Domain\Payment\Models\PaymentListenerPayment;
 use App\Http\Controllers\Controller;
-use App\Models\PaymentListenerDevice;
-use App\Models\PaymentListenerPayment;
 use App\Services\FcmService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;

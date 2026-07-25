@@ -185,8 +185,8 @@ it('CatalogService::recordView increments view count', function (): void {
 
 // ─── BC alias ─────────────────────────────────────────────────────────────────
 
-it('App\\Models\\Product is a BC alias for the domain model', function (): void {
-    expect(new App\Models\Product)
+it('Product domain model instantiates correctly', function (): void {
+    expect(new Product)
         ->toBeInstanceOf(Product::class);
 });
 

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Domain\Auth\Models\User;
+use App\Domain\Order\Models\BillingAddress;
 use App\Domain\Shipping\Models\Division;
 use App\Http\Controllers\Controller;
-use App\Models\BillingAddress;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;

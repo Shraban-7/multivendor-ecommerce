@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\PaymentListenerDevice;
+use App\Domain\Payment\Models\PaymentListenerDevice;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

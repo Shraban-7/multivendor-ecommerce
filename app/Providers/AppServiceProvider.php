@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use App\Models\Cart;
-use App\Models\Wishlist;
+use App\Domain\Order\Models\Cart;
+use App\Domain\Order\Models\Wishlist;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;

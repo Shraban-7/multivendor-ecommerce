@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Order\Models\Order;
 use App\Domain\Payment\Services\PaymentService;
-use App\Models\Order;
 use Illuminate\Http\Request;
 use InvalidArgumentException;
 use RuntimeException;

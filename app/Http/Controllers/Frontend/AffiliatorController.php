@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Domain\Affiliate\Models\AffiliateClick;
+use App\Domain\Affiliate\Models\AffiliateCommission;
+use App\Domain\Affiliate\Models\AffiliatePayout;
+use App\Domain\Order\Models\Order;
 use App\Http\Controllers\Controller;
-use App\Models\AffiliateClick;
-use App\Models\AffiliateCommission;
-use App\Models\AffiliatePayout;
-use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

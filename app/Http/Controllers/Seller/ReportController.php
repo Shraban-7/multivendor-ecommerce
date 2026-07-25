@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Seller;
 
+use App\Domain\Order\Models\Order;
+use App\Domain\Order\Models\OrderBillingAddress;
+use App\Domain\Order\Models\OrderItem;
 use App\Domain\Product\Models\Product;
 use App\Domain\Shipping\Models\District;
 use App\Domain\Shipping\Models\Division;
@@ -9,9 +12,6 @@ use App\Domain\Vendor\Models\Seller;
 use App\Domain\Vendor\Models\SellerExpense;
 use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
-use App\Models\Order;
-use App\Models\OrderBillingAddress;
-use App\Models\OrderItem;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;

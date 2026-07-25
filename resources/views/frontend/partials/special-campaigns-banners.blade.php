@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Banner;
+use App\Domain\Product\Models\Banner;
 $midBanner = null;
 if (isset($banners[Banner::SECTION_MID_PROMO]) && $banners[Banner::SECTION_MID_PROMO]->count() > 0) {
     $midBanner = $banners[Banner::SECTION_MID_PROMO]->first();

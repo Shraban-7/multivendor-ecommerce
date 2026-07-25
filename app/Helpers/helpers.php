@@ -1,13 +1,13 @@
 <?php
 
+use App\Domain\Payment\Models\PaymentOption;
 use App\Domain\Product\Models\Category;
+use App\Domain\Support\Models\Notification;
+use App\Domain\Support\Models\SocialLink;
+use App\Domain\Support\Models\SystemSetting;
 use App\Enums\AdminRole;
 use App\Enums\DiscountType;
 use App\Enums\UserRole;
-use App\Models\Notification;
-use App\Models\PaymentOption;
-use App\Models\SocialLink;
-use App\Models\SystemSetting;
 use App\Services\NotificationService;
 use App\Services\SmsService;
 use Carbon\Carbon;

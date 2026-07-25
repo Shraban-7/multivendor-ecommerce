@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\SubscriptionPlan;
+use App\Domain\Vendor\Models\SubscriptionPlan;
 use Illuminate\Database\Seeder;
 
 class SubscriptionPlanSeeder extends Seeder

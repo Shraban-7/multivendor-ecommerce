@@ -2,9 +2,9 @@
 
 namespace App\Domain\Payment\Services;
 
+use App\Domain\Order\Models\Order;
 use App\Domain\Payment\Models\Payment;
 use App\Domain\Vendor\Models\Seller;
-use App\Models\Order;
 use App\Services\AffiliateService;
 use App\Services\BkashService;
 use Illuminate\Support\Facades\DB;

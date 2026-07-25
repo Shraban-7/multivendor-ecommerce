@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Seller;
 
+use App\Domain\Shipping\Models\Country;
+use App\Domain\Shipping\Models\State;
 use App\Domain\Vendor\Models\Seller;
 use App\Domain\Vendor\Models\SellerBannerImage;
 use App\Http\Controllers\Controller;
-use App\Models\Country;
-use App\Models\State;
 use Illuminate\Http\Request;
 
 class SettingController extends Controller

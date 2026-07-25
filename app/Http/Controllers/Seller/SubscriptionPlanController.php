@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Seller;
 
 use App\Domain\Vendor\Models\SellerSubscription;
+use App\Domain\Vendor\Models\SubscriptionPlan;
 use App\Http\Controllers\Controller;
-use App\Models\SubscriptionPlan;
 use Illuminate\Http\Request;
 
 class SubscriptionPlanController extends Controller

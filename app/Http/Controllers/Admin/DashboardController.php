@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Domain\Auth\Models\User;
+use App\Domain\Order\Models\Order;
 use App\Domain\Product\Models\Product;
 use App\Domain\Vendor\Models\Seller;
 use App\Http\Controllers\Controller;
-use App\Models\Order;
-use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller

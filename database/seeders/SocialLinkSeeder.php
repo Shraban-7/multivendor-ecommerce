@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\SocialLink;
+use App\Domain\Support\Models\SocialLink;
 use DB;
 use Illuminate\Database\Seeder;
 

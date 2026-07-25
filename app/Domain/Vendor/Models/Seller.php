@@ -2,17 +2,16 @@
 
 namespace App\Domain\Vendor\Models;
 
+use App\Domain\Auth\Models\User;
 use App\Domain\Order\Models\Order;
 use App\Domain\Product\Models\Category;
 use App\Domain\Product\Models\Product;
 use App\Domain\Review\Models\Review;
+use App\Domain\Shipping\Models\Country;
 use App\Domain\Shipping\Models\District;
 use App\Domain\Shipping\Models\Division;
 use App\Enums\CommissionType;
 use App\Mail\WelcomeMail;
-use App\Models\Country;
-use App\Models\SubscriptionPlan;
-use App\Models\User;
 use App\Traits\HasSubscription;
 use Database\Factories\SellerFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;

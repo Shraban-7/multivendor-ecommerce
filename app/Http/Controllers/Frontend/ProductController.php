@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Domain\Affiliate\Models\AffiliateClick;
+use App\Domain\Auth\Models\User;
 use App\Domain\Product\Models\Brand;
 use App\Domain\Product\Models\Category;
 use App\Domain\Product\Models\OptionValue;
@@ -9,8 +11,6 @@ use App\Domain\Product\Models\Product;
 use App\Domain\Review\Models\Review;
 use App\Domain\Vendor\Models\Seller;
 use App\Http\Controllers\Controller;
-use App\Models\AffiliateClick;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;

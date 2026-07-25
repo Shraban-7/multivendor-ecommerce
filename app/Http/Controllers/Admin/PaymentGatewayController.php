@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Domain\Payment\Models\PaymentGateway;
 use App\Http\Controllers\Controller;
-use App\Models\PaymentGateway;
 use Illuminate\Http\Request;
 
 class PaymentGatewayController extends Controller

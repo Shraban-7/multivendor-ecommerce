@@ -2,7 +2,7 @@
 
 namespace App\Domain\Payment\Models;
 
-use App\Models\User;
+use App\Domain\Auth\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 

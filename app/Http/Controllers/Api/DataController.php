@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Domain\Payment\Models\PaymentGateway;
 use App\Domain\Shipping\Repositories\LocationRepositoryInterface;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DistrictResource;
 use App\Http\Resources\DivisionResource;
 use App\Http\Resources\PaymentGatewayResource;
-use App\Models\PaymentGateway;
 use Illuminate\Http\Request;
 
 class DataController extends Controller

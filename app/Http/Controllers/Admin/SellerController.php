@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Domain\Order\Models\Order;
 use App\Domain\Product\Models\Product;
 use App\Domain\Shipping\Models\Division;
 use App\Domain\Vendor\Actions\ApproveVendorAction;
 use App\Domain\Vendor\Actions\RegisterVendorAction;
 use App\Domain\Vendor\Models\Seller;
+use App\Domain\Vendor\Models\SubscriptionPlan;
 use App\Domain\Vendor\Services\VendorService;
 use App\Http\Controllers\Controller;
-use App\Models\Order;
-use App\Models\SubscriptionPlan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;

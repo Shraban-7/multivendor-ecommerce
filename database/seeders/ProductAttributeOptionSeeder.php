@@ -2,8 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\ProductAttribute;
-use App\Models\ProductAttributeOption;
 use Illuminate\Database\Seeder;
 
 class ProductAttributeOptionSeeder extends Seeder

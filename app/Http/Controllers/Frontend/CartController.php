@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Domain\Order\Models\Cart;
+use App\Domain\Order\Models\CartItem;
 use App\Domain\Product\Models\Product;
 use App\Domain\Product\Models\ProductVariant;
 use App\Domain\Vendor\Models\Seller;
 use App\Http\Controllers\Controller;
-use App\Models\Cart;
-use App\Models\CartItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

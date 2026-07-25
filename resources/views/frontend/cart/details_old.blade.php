@@ -16,7 +16,7 @@
                     @else
                         @foreach ($carts as $sellerId => $cartGroup)
                             @php
-                                $seller = \App\Models\Seller::find($sellerId);
+                                $seller = \App\Domain\Vendor\Models\Seller::find($sellerId);
                                 $sellerName = $seller ? $seller->business_name : '';
                             @endphp
                             <!-- Store/Seller Header with Select All for this seller -->

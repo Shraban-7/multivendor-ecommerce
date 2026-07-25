@@ -119,10 +119,10 @@ it('VendorService::setEmployeePermissions replaces all previous permissions', fu
 // Domain model class hierarchy
 // ---------------------------------------------------------------------------
 
-it('App\Models\SellerEmployee is a class_alias of the Domain model', function (): void {
-    expect(new App\Models\SellerEmployee)
+it('SellerEmployee Domain model resolves correctly', function (): void {
+    expect(new SellerEmployee)
         ->toBeInstanceOf(SellerEmployee::class);
-    expect(is_a(App\Models\SellerEmployee::class, SellerEmployee::class, true))
+    expect(is_a(SellerEmployee::class, SellerEmployee::class, true))
         ->toBeTrue();
 });
 

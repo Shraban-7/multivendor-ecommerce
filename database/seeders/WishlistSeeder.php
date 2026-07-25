@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Wishlist;
+use App\Domain\Order\Models\Wishlist;
 use Illuminate\Database\Seeder;
 
 class WishlistSeeder extends Seeder

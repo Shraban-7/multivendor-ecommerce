@@ -4,7 +4,7 @@ namespace App\Domain\Affiliate\Services;
 
 use App\Domain\Affiliate\Models\AffiliateCommission;
 use App\Domain\Affiliate\Models\AffiliatePayout;
-use App\Models\Order;
+use App\Domain\Order\Models\Order;
 use App\Services\AffiliateService as LegacyAffiliateService;
 
 class AffiliateService

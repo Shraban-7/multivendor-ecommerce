@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Domain\Payment\Models\PaymentOption;
 use App\Http\Controllers\Controller;
-use App\Models\PaymentOption;
 use Illuminate\Http\Request;
 
 class PaymentOptionController extends Controller

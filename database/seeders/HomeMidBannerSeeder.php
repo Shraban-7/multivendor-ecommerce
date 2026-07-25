@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\HomeMidBanner;
+use App\Domain\Product\Models\HomeMidBanner;
 use Illuminate\Database\Seeder;
 
 class HomeMidBannerSeeder extends Seeder

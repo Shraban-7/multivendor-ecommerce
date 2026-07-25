@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Seller;
 
+use App\Domain\Order\Models\CartItem;
+use App\Domain\Order\Models\PosCartItem;
 use App\Domain\Product\Models\Option;
 use App\Domain\Product\Models\OptionValue;
 use App\Domain\Product\Models\Product;
@@ -9,8 +11,6 @@ use App\Domain\Product\Models\ProductVariant;
 use App\Domain\Product\Models\ProductVariantOption;
 use App\Domain\Vendor\Models\Seller;
 use App\Http\Controllers\Controller;
-use App\Models\CartItem;
-use App\Models\PosCartItem;
 use App\Services\ImageOptimizerService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;

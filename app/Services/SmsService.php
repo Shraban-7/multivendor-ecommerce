@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\SmsLog;
+use App\Domain\Support\Models\SmsLog;
 use Illuminate\Support\Facades\Http;
 
 class SmsService

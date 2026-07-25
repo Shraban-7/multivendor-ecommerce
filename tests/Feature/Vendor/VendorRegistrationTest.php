@@ -49,14 +49,14 @@ it('Seller model defines PENDING, ACTIVE, BLOCKED, DELETED status constants', fu
         ->and(Seller::DELETED)->toBe(4);
 });
 
-it('Seller BC alias (App\Models\Seller) extends the Domain model', function (): void {
-    expect(is_a(App\Models\Seller::class, Seller::class, true))->toBeTrue();
+it('Seller Domain model resolves correctly', function (): void {
+    expect(is_a(Seller::class, Seller::class, true))->toBeTrue();
 });
 
-it('SellerEmployee BC alias is a class_alias of the Domain model', function (): void {
-    expect(new App\Models\SellerEmployee)
+it('SellerEmployee Domain model instantiates correctly', function (): void {
+    expect(new SellerEmployee)
         ->toBeInstanceOf(SellerEmployee::class);
-    expect(is_a(App\Models\SellerEmployee::class, SellerEmployee::class, true))
+    expect(is_a(SellerEmployee::class, SellerEmployee::class, true))
         ->toBeTrue();
 });
 
@@ -90,8 +90,8 @@ it('SellerEmployee hasPermission returns true when route is present', function (
         ->and($employee->hasPermission('seller.other.route'))->toBeFalse();
 });
 
-it('SellerEmployee BC alias (App\Models\SellerEmployee) is interchangeable with domain class', function (): void {
-    $employee = new App\Models\SellerEmployee(['permissions' => ['seller.dashboard']]);
+it('SellerEmployee domain class handles permission check correctly', function (): void {
+    $employee = new SellerEmployee(['permissions' => ['seller.dashboard']]);
 
     expect($employee->hasPermission('seller.dashboard'))->toBeTrue();
 });

@@ -2,8 +2,8 @@
 
 namespace App\Domain\Review\Models;
 
+use App\Domain\Auth\Models\User;
 use App\Domain\Product\Models\Product;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 

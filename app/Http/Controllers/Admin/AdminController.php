@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Domain\Auth\Models\Admin;
+use App\Domain\Auth\Models\Role;
 use App\Http\Controllers\Controller;
-use App\Models\Admin;
-use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;

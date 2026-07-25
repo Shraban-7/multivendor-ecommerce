@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Domain\Auth\Models\User;
 use App\Domain\Product\Models\Category;
 use App\Domain\Product\Models\Product;
 use App\Domain\Review\Models\ReportReview;
@@ -9,7 +10,6 @@ use App\Domain\Review\Models\Review;
 use App\Domain\Vendor\Models\Seller;
 use App\Domain\Vendor\Models\SellerFollower;
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

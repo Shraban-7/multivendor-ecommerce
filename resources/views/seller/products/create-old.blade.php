@@ -18,7 +18,7 @@
                     </div>
                     <div class="mb-3 col-md-4">
                         <label class="form-label">SKU</label>
-                        <input name="sku" type="text" value="{{ \App\Models\ProductVariant::generate_sku() }}"
+                        <input name="sku" type="text" value="{{ \App\Domain\Product\Models\ProductVariant::generate_sku() }}"
                             class="form-control" required>
                     </div>
 

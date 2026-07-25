@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Banner;
+use App\Domain\Product\Models\Banner;
 
 $heroBanners = $banners[Banner::SECTION_HERO] ?? [];
 $categoryBanners = [];

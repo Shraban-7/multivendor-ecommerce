@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Domain\Auth\Models\Admin;
+use App\Domain\Auth\Models\Role;
 use App\Enums\AdminRole;
-use App\Models\Admin;
-use App\Models\Role;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 

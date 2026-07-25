@@ -2,9 +2,9 @@
 
 namespace App\Domain\Order\Services;
 
+use App\Domain\Auth\Models\Customer;
 use App\Domain\Order\Models\PosCart;
 use App\Domain\Order\Models\PosCartItem;
-use App\Models\Customer;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 

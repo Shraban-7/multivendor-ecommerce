@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Models\AffiliateCommission;
-use App\Models\Order;
-use App\Models\User;
+use App\Domain\Affiliate\Models\AffiliateCommission;
+use App\Domain\Auth\Models\User;
+use App\Domain\Order\Models\Order;
 use Illuminate\Support\Facades\Cookie;
 
 class AffiliateService

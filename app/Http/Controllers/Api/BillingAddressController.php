@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Domain\Order\Models\BillingAddress;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BillingAddressResource;
-use App\Models\BillingAddress;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

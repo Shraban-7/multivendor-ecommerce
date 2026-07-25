@@ -4,7 +4,7 @@
 @section('content')
 
     <?php
-    $promoBanner = $banners->get(\App\Models\Banner::SECTION_PROMO_MODAL)?->first();
+    $promoBanner = $banners->get(\App\Domain\Product\Models\Banner::SECTION_PROMO_MODAL)?->first();
         ?>
     @if ($promoBanner)
         <x-frontend.promoModal :banner="$promoBanner" />

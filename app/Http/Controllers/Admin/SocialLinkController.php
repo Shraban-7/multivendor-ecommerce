@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Domain\Support\Models\SocialLink;
 use App\Http\Controllers\Controller;
-use App\Models\SocialLink;
 use Illuminate\Http\Request;
 
 class SocialLinkController extends Controller

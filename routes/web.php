@@ -1,17 +1,16 @@
 <?php
 
+use App\Domain\Auth\Models\VerificationCode;
+use App\Domain\Product\Models\Product;
+use App\Domain\Product\Models\ProductImage;
+use App\Domain\Product\Models\ProductSeo;
+use App\Domain\Product\Models\ProductVariant;
 use App\Domain\Vendor\Models\Seller;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BkashController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\InvoiceController;
-use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PaymentController;
-use App\Models\Product;
-use App\Models\ProductImage;
-use App\Models\ProductSeo;
-use App\Models\ProductVariant;
-use App\Models\VerificationCode;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 

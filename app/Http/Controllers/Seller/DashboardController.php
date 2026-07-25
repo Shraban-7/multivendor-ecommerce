@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Seller;
 
+use App\Domain\Order\Models\Order;
+use App\Domain\Order\Models\OrderItem;
 use App\Domain\Product\Models\Product;
 use App\Domain\Product\Models\ProductVariant;
 use App\Domain\Vendor\Models\Seller;
 use App\Domain\Vendor\Models\SellerExpense;
 use App\Http\Controllers\Controller;
-use App\Models\Order;
-use App\Models\OrderItem;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller

@@ -5,7 +5,7 @@
 @section('content')
 <div class="flex items-center justify-center min-h-screen bg-gray-100 px-4">
     <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full text-center">
-        @if($status === \App\Models\Payment::SUCCESSFUL)
+        @if($status === \App\Domain\Payment\Models\Payment::SUCCESSFUL)
         <div class="flex flex-col items-center space-y-4">
             <div class="text-green-500">
                 <svg class="w-20 h-20" fill="none" stroke="currentColor" stroke-width="1.5"

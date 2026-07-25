@@ -2,15 +2,15 @@
 
 namespace App\Domain\Order\Models;
 
+use App\Domain\Auth\Models\Customer;
+use App\Domain\Auth\Models\User;
+use App\Domain\Payment\Models\Payment;
 use App\Domain\Product\Models\Product;
 use App\Domain\Review\Models\Review;
 use App\Domain\Vendor\Models\Seller;
 use App\Domain\Vendor\Models\SellerEmployee;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentType;
-use App\Models\Customer;
-use App\Models\Payment;
-use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

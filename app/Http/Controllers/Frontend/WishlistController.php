@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Domain\Order\Models\Wishlist;
 use App\Domain\Product\Models\Product;
 use App\Http\Controllers\Controller;
-use App\Models\Wishlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

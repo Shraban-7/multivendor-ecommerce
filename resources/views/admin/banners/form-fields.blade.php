@@ -35,7 +35,7 @@
     <div class="col-md-6">
         <label class="form-label">Section</label>
         <select name="section" class="form-select" required>
-            @foreach(\App\Models\Banner::sections() as $section)
+            @foreach(\App\Domain\Product\Models\Banner::sections() as $section)
             <option value="{{ $section }}" {{ old('section', $banner->section ?? '') == $section ? 'selected' : '' }}>
                 {{ ucfirst(str_replace('_', ' ', $section)) }}
             </option>
