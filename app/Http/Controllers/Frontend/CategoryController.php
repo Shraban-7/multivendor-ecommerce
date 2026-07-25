@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Models\Category;
-use Illuminate\Http\Request;
+use App\Domain\Product\Models\Brand;
+use App\Domain\Product\Models\Category;
+use App\Domain\Product\Models\CategoryOption;
+use App\Domain\Product\Models\Option;
+use App\Domain\Product\Models\Product;
+use App\Domain\Product\Models\ProductVariantOption;
 use App\Http\Controllers\Controller;
-use App\Models\Brand;
-use App\Models\CategoryOption;
-use App\Models\Option;
-use App\Models\Product;
-use App\Models\ProductVariantOption;
+use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
@@ -59,8 +59,8 @@ class CategoryController extends Controller
         if ($request->has('attributes')) {
             foreach ($request->attributes as $optionName => $values) {
 
-                if (!empty($values) && !in_array('all', $values)) {
-                    $ok =   $query->whereHas('variants.variantOptions.optionValue.option', function ($q) use ($optionName) {
+                if (! empty($values) && ! in_array('all', $values)) {
+                    $ok = $query->whereHas('variants.variantOptions.optionValue.option', function ($q) use ($optionName) {
                         $q->where('name', $optionName);
                     })->whereHas('variants.variantOptions.optionValue', function ($q) use ($values) {
                         $q->whereIn('value', (array) $values);
@@ -80,14 +80,15 @@ class CategoryController extends Controller
             ->with([
                 'option_values' => function ($q) use ($usedOptionValueIds) {
                     $q->whereIn('id', $usedOptionValueIds);
-                }
+                },
             ])
             ->get();
-            
+
         if ($request->ajax()) {
             if ($products->isEmpty()) {
                 return '';
             }
+
             return view('frontend.partials.product-card-load', compact('products'))->render();
         }
 

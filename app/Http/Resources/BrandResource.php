@@ -12,7 +12,7 @@ class BrandResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'image' =>is_null($this->image) ? asset('assets/frontend/images/placeholder-img.jpg') : storage_url($this->image),
+            'image' => is_null($this->image) ? asset('assets/frontend/images/placeholder-img.jpg') : storage_url($this->image),
         ];
     }
 }

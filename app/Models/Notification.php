@@ -12,7 +12,10 @@ class Notification extends Model
     protected $guarded = ['id'];
 
     const TARGET_ORDER = 'order';
+
     const TARGET_PRODUCT = 'product';
+
     const TARGET_CHAT = 'chat';
+
     const TARGET_PROMOTION = 'promotion';
 }

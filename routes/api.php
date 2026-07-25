@@ -1,23 +1,23 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BillingAddressController;
 use App\Http\Controllers\Api\CartController;
-use App\Http\Controllers\Api\ShopController;
-use App\Http\Controllers\Api\OrderController;
-use App\Http\Controllers\Api\SellerController;
-use App\Http\Controllers\Api\ProductController;
-use App\Http\Controllers\Api\ProfileController;
-use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\DataController;
 use App\Http\Controllers\Api\MobipayController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\SellerChatController;
+use App\Http\Controllers\Api\SellerController;
+use App\Http\Controllers\Api\SettingController;
+use App\Http\Controllers\Api\ShopController;
 use App\Http\Controllers\Seller\PaymentListnerController;
+use Illuminate\Support\Facades\Route;
 
 // Route::prefix('auth')->group(function () {
 //     Route::prefix('password-reset')->group(function () {

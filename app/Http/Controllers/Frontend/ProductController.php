@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Models\Brand;
-use App\Models\Category;
-use App\Models\OptionValue;
-use App\Models\User;
-use App\Models\Review;
-use App\Models\Seller;
-use App\Models\Product;
-use Illuminate\Http\Request;
-use App\Models\AffiliateClick;
-use Illuminate\Support\Facades\DB;
+use App\Domain\Product\Models\Brand;
+use App\Domain\Product\Models\Category;
+use App\Domain\Product\Models\OptionValue;
+use App\Domain\Product\Models\Product;
+use App\Domain\Review\Models\Review;
 use App\Http\Controllers\Controller;
+use App\Models\AffiliateClick;
+use App\Models\Seller;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -27,13 +27,13 @@ class ProductController extends Controller
         $priceMin = $request->price_min ?? 0;
         $priceMax = $request->price_max ?? 50000;
 
-        if (!empty($selectedCategories)) {
+        if (! empty($selectedCategories)) {
             $query->whereHas('category', function ($q) use ($selectedCategories) {
                 $q->whereIn('slug', $selectedCategories);
             });
         }
 
-        if (!empty($selectedBrands)) {
+        if (! empty($selectedBrands)) {
             $query->whereHas('brand', function ($q) use ($selectedBrands) {
                 $q->whereIn('slug', $selectedBrands);
             });
@@ -45,7 +45,7 @@ class ProductController extends Controller
 
         $subcategorySlug = $request->query('subcategory');
 
-        if (!empty($subcategorySlug)) {
+        if (! empty($subcategorySlug)) {
 
             $subcategory = Category::where('slug', $subcategorySlug)->first();
 
@@ -60,10 +60,9 @@ class ProductController extends Controller
             $valuesArray = is_array($values) ? $values : explode(',', $values);
 
             $query->whereHas('variants.option_values', function ($q) use ($valuesArray) {
-                $q->whereIn('option_values.id', $valuesArray); 
+                $q->whereIn('option_values.id', $valuesArray);
             });
         }
-
 
         switch ($sortFilter) {
 
@@ -243,7 +242,7 @@ class ProductController extends Controller
             'totalReviews' => $totalReviews,
             'averageRating' => round($averageRating, 1),
             // 'seller' => $seller,
-            'seo' => $productModel->seo
+            'seo' => $productModel->seo,
         ]);
     }
 

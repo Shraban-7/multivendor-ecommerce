@@ -1,9 +1,9 @@
 <?php
 
 namespace Database\Seeders;
+
 use App\Models\PaymentOption;
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class PaymentOptionSeeder extends Seeder
 {

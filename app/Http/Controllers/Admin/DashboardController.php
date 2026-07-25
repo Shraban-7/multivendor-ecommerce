@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
+use App\Domain\Product\Models\Product;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
-use App\Models\Product;
 use App\Models\Seller;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -44,7 +43,7 @@ class DashboardController extends Controller
             ->orderBy('month')
             ->get();
 
-            $data = [];
+        $data = [];
         $data['total_products'] = Product::count();
         $data['total_orders'] = Order::count();
         $data['pending_orders'] = Order::pending()->count();

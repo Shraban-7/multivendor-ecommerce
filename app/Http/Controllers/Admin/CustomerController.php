@@ -5,13 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\User;
-use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
     public function index()
     {
-       $customers = User::with('country')->get();
+        $customers = User::with('country')->get();
 
         return view('admin.customers.index', compact('customers'));
     }
@@ -30,7 +29,6 @@ class CustomerController extends Controller
 
         $data['customer'] = $customer;
 
-
-        return view('admin.customers.profile',$data);
+        return view('admin.customers.profile', $data);
     }
 }

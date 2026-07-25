@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Domain\Vendor\Models\SellerSubscription;
 use App\Http\Controllers\Controller;
-use App\Models\SellerSubscription;
 use App\Models\SubscriptionPlan;
 use Illuminate\Http\Request;
 

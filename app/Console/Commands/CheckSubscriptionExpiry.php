@@ -1,12 +1,12 @@
 <?php
 
 // app/Console/Commands/CheckSubscriptionExpiry.php
+
 namespace App\Console\Commands;
 
-use App\Models\SellerSubscription;
-use Illuminate\Console\Command;
-use App\Models\VendorSubscription;
+use App\Domain\Vendor\Models\SellerSubscription;
 use Carbon\Carbon;
+use Illuminate\Console\Command;
 
 class CheckSubscriptionExpiry extends Command
 {

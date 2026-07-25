@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\User;
 use App\Enums\UserRole;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use App\Models\VerificationCode;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\OtpLog;
+use App\Models\User;
+use App\Models\VerificationCode;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class AuthController extends Controller
 {
@@ -23,7 +23,7 @@ class AuthController extends Controller
     public function checkPhone(Request $request)
     {
         $validator = validateRequest($request, [
-            'phone' => $this->phoneValidationRules()
+            'phone' => $this->phoneValidationRules(),
         ]);
 
         if ($validator->fails()) {
@@ -35,7 +35,7 @@ class AuthController extends Controller
         $user = User::where('phone', $phone)->first();
         if ($user) {
             return apiResponse([
-                'user_exists' => true
+                'user_exists' => true,
             ]);
         }
 
@@ -60,7 +60,7 @@ class AuthController extends Controller
         $phone = $request->phone;
 
         $otpLog = OtpLog::verify($phone, $request->otp, OtpLog::TYPE_SIGNUP);
-        if (!$otpLog) {
+        if (! $otpLog) {
             return errorResponse('Invalid or expired verification code.');
         }
 
@@ -68,7 +68,7 @@ class AuthController extends Controller
 
         return apiResponse([
             'message' => 'OTP verified.',
-            'is_existing_user' => (bool)$user,
+            'is_existing_user' => (bool) $user,
         ]);
     }
 
@@ -97,7 +97,7 @@ class AuthController extends Controller
 
         return apiResponse([
             'user' => (new UserResource($user)),
-            'token' => $user->createToken("API TOKEN")->plainTextToken,
+            'token' => $user->createToken('API TOKEN')->plainTextToken,
         ], 'Signup successful');
     }
 
@@ -106,7 +106,7 @@ class AuthController extends Controller
         $validator = validateRequest($request, [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'phone'    => 'required|string|max:20',
+            'phone' => 'required|string|max:20',
             'password' => 'required|string|min:5|confirmed',
             'role' => ['nullable', Rule::in([
                 UserRole::AFFILIATE->label(),
@@ -132,7 +132,7 @@ class AuthController extends Controller
         $user->sendEmailVerificationMail();
 
         return apiResponse([
-            'token' => $user->createToken("API TOKEN")->plainTextToken,
+            'token' => $user->createToken('API TOKEN')->plainTextToken,
         ], 'Signup successful');
     }
 
@@ -149,17 +149,17 @@ class AuthController extends Controller
 
         $user = User::where('phone', $request->phone)->first();
 
-        if (!$user) {
-            return errorResponse("No account found with this phone!");
+        if (! $user) {
+            return errorResponse('No account found with this phone!');
         }
 
-        if (!Hash::check($request->password, $user->password)) {
+        if (! Hash::check($request->password, $user->password)) {
             return errorResponse('Incorrect password!');
         }
 
         return apiResponse([
             'user' => (new UserResource($user)),
-            'token' => $user->createToken("API TOKEN")->plainTextToken,
+            'token' => $user->createToken('API TOKEN')->plainTextToken,
         ], 'Login Successful');
     }
 
@@ -214,7 +214,7 @@ class AuthController extends Controller
             ->latest()
             ->first();
 
-        if (!$verification_code) {
+        if (! $verification_code) {
             return errorResponse('No reset code found or it has already been used.');
         }
 
@@ -243,13 +243,13 @@ class AuthController extends Controller
 
         User::where('email', $request->email)
             ->update([
-                'password' => Hash::make($request->password)
+                'password' => Hash::make($request->password),
             ]);
 
         VerificationCode::where('code', $request->reset_code)
             ->where('email', $request->email)
             ->update([
-                'used_at' => now()
+                'used_at' => now(),
             ]);
 
         return successResponse('Password reset successfully.');
@@ -275,6 +275,7 @@ class AuthController extends Controller
 
         if ($alreadySent && $alreadySent->expiry_at && $alreadySent->expiry_at > now()) {
             $timeLeft = now()->diffForHumans($alreadySent->expiry_at, false, true);
+
             return errorResponse("Please wait for {$timeLeft} to request another code.");
         }
 
@@ -309,7 +310,7 @@ class AuthController extends Controller
             ->latest()
             ->first();
 
-        if (!$verification) {
+        if (! $verification) {
             return errorResponse('Invalid or expired verification code.');
         }
 

@@ -1,8 +1,10 @@
 <?php
+
 namespace App\Enums;
 
-enum CommissionType: string {
-    case FLAT       = 'flat';
+enum CommissionType: string
+{
+    case FLAT = 'flat';
     case PERCENTAGE = 'percentage';
 
     public function label(): string

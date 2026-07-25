@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Domain\Product\Models\Product;
 use App\Http\Controllers\Controller;
-use App\Models\Product;
 use App\Models\Seller;
 use Illuminate\Http\Request;
 
@@ -17,11 +17,11 @@ class SearchController extends Controller
             return response()->json(['html' => '']);
         }
 
-        $products = Product::where('name', 'like', '%' . $query . '%')
+        $products = Product::where('name', 'like', '%'.$query.'%')
             ->take(5)
             ->get();
 
-        $sellers = Seller::where('business_name', 'like', '%' . $query . '%')
+        $sellers = Seller::where('business_name', 'like', '%'.$query.'%')
             ->take(5)
             ->get();
 

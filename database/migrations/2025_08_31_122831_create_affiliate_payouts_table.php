@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('affiliate_payouts', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('affiliate_id')->nullable();
-            $table->decimal('amount',10,2)->nullable();
+            $table->decimal('amount', 10, 2)->nullable();
             $table->string('method')->nullable();
             $table->text('account_details')->nullable();
             $table->integer('status')->default(0);

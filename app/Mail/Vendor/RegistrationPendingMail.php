@@ -3,8 +3,8 @@
 namespace App\Mail\Vendor;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
@@ -34,7 +34,7 @@ class RegistrationPendingMail extends Mailable
             with: [
                 'receipent_name' => $this->receipentName,
                 'header_subtitle' => 'Registration Pending Mail',
-                'seller_guide_url' => route('static.sellerGuide')
+                'seller_guide_url' => route('static.sellerGuide'),
             ],
         );
     }
@@ -42,7 +42,7 @@ class RegistrationPendingMail extends Mailable
     /**
      * Get the attachments for the message.
      *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
+     * @return array<int, Attachment>
      */
     public function attachments(): array
     {

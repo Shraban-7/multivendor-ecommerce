@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Models\Order;
-use Illuminate\Http\Request;
-use App\Models\AffiliateClick;
 use App\Http\Controllers\Controller;
+use App\Models\AffiliateClick;
 use App\Models\AffiliateCommission;
 use App\Models\AffiliatePayout;
-use App\Models\User;
+use App\Models\Order;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AffiliatorController extends Controller
@@ -23,7 +22,7 @@ class AffiliatorController extends Controller
                 $startDate = now()->startOfWeek();
                 $endDate = now()->endOfWeek();
                 $months = collect(range(0, 6))
-                    ->map(fn($i) => now()->startOfWeek()->addDays($i)->format('D'))
+                    ->map(fn ($i) => now()->startOfWeek()->addDays($i)->format('D'))
                     ->values();
                 $groupByFormat = 'D';
                 break;
@@ -33,7 +32,7 @@ class AffiliatorController extends Controller
                 $endDate = now()->endOfMonth();
                 $daysInMonth = now()->daysInMonth;
                 $months = collect(range(1, $daysInMonth))
-                    ->map(fn($d) => str_pad($d, 2, '0', STR_PAD_LEFT))
+                    ->map(fn ($d) => str_pad($d, 2, '0', STR_PAD_LEFT))
                     ->values();
                 $groupByFormat = 'd';
                 break;
@@ -42,7 +41,7 @@ class AffiliatorController extends Controller
                 $startDate = now()->subMonths(2)->startOfMonth();
                 $endDate = now()->endOfMonth();
                 $months = collect(range(0, 2))
-                    ->map(fn($i) => now()->subMonths($i)->format('M'))
+                    ->map(fn ($i) => now()->subMonths($i)->format('M'))
                     ->reverse()
                     ->values();
                 $groupByFormat = 'M';
@@ -52,17 +51,17 @@ class AffiliatorController extends Controller
                 $startDate = now()->subMonths(5)->startOfMonth();
                 $endDate = now()->endOfMonth();
                 $months = collect(range(0, 5))
-                    ->map(fn($i) => now()->subMonths($i)->format('M'))
+                    ->map(fn ($i) => now()->subMonths($i)->format('M'))
                     ->reverse()
                     ->values();
                 $groupByFormat = 'M';
                 break;
 
-            default: 
+            default:
                 $startDate = now()->subMonths(11)->startOfMonth();
                 $endDate = now()->endOfMonth();
                 $months = collect(range(0, 11))
-                    ->map(fn($i) => now()->subMonths($i)->format('M'))
+                    ->map(fn ($i) => now()->subMonths($i)->format('M'))
                     ->reverse()
                     ->values();
                 $groupByFormat = 'M';
@@ -79,33 +78,33 @@ class AffiliatorController extends Controller
         $clicks_data = AffiliateClick::where('affiliate_id', $affiliate_id)
             ->whereBetween('created_at', [$startDate, $endDate])
             ->get()
-            ->groupBy(fn($c) => $c->created_at->format($groupByFormat))
+            ->groupBy(fn ($c) => $c->created_at->format($groupByFormat))
             ->map->count();
 
         $earnings_data = AffiliateCommission::where('affiliate_id', $affiliate_id)
             ->where('status', AffiliateCommission::APPROVED)
             ->whereBetween('created_at', [$startDate, $endDate])
             ->get()
-            ->groupBy(fn($e) => $e->created_at->format($groupByFormat))
+            ->groupBy(fn ($e) => $e->created_at->format($groupByFormat))
             ->map->sum('commission_amount');
 
         $pending_data = AffiliateCommission::where('affiliate_id', $affiliate_id)
             ->where('status', AffiliateCommission::APPROVED)
             ->whereBetween('created_at', [$startDate, $endDate])
             ->get()
-            ->groupBy(fn($p) => $p->created_at->format($groupByFormat))
+            ->groupBy(fn ($p) => $p->created_at->format($groupByFormat))
             ->map->sum('commission_amount');
 
         $orders_data = Order::where('affiliate_id', $affiliate_id)
             ->whereBetween('created_at', [$startDate, $endDate])
             ->get()
-            ->groupBy(fn($o) => $o->created_at->format($groupByFormat))
+            ->groupBy(fn ($o) => $o->created_at->format($groupByFormat))
             ->map->count();
 
-        $clicks_data = $months->map(fn($m) => $clicks_data[$m] ?? 0)->values();
-        $earnings_data = $months->map(fn($m) => $earnings_data[$m] ?? 0)->values();
-        $pending_data = $months->map(fn($m) => $pending_data[$m] ?? 0)->values();
-        $orders_data = $months->map(fn($m) => $orders_data[$m] ?? 0)->values();
+        $clicks_data = $months->map(fn ($m) => $clicks_data[$m] ?? 0)->values();
+        $earnings_data = $months->map(fn ($m) => $earnings_data[$m] ?? 0)->values();
+        $pending_data = $months->map(fn ($m) => $pending_data[$m] ?? 0)->values();
+        $orders_data = $months->map(fn ($m) => $orders_data[$m] ?? 0)->values();
 
         return view('frontend.affiliator.dashboard', compact(
             'clicks',
@@ -121,8 +120,6 @@ class AffiliatorController extends Controller
         ));
     }
 
-
-
     public function withdraw(Request $request)
     {
         $affiliate = Auth::user();
@@ -136,9 +133,9 @@ class AffiliatorController extends Controller
         }
 
         $data = $request->validate([
-            'amount' => 'required|numeric|min:1|max:' . $affiliate->balance,
+            'amount' => 'required|numeric|min:1|max:'.$affiliate->balance,
             'method' => 'required',
-            'account_details' => 'required'
+            'account_details' => 'required',
         ]);
 
         if ($affiliate->balance < $data['amount']) {

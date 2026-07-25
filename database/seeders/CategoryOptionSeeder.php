@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Category;
-use App\Models\Option;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Domain\Product\Models\Category;
+use App\Domain\Product\Models\Option;
 use Illuminate\Database\Seeder;
 
 class CategoryOptionSeeder extends Seeder
@@ -13,318 +12,318 @@ class CategoryOptionSeeder extends Seeder
     {
         $categories = [
             [
-                "category" => "Fashion & Clothing",
-                "subcategories" => [
+                'category' => 'Fashion & Clothing',
+                'subcategories' => [
                     "Men's Fashion",
                     "Women's Fashion",
-                    "Kids & Babies",
-                    "T-Shirts & Polos"
+                    'Kids & Babies',
+                    'T-Shirts & Polos',
                 ],
-                "options" => ["Size", "Color"]
+                'options' => ['Size', 'Color'],
             ],
             [
-                "category" => "Men's Fashion",
-                "subcategories" => [],
-                "options" => ["Size", "Color"]
+                'category' => "Men's Fashion",
+                'subcategories' => [],
+                'options' => ['Size', 'Color'],
             ],
             [
-                "category" => "Women's Fashion",
-                "subcategories" => [],
-                "options" => ["Size", "Color"]
+                'category' => "Women's Fashion",
+                'subcategories' => [],
+                'options' => ['Size', 'Color'],
             ],
             [
-                "category" => "Kids & Babies",
-                "subcategories" => [],
-                "options" => ["Size", "Color"]
+                'category' => 'Kids & Babies',
+                'subcategories' => [],
+                'options' => ['Size', 'Color'],
             ],
             [
-                "category" => "T-Shirts & Polos",
-                "subcategories" => [],
-                "options" => ["Size", "Color"]
+                'category' => 'T-Shirts & Polos',
+                'subcategories' => [],
+                'options' => ['Size', 'Color'],
             ],
 
             [
-                "category" => "Footwear",
-                "subcategories" => [
+                'category' => 'Footwear',
+                'subcategories' => [
                     "Men's Footwear",
                     "Women's Footwear",
-                    "Kids Footwear",
-                    "Sliders"
+                    'Kids Footwear',
+                    'Sliders',
                 ],
-                "options" => ["Size", "Color"]
+                'options' => ['Size', 'Color'],
             ],
             [
-                "category" => "Men's Footwear",
-                "subcategories" => [],
-                "options" => ["Size", "Color"]
+                'category' => "Men's Footwear",
+                'subcategories' => [],
+                'options' => ['Size', 'Color'],
             ],
             [
-                "category" => "Women's Footwear",
-                "subcategories" => [],
-                "options" => ["Size", "Color"]
+                'category' => "Women's Footwear",
+                'subcategories' => [],
+                'options' => ['Size', 'Color'],
             ],
             [
-                "category" => "Kids Footwear",
-                "subcategories" => [],
-                "options" => ["Size", "Color"]
+                'category' => 'Kids Footwear',
+                'subcategories' => [],
+                'options' => ['Size', 'Color'],
             ],
             [
-                "category" => "Sliders",
-                "subcategories" => [],
-                "options" => ["Size", "Color"]
+                'category' => 'Sliders',
+                'subcategories' => [],
+                'options' => ['Size', 'Color'],
             ],
 
             [
-                "category" => "Beauty & Personal Care",
-                "subcategories" => [
-                    "Skincare",
-                    "Haircare",
-                    "Makeup",
-                    "Fragrances",
-                    "Men's Grooming"
+                'category' => 'Beauty & Personal Care',
+                'subcategories' => [
+                    'Skincare',
+                    'Haircare',
+                    'Makeup',
+                    'Fragrances',
+                    "Men's Grooming",
                 ],
-                "options" => ["Volume", "Shade", "Fragrance"]
+                'options' => ['Volume', 'Shade', 'Fragrance'],
             ],
             [
-                "category" => "Skincare",
-                "subcategories" => [],
-                "options" => ["Volume"]
+                'category' => 'Skincare',
+                'subcategories' => [],
+                'options' => ['Volume'],
             ],
             [
-                "category" => "Haircare",
-                "subcategories" => [],
-                "options" => ["Volume"]
+                'category' => 'Haircare',
+                'subcategories' => [],
+                'options' => ['Volume'],
             ],
             [
-                "category" => "Makeup",
-                "subcategories" => [],
-                "options" => ["Shade"]
+                'category' => 'Makeup',
+                'subcategories' => [],
+                'options' => ['Shade'],
             ],
             [
-                "category" => "Fragrances",
-                "subcategories" => [],
-                "options" => ["Volume"]
+                'category' => 'Fragrances',
+                'subcategories' => [],
+                'options' => ['Volume'],
             ],
             [
-                "category" => "Men's Grooming",
-                "subcategories" => [],
-                "options" => ["Volume"]
+                'category' => "Men's Grooming",
+                'subcategories' => [],
+                'options' => ['Volume'],
             ],
 
             [
-                "category" => "Electronics",
-                "subcategories" => [
-                    "Mobile Accessories",
-                    "Computer Accessories",
-                    "Gadgets",
-                    "Audio & Video",
-                    "Cable",
-                    "Earphone (Wired)",
-                    "Neckband",
-                    "Ear Buds/TWS",
-                    "Bluetooth Speaker",
-                    "USB Adapter",
-                    "Charger"
+                'category' => 'Electronics',
+                'subcategories' => [
+                    'Mobile Accessories',
+                    'Computer Accessories',
+                    'Gadgets',
+                    'Audio & Video',
+                    'Cable',
+                    'Earphone (Wired)',
+                    'Neckband',
+                    'Ear Buds/TWS',
+                    'Bluetooth Speaker',
+                    'USB Adapter',
+                    'Charger',
                 ],
-                "options" => ["Color", "Storage", "Region", "Size"]
+                'options' => ['Color', 'Storage', 'Region', 'Size'],
             ],
             [
-                "category" => "Mobile Accessories",
-                "subcategories" => [],
-                "options" => ["Color"]
+                'category' => 'Mobile Accessories',
+                'subcategories' => [],
+                'options' => ['Color'],
             ],
             [
-                "category" => "Computer Accessories",
-                "subcategories" => [],
-                "options" => ["Color"]
+                'category' => 'Computer Accessories',
+                'subcategories' => [],
+                'options' => ['Color'],
             ],
             [
-                "category" => "Gadgets",
-                "subcategories" => [],
-                "options" => ["Color", "Storage", "Region"]
+                'category' => 'Gadgets',
+                'subcategories' => [],
+                'options' => ['Color', 'Storage', 'Region'],
             ],
             [
-                "category" => "Audio & Video",
-                "subcategories" => [],
-                "options" => ["Color"]
+                'category' => 'Audio & Video',
+                'subcategories' => [],
+                'options' => ['Color'],
             ],
             [
-                "category" => "Cable",
-                "subcategories" => [],
-                "options" => ["Length", "Color"]
+                'category' => 'Cable',
+                'subcategories' => [],
+                'options' => ['Length', 'Color'],
             ],
             [
-                "category" => "Earphone (Wired)",
-                "subcategories" => [],
-                "options" => ["Color"]
+                'category' => 'Earphone (Wired)',
+                'subcategories' => [],
+                'options' => ['Color'],
             ],
             [
-                "category" => "Neckband",
-                "subcategories" => [],
-                "options" => ["Color"]
+                'category' => 'Neckband',
+                'subcategories' => [],
+                'options' => ['Color'],
             ],
             [
-                "category" => "Ear Buds/TWS",
-                "subcategories" => [],
-                "options" => ["Color"]
+                'category' => 'Ear Buds/TWS',
+                'subcategories' => [],
+                'options' => ['Color'],
             ],
             [
-                "category" => "Bluetooth Speaker",
-                "subcategories" => [],
-                "options" => ["Color"]
+                'category' => 'Bluetooth Speaker',
+                'subcategories' => [],
+                'options' => ['Color'],
             ],
             [
-                "category" => "USB Adapter",
-                "subcategories" => [],
-                "options" => ["Color"]
+                'category' => 'USB Adapter',
+                'subcategories' => [],
+                'options' => ['Color'],
             ],
             [
-                "category" => "Charger",
-                "subcategories" => [],
-                "options" => ["Color"]
+                'category' => 'Charger',
+                'subcategories' => [],
+                'options' => ['Color'],
             ],
 
             [
-                "category" => "Home & Living",
-                "subcategories" => [
-                    "Home Decor",
-                    "Gifts & Novelties",
-                    "Kitchen & Dining"
+                'category' => 'Home & Living',
+                'subcategories' => [
+                    'Home Decor',
+                    'Gifts & Novelties',
+                    'Kitchen & Dining',
                 ],
-                "options" => ["Color", "Size"]
+                'options' => ['Color', 'Size'],
             ],
             [
-                "category" => "Home Decor",
-                "subcategories" => [],
-                "options" => ["Color", "Size"]
+                'category' => 'Home Decor',
+                'subcategories' => [],
+                'options' => ['Color', 'Size'],
             ],
             [
-                "category" => "Gifts & Novelties",
-                "subcategories" => [],
-                "options" => ["Color"]
+                'category' => 'Gifts & Novelties',
+                'subcategories' => [],
+                'options' => ['Color'],
             ],
             [
-                "category" => "Kitchen & Dining",
-                "subcategories" => [],
-                "options" => ["Color", "Size"]
+                'category' => 'Kitchen & Dining',
+                'subcategories' => [],
+                'options' => ['Color', 'Size'],
             ],
 
             [
-                "category" => "Kids And Baby",
-                "subcategories" => [
-                    "Action Figures",
-                    "Board Games",
-                    "Educational Toys",
-                    "Outdoor Toys",
-                    "Puzzles"
+                'category' => 'Kids And Baby',
+                'subcategories' => [
+                    'Action Figures',
+                    'Board Games',
+                    'Educational Toys',
+                    'Outdoor Toys',
+                    'Puzzles',
                 ],
-                "options" => ["Color", "Size"]
+                'options' => ['Color', 'Size'],
             ],
             [
-                "category" => "Action Figures",
-                "subcategories" => [],
-                "options" => ["Character", "Size", "Color"]
+                'category' => 'Action Figures',
+                'subcategories' => [],
+                'options' => ['Character', 'Size', 'Color'],
             ],
             [
-                "category" => "Board Games",
-                "subcategories" => [],
-                "options" => ["Edition"]
+                'category' => 'Board Games',
+                'subcategories' => [],
+                'options' => ['Edition'],
             ],
             [
-                "category" => "Educational Toys",
-                "subcategories" => [],
-                "options" => ["Color", "Size"]
+                'category' => 'Educational Toys',
+                'subcategories' => [],
+                'options' => ['Color', 'Size'],
             ],
             [
-                "category" => "Outdoor Toys",
-                "subcategories" => [],
-                "options" => ["Color", "Size"]
+                'category' => 'Outdoor Toys',
+                'subcategories' => [],
+                'options' => ['Color', 'Size'],
             ],
             [
-                "category" => "Puzzles",
-                "subcategories" => [],
-                "options" => ["Pieces Count"]
+                'category' => 'Puzzles',
+                'subcategories' => [],
+                'options' => ['Pieces Count'],
             ],
 
             [
-                "category" => "Sports & Outdoors",
-                "subcategories" => [
-                    "Fitness Equipment",
-                    "Team Sports",
-                    "Outdoor Gear",
-                    "Cycling"
+                'category' => 'Sports & Outdoors',
+                'subcategories' => [
+                    'Fitness Equipment',
+                    'Team Sports',
+                    'Outdoor Gear',
+                    'Cycling',
                 ],
-                "options" => ["Size", "Color"]
+                'options' => ['Size', 'Color'],
             ],
             [
-                "category" => "Fitness Equipment",
-                "subcategories" => [],
-                "options" => ["Weight", "Color"]
+                'category' => 'Fitness Equipment',
+                'subcategories' => [],
+                'options' => ['Weight', 'Color'],
             ],
             [
-                "category" => "Team Sports",
-                "subcategories" => [],
-                "options" => ["Size", "Color"]
+                'category' => 'Team Sports',
+                'subcategories' => [],
+                'options' => ['Size', 'Color'],
             ],
             [
-                "category" => "Outdoor Gear",
-                "subcategories" => [],
-                "options" => ["Size", "Color"]
+                'category' => 'Outdoor Gear',
+                'subcategories' => [],
+                'options' => ['Size', 'Color'],
             ],
             [
-                "category" => "Cycling",
-                "subcategories" => [],
-                "options" => ["Frame Size", "Color"]
+                'category' => 'Cycling',
+                'subcategories' => [],
+                'options' => ['Frame Size', 'Color'],
             ],
 
             [
-                "category" => "Automobile",
-                "subcategories" => [
-                    "Cars",
-                    "Car Accessories",
-                    "Motorcycle Parts",
-                    "Engine Oils & Fluids",
-                    "Tires & Wheels",
-                    "Interior Accessories",
-                    "Tools & Equipment"
+                'category' => 'Automobile',
+                'subcategories' => [
+                    'Cars',
+                    'Car Accessories',
+                    'Motorcycle Parts',
+                    'Engine Oils & Fluids',
+                    'Tires & Wheels',
+                    'Interior Accessories',
+                    'Tools & Equipment',
                 ],
-                "options" => ["Color", "Variant", "Region"]
+                'options' => ['Color', 'Variant', 'Region'],
             ],
             [
-                "category" => "Cars",
-                "subcategories" => [],
-                "options" => ["Color", "Variant", "Region"]
+                'category' => 'Cars',
+                'subcategories' => [],
+                'options' => ['Color', 'Variant', 'Region'],
             ],
             [
-                "category" => "Car Accessories",
-                "subcategories" => [],
-                "options" => ["Color"]
+                'category' => 'Car Accessories',
+                'subcategories' => [],
+                'options' => ['Color'],
             ],
             [
-                "category" => "Motorcycle Parts",
-                "subcategories" => [],
-                "options" => ["Color"]
+                'category' => 'Motorcycle Parts',
+                'subcategories' => [],
+                'options' => ['Color'],
             ],
             [
-                "category" => "Engine Oils & Fluids",
-                "subcategories" => [],
-                "options" => ["Volume"]
+                'category' => 'Engine Oils & Fluids',
+                'subcategories' => [],
+                'options' => ['Volume'],
             ],
             [
-                "category" => "Tires & Wheels",
-                "subcategories" => [],
-                "options" => ["Size"]
+                'category' => 'Tires & Wheels',
+                'subcategories' => [],
+                'options' => ['Size'],
             ],
             [
-                "category" => "Interior Accessories",
-                "subcategories" => [],
-                "options" => ["Color"]
+                'category' => 'Interior Accessories',
+                'subcategories' => [],
+                'options' => ['Color'],
             ],
             [
-                "category" => "Tools & Equipment",
-                "subcategories" => [],
-                "options" => ["Size"]
-            ]
+                'category' => 'Tools & Equipment',
+                'subcategories' => [],
+                'options' => ['Size'],
+            ],
         ];
 
         foreach ($categories as $cat) {

@@ -16,11 +16,13 @@ class AutoMarkNotificationsAsRead
 
     public function terminate($request, $response)
     {
-        if (!auth()->check()) return;
+        if (! auth()->check()) {
+            return;
+        }
 
         $ids = $request->attributes->get('notifications_to_mark_read', []);
 
-        if (!empty($ids)) {
+        if (! empty($ids)) {
             Notification::whereIn('id', $ids)
                 ->update(['is_read' => true]);
         }

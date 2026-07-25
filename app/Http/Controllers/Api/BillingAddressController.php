@@ -40,13 +40,13 @@ class BillingAddressController extends Controller
         if ($data['is_default'] == 1) {
             BillingAddress::where('user_id', $user_id)
                 ->update([
-                    'is_default' => false
+                    'is_default' => false,
                 ]);
         }
 
         BillingAddress::create($data);
 
-        return successResponse("Billing address added successfully");
+        return successResponse('Billing address added successfully');
     }
 
     public function update(BillingAddress $address, Request $request)
@@ -70,12 +70,12 @@ class BillingAddressController extends Controller
         if ($data['is_default'] == 1) {
             BillingAddress::where('user_id', Auth::id())
                 ->update([
-                    'is_default' => false
+                    'is_default' => false,
                 ]);
         }
 
         $address->update($data);
 
-        return successResponse("Billing address updated successfully");
+        return successResponse('Billing address updated successfully');
     }
 }

@@ -8,7 +8,6 @@ use App\Models\Order;
 use App\Models\Seller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class CustomerController extends Controller
 {

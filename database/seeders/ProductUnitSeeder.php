@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\ProductUnit;
+use App\Domain\Product\Models\ProductUnit;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class ProductUnitSeeder extends Seeder
 {
@@ -24,7 +23,7 @@ class ProductUnitSeeder extends Seeder
         ];
 
         foreach ($units as $unit) {
-           ProductUnit::insert([
+            ProductUnit::insert([
                 'name' => $unit['name'],
                 'short_name' => $unit['short_name'],
             ]);

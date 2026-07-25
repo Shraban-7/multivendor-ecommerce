@@ -14,7 +14,7 @@ class PaymentGatewayResource extends JsonResource
             'name' => $this->name,
             'image' => storage_url($this->image),
             'is_enabled' => $this->is_enabled,
-            'is_default' => $this->is_default
+            'is_default' => $this->is_default,
         ];
     }
 }

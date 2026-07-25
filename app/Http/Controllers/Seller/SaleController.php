@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers\Seller;
 
-use App\Models\Order;
-use App\Models\Seller;
-use App\Models\Product;
-use App\Models\Customer;
-use App\Models\OrderItem;
-use Illuminate\Http\Request;
-use App\Models\ProductVariant;
-use App\Models\SellerEmployee;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use App\Domain\Product\Models\Product;
+use App\Domain\Product\Models\ProductVariant;
+use App\Domain\Vendor\Models\SellerEmployee;
 use App\Http\Controllers\Controller;
+use App\Models\Customer;
+use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\Seller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SaleController extends Controller
 {
@@ -22,18 +21,18 @@ class SaleController extends Controller
             ->whereNull('user_id');
 
         if ($request->filled('invoice_id')) {
-            $orders->where('invoice_id', 'like', '%' . $request->invoice_id . '%');
+            $orders->where('invoice_id', 'like', '%'.$request->invoice_id.'%');
         }
 
         if ($request->filled('customer_name')) {
             $orders->whereHas('customer', function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->customer_name . '%');
+                $q->where('name', 'like', '%'.$request->customer_name.'%');
             });
         }
 
         if ($request->filled('customer_phone')) {
             $orders->whereHas('customer', function ($q) use ($request) {
-                $q->where('phone', 'like', '%' . $request->customer_phone . '%');
+                $q->where('phone', 'like', '%'.$request->customer_phone.'%');
             });
         }
 
@@ -53,7 +52,7 @@ class SaleController extends Controller
     {
         $orderId = $request->input('order_id', $request->query('order_id'));
         $seller = Seller::find(get_seller_id());
-        
+
         $data = $request->validate([
             'customer_name' => 'nullable|string|max:255|required_with:customer_phone',
             'customer_phone' => 'nullable|string|max:20|required_with:customer_name',
@@ -68,7 +67,7 @@ class SaleController extends Controller
             'items.*.price' => 'nullable|numeric|min:0',
             'items.*.quantity' => 'required|numeric|min:1',
             'additional_discount' => 'nullable|numeric|min:0',
-            'employee_id' => 'nullable'
+            'employee_id' => 'nullable',
         ]);
 
         $employee = SellerEmployee::find($data['employee_id']);
@@ -81,12 +80,12 @@ class SaleController extends Controller
         DB::beginTransaction();
 
         try {
-            if (!empty($data['customer_name']) && !empty($data['customer_phone'])) {
+            if (! empty($data['customer_name']) && ! empty($data['customer_phone'])) {
                 $customer = Customer::firstOrCreate([
                     'name' => $data['customer_name'],
-                    'phone' => $data['customer_phone']
+                    'phone' => $data['customer_phone'],
                 ], [
-                    'seller_id' => $seller->id
+                    'seller_id' => $seller->id,
                 ]);
                 $order->update(['customer_id' => $customer->id]);
             }
@@ -182,11 +181,12 @@ class SaleController extends Controller
                 'total' => $total,
                 'paid' => $paid,
                 'due' => $due,
-            ], "Order updated successfully");
+            ], 'Order updated successfully');
         } catch (\Throwable $e) {
             DB::rollBack();
             \Log::error($e->getMessage());
-            return errorResponse("Order update failed, please try again.");
+
+            return errorResponse('Order update failed, please try again.');
         }
     }
 
@@ -194,12 +194,12 @@ class SaleController extends Controller
     {
         $order = Order::with('items')->find($id);
 
-        if (!$order) {
+        if (! $order) {
             return response()->json(['message' => 'Order not found'], 404);
         }
 
         foreach ($order->items as $item) {
-            if (!empty($item->product_variant_id)) {
+            if (! empty($item->product_variant_id)) {
 
                 $variant = ProductVariant::find($item->product_variant_id);
 
@@ -225,7 +225,7 @@ class SaleController extends Controller
 
         $order->delete();
 
-        return successResponse("Order Deleted Successfully!");
+        return successResponse('Order Deleted Successfully!');
     }
 
     public function itemAdd(Request $request)
@@ -242,15 +242,15 @@ class SaleController extends Controller
             ->with('items.variant.product')
             ->first();
 
-        if (!$order) {
-            return errorResponse("Order not found");
+        if (! $order) {
+            return errorResponse('Order not found');
         }
 
         $quantity = $data['quantity'];
         $variant = null;
         $product = null;
 
-        if (!empty($data['variant_id'])) {
+        if (! empty($data['variant_id'])) {
             $variant = ProductVariant::with('product')->find($data['variant_id']);
             if ($variant) {
                 $product = $variant->product;
@@ -259,10 +259,10 @@ class SaleController extends Controller
             }
         }
 
-        if (!$variant) {
+        if (! $variant) {
             $product = Product::find($data['product_id']);
-            if (!$product) {
-                return errorResponse("Product not found");
+            if (! $product) {
+                return errorResponse('Product not found');
             }
             $sellingPrice = $product->selling_price;
             $unitPrice = $product->discounted_price ?? $sellingPrice;
@@ -273,8 +273,8 @@ class SaleController extends Controller
         $total = $unitPrice * $quantity;
 
         $existing = $order->items()
-            ->when($variant, fn($q) => $q->where('product_variant_id', $variant->id))
-            ->when(!$variant, fn($q) => $q->where('product_id', $product->id)->whereNull('product_variant_id'))
+            ->when($variant, fn ($q) => $q->where('product_variant_id', $variant->id))
+            ->when(! $variant, fn ($q) => $q->where('product_id', $product->id)->whereNull('product_variant_id'))
             ->where('unit_price', $unitPrice)
             ->first();
 
@@ -305,9 +305,8 @@ class SaleController extends Controller
             $variant->increment('stock_out', $quantity);
         }
 
-        return $this->refreshOrderSummary($order, "Item added successfully");
+        return $this->refreshOrderSummary($order, 'Item added successfully');
     }
-
 
     public function itemUpdate(Request $request)
     {
@@ -317,8 +316,9 @@ class SaleController extends Controller
         ]);
 
         $item = OrderItem::with('variant.product', 'product', 'order')->find($request->id);
-        if (!$item)
-            return errorResponse("Order item not found");
+        if (! $item) {
+            return errorResponse('Order item not found');
+        }
 
         $variant = $item->variant;
         $product = $variant?->product ?? $item->product;
@@ -340,7 +340,7 @@ class SaleController extends Controller
         $item->total = $item->sub_total - $item->discount;
         $item->save();
 
-        return $this->refreshOrderSummary($item->order, "Item updated successfully");
+        return $this->refreshOrderSummary($item->order, 'Item updated successfully');
     }
 
     public function itemRemove(Request $request)
@@ -348,8 +348,9 @@ class SaleController extends Controller
         $request->validate(['id' => 'required|integer']);
 
         $item = OrderItem::with('variant.product', 'product', 'order')->find($request->id);
-        if (!$item)
-            return errorResponse("Order item not found");
+        if (! $item) {
+            return errorResponse('Order item not found');
+        }
 
         $variant = $item->variant;
 
@@ -360,14 +361,13 @@ class SaleController extends Controller
         $order = $item->order;
         $item->delete();
 
-        return $this->refreshOrderSummary($order, "Item removed successfully");
+        return $this->refreshOrderSummary($order, 'Item removed successfully');
     }
-
 
     public function pay(Request $request, Order $order)
     {
         $validated = $request->validate([
-            'amount' => 'required|numeric|min:0'
+            'amount' => 'required|numeric|min:0',
         ]);
 
         if ($validated['amount'] > $order->due) {

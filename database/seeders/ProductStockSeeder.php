@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\ProductStock;
+use App\Domain\Product\Models\ProductStock;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class ProductStockSeeder extends Seeder
 {
@@ -49,7 +48,7 @@ class ProductStockSeeder extends Seeder
         ];
 
         foreach ($stocks as $stock) {
-           ProductStock::create([
+            ProductStock::create([
                 'seller_id' => $stock['seller_id'],
                 'product_id' => $stock['product_id'],
                 'quantity' => $stock['quantity'],

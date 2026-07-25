@@ -44,7 +44,7 @@ class PaymentOptionController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            if (!empty($gateway->image)) {
+            if (! empty($gateway->image)) {
                 delete_file($gateway->image);
             }
             $filePath = 'images/payment_options';

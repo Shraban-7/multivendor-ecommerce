@@ -8,7 +8,6 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FlashSaleController;
-use App\Http\Controllers\Admin\HomeMidController;
 use App\Http\Controllers\Admin\ImageController;
 use App\Http\Controllers\Admin\ManualPaymentMethodController;
 use App\Http\Controllers\Admin\OptionController;
@@ -73,7 +72,7 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
         Route::get('/', [OptionController::class, 'index'])->name('index');
         Route::post('/store', [OptionController::class, 'store'])->name('store');
         Route::post('values/{id}/update', [OptionController::class, 'optionValueUpdate'])->name('option_value_update');
-        //Route::post('values/{value}/delete', [OptionController::class, 'deleteValue'])->name('option_value_delete');
+        // Route::post('values/{value}/delete', [OptionController::class, 'deleteValue'])->name('option_value_delete');
         Route::post('{option}/update', [OptionController::class, 'update'])->name('update');
         Route::post('{option}/delete', [OptionController::class, 'destroy'])->name('delete');
     });

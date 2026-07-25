@@ -8,8 +8,8 @@ use Illuminate\Console\Command;
 class ExpireSubscriptions extends Command
 {
     protected $signature = 'subscriptions:expire';
-    protected $description = 'Mark expired subscriptions as expired';
 
+    protected $description = 'Mark expired subscriptions as expired';
 
     public function handle(SubscriptionService $subscriptionService)
     {

@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Product;
-use App\Models\ProductImage;
+use App\Domain\Product\Models\Product;
+use App\Domain\Product\Models\ProductImage;
 use Illuminate\Database\Seeder;
 
 class ProductImageSeeder extends Seeder
@@ -50,14 +50,13 @@ class ProductImageSeeder extends Seeder
 
         $productImages = [];
 
-        for($i=1;$i<=5;++$i)
-        {
+        for ($i = 1; $i <= 5; $i++) {
             foreach ($products as $product) {
-                $productImages[] =[
+                $productImages[] = [
                     'product_id' => $product->id,
                     'image' => $images[array_rand($images)],
                     'created_at' => now(),
-                    'updated_at' => now()
+                    'updated_at' => now(),
                 ];
             }
         }

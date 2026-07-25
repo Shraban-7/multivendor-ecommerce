@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Seller;
 
+use App\Domain\Vendor\Models\SellerExpense;
+use App\Domain\Vendor\Models\SellerExpenseCategory;
 use App\Http\Controllers\Controller;
-use App\Models\SellerExpense;
-use App\Models\SellerExpenseCategory;
 use Illuminate\Http\Request;
 
 class SellerExpenseController extends Controller
@@ -25,7 +25,6 @@ class SellerExpenseController extends Controller
 
         return view('seller.expenses.index', compact('expenses', 'categories', 'descriptions'));
     }
-
 
     public function store(Request $request)
     {

@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use App\Domain\Vendor\Models\SellerEmployee;
 use App\Models\Admin;
 use App\Models\Seller;
-use App\Models\SellerEmployee;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,7 +26,7 @@ class LoginController extends Controller
             if (Auth::guard('admin')->check()) {
                 return redirect()->route('admin.dashboard');
             }
-            
+
             return view('frontend.auth.login');
         }
 
@@ -38,31 +37,31 @@ class LoginController extends Controller
 
         $userTypes = [
             'user' => [
-                'model' => \App\Models\User::class,
+                'model' => User::class,
                 'guard' => 'web',
                 'redirect' => route('home'),
-                //'check' => fn($user) => !is_null($user->email_verified_at),
-                'check' => fn($user) => true
+                // 'check' => fn($user) => !is_null($user->email_verified_at),
+                'check' => fn ($user) => true,
             ],
             'seller' => [
-                'model' => \App\Models\Seller::class,
+                'model' => Seller::class,
                 'guard' => 'seller',
                 'redirect' => route('seller.dashboard'),
-                'check' => fn($seller) => $seller->status == Seller::ACTIVE,
-                'inactiveMessage' => "Your account is inactive, contact with admin",
+                'check' => fn ($seller) => $seller->status == Seller::ACTIVE,
+                'inactiveMessage' => 'Your account is inactive, contact with admin',
             ],
             'employee' => [
-                'model' => \App\Models\SellerEmployee::class,
+                'model' => SellerEmployee::class,
                 'guard' => 'employee',
                 'redirect' => route('seller.pos.index'),
-                'check' => fn($employee) => $employee->is_active == 1,
+                'check' => fn ($employee) => $employee->is_active == 1,
                 'inactiveMessage' => 'Your account is inactive, contact with seller',
             ],
             'admin' => [
-                'model' => \App\Models\Admin::class,
+                'model' => Admin::class,
                 'guard' => 'admin',
                 'redirect' => route('admin.dashboard'),
-                'check' => fn($admin) => true,
+                'check' => fn ($admin) => true,
             ],
         ];
 
@@ -70,7 +69,7 @@ class LoginController extends Controller
             $model = $config['model'];
             $user = $model::where('email', $request->email)->first();
 
-            if (!$user) {
+            if (! $user) {
                 continue;
             }
 
@@ -82,11 +81,11 @@ class LoginController extends Controller
                 if ($user->status != Seller::ACTIVE) {
                     return redirect()->back()->with('warning', 'Your account is pending approval. Please wait for admin review.');
                 }
-            } elseif (!($config['check'])($user)) {
+            } elseif (! ($config['check'])($user)) {
                 return redirect()->back()->with('warning', $config['inactiveMessage'] ?? 'Account inactive');
             }
 
-            if (!Auth::guard($config['guard'])->attempt($credentials)) {
+            if (! Auth::guard($config['guard'])->attempt($credentials)) {
                 return redirect()->back()->with('error', 'Incorrect password!');
             }
 

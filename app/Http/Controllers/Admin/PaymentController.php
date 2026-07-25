@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -12,16 +13,15 @@ class PaymentController extends Controller
         $query = Payment::latest();
 
         if ($request->filled('user_name')) {
-            $query->where('customer_name', 'like', '%' . $request->user_name . '%');
+            $query->where('customer_name', 'like', '%'.$request->user_name.'%');
         }
 
         if ($request->filled('user_phone')) {
-            $query->where('customer_phone', 'like', '%' . $request->user_phone . '%');
+            $query->where('customer_phone', 'like', '%'.$request->user_phone.'%');
         }
 
         $payments = $query->paginate(20);
 
         return view('admin.payments.index', compact('payments'));
     }
-
 }

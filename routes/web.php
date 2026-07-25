@@ -1,20 +1,18 @@
 <?php
 
-use App\Models\Seller;
-use App\Models\Product;
-use App\Models\ProductSeo;
-use App\Models\ProductImage;
-use App\Models\ProductVariant;
-use App\Models\VerificationCode;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Route;
-use App\Services\ImageOptimizerService;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BkashController;
-use App\Http\Controllers\InvoiceController;
-use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\LocationController;
 use App\Http\Controllers\Frontend\HomeController;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\LocationController;
+use App\Http\Controllers\PaymentController;
+use App\Models\Product;
+use App\Models\ProductImage;
+use App\Models\ProductSeo;
+use App\Models\ProductVariant;
+use App\Models\Seller;
+use App\Models\VerificationCode;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
 Route::prefix('auth')->as('auth.')->group(function () {
@@ -63,7 +61,7 @@ Route::prefix('mails')->as('mails.')->group(function () {
         $data['delivery_date'] = '2025-10-15';
         $data['review_url'] = '#';
         $data['item_count'] = 6;
-        $data['total_amount'] = "1200.00";
+        $data['total_amount'] = '1200.00';
         $data['order_details_url'] = '#';
         $data['shop_url'] = '#';
 
@@ -82,16 +80,16 @@ Route::prefix('mails')->as('mails.')->group(function () {
         $data['cancellation_date'] = '2025-10-15';
         $data['review_url'] = '#';
         $data['item_count'] = 6;
-        $data['item_total'] = "4800.00";
-        $data['total_amount'] = "1200.00";
-        $data['refund_amount'] = "1200.00";
-        $data['refund_days'] = "10";
+        $data['item_total'] = '4800.00';
+        $data['total_amount'] = '1200.00';
+        $data['refund_amount'] = '1200.00';
+        $data['refund_days'] = '10';
         $data['order_details_url'] = '#';
         $data['shop_url'] = '#';
         $data['cancellation_reason'] = '';
         $data['product_name'] = 'abcd';
         $data['quantity'] = 1;
-        $data['price'] = "1000.00";
+        $data['price'] = '1000.00';
 
         return view('emails.order-cancellation', $data);
     })->name('order_cancellation');
@@ -108,31 +106,31 @@ Route::prefix('mails')->as('mails.')->group(function () {
         $data['cancellation_date'] = '2025-10-15';
         $data['review_url'] = '#';
         $data['item_count'] = 6;
-        $data['item_total'] = "4800.00";
-        $data['item_total_1'] = "4800.00";
-        $data['subtotal'] = "4800.00";
-        $data['total_amount'] = "1200.00";
-        $data['refund_amount'] = "1200.00";
-        $data['shipping_cost'] = "1200.00";
-        $data['tax'] = "10.00";
-        $data['refund_days'] = "10";
+        $data['item_total'] = '4800.00';
+        $data['item_total_1'] = '4800.00';
+        $data['subtotal'] = '4800.00';
+        $data['total_amount'] = '1200.00';
+        $data['refund_amount'] = '1200.00';
+        $data['shipping_cost'] = '1200.00';
+        $data['tax'] = '10.00';
+        $data['refund_days'] = '10';
         $data['order_details_url'] = '#';
         $data['shop_url'] = '#';
         $data['cancellation_reason'] = '';
         $data['product_name'] = 'abcd';
         $data['quantity'] = 1;
         $data['quantity_1'] = 1;
-        $data['price'] = "1000.00";
-        $data['price_1'] = "1000.00";
-        $data['product_image_1'] = "";
-        $data['product_name_1'] = "";
-        $data['vendor_name_1'] = "";
-        $data['address_line_1'] = "geqwf";
-        $data['address_line_2'] = "geqwf";
-        $data['city'] = "Mymensingh";
-        $data['state'] = "Mymensingh";
-        $data['zip'] = "2200";
-        $data['country'] = "Bangladesh";
+        $data['price'] = '1000.00';
+        $data['price_1'] = '1000.00';
+        $data['product_image_1'] = '';
+        $data['product_name_1'] = '';
+        $data['vendor_name_1'] = '';
+        $data['address_line_1'] = 'geqwf';
+        $data['address_line_2'] = 'geqwf';
+        $data['city'] = 'Mymensingh';
+        $data['state'] = 'Mymensingh';
+        $data['zip'] = '2200';
+        $data['country'] = 'Bangladesh';
 
         return view('emails.order-confirmation', $data);
     })->name('order_confirmation');
@@ -153,31 +151,31 @@ Route::prefix('mails')->as('mails.')->group(function () {
         $data['cancellation_date'] = '2025-10-15';
         $data['review_url'] = '#';
         $data['item_count'] = 6;
-        $data['item_total'] = "4800.00";
-        $data['item_total_1'] = "4800.00";
-        $data['subtotal'] = "4800.00";
-        $data['total_amount'] = "1200.00";
-        $data['refund_amount'] = "1200.00";
-        $data['shipping_cost'] = "1200.00";
-        $data['tax'] = "10.00";
-        $data['refund_days'] = "10";
+        $data['item_total'] = '4800.00';
+        $data['item_total_1'] = '4800.00';
+        $data['subtotal'] = '4800.00';
+        $data['total_amount'] = '1200.00';
+        $data['refund_amount'] = '1200.00';
+        $data['shipping_cost'] = '1200.00';
+        $data['tax'] = '10.00';
+        $data['refund_days'] = '10';
         $data['order_details_url'] = '#';
         $data['shop_url'] = '#';
         $data['cancellation_reason'] = '';
         $data['product_name'] = 'abcd';
         $data['quantity'] = 1;
         $data['quantity_1'] = 1;
-        $data['price'] = "1000.00";
-        $data['price_1'] = "1000.00";
-        $data['product_image_1'] = "";
-        $data['product_name_1'] = "";
-        $data['vendor_name_1'] = "";
-        $data['address_line_1'] = "geqwf";
-        $data['address_line_2'] = "geqwf";
-        $data['city'] = "Mymensingh";
-        $data['state'] = "Mymensingh";
-        $data['zip'] = "2200";
-        $data['country'] = "Bangladesh";
+        $data['price'] = '1000.00';
+        $data['price_1'] = '1000.00';
+        $data['product_image_1'] = '';
+        $data['product_name_1'] = '';
+        $data['vendor_name_1'] = '';
+        $data['address_line_1'] = 'geqwf';
+        $data['address_line_2'] = 'geqwf';
+        $data['city'] = 'Mymensingh';
+        $data['state'] = 'Mymensingh';
+        $data['zip'] = '2200';
+        $data['country'] = 'Bangladesh';
 
         return view('emails.shipping-update', $data);
     })->name('shipping_update');
@@ -214,34 +212,34 @@ Route::prefix('mails')->as('mails.')->group(function () {
         $data['cancellation_date'] = '2025-10-15';
         $data['review_url'] = '#';
         $data['item_count'] = 6;
-        $data['item_total'] = "4800.00";
-        $data['item_total_1'] = "4800.00";
-        $data['subtotal'] = "4800.00";
-        $data['total_amount'] = "1200.00";
-        $data['refund_amount'] = "1200.00";
-        $data['shipping_cost'] = "1200.00";
-        $data['tax'] = "10.00";
-        $data['refund_days'] = "10";
+        $data['item_total'] = '4800.00';
+        $data['item_total_1'] = '4800.00';
+        $data['subtotal'] = '4800.00';
+        $data['total_amount'] = '1200.00';
+        $data['refund_amount'] = '1200.00';
+        $data['shipping_cost'] = '1200.00';
+        $data['tax'] = '10.00';
+        $data['refund_days'] = '10';
         $data['order_details_url'] = '#';
         $data['shop_url'] = '#';
         $data['cancellation_reason'] = '';
         $data['product_name'] = 'abcd';
         $data['quantity'] = 1;
         $data['quantity_1'] = 1;
-        $data['price'] = "1000.00";
-        $data['price_1'] = "1000.00";
-        $data['product_image_1'] = "";
-        $data['product_name_1'] = "";
-        $data['vendor_name_1'] = "";
-        $data['address_line_1'] = "geqwf";
-        $data['address_line_2'] = "geqwf";
-        $data['city'] = "Mymensingh";
-        $data['state'] = "Mymensingh";
-        $data['zip'] = "2200";
-        $data['country'] = "Bangladesh";
-        $data['payment_method'] = "B Kash";
-        $data['refund_processing_days'] = "7";
-        $data['account_url'] = "#";
+        $data['price'] = '1000.00';
+        $data['price_1'] = '1000.00';
+        $data['product_image_1'] = '';
+        $data['product_name_1'] = '';
+        $data['vendor_name_1'] = '';
+        $data['address_line_1'] = 'geqwf';
+        $data['address_line_2'] = 'geqwf';
+        $data['city'] = 'Mymensingh';
+        $data['state'] = 'Mymensingh';
+        $data['zip'] = '2200';
+        $data['country'] = 'Bangladesh';
+        $data['payment_method'] = 'B Kash';
+        $data['refund_processing_days'] = '7';
+        $data['account_url'] = '#';
 
         return view('emails.refund-processed', $data);
     })->name('refund_processed');
@@ -286,14 +284,14 @@ Route::prefix('mails')->as('mails.')->group(function () {
             $data['respond_to_review_url'] = '#';
             $data['review_text'] = 'This product is good';
             $data['item_count'] = 6;
-            $data['item_total'] = "4800.00";
-            $data['item_total_1'] = "4800.00";
-            $data['subtotal'] = "4800.00";
-            $data['total_amount'] = "1200.00";
-            $data['refund_amount'] = "1200.00";
-            $data['shipping_cost'] = "1200.00";
-            $data['tax'] = "10.00";
-            $data['refund_days'] = "10";
+            $data['item_total'] = '4800.00';
+            $data['item_total_1'] = '4800.00';
+            $data['subtotal'] = '4800.00';
+            $data['total_amount'] = '1200.00';
+            $data['refund_amount'] = '1200.00';
+            $data['shipping_cost'] = '1200.00';
+            $data['tax'] = '10.00';
+            $data['refund_days'] = '10';
             $data['order_details_url'] = '#';
             $data['shop_url'] = '#';
             $data['cancellation_reason'] = '';
@@ -304,7 +302,7 @@ Route::prefix('mails')->as('mails.')->group(function () {
             $data['rating_number'] = '4';
             $data['quantity'] = 1;
             $data['quantity_1'] = 1;
-            $data['price'] = "1000.00";
+            $data['price'] = '1000.00';
             $data['vendor_name'] = 'spinner fashion';
             $data['commission_rate'] = '12.5%';
             $data['payout_cycle'] = '30d';
@@ -331,14 +329,14 @@ Route::prefix('mails')->as('mails.')->group(function () {
             $data['respond_to_review_url'] = '#';
             $data['review_text'] = 'This product is good';
             $data['item_count'] = 6;
-            $data['item_total'] = "4800.00";
-            $data['item_total_1'] = "4800.00";
-            $data['subtotal'] = "4800.00";
-            $data['payout_amount'] = "1200.00";
-            $data['refund_amount'] = "1200.00";
-            $data['shipping_cost'] = "1200.00";
-            $data['tax'] = "10.00";
-            $data['refund_days'] = "10";
+            $data['item_total'] = '4800.00';
+            $data['item_total_1'] = '4800.00';
+            $data['subtotal'] = '4800.00';
+            $data['payout_amount'] = '1200.00';
+            $data['refund_amount'] = '1200.00';
+            $data['shipping_cost'] = '1200.00';
+            $data['tax'] = '10.00';
+            $data['refund_days'] = '10';
             $data['order_details_url'] = '#';
             $data['shop_url'] = '#';
             $data['cancellation_reason'] = '';
@@ -349,7 +347,7 @@ Route::prefix('mails')->as('mails.')->group(function () {
             $data['rating_number'] = '4';
             $data['quantity'] = 1;
             $data['quantity_1'] = 1;
-            $data['price'] = "1000.00";
+            $data['price'] = '1000.00';
             $data['vendor_name'] = 'spinner fashion';
             $data['commission_rate'] = '12.5%';
             $data['payout_cycle'] = '30d';
@@ -390,15 +388,15 @@ Route::prefix('mails')->as('mails.')->group(function () {
             $data['respond_to_review_url'] = '#';
             $data['review_text'] = 'This product is good';
             $data['item_count'] = 6;
-            $data['item_price'] = "1200.00";
-            $data['item_total'] = "4800.00";
-            $data['item_total_1'] = "4800.00";
-            $data['subtotal'] = "4800.00";
-            $data['payout_amount'] = "1200.00";
-            $data['refund_amount'] = "1200.00";
-            $data['shipping_cost'] = "1200.00";
-            $data['tax'] = "10.00";
-            $data['refund_days'] = "10";
+            $data['item_price'] = '1200.00';
+            $data['item_total'] = '4800.00';
+            $data['item_total_1'] = '4800.00';
+            $data['subtotal'] = '4800.00';
+            $data['payout_amount'] = '1200.00';
+            $data['refund_amount'] = '1200.00';
+            $data['shipping_cost'] = '1200.00';
+            $data['tax'] = '10.00';
+            $data['refund_days'] = '10';
             $data['order_details_url'] = '#';
             $data['shop_url'] = '#';
             $data['cancellation_reason'] = '';
@@ -409,7 +407,7 @@ Route::prefix('mails')->as('mails.')->group(function () {
             $data['rating_number'] = '4';
             $data['quantity'] = 1;
             $data['quantity_1'] = 1;
-            $data['price'] = "1000.00";
+            $data['price'] = '1000.00';
             $data['vendor_name'] = 'spinner fashion';
             $data['commission_rate'] = '12.5%';
             $data['payout_cycle'] = '30d';
@@ -430,23 +428,22 @@ Route::prefix('mails')->as('mails.')->group(function () {
             $data['period_end'] = '7';
             $data['payout_details_url'] = '#';
             $data['download_statement_url'] = '#';
-            $data['vendor_name_1'] = "";
-            $data['address_line_1'] = "geqwf";
-            $data['address_line_2'] = "geqwf";
-            $data['city'] = "Mymensingh";
-            $data['state'] = "Mymensingh";
-            $data['zip'] = "2200";
-            $data['country'] = "Bangladesh";
-            $data['payment_method'] = "B Kash";
-            $data['refund_processing_days'] = "7";
-            $data['account_url'] = "#";
-            $data['process_order_url'] = "#";
-            $data['print_packing_slip_url'] = "#";
-            $data['customer_phone'] = "0170000000";
+            $data['vendor_name_1'] = '';
+            $data['address_line_1'] = 'geqwf';
+            $data['address_line_2'] = 'geqwf';
+            $data['city'] = 'Mymensingh';
+            $data['state'] = 'Mymensingh';
+            $data['zip'] = '2200';
+            $data['country'] = 'Bangladesh';
+            $data['payment_method'] = 'B Kash';
+            $data['refund_processing_days'] = '7';
+            $data['account_url'] = '#';
+            $data['process_order_url'] = '#';
+            $data['print_packing_slip_url'] = '#';
+            $data['customer_phone'] = '0170000000';
 
             return view('emails.vendors.new-order', $data);
         })->name('welcome');
-
 
         Route::get('/low-stock-alert', function () {
             $data['customer_name'] = 'John Doe';
@@ -466,15 +463,15 @@ Route::prefix('mails')->as('mails.')->group(function () {
             $data['review_text'] = 'This product is good';
             $data['item_count'] = 6;
             $data['additional_count'] = 6;
-            $data['item_price'] = "1200.00";
-            $data['item_total'] = "4800.00";
-            $data['item_total_1'] = "4800.00";
-            $data['subtotal'] = "4800.00";
-            $data['payout_amount'] = "1200.00";
-            $data['refund_amount'] = "1200.00";
-            $data['shipping_cost'] = "1200.00";
-            $data['tax'] = "10.00";
-            $data['refund_days'] = "10";
+            $data['item_price'] = '1200.00';
+            $data['item_total'] = '4800.00';
+            $data['item_total_1'] = '4800.00';
+            $data['subtotal'] = '4800.00';
+            $data['payout_amount'] = '1200.00';
+            $data['refund_amount'] = '1200.00';
+            $data['shipping_cost'] = '1200.00';
+            $data['tax'] = '10.00';
+            $data['refund_days'] = '10';
             $data['order_details_url'] = '#';
             $data['shop_url'] = '#';
             $data['cancellation_reason'] = '';
@@ -490,7 +487,7 @@ Route::prefix('mails')->as('mails.')->group(function () {
             $data['rating_number'] = '4';
             $data['quantity'] = 1;
             $data['quantity_1'] = 1;
-            $data['price'] = "1000.00";
+            $data['price'] = '1000.00';
             $data['vendor_name'] = 'spinner fashion';
             $data['commission_rate'] = '12.5%';
             $data['payout_cycle'] = '30d';
@@ -511,21 +508,21 @@ Route::prefix('mails')->as('mails.')->group(function () {
             $data['period_end'] = '7';
             $data['payout_details_url'] = '#';
             $data['download_statement_url'] = '#';
-            $data['vendor_name_1'] = "";
-            $data['address_line_1'] = "geqwf";
-            $data['address_line_2'] = "geqwf";
-            $data['city'] = "Mymensingh";
-            $data['state'] = "Mymensingh";
-            $data['zip'] = "2200";
-            $data['country'] = "Bangladesh";
-            $data['payment_method'] = "B Kash";
-            $data['refund_processing_days'] = "7";
-            $data['account_url'] = "#";
-            $data['process_order_url'] = "#";
-            $data['print_packing_slip_url'] = "#";
-            $data['update_inventory_url'] = "#";
-            $data['view_all_products_url'] = "#";
-            $data['customer_phone'] = "0170000000";
+            $data['vendor_name_1'] = '';
+            $data['address_line_1'] = 'geqwf';
+            $data['address_line_2'] = 'geqwf';
+            $data['city'] = 'Mymensingh';
+            $data['state'] = 'Mymensingh';
+            $data['zip'] = '2200';
+            $data['country'] = 'Bangladesh';
+            $data['payment_method'] = 'B Kash';
+            $data['refund_processing_days'] = '7';
+            $data['account_url'] = '#';
+            $data['process_order_url'] = '#';
+            $data['print_packing_slip_url'] = '#';
+            $data['update_inventory_url'] = '#';
+            $data['view_all_products_url'] = '#';
+            $data['customer_phone'] = '0170000000';
 
             return view('emails.vendors.low-stock-alert', $data);
         })->name('welcome');
@@ -556,7 +553,7 @@ Route::get('/get-districts/{divisionId}', [LocationController::class, 'getDistri
 // });
 
 Route::as('static.')->group(function () {
-    Route::get('seller-guide', fn() => view('static.seller-guide'))->name('sellerGuide');
+    Route::get('seller-guide', fn () => view('static.seller-guide'))->name('sellerGuide');
 });
 
 Route::get('/refresh-csrf', function () {
@@ -570,7 +567,6 @@ Route::get('/bkash/callback', [BkashController::class, 'callback'])->name('bkash
 // Route::post('/bkash/execute', [BkashController::class, 'execute']);
 // Route::get('/bkash/query/{transactionId}', [BkashController::class, 'query']);
 
-
 Route::get('/fix-product-images', function () {
 
     $products = Product::with('seller')->whereNotNull('thumbnail')->get();
@@ -580,15 +576,16 @@ Route::get('/fix-product-images', function () {
     $sellers = Seller::get();
 
     foreach ($products as $product) {
-        if (!Storage::disk('public')->exists($product->thumbnail)) {
+        if (! Storage::disk('public')->exists($product->thumbnail)) {
             $product->thumbnail = null;
             $product->save();
+
             continue;
         }
 
         $filename = basename($product->thumbnail);
-        $directory = $product->seller->username . '/products';
-        $newPath = $directory . '/' . $filename;
+        $directory = $product->seller->username.'/products';
+        $newPath = $directory.'/'.$filename;
 
         Storage::disk('public')->makeDirectory($directory);
         Storage::disk('public')->move($product->thumbnail, $newPath);
@@ -598,15 +595,16 @@ Route::get('/fix-product-images', function () {
     }
 
     foreach ($product_images as $product_image) {
-        if (!Storage::disk('public')->exists($product_image->image)) {
+        if (! Storage::disk('public')->exists($product_image->image)) {
             $product_image->image = null;
             $product_image->save();
+
             continue;
         }
 
         $filename = basename($product_image->image);
-        $directory = $product_image->product->seller->username . '/products';
-        $newPath = $directory . '/' . $filename;
+        $directory = $product_image->product->seller->username.'/products';
+        $newPath = $directory.'/'.$filename;
 
         Storage::disk('public')->makeDirectory($directory);
         Storage::disk('public')->move($product_image->image, $newPath);
@@ -616,15 +614,16 @@ Route::get('/fix-product-images', function () {
     }
 
     foreach ($variants as $variant) {
-        if (!Storage::disk('public')->exists($variant->image)) {
+        if (! Storage::disk('public')->exists($variant->image)) {
             $variant->image = null;
             $variant->save();
+
             continue;
         }
 
         $filename = basename($variant->image);
-        $directory = $variant->product->seller->username . '/products';
-        $newPath = $directory . '/' . $filename;
+        $directory = $variant->product->seller->username.'/products';
+        $newPath = $directory.'/'.$filename;
 
         Storage::disk('public')->makeDirectory($directory);
         Storage::disk('public')->move($variant->image, $newPath);
@@ -634,15 +633,16 @@ Route::get('/fix-product-images', function () {
     }
 
     foreach ($seos as $seo) {
-        if (!Storage::disk('public')->exists($seo->og_image)) {
+        if (! Storage::disk('public')->exists($seo->og_image)) {
             $seo->og_image = null;
             $seo->save();
+
             continue;
         }
 
         $filename = basename($seo->og_image);
-        $directory = $seo->product->seller->username . '/products';
-        $newPath = $directory . '/' . $filename;
+        $directory = $seo->product->seller->username.'/products';
+        $newPath = $directory.'/'.$filename;
 
         Storage::disk('public')->makeDirectory($directory);
         Storage::disk('public')->move($seo->og_image, $newPath);
@@ -664,16 +664,19 @@ Route::get('/fix-product-images', function () {
         ];
 
         foreach ($imageFields as $field) {
-            if (!$seller->$field) continue;
+            if (! $seller->$field) {
+                continue;
+            }
 
-            if (!Storage::disk('public')->exists($seller->$field)) {
+            if (! Storage::disk('public')->exists($seller->$field)) {
                 $seller->$field = null;
                 $seller->save();
+
                 continue;
             }
             $directory = $seller->username;
             $filename = basename($seller->$field);
-            $newPath = $directory . '/' . $filename;
+            $newPath = $directory.'/'.$filename;
             Storage::disk('public')->makeDirectory($directory);
             Storage::disk('public')->move($seller->$field, $newPath);
             $seller->$field = $newPath;
@@ -681,9 +684,7 @@ Route::get('/fix-product-images', function () {
         }
     }
 
-    return;
 });
-
 
 Route::prefix('payment')->as('payment.')->group(function () {
     Route::get('/success', [PaymentController::class, 'success'])->name('success');

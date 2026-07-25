@@ -1,19 +1,8 @@
 <?php
 
-namespace Tests\Feature;
+use Illuminate\Foundation\Application;
 
-// use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
-
-class ExampleTest extends TestCase
-{
-    /**
-     * A basic test example.
-     */
-    public function test_the_application_returns_a_successful_response(): void
-    {
-        $response = $this->get('/');
-
-        $response->assertStatus(200);
-    }
-}
+test('the application container resolves the app binding', function () {
+    expect(app())->toBeInstanceOf(Application::class)
+        ->and(app()->version())->toStartWith('11.');
+});

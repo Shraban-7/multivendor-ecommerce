@@ -2,35 +2,38 @@
 
 namespace App\Http\Controllers\Seller;
 
-use App\Models\Brand;
-use App\Models\Option;
-use App\Models\Seller;
-use App\Models\Product;
+use App\Domain\Product\Models\Brand;
+use App\Domain\Product\Models\Category;
+use App\Domain\Product\Models\CategoryOption;
+use App\Domain\Product\Models\Option;
+use App\Domain\Product\Models\Product;
+use App\Domain\Product\Models\ProductImage;
+use App\Domain\Product\Models\ProductUnit;
+use App\Domain\Product\Models\ProductVariant;
+use App\Domain\Product\Models\StockHistory;
+use App\Domain\Product\Services\ProductService;
+use App\Domain\Product\Services\StockManagerService;
 use App\Enums\StockType;
-use App\Models\CartItem;
-use App\Models\Category;
-use App\Models\ProductSeo;
-use App\Models\OptionValue;
-use App\Models\PosCartItem;
-use App\Models\ProductUnit;
-use App\Models\ProductImage;
-use App\Models\StockHistory;
-use Illuminate\Http\Request;
-use App\Models\CategoryOption;
-use App\Models\ProductVariant;
 use App\Http\Controllers\Controller;
-use App\Models\ProductVariantOption;
-use App\Services\ImageOptimizerService;
+use App\Models\Seller;
+use Illuminate\Http\Request;
+use RuntimeException;
 
 class ProductController extends Controller
 {
+    public function __construct(
+        private readonly ProductService $productService,
+        private readonly StockManagerService $stockManager,
+    ) {}
+
     public function index()
     {
         $categories = Category::category()->with('subcategories')->get();
-
         $brands = Brand::all();
-
-        $products = Product::with('variants.option_values', 'unit')->where('seller_id', get_seller_id())->latest('id')->paginate(25);
+        $products = Product::with('variants.option_values', 'unit')
+            ->where('seller_id', get_seller_id())
+            ->latest('id')
+            ->paginate(25);
 
         return view('seller.products.index', compact('products', 'categories', 'brands'));
     }
@@ -43,25 +46,6 @@ class ProductController extends Controller
         $categoryAttributes = $this->categorizedAttributes($categories);
 
         return view('seller.products.create', compact('categories', 'brands', 'units', 'categoryAttributes'));
-    }
-
-    private function categorizedAttributes($categories, $category_id = null)
-    {
-        $data = [];
-        foreach ($categories as $cat) {
-            if (!is_null($category_id) && $cat->id != $category_id) {
-                continue;
-            }
-            foreach ($cat->options as $option) {
-                $data[$cat->id][] = [
-                    'id' => $option->id,
-                    'name' => $option->name,
-                    'values' => $option->option_values->select('id', 'value')
-                ];
-            }
-        }
-
-        return $data;
     }
 
     public function store(Request $request)
@@ -85,115 +69,25 @@ class ProductController extends Controller
             'variants' => 'nullable|string',
         ]);
 
-        $hasDiscount = !empty($validated['discount_type']) && !empty($validated['discount_value']);
-
-        $validated['discount_amount'] = $hasDiscount ? calculate_discount_amount($validated['selling_price'], $validated['discount_type'], $validated['discount_value']) : null;
-
-        $validated['discounted_price'] = $hasDiscount ? calculate_discounted_price($validated['selling_price'], $validated['discount_type'], $validated['discount_value']) : null;
-
-        $brandId = null;
-        if (!empty($validated['brand'])) {
-            if (is_numeric($validated['brand'])) {
-                $brandId = (int) $validated['brand'];
-            } else {
-                $brand = Brand::firstOrCreate(
-                    ['name' => trim($validated['brand'])],
-                    ['slug' => str_slug('brands', 'slug', trim($validated['brand']))]
-                );
-                $brandId = $brand->id;
-            }
-        }
-        $validated['brand_id'] = $brandId;
-        unset($validated['brand']);
-
-        $imageService = new ImageOptimizerService;
+        $productData = $this->productService->buildProductData($validated, $seller);
+        $productData['seller_id'] = $seller->id;
+        $productData['slug'] = str_slug('products', 'slug', trim($validated['name']));
+        $productData['sku'] = Product::generateSku($seller->id);
 
         $imageFolder = "{$seller->username}/products";
+
         if ($request->hasFile('thumbnail')) {
-            //$validated['thumbnail'] = upload_file($request->file('thumbnail'), "$imageFolder/thumb");
-            $validated['thumbnail'] = $imageService->uploadAndOptimize(
+            $productData['thumbnail'] = $this->productService->uploadThumbnail(
                 $request->file('thumbnail'),
-                "$imageFolder"
+                $imageFolder
             );
         }
 
-        $validated['seller_id'] = $seller->id;
-        $validated['slug'] = str_slug('products', 'slug', trim($validated['name']));
-        $validated['sku'] = Product::generateSku($seller->id);
+        $product = Product::create($productData);
 
-        $product = Product::create($validated);
-
-        $variants = json_decode($request->variants, true);
-
-        if (!empty($variants) && is_array($variants)) {
-            foreach ($variants as $index => $v) {
-                if (empty($v['buying_price']) || empty($v['selling_price'])) {
-                    continue;
-                }
-
-                $variant = new ProductVariant();
-                $variant->product_id = $product->id;
-                $variant->sku = Product::generateSku($seller->id);
-                $variant->buying_price = $v['buying_price'];
-                $variant->selling_price = $v['selling_price'];
-                $variant->stock_in = $v['stock'] ?? 0;
-
-                $variant->discount_type = ($v['discount_type'] ?? 'none') !== 'none'
-                    ? $v['discount_type']
-                    : null;
-
-                $variant->discount_value = !empty($v['discount_value'])
-                    ? (float) $v['discount_value']
-                    : null;
-
-                $hasDiscount = !empty($variant->discount_type) && !empty($variant->discount_value);
-
-                $variant->discount_amount = $hasDiscount
-                    ? calculate_discount_amount(
-                        $v['selling_price'],
-                        $variant->discount_type,
-                        $variant->discount_value
-                    )
-                    : null;
-
-                $variant->discounted_price = $hasDiscount
-                    ? calculate_discounted_price(
-                        $v['selling_price'],
-                        $variant->discount_type,
-                        $variant->discount_value
-                    )
-                    : null;
-
-                $variant->is_default = $index === 0 ? 1 : 0;
-
-                if (isset($v['image']) && $request->hasFile("variants.$index.image")) {
-                    // $variant->image = upload_file($request->file("variants.$index.image"), "$imageFolder/variants");
-                    $variant->image = $imageService->uploadAndOptimize($request->file("variants.$index.image"), "$imageFolder");
-                }
-
-                $variant->save();
-
-                if (!empty($v['attributes']) && is_array($v['attributes'])) {
-                    foreach ($v['attributes'] as $key => $value) {
-                        $key = trim($key);
-                        $value = trim($value);
-                        if (!$key || !$value)
-                            continue;
-
-                        $option = Option::firstOrCreate(['name' => $key]);
-
-                        $optionValue = OptionValue::firstOrCreate([
-                            'option_id' => $option->id,
-                            'value' => $value,
-                        ]);
-
-                        ProductVariantOption::create([
-                            'product_variant_id' => $variant->id,
-                            'option_value_id' => $optionValue->id,
-                        ]);
-                    }
-                }
-            }
+        $variants = json_decode($request->variants ?? 'null', true);
+        if (! empty($variants) && is_array($variants)) {
+            $this->productService->createVariants($product, $variants, $seller, $imageFolder);
         }
 
         return successResponse('Product Added Successfully');
@@ -208,11 +102,10 @@ class ProductController extends Controller
 
         $profitAmount = $sellingPrice - $costPrice;
         $profitPercent = $costPrice > 0 ? ($profitAmount / $costPrice) * 100 : 0;
-        $productStock = $product->stock_in - $product->stock_out;
 
         $product->profit_amount = $profitAmount;
         $product->profit_percent = $profitPercent;
-        $product->stock = $productStock;
+        $product->stock = $product->stock_in - $product->stock_out;
 
         foreach ($product->variants as $variant) {
             $variant->stock = ($variant->stock_in ?? 0) - ($variant->stock_out ?? 0);
@@ -243,7 +136,6 @@ class ProductController extends Controller
     public function update($slug, Request $request)
     {
         $product = Product::where('slug', $slug)->first();
-
         $seller = $product->seller;
 
         $validated = $request->validate([
@@ -272,100 +164,61 @@ class ProductController extends Controller
         $useMainPrices = $request->has('useMainPrices');
         $useMainDiscount = $request->has('useMainDiscount');
 
-        $hasDiscount = !empty($product->discount_type) && !empty($product->discount_value);
+        $productData = $this->productService->buildProductData($validated, $seller);
 
-        $validated['discount_amount'] = $hasDiscount ? calculate_discount_amount($validated['selling_price'], $validated['discount_type'], $validated['discount_value']) : null;
-
-        $validated['discounted_price'] = $hasDiscount ? calculate_discounted_price($validated['selling_price'], $validated['discount_type'], $validated['discount_value']) : null;
-
-        if ($request->best_selling) {
-            $validated['best_selling'] = $validated['best_selling'] ? 1 : 0;
+        if ($request->has('best_selling')) {
+            $productData['best_selling'] = $validated['best_selling'] ? 1 : 0;
         }
 
-        if ($request->is_featured) {
-            $validated['is_featured'] = $validated['is_featured'] ? 1 : 0;
+        if ($request->has('is_featured')) {
+            $productData['is_featured'] = $validated['is_featured'] ? 1 : 0;
         }
-
-        $brandId = null;
-
-        if (!empty($validated['brand'])) {
-            if (is_numeric($validated['brand'])) {
-                $brandId = (int) $validated['brand'];
-            } else {
-                $brand = Brand::firstOrCreate(
-                    ['name' => trim($validated['brand'])],
-                    ['slug' => str_slug('brands', 'slug', $validated['brand'])]
-                );
-                $brandId = $brand->id;
-            }
-        }
-
-        $validated['brand_id'] = $brandId;
-
-        unset($validated['brand']);
 
         $imageFolder = "{$seller->username}/products";
 
         if ($validated['name'] && $validated['name'] !== $product->name) {
-            $validated['slug'] = str_slug('products', 'slug', $validated['name']);
+            $productData['slug'] = str_slug('products', 'slug', $validated['name']);
         }
 
         if ($request->hasFile('thumbnail')) {
-            if ($product->thumbnail != null) {
-                delete_file($product->thumbnail);
-            }
-
-            $imageService = new ImageOptimizerService;
-            $validated['thumbnail'] = $imageService->uploadAndOptimize($request->file('thumbnail'), "$imageFolder");
-            // $validated['thumbnail'] = $imageService->uploadAndOptimize($request->file('thumbnail'), "$imageFolder/thumb");
-            //$validated['thumbnail'] = upload_file($request->file('thumbnail'), "$imageFolder/thumb");
-            //$validated['thumbnail'] = upload_with_watermark($request->file('thumbnail'), "$imageFolder/thumb");
+            $productData['thumbnail'] = $this->productService->replaceThumbnail(
+                $product,
+                $request->file('thumbnail'),
+                $imageFolder
+            );
         }
 
         if ($request->hasFile('video')) {
-            if ($product->video != null) {
+            if ($product->video !== null) {
                 delete_file($product->video);
             }
-
-            $validated['video'] = upload_file($request->file('video'), "videos/{$seller->username}/products");
+            $productData['video'] = upload_file($request->file('video'), "videos/{$seller->username}/products");
         }
-        $product->update($validated);
+
+        $product->update($productData);
 
         if ($useMainPrices) {
-            foreach ($product->variants as $variant) {
-                $variant->buying_price = $product->buying_price;
-                $variant->selling_price = $product->selling_price;
-                $variant->save();
-            }
+            $product->variants->each(function (ProductVariant $variant) use ($product) {
+                $variant->update([
+                    'buying_price' => $product->buying_price,
+                    'selling_price' => $product->selling_price,
+                ]);
+            });
         }
 
         if ($useMainDiscount) {
-            foreach ($product->variants as $variant) {
-                $variant->discount_type = $product->discount_type;
-                $variant->discount_value = $product->discount_value;
-                $variant->discount_amount = $product->discount_amount;
-                $variant->discounted_price = $product->discounted_price;
-                $variant->save();
-            }
+            $product->variants->each(function (ProductVariant $variant) use ($product) {
+                $variant->update([
+                    'discount_type' => $product->discount_type,
+                    'discount_value' => $product->discount_value,
+                    'discount_amount' => $product->discount_amount,
+                    'discounted_price' => $product->discounted_price,
+                ]);
+            });
         }
 
         if ($request->hasFile('files')) {
-            // $product->images->each(function ($image) {
-            //     delete_file($image->image);
-            //     $image->delete();
-            // });
-            foreach ($request->file('files') as $file) {
-
-                $prodImage = $imageService->uploadAndOptimize(
-                    $request->file($file),
-                    "$imageFolder"
-                );
-                ProductImage::create([
-                    'product_id' => $product->id,
-                    'image' => $prodImage,
-                ]);
-            }
-
+            $this->productService->attachImages($product, $request->file('files'), $imageFolder);
         }
 
         return response()->json([
@@ -377,19 +230,7 @@ class ProductController extends Controller
 
     public function delete(Product $product)
     {
-        if ($product->thumbnail != null) {
-            delete_file($product->thumbnail);
-        }
-
-        $product->images->each(function ($image) {
-            delete_file($image->image);
-            $image->delete();
-        });
-
-        CartItem::where('product_id', $product->id)->delete();
-        PosCartItem::where('product_id', $product->id)->delete();
-
-        $product->delete();
+        $this->productService->deleteProduct($product);
 
         return redirect()->route('seller.products.index')->with('success', 'Product Removed Successfully');
     }
@@ -398,18 +239,13 @@ class ProductController extends Controller
     {
         $request->validate([
             'images' => 'required|array',
-            'images.*' => 'image|mimes:jpeg,jpg,png,webp|max:4000'
+            'images.*' => 'image|mimes:jpeg,jpg,png,webp|max:4000',
         ]);
 
-        $product = Product::find($request->product_id);
-        $imageFolder ="{$product->seller->username}/products";
+        $product = Product::findOrFail($request->product_id);
+        $imageFolder = "{$product->seller->username}/products";
 
-        foreach ($request->file('images') as $file) {
-            ProductImage::create([
-                'product_id' => $request->product_id,
-                'image' => upload_file($file, $imageFolder)
-            ]);
-        }
+        $this->productService->attachImages($product, $request->file('images'), $imageFolder);
 
         return redirect()->back()->with('success', 'Images added Successfully');
     }
@@ -417,7 +253,6 @@ class ProductController extends Controller
     public function deleteImage(ProductImage $image)
     {
         delete_file($image->image);
-
         $image->delete();
 
         return redirect()->back()->with('success', 'Images deleted Successfully');
@@ -434,80 +269,43 @@ class ProductController extends Controller
             'stock_note_product' => 'nullable|string',
         ]);
 
-        $stockQuantities = $request->input('stock_quantity', []);
-        $stockActions = $request->input('stock_action', []);
-        $stockNotes = $request->input('stock_note', []);
-
         if ($request->has('stock_quantity_product') && $request->has('stock_action_product')) {
-            $productCurrentStock = ($product->stock_in ?? 0) - ($product->stock_out ?? 0);
-            $productAction = $request->stock_action_product;
-            $productQuantity = $request->stock_quantity_product;
-            $productNote = $request->stock_note_product;
+            $type = StockType::from((int) $request->stock_action_product);
+            $quantity = (int) $request->stock_quantity_product;
+            $note = $request->stock_note_product ?? '';
 
-            if ($productAction == StockType::REMOVE_STOCK->value && $productQuantity > $productCurrentStock) {
-                return redirect()->back()->with('warning', 'Insufficient stock! You cannot remove more than the available quantity.');
+            try {
+                $this->stockManager->adjustStock($product, null, $quantity, $type, $note);
+            } catch (RuntimeException $e) {
+                return redirect()->back()->with('warning', $e->getMessage());
             }
-
-            StockHistory::create([
-                'product_id' => $product->id,
-                'quantity' => $productQuantity,
-                'type' => $productAction,
-                'note' => $productNote,
-            ]);
-
-            if ($productAction == StockType::SET_EXACT_STOCK->value) {
-                $product->stock_in = $productQuantity;
-                $product->stock_out = 0;
-            } elseif ($productAction == StockType::ADD_STOCK->value) {
-                $product->stock_in += $productQuantity;
-            } elseif ($productAction == StockType::REMOVE_STOCK->value) {
-                $product->stock_in -= $productQuantity;
-                if ($product->stock_in < 0)
-                    $product->stock_in = 0;
-            }
-
-            $product->save();
 
             return redirect()->back()->with('success', 'Stock updated successfully!');
         }
 
+        $stockQuantities = $request->input('stock_quantity', []);
+        $stockActions = $request->input('stock_action', []);
+        $stockNotes = $request->input('stock_note', []);
+
         foreach ($stockQuantities as $variantId => $quantity) {
-            if (!$quantity)
+            if (! $quantity) {
                 continue;
-            $action = $stockActions[$variantId] ?? null;
-            $note = $stockNotes[$variantId] ?? null;
+            }
 
             $variant = ProductVariant::find($variantId);
-
-            if (!$variant)
-                continue;
-
-            $currentStock = ($variant->stock_in ?? 0) - ($variant->stock_out ?? 0);
-
-            if ($action == StockType::REMOVE_STOCK->value && $quantity > $currentStock) {
+            if (! $variant) {
                 continue;
             }
 
-            StockHistory::create([
-                'product_id' => $product->id,
-                'product_variant_id' => $variant->id,
-                'quantity' => $quantity,
-                'type' => $action,
-                'note' => $note,
-            ]);
+            $type = StockType::from((int) ($stockActions[$variantId] ?? StockType::ADD_STOCK->value));
+            $note = $stockNotes[$variantId] ?? '';
 
-            if ($action == StockType::SET_EXACT_STOCK->value) {
-                $variant->stock_in = $quantity;
-                $variant->stock_out = 0;
-            } elseif ($action == StockType::ADD_STOCK->value) {
-                $variant->stock_in += $quantity;
-            } elseif ($action == StockType::REMOVE_STOCK->value) {
-                $variant->stock_in -= $quantity;
-                if ($variant->stock_in < 0)
-                    $variant->stock_in = 0;
+            try {
+                $this->stockManager->adjustStock($product, $variant, (int) $quantity, $type, $note);
+            } catch (RuntimeException) {
+                // Skip variants with insufficient stock silently (matches previous behavior)
+                continue;
             }
-
-            $variant->save();
         }
 
         return redirect()->back()->with('success', 'Stock updated successfully for all variants!');
@@ -524,39 +322,27 @@ class ProductController extends Controller
             'meta_keywords' => ['nullable', 'string', 'max:255'],
             'og_title' => ['nullable', 'string', 'max:70'],
             'og_description' => ['nullable', 'string', 'max:200'],
-            'og_image' => [
-                'nullable',
-                'image',
-                'mimes:jpg,jpeg,png,webp',
-                'max:2048',
-                // 'dimensions:min_width=1200,min_height=630'
-            ]
+            'og_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ]);
-
-        $imageFolder = "{$seller->username}/products";
 
         if ($request->hasFile('og_image')) {
             if ($product->seo && $product->seo->og_image) {
                 delete_file($product->seo->og_image);
             }
-
-            $validated['og_image'] = upload_file($request->file('og_image'), "$imageFolder");
+            $validated['og_image'] = upload_file(
+                $request->file('og_image'),
+                "{$seller->username}/products"
+            );
         }
 
-        if ($product->seo) {
-            $product->seo->update($validated);
-        } else {
-            $validated['product_id'] = $product->id;
-            ProductSeo::create($validated);
-        }
+        $this->productService->updateSeo($product, $validated);
 
-        return successResponse("Product SEO Updated Successfully");
+        return successResponse('Product SEO Updated Successfully');
     }
 
     public function stockHistory()
     {
         $seller = Seller::find(get_seller_id());
-
         $productIds = Product::where('seller_id', $seller->id)->pluck('id');
 
         $stockHistories = StockHistory::with(['product', 'variant'])
@@ -582,38 +368,32 @@ class ProductController extends Controller
     {
         $request->validate([
             'sku' => 'required',
-            'quantity' => 'required|numeric'
+            'quantity' => 'required|numeric',
         ]);
 
         $variant = ProductVariant::with('product.seller')->where('sku', $request->sku)->first();
 
         if ($variant) {
-            $price = $variant->selling_price;
-
-            $data = [
+            return view('seller.barcodes.print_new', ['data' => [
                 'sellerName' => $variant->product->seller->business_name,
                 'productName' => $variant->product->name,
                 'variantName' => $variant->fullName,
                 'sku' => $variant->sku,
-                'price' => money($price),
+                'price' => money($variant->selling_price),
                 'quantity' => $request->quantity,
-            ];
-
-            return view('seller.barcodes.print_new', compact('data'));
+            ]]);
         }
 
         $product = Product::where('sku', $request->sku)->first();
         if ($product) {
-            $data = [
+            return view('seller.barcodes.print_new', ['data' => [
                 'sellerName' => $product->seller->business_name,
                 'productName' => $product->name,
                 'variantName' => '',
                 'sku' => $product->sku,
                 'price' => money($product->selling_price),
                 'quantity' => $request->quantity,
-            ];
-
-            return view('seller.barcodes.print_new', compact('data'));
+            ]]);
         }
 
         return redirect()->route('seller.products.printBarcode')->with('error', 'Product not found!');
@@ -625,29 +405,48 @@ class ProductController extends Controller
             ->orderBy('name', 'ASC')
             ->where('seller_id', get_seller_id())
             ->get()
-            ->map(function ($product) {
-                return [
-                    'id' => $product->id,
-                    'name' => $product->name,
-                    'sku' => $product->sku,
-                    'quantity' => $product->stock_in - $product->stock_out,
-                    'price' => removeZeroFromDecimal($product->selling_price, 'int'),
-                    'discounted_price' => removeZeroFromDecimal($product->discounted_price ?? $product->selling_price, 'int'),
-                    'image' => is_null($product->thumbnail) ? asset('assets/frontend/images/placeholder-img.jpg') : storage_url($product->thumbnail),
-                    'variants' => $product->variants->map(function ($variant) {
-                        return [
-                            'id' => $variant->id,
-                            'sku' => $variant->sku,
-                            'fullName' => $variant->fullName,
-                            'quantity' => $variant->stock_in - $variant->stock_out,
-                            'price' => removeZeroFromDecimal($variant->selling_price, 'int'),
-                            'discounted_price' => removeZeroFromDecimal($variant->discounted_price, 'int'),
-                            'image' => is_null($variant->image) ? null : storage_url($variant->image)
-                        ];
-                    })
-                ];
-            });
+            ->map(fn ($product) => [
+                'id' => $product->id,
+                'name' => $product->name,
+                'sku' => $product->sku,
+                'quantity' => $product->stock_in - $product->stock_out,
+                'price' => removeZeroFromDecimal($product->selling_price, 'int'),
+                'discounted_price' => removeZeroFromDecimal($product->discounted_price ?? $product->selling_price, 'int'),
+                'image' => is_null($product->thumbnail)
+                    ? asset('assets/frontend/images/placeholder-img.jpg')
+                    : storage_url($product->thumbnail),
+                'variants' => $product->variants->map(fn ($variant) => [
+                    'id' => $variant->id,
+                    'sku' => $variant->sku,
+                    'fullName' => $variant->fullName,
+                    'quantity' => $variant->stock_in - $variant->stock_out,
+                    'price' => removeZeroFromDecimal($variant->selling_price, 'int'),
+                    'discounted_price' => removeZeroFromDecimal($variant->discounted_price, 'int'),
+                    'image' => is_null($variant->image) ? null : storage_url($variant->image),
+                ]),
+            ]);
 
         return view('seller.products.inventory', compact('products'));
+    }
+
+    // ─── Private helpers ───────────────────────────────────────────────────────
+
+    private function categorizedAttributes($categories, $category_id = null): array
+    {
+        $data = [];
+        foreach ($categories as $cat) {
+            if (! is_null($category_id) && $cat->id != $category_id) {
+                continue;
+            }
+            foreach ($cat->options as $option) {
+                $data[$cat->id][] = [
+                    'id' => $option->id,
+                    'name' => $option->name,
+                    'values' => $option->option_values->select('id', 'value'),
+                ];
+            }
+        }
+
+        return $data;
     }
 }

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Seller;
 
-use Illuminate\Http\Request;
-use App\Models\SubscriptionPlan;
-use App\Models\SellerSubscription;
+use App\Domain\Vendor\Models\SellerSubscription;
 use App\Http\Controllers\Controller;
+use App\Models\SubscriptionPlan;
+use Illuminate\Http\Request;
 
 class SubscriptionPlanController extends Controller
 {
@@ -26,7 +26,7 @@ class SubscriptionPlanController extends Controller
         $seller = auth('seller')->user();
 
         $freePlan = SubscriptionPlan::where('price', 0)->first();
-        if (!$freePlan) {
+        if (! $freePlan) {
             return redirect()->back()->with('error', 'Free plan not found. Please create one first.');
         }
 

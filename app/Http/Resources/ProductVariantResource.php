@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -8,9 +9,9 @@ class ProductVariantResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
-        $price           = $this->selling_price;
+        $price = $this->selling_price;
         $discountedPrice = $this->discounted_price;
-        $discount        = null;
+        $discount = null;
 
         if ($this->discount_amount > 0) {
             $discount = "-{$this->discount_amount}";
@@ -18,16 +19,16 @@ class ProductVariantResource extends JsonResource
         }
 
         return [
-            'id'               => $this->id,
-            'sku'              => $this->sku,
-            'stock'            => $this->stock_in - $this->stock_out,
-            'price'            => removeZeroFromDecimal($price),
+            'id' => $this->id,
+            'sku' => $this->sku,
+            'stock' => $this->stock_in - $this->stock_out,
+            'price' => removeZeroFromDecimal($price),
             'discounted_price' => removeZeroFromDecimal($discountedPrice),
             'discount' => $discount,
-            'image'            => $this->image,
-            'value_ids'        => $this->option_values->pluck('id')->sort()->values()->toArray(),
-            'default'          => $this->is_default,
-            'variant_options'  => ProductVariantOptionResource::collection($this->options),
+            'image' => $this->image,
+            'value_ids' => $this->option_values->pluck('id')->sort()->values()->toArray(),
+            'default' => $this->is_default,
+            'variant_options' => ProductVariantOptionResource::collection($this->options),
         ];
     }
 }

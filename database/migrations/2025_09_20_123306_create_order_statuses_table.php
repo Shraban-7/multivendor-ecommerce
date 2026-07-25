@@ -37,47 +37,47 @@ return new class extends Migration
             [
                 'name' => 'Order Placed',
                 'description' => 'Order has been placed by customer',
-                'is_active' => true
+                'is_active' => true,
             ],
             [
                 'name' => 'Order Confirmed',
                 'description' => 'Order has been confirmed by seller',
-                'is_active' => true
+                'is_active' => true,
             ],
             [
                 'name' => 'Processing',
                 'description' => 'Order is being processed',
-                'is_active' => true
+                'is_active' => true,
             ],
             [
                 'name' => 'Shipped',
                 'description' => 'Order has been shipped',
-                'is_active' => true
+                'is_active' => true,
             ],
             [
                 'name' => 'Out for Delivery',
                 'description' => 'Order is out for delivery',
-                'is_active' => true
+                'is_active' => true,
             ],
             [
                 'name' => 'Delivered',
                 'description' => 'Order has been delivered',
-                'is_active' => true
+                'is_active' => true,
             ],
             [
                 'name' => 'Cancelled',
                 'description' => 'Order has been cancelled',
-                'is_active' => true
+                'is_active' => true,
             ],
             [
                 'name' => 'Returned',
                 'description' => 'Order has been returned',
-                'is_active' => true
+                'is_active' => true,
             ],
             [
                 'name' => 'Refunded',
                 'description' => 'Order amount has been refunded',
-                'is_active' => true
+                'is_active' => true,
             ],
         ];
 

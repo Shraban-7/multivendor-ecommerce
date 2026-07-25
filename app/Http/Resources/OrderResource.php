@@ -12,7 +12,7 @@ class OrderResource extends JsonResource
     {
         $paymentStatus = 0;
 
-        if ($this->due == 0 && !is_null($this->payment_id) && $this->payment->status == Payment::SUCCESSFUL) {
+        if ($this->due == 0 && ! is_null($this->payment_id) && $this->payment->status == Payment::SUCCESSFUL) {
             $paymentStatus = 1;
         }
 
@@ -28,7 +28,7 @@ class OrderResource extends JsonResource
             'due' => money($this->due),
             'status' => $this->status,
             'payment_status' => $paymentStatus,
-            'delivery_status'  => $this->delivery_status,
+            'delivery_status' => $this->delivery_status,
             'created_at' => $this->created_at->format('d m Y h:i A'),
             'seller' => SellerResource::make($this->whenLoaded('seller')),
             'items' => OrderItemResource::collection($this->whenLoaded('items')),

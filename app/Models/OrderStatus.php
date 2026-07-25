@@ -2,12 +2,5 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-
-class OrderStatus extends Model
-{
-    use HasFactory;
-
-    protected $guarded  = ['id'];
-}
+/** @deprecated Use App\Domain\Order\Models\OrderStatus */
+class OrderStatus extends \App\Domain\Order\Models\OrderStatus {}

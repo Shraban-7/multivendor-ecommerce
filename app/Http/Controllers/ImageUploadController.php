@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use Intervention\Image\Laravel\Facades\Image;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Laravel\Facades\Image;
 
 class ImageUploadController extends Controller
 {
@@ -28,7 +27,7 @@ class ImageUploadController extends Controller
             $watermark = Storage::disk('public')->get('images/watermark.png');
 
             $newImagePath = str_replace('temp', 'products/new', $imagePath);
- 
+
             Image::read(Storage::disk('public')->get($imagePath))
                 ->place(
                     element: $watermark,
@@ -43,13 +42,12 @@ class ImageUploadController extends Controller
 
             return response()->json([
                 'success' => true,
-                'path' => asset('storage/' . $imagePath)
+                'path' => asset('storage/'.$imagePath),
             ]);
         }
 
         return response()->json(['success' => false, 'message' => 'No file uploaded'], 400);
     }
-
 
     public function upload(Request $request)
     {
@@ -67,8 +65,8 @@ class ImageUploadController extends Controller
         $newImagePath = str_replace('temp', 'products/new', $imagePath);
 
         Image::read(Storage::disk('public')->get($imagePath))
-            //->crop(width: 2500, height: 2500, position: 'center')
-            //->scale(width: 500, height: 500)
+            // ->crop(width: 2500, height: 2500, position: 'center')
+            // ->scale(width: 500, height: 500)
             ->place(
                 element: $watermark,
                 position: 'bottom-right',

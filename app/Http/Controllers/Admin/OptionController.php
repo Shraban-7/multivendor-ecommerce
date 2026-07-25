@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Option;
-use App\Models\OptionValue;
-use Illuminate\Http\Request;
+use App\Domain\Product\Models\Category;
+use App\Domain\Product\Models\CategoryOption;
+use App\Domain\Product\Models\Option;
+use App\Domain\Product\Models\OptionValue;
+use App\Domain\Product\Models\ProductVariantOption;
 use App\Http\Controllers\Controller;
-use App\Models\Category;
-use App\Models\CategoryOption;
-use App\Models\ProductVariantOption;
+use Illuminate\Http\Request;
 
 class OptionController extends Controller
 {
@@ -25,7 +25,7 @@ class OptionController extends Controller
         $data = $request->validate([
             'name' => 'required|string',
             'values' => 'required|array',
-            'categories' => 'nullable|array'
+            'categories' => 'nullable|array',
         ]);
 
         $option = Option::create([
@@ -42,7 +42,7 @@ class OptionController extends Controller
         foreach ($data['categories'] as $category) {
             CategoryOption::create([
                 'category_id' => $category,
-                'option_id' => $option->id
+                'option_id' => $option->id,
             ]);
         }
 
@@ -68,7 +68,7 @@ class OptionController extends Controller
             ->delete();
 
         foreach ($data['values'] as $value) {
-            if (!in_array($value, $existingValues)) {
+            if (! in_array($value, $existingValues)) {
                 OptionValue::create([
                     'option_id' => $option->id,
                     'value' => $value,
@@ -83,7 +83,7 @@ class OptionController extends Controller
         return redirect()->back()->with('success', 'Option Updated Successfully!');
     }
 
-    public function optionValueUpdate(Request $request,$id)
+    public function optionValueUpdate(Request $request, $id)
     {
         $request->validate([
             'value' => 'required|string|max:255',
@@ -97,7 +97,6 @@ class OptionController extends Controller
         return redirect()->back()->with('success', 'Option value updated successfully');
     }
 
-
     public function deleteValue(OptionValue $value)
     {
         $value->delete();
@@ -108,7 +107,7 @@ class OptionController extends Controller
     public function destroy(Option $option)
     {
         $optionValueIds = OptionValue::where('option_id', $option->id)->pluck('id')->toArray();
-        if (!empty($optionValueIds)) {
+        if (! empty($optionValueIds)) {
             ProductVariantOption::whereIn('option_value_id', $optionValueIds)->delete();
         }
 

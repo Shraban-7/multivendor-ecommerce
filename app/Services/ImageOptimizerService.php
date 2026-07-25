@@ -2,27 +2,28 @@
 
 namespace App\Services;
 
-use Intervention\Image\Laravel\Facades\Image;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Intervention\Image\Laravel\Facades\Image;
 
 class ImageOptimizerService
 {
     const IMAGE_QUALITY = 85;
+
     /**
      * Optimize and upload an image.
      *
-     * @param UploadedFile $file The uploaded file.
-     * @param string $path The storage path (e.g., 'products').
-     * @param int|null $width Max width (optional).
-     * @param int|null $height Max height (optional).
+     * @param  UploadedFile  $file  The uploaded file.
+     * @param  string  $path  The storage path (e.g., 'products').
+     * @param  int|null  $width  Max width (optional).
+     * @param  int|null  $height  Max height (optional).
      * @return string The stored file path.
      */
     public function uploadAndOptimize(UploadedFile $file, string $path, ?int $width = 1200, ?int $height = null): string
     {
-        $filename = Str::uuid() . '.webp';
-        $fullPath = $path . '/' . $filename;
+        $filename = Str::uuid().'.webp';
+        $fullPath = $path.'/'.$filename;
 
         $image = Image::read($file);
 
@@ -41,7 +42,7 @@ class ImageOptimizerService
         return $fullPath;
     }
 
-    public function optimizeExistingImage(string $existingPath, bool $webp = false): null|string
+    public function optimizeExistingImage(string $existingPath, bool $webp = false): ?string
     {
         $disk = Storage::disk('public');
 
@@ -79,11 +80,11 @@ class ImageOptimizerService
     /**
      * Optimize an existing image in storage.
      *
-     * @param string $existingPath Path relative to disk (e.g. 'products/image.jpg')
-     * @param string|null $newPath Optional new directory (defaults to same folder)
-     * @param int|null $width Max width
-     * @param int|null $height Max height
-     * @param bool $overwrite Whether to overwrite the original file
+     * @param  string  $existingPath  Path relative to disk (e.g. 'products/image.jpg')
+     * @param  string|null  $newPath  Optional new directory (defaults to same folder)
+     * @param  int|null  $width  Max width
+     * @param  int|null  $height  Max height
+     * @param  bool  $overwrite  Whether to overwrite the original file
      * @return string Path to optimized image
      */
     public function optimizeExisting(string $existingPath, ?string $newPath = null, ?int $width = 1200, ?int $height = null, bool $overwrite = true): string
@@ -92,7 +93,7 @@ class ImageOptimizerService
 
         if (! $disk->exists($existingPath)) {
             return $existingPath;
-            //throw new \InvalidArgumentException("Image does not exist: {$existingPath}");
+            // throw new \InvalidArgumentException("Image does not exist: {$existingPath}");
         }
 
         $image = Image::read($disk->get($existingPath));
@@ -112,7 +113,7 @@ class ImageOptimizerService
         } else {
             // Save as new file
             $directory = $newPath ?? dirname($existingPath);
-            $optimizedPath = $directory . '/' . Str::uuid() . '.webp';
+            $optimizedPath = $directory.'/'.Str::uuid().'.webp';
         }
 
         $disk->put($optimizedPath, (string) $encoded);

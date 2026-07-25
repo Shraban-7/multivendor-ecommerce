@@ -8,7 +8,6 @@ enum StockType: int
     case ADD_STOCK = 1;
     case REMOVE_STOCK = 2;
 
-
     public function label(): string
     {
         return match ($this) {
@@ -21,9 +20,9 @@ enum StockType: int
     public static function labels(): array
     {
         return [
-            static::SET_EXACT_STOCK->label(),
-            static::ADD_STOCK->label(),
-            static::REMOVE_STOCK->label(),
+            self::SET_EXACT_STOCK->label(),
+            self::ADD_STOCK->label(),
+            self::REMOVE_STOCK->label(),
         ];
     }
 }

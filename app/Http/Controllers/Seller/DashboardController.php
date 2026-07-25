@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Seller;
 
-use App\Models\Order;
-use App\Models\Seller;
-use App\Models\Product;
-use App\Models\OrderItem;
-use Illuminate\Http\Request;
-use App\Models\SellerExpense;
-use App\Models\ProductVariant;
+use App\Domain\Product\Models\Product;
+use App\Domain\Product\Models\ProductVariant;
+use App\Domain\Vendor\Models\SellerExpense;
 use App\Http\Controllers\Controller;
+use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\Seller;
+use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
@@ -19,7 +19,7 @@ class DashboardController extends Controller
 
         $dateRange = $request->input('date_range', 'daily');
         $startDate = $request->input('start_date', now()->startOfMonth()->toDateString());
-        $endDate   = $request->input('end_date', now()->toDateString());
+        $endDate = $request->input('end_date', now()->toDateString());
 
         $ordersQuery = Order::where('seller_id', $seller->id)
             ->whereDate('created_at', '>=', $startDate)
@@ -47,10 +47,10 @@ class DashboardController extends Controller
         $profit = (clone $ordersQuery)->sum('seller_earnings') - $TotalBuyingPrice;
 
         $chartData = [
-            'labels'  => $orders->pluck('label'),
-            'orders'  => $orders->pluck('order_count'),
-            'sales'   => $orders->pluck('sale'),
-            'profits' => $orders->map(fn($order) => $order->sale - $order->buying_price),
+            'labels' => $orders->pluck('label'),
+            'orders' => $orders->pluck('order_count'),
+            'sales' => $orders->pluck('sale'),
+            'profits' => $orders->map(fn ($order) => $order->sale - $order->buying_price),
         ];
 
         $top_selling_products = Product::where('seller_id', $seller->id)
@@ -72,16 +72,15 @@ class DashboardController extends Controller
             ->whereDate('expense_date', '<=', $endDate)
             ->sum('amount');
 
-
         $total_stock_product_amount = ProductVariant::whereHas('product', function ($q) use ($seller) {
             $q->where('seller_id', $seller->id);
         })
             ->get()
             ->sum(function ($variant) {
                 $available = $variant->stock_in - $variant->stock_out;
+
                 return max($available, 0) * $variant->selling_price;
             });
-
 
         return view('seller.dashboard', [
             'total_products' => Product::where('seller_id', $seller->id)->count(),
@@ -99,7 +98,7 @@ class DashboardController extends Controller
             'total_commission' => $total_commission,
             'total_stock_product_amount' => $total_stock_product_amount,
             'seller' => $seller,
-            'total_expense' => $total_expense
+            'total_expense' => $total_expense,
         ]);
     }
 }

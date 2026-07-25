@@ -2,12 +2,5 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-
-class AffiliateClick extends Model
-{
-    use HasFactory;
-
-    protected $guarded = ['id'];
-}
+/** @deprecated Use App\Domain\Affiliate\Models\AffiliateClick */
+class AffiliateClick extends \App\Domain\Affiliate\Models\AffiliateClick {}

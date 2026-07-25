@@ -22,7 +22,7 @@ class Firebase
 
     public function notifyPaymentListener($deviceToken, $title, $body, $data = [])
     {
-        return $this->send($deviceToken, $title, $body, $data, storage_path("app/firebase/payment-listener.json"));
+        return $this->send($deviceToken, $title, $body, $data, storage_path('app/firebase/payment-listener.json'));
     }
 
     private function send($deviceToken, $title, $body, $data, $credentialPath)
@@ -42,7 +42,8 @@ class Firebase
 
             return $firebase->send($message);
         } catch (Exception $e) {
-            \Log::error('FCM send error: ' . $e->getMessage());
+            \Log::error('FCM send error: '.$e->getMessage());
+
             return $e->getMessage();
         }
     }

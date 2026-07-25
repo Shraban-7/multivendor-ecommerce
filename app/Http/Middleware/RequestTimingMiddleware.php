@@ -36,14 +36,14 @@ class RequestTimingMiddleware
         // Log only slow requests or large payloads
         if ($duration > 3 || $payloadSize > 1024 * 50) { // 3 sec or > 50 KB
             Log::warning('⚠️ Slow or heavy request detected', [
-                'method'         => $method,
-                'uri'            => $uri,
-                'ip'             => $ip,
-                'duration_sec'   => round($duration, 3),
+                'method' => $method,
+                'uri' => $uri,
+                'ip' => $ip,
+                'duration_sec' => round($duration, 3),
                 'memory_used_mb' => round($memoryUsed / 1024 / 1024, 2),
                 'payload_size_kb' => round($payloadSize / 1024, 2),
-                'status_code'    => $statusCode,
-                'payload'        => $payload,
+                'status_code' => $statusCode,
+                'payload' => $payload,
             ]);
         }
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -22,15 +23,15 @@ class PaymentGatewayController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name'                 => 'required|string',
-            'payment_url'          => 'required|url',
-            'image'                => 'nullable|image|max:4096',
-            'credentials_keys'     => 'required|array|min:1',
-            'credentials_keys.*'   => 'required|string',
-            'credentials_values'   => 'required|array|min:1',
+            'name' => 'required|string',
+            'payment_url' => 'required|url',
+            'image' => 'nullable|image|max:4096',
+            'credentials_keys' => 'required|array|min:1',
+            'credentials_keys.*' => 'required|string',
+            'credentials_values' => 'required|array|min:1',
             'credentials_values.*' => 'required|string',
-            'is_enabled'           => 'required|boolean',
-            'is_default'           => 'required|boolean',
+            'is_enabled' => 'required|boolean',
+            'is_default' => 'required|boolean',
         ]);
 
         $credentials = array_combine($data['credentials_keys'], $data['credentials_values']);
@@ -58,15 +59,15 @@ class PaymentGatewayController extends Controller
     public function update(Request $request, PaymentGateway $gateway)
     {
         $data = $request->validate([
-            'name'                 => 'required|string',
-            'payment_url'          => 'required|url',
-            'image'                => 'nullable|image|max:4096',
-            'credentials_keys'     => 'required|array|min:1',
-            'credentials_keys.*'   => 'required|string',
-            'credentials_values'   => 'required|array|min:1',
+            'name' => 'required|string',
+            'payment_url' => 'required|url',
+            'image' => 'nullable|image|max:4096',
+            'credentials_keys' => 'required|array|min:1',
+            'credentials_keys.*' => 'required|string',
+            'credentials_values' => 'required|array|min:1',
             'credentials_values.*' => 'required|string',
-            'is_enabled'           => 'required|boolean',
-            'is_default'           => 'required|boolean',
+            'is_enabled' => 'required|boolean',
+            'is_default' => 'required|boolean',
         ]);
 
         $credentials = array_combine($data['credentials_keys'], $data['credentials_values']);
@@ -102,5 +103,4 @@ class PaymentGatewayController extends Controller
         return redirect()->route('admin.paymentGateways.index')
             ->with('success', 'Payment gateway deleted successfully.');
     }
-
 }

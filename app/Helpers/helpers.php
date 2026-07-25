@@ -1,14 +1,15 @@
 <?php
 
+use App\Domain\Product\Models\Category;
 use App\Enums\AdminRole;
 use App\Enums\DiscountType;
 use App\Enums\UserRole;
-use App\Models\Category;
 use App\Models\Notification;
 use App\Models\PaymentOption;
 use App\Models\SocialLink;
 use App\Models\SystemSetting;
-use App\Models\User;
+use App\Services\NotificationService;
+use App\Services\SmsService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,25 +17,25 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Intervention\Image\Laravel\Facades\Image;
-use Spatie\LaravelImageOptimizer\Facades\ImageOptimizer;
 
 if (! function_exists('currency_symbol')) {
     function currency_symbol()
     {
-        return "৳";
+        return '৳';
     }
 }
 
 if (! function_exists('str_slug')) {
     function str_slug($table, $column, $title, $separator = '-')
     {
-        $slug         = Str::slug($title, $separator);
+        $slug = Str::slug($title, $separator);
         $originalSlug = $slug;
-        $count        = 1;
+        $count = 1;
 
         while (DB::table($table)->where($column, $slug)->exists()) {
             $slug = "{$originalSlug}{$separator}{$count}";
@@ -49,7 +50,7 @@ if (! function_exists('sendValidationError')) {
     function sendValidationError($errors)
     {
         return response()->json([
-            'status'  => false,
+            'status' => false,
             'message' => $errors->first(),
         ], 422);
     }
@@ -58,7 +59,7 @@ if (! function_exists('sendValidationError')) {
 if (! function_exists('generateFileName')) {
     function generateFileName($file)
     {
-        return time() . rand(1, 9999) . '.' . $file->extension();
+        return time().rand(1, 9999).'.'.$file->extension();
     }
 }
 
@@ -69,32 +70,32 @@ if (! function_exists('upload_file')) {
             Storage::disk($disk)->makeDirectory($directory);
         }
 
-        $fileName = time() . rand(1, 9999) . '.' . $file->getClientOriginalExtension();
-        $path = $directory . '/' . $fileName;
+        $fileName = time().rand(1, 9999).'.'.$file->getClientOriginalExtension();
+        $path = $directory.'/'.$fileName;
         $file->storeAs($directory, $fileName, $disk);
 
-        //$storagePath = Storage::disk($disk)->path($path);
-        //optimize_image($storagePath, $storagePath);
+        // $storagePath = Storage::disk($disk)->path($path);
+        // optimize_image($storagePath, $storagePath);
 
         return $path;
     }
 }
 
-if (!function_exists('optimize_image')) {
+if (! function_exists('optimize_image')) {
     /**
      * Optimize an image to reduce file size without perceptible quality loss.
      * Supports JPEG, PNG, WebP.
      *
-     * @param string $sourcePath Path to original image
-     * @param string $destinationPath Path to save optimized image
-     * @param int $maxWidth Optional max width to resize (keeps aspect ratio)
-     * @param int $quality 0-100 JPEG/WebP quality
-     * @return bool
+     * @param  string  $sourcePath  Path to original image
+     * @param  string  $destinationPath  Path to save optimized image
+     * @param  int  $maxWidth  Optional max width to resize (keeps aspect ratio)
+     * @param  int  $quality  0-100 JPEG/WebP quality
+     *
      * @throws Exception
      */
     function optimize_image(string $sourcePath, string $destinationPath, int $maxWidth = 0, int $quality = 80): bool
     {
-        if (!extension_loaded('gd')) {
+        if (! extension_loaded('gd')) {
             throw new Exception('GD extension not installed.');
         }
 
@@ -104,10 +105,10 @@ if (!function_exists('optimize_image')) {
         // Calculate new dimensions if resizing
         if ($maxWidth > 0 && $width > $maxWidth) {
             $ratio = $maxWidth / $width;
-            $newWidth  = $maxWidth;
+            $newWidth = $maxWidth;
             $newHeight = intval($height * $ratio);
         } else {
-            $newWidth  = $width;
+            $newWidth = $width;
             $newHeight = $height;
         }
 
@@ -198,9 +199,9 @@ if (! function_exists('upload_with_watermark')) {
     function upload_with_watermark($file, $directory, $disk = 'public')
     {
         $watermarkPath = 'images/watermark.png';
-        $tempPath      = upload_file($file, 'images/temp', $disk);
-        $fileName      = basename($tempPath);
-        $finalPath     = $directory . '/' . $fileName;
+        $tempPath = upload_file($file, 'images/temp', $disk);
+        $fileName = basename($tempPath);
+        $finalPath = $directory.'/'.$fileName;
         $fullFinalPath = Storage::disk($disk)->path($finalPath);
 
         if (! Storage::disk($disk)->exists($directory)) {
@@ -213,8 +214,8 @@ if (! function_exists('upload_with_watermark')) {
             $watermark = Image::read(Storage::disk($disk)->get($watermarkPath));
 
             $imageWidth = $image->width();
-            $offset_x   = (int) ($imageWidth * 0.06);
-            $offset_y   = 10;
+            $offset_x = (int) ($imageWidth * 0.06);
+            $offset_y = 10;
 
             $image->place(
                 element: $watermark,
@@ -276,7 +277,7 @@ if (! function_exists('currency')) {
     function currency($key = 'symbol')
     {
         $currency = [
-            'name'   => 'BDT',
+            'name' => 'BDT',
             'symbol' => '৳',
         ];
 
@@ -303,17 +304,19 @@ if (! function_exists('number_shorten_format')) {
         if ($number <= 1000) {
             $precision = 0;
         }
-        return number_format($number / $divisor, $precision) . $shorthand;
+
+        return number_format($number / $divisor, $precision).$shorthand;
     }
 }
 
 if (! function_exists('datetime_format')) {
     function datetime_format($time)
     {
-        $carbonTime    = Carbon::parse($time);
-        $days          = $carbonTime->diffInDays(Carbon::now()) > 0 ? $carbonTime->diffInDays(Carbon::now()) . ':' : '';
+        $carbonTime = Carbon::parse($time);
+        $days = $carbonTime->diffInDays(Carbon::now()) > 0 ? $carbonTime->diffInDays(Carbon::now()).':' : '';
         $formattedTime = substr($carbonTime->format('H:i:s.u'), 0, -3);
-        return $days . $formattedTime;
+
+        return $days.$formattedTime;
     }
 }
 
@@ -324,7 +327,7 @@ if (! function_exists('percentage')) {
             return '0%';
         }
 
-        return $number * 100 . '%';
+        return $number * 100 .'%';
     }
 }
 
@@ -343,7 +346,7 @@ if (! function_exists('employee')) {
 }
 
 if (! function_exists('apiResponse')) {
-    function apiResponse(object | array $data, string | null $message = null, int $statusCode = 200)
+    function apiResponse(object|array $data, ?string $message = null, int $statusCode = 200)
     {
         $response['status'] = true;
 
@@ -376,14 +379,14 @@ if (! function_exists('errorResponse')) {
     function errorResponse(string $message, int $statusCode = 400)
     {
         return response()->json([
-            'status'  => false,
+            'status' => false,
             'message' => $message ?? 'Something went wrong!',
         ], $statusCode);
     }
 }
 
 if (! function_exists('apiResourceResponse')) {
-    function apiResourceResponse(object $collection, string | null $message = null, array $extraData = [], int $statusCode = 200)
+    function apiResourceResponse(object $collection, ?string $message = null, array $extraData = [], int $statusCode = 200)
     {
         $response['status'] = true;
         if (isset($message)) {
@@ -434,11 +437,11 @@ if (! function_exists('money')) {
     {
         $money = number_format($amount, 2);
 
-        if(!$showCurrency) {
+        if (! $showCurrency) {
             return removeZeroFromDecimal($money);
         }
 
-        return currency_symbol() . ' ' . removeZeroFromDecimal($money);
+        return currency_symbol().' '.removeZeroFromDecimal($money);
     }
 }
 
@@ -475,7 +478,7 @@ if (! function_exists('hasPermission')) {
     {
         $admin = admin();
 
-        return Cache::remember("permissions_" . $admin->role->name, 6, function () use ($admin, $permissionKey) {
+        return Cache::remember('permissions_'.$admin->role->name, 6, function () use ($admin, $permissionKey) {
             $permissions = $admin->role->permissionNames;
 
             return in_array($permissionKey, $permissions);
@@ -486,7 +489,7 @@ if (! function_exists('hasPermission')) {
 if (! function_exists('settings')) {
     function settings()
     {
-        return Cache::remember('system_settings', 120, function(){
+        return Cache::remember('system_settings', 120, function () {
             return SystemSetting::first();
         });
     }
@@ -544,7 +547,7 @@ if (! function_exists('downloadImageFromUrl')) {
             }
 
             $imageContent = $response->body();
-            $extension    = pathinfo(parse_url($url, PHP_URL_PATH), PATHINFO_EXTENSION);
+            $extension = pathinfo(parse_url($url, PHP_URL_PATH), PATHINFO_EXTENSION);
 
             $fileName = is_null($fileName) ? Str::uuid() : $fileName;
 
@@ -553,7 +556,7 @@ if (! function_exists('downloadImageFromUrl')) {
             Storage::disk('public')->put($path, $imageContent);
 
             return $path;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return null;
         }
     }
@@ -565,16 +568,16 @@ if (! function_exists('convert_number_to_words_bdt')) {
         $number = (int) $number;
 
         $words = [
-            0  => '',
-            1  => 'One',
-            2  => 'Two',
-            3  => 'Three',
-            4  => 'Four',
-            5  => 'Five',
-            6  => 'Six',
-            7  => 'Seven',
-            8  => 'Eight',
-            9  => 'Nine',
+            0 => '',
+            1 => 'One',
+            2 => 'Two',
+            3 => 'Three',
+            4 => 'Four',
+            5 => 'Five',
+            6 => 'Six',
+            7 => 'Seven',
+            8 => 'Eight',
+            9 => 'Nine',
             10 => 'Ten',
             11 => 'Eleven',
             12 => 'Twelve',
@@ -610,26 +613,26 @@ if (! function_exists('convert_number_to_words_bdt')) {
 
         $numStr = str_pad($number, 9, '0', STR_PAD_LEFT);
 
-        $crore    = (int) substr($numStr, 0, 2);
-        $lakh     = (int) substr($numStr, 2, 2);
+        $crore = (int) substr($numStr, 0, 2);
+        $lakh = (int) substr($numStr, 2, 2);
         $thousand = (int) substr($numStr, 4, 2);
-        $hundred  = (int) substr($numStr, 6, 1);
-        $rest     = (int) substr($numStr, 7, 2);
+        $hundred = (int) substr($numStr, 6, 1);
+        $rest = (int) substr($numStr, 7, 2);
 
         if ($crore) {
-            $result .= number_to_words_bdt($crore, $words) . ' Crore ';
+            $result .= number_to_words_bdt($crore, $words).' Crore ';
         }
         if ($lakh) {
-            $result .= number_to_words_bdt($lakh, $words) . ' Lakh ';
+            $result .= number_to_words_bdt($lakh, $words).' Lakh ';
         }
         if ($thousand) {
-            $result .= number_to_words_bdt($thousand, $words) . ' Thousand ';
+            $result .= number_to_words_bdt($thousand, $words).' Thousand ';
         }
         if ($hundred) {
-            $result .= $words[$hundred] . ' Hundred ';
+            $result .= $words[$hundred].' Hundred ';
         }
         if ($rest) {
-            $result .= ($result != '' ? 'and ' : '') . number_to_words_bdt($rest, $words);
+            $result .= ($result != '' ? 'and ' : '').number_to_words_bdt($rest, $words);
         }
 
         return trim($result);
@@ -640,9 +643,10 @@ if (! function_exists('convert_number_to_words_bdt')) {
         if ($num < 21) {
             return $words[$num];
         } else {
-            $tens  = ((int) ($num / 10)) * 10;
+            $tens = ((int) ($num / 10)) * 10;
             $units = $num % 10;
-            return $words[$tens] . ($units ? ' ' . $words[$units] : '');
+
+            return $words[$tens].($units ? ' '.$words[$units] : '');
         }
     }
 }
@@ -650,21 +654,21 @@ if (! function_exists('convert_number_to_words_bdt')) {
 if (! function_exists('notify_user')) {
     function notify_user($userId, $title, $message, $targetType = null, $targetId = null, $sendPush = false)
     {
-        return \App\Services\NotificationService::send("user_id", $userId, $title, $message, $targetType, $targetId, $sendPush);
+        return NotificationService::send('user_id', $userId, $title, $message, $targetType, $targetId, $sendPush);
     }
 }
 
 if (! function_exists('notify_seller')) {
     function notify_seller($sellerID, $title, $message, $targetType = null, $targetId = null, $sendPush = false)
     {
-        return \App\Services\NotificationService::send("seller_id", $sellerID, $title, $message, $targetType, $targetId, $sendPush);
+        return NotificationService::send('seller_id', $sellerID, $title, $message, $targetType, $targetId, $sendPush);
     }
 }
 
 if (! function_exists('notificationCount')) {
     function notificationCount()
     {
-        if (!auth('web')->check() && !auth()->guard('seller')->check()) {
+        if (! auth('web')->check() && ! auth()->guard('seller')->check()) {
             return 0;
         }
         if (auth()->guard('seller')->check()) {
@@ -681,6 +685,7 @@ if (! function_exists('affiliate')) {
     function affiliate()
     {
         $user = Auth::guard('web')->user();
+
         return $user && $user->role == UserRole::AFFILIATE->value;
     }
 }
@@ -688,7 +693,7 @@ if (! function_exists('affiliate')) {
 if (! function_exists('get_seller_routes')) {
     function get_seller_routes(): array
     {
-        $prefix = "seller.";
+        $prefix = 'seller.';
 
         $excludedRoutes = [
             'seller.signup',
@@ -697,9 +702,9 @@ if (! function_exists('get_seller_routes')) {
         ];
 
         $routes = [];
-        foreach (\Illuminate\Support\Facades\Route::getRoutes() as $route) {
+        foreach (Route::getRoutes() as $route) {
             $routeName = $route->getName();
-            if ($routeName != null && str_starts_with($routeName, $prefix) && !in_array($routeName, $excludedRoutes)) {
+            if ($routeName != null && str_starts_with($routeName, $prefix) && ! in_array($routeName, $excludedRoutes)) {
                 $routes[] = $routeName;
             }
         }
@@ -713,7 +718,7 @@ if (! function_exists('get_seller_routes')) {
             $title = ucwords(str_replace('.', ' > ', $title));
 
             $permissions[] = [
-                'name'  => $route,
+                'name' => $route,
                 'title' => $title,
             ];
         }
@@ -725,7 +730,7 @@ if (! function_exists('get_seller_routes')) {
 if (! function_exists('get_seller_id')) {
     function get_seller_id()
     {
-        if(seller()) {
+        if (seller()) {
             return seller()->id;
         }
 
@@ -733,13 +738,13 @@ if (! function_exists('get_seller_id')) {
     }
 }
 
-if (!function_exists('calculate_vat')) {
+if (! function_exists('calculate_vat')) {
     /**
      * Calculate VAT amount based on percentage and price.
      *
-     * @param float $vatPercentage  VAT percentage (e.g., 15 for 15%)
-     * @param float $price          Product price (excluding VAT)
-     * @return float                VAT amount
+     * @param  float  $vatPercentage  VAT percentage (e.g., 15 for 15%)
+     * @param  float  $price  Product price (excluding VAT)
+     * @return float VAT amount
      */
     function calculate_vat(float $vatPercentage, float $price): float
     {
@@ -747,7 +752,7 @@ if (!function_exists('calculate_vat')) {
     }
 }
 
-if (!function_exists('time_to_ms')) {
+if (! function_exists('time_to_ms')) {
     function time_to_ms($time)
     {
         $timestamp = strtotime($time);
@@ -766,14 +771,14 @@ if (! function_exists('format_bd_phone')) {
             $number = substr($number, 1); // Remove "+"
         }
         if (strpos($number, '01') === 0) {
-            $number = '880' . substr($number, 1); // Convert 01xxxxxxxxx to 8801xxxxxxxxx
+            $number = '880'.substr($number, 1); // Convert 01xxxxxxxxx to 8801xxxxxxxxx
         }
 
         return $number;
     }
 }
 
-if (!function_exists('is_valid_number')) {
+if (! function_exists('is_valid_number')) {
     /**
      * Validate Bangladesh mobile number.
      *
@@ -798,8 +803,8 @@ if (!function_exists('is_valid_number')) {
 if (! function_exists('send_sms')) {
     function send_sms($message, $recipients)
     {
-        if(app()->isProduction()) {
-            return (new \App\Services\SmsService)->send($message, $recipients);
+        if (app()->isProduction()) {
+            return (new SmsService)->send($message, $recipients);
         }
 
         return null;

@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Category;
+use App\Domain\Product\Models\Category;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -21,7 +21,7 @@ class CategorySeeder extends Seeder
                     ['name' => 'Men’s Fashion', 'icon' => 'fa fa-person'],
                     ['name' => 'Women’s Fashion', 'icon' => 'fa fa-person-dress'],
                     ['name' => 'Kids & Babies', 'icon' => 'fa fa-child'],
-                ]
+                ],
             ],
 
             [
@@ -32,7 +32,7 @@ class CategorySeeder extends Seeder
                     ['name' => 'Men’s Footwear', 'icon' => 'fa fa-shoe-prints'],
                     ['name' => 'Women’s Footwear', 'icon' => 'fa fa-shoe-prints'],
                     ['name' => 'Kids Footwear', 'icon' => 'fa fa-shoe-prints'],
-                ]
+                ],
             ],
 
             [
@@ -45,7 +45,7 @@ class CategorySeeder extends Seeder
                     ['name' => 'Makeup', 'icon' => 'fa fa-paintbrush'],
                     ['name' => 'Fragrances', 'icon' => 'fa fa-spray-can-sparkles'],
                     ['name' => 'Men’s Grooming', 'icon' => 'fa fa-hand-sparkles'],
-                ]
+                ],
             ],
 
             [
@@ -61,8 +61,8 @@ class CategorySeeder extends Seeder
                 'child' => [
                     ['name' => 'Earphone', 'icon' => 'fa fa-ear-listen'],
                     ['name' => 'Bluetooth Speaker', 'icon' => 'fa fa-volume-high'],
-                    ['name' => 'Charger', 'icon' => 'fa fa-bolt']
-                ]
+                    ['name' => 'Charger', 'icon' => 'fa fa-bolt'],
+                ],
             ],
 
             [
@@ -73,7 +73,7 @@ class CategorySeeder extends Seeder
                     ['name' => 'Home Decor', 'icon' => 'fa fa-couch'],
                     ['name' => 'Kitchen & Dining', 'icon' => 'fa fa-utensils'],
                     ['name' => 'Gifts & Novelties', 'icon' => 'fa fa-gift'],
-                ]
+                ],
             ],
 
             [
@@ -88,7 +88,7 @@ class CategorySeeder extends Seeder
                     ['name' => 'Educational Toys', 'icon' => 'fa fa-lightbulb'],
                     ['name' => 'Outdoor Toys', 'icon' => 'fa fa-tree'],
                     ['name' => 'Puzzles', 'icon' => 'fa fa-jigsaw'],
-                ]
+                ],
             ],
 
             [
@@ -100,7 +100,7 @@ class CategorySeeder extends Seeder
                     ['name' => 'Team Sports', 'icon' => 'fa fa-football'],
                     ['name' => 'Outdoor Gear', 'icon' => 'fa fa-campground'],
                     ['name' => 'Cycling', 'icon' => 'fa fa-bicycle'],
-                ]
+                ],
             ],
 
             [
@@ -116,7 +116,7 @@ class CategorySeeder extends Seeder
                     ['name' => 'Engine Oils', 'icon' => 'fa fa-oil-can'],
                     ['name' => 'Tires & Wheels', 'icon' => 'fa fa-circle-notch'],
                     ['name' => 'Tools', 'icon' => 'fa fa-screwdriver-wrench'],
-                ]
+                ],
             ],
         ];
 
@@ -136,10 +136,10 @@ class CategorySeeder extends Seeder
                 'is_slider' => $categoryData['is_slider'] ?? 0,
                 'icon' => $categoryData['icon'] ?? null,
                 'slug' => str_slug('categories', 'slug', $categoryData['name']),
-                'status' => true
+                'status' => true,
             ]);
 
-            if (!empty($categoryData['children'])) {
+            if (! empty($categoryData['children'])) {
                 foreach ($categoryData['children'] as $child) {
                     Category::insert([
                         'name' => $child['name'],
@@ -150,7 +150,7 @@ class CategorySeeder extends Seeder
                 }
             }
 
-            if (!empty($categoryData['child'])) {
+            if (! empty($categoryData['child'])) {
                 foreach ($categoryData['child'] as $subchild) {
                     Category::insert([
                         'name' => $subchild['name'],

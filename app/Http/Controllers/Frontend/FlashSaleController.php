@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Domain\Product\Models\FlashSale;
 use App\Http\Controllers\Controller;
-use App\Models\FlashSale;
-use Illuminate\Http\Request;
 
 class FlashSaleController extends Controller
 {

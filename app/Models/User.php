@@ -6,13 +6,13 @@ namespace App\Models;
 use App\Enums\UserRole;
 use App\Mail\EmailVerificationMail;
 use App\Mail\WelcomeMail;
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Mail;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -48,23 +48,22 @@ class User extends Authenticatable
         return $code;
     }
 
-    public static function generateShortUsername(string $phone = null): string
+    public static function generateShortUsername(?string $phone = null): string
     {
         $last4 = $phone ? substr($phone, -4) : rand(1000, 9999);
 
         // 2 random letters
         $random = substr(str_shuffle('abcdefghijklmnopqrstuvwxyz'), 0, 2);
 
-        $username = 'u' . $last4 . $random;
-        
+        $username = 'u'.$last4.$random;
+
         while (self::where('username', $username)->exists()) {
             $random = substr(str_shuffle('abcdefghijklmnopqrstuvwxyz'), 0, 2);
-            $username = 'u' . $last4 . $random;
+            $username = 'u'.$last4.$random;
         }
 
         return $username;
     }
-
 
     public function country(): BelongsTo
     {
@@ -111,7 +110,7 @@ class User extends Authenticatable
 
     public static function phoneValidationRules($unique = false)
     {
-        //'required|string|regex:/^\+8801[3-9]\d{8}$/|max:14',
+        // 'required|string|regex:/^\+8801[3-9]\d{8}$/|max:14',
         $rules = 'required|string|regex:/^01[3-9]\d{8}$/|size:11';
 
         if ($unique) {

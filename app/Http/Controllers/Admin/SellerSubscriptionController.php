@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Domain\Vendor\Models\SellerSubscription;
 use App\Enums\SubscriptionStatus;
 use App\Http\Controllers\Controller;
-use App\Models\SellerSubscription;
 use App\Models\SubscriptionPlan;
 use App\Services\SubscriptionService;
 use Illuminate\Http\Request;
@@ -32,8 +32,8 @@ class SellerSubscriptionController extends Controller
 
         if ($request->filled('search')) {
             $query->whereHas('seller', function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%')
-                    ->orWhere('email', 'like', '%' . $request->search . '%');
+                $q->where('name', 'like', '%'.$request->search.'%')
+                    ->orWhere('email', 'like', '%'.$request->search.'%');
             });
         }
 

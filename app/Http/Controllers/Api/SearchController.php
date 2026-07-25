@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Domain\Product\Models\Product;
 use App\Http\Controllers\Controller;
-use App\Models\Product;
 use App\Models\Seller;
 use Illuminate\Http\Request;
 
@@ -19,11 +19,11 @@ class SearchController extends Controller
             return apiResponse($data);
         }
 
-        $products = Product::where('name', 'like', '%' . $query . '%')
+        $products = Product::where('name', 'like', '%'.$query.'%')
             ->take(5)
             ->get();
 
-        $sellers = Seller::where('business_name', 'like', '%' . $query . '%')
+        $sellers = Seller::where('business_name', 'like', '%'.$query.'%')
             ->take(5)
             ->get();
 
@@ -42,7 +42,7 @@ class SearchController extends Controller
                 'name' => $product->name,
                 'thumbnail' => storage_url($product->thumbnail),
                 'price' => is_null($product->selling_price) ? null : money($product->selling_price),
-                'discounted_price' => is_null($product->discounted_price) ? null : money($product->discounted_price)
+                'discounted_price' => is_null($product->discounted_price) ? null : money($product->discounted_price),
             ];
         }
 

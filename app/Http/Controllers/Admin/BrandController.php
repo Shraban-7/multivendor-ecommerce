@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Domain\Product\Models\Brand;
 use App\Http\Controllers\Controller;
-use App\Models\Brand;
 use Illuminate\Http\Request;
 
 class BrandController extends Controller
@@ -11,6 +11,7 @@ class BrandController extends Controller
     public function index()
     {
         $brands = Brand::latest()->paginate(10);
+
         return view('admin.brands.index', compact('brands'));
     }
 
@@ -32,10 +33,10 @@ class BrandController extends Controller
 
         Brand::create($data);
 
-        return redirect()->back()->with('success','Brand Added Successfully');
+        return redirect()->back()->with('success', 'Brand Added Successfully');
     }
 
-    public function update(Request $request,Brand $brand)
+    public function update(Request $request, Brand $brand)
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
@@ -54,14 +55,14 @@ class BrandController extends Controller
 
         $brand->update($data);
 
-        return redirect()->back()->with('success','Brand Updated Successfully');
+        return redirect()->back()->with('success', 'Brand Updated Successfully');
     }
 
     public function toggleStatus(Brand $brand)
     {
-        $brand->status = !$brand->status;
+        $brand->status = ! $brand->status;
         $brand->save();
+
         return redirect()->back()->with('success', 'Brand Status Updated Successfully');
     }
-
 }

@@ -8,9 +8,13 @@ use Illuminate\Support\Facades\Http;
 class SmsService
 {
     protected $apiUrl;
+
     protected $apiKey;
+
     protected $secretKey;
+
     protected $callerId;
+
     protected $bypassUrl;
 
     public function __construct()
@@ -30,7 +34,7 @@ class SmsService
         }, $numbers);
         $formattedRecipients = implode(',', $formattedNumbers);
 
-        $apiUrl =  $this->apiUrl . '/sendtext';
+        $apiUrl = $this->apiUrl.'/sendtext';
 
         try {
             $response = Http::post($this->bypassUrl, [
@@ -59,7 +63,7 @@ class SmsService
             ]);
 
             return [
-                'Text' => $e->getMessage()
+                'Text' => $e->getMessage(),
             ];
         }
     }

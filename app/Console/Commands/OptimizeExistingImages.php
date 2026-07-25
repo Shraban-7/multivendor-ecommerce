@@ -4,13 +4,12 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Laravel\Facades\Image;
 use Illuminate\Support\Str;
+use Intervention\Image\Laravel\Facades\Image;
 
 class OptimizeExistingImages extends Command
 {
-    //php artisan images:optimize images/my-shop
-
+    // php artisan images:optimize images/my-shop
 
     protected $signature = 'images:optimize 
         {path=images/my-shop : Relative path inside storage/app/public}
@@ -27,12 +26,13 @@ class OptimizeExistingImages extends Command
 
         if (! $disk->exists($path)) {
             $this->error("Path not found: {$path}");
+
             return Command::FAILURE;
         }
 
         $files = $disk->allFiles($path);
 
-        $this->info('Found ' . count($files) . ' files.');
+        $this->info('Found '.count($files).' files.');
 
         foreach ($files as $file) {
 

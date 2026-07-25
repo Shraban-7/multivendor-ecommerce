@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use Illuminate\Http\Request;
-use App\Models\BillingAddress;
 use App\Http\Controllers\Controller;
+use App\Models\BillingAddress;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class BillingAddressController extends Controller
@@ -25,13 +25,11 @@ class BillingAddressController extends Controller
 
         $data['user_id'] = $user_id;
 
-
-
         if ($data['is_default'] == true) {
             BillingAddress::where('user_id', $user_id)
                 ->where('is_default', true)
                 ->update([
-                    'is_default' => false
+                    'is_default' => false,
                 ]);
         }
 
@@ -63,7 +61,7 @@ class BillingAddressController extends Controller
                 BillingAddress::where('user_id', $user_id)
                     ->where('is_default', true)
                     ->update([
-                        'is_default' => false
+                        'is_default' => false,
                     ]);
             }
         }

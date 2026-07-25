@@ -2,36 +2,34 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Models\Cart;
-use App\Models\User;
-use App\Models\Order;
-use App\Models\Review;
-use App\Models\Seller;
-use App\Models\Payment;
-use App\Models\Product;
-use App\Models\District;
-use App\Models\Division;
-use App\Models\OrderItem;
+use App\Domain\Product\Models\Product;
+use App\Domain\Product\Models\ProductVariant;
+use App\Domain\Review\Models\Review;
+use App\Domain\Review\Models\ReviewImage;
+use App\Domain\Shipping\Models\District;
+use App\Domain\Shipping\Models\Division;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentType;
-use App\Models\ReviewImage;
-use App\Models\Notification;
-use Illuminate\Http\Request;
-use App\Enums\CommissionType;
+use App\Http\Controllers\Controller;
+use App\Models\AffiliateCommission;
 use App\Models\BillingAddress;
+use App\Models\Cart;
+use App\Models\Notification;
+use App\Models\Order;
+use App\Models\OrderBillingAddress;
+use App\Models\OrderItem;
+use App\Models\Payment;
 use App\Models\PaymentGateway;
-use App\Models\ProductVariant;
-use App\Services\BkashService;
+use App\Models\Seller;
+use App\Models\User;
 use App\Services\AamarpayService;
 use App\Services\AffiliateService;
-use App\Models\AffiliateCommission;
-use App\Models\OrderBillingAddress;
-use Illuminate\Support\Facades\Log;
-use App\Http\Controllers\Controller;
+use App\Services\BkashService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
@@ -43,6 +41,7 @@ class OrderController extends Controller
     }
 
     const AFFILIATE_COMMISSION_PERCENTAGE = 0.05;
+
     public function index(Request $request)
     {
         $statusLabel = (string) $request->input('status', 'all');
@@ -68,7 +67,7 @@ class OrderController extends Controller
             'reviews.user',
         ])->inRandomOrder()->limit(8)->get();
 
-        //$products = $interest_products->map(fn($product) => $product->toDetailsArray());
+        // $products = $interest_products->map(fn($product) => $product->toDetailsArray());
 
         return view('frontend.orders.index', [
             'orders' => $orders,
@@ -107,7 +106,7 @@ class OrderController extends Controller
             ->with('cart_items.product')
             ->first();
 
-        if (!$cart) {
+        if (! $cart) {
             if ($request->ajax()) {
                 return response()->json([
                     'status' => false,
@@ -117,7 +116,6 @@ class OrderController extends Controller
 
             return redirect()->route('home');
         }
-
 
         $sub_total = 0;
         $total = 0;
@@ -170,6 +168,7 @@ class OrderController extends Controller
             $billingAddresses = BillingAddress::where('user_id', $user->id)
                 ->latest()
                 ->get();
+
             return view('frontend.pages.checkout', compact('user', 'selectedSellerId', 'sub_total', 'discount', 'shipping_fee', 'payment_gateways', 'grand_total', 'divisions', 'districts', 'billingAddresses', 'total', 'allCod'));
         }
 
@@ -282,6 +281,7 @@ class OrderController extends Controller
                     'response' => $jsonResponse,
                     'paymentData' => $paymentData,
                 ]);
+
                 return back()->withInput()->with('error', 'Payment gateway error. Please try again.');
             }
         } else {
@@ -363,13 +363,12 @@ class OrderController extends Controller
         ];
     }
 
-
     private function initiateAmarpayGateway($user, $invoiceId, $amount, $customerName, $customerPhone)
     {
         $payment = Payment::where('transaction_id', $invoiceId)->first();
         $order = Order::where('invoice_id', $invoiceId)->first();
 
-        if (!$payment) {
+        if (! $payment) {
             $payment = Payment::create([
                 'user_id' => $user->id,
                 'gateway' => 'aamarpay',
@@ -444,7 +443,7 @@ class OrderController extends Controller
         $payment = Payment::where('transaction_id', $invoiceId)->first();
         $order = Order::where('invoice_id', $invoiceId)->first();
 
-        if (!$payment) {
+        if (! $payment) {
             $payment = Payment::create([
                 'user_id' => $user->id,
                 'gateway' => 'bkash',
@@ -482,7 +481,7 @@ class OrderController extends Controller
                 $invoiceId
             );
 
-            if (!isset($response['bkashURL'])) {
+            if (! isset($response['bkashURL'])) {
                 throw new \Exception('bKash payment URL not found');
             }
 
@@ -493,7 +492,7 @@ class OrderController extends Controller
         } catch (\Exception $e) {
             Log::error('bKash Init Error', [
                 'invoice' => $invoiceId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             return [
@@ -506,12 +505,14 @@ class OrderController extends Controller
     public function success($invoice_id)
     {
         $order = Order::where('invoice_id', $invoice_id)->first();
+
         return view('frontend.orders.success', compact('order'));
     }
 
     public function tracking($invoice_id)
     {
         $order = Order::withCount('items')->where('invoice_id', $invoice_id)->first();
+
         return view('frontend.orders.tracking', compact('order'));
     }
 
@@ -547,7 +548,7 @@ class OrderController extends Controller
             'seller_id' => $orderItem->order->seller_id,
             'rating' => $request->rating,
             'description' => $request->description,
-            'is_reviewed' => 1
+            'is_reviewed' => 1,
         ]);
 
         $review->product->addRating($review->rating);
@@ -574,6 +575,7 @@ class OrderController extends Controller
     public function getDistricts($divisionId)
     {
         $districts = District::where('division_id', $divisionId)->pluck('name', 'id');
+
         return response()->json($districts);
     }
 
@@ -598,7 +600,7 @@ class OrderController extends Controller
     {
         $orderBillingAddress = OrderBillingAddress::where('order_id', $order->id)->first();
 
-        if (!$orderBillingAddress) {
+        if (! $orderBillingAddress) {
             return back()->with('error', 'Billing address not found.');
         }
 

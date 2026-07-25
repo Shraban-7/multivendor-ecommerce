@@ -7,7 +7,9 @@ use Illuminate\Support\Facades\Http;
 class AamarpayService
 {
     protected $storeId;
+
     protected $signatureKey;
+
     protected $sandbox;
 
     public function __construct()
@@ -41,6 +43,6 @@ class AamarpayService
             return $response->json();
         }
 
-        throw new \Exception("AamarPay API Error: " . $response->body());
+        throw new \Exception('AamarPay API Error: '.$response->body());
     }
 }

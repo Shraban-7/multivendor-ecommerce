@@ -12,7 +12,9 @@ class OtpLog extends Model
     protected $guarded = ['id'];
 
     public const TYPE_SIGNUP = 'signup';
+
     public const TYPE_LOGIN = 'login';
+
     public const TYPE_PASSWORD_RESET = 'password_reset';
 
     protected $casts = [
@@ -25,7 +27,7 @@ class OtpLog extends Model
         $code = str_pad(random_int(0, pow(10, $length) - 1), $length, '0', STR_PAD_LEFT);
 
         return self::create([
-            'identifier'  => $identifier,
+            'identifier' => $identifier,
             'code' => $code,
             'type' => $type,
             'expires_at' => now()->addMinutes($validMinutes),

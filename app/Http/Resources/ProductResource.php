@@ -15,7 +15,7 @@ class ProductResource extends JsonResource
 
         if ($this->discount_amount > 0) {
 
-            $discount = "-" . removeZeroFromDecimal($this->discount_amount);
+            $discount = '-'.removeZeroFromDecimal($this->discount_amount);
             $discount .= $this->discount_type === 'percentage' ? '%' : currency();
         }
 

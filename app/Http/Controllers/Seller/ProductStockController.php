@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Seller;
 
-use App\Models\Seller;
-use App\Models\Product;
+use App\Domain\Product\Models\Product;
+use App\Domain\Product\Models\ProductVariant;
+use App\Domain\Product\Models\StockHistory;
 use App\Enums\StockType;
-use App\Models\StockHistory;
-use Illuminate\Http\Request;
-use App\Models\ProductVariant;
 use App\Http\Controllers\Controller;
+use App\Models\Seller;
+use Illuminate\Http\Request;
 
 class ProductStockController extends Controller
 {
@@ -28,7 +28,7 @@ class ProductStockController extends Controller
 
     public function products()
     {
-        $products = Product::select('id', 'name','sku', 'stock_in', 'stock_out')
+        $products = Product::select('id', 'name', 'sku', 'stock_in', 'stock_out')
             ->where('seller_id', get_seller_id())
             ->get()
             ->map(function ($product) {
@@ -46,7 +46,7 @@ class ProductStockController extends Controller
     public function variants(Request $request)
     {
         $variants = ProductVariant::where('product_id', $request->product_id)
-            ->with('option_values.option') 
+            ->with('option_values.option')
             ->get()
             ->map(function ($variant) {
                 $currentStock = (int) $variant->stock_in - (int) $variant->stock_out;
@@ -68,8 +68,8 @@ class ProductStockController extends Controller
             'product_id' => 'required',
             'variant_id' => 'nullable',
             'quantity' => 'nullable|numeric|min:0',
-            'stock_action'   => 'nullable|numeric',
-            'note'     => 'nullable|string',
+            'stock_action' => 'nullable|numeric',
+            'note' => 'nullable|string',
         ]);
 
         $variant = ProductVariant::find($data['variant_id']);
@@ -101,7 +101,9 @@ class ProductStockController extends Controller
                 $variant->stock_in += $quantity;
             } elseif ($action == StockType::REMOVE_STOCK->value) {
                 $variant->stock_in -= $quantity;
-                if ($variant->stock_in < 0) $variant->stock_in = 0;
+                if ($variant->stock_in < 0) {
+                    $variant->stock_in = 0;
+                }
             }
 
             $variant->save();
@@ -120,7 +122,9 @@ class ProductStockController extends Controller
                 $product->stock_in += $quantity;
             } elseif ($action == StockType::REMOVE_STOCK->value) {
                 $product->stock_in -= $quantity;
-                if ($product->stock_in < 0) $product->stock_in = 0;
+                if ($product->stock_in < 0) {
+                    $product->stock_in = 0;
+                }
             }
 
             $product->save();

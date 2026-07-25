@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Domain\Product\Models\Product;
+use App\Domain\Product\Models\ProductVariant;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CartResource;
 use App\Http\Resources\ProductListResource;
 use App\Models\Cart;
 use App\Models\CartItem;
-use App\Models\Product;
-use App\Models\ProductVariant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -98,7 +98,7 @@ class CartController extends Controller
             ['user_id' => $userId, 'seller_id' => $product->seller_id],
         );
 
-        if (!is_null($variant)) {
+        if (! is_null($variant)) {
             $price = $variant->discounted_price ?? $variant->selling_price;
             $variantId = $variant->id;
         } else {
@@ -124,7 +124,7 @@ class CartController extends Controller
 
         return apiResponse([
             'cart_count' => Cart::getCount($userId),
-        ], "Added to cart successfully");
+        ], 'Added to cart successfully');
     }
 
     public function deleteItem(CartItem $item)
@@ -139,7 +139,7 @@ class CartController extends Controller
 
         return apiResponse([
             'cart_count' => Cart::getCount(),
-        ], "Item removed successfully");
+        ], 'Item removed successfully');
     }
 
     public function updateQuantity(CartItem $item, Request $request)
@@ -158,6 +158,6 @@ class CartController extends Controller
 
         return apiResponse([
             'cart_count' => Cart::getCount(),
-        ], "Cart updated successfully");
+        ], 'Cart updated successfully');
     }
 }

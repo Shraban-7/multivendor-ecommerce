@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Wishlist;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class WishlistSeeder extends Seeder
 {

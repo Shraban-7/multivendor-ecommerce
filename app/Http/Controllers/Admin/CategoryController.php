@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Domain\Product\Models\Category;
 use App\Http\Controllers\Controller;
-use App\Models\Category;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -26,7 +26,7 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255',
             'category_id' => 'nullable|exists:categories,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:4000',
-            'status' => 'nullable'
+            'status' => 'nullable',
         ]);
 
         $data['slug'] = str_slug('categories', 'slug', $data['name']);
@@ -56,7 +56,7 @@ class CategoryController extends Controller
             'category_id' => 'nullable|exists:categories,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:4000',
             'status' => 'nullable',
-            'icon' => 'nullable'
+            'icon' => 'nullable',
         ]);
 
         $data['slug'] = str_slug('categories', 'slug', $data['name']);
@@ -77,8 +77,9 @@ class CategoryController extends Controller
 
     public function toggleStatus(Category $category)
     {
-        $category->status = !$category->status;
+        $category->status = ! $category->status;
         $category->save();
+
         return redirect()->route('admin.categories.index')->with('success', 'Category Status Updated Successfully');
     }
 }

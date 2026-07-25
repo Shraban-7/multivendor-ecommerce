@@ -2,17 +2,5 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-
-class OrderBillingAddress extends Model
-{
-    use HasFactory;
-
-    protected $guarded = ['id'];
-
-    public function order()
-    {
-        return $this->belongsTo(Order::class);
-    }
-}
+/** @deprecated Use App\Domain\Order\Models\OrderBillingAddress */
+class OrderBillingAddress extends \App\Domain\Order\Models\OrderBillingAddress {}

@@ -1,9 +1,9 @@
 <?php
 
 use App\Http\Controllers\Frontend\AuthController;
+use App\Http\Controllers\Frontend\ProfileController;
 use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Frontend\ProfileController;
 
 Route::middleware('guest')->group(function () {
     // Route::match(['get', 'post'], '/signup', [AuthController::class, 'signup'])->name('signup');

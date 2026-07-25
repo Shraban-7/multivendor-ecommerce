@@ -1,19 +1,19 @@
 <?php
 
 use App\Http\Controllers\Frontend\AffiliatorController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Frontend\CartController;
-use App\Http\Controllers\Frontend\OrderController;
-use App\Http\Controllers\Frontend\SellerController;
-use App\Http\Controllers\Frontend\ProductController;
-use App\Http\Controllers\Frontend\CategoryController;
-use App\Http\Controllers\Frontend\WishlistController;
-use App\Http\Controllers\Frontend\ContactUsController;
-use App\Http\Controllers\Frontend\NotificationController;
 use App\Http\Controllers\Frontend\BillingAddressController;
+use App\Http\Controllers\Frontend\CartController;
+use App\Http\Controllers\Frontend\CategoryController;
+use App\Http\Controllers\Frontend\ContactUsController;
 use App\Http\Controllers\Frontend\FlashSaleController;
+use App\Http\Controllers\Frontend\NotificationController;
+use App\Http\Controllers\Frontend\OrderController;
+use App\Http\Controllers\Frontend\ProductController;
 use App\Http\Controllers\Frontend\SearchController;
+use App\Http\Controllers\Frontend\SellerController;
 use App\Http\Controllers\Frontend\StaticPageController;
+use App\Http\Controllers\Frontend\WishlistController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('pages/{slug}', [StaticPageController::class, 'show'])->name('pages.show');
 
@@ -96,9 +96,8 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/search/suggestions', [SearchController::class, 'suggestions'])->name('search.suggestions');
 
-
 Route::get('/message', function () {
-    if (!session()->has('message_data')) {
+    if (! session()->has('message_data')) {
         return redirect()->route('home');
     }
 

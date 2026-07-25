@@ -1,8 +1,10 @@
 <?php
+
 namespace App\Enums;
 
-enum DiscountType: string {
-    case FLAT       = 'flat';
+enum DiscountType: string
+{
+    case FLAT = 'flat';
     case PERCENTAGE = 'percentage';
 
     public function label(): string

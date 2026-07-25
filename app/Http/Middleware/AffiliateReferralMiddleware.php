@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 class AffiliateReferralMiddleware
 {
     protected $cookieName = 'affiliate_refs';
+
     protected $cookieDuration = 60 * 24 * 30;
 
     public function handle(Request $request, Closure $next)
@@ -32,11 +33,11 @@ class AffiliateReferralMiddleware
                 $affiliateRefs = json_decode($cookieValue, true) ?: [];
             }
 
-            if (!isset($affiliateRefs[$productSlug])) {
+            if (! isset($affiliateRefs[$productSlug])) {
                 $affiliateRefs[$productSlug] = [];
             }
 
-            if (!in_array($refCode, $affiliateRefs[$productSlug])) {
+            if (! in_array($refCode, $affiliateRefs[$productSlug])) {
                 $affiliateRefs[$productSlug][] = $refCode;
             }
 

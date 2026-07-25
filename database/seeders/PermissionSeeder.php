@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Seeders;
 
 use App\Enums\AdminRole;
@@ -23,7 +24,7 @@ class PermissionSeeder extends Seeder
             $title = ucwords(str_replace('.', ' > ', $title));
 
             $permission = Permission::query()->firstOrCreate([
-                'name'  => $permissionName,
+                'name' => $permissionName,
                 'title' => $title,
             ]);
 
@@ -31,7 +32,7 @@ class PermissionSeeder extends Seeder
             if ($superAdmin) {
                 RoleHasPermission::query()->firstOrCreate(
                     [
-                        'role_id'       => $superAdmin->id,
+                        'role_id' => $superAdmin->id,
                         'permission_id' => $permission->id,
                     ]
                 );
@@ -39,6 +40,7 @@ class PermissionSeeder extends Seeder
         }
 
     }
+
     private function getAdminRoutes(): array
     {
         $routes = [];

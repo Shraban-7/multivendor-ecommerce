@@ -2,16 +2,14 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Domain\Product\Models\Product;
+use App\Domain\Product\Models\ProductVariant;
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\CartItem;
-use App\Models\Product;
-use App\Models\ProductVariant;
 use App\Models\Seller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
-use function PHPUnit\Framework\isNull;
 
 class CartController extends Controller
 {
@@ -19,13 +17,13 @@ class CartController extends Controller
     {
         if (Auth::guard('seller')->check() || Auth::guard('admin')->check()) {
             return response()->json([
-                'error' => 'Please login as a user.'
+                'error' => 'Please login as a user.',
             ], 403);
         }
 
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return response()->json([
-                'error' => 'Please login to continue cart.'
+                'error' => 'Please login to continue cart.',
             ], 401);
         }
 
@@ -40,11 +38,11 @@ class CartController extends Controller
         $userId = Auth::id();
         $product = Product::find($data['product_id']);
 
-        if (!$product) {
+        if (! $product) {
             return response()->json(['success' => false, 'warning' => 'Product not found']);
         }
 
-        if ($data['quantity']>$product->total_stock) {
+        if ($data['quantity'] > $product->total_stock) {
             return response()->json(['success' => false, 'warning' => 'Not Enough stock']);
         }
 
@@ -52,7 +50,7 @@ class CartController extends Controller
             ['user_id' => $userId, 'seller_id' => $product->seller_id],
         );
 
-        if (!empty($variant)) {
+        if (! empty($variant)) {
             $price = $variant->discounted_price ?? $variant->selling_price;
         } else {
             $price = $product->discounted_price ?? $product->selling_price;
@@ -106,12 +104,15 @@ class CartController extends Controller
                     $grand_total += $discounted_price * $quantity;
 
                     $addedItemIds[] = $item->product->id;
-                    if (!is_null($item->product->category_id))
+                    if (! is_null($item->product->category_id)) {
                         $categoryIds[] = $item->product->category_id;
-                    if (!is_null($item->product->subcategory_id))
+                    }
+                    if (! is_null($item->product->subcategory_id)) {
                         $subcategoryIds[] = $item->product->subcategory_id;
-                    if (!is_null($item->product->brand_id))
+                    }
+                    if (! is_null($item->product->brand_id)) {
                         $brandIds[] = $item->product->brand_id;
+                    }
                 }
             }
         }
@@ -120,26 +121,29 @@ class CartController extends Controller
             ->withDefaultRelations()
             ->whereNotIn('id', $addedItemIds)
             ->where(function ($query) use ($categoryIds, $subcategoryIds, $brandIds) {
-                $query->when(!empty($categoryIds), fn($q) => $q->orWhereIn('category_id', $categoryIds))
-                    ->when(!empty($subcategoryIds), fn($q) => $q->orWhereIn('subcategory_id', $subcategoryIds))
-                    ->when(!empty($brandIds), fn($q) => $q->orWhereIn('brand_id', $brandIds));
+                $query->when(! empty($categoryIds), fn ($q) => $q->orWhereIn('category_id', $categoryIds))
+                    ->when(! empty($subcategoryIds), fn ($q) => $q->orWhereIn('subcategory_id', $subcategoryIds))
+                    ->when(! empty($brandIds), fn ($q) => $q->orWhereIn('brand_id', $brandIds));
             })
             ->latest('id')
             ->limit(50)
             ->get()
             ->sortByDesc(function ($product) use ($categoryIds, $subcategoryIds, $brandIds) {
                 $score = 0;
-                if (in_array($product->subcategory_id, $subcategoryIds ?? []))
+                if (in_array($product->subcategory_id, $subcategoryIds ?? [])) {
                     $score += 3;
-                if (in_array($product->category_id, $categoryIds ?? []))
+                }
+                if (in_array($product->category_id, $categoryIds ?? [])) {
                     $score += 2;
-                if (in_array($product->brand_id, $brandIds ?? []))
+                }
+                if (in_array($product->brand_id, $brandIds ?? [])) {
                     $score += 1;
+                }
+
                 return $score;
             })
             ->take(16)
             ->values();
-
 
         $discount = $sub_total - $grand_total;
 

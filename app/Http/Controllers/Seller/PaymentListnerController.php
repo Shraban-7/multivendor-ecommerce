@@ -27,7 +27,7 @@ class PaymentListnerController extends Controller
         $seller_id = get_seller_id();
 
         $device = PaymentListenerDevice::where('seller_id', $seller_id)->whereNull('device_name')->first();
-        if (!$device) {
+        if (! $device) {
             $device = PaymentListenerDevice::create([
                 'seller_id' => get_seller_id(),
                 'device_code' => strtoupper(Str::random(8)),
@@ -68,15 +68,15 @@ class PaymentListnerController extends Controller
         }
 
         $device = PaymentListenerDevice::where('device_code', $request->device_code)->first();
-        if (!$device) {
-            return errorResponse("Invalid device code!");
+        if (! $device) {
+            return errorResponse('Invalid device code!');
         }
 
         // if (!is_null($device->device_name) && $device->status == PaymentListenerDevice::STATUS_ACTIVE) {
         //     return errorResponse("This device code is already connected!");
         // }
 
-        if (!is_null($device->device_name) && $device->device_name != $request->device_name) {
+        if (! is_null($device->device_name) && $device->device_name != $request->device_name) {
             return errorResponse("Use this code for {$device->device_name}");
         }
 
@@ -91,10 +91,10 @@ class PaymentListnerController extends Controller
         $data['user'] = [
             'id' => $device->seller->id,
             'name' => $device->seller->name,
-            'last_sync_at' => $device->last_sync_at ? $device->last_sync_at->format('Y/m/d h:iA') : 'Never'
+            'last_sync_at' => $device->last_sync_at ? $device->last_sync_at->format('Y/m/d h:iA') : 'Never',
         ];
 
-        return apiResponse($data, "Device connected successfully");
+        return apiResponse($data, 'Device connected successfully');
     }
 
     public function triggerSms(Request $request)
@@ -114,8 +114,8 @@ class PaymentListnerController extends Controller
         }
 
         $device = PaymentListenerDevice::where('device_code', $request->device_code)->first();
-        if (!$device) {
-            return errorResponse("Invalid device code!", 403);
+        if (! $device) {
+            return errorResponse('Invalid device code!', 403);
         }
 
         PaymentListenerPayment::create([
@@ -146,15 +146,15 @@ class PaymentListnerController extends Controller
         }
 
         $device = PaymentListenerDevice::where('device_code', $request->device_code)->first();
-        if (!$device) {
-            return errorResponse("Invalid device code!", 403);
+        if (! $device) {
+            return errorResponse('Invalid device code!', 403);
         }
 
         $data['allowed_senders'] = PaymentListenerPayment::allowed_senders();
         $data['user'] = [
             'id' => $device->seller->id,
             'name' => $device->seller->name,
-            'last_sync_at' => $device->last_sync_at ? $device->last_sync_at->format('Y/m/d h:iA') : 'Never'
+            'last_sync_at' => $device->last_sync_at ? $device->last_sync_at->format('Y/m/d h:iA') : 'Never',
         ];
 
         return apiResponse($data);
@@ -171,8 +171,8 @@ class PaymentListnerController extends Controller
         }
 
         $device = PaymentListenerDevice::where('device_code', $request->device_code)->first();
-        if (!$device) {
-            return errorResponse("Invalid device code!");
+        if (! $device) {
+            return errorResponse('Invalid device code!');
         }
 
         $device->status = PaymentListenerDevice::STATUS_INACTIVE;
@@ -183,8 +183,8 @@ class PaymentListnerController extends Controller
 
     public function checkPayments(PaymentListenerDevice $device)
     {
-        (new FcmService)->notifyPaymentListener($device->fcm_token, "Payment Listener", "Checking new payment messages");
+        (new FcmService)->notifyPaymentListener($device->fcm_token, 'Payment Listener', 'Checking new payment messages');
 
-        return redirect()->back()->with('success', "Checked successfully");
+        return redirect()->back()->with('success', 'Checked successfully');
     }
 }

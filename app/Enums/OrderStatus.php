@@ -39,22 +39,22 @@ enum OrderStatus: int
     public static function labels(): array
     {
         return [
-            static::PENDING->label(),
-            static::ACCEPTED->label(),
-            static::SHIPPED->label(),
-            static::DELIVERED->label(),
-            static::COMPLETED->label(),
-            static::CANCELLED->label(),
-            static::RETURN_REQUESTED->label(),
-            static::RETURN_APPROVED->label(),
-            static::RETURNED->label(),
-            static::REFUNDED->label(),
+            self::PENDING->label(),
+            self::ACCEPTED->label(),
+            self::SHIPPED->label(),
+            self::DELIVERED->label(),
+            self::COMPLETED->label(),
+            self::CANCELLED->label(),
+            self::RETURN_REQUESTED->label(),
+            self::RETURN_APPROVED->label(),
+            self::RETURNED->label(),
+            self::REFUNDED->label(),
         ];
     }
 
     public static function valueFromLabel(string $label): ?int
     {
         return collect(self::cases())
-            ->first(fn(self $case) => $case->label() === $label)?->value;
+            ->first(fn (self $case) => $case->label() === $label)?->value;
     }
 }

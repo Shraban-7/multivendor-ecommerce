@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\FlashSale;
-use Illuminate\Http\Request;
-use App\Models\FlashSaleProduct;
+use App\Domain\Product\Models\FlashSale;
+use App\Domain\Product\Models\FlashSaleProduct;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\File;
+use Illuminate\Http\Request;
 
 class FlashSaleController extends Controller
 {
@@ -52,6 +51,7 @@ class FlashSaleController extends Controller
     public function edit($id)
     {
         $sale = FlashSale::findOrFail($id);
+
         return view('admin.flash_sales.edit', compact('sale'));
     }
 
@@ -91,13 +91,13 @@ class FlashSaleController extends Controller
         return view('admin.flash_sales.show', compact('sale'));
     }
 
-    public function productReview(Request $request,$id, $productId)
+    public function productReview(Request $request, $id, $productId)
     {
         $data = $request->validate([
             'status' => 'required|integer',
         ]);
 
-        $flashSale = FlashSaleProduct::where('id',$id)->where('product_id',$productId)->first();
+        $flashSale = FlashSaleProduct::where('id', $id)->where('product_id', $productId)->first();
         $flashSale->update($data);
 
         return successResponse('Product Status Update Successfully');

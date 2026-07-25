@@ -9,9 +9,13 @@ use Illuminate\Support\Facades\Session;
 class BkashService
 {
     protected $baseUrl;
+
     protected $appKey;
+
     protected $appSecret;
+
     protected $username;
+
     protected $password;
 
     public function __construct()
@@ -28,7 +32,7 @@ class BkashService
      */
     public function grantToken()
     {
-        $url = $this->baseUrl . '/tokenized/checkout/token/grant';
+        $url = $this->baseUrl.'/tokenized/checkout/token/grant';
 
         $headers = [
             'Content-Type' => 'application/json',
@@ -47,10 +51,12 @@ class BkashService
             $data = $response->json();
             // Store token in session (expires in 3600 seconds typically)
             Session::put('bkash_token', $data['id_token']);
+
             return $data['id_token'];
         }
 
         Log::error('Bkash Grant Token Failed', ['response' => $response->body()]);
+
         return null;
     }
 
@@ -62,29 +68,29 @@ class BkashService
         $token = Session::get('bkash_token');
 
         // If token doesn't exist or is expired, generate a new one
-        if (!$token) {
+        if (! $token) {
             $token = $this->grantToken();
         }
 
-        if (!$token) {
+        if (! $token) {
             throw new \Exception('Failed to generate bKash access token.');
         }
 
-        $url = $this->baseUrl . '/tokenized/checkout/create';
+        $url = $this->baseUrl.'/tokenized/checkout/create';
 
         $headers = [
-            'Content-Type'  => 'application/json',
+            'Content-Type' => 'application/json',
             'Authorization' => $token,
-            'X-APP-Key'     => $this->appKey,
+            'X-APP-Key' => $this->appKey,
         ];
 
         $body = [
-            'mode'                  => '0011',
-            'payerReference'        => $invoiceNumber,
-            'callbackURL'           => config('bkash.callback_url'),
-            'amount'                => $amount,
-            'currency'              => 'BDT',
-            'intent'                => 'sale',
+            'mode' => '0011',
+            'payerReference' => $invoiceNumber,
+            'callbackURL' => config('bkash.callback_url'),
+            'amount' => $amount,
+            'currency' => 'BDT',
+            'intent' => 'sale',
             'merchantInvoiceNumber' => $invoiceNumber,
         ];
 
@@ -100,16 +106,16 @@ class BkashService
     {
         $token = Session::get('bkash_token');
 
-        if (!$token) {
+        if (! $token) {
             $token = $this->grantToken();
         }
 
-        $url = $this->baseUrl . '/tokenized/checkout/execute';
+        $url = $this->baseUrl.'/tokenized/checkout/execute';
 
         $headers = [
-            'Content-Type'  => 'application/json',
+            'Content-Type' => 'application/json',
             'Authorization' => $token,
-            'X-APP-Key'     => $this->appKey,
+            'X-APP-Key' => $this->appKey,
         ];
 
         $body = [
@@ -128,12 +134,12 @@ class BkashService
     {
         $token = Session::get('bkash_token');
 
-        $url = $this->baseUrl . '/tokenized/checkout/payment/status';
+        $url = $this->baseUrl.'/tokenized/checkout/payment/status';
 
         $headers = [
-            'Content-Type'  => 'application/json',
+            'Content-Type' => 'application/json',
             'Authorization' => $token,
-            'X-APP-Key'     => $this->appKey,
+            'X-APP-Key' => $this->appKey,
         ];
 
         $body = [

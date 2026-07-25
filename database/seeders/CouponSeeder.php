@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Coupon;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class CouponSeeder extends Seeder
 {

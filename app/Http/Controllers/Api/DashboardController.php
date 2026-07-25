@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Domain\Product\Models\Brand;
+use App\Domain\Product\Models\Category;
+use App\Domain\Product\Models\FlashSale;
+use App\Domain\Product\Models\Product;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BannerResource;
 use App\Http\Resources\BrandResource;
@@ -10,10 +14,6 @@ use App\Http\Resources\FlashSaleResource;
 use App\Http\Resources\ProductListResource;
 use App\Http\Resources\SellerResource;
 use App\Models\Banner;
-use App\Models\Brand;
-use App\Models\Category;
-use App\Models\FlashSale;
-use App\Models\Product;
 use App\Models\Seller;
 
 class DashboardController extends Controller
@@ -40,10 +40,10 @@ class DashboardController extends Controller
             ->orderByDesc('id')
             ->get();
 
-        $data['products'] = array(
+        $data['products'] = [
             'trending' => ProductListResource::collection($trendingProducts),
             'new' => ProductListResource::collection($newProducts),
-        );
+        ];
 
         $data['sellers'] = SellerResource::collection(Seller::limit(10)->get());
 

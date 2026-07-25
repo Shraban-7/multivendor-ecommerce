@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use Exception;
-
 class FcmService
 {
     const PAYMENT_LISTENER = 'payment-listener';
@@ -25,19 +23,19 @@ class FcmService
                 'token' => $deviceToken,
                 'notification' => [
                     'title' => $title,
-                    'body'  => $body,
+                    'body' => $body,
                 ],
             ],
         ];
 
-        if (!empty($data)) {
-            $stringData = array_map(fn($v) => (string) $v, $data); //all values must be string
+        if (! empty($data)) {
+            $stringData = array_map(fn ($v) => (string) $v, $data); // all values must be string
             $payload['message']['data'] = $stringData;
         }
 
         $headers = [
             "Authorization: Bearer {$accessToken}",
-            "Content-Type: application/json",
+            'Content-Type: application/json',
         ];
 
         $ch = curl_init();
@@ -52,7 +50,8 @@ class FcmService
         curl_close($ch);
 
         if ($error) {
-            \Log::error("FCM send error ($appType): " . $error);
+            \Log::error("FCM send error ($appType): ".$error);
+
             return null;
         }
 
@@ -69,7 +68,7 @@ class FcmService
 
         // Exchange JWT for access token
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "https://oauth2.googleapis.com/token");
+        curl_setopt($ch, CURLOPT_URL, 'https://oauth2.googleapis.com/token');
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
@@ -123,6 +122,7 @@ class FcmService
     private function getProjectId($appType)
     {
         $keyFile = $this->getKeyFile($appType);
+
         return $keyFile['project_id'];
     }
 }

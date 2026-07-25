@@ -2,19 +2,27 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Domain\Product\Models\Product;
+use App\Domain\Shipping\Models\Division;
+use App\Domain\Vendor\Actions\ApproveVendorAction;
+use App\Domain\Vendor\Actions\RegisterVendorAction;
+use App\Domain\Vendor\Services\VendorService;
+use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Seller;
-use App\Models\Product;
-use App\Models\Division;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
 use App\Models\SubscriptionPlan;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
 class SellerController extends Controller
 {
+    public function __construct(
+        private readonly VendorService $vendorService,
+        private readonly RegisterVendorAction $registerAction,
+        private readonly ApproveVendorAction $approveAction,
+    ) {}
+
     public function index()
     {
         $sellers = Seller::with('plan')->latest('id')->paginate(30);
@@ -43,13 +51,13 @@ class SellerController extends Controller
         $data['total_commission'] = Order::where('seller_id', $seller->id)->sum('total_commission');
         $data['products'] = Product::where('seller_id', $seller->id)->paginate(102);
         $data['seller'] = $seller;
+
         return view('admin.sellers.profile', $data);
     }
 
-    public function create(Request $request)
+    public function create()
     {
         $divisions = Division::all();
-
         $plans = SubscriptionPlan::all();
 
         return view('admin.sellers.create', compact('divisions', 'plans'));
@@ -57,7 +65,7 @@ class SellerController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
+        $request->validate([
             'name' => 'required|string|max:255',
             'plan_id' => 'nullable',
             'email' => 'required|email|unique:sellers,email',
@@ -78,33 +86,21 @@ class SellerController extends Controller
             'shop_image' => 'nullable|image|max:4096',
         ]);
 
-        $data = $request->except(['password', 'image', 'nid_front_image', 'nid_back_image', 'business_logo', 'trade_license_image', 'shop_image']);
+        $data = $request->except(['password', 'password_confirmation', 'image', 'nid_front_image', 'nid_back_image', 'business_logo', 'trade_license_image', 'shop_image']);
         $data['password'] = Hash::make($request->password);
 
         $username = str_slug('sellers', 'username', $request->name);
-        $data['code'] = Seller::generateSellerCode($data['name']);
         $data['username'] = $username;
         $destinationDir = "images/{$username}";
         Storage::disk('public')->makeDirectory($destinationDir);
 
-        $fields = [
-            'image',
-            'nid_front_image',
-            'nid_back_image',
-            'business_logo',
-            'trade_license_image',
-            'shop_image',
-        ];
-
-        foreach ($fields as $field) {
-            if ($request->hasFile($field)) {
-                $data[$field] = upload_file($request->file($field), $destinationDir);
-            } else {
-                $data[$field] = null;
-            }
+        foreach (['image', 'nid_front_image', 'nid_back_image', 'business_logo', 'trade_license_image', 'shop_image'] as $field) {
+            $data[$field] = $request->hasFile($field)
+                ? upload_file($request->file($field), $destinationDir)
+                : null;
         }
 
-        Seller::create($data);
+        $this->registerAction->execute($data);
 
         return successResponse('Seller created successfully.');
     }
@@ -112,6 +108,7 @@ class SellerController extends Controller
     public function edit(Seller $seller)
     {
         $divisions = Division::all();
+
         return view('admin.sellers.edit', compact('seller', 'divisions'));
     }
 
@@ -119,7 +116,7 @@ class SellerController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:sellers,email,' . $seller->id,
+            'email' => 'required|email|unique:sellers,email,'.$seller->id,
             'phone' => 'required',
             'business_name' => 'required',
             'business_address' => 'required',
@@ -138,45 +135,26 @@ class SellerController extends Controller
         Storage::disk('public')->makeDirectory($destinationDir);
 
         $data = $request->only([
-            'name',
-            'email',
-            'phone',
-            'nid_no',
-            'business_name',
-            'business_email',
-            'business_address',
-            'division_id',
-            'district_id',
-            'trade_license_no'
+            'name', 'email', 'phone', 'nid_no', 'business_name',
+            'business_email', 'business_address', 'division_id',
+            'district_id', 'trade_license_no',
         ]);
 
-        $files = [
-            'image',
-            'nid_front_image',
-            'nid_back_image',
-            'business_logo',
-            'trade_license_image',
-            'shop_image',
-        ];
-
-        foreach ($files as $file) {
-            if ($request->hasFile($file)) {
-                delete_file($seller->$file);
-                $data[$file] = upload_file($request->file($file), $destinationDir);
+        foreach (['image', 'nid_front_image', 'nid_back_image', 'business_logo', 'trade_license_image', 'shop_image'] as $field) {
+            if ($request->hasFile($field)) {
+                delete_file($seller->$field);
+                $data[$field] = upload_file($request->file($field), $destinationDir);
             }
         }
 
         $seller->update($data);
 
-        return apiResponse([
-            "redirect" => route('admin.sellers.edit', $seller->username)
-        ], 'Seller updated successfully');
+        return apiResponse(['redirect' => route('admin.sellers.edit', $seller->username)], 'Seller updated successfully');
     }
 
     public function best_seller(Seller $seller, Request $request)
     {
-        $seller->is_best_seller = $request->is_best_seller;
-        $seller->save();
+        $this->vendorService->setBestSeller($seller, (bool) $request->is_best_seller);
 
         return redirect()->back()->with('success', 'Best seller updated successfully');
     }
@@ -185,26 +163,23 @@ class SellerController extends Controller
     {
         $status = $request->input('status') == Seller::BLOCKED ? Seller::BLOCKED : Seller::ACTIVE;
 
-        $seller->status = $status;
-        $seller->save();
+        $this->vendorService->setStatus($seller, $status);
 
-        $message = $status == Seller::ACTIVE ? 'Seller activated successfully' : 'Seller blocked successfully';
+        $message = $status === Seller::ACTIVE ? 'Seller activated successfully' : 'Seller blocked successfully';
 
         return redirect()->back()->with('success', $message);
     }
 
     public function delete(Seller $seller)
     {
-        $seller->status = Seller::DELETED;
-        $seller->save();
+        $this->vendorService->softDelete($seller);
 
         return redirect()->back()->with('success', 'Seller deleted successfully');
     }
 
     public function restore(Seller $seller)
     {
-        $seller->status = Seller::ACTIVE;
-        $seller->save();
+        $this->vendorService->restore($seller);
 
         return redirect()->back()->with('success', 'Seller restore successfully');
     }
@@ -214,28 +189,17 @@ class SellerController extends Controller
         $data = $request->validate([
             'commission_type' => 'required|string|in:flat,percentage',
             'commission_amount' => 'required|numeric',
-            'status' => 'required'
+            'status' => 'required',
         ]);
 
-        $seller->update($data);
+        $this->approveAction->execute($seller, $data);
 
         return redirect()->back()->with('success', 'Seller update successfully');
     }
 
     public function permanentDelete(Seller $seller)
     {
-        DB::transaction(function () use ($seller) {
-            $seller->orders()->delete();
-            $seller->employees()->delete();
-            $seller->products()->delete();
-            $seller->banner_images()->delete();
-            $seller->followers()->delete();
-            $seller->followerUsers()->delete();
-            $seller->chats()->delete();
-            $seller->expenses()->delete();
-            $seller->seller_expense_categories()->delete();
-            $seller->forceDelete();
-        });
+        $this->vendorService->permanentDelete($seller);
 
         return successResponse('Seller and all related data permanently deleted.');
     }

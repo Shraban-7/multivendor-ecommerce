@@ -2,18 +2,21 @@
 
 namespace App\Http\Controllers\Seller;
 
+use App\Domain\Vendor\Models\SellerEmployee;
+use App\Domain\Vendor\Services\VendorService;
 use App\Http\Controllers\Controller;
-use App\Models\SellerEmployee;
+use App\Models\Seller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 
 class SellerEmployeeController extends Controller
 {
+    public function __construct(private readonly VendorService $vendorService) {}
+
     public function index()
     {
         $employees = SellerEmployee::where('seller_id', get_seller_id())->get();
-
         $permissions = get_seller_routes();
 
         return view('seller.employees.index', compact('employees', 'permissions'));
@@ -27,15 +30,14 @@ class SellerEmployeeController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name'     => 'required|string|max:255',
-            'phone'    => 'required|string|max:20',
-            'email'    => 'required|string|email|max:255|unique:users',
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'email' => 'required|string|email|max:255|unique:seller_employees,email',
             'password' => 'required|string|min:5|confirmed',
         ]);
 
-        $data['seller_id'] = seller()->id;
-
-        SellerEmployee::create($data);
+        $seller = Seller::findOrFail(get_seller_id());
+        $this->vendorService->createEmployee($seller, $data);
 
         return redirect()->route('seller.employees.index')->with('success', 'Employee Create Successfully');
     }
@@ -52,23 +54,20 @@ class SellerEmployeeController extends Controller
         $employee = SellerEmployee::where('seller_id', get_seller_id())->findOrFail($id);
 
         $data = $request->validate([
-            'name'     => 'required|string|max:255',
-            'phone'    => 'required|string|max:20',
-            'email'    => 'required|string|email|max:255|unique:users,email,' . $employee->id,
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'email' => 'required|string|email|max:255|unique:seller_employees,email,'.$employee->id,
             'password' => 'nullable|string|min:5|confirmed',
-            'is_active' => 'required|in:0,1'
+            'is_active' => 'required|in:0,1',
         ]);
 
-        if (!empty($data['password'])) {
-            $employee->password = Hash::make($data['password']);
+        if (! empty($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+        } else {
+            unset($data['password']);
         }
 
-        $employee->name  = $data['name'];
-        $employee->phone  = $data['phone'];
-        $employee->email = $data['email'];
-        $employee->is_active = $data['is_active'];
-        $employee->seller_id = get_seller_id();
-        $employee->save();
+        $employee->update($data);
 
         return redirect()->route('seller.employees.index')->with('success', 'Employee Updated Successfully');
     }
@@ -77,8 +76,7 @@ class SellerEmployeeController extends Controller
     {
         $employee = SellerEmployee::where('seller_id', seller()->id)->findOrFail($id);
 
-        $employee->is_active = !$employee->is_active;
-        $employee->save();
+        $this->vendorService->toggleEmployeeActive($employee);
 
         return redirect()->route('seller.employees.index')->with('success', 'Employee status updated successfully');
     }
@@ -86,14 +84,12 @@ class SellerEmployeeController extends Controller
     public function setPermissions(SellerEmployee $employee, Request $request)
     {
         $request->validate([
-            'permissions' => 'required|array'
+            'permissions' => 'required|array',
         ]);
 
-        $employee->update([
-            'permissions' => $request->permissions
-        ]);
+        $this->vendorService->setEmployeePermissions($employee, $request->permissions);
 
-        return redirect()->back()->with('success', "Permissions updated successfully");
+        return redirect()->back()->with('success', 'Permissions updated successfully');
     }
 
     public function profile()
@@ -108,21 +104,19 @@ class SellerEmployeeController extends Controller
         $employee = auth('employee')->user();
 
         $data = $request->validate([
-            'name'      => 'required|string|max:255',
-            'email'     => 'required|string|email|max:255|unique:seller_employees,email,' . $employee->id,
-            'password'  => 'nullable|string|min:5|confirmed',
-            'is_active' => 'required'
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:seller_employees,email,'.$employee->id,
+            'password' => 'nullable|string|min:5|confirmed',
+            'is_active' => 'required',
         ]);
 
-        $employee->name  = $data['name'];
-        $employee->email = $data['email'];
-        $employee->is_active = $data['is_active'];
-
-        if (!empty($data['password'])) {
-            $employee->password = Hash::make($data['password']);
+        if (! empty($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+        } else {
+            unset($data['password']);
         }
 
-        $employee->save();
+        $employee->update($data);
 
         return redirect()->back()->with('success', 'Profile updated successfully!');
     }

@@ -30,9 +30,9 @@ return new class extends Migration
             $table->decimal('selling_price', 10, 2);
 
             $table->string('discount_type')->nullable();
-            $table->decimal('discount_value',6,1)->nullable();
-            $table->decimal('discount_amount',8,2)->nullable();
-            $table->decimal('discounted_price',10,2)->nullable();
+            $table->decimal('discount_value', 6, 1)->nullable();
+            $table->decimal('discount_amount', 8, 2)->nullable();
+            $table->decimal('discounted_price', 10, 2)->nullable();
 
             $table->unsignedBigInteger('unit_id')->nullable();
             $table->integer('unit_value')->nullable();

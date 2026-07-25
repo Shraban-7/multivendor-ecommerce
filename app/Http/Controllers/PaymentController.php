@@ -16,8 +16,9 @@ class PaymentController extends Controller
 
         $order = Order::where('invoice_id', $request->order_id)->first();
 
-        if (!$order) {
+        if (! $order) {
             Log::error('Order not found for IPN:', ['invoice_id' => $request->order_id]);
+
             return response()->json(['status' => 'error', 'message' => 'Order not found'], 404);
         }
 
@@ -38,8 +39,9 @@ class PaymentController extends Controller
     {
         $order = Order::where('payment_id', $request->payment_id)->first();
 
-        if (!$order) {
+        if (! $order) {
             Log::error('Order not found for success callback:', ['payment_id' => $request->payment_id]);
+
             return view('errors.404');
         }
 
@@ -54,8 +56,9 @@ class PaymentController extends Controller
     {
         $order = Order::where('payment_id', $request->payment_id)->first();
 
-        if (!$order) {
+        if (! $order) {
             Log::error('Order not found for cancelled callback:', ['payment_id' => $request->payment_id]);
+
             return view('errors.404');
         }
 
@@ -70,8 +73,9 @@ class PaymentController extends Controller
     {
         $order = Order::where('payment_id', $request->payment_id)->first();
 
-        if (!$order) {
+        if (! $order) {
             Log::error('Order not found for failed callback:', ['payment_id' => $request->payment_id]);
+
             return view('errors.404');
         }
 

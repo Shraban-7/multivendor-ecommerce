@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('cart_id')->nullable();
             $table->unsignedBigInteger('product_id')->nullable();
             $table->unsignedBigInteger('product_variant_id')->nullable();
-            $table->decimal('price',10,2)->nullable();
+            $table->decimal('price', 10, 2)->nullable();
             $table->integer('quantity')->nullable();
             $table->timestamps();
         });

@@ -23,15 +23,15 @@ class MobipayController extends Controller
 
         $data = [
             [
-                "sender" => 'sender',
-                "url" => url('/api/mobipay/store'),
-                "sim_slot" => 1,
-                "template" => 'template',
-                "headers" => 'headers',
-                "retries_number" => 3,
-                "ignore_ssl" => false,
-                "chunked_mode" => false,
-                "is_sms_enabled" => true
+                'sender' => 'sender',
+                'url' => url('/api/mobipay/store'),
+                'sim_slot' => 1,
+                'template' => 'template',
+                'headers' => 'headers',
+                'retries_number' => 3,
+                'ignore_ssl' => false,
+                'chunked_mode' => false,
+                'is_sms_enabled' => true,
             ],
         ];
 

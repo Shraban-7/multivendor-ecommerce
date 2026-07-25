@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Role;
-use App\Models\Permission;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Permission;
+use App\Models\Role;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
 class PermissionController extends Controller
@@ -14,7 +14,7 @@ class PermissionController extends Controller
     {
         $roles = Role::get();
 
-        return view('admin.permissions.index',compact('roles'));
+        return view('admin.permissions.index', compact('roles'));
     }
 
     public function store(Request $request)
@@ -27,7 +27,7 @@ class PermissionController extends Controller
 
         Role::create([
             'title' => $request->title,
-            'name'  => $name,
+            'name' => $name,
         ]);
 
         return redirect()->route('admin.roles.index')->with('success', 'Role create successfully');
@@ -43,7 +43,7 @@ class PermissionController extends Controller
     public function update(Request $request, Role $role)
     {
         $request->validate([
-            'title'       => 'required|unique:roles,title,' . $role->id,
+            'title' => 'required|unique:roles,title,'.$role->id,
             'permissions' => 'required|array',
         ]);
 

@@ -2,12 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Option;
-use App\Models\ProductVariant;
+use App\Domain\Product\Models\Option;
+use App\Domain\Product\Models\ProductVariant;
+use App\Domain\Product\Models\ProductVariantOption;
 use Illuminate\Database\Seeder;
-use App\Models\ProductAttribute;
-use App\Models\ProductVariantOption;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class VariantOptionSeeder extends Seeder
 {
@@ -18,6 +16,7 @@ class VariantOptionSeeder extends Seeder
 
         if ($attributes->isEmpty()) {
             $this->command->warn('No attributes found. Seed product_attributes and options first.');
+
             return;
         }
 
@@ -28,7 +27,7 @@ class VariantOptionSeeder extends Seeder
 
                     ProductVariantOption::firstOrCreate([
                         'product_variant_id' => $variant->id,
-                        'option_value_id'    => $option->id,
+                        'option_value_id' => $option->id,
                     ]);
                 }
             }

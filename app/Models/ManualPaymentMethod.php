@@ -2,12 +2,5 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-
-class ManualPaymentMethod extends Model
-{
-    use HasFactory;
-
-    protected $guarded = ['id'];
-}
+/** @deprecated Use App\Domain\Payment\Models\ManualPaymentMethod */
+class ManualPaymentMethod extends \App\Domain\Payment\Models\ManualPaymentMethod {}

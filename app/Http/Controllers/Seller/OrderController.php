@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers\Seller;
 
-use App\Models\User;
-use App\Models\Order;
-use App\Models\Seller;
 use App\Enums\OrderStatus;
-use Illuminate\Http\Request;
-use App\Models\OrderStatusLog;
-use App\Models\AffiliateCommission;
 use App\Http\Controllers\Controller;
+use App\Models\AffiliateCommission;
+use App\Models\Order;
+use App\Models\OrderStatusLog;
+use App\Models\User;
+use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
@@ -24,18 +23,18 @@ class OrderController extends Controller
         }
 
         $orders = Order::where('seller_id', get_seller_id())
-            ->when($statusValue !== null, fn($q) => $q->where('status', $statusValue))
+            ->when($statusValue !== null, fn ($q) => $q->where('status', $statusValue))
             ->whereNotNull('user_id')
             ->latest('id');
 
         if ($request->filled('invoice_id')) {
-            $orders->where('invoice_id', 'like', '%' . $request->invoice_id . '%');
+            $orders->where('invoice_id', 'like', '%'.$request->invoice_id.'%');
         }
         if ($request->filled('customer_name')) {
-            $orders->whereHas('user', fn($q) => $q->where('name', 'like', '%' . $request->customer_name . '%'));
+            $orders->whereHas('user', fn ($q) => $q->where('name', 'like', '%'.$request->customer_name.'%'));
         }
         if ($request->filled('customer_phone')) {
-            $orders->whereHas('user', fn($q) => $q->where('phone', 'like', '%' . $request->customer_phone . '%'));
+            $orders->whereHas('user', fn ($q) => $q->where('phone', 'like', '%'.$request->customer_phone.'%'));
         }
         if ($request->filled('date_from')) {
             $orders->whereDate('created_at', '>=', $request->date_from);
@@ -54,8 +53,10 @@ class OrderController extends Controller
         $order = Order::where('invoice_id', $invoice_id)->first();
         if (get_seller_id() == $order->seller_id) {
             $order->load(['review', 'items']);
+
             return view('seller.orders.details', compact('order'));
         }
+
         return redirect()->back();
     }
 
@@ -73,7 +74,7 @@ class OrderController extends Controller
         $old_status = $order->status;
 
         if ($old_status->value == $request->new_status) {
-            return  redirect()->back()->with('success', 'Order status already ' . $old_status->title());
+            return redirect()->back()->with('success', 'Order status already '.$old_status->title());
         }
 
         $order->status = $request->new_status;
@@ -106,7 +107,6 @@ class OrderController extends Controller
         return redirect()->back()->with('success', 'Order updated successfully');
     }
 
-
     public function posInvoice($invoice_id)
     {
         $order = Order::where('invoice_id', $invoice_id)->first();
@@ -114,6 +114,7 @@ class OrderController extends Controller
         if (get_seller_id() == $order->seller_id) {
             return view('seller.orders.pos_invoice', compact('order'));
         }
+
         return redirect()->back();
     }
 }

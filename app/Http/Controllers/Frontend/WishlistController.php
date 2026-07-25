@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Models\Product;
+use App\Domain\Product\Models\Product;
+use App\Http\Controllers\Controller;
 use App\Models\Wishlist;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class WishlistController extends Controller
@@ -21,19 +21,19 @@ class WishlistController extends Controller
     {
         $product = Product::find($request->product_id);
 
-        if (!$product) {
+        if (! $product) {
             return response()->json(['success' => false, 'error' => 'Product not found']);
         }
 
         $wishlist = Wishlist::where([
             'user_id' => Auth::user()->id,
-            'product_id' => $product->id
+            'product_id' => $product->id,
         ])->first();
 
-        if (!$wishlist) {
+        if (! $wishlist) {
             Wishlist::create([
                 'user_id' => Auth::user()->id,
-                'product_id' => $product->id
+                'product_id' => $product->id,
             ]);
         }
 
@@ -59,5 +59,4 @@ class WishlistController extends Controller
             'wishlistCount' => $wishlistCount,
         ]);
     }
-
 }

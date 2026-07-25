@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class CheckSubscriptionFeature
 {
@@ -12,7 +11,7 @@ class CheckSubscriptionFeature
     {
         $user = seller();
 
-        if (!$user || !$user->hasFeature($feature)) {
+        if (! $user || ! $user->hasFeature($feature)) {
             return redirect()->back()->with('error', 'Your plan does not allow access to this feature.');
         }
 

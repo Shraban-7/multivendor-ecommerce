@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Domain\Product\Models\Category;
+use App\Domain\Product\Models\Product;
+use App\Domain\Review\Models\ReportReview;
+use App\Domain\Review\Models\Review;
+use App\Domain\Vendor\Models\SellerFollower;
 use App\Http\Controllers\Controller;
-use App\Models\Category;
-use App\Models\Product;
-use App\Models\ReportReview;
-use App\Models\Review;
 use App\Models\Seller;
-
-use App\Models\SellerFollower;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -79,7 +78,6 @@ class SellerController extends Controller
             $productQuery->latest();
         }
 
-
         $shopProducts = $productQuery->skip($skip)->take($limit)->get();
 
         $products = $shopProducts;
@@ -93,6 +91,7 @@ class SellerController extends Controller
             if ($products->isEmpty()) {
                 return '';
             }
+
             return view('frontend.partials.product-card-load', compact('products'))->render();
         }
 

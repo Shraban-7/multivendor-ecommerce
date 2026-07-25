@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Models\User;
-use App\Models\Order;
 use App\Models\AffiliateCommission;
+use App\Models\Order;
+use App\Models\User;
 use Illuminate\Support\Facades\Cookie;
 
 class AffiliateService
@@ -15,11 +15,11 @@ class AffiliateService
     {
         $cookieValue = Cookie::get('affiliate_refs');
         $affiliateRefs = json_decode($cookieValue, true) ?: [];
-        $order = Order::where('invoice_id',$invoiceId)->first();
+        $order = Order::where('invoice_id', $invoiceId)->first();
 
         foreach ($orderItems as $item) {
 
-            if (!isset($item->product) || !isset($item->product->slug)) {
+            if (! isset($item->product) || ! isset($item->product->slug)) {
                 continue;
             }
 
@@ -31,7 +31,7 @@ class AffiliateService
 
                     $affiliateUser = User::where('referral_code', $refCode)->first();
 
-                    if (!$affiliateUser || $affiliateUser->id === $user->id) {
+                    if (! $affiliateUser || $affiliateUser->id === $user->id) {
                         continue;
                     }
 
@@ -69,7 +69,7 @@ class AffiliateService
 
         if ($affiliate) {
             $affiliate->status = AffiliateCommission::APPROVED;
-    
+
             $affiliate->save();
         }
     }

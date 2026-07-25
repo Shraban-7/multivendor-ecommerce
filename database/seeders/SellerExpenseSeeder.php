@@ -2,8 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\SellerExpenseCategory;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Domain\Vendor\Models\SellerExpenseCategory;
 use Illuminate\Database\Seeder;
 
 class SellerExpenseSeeder extends Seeder

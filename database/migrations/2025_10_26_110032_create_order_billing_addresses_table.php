@@ -25,7 +25,7 @@ return new class extends Migration
         Schema::table('orders', function (Blueprint $table) {
             $table->dropColumn([
                 'billing_address_id',
-                'billing_information'
+                'billing_information',
             ]);
         });
     }

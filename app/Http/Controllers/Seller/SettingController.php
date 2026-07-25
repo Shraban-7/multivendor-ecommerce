@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Seller;
 
+use App\Domain\Vendor\Models\SellerBannerImage;
 use App\Http\Controllers\Controller;
 use App\Models\Country;
 use App\Models\Seller;
-use App\Models\SellerBannerImage;
 use App\Models\State;
 use Illuminate\Http\Request;
 
@@ -16,6 +16,7 @@ class SettingController extends Controller
         $seller = Seller::find(get_seller_id());
         $countries = Country::orderBy('name', 'ASC')->get();
         $states = State::orderBy('name', 'ASC')->get();
+
         return view('seller.settings.index', compact('seller', 'countries', 'states'));
     }
 
@@ -26,17 +27,17 @@ class SettingController extends Controller
         $data = $request->validate([
             'business_name' => 'required|string|max:255',
             'business_logo' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:12288',
-            'business_email' => 'required|string|email|max:255|unique:sellers,business_email,' . $seller->id,
+            'business_email' => 'required|string|email|max:255|unique:sellers,business_email,'.$seller->id,
             'business_address' => 'required|string|max:1000',
             'shipping_cost' => 'nullable|numeric',
             'cover_image' => 'nullable|mimes:jpg,png,webp,svg,jpeg,avif,gif|max:4096',
-            'banner' => 'nullable|mimes:jpg,png,webp,svg,jpeg,avif,gif|max:4096'
+            'banner' => 'nullable|mimes:jpg,png,webp,svg,jpeg,avif,gif|max:4096',
         ]);
 
         $username = $seller->username;
 
         if ($request->hasFile('business_logo')) {
-            if (!empty($seller->business_logo)) {
+            if (! empty($seller->business_logo)) {
                 delete_file($seller->business_logo);
             }
             $data['business_logo'] = upload_file($request->file('business_logo'), "{$username}");
@@ -45,7 +46,7 @@ class SettingController extends Controller
         }
 
         if ($request->hasFile('cover_image')) {
-            if (!empty($seller->cover_image)) {
+            if (! empty($seller->cover_image)) {
                 delete_file($seller->cover_image);
             }
             $data['cover_image'] = upload_file($request->file('cover_image'), "{$username}");
@@ -59,7 +60,7 @@ class SettingController extends Controller
 
         if ($request->hasFile('banner')) {
 
-            if ($existBanner && !empty($existBanner->image)) {
+            if ($existBanner && ! empty($existBanner->image)) {
                 delete_file($existBanner->image);
                 $existBanner->delete();
             }
@@ -73,10 +74,8 @@ class SettingController extends Controller
             ]);
         }
 
-
         return redirect()->route('seller.settings.index')->with('success', 'Settings updated successfully');
     }
-
 
     public function deleteImage(SellerBannerImage $image)
     {
@@ -85,7 +84,7 @@ class SettingController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Banner image deleted successfully!'
+            'message' => 'Banner image deleted successfully!',
         ]);
     }
 }

@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Domain\Vendor\Models\SellerEmployee;
 use App\Models\Admin;
 use App\Models\OtpLog;
 use App\Models\Seller;
+use App\Models\User;
 use Illuminate\Http\Request;
-use App\Models\SellerEmployee;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -22,7 +21,7 @@ class AuthController extends Controller
     public function checkPhone(Request $request)
     {
         $validator = validateRequest($request, [
-            'phone' => $this->phoneValidationRules()
+            'phone' => $this->phoneValidationRules(),
         ]);
 
         if ($validator->fails()) {
@@ -61,10 +60,9 @@ class AuthController extends Controller
 
         return apiResponse([
             'user_exists' => false,
-            'remaining_otp_time' => $remainingSeconds
+            'remaining_otp_time' => $remainingSeconds,
         ], 'OTP sent successfully');
     }
-
 
     public function verifyOtp(Request $request)
     {
@@ -80,7 +78,7 @@ class AuthController extends Controller
         $phone = $request->phone;
 
         $otpLog = OtpLog::verify($phone, $request->otp, OtpLog::TYPE_SIGNUP);
-        if (!$otpLog) {
+        if (! $otpLog) {
             return errorResponse('Invalid or expired verification code.');
         }
 
@@ -112,23 +110,23 @@ class AuthController extends Controller
             'admin' => [
                 'model' => Admin::class,
                 'guard' => 'admin',
-                'check' => fn($admin) => true,
+                'check' => fn ($admin) => true,
             ],
             'user' => [
                 'model' => User::class,
                 'guard' => 'web',
-                'check' => fn($user) => true,
+                'check' => fn ($user) => true,
             ],
             'seller' => [
                 'model' => Seller::class,
                 'guard' => 'seller',
-                'check' => fn($seller) => $seller->status == Seller::ACTIVE,
-                'inactiveMessage' => "Your account is inactive, contact with admin",
+                'check' => fn ($seller) => $seller->status == Seller::ACTIVE,
+                'inactiveMessage' => 'Your account is inactive, contact with admin',
             ],
             'employee' => [
                 'model' => SellerEmployee::class,
                 'guard' => 'employee',
-                'check' => fn($employee) => $employee->is_active == 1,
+                'check' => fn ($employee) => $employee->is_active == 1,
                 'inactiveMessage' => 'Your account is inactive, contact with seller',
             ],
 
@@ -138,27 +136,25 @@ class AuthController extends Controller
             $model = $config['model'];
 
             $user = $model::where('phone', $request->phone)->first();
-            if (!$user) {
+            if (! $user) {
                 continue;
             }
 
-
             if ($type === 'seller') {
                 if ($user->status == Seller::BLOCKED) {
-                    return errorResponse("Your account has been blocked. Contact admin.", 403);
+                    return errorResponse('Your account has been blocked. Contact admin.', 403);
                 }
 
                 if ($user->status != Seller::ACTIVE) {
-                    return errorResponse("Your account is pending approval.", 403);
+                    return errorResponse('Your account is pending approval.', 403);
                 }
             }
 
-
-            if (!($config['check'])($user)) {
+            if (! ($config['check'])($user)) {
                 return errorResponse($config['inactiveMessage'] ?? 'Account inactive', 403);
             }
 
-            if (!Auth::guard($config['guard'])->attempt($credentials)) {
+            if (! Auth::guard($config['guard'])->attempt($credentials)) {
                 return errorResponse('Incorrect password!');
             }
 
@@ -167,7 +163,6 @@ class AuthController extends Controller
 
         return errorResponse('Incorrect password!');
     }
-
 
     public function register(Request $request)
     {

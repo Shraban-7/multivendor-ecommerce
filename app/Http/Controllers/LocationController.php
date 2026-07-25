@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\District;
-use Illuminate\Http\Request;
+use App\Domain\Shipping\Models\District;
 
 class LocationController extends Controller
 {

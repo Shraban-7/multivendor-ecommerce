@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Seller;
 
-use App\Models\Seller;
-use App\Models\Country;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Country;
+use App\Models\Seller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -46,10 +46,10 @@ class AuthController extends Controller
         return redirect()->route('home');
     }
 
-
     public function profile()
     {
         $countries = Country::all();
+
         return view('frontend.profile', compact('countries'));
     }
 
@@ -59,7 +59,7 @@ class AuthController extends Controller
 
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:sellers,email,' . $seller->id,
+            'email' => 'required|string|email|max:255|unique:sellers,email,'.$seller->id,
             'image' => 'nullable|image|mimes:jpg,jpeg,png,svg|max:2048',
         ]);
 
@@ -69,11 +69,10 @@ class AuthController extends Controller
             $data['username'] = $seller->username;
         }
 
-
         $data['phone'] = $request->phone;
 
         if ($request->hasFile('image')) {
-            if (!empty($seller->image)) {
+            if (! empty($seller->image)) {
                 delete_file($seller->image);
             }
 
@@ -82,7 +81,6 @@ class AuthController extends Controller
         } else {
             $data['image'] = $seller->image;
         }
-
 
         $seller->update($data);
 
@@ -98,12 +96,12 @@ class AuthController extends Controller
             'password' => 'required|string|confirmed',
         ]);
 
-        if (!Hash::check($request->current_password, $seller->password)) {
-            return redirect()->back()->with("warning", "Incorrect old password!");
+        if (! Hash::check($request->current_password, $seller->password)) {
+            return redirect()->back()->with('warning', 'Incorrect old password!');
         }
 
         $seller->update(['password' => Hash::make($request->password)]);
 
-        return redirect()->back()->with("success", "Password updated successfully");
+        return redirect()->back()->with('success', 'Password updated successfully');
     }
 }

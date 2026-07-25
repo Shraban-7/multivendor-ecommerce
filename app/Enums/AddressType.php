@@ -7,7 +7,6 @@ enum AddressType: int
     case HOME = 1;
     case OFFICE = 2;
 
-
     public function title()
     {
         return match ($this) {

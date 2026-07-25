@@ -2,17 +2,5 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-
-class PosCart extends Model
-{
-    use HasFactory;
-
-    protected $guarded = ['id'];
-
-    public function items()
-    {
-        return $this->hasMany(PosCartItem::class);
-    }
-}
+/** @deprecated Use App\Domain\Order\Models\PosCart */
+class PosCart extends \App\Domain\Order\Models\PosCart {}

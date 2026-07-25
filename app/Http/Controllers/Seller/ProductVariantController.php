@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers\Seller;
 
-use App\Models\Option;
-use App\Models\Seller;
-use App\Models\Product;
-use App\Models\CartItem;
-use App\Models\OptionValue;
-use App\Models\PosCartItem;
-use Illuminate\Http\Request;
-use App\Models\ProductVariant;
+use App\Domain\Product\Models\Option;
+use App\Domain\Product\Models\OptionValue;
+use App\Domain\Product\Models\Product;
+use App\Domain\Product\Models\ProductVariant;
+use App\Domain\Product\Models\ProductVariantOption;
 use App\Http\Controllers\Controller;
-use App\Models\ProductVariantOption;
+use App\Models\CartItem;
+use App\Models\PosCartItem;
+use App\Models\Seller;
 use App\Services\ImageOptimizerService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class ProductVariantController extends Controller
@@ -22,7 +22,7 @@ class ProductVariantController extends Controller
         $variants = json_decode($request->variants, true);
 
         $validator = Validator::make([
-            'variants' => $variants
+            'variants' => $variants,
         ], [
             'variants' => 'required|array|min:1',
             'variants.*.sku' => 'required|string|max:255|unique:product_variants,sku',
@@ -47,13 +47,13 @@ class ProductVariantController extends Controller
 
         $defaultExists = ProductVariant::where('product_id', $product->id)->where('is_default', 1)->exists();
 
-        if (!empty($variants) && is_array($variants)) {
+        if (! empty($variants) && is_array($variants)) {
             foreach ($variants as $index => $v) {
                 if (empty($v['buying_price']) || empty($v['selling_price'])) {
                     continue;
                 }
 
-                $variant = new ProductVariant();
+                $variant = new ProductVariant;
                 $variant->product_id = $product->id;
                 $variant->sku = ProductVariant::generate_sku();
                 $variant->buying_price = $v['buying_price'];
@@ -61,8 +61,8 @@ class ProductVariantController extends Controller
                 $variant->stock_in = $v['stock'] ?? 0;
 
                 $variant->discount_type = ($v['discount_type'] ?? 'none') !== 'none' ? $v['discount_type'] : null;
-                $variant->discount_value = !empty($v['discount_value']) ? $v['discount_value'] : null;
-                $hasDiscount = !empty($variant->discount_type) && !empty($variant->discount_value);
+                $variant->discount_value = ! empty($v['discount_value']) ? $v['discount_value'] : null;
+                $hasDiscount = ! empty($variant->discount_type) && ! empty($variant->discount_value);
 
                 $variant->discount_amount = $hasDiscount
                     ? calculate_discount_amount($v['selling_price'], $variant->discount_type, $variant->discount_value) : null;
@@ -70,7 +70,7 @@ class ProductVariantController extends Controller
                 $variant->discounted_price = $hasDiscount
                     ? calculate_discounted_price($v['selling_price'], $variant->discount_type, $variant->discount_value) : null;
 
-                if (!$defaultExists) {
+                if (! $defaultExists) {
                     $variant->is_default = $index === 0 ? 1 : 0;
                 }
 
@@ -82,12 +82,13 @@ class ProductVariantController extends Controller
 
                 $variant->save();
 
-                if (!empty($v['attributes']) && is_array($v['attributes'])) {
+                if (! empty($v['attributes']) && is_array($v['attributes'])) {
                     foreach ($v['attributes'] as $key => $value) {
                         $key = trim($key);
                         $value = trim($value);
-                        if (!$key || !$value)
+                        if (! $key || ! $value) {
                             continue;
+                        }
 
                         $option = Option::firstOrCreate(['name' => $key]);
 
@@ -105,7 +106,7 @@ class ProductVariantController extends Controller
             }
         }
 
-        return successResponse("Variants added successfully");
+        return successResponse('Variants added successfully');
     }
 
     public function update(ProductVariant $variant, Request $request)
@@ -117,21 +118,21 @@ class ProductVariantController extends Controller
             'discount_value' => 'nullable',
             'low_stock_quantity' => 'required',
             'is_default' => 'nullable',
-            'image' => 'nullable|image|mimes:png,jpg,jpeg|max:4000'
+            'image' => 'nullable|image|mimes:png,jpg,jpeg|max:4000',
         ]);
 
         if ($request->hasFile('image')) {
             $imageFolder = "images/{$variant->product->seller->username}/products";
             $imageService = new ImageOptimizerService;
-            $variant->image = $imageService->uploadAndOptimize($request->file("image"), "$imageFolder");
+            $variant->image = $imageService->uploadAndOptimize($request->file('image'), "$imageFolder");
             // $variant->image = upload_file($request->file('image'), $imageFolder);
         }
 
-        if ($request->is_default && !$variant->is_default) {
+        if ($request->is_default && ! $variant->is_default) {
             ProductVariant::where('product_id', $variant->product_id)->where('is_default', 1)->update(['is_default' => 0]);
         }
 
-        $hasDiscount = !empty($request->discount_type) && !empty($request->discount_value);
+        $hasDiscount = ! empty($request->discount_type) && ! empty($request->discount_value);
 
         $variant->is_default = $request->is_default ? 1 : 0;
         $variant->low_stock_quantity = $request->low_stock_quantity;
@@ -143,9 +144,9 @@ class ProductVariantController extends Controller
         $variant->discounted_price = $hasDiscount ? calculate_discounted_price($request->selling_price, $request->discount_type, $request->discount_value) : null;
         $variant->save();
 
-        if (!$request->is_default) {
+        if (! $request->is_default) {
             $defaultExists = ProductVariant::where('product_id', $variant->product_id)->where('is_default', 1)->exists();
-            if (!$defaultExists) {
+            if (! $defaultExists) {
                 ProductVariant::where('product_id', $variant->product_id)->first()->update(['is_default' => 1]);
             }
         }

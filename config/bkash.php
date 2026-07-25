@@ -6,5 +6,5 @@ return [
     'app_secret' => env('BKASH_CHECKOUT_URL_APP_SECRET'),
     'username' => env('BKASH_CHECKOUT_URL_USER_NAME'),
     'password' => env('BKASH_CHECKOUT_URL_PASSWORD'),
-    'callback_url' => env('BKASH_CALLBACK_URL')
+    'callback_url' => env('BKASH_CALLBACK_URL'),
 ];

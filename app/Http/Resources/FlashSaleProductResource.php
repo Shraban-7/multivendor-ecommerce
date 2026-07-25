@@ -16,7 +16,7 @@ class FlashSaleProductResource extends JsonResource
             'stock_in' => (string) $this->stock_in,
             'stock_out' => (string) $this->stock_out,
             'percentage_sold' => round($percentageSold, 4),
-            'product' => ProductListResource::make($this->product)
+            'product' => ProductListResource::make($this->product),
         ];
     }
 }

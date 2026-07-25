@@ -1,5 +1,10 @@
 <?php
 
+use App\Models\Admin;
+use App\Models\Seller;
+use App\Models\SellerEmployee;
+use App\Models\User;
+
 return [
     'defaults' => [
         'guard' => 'web',
@@ -28,19 +33,19 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class,
+            'model' => User::class,
         ],
         'sellers' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Seller::class,
+            'model' => Seller::class,
         ],
         'seller_employees' => [
             'driver' => 'eloquent',
-            'model' => App\Models\SellerEmployee::class,
+            'model' => SellerEmployee::class,
         ],
         'admins' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Admin::class,
+            'model' => Admin::class,
         ],
 
         // 'users' => [

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -12,7 +13,7 @@ class CartItemResource extends JsonResource
 
         $variant = $this->variant;
 
-        $price           = $variant ? $variant->selling_price : $product->selling_price;
+        $price = $variant ? $variant->selling_price : $product->selling_price;
         $discountedPrice = $variant ? $variant->discounted_price : $product->discounted_price;
 
         $discount = null;
@@ -22,17 +23,17 @@ class CartItemResource extends JsonResource
         }
 
         return [
-            'id'               => $this->id,
-            'product_id'       => $product->id,
-            'name'             => $product->name,
-            'thumbnail'        => $product->imageUrl,
-            'quantity'         => $this->quantity,
-            'price'            => removeZeroFromDecimal($price),
+            'id' => $this->id,
+            'product_id' => $product->id,
+            'name' => $product->name,
+            'thumbnail' => $product->imageUrl,
+            'quantity' => $this->quantity,
+            'price' => removeZeroFromDecimal($price),
             'discounted_price' => removeZeroFromDecimal($discountedPrice),
-            'discount'         => $discount,
-            'category'         => CategoryResource::make($product->category),
-            'subcategory'      => CategoryResource::make($product->subcategory),
-            'variant'          => ProductVariantResource::make($this->variant),
+            'discount' => $discount,
+            'category' => CategoryResource::make($product->category),
+            'subcategory' => CategoryResource::make($product->subcategory),
+            'variant' => ProductVariantResource::make($this->variant),
         ];
     }
 }

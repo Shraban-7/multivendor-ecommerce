@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Role;
-use App\Models\Admin;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
+use App\Models\Role;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
@@ -20,7 +20,7 @@ class AdminController extends Controller
 
     public function add()
     {
-        $roles =  Role::get();
+        $roles = Role::get();
 
         return view('admin.members.create', compact('roles'));
     }
@@ -49,7 +49,7 @@ class AdminController extends Controller
 
     public function edit(Admin $admin)
     {
-        $roles =  Role::get();
+        $roles = Role::get();
 
         return view('admin.members.edit', compact('admin', 'roles'));
     }
@@ -59,7 +59,7 @@ class AdminController extends Controller
         $request->validate([
             'name' => 'nullable|string',
             'role_id' => 'required|numeric|exists:roles,id',
-            'email' => 'required|email|unique:admins,email,' . $admin->id,
+            'email' => 'required|email|unique:admins,email,'.$admin->id,
             'password' => 'nullable|confirmed|string|min:6',
         ]);
 
@@ -73,7 +73,7 @@ class AdminController extends Controller
             'role_id' => $request->role_id,
         ]);
 
-        return redirect()->back()->with('success', "Admin updated successfully");
+        return redirect()->back()->with('success', 'Admin updated successfully');
     }
 
     public function delete(Admin $admin)

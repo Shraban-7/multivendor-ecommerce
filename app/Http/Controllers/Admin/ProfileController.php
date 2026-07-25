@@ -1,15 +1,15 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class ProfileController extends Controller
 {
- 
     public function profile(Request $request)
     {
         $admin = Auth::guard('admin')->user();
@@ -20,21 +20,21 @@ class ProfileController extends Controller
         }
 
         $request->validate([
-            'name'     => 'required|string',
-            'email'    => 'required|email|unique:admins,email,' . $admin->id,
+            'name' => 'required|string',
+            'email' => 'required|email|unique:admins,email,'.$admin->id,
             'password' => 'nullable|confirmed|string|min:6',
         ]);
 
         $password = $request->password != '' ? Hash::make($request->password) : $admin->password;
 
         $admin->update([
-            'name'     => $request->name,
+            'name' => $request->name,
             'username' => Str::slug($request->name),
-            'email'    => $request->email,
+            'email' => $request->email,
             'password' => $password,
-            'role_id'  => $admin->role_id,
+            'role_id' => $admin->role_id,
         ]);
 
-        return redirect()->back()->with('success', "Profile updated successfully");
+        return redirect()->back()->with('success', 'Profile updated successfully');
     }
 }

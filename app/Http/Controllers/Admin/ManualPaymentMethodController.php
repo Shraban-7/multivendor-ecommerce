@@ -63,14 +63,14 @@ class ManualPaymentMethodController extends Controller
         }
 
         if ($request->hasFile('image')) {
-            if (!empty($manualPayment->image)) {
+            if (! empty($manualPayment->image)) {
                 delete_file($manualPayment->image);
             }
             $data['image'] = upload_file($request->file('image'), $this::IMAGE_DIR);
         }
 
         if ($request->hasFile('qr_image')) {
-            if (!empty($manualPayment->qr_image)) {
+            if (! empty($manualPayment->qr_image)) {
                 delete_file($manualPayment->qr_image);
             }
             $data['qr_image'] = upload_file($request->file('qr_image'), $this::IMAGE_DIR);
@@ -85,10 +85,10 @@ class ManualPaymentMethodController extends Controller
 
     public function delete(ManualPaymentMethod $manualPayment)
     {
-        if (!empty($manualPayment->image)) {
+        if (! empty($manualPayment->image)) {
             delete_file($manualPayment->image);
         }
-        if (!empty($manualPayment->qr_image)) {
+        if (! empty($manualPayment->qr_image)) {
             delete_file($manualPayment->qr_image);
         }
 

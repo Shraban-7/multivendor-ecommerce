@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\ProductAttribute;
 use App\Models\ProductAttributeOption;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class ProductAttributeOptionSeeder extends Seeder
@@ -26,7 +25,9 @@ class ProductAttributeOptionSeeder extends Seeder
         foreach ($data as $attributeName => $values) {
             $attribute = ProductAttribute::where('name', $attributeName)->first();
 
-            if (!$attribute) continue;
+            if (! $attribute) {
+                continue;
+            }
 
             foreach ($values as $value) {
                 ProductAttributeOption::firstOrCreate([

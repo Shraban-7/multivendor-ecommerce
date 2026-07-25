@@ -2,32 +2,28 @@
 
 namespace App\Http\Controllers\Api;
 
-use Exception;
-use App\Models\Cart;
-use App\Models\Order;
-use App\Models\Review;
-use App\Models\Seller;
-use App\Models\Payment;
-use App\Models\Product;
-use App\Models\OrderItem;
-use App\Enums\AddressType;
+use App\Domain\Product\Models\ProductVariant;
+use App\Domain\Review\Models\Review;
+use App\Domain\Review\Models\ReviewImage;
+use App\Enums\CommissionType;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentType;
-use App\Models\ReviewImage;
-use App\Models\Notification;
-use Illuminate\Http\Request;
-use App\Enums\CommissionType;
-use App\Models\BillingAddress;
-use App\Models\ProductVariant;
-use App\Services\AamarpayService;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Resources\OrderResource;
 use App\Http\Resources\InvoiceResource;
+use App\Http\Resources\OrderResource;
+use App\Models\BillingAddress;
+use App\Models\Cart;
+use App\Models\Notification;
+use App\Models\Order;
 use App\Models\OrderBillingAddress;
-
-use function PHPUnit\Framework\returnSelf;
+use App\Models\OrderItem;
+use App\Models\Payment;
+use App\Models\Seller;
+use App\Services\AamarpayService;
+use Exception;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -36,7 +32,7 @@ class OrderController extends Controller
         $statusLabel = (string) $request->input('status', 'all');
         $statusValue = OrderStatus::valueFromLabel($statusLabel);
 
-        $query = Order::with('seller')->withCount('items')
+        $query = Order::with(['seller', 'items.product', 'items.variant'])->withCount('items')
             ->where('user_id', Auth::id())
             ->whereNotNull('invoice_id');
 
@@ -53,7 +49,7 @@ class OrderController extends Controller
     {
         $validator = validateRequest($request, [
             'seller_id' => 'required|exists:sellers,id',
-            'billing_address_id' => 'required|exists:billing_addresses,id'
+            'billing_address_id' => 'required|exists:billing_addresses,id',
         ]);
 
         if ($validator->fails()) {
@@ -84,7 +80,7 @@ class OrderController extends Controller
         $cartProducts = [];
         foreach ($cart->cart_items as $cartItem) {
             $product = $cartItem->product;
-            $cartProducts [] = $product;
+            $cartProducts[] = $product;
             $variant = $cartItem->variant;
             $unitPrice = $cartItem->price;
             $itemTotal = $cartItem->quantity * $unitPrice;
@@ -117,7 +113,7 @@ class OrderController extends Controller
         if ($seller->commission_amount != null && $seller->commission_type != null) {
             if ($seller->commission_type === CommissionType::PERCENTAGE->value) {
                 $total_commission = ($sub_total) * ($seller->commission_amount / 100);
-            } else if ($seller->commission_type === CommissionType::FLAT->value) {
+            } elseif ($seller->commission_type === CommissionType::FLAT->value) {
                 $total_commission = $seller->commission_amount;
             }
         }
@@ -138,7 +134,7 @@ class OrderController extends Controller
                 'seller_id' => $selectedSellerId,
                 'invoice_id' => $invoiceId,
                 'sub_total' => $sub_total,
-                'total' => $sub_total  + $shipping_fee,
+                'total' => $sub_total + $shipping_fee,
                 'discount' => $discount,
                 'shipping_fee' => $shipping_fee,
                 'payable' => $payableAmount,
@@ -196,6 +192,7 @@ class OrderController extends Controller
             );
         } catch (Exception $e) {
             DB::rollBack();
+
             return errorResponse($e->getMessage());
         }
 
@@ -232,7 +229,7 @@ class OrderController extends Controller
     {
         $payment = Payment::where('transaction_id', $invoiceId)->first();
 
-        if (!$payment) {
+        if (! $payment) {
             $payment = Payment::create([
                 'gateway' => 'aamarpay',
                 'transaction_id' => $invoiceId,
@@ -241,7 +238,7 @@ class OrderController extends Controller
                 'currency' => 'BDT',
                 'customer_name' => $customerName,
                 'customer_email' => $customerPhone,
-                'customer_phone' => $user->email
+                'customer_phone' => $user->email,
             ]);
         }
 
@@ -259,7 +256,7 @@ class OrderController extends Controller
         $aamarpay = (new AamarpayService);
 
         $message = 'Redirecting to payment gateway';
-        $paymentUrl = null;;
+        $paymentUrl = null;
 
         try {
             $response = $aamarpay->initiate([
@@ -289,7 +286,7 @@ class OrderController extends Controller
             } else {
                 $message = 'Payment URL not received.';
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $message = $e->getMessage();
         }
 
@@ -312,7 +309,7 @@ class OrderController extends Controller
 
         if (! $order) {
             return response()->json([
-                'status'  => false,
+                'status' => false,
                 'message' => 'Order not found with the given invoice ID.',
             ], 404);
         }
@@ -341,15 +338,15 @@ class OrderController extends Controller
         }
 
         $review = Review::create([
-            'product_id'  => $orderItem->product_id,
-            'order_id'    => $orderItem->order_id,
+            'product_id' => $orderItem->product_id,
+            'order_id' => $orderItem->order_id,
             'order_item_id' => $orderItem->id,
-            'user_id'     => Auth::id(),
-            'rating'      => $request->rating,
+            'user_id' => Auth::id(),
+            'rating' => $request->rating,
             'description' => $request->description,
         ]);
 
-        $reviewedProductSeller = Seller::where('id',$review->product->seller_id)->first();
+        $reviewedProductSeller = Seller::where('id', $review->product->seller_id)->first();
 
         $reviewedProductSeller->addRating($review->rating);
 
@@ -357,7 +354,7 @@ class OrderController extends Controller
             foreach ($request->file('images') as $file) {
                 ReviewImage::create([
                     'review_id' => $review->id,
-                    'image'     => upload_file($file, 'images/reviews'),
+                    'image' => upload_file($file, 'images/reviews'),
                 ]);
             }
         }

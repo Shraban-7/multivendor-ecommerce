@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use Carbon\Carbon;
-use App\Models\User;
-use App\Models\Seller;
+use App\Domain\Shipping\Models\Division;
 use App\Enums\UserRole;
-use App\Models\Division;
-use Illuminate\Http\Request;
-use App\Models\VerificationCode;
 use App\Http\Controllers\Controller;
 use App\Mail\Vendor\RegistrationPendingMail;
-use Exception;
+use App\Models\Seller;
+use App\Models\User;
+use App\Models\VerificationCode;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -26,14 +25,13 @@ class AuthController extends Controller
         }
 
         $data = $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|string|email|max:255|unique:users',
-            'phone'    => 'required|string|max:20',
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'phone' => 'required|string|max:20',
             'password' => 'required|string|min:5|confirmed',
         ]);
 
         $data['username'] = str_slug('users', 'username', $data['name']);
-
 
         if ($request->has('role') && $request->role === UserRole::AFFILIATE->label()) {
             $data['role'] = UserRole::AFFILIATE->value;
@@ -46,11 +44,11 @@ class AuthController extends Controller
         $code = VerificationCode::generateCode();
 
         VerificationCode::create([
-            'user_id'    => $user->id,
-            'email'      => $user->email,
-            'phone'      => $user->phone,
-            'code'       => $code,
-            'type'       => VerificationCode::EMAIL_VERIFICATION,
+            'user_id' => $user->id,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'code' => $code,
+            'type' => VerificationCode::EMAIL_VERIFICATION,
             'expires_at' => Carbon::now()->addMinutes(VerificationCode::EXPIRY_MINUTES),
         ]);
 
@@ -84,9 +82,15 @@ class AuthController extends Controller
 
                 $sessionData = $request->except(['image', 'nid_front_image', 'nid_back_image']);
 
-                if (!session()->has('image')) return errorResponse('The image field is required!');
-                if (!session()->has('nid_front_image')) return errorResponse('NID front image is required!');
-                if (!session()->has('nid_back_image')) return errorResponse('NID back image is required!');
+                if (! session()->has('image')) {
+                    return errorResponse('The image field is required!');
+                }
+                if (! session()->has('nid_front_image')) {
+                    return errorResponse('NID front image is required!');
+                }
+                if (! session()->has('nid_back_image')) {
+                    return errorResponse('NID back image is required!');
+                }
 
                 session(['seller_step1' => $sessionData]);
 
@@ -105,7 +109,9 @@ class AuthController extends Controller
 
                 session(['seller_step2' => $sessionData]);
 
-                if (!session()->has('business_logo')) return errorResponse('Business logo is required!');
+                if (! session()->has('business_logo')) {
+                    return errorResponse('Business logo is required!');
+                }
 
                 return apiResponse(['next_step' => 3], 'Step 2 complete');
 
@@ -114,8 +120,12 @@ class AuthController extends Controller
                     'trade_license_no' => 'required|string|max:100',
                 ]);
 
-                if (!session()->has('trade_license_image')) return errorResponse('Trade license image is required!');
-                if (!session()->has('shop_image')) return errorResponse('Shop image is required!');
+                if (! session()->has('trade_license_image')) {
+                    return errorResponse('Trade license image is required!');
+                }
+                if (! session()->has('shop_image')) {
+                    return errorResponse('Shop image is required!');
+                }
 
                 $sessionData = $request->except(['trade_license_image', 'shop_image']);
 
@@ -128,7 +138,7 @@ class AuthController extends Controller
                 $username = $allData['username'];
 
                 $destinationDir = $username;
-                if (!Storage::disk('public')->exists($destinationDir)) {
+                if (! Storage::disk('public')->exists($destinationDir)) {
                     Storage::disk('public')->makeDirectory($destinationDir);
                 }
 
@@ -167,7 +177,7 @@ class AuthController extends Controller
                         'type' => 'success',
                     ]);
 
-                    //Mail::to($seller->email)->queue(new RegistrationPendingMail($seller->business_name));
+                    // Mail::to($seller->email)->queue(new RegistrationPendingMail($seller->business_name));
 
                     return successResponse('Registration is complete, check your email.');
                 } catch (\Throwable $e) {
@@ -181,12 +191,12 @@ class AuthController extends Controller
 
     private function moveTempImage($imagePath, $destinationDir)
     {
-        if (!Storage::disk('public')->exists($imagePath)) {
+        if (! Storage::disk('public')->exists($imagePath)) {
             return null;
         }
 
         $filename = basename($imagePath);
-        $newPath = $destinationDir . '/' . $filename;
+        $newPath = $destinationDir.'/'.$filename;
 
         Storage::disk('public')->move($imagePath, $newPath);
 
@@ -198,7 +208,7 @@ class AuthController extends Controller
         $allowedNames = ['image', 'nid_front_image', 'nid_back_image', 'trade_license_image', 'business_logo', 'shop_image'];
 
         $request->validate([
-            'name' => 'required|string|in:' . implode(',', $allowedNames),
+            'name' => 'required|string|in:'.implode(',', $allowedNames),
             'image' => 'required|image|mimes:jpeg,png,jpg|max:8000',
         ]);
 
@@ -216,10 +226,10 @@ class AuthController extends Controller
     private function logMemoryUsage($source)
     {
         $usage = memory_get_usage(true);
-        $peak  = memory_get_peak_usage(true);
+        $peak = memory_get_peak_usage(true);
 
-        \Log::info("Current memory usage from {$source}: " . $this->formatBytes($usage));
-        \Log::info("Peak memory usage from {$source}: " . $this->formatBytes($peak));
+        \Log::info("Current memory usage from {$source}: ".$this->formatBytes($usage));
+        \Log::info("Peak memory usage from {$source}: ".$this->formatBytes($peak));
     }
 
     private function formatBytes($bytes, $precision = 2)
@@ -230,7 +240,8 @@ class AuthController extends Controller
         $pow = min($pow, count($units) - 1);
 
         $bytes /= (1 << (10 * $pow));
-        return round($bytes, $precision) . ' ' . $units[$pow];
+
+        return round($bytes, $precision).' '.$units[$pow];
     }
 
     public function logout(Request $request)
@@ -269,7 +280,7 @@ class AuthController extends Controller
 
         $account = User::where('email', $email)->first() ?? Seller::where('email', $email)->first();
 
-        if (!$account) {
+        if (! $account) {
             return back()->with('error', 'No account found with this email.')->withInput();
         }
 
@@ -281,10 +292,10 @@ class AuthController extends Controller
             ->delete();
 
         VerificationCode::create([
-            'email'      => $email,
-            'phone'      => $account->phone ?? null,
-            'code'       => $code,
-            'type'       => VerificationCode::PASSWORD_RESET,
+            'email' => $email,
+            'phone' => $account->phone ?? null,
+            'code' => $code,
+            'type' => VerificationCode::PASSWORD_RESET,
             'expires_at' => now()->addMinutes(VerificationCode::EXPIRY_MINUTES),
         ]);
 
@@ -298,7 +309,7 @@ class AuthController extends Controller
         $settings = settings();
         $email = $request->session()->get('reset_email');
 
-        if (!$email) {
+        if (! $email) {
             return redirect()->route('password.forgot')->with('info', 'Please enter your email first.');
         }
 
@@ -319,7 +330,7 @@ class AuthController extends Controller
             ->latest()
             ->first();
 
-        if (!$verification) {
+        if (! $verification) {
             return back()->with('error', 'Invalid or expired verification code.');
         }
 
@@ -327,7 +338,7 @@ class AuthController extends Controller
 
         $account = User::where('email', $email)->first() ?? Seller::where('email', $email)->first();
 
-        if (!$account) {
+        if (! $account) {
             return redirect()->route('password.forgot')->with('error', 'Account not found.');
         }
 
@@ -345,18 +356,20 @@ class AuthController extends Controller
         $settings = settings();
         $email = $request->session()->get('verify_email');
 
-        if (!$email) {
+        if (! $email) {
             return redirect()->route('home')->with('info', 'Please register first.');
         }
 
         $user = User::where('email', $email)->first() ?? Seller::where('email', $email)->first();
-        if (!$user) {
+        if (! $user) {
             $request->session()->forget('verify_email');
+
             return redirect()->route('home')->with('info', 'Please register first.');
         }
 
         if ($user->email_verified_at) {
             $request->session()->forget('verify_email');
+
             return redirect()->route('home')->with('success', 'Your account is already verified. Please login.');
         }
 
@@ -386,7 +399,7 @@ class AuthController extends Controller
             ->where('expires_at', '>', now())
             ->first();
 
-        if (!$verification) {
+        if (! $verification) {
             return back()->withErrors(['code' => 'Invalid or expired verification code.']);
         }
 
@@ -401,18 +414,17 @@ class AuthController extends Controller
         return redirect()->route('home')->with('success', 'Your account has been verified successfully!');
     }
 
-
     public function resendVerification(Request $request)
     {
         $email = $request->session()->get('verify_email') ?? $request->email;
 
-        if (!$email) {
+        if (! $email) {
             return errorResponse('Email not found. Please sign up first.');
         }
 
         $account = User::where('email', $email)->first() ?? Seller::where('email', $email)->first();
 
-        if (!$account) {
+        if (! $account) {
             return errorResponse('No account found with this email.');
         }
 
@@ -426,14 +438,14 @@ class AuthController extends Controller
         $code = VerificationCode::generateCode();
 
         VerificationCode::create([
-            'email'     => $email,
-            'code'      => $code,
-            'type'      => VerificationCode::EMAIL_VERIFICATION,
+            'email' => $email,
+            'code' => $code,
+            'type' => VerificationCode::EMAIL_VERIFICATION,
             'expires_at' => now()->addMinutes(VerificationCode::EXPIRY_MINUTES),
         ]);
 
         $request->session()->put('last_resend_time', now());
 
-        return apiResponse(["resend_seconds" => 120], 'A new verification code has been sent to your email.');
+        return apiResponse(['resend_seconds' => 120], 'A new verification code has been sent to your email.');
     }
 }

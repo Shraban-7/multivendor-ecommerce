@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Laravel\Facades\Image;
 
-
 class ImageController extends Controller
 {
     public function index()
@@ -19,16 +18,16 @@ class ImageController extends Controller
 
         return view('admin.image', [
             'watermarkedImages' => $watermarkedImages,
-            'croppedImages' => $croppedImages
+            'croppedImages' => $croppedImages,
         ]);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'watermark'  => 'nullable|image|max:4096',
-            'images'     => 'required|array',
-            'images.*'   => 'image|mimes:jpeg,png,jpg,gif,webp|max:4096',
+            'watermark' => 'nullable|image|max:4096',
+            'images' => 'required|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:4096',
 
         ]);
 
@@ -46,10 +45,10 @@ class ImageController extends Controller
             $tempPath = upload_file($image, 'images/temp');
 
             $fileName = basename($tempPath);
-            $finalPath = $directory . '/' . $fileName;
+            $finalPath = $directory.'/'.$fileName;
             $fullFinalPath = Storage::disk($disk)->path($finalPath);
 
-            if (!Storage::disk($disk)->exists($directory)) {
+            if (! Storage::disk($disk)->exists($directory)) {
                 Storage::disk($disk)->makeDirectory($directory);
             }
 
@@ -85,7 +84,7 @@ class ImageController extends Controller
     public function croppedImage(Request $request)
     {
         $request->validate([
-            'image'     => 'required|mimes:jpeg,png,jpg,gif,webp',
+            'image' => 'required|mimes:jpeg,png,jpg,gif,webp',
         ]);
 
         if ($request->hasFile('image')) {
@@ -94,7 +93,7 @@ class ImageController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Cropped image saved successfully'
+            'message' => 'Cropped image saved successfully',
         ]);
     }
 

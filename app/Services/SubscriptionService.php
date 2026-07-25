@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
+use App\Domain\Vendor\Models\SellerSubscription;
+use App\Domain\Vendor\Models\SubscriptionHistory;
 use App\Enums\SubscriptionStatus;
 use App\Models\Seller;
-use App\Models\SellerSubscription;
 use App\Models\SubscriptionPlan;
-use App\Models\SubscriptionHistory;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -57,7 +57,7 @@ class SubscriptionService
 
             $startDate = now();
             $endDate = $this->calculateEndDate($startDate, $newPlan->duration_type);
-            
+
             $subscription->update([
                 'subscription_plan_id' => $newPlan->id,
                 'start_date' => $startDate,
@@ -104,7 +104,7 @@ class SubscriptionService
         });
     }
 
-    public function cancelSubscription(SellerSubscription $subscription, string $reason = null, ?int $performedBy = null): SellerSubscription
+    public function cancelSubscription(SellerSubscription $subscription, ?string $reason = null, ?int $performedBy = null): SellerSubscription
     {
         return DB::transaction(function () use ($subscription, $reason, $performedBy) {
             $subscription->update([

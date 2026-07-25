@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\SellerChat;
-use Illuminate\Http\Request;
+use App\Domain\Vendor\Models\SellerChat;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\SellerChatMessageResource;
+use Illuminate\Http\Request;
 
 class SellerChatController extends Controller
 {

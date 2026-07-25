@@ -14,7 +14,7 @@ class SettingController extends Controller
             'apk_version' => 'required|string',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return sendValidationError($validator->errors());
         }
 
@@ -24,10 +24,10 @@ class SettingController extends Controller
         $data['logo_white'] = asset($settings->logo_white);
         $data['apk_version'] = $settings->apk_version;
         $data['apk_link'] = $settings->apk_link;
-        $data['currency'] = array(
+        $data['currency'] = [
             'name' => 'BDT',
             'symbol' => '৳',
-        );
+        ];
 
         return apiResponse($data);
     }

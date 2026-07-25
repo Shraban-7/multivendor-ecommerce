@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Domain\Product\Models\Category;
+use App\Domain\Product\Models\Product;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CategoryResource;
-use App\Http\Resources\ProductListResource;
 use App\Http\Resources\SellerResource;
-use App\Models\Category;
-use App\Models\Product;
 use App\Models\Seller;
 use Illuminate\Http\Request;
 

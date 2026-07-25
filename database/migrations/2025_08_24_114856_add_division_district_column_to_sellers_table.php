@@ -16,7 +16,6 @@ return new class extends Migration
             $table->unsignedBigInteger('district_id')->nullable()->after('division_id');
         });
 
-
         Schema::table('users', function (Blueprint $table) {
             $table->unsignedBigInteger('division_id')->nullable()->after('password');
             $table->unsignedBigInteger('district_id')->nullable()->after('division_id');

@@ -12,10 +12,15 @@ class Banner extends Model
     protected $guarded = ['id'];
 
     const SECTION_HERO = 'hero';
+
     const SECTION_MID_PROMO = 'mid_promo';
+
     const SECTION_FLASH_SALE = 'flash_sale';
+
     const SECTION_CATEGORY_TOP = 'category_top';
+
     const SECTION_FOOTER_BANNER = 'footer_banner';
+
     const SECTION_PROMO_MODAL = 'promo_modal';
 
     public static function sections(): array

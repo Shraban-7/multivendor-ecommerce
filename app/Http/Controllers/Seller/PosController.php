@@ -2,29 +2,31 @@
 
 namespace App\Http\Controllers\Seller;
 
-use Carbon\Carbon;
-use App\Models\Order;
-use App\Models\Seller;
-use App\Models\PosCart;
-use App\Models\Product;
-use App\Models\Category;
-use App\Models\Customer;
-use App\Models\OrderItem;
+use App\Domain\Order\Services\PosCartService;
+use App\Domain\Product\Models\Category;
+use App\Domain\Product\Models\Product;
+use App\Domain\Product\Models\ProductVariant;
+use App\Domain\Vendor\Models\SellerEmployee;
 use App\Enums\OrderStatus;
-use App\Models\PosCartItem;
-use Illuminate\Http\Request;
-use App\Enums\CommissionType;
-use App\Models\ProductVariant;
 use App\Http\Controllers\Controller;
-use App\Models\SellerEmployee;
+use App\Models\Customer;
+use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\PosCart;
+use App\Models\PosCartItem;
+use App\Models\Seller;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class PosController extends Controller
 {
+    public function __construct(protected PosCartService $posCartService) {}
+
     public function index(Request $request)
     {
         $seller = Seller::find(get_seller_id());
 
-        $employees = SellerEmployee::active()->where('seller_id',$seller->id)->get();
+        $employees = SellerEmployee::active()->where('seller_id', $seller->id)->get();
 
         $products = Product::where('seller_id', $seller->id)
             ->with('variants.option_values', 'unit')
@@ -64,12 +66,14 @@ class PosController extends Controller
 
                 $cartSubtotal = $cartItems->sum(function ($item) {
                     $selling = $item->variant->selling_price ?? $item->product->selling_price;
+
                     return $selling * $item->quantity;
                 });
 
                 $cartDiscount = $cartItems->sum(function ($item) {
                     $selling = $item->variant->selling_price ?? $item->product->selling_price;
                     $discounted = $item->variant->discounted_price ?? $item->product->discounted_price ?? $selling;
+
                     return ($selling - $discounted) * $item->quantity;
                 });
 
@@ -204,7 +208,7 @@ class PosController extends Controller
             [
                 'seller_id' => get_seller_id(),
                 'order_id' => null,
-                'is_draft' => $draftId ? 1 : 0
+                'is_draft' => $draftId ? 1 : 0,
             ],
         );
 
@@ -212,7 +216,7 @@ class PosController extends Controller
 
         $variant = ProductVariant::find($data['variant_id']);
 
-        if (!empty($variant)) {
+        if (! empty($variant)) {
             $price = $variant->discounted_price ?? $variant->selling_price;
         } else {
             $price = $product->discounted_price ?? $product->selling_price;
@@ -239,6 +243,7 @@ class PosController extends Controller
 
         $subtotal = $cartItems->sum(function ($item) {
             $price = $item->variant->selling_price ?? $item->product->selling_price;
+
             return $price * $item->quantity;
         });
 
@@ -262,8 +267,8 @@ class PosController extends Controller
             'discount' => $discount,
             'total' => $total,
             'due' => $total,
-            'cart_items' => $cartItems
-        ], "Product added to cart");
+            'cart_items' => $cartItems,
+        ], 'Product added to cart');
     }
 
     public function cartUpdate(Request $request)
@@ -275,7 +280,7 @@ class PosController extends Controller
 
         $item = PosCartItem::with(['variant.product', 'product'])->find($request->id);
 
-        if (!$item) {
+        if (! $item) {
             return response()->json(['success' => false, 'message' => 'Item not found']);
         }
 
@@ -293,6 +298,7 @@ class PosController extends Controller
         $subtotal = $cartItems->sum(function ($i) {
 
             $selling = $i->variant->selling_price ?? $i->product->selling_price;
+
             return $selling * $i->quantity;
         });
 
@@ -306,7 +312,6 @@ class PosController extends Controller
 
         $total = $subtotal - $discount;
 
-
         $html = view('components.seller.pos-cart-items', compact('cartItems'))->render();
 
         return apiResponse([
@@ -315,8 +320,8 @@ class PosController extends Controller
             'discount' => $discount,
             'total' => $total,
             'due' => $total,
-            'cart_items' => $cartItems
-        ], "Cart Updated Successfully");
+            'cart_items' => $cartItems,
+        ], 'Cart Updated Successfully');
     }
 
     public function removeCartItem(Request $request)
@@ -325,14 +330,14 @@ class PosController extends Controller
 
         $item = PosCartItem::with(['variant.product', 'product'])->find($itemId);
 
-        if (!$item) {
-            return errorResponse("Item not found", 404);
+        if (! $item) {
+            return errorResponse('Item not found', 404);
         }
 
         $cart = $item->pos_cart;
 
-        if (!$cart) {
-            return errorResponse("Cart not found", 404);
+        if (! $cart) {
+            return errorResponse('Cart not found', 404);
         }
 
         $item->delete();
@@ -342,6 +347,7 @@ class PosController extends Controller
         $subtotal = $cartItems->sum(function ($i) {
 
             $selling = $i->variant->selling_price ?? $i->product->selling_price;
+
             return $selling * $i->quantity;
         });
 
@@ -363,16 +369,16 @@ class PosController extends Controller
             'discount' => $discount,
             'total' => $total,
             'due' => $total,
-            'cart_items' => $cartItems
-        ], "Item Removed From Cart Successfully!");
+            'cart_items' => $cartItems,
+        ], 'Item Removed From Cart Successfully!');
     }
 
     public function cartClear()
     {
         $cart = PosCart::where('seller_id', get_seller_id())->first();
 
-        if (!$cart) {
-            return errorResponse("No Cart Items Found!");
+        if (! $cart) {
+            return errorResponse('No Cart Items Found!');
         }
 
         if ($cart) {
@@ -380,7 +386,7 @@ class PosController extends Controller
             $cart->delete();
         }
 
-        return successResponse("Cart Clear Successfully");
+        return successResponse('Cart Clear Successfully');
     }
 
     public function draftClear(PosCart $draft)
@@ -388,8 +394,8 @@ class PosController extends Controller
         $cart = PosCart::where('seller_id', get_seller_id())->where('id', $draft->id)
             ->where('is_draft', 1)->first();
 
-        if (!$cart) {
-            return errorResponse("No Cart Items Found!");
+        if (! $cart) {
+            return errorResponse('No Cart Items Found!');
         }
 
         if ($cart) {
@@ -397,7 +403,7 @@ class PosController extends Controller
             $cart->delete();
         }
 
-        return successResponse("Draft Clear Successfully");
+        return successResponse('Draft Clear Successfully');
     }
 
     public function placeOrder(Request $request)
@@ -413,7 +419,7 @@ class PosController extends Controller
             'cash_received' => 'nullable',
             'cash_returned' => 'nullable',
             'items' => 'required|array',
-            'employee_id' => 'nullable'
+            'employee_id' => 'nullable',
         ]);
 
         $seller = Seller::find(get_seller_id());
@@ -421,12 +427,12 @@ class PosController extends Controller
         $data['seller_id'] = $seller->id;
 
         $cart = PosCart::where('seller_id', get_seller_id())->where('is_draft', 0)->first();
-        if (!is_null($draftId)) {
+        if (! is_null($draftId)) {
             $cart = PosCart::where('seller_id', get_seller_id())->where('is_draft', 1)->first();
         }
 
-        if (!$cart) {
-            return errorResponse("No items found in the cart!");
+        if (! $cart) {
+            return errorResponse('No items found in the cart!');
         }
 
         $cartItems = $cart->items()->with('variant.product')->get();
@@ -473,7 +479,7 @@ class PosController extends Controller
         }
 
         if (empty($orderItems)) {
-            return errorResponse("No items found in the cart!");
+            return errorResponse('No items found in the cart!');
         }
 
         $total = $sub_total - ($discount + $data['discount']);
@@ -515,7 +521,7 @@ class PosController extends Controller
         $updatedVariants = [];
 
         foreach ($order->items as $item) {
-            if (!empty($item->product_variant_id)) {
+            if (! empty($item->product_variant_id)) {
 
                 $variant = ProductVariant::find($item->product_variant_id);
 
@@ -556,40 +562,40 @@ class PosController extends Controller
         $order->update(['status' => OrderStatus::COMPLETED->value]);
         $order->addSellerEarningToBalance();
 
-        if (!empty($data['customer_name']) || !empty($data['customer_phone'])) {
+        if (! empty($data['customer_name']) || ! empty($data['customer_phone'])) {
 
             $exist_customer = Customer::where('name', $data['customer_name'] ?? null)
                 ->where('phone', $data['customer_phone'] ?? null)
                 ->first();
 
-            if (!$exist_customer) {
+            if (! $exist_customer) {
                 $customer = Customer::create([
                     'name' => $data['customer_name'] ?? null,
                     'phone' => $data['customer_phone'] ?? null,
-                    'seller_id' => $seller->id
+                    'seller_id' => $seller->id,
                 ]);
             } else {
                 $customer = $exist_customer;
             }
 
-            if($customer->phone && is_valid_number($customer->phone)){
+            if ($customer->phone && is_valid_number($customer->phone)) {
                 $smsText = "Thank you for your purchase from {$seller->business_name}. We hope to see you again soon! Visit: www.slash-mart.com";
-               send_sms($smsText, format_bd_phone($customer->phone));
+                send_sms($smsText, format_bd_phone($customer->phone));
             }
 
             $order->update([
-                'customer_id' => $customer->id
+                'customer_id' => $customer->id,
             ]);
         } else {
             $order->update([
-                'customer_id' => null
+                'customer_id' => null,
             ]);
         }
 
         return apiResponse([
             'invoice_id' => $order->invoice_id,
-            'variants' => $updatedVariants
-        ], "Order Placed Successfully");
+            'variants' => $updatedVariants,
+        ], 'Order Placed Successfully');
     }
 
     public function saveDraft(Request $request)
@@ -613,8 +619,8 @@ class PosController extends Controller
             ->where('is_draft', 0)
             ->first();
 
-        if (!$cart || $cart->items->isEmpty()) {
-            return errorResponse("Cart is empty!");
+        if (! $cart || $cart->items->isEmpty()) {
+            return errorResponse('Cart is empty!');
         }
 
         $cartItems = $cart->items()->with('variant.product')->get();
@@ -670,25 +676,18 @@ class PosController extends Controller
             'html' => $html,
             'cart_items' => $cartItems,
             'is_draft' => $cart->is_draft,
-        ], "Draft saved successfully");
+        ], 'Draft saved successfully');
     }
 
     public function customerSearch(Request $request)
     {
-        $term = $request->get('term', '');
-        $customers = Customer::where('name', 'LIKE', "%{$term}%")
-            ->orWhere('phone', 'LIKE', "%{$term}%")
-            ->take(10)
-            ->get();
+        $customers = $this->posCartService->searchCustomers((string) $request->get('term', ''));
 
-        $results = [];
-        foreach ($customers as $c) {
-            $results[] = [
-                'label' => $c->name . ' (' . $c->phone . ')',
-                'value' => $c->name,
-                'phone' => $c->phone
-            ];
-        }
+        $results = $customers->map(fn ($c) => [
+            'label' => $c->name.' ('.$c->phone.')',
+            'value' => $c->name,
+            'phone' => $c->phone,
+        ])->values()->all();
 
         return response()->json($results);
     }

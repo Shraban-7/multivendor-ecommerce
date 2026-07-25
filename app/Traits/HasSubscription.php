@@ -2,8 +2,8 @@
 
 namespace App\Traits;
 
+use App\Domain\Vendor\Models\SellerSubscription;
 use App\Enums\SubscriptionStatus;
-use App\Models\SellerSubscription;
 use Carbon\Carbon;
 
 trait HasSubscription
@@ -20,7 +20,7 @@ trait HasSubscription
             ->where('end_date', '>=', now()->toDateString())
             ->latest();
     }
-    
+
     public function isInTrial(): bool
     {
         $subscription = $this->activeSubscription;
@@ -49,10 +49,14 @@ trait HasSubscription
     {
         $plan = $this->currentPlan();
 
-        if (!$plan) return false;
+        if (! $plan) {
+            return false;
+        }
 
         // Unlimited products
-        if ($plan->product_limit === 0) return true;
+        if ($plan->product_limit === 0) {
+            return true;
+        }
 
         $currentProductCount = $this->products()->count();
 
@@ -83,6 +87,6 @@ trait HasSubscription
     {
         $sub = $this->activeSubscription()->first();
 
-        return !$sub || Carbon::now()->gt($sub->end_date);
+        return ! $sub || Carbon::now()->gt($sub->end_date);
     }
 }

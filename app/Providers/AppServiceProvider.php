@@ -3,10 +3,12 @@
 namespace App\Providers;
 
 use App\Models\Cart;
-use App\Models\CartItem;
 use App\Models\Wishlist;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -25,6 +27,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        RateLimiter::for('api', function (Request $request) {
+            return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+        });
+
         Paginator::useBootstrap();
 
         View::composer('*', function ($view) {
@@ -64,5 +70,4 @@ class AppServiceProvider extends ServiceProvider
                 ->with('wishlistCount', $wishlistCount);
         });
     }
-
 }

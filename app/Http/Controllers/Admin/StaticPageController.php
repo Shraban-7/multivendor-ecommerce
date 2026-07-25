@@ -34,7 +34,7 @@ class StaticPageController extends Controller
         $i = 1;
         $originalSlug = $validated['slug'];
         while (StaticPage::where('slug', $validated['slug'])->exists()) {
-            $validated['slug'] = $originalSlug . '-' . $i++;
+            $validated['slug'] = $originalSlug.'-'.$i++;
         }
 
         StaticPage::create($validated);
@@ -44,13 +44,14 @@ class StaticPageController extends Controller
 
     public function edit($slug)
     {
-        $page = StaticPage::where('slug',$slug)->first();
+        $page = StaticPage::where('slug', $slug)->first();
+
         return view('admin.static_pages.edit', compact('page'));
     }
 
     public function update(Request $request, $slug)
     {
-        $page = StaticPage::where('slug',$slug)->first();
+        $page = StaticPage::where('slug', $slug)->first();
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'nullable|string',

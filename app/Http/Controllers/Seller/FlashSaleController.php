@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Seller;
 
+use App\Domain\Product\Models\FlashSale;
+use App\Domain\Product\Models\FlashSaleProduct;
 use App\Http\Controllers\Controller;
-use App\Models\FlashSale;
-use App\Models\FlashSaleProduct;
 use App\Models\Seller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class FlashSaleController extends Controller
 {
@@ -18,7 +17,7 @@ class FlashSaleController extends Controller
         $flashSales = FlashSale::active()
             ->orderBy('start_time', 'asc')
             ->get();
-        
+
         $sellerFlashSales = FlashSale::whereHas('products', function ($q) use ($seller) {
             $q->where('seller_id', $seller->id);
         })->get();
@@ -47,7 +46,7 @@ class FlashSaleController extends Controller
         $seller = Seller::find(get_seller_id());
 
         $request->validate([
-            'product_id'    => 'required|exists:products,id',
+            'product_id' => 'required|exists:products,id',
         ]);
 
         $product = $seller->products()->findOrFail($request->product_id);

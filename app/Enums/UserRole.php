@@ -7,7 +7,6 @@ enum UserRole: int
     case CUSTOMER = 0;
     case AFFILIATE = 1;
 
-
     public function title()
     {
         return match ($this) {

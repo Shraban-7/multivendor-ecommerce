@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\District;
-use App\Models\Division;
-use Illuminate\Http\Request;
+use App\Domain\Shipping\Models\District;
+use App\Domain\Shipping\Models\Division;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DistrictResource;
 use App\Http\Resources\DivisionResource;
 use App\Http\Resources\PaymentGatewayResource;
 use App\Models\PaymentGateway;
+use Illuminate\Http\Request;
 
 class DataController extends Controller
 {
@@ -23,7 +23,7 @@ class DataController extends Controller
     public function districts(Request $request)
     {
         $validator = validateRequest($request, [
-            'division_id' => 'required|exists:divisions,id'
+            'division_id' => 'required|exists:divisions,id',
         ]);
 
         if ($validator->fails()) {
@@ -41,5 +41,4 @@ class DataController extends Controller
 
         return apiResourceResponse(PaymentGatewayResource::collection($paymentGateways));
     }
-
 }

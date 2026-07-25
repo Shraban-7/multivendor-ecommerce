@@ -1,10 +1,11 @@
 <?php
+
 namespace App\Http\Controllers\Seller;
 
+use App\Domain\Product\Models\Option;
+use App\Domain\Product\Models\OptionValue;
+use App\Domain\Product\Models\Product;
 use App\Http\Controllers\Controller;
-use App\Models\Option;
-use App\Models\OptionValue;
-use App\Models\Product;
 use Illuminate\Http\Request;
 
 class OptionController extends Controller
@@ -12,12 +13,12 @@ class OptionController extends Controller
     public function store(Request $request, Product $product)
     {
         $request->validate([
-            'value'     => 'required|string',
-            'name'      => 'nullable|string',
+            'value' => 'required|string',
+            'name' => 'nullable|string',
             'option_id' => 'nullable|exists:options,id',
         ]);
 
-        $value    = trim($request->value);
+        $value = trim($request->value);
         $optionId = $request->option_id;
 
         if (! $optionId) {
@@ -26,7 +27,7 @@ class OptionController extends Controller
             }
 
             $option = Option::create([
-                'name'        => $request->name,
+                'name' => $request->name,
             ]);
 
             $optionId = $option->id;
@@ -42,10 +43,9 @@ class OptionController extends Controller
 
         OptionValue::create([
             'option_id' => $optionId,
-            'value'     => $value,
+            'value' => $value,
         ]);
 
         return redirect()->back()->with('success', 'Option Added Successfully!');
     }
-
 }

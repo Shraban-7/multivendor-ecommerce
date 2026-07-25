@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Category;
-use Illuminate\Http\Request;
+use App\Domain\Product\Models\Category;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 class SubcategoryController extends Controller
 {
@@ -19,7 +19,7 @@ class SubcategoryController extends Controller
     {
         $categories = Category::category()->with('subcategories')->latest()->get();
 
-        return view('admin.subcategories.create',compact('categories'));
+        return view('admin.subcategories.create', compact('categories'));
     }
 
     public function store(Request $request)
@@ -60,7 +60,8 @@ class SubcategoryController extends Controller
     public function edit(Category $subcategory)
     {
         $categories = Category::category()->with('subcategories')->latest()->get();
-        return view('admin.subcategories.edit', compact('categories','subcategory'));
+
+        return view('admin.subcategories.edit', compact('categories', 'subcategory'));
     }
 
     public function update(Request $request, Category $subcategory)
@@ -102,8 +103,9 @@ class SubcategoryController extends Controller
 
     public function toggleStatus(Category $subcategory)
     {
-        $subcategory->status = !$subcategory->status;
+        $subcategory->status = ! $subcategory->status;
         $subcategory->save();
+
         return redirect()->route('admin.subcategories.index')->with('success', 'Category Status Updated Successfully');
     }
 }

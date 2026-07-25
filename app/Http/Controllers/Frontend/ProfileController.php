@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Models\User;
-use App\Models\Country;
-use Illuminate\Http\Request;
-use App\Models\BillingAddress;
+use App\Domain\Shipping\Models\Division;
 use App\Http\Controllers\Controller;
-use App\Models\Division;
+use App\Models\BillingAddress;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -18,10 +17,10 @@ class ProfileController extends Controller
         $user = Auth::user();
         $divisions = Division::get();
         $billingAddresses = BillingAddress::where('user_id', $user->id)
-                ->latest()
-                ->get();
+            ->latest()
+            ->get();
 
-        return view('frontend.profile', compact('divisions','billingAddresses','user'));
+        return view('frontend.profile', compact('divisions', 'billingAddresses', 'user'));
     }
 
     public function updateAccount(Request $request)
@@ -29,8 +28,8 @@ class ProfileController extends Controller
         $user = User::find(Auth::id());
 
         $data = $request->validate([
-            'name'  => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
             'image' => 'nullable|image|mimes:jpg,jpeg,png,svg|max:2048',
         ]);
 
@@ -68,11 +67,11 @@ class ProfileController extends Controller
         ]);
 
         if (! Hash::check($request->current_password, $user->password)) {
-            return redirect()->back()->with("warning", "Incorrect old password!");
+            return redirect()->back()->with('warning', 'Incorrect old password!');
         }
 
         $user->update(['password' => Hash::make($request->password)]);
 
-        return redirect()->back()->with("success", "Password updated successfully");
+        return redirect()->back()->with('success', 'Password updated successfully');
     }
 }

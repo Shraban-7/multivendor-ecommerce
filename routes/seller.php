@@ -1,29 +1,26 @@
 <?php
 
-use App\Models\Option;
-use App\Models\OptionValue;
-use App\Models\ProductVariantOption;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Seller\PosController;
 use App\Http\Controllers\Seller\AuthController;
-use App\Http\Controllers\Seller\SaleController;
-use App\Http\Controllers\Seller\OrderController;
-use App\Http\Controllers\Seller\OptionController;
-use App\Http\Controllers\Seller\SellerController;
-use App\Http\Controllers\Seller\ProductController;
-use App\Http\Controllers\Seller\SettingController;
 use App\Http\Controllers\Seller\CustomerController;
 use App\Http\Controllers\Seller\DashboardController;
 use App\Http\Controllers\Seller\FlashSaleController;
-use App\Http\Controllers\Seller\SellerChatController;
 use App\Http\Controllers\Seller\NotificationController;
+use App\Http\Controllers\Seller\OptionController;
+use App\Http\Controllers\Seller\OrderController;
 use App\Http\Controllers\Seller\PaymentListnerController;
+use App\Http\Controllers\Seller\PosController;
+use App\Http\Controllers\Seller\ProductController;
 use App\Http\Controllers\Seller\ProductStockController;
-use App\Http\Controllers\Seller\SellerExpenseController;
 use App\Http\Controllers\Seller\ProductVariantController;
 use App\Http\Controllers\Seller\ReportController;
+use App\Http\Controllers\Seller\SaleController;
+use App\Http\Controllers\Seller\SellerChatController;
+use App\Http\Controllers\Seller\SellerController;
 use App\Http\Controllers\Seller\SellerEmployeeController;
+use App\Http\Controllers\Seller\SellerExpenseController;
+use App\Http\Controllers\Seller\SettingController;
 use App\Http\Controllers\Seller\SubscriptionPlanController;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () {
 

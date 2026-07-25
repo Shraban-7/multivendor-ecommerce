@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Domain\Product\Models\Product;
+use App\Domain\Review\Models\Review;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductListResource;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\ReviewResource;
 use App\Http\Resources\SellerResource;
-use App\Models\Product;
-use App\Models\Review;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -20,7 +20,7 @@ class ProductController extends Controller
         $name = $request->name ?? '';
         $seller_id = $request->seller_id ?? '';
 
-        $products = Product::query();
+        $products = Product::query()->with(['variants', 'images', 'seller']);
 
         if ($category_id != '') {
             $products->where('category_id', $category_id);
@@ -53,7 +53,9 @@ class ProductController extends Controller
         }
 
         $limit = $request->limit ?? 15;
-        if($request->limit > 100) $limit = 100;
+        if ($request->limit > 100) {
+            $limit = 100;
+        }
 
         $products = $products->paginate($limit)->appends($request->query());
 
