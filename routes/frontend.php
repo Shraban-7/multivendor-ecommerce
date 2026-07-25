@@ -3,12 +3,9 @@
 use App\Http\Controllers\Frontend\AffiliatorController;
 use App\Http\Controllers\Frontend\BillingAddressController;
 use App\Http\Controllers\Frontend\CartController;
-use App\Http\Controllers\Frontend\CategoryController;
 use App\Http\Controllers\Frontend\ContactUsController;
-use App\Http\Controllers\Frontend\FlashSaleController;
 use App\Http\Controllers\Frontend\NotificationController;
 use App\Http\Controllers\Frontend\OrderController;
-use App\Http\Controllers\Frontend\ProductController;
 use App\Http\Controllers\Frontend\SearchController;
 use App\Http\Controllers\Frontend\SellerController;
 use App\Http\Controllers\Frontend\StaticPageController;
@@ -17,15 +14,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('pages/{slug}', [StaticPageController::class, 'show'])->name('pages.show');
 
-Route::get('categories/{slug}', [CategoryController::class, 'details'])->name('category.details');
-
 Route::get('/contact-us', [ContactUsController::class, 'contactUs'])->name('contactUs');
-
-Route::prefix('products')->as('products.')->group(function () {
-    Route::get('/', [ProductController::class, 'index'])->name('index');
-    Route::post('{slug}/get-variant', [ProductController::class, 'getVariant']);
-    Route::get('{slug}', [ProductController::class, 'details'])->name('details');
-});
 
 Route::get('/no-order', function () {
     return view('frontend.pages.no-order');
@@ -34,11 +23,6 @@ Route::get('/no-order', function () {
 Route::get('/tracking', function () {
     return view('frontend.orders.status_logs');
 })->name('tracking');
-
-Route::prefix('flash-sales')->as('flashSales.')->group(function () {
-    Route::get('/', [FlashSaleController::class, 'index'])->name('index');
-    Route::get('/{id}', [FlashSaleController::class, 'show'])->name('show');
-});
 
 Route::prefix('sellers')->as('sellers.')->group(function () {
     Route::get('/', [SellerController::class, 'index'])->name('index');

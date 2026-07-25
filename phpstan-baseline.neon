@@ -292,19 +292,19 @@ parameters:
 			message: '#^Relation ''seller'' is not found in App\\Models\\Product model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Admin/ProductController.php
+			path: app/Domain/Product/Http/Controllers/Admin/ProductController.php
 
 		-
 			message: '#^Relation ''subcategories'' is not found in App\\Models\\Category model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Admin/ProductController.php
+			path: app/Domain/Product/Http/Controllers/Admin/ProductController.php
 
 		-
 			message: '#^Relation ''user'' is not found in App\\Models\\Review model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Admin/ReviewsController.php
+			path: app/Domain/Review/Http/Controllers/Admin/ReviewsController.php
 
 		-
 			message: '#^Relation ''subcategories'' is not found in App\\Models\\Category model\.$#'
@@ -358,31 +358,31 @@ parameters:
 			message: '#^Relation ''images'' is not found in App\\Models\\Product model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Api/ProductController.php
+			path: app/Domain/Product/Http/Controllers/Api/ProductController.php
 
 		-
 			message: '#^Relation ''images'' is not found in App\\Models\\Review model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Api/ProductController.php
+			path: app/Domain/Product/Http/Controllers/Api/ProductController.php
 
 		-
 			message: '#^Relation ''seller'' is not found in App\\Models\\Product model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Api/ProductController.php
+			path: app/Domain/Product/Http/Controllers/Api/ProductController.php
 
 		-
 			message: '#^Relation ''user'' is not found in App\\Models\\Review model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Api/ProductController.php
+			path: app/Domain/Product/Http/Controllers/Api/ProductController.php
 
 		-
 			message: '#^Relation ''variants'' is not found in App\\Models\\Product model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Api/ProductController.php
+			path: app/Domain/Product/Http/Controllers/Api/ProductController.php
 
 		-
 			message: '#^Relation ''cart_items'' is not found in App\\Models\\Cart model\.$#'
@@ -502,37 +502,37 @@ parameters:
 			message: '#^Relation ''brand'' is not found in App\\Models\\Product model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Frontend/ProductController.php
+			path: app/Domain/Product/Http/Controllers/Frontend/ProductController.php
 
 		-
 			message: '#^Relation ''category'' is not found in App\\Models\\Product model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Frontend/ProductController.php
+			path: app/Domain/Product/Http/Controllers/Frontend/ProductController.php
 
 		-
 			message: '#^Relation ''option'' is not found in App\\Models\\OptionValue model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Frontend/ProductController.php
+			path: app/Domain/Product/Http/Controllers/Frontend/ProductController.php
 
 		-
 			message: '#^Relation ''user'' is not found in App\\Models\\Review model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Frontend/ProductController.php
+			path: app/Domain/Product/Http/Controllers/Frontend/ProductController.php
 
 		-
 			message: '#^Relation ''variants'' is not found in App\\Models\\OptionValue model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Frontend/ProductController.php
+			path: app/Domain/Product/Http/Controllers/Frontend/ProductController.php
 
 		-
 			message: '#^Relation ''variants'' is not found in App\\Models\\Product model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Frontend/ProductController.php
+			path: app/Domain/Product/Http/Controllers/Frontend/ProductController.php
 
 		-
 			message: '#^Relation ''category'' is not found in App\\Models\\Product model\.$#'
@@ -604,43 +604,43 @@ parameters:
 			message: '#^Relation ''option_values'' is not found in App\\Models\\Option model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Seller/ProductController.php
+			path: app/Domain/Product/Http/Controllers/Seller/ProductController.php
 
 		-
 			message: '#^Relation ''options'' is not found in App\\Models\\Category model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Seller/ProductController.php
+			path: app/Domain/Product/Http/Controllers/Seller/ProductController.php
 
 		-
 			message: '#^Relation ''product'' is not found in App\\Models\\ProductVariant model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Seller/ProductController.php
+			path: app/Domain/Product/Http/Controllers/Seller/ProductController.php
 
 		-
 			message: '#^Relation ''product'' is not found in App\\Models\\StockHistory model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Seller/ProductController.php
+			path: app/Domain/Product/Http/Controllers/Seller/ProductController.php
 
 		-
 			message: '#^Relation ''subcategories'' is not found in App\\Models\\Category model\.$#'
 			identifier: larastan.relationExistence
 			count: 3
-			path: app/Http/Controllers/Seller/ProductController.php
+			path: app/Domain/Product/Http/Controllers/Seller/ProductController.php
 
 		-
 			message: '#^Relation ''variant'' is not found in App\\Models\\StockHistory model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Seller/ProductController.php
+			path: app/Domain/Product/Http/Controllers/Seller/ProductController.php
 
 		-
 			message: '#^Relation ''variants'' is not found in App\\Models\\Product model\.$#'
 			identifier: larastan.relationExistence
 			count: 3
-			path: app/Http/Controllers/Seller/ProductController.php
+			path: app/Domain/Product/Http/Controllers/Seller/ProductController.php
 
 		-
 			message: '#^Relation ''option_values'' is not found in App\\Models\\ProductVariant model\.$#'
@@ -862,61 +862,61 @@ parameters:
 			message: '#^Access to an undefined property App\\Http\\Resources\\CategoryResource\:\:\$app_icon\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/CategoryResource.php
+			path: app/Domain/Product/Http/Resources/CategoryResource.php
 
 		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\CategoryResource\:\:\$id\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/CategoryResource.php
+			path: app/Domain/Product/Http/Resources/CategoryResource.php
 
 		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\CategoryResource\:\:\$image\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/CategoryResource.php
+			path: app/Domain/Product/Http/Resources/CategoryResource.php
 
 		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\CategoryResource\:\:\$name\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/CategoryResource.php
+			path: app/Domain/Product/Http/Resources/CategoryResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\DistrictResource\:\:\$bn_name\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Shipping\\Http\\Resources\\DistrictResource\:\:\$bn_name\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/DistrictResource.php
+			path: app/Domain/Shipping/Http/Resources/DistrictResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\DistrictResource\:\:\$id\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Shipping\\Http\\Resources\\DistrictResource\:\:\$id\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/DistrictResource.php
+			path: app/Domain/Shipping/Http/Resources/DistrictResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\DistrictResource\:\:\$name\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Shipping\\Http\\Resources\\DistrictResource\:\:\$name\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/DistrictResource.php
+			path: app/Domain/Shipping/Http/Resources/DistrictResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\DivisionResource\:\:\$bn_name\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Shipping\\Http\\Resources\\DivisionResource\:\:\$bn_name\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/DivisionResource.php
+			path: app/Domain/Shipping/Http/Resources/DivisionResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\DivisionResource\:\:\$id\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Shipping\\Http\\Resources\\DivisionResource\:\:\$id\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/DivisionResource.php
+			path: app/Domain/Shipping/Http/Resources/DivisionResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\DivisionResource\:\:\$name\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Shipping\\Http\\Resources\\DivisionResource\:\:\$name\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/DivisionResource.php
+			path: app/Domain/Shipping/Http/Resources/DivisionResource.php
 
 		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\FlashSaleProductResource\:\:\$id\.$#'
@@ -1501,40 +1501,40 @@ parameters:
 			path: app/Http/Resources/ProductVariantResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\ReviewResource\:\:\$created_at\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Review\\Http\\Resources\\ReviewResource\:\:\$created_at\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/ReviewResource.php
+			path: app/Domain/Review/Http/Resources/ReviewResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\ReviewResource\:\:\$description\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Review\\Http\\Resources\\ReviewResource\:\:\$description\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/ReviewResource.php
+			path: app/Domain/Review/Http/Resources/ReviewResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\ReviewResource\:\:\$id\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Review\\Http\\Resources\\ReviewResource\:\:\$id\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/ReviewResource.php
+			path: app/Domain/Review/Http/Resources/ReviewResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\ReviewResource\:\:\$images\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Review\\Http\\Resources\\ReviewResource\:\:\$images\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/ReviewResource.php
+			path: app/Domain/Review/Http/Resources/ReviewResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\ReviewResource\:\:\$rating\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Review\\Http\\Resources\\ReviewResource\:\:\$rating\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/ReviewResource.php
+			path: app/Domain/Review/Http/Resources/ReviewResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\ReviewResource\:\:\$user\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Review\\Http\\Resources\\ReviewResource\:\:\$user\.$#'
 			identifier: property.notFound
 			count: 2
-			path: app/Http/Resources/ReviewResource.php
+			path: app/Domain/Review/Http/Resources/ReviewResource.php
 
 		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\SellerChatMessageResource\:\:\$created_at\.$#'

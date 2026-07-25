@@ -1,11 +1,11 @@
 <?php
 
+use App\Domain\Product\Enums\StockType;
 use App\Domain\Product\Models\Product;
 use App\Domain\Product\Models\ProductStock;
 use App\Domain\Product\Models\ProductVariant;
 use App\Domain\Product\Models\StockHistory;
 use App\Domain\Product\Services\StockManagerService;
-use App\Enums\StockType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

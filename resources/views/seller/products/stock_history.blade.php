@@ -33,17 +33,17 @@
                         </td>
                         <td>
                             @switch($history->type)
-                                @case(\App\Enums\StockType::ADD_STOCK)
+                                @case(\App\Domain\Product\Enums\StockType::ADD_STOCK)
                                     <span class="badge bg-success">+{{ $history->quantity }}
                                         {{ $history->product->unit->short_name }}</span>
                                 @break
 
-                                @case(\App\Enums\StockType::REMOVE_STOCK)
+                                @case(\App\Domain\Product\Enums\StockType::REMOVE_STOCK)
                                     <span class="badge bg-danger">-{{ $history->quantity }}
                                         {{ $history->product->unit->short_name }}</span>
                                 @break
 
-                                @case(\App\Enums\StockType::SET_EXACT_STOCK)
+                                @case(\App\Domain\Product\Enums\StockType::SET_EXACT_STOCK)
                                     <span class="badge bg-warning text-dark">Adjusted: {{ $history->quantity }}
                                         {{ $history->product->unit->short_name }}</span>
                                 @break
@@ -99,18 +99,18 @@
                                 <div class="d-flex gap-3 flex-wrap">
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="stock_action" id="addStock"
-                                            value="{{ \App\Enums\StockType::ADD_STOCK->value }}" checked>
-                                        <label class="form-check-label" for="addStock">{{ \App\Enums\StockType::ADD_STOCK->label() }}</label>
+                                            value="{{ \App\Domain\Product\Enums\StockType::ADD_STOCK->value }}" checked>
+                                        <label class="form-check-label" for="addStock">{{ \App\Domain\Product\Enums\StockType::ADD_STOCK->label() }}</label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="stock_action" id="removeStock"
-                                            value="{{ \App\Enums\StockType::REMOVE_STOCK->value }}">
-                                        <label class="form-check-label" for="removeStock">{{ \App\Enums\StockType::REMOVE_STOCK->label() }}</label>
+                                            value="{{ \App\Domain\Product\Enums\StockType::REMOVE_STOCK->value }}">
+                                        <label class="form-check-label" for="removeStock">{{ \App\Domain\Product\Enums\StockType::REMOVE_STOCK->label() }}</label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="stock_action" id="setStock"
-                                            value="{{ \App\Enums\StockType::SET_EXACT_STOCK->value }}">
-                                        <label class="form-check-label" for="setStock">{{ \App\Enums\StockType::SET_EXACT_STOCK->label() }}</label>
+                                            value="{{ \App\Domain\Product\Enums\StockType::SET_EXACT_STOCK->value }}">
+                                        <label class="form-check-label" for="setStock">{{ \App\Domain\Product\Enums\StockType::SET_EXACT_STOCK->label() }}</label>
                                     </div>
                                 </div>
                             </div>

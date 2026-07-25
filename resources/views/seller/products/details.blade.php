@@ -148,15 +148,15 @@
                                 </td>
                                 <td class="text-center small">
                                     @switch($history->type)
-                                    @case(\App\Enums\StockType::ADD_STOCK)
+                                    @case(\App\Domain\Product\Enums\StockType::ADD_STOCK)
                                     <span class="badge bg-success">Added</span>
                                     @break
 
-                                    @case(\App\Enums\StockType::REMOVE_STOCK)
+                                    @case(\App\Domain\Product\Enums\StockType::REMOVE_STOCK)
                                     <span class="badge bg-danger">Removed</span>
                                     @break
 
-                                    @case(\App\Enums\StockType::SET_EXACT_STOCK)
+                                    @case(\App\Domain\Product\Enums\StockType::SET_EXACT_STOCK)
                                     <span class="badge bg-warning text-dark">Set Exact</span>
                                     @break
                                     @endswitch
@@ -431,14 +431,14 @@
                         <div class="col-md-4 mb-2">
                             <select class="form-select form-select-sm"
                                 name="stock_action[{{ $variant->id }}]">
-                                <option value="{{ \App\Enums\StockType::ADD_STOCK->value }}">
-                                    {{ \App\Enums\StockType::ADD_STOCK->label() }}
+                                <option value="{{ \App\Domain\Product\Enums\StockType::ADD_STOCK->value }}">
+                                    {{ \App\Domain\Product\Enums\StockType::ADD_STOCK->label() }}
                                 </option>
-                                <option value="{{ \App\Enums\StockType::REMOVE_STOCK->value }}">
-                                    {{ \App\Enums\StockType::REMOVE_STOCK->label() }}
+                                <option value="{{ \App\Domain\Product\Enums\StockType::REMOVE_STOCK->value }}">
+                                    {{ \App\Domain\Product\Enums\StockType::REMOVE_STOCK->label() }}
                                 </option>
-                                <option value="{{ \App\Enums\StockType::SET_EXACT_STOCK->value }}">
-                                    {{ \App\Enums\StockType::SET_EXACT_STOCK->label() }}
+                                <option value="{{ \App\Domain\Product\Enums\StockType::SET_EXACT_STOCK->value }}">
+                                    {{ \App\Domain\Product\Enums\StockType::SET_EXACT_STOCK->label() }}
                                 </option>
                             </select>
                         </div>
@@ -465,14 +465,14 @@
                     <div class="row">
                         <div class="col-md-4 mb-2">
                             <select class="form-select form-select-sm" name="stock_action_product">
-                                <option value="{{ \App\Enums\StockType::ADD_STOCK->value }}">
-                                    {{ \App\Enums\StockType::ADD_STOCK->label() }}
+                                <option value="{{ \App\Domain\Product\Enums\StockType::ADD_STOCK->value }}">
+                                    {{ \App\Domain\Product\Enums\StockType::ADD_STOCK->label() }}
                                 </option>
-                                <option value="{{ \App\Enums\StockType::REMOVE_STOCK->value }}">
-                                    {{ \App\Enums\StockType::REMOVE_STOCK->label() }}
+                                <option value="{{ \App\Domain\Product\Enums\StockType::REMOVE_STOCK->value }}">
+                                    {{ \App\Domain\Product\Enums\StockType::REMOVE_STOCK->label() }}
                                 </option>
-                                <option value="{{ \App\Enums\StockType::SET_EXACT_STOCK->value }}">
-                                    {{ \App\Enums\StockType::SET_EXACT_STOCK->label() }}
+                                <option value="{{ \App\Domain\Product\Enums\StockType::SET_EXACT_STOCK->value }}">
+                                    {{ \App\Domain\Product\Enums\StockType::SET_EXACT_STOCK->label() }}
                                 </option>
                             </select>
                         </div>

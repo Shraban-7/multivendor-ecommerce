@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Domain\Product\Http\Resources\ProductVariantResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 

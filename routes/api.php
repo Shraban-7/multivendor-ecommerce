@@ -3,13 +3,11 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BillingAddressController;
 use App\Http\Controllers\Api\CartController;
-use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\DataController;
 use App\Http\Controllers\Api\MobipayController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\OrderController;
-use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\SellerChatController;
@@ -45,12 +43,8 @@ Route::prefix('auth')->group(function () {
 // });
 
 Route::get('settings', [SettingController::class, 'index']);
-Route::get('categories', [CategoryController::class, 'index']);
 Route::get('dashboard', [DashboardController::class, 'index']);
 Route::post('search', [SearchController::class, 'search'])->middleware('throttle:30,1');
-
-Route::get('products', [ProductController::class, 'index'])->middleware('throttle:60,1');
-Route::get('products/{product}', [ProductController::class, 'show'])->middleware('throttle:60,1');
 
 Route::get('sellers', [SellerController::class, 'index']);
 Route::get('sellers/{seller}', [SellerController::class, 'show']);
@@ -58,8 +52,6 @@ Route::get('sellers/{seller}', [SellerController::class, 'show']);
 Route::get('shops', [ShopController::class, 'index']);
 
 Route::prefix('data')->group(function () {
-    Route::get('/divisions', [DataController::class, 'divisions']);
-    Route::get('/districts', [DataController::class, 'districts']);
     Route::get('/payment-gateways', [DataController::class, 'paymentGateways']);
 });
 

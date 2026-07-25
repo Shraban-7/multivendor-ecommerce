@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Domain\Order\Models\Cart;
 use App\Domain\Order\Models\CartItem;
 use App\Domain\Order\Repositories\Contracts\CartRepositoryInterface;
+use App\Domain\Product\Http\Resources\ProductListResource;
 use App\Domain\Product\Models\Product;
 use App\Domain\Product\Models\ProductVariant;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CartResource;
-use App\Http\Resources\ProductListResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -39,7 +39,7 @@ class CartController extends Controller
     {
         $cartProductIds = CartItem::whereHas('cart', fn ($q) => $q->where('user_id', Auth::id()))
             ->pluck('product_id')
-->unique()
+            ->unique()
             ->values()
             ->toArray();
 

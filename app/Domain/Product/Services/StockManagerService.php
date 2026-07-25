@@ -2,11 +2,11 @@
 
 namespace App\Domain\Product\Services;
 
+use App\Domain\Product\Enums\StockType;
 use App\Domain\Product\Models\Product;
 use App\Domain\Product\Models\ProductStock;
 use App\Domain\Product\Models\ProductVariant;
 use App\Domain\Product\Models\StockHistory;
-use App\Enums\StockType;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
 

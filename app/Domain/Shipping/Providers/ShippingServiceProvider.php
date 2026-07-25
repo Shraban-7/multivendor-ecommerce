@@ -15,4 +15,10 @@ class ShippingServiceProvider extends ServiceProvider
         $this->app->bind(LocationRepositoryInterface::class, EloquentLocationRepository::class);
         $this->app->bind(ShippingRepositoryInterface::class, EloquentShippingRepository::class);
     }
+
+    public function boot(): void
+    {
+        $this->loadRoutesFrom(__DIR__.'/../routes.php');
+        $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
+    }
 }

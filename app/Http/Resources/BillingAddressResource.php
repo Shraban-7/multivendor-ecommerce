@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources;
 
+use App\Domain\Shipping\Http\Resources\DistrictResource;
+use App\Domain\Shipping\Http\Resources\DivisionResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 

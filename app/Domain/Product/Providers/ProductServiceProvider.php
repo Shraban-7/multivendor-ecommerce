@@ -3,6 +3,7 @@
 namespace App\Domain\Product\Providers;
 
 use App\Domain\Product\Models\Product;
+use App\Domain\Product\Observers\ProductObserver;
 use App\Domain\Product\Repositories\Contracts\BrandRepositoryInterface;
 use App\Domain\Product\Repositories\Contracts\CategoryRepositoryInterface;
 use App\Domain\Product\Repositories\Contracts\FlashSaleRepositoryInterface;
@@ -13,7 +14,6 @@ use App\Domain\Product\Repositories\EloquentCategoryRepository;
 use App\Domain\Product\Repositories\EloquentFlashSaleRepository;
 use App\Domain\Product\Repositories\EloquentOptionRepository;
 use App\Domain\Product\Repositories\EloquentProductRepository;
-use App\Observers\ProductObserver;
 use Illuminate\Support\ServiceProvider;
 
 class ProductServiceProvider extends ServiceProvider
@@ -29,6 +29,8 @@ class ProductServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        $this->loadRoutesFrom(__DIR__.'/../routes.php');
+        $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
         Product::observe(ProductObserver::class);
     }
 }

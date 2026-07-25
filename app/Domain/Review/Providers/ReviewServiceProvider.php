@@ -12,4 +12,10 @@ class ReviewServiceProvider extends ServiceProvider
     {
         $this->app->bind(ReviewRepositoryInterface::class, EloquentReviewRepository::class);
     }
+
+    public function boot(): void
+    {
+        $this->loadRoutesFrom(__DIR__.'/../routes.php');
+        $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
+    }
 }

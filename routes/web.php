@@ -533,8 +533,6 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/invoice/{invoice_id}', [InvoiceController::class, 'invoice'])->name('invoice');
 Route::get('/receipt/{invoice_id}', [InvoiceController::class, 'receipt'])->name('receipt');
 
-Route::get('/get-districts/{divisionId}', [LocationController::class, 'getDistricts'])->name('get.districts');
-
 Route::as('static.')->group(function () {
     Route::get('seller-guide', fn () => view('static.seller-guide'))->name('sellerGuide');
 });

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Domain\Product\Http\Resources\BrandResource;
+use App\Domain\Product\Http\Resources\CategoryResource;
 use App\Domain\Product\Models\Brand;
 use App\Domain\Product\Models\Category;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\BrandResource;
-use App\Http\Resources\CategoryResource;
 
 class ShopController extends Controller
 {

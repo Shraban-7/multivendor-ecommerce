@@ -2,29 +2,21 @@
 
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AuthController;
-use App\Http\Controllers\Admin\BannerController;
-use App\Http\Controllers\Admin\BrandController;
-use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\FlashSaleController;
 use App\Http\Controllers\Admin\ImageController;
 use App\Http\Controllers\Admin\ManualPaymentMethodController;
-use App\Http\Controllers\Admin\OptionController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\PaymentGatewayController;
 use App\Http\Controllers\Admin\PaymentOptionController;
 use App\Http\Controllers\Admin\PermissionController;
-use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProfileController;
-use App\Http\Controllers\Admin\ReviewsController;
 use App\Http\Controllers\Admin\SellerController;
 use App\Http\Controllers\Admin\SellerSubscriptionController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SocialLinkController;
 use App\Http\Controllers\Admin\StaticPageController;
-use App\Http\Controllers\Admin\SubcategoryController;
 use App\Http\Controllers\Admin\SubscriptionPlanController;
 use Illuminate\Support\Facades\Route;
 
@@ -54,57 +46,12 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
         Route::post('{seller}/permanent-delete', [SellerController::class, 'permanentDelete'])->name('permanent-delete');
     });
 
-    Route::prefix('products')->as('products.')->group(function () {
-        Route::get('/', [ProductController::class, 'index'])->name('index');
-        Route::post('/{id}/status', [ProductController::class, 'updateStatus'])
-            ->name('updateStatus');
-    });
-
     Route::prefix('orders')->as('orders.')->group(function () {
         Route::get('/', [OrderController::class, 'index'])->name('index');
         // Route::get('/payments', [PaymentController::class, 'index'])->name('payments');
     });
     Route::prefix('payments')->as('payments.')->group(function () {
         Route::get('/', [PaymentController::class, 'index'])->name('index');
-    });
-
-    Route::prefix('options')->as('options.')->group(function () {
-        Route::get('/', [OptionController::class, 'index'])->name('index');
-        Route::post('/store', [OptionController::class, 'store'])->name('store');
-        Route::post('values/{id}/update', [OptionController::class, 'optionValueUpdate'])->name('option_value_update');
-        // Route::post('values/{value}/delete', [OptionController::class, 'deleteValue'])->name('option_value_delete');
-        Route::post('{option}/update', [OptionController::class, 'update'])->name('update');
-        Route::post('{option}/delete', [OptionController::class, 'destroy'])->name('delete');
-    });
-
-    Route::prefix('brands')->as('brands.')->group(function () {
-        Route::get('/', [BrandController::class, 'index'])->name('index');
-        Route::post('/store', [BrandController::class, 'store'])->name('store');
-        Route::post('/update/{brand}', [BrandController::class, 'update'])->name('update');
-        Route::post('/toggle-status/{brand}', [BrandController::class, 'toggleStatus'])->name('toggleStatus');
-    });
-
-    Route::prefix('categories')->as('categories.')->group(function () {
-        Route::get('/', [CategoryController::class, 'index'])->name('index');
-        Route::get('/create', [CategoryController::class, 'create'])->name('create');
-        Route::post('/store', [CategoryController::class, 'store'])->name('store');
-        Route::get('{category}/edit', [CategoryController::class, 'edit'])->name('edit');
-        Route::post('/update/{category}', [CategoryController::class, 'update'])->name('update');
-        Route::post('/toggle-status/{category}', [CategoryController::class, 'toggleStatus'])->name('toggleStatus');
-    });
-
-    Route::prefix('subcategories')->as('subcategories.')->group(function () {
-        Route::get('/', [SubcategoryController::class, 'index'])->name('index');
-        Route::get('/create', [SubcategoryController::class, 'create'])->name('create');
-        Route::post('/store', [SubcategoryController::class, 'store'])->name('store');
-        Route::get('{subcategory}/edit', [SubcategoryController::class, 'edit'])->name('edit');
-        Route::post('/update/{subcategory}', [SubcategoryController::class, 'update'])->name('update');
-        Route::post('/toggle-status/{subcategory}', [SubcategoryController::class, 'toggleStatus'])->name('toggleStatus');
-    });
-
-    Route::prefix('reviews')->as('reviews.')->group(function () {
-        Route::get('/', [ReviewsController::class, 'index'])->name('index');
-        Route::post('/{review}/delete', [ReviewsController::class, 'destroy'])->name('destroy');
     });
 
     Route::prefix('roles')->as('roles.')->group(function () {
@@ -194,19 +141,6 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
         Route::put('/{slug}/update', 'update')->name('update');
     });
 
-    Route::resource('banners', BannerController::class)->names('banners');
-
-    Route::prefix('flash-sales')->as('flash-sales.')->group(function () {
-        Route::get('/', [FlashSaleController::class, 'index'])->name('index');
-        Route::get('/create', [FlashSaleController::class, 'create'])->name('create');
-        Route::post('/store', [FlashSaleController::class, 'store'])->name('store');
-        Route::get('/{id}/edit', [FlashSaleController::class, 'edit'])->name('edit');
-        Route::put('/{id}/update', [FlashSaleController::class, 'update'])->name('update');
-        Route::get('/{id}', [FlashSaleController::class, 'show'])->name('show');
-        Route::delete('/{id}', [FlashSaleController::class, 'destroy'])->name('delete');
-        Route::post('/{id}/product/{productId}/review', [FlashSaleController::class, 'productReview'])->name('product.review');
-
-    });
 });
 
 Route::middleware('guest')->prefix('admin')->as('admin.')->group(function () {

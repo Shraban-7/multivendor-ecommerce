@@ -3,6 +3,19 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Domain\Product\Database\Seeders\BrandSeeder;
+use App\Domain\Product\Database\Seeders\CategoryBannerSeeder;
+use App\Domain\Product\Database\Seeders\CategoryOptionSeeder;
+use App\Domain\Product\Database\Seeders\CategorySeeder;
+use App\Domain\Product\Database\Seeders\HomeMidBannerSeeder;
+use App\Domain\Product\Database\Seeders\OptionSeeder;
+use App\Domain\Product\Database\Seeders\ProductSeeder;
+use App\Domain\Product\Database\Seeders\ProductStockSeeder;
+use App\Domain\Product\Database\Seeders\ProductUnitSeeder;
+use App\Domain\Shipping\Database\Seeders\DistrictSeeder;
+use App\Domain\Shipping\Database\Seeders\DivisionSeeder;
+use App\Domain\Shipping\Database\Seeders\UnionSeeder;
+use App\Domain\Shipping\Database\Seeders\UpazilaSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -25,14 +38,14 @@ class DatabaseSeeder extends Seeder
             // OrderSeeder::class,
             // OrderItemSeeder::class,
             WishlistSeeder::class,
-            // ReviewSeeder::class,
+            // \App\Domain\Review\Database\Seeders\ReviewSeeder::class,
             CouponSeeder::class,
             CategoryBannerSeeder::class,
             HomeMidBannerSeeder::class,
             SocialLinkSeeder::class,
             PaymentOptionSeeder::class,
-            // ProductVariantSeeder::class,
-            // VariantOptionSeeder::class,
+            // \App\Domain\Product\Database\Seeders\ProductVariantSeeder::class,
+            // \App\Domain\Product\Database\Seeders\VariantOptionSeeder::class,
             SystemSettingSeeder::class,
             PermissionSeeder::class,
             PaymentGatewaySeeder::class,
