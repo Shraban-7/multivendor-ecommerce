@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Seller;
+namespace App\Domain\Order\Http\Controllers\Seller;
 
 use App\Domain\Auth\Models\Customer;
+use App\Domain\Order\Enums\OrderStatus;
 use App\Domain\Order\Models\Order;
 use App\Domain\Order\Models\OrderItem;
 use App\Domain\Order\Models\PosCart;
@@ -14,7 +15,6 @@ use App\Domain\Product\Models\Product;
 use App\Domain\Product\Models\ProductVariant;
 use App\Domain\Vendor\Models\Seller;
 use App\Domain\Vendor\Models\SellerEmployee;
-use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;

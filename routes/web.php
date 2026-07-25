@@ -9,7 +9,6 @@ use App\Domain\Vendor\Models\Seller;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BkashController;
 use App\Http\Controllers\Frontend\HomeController;
-use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
@@ -529,9 +528,6 @@ Route::prefix('mails')->as('mails.')->group(function () {
 });
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
-
-Route::get('/invoice/{invoice_id}', [InvoiceController::class, 'invoice'])->name('invoice');
-Route::get('/receipt/{invoice_id}', [InvoiceController::class, 'receipt'])->name('receipt');
 
 Route::as('static.')->group(function () {
     Route::get('seller-guide', fn () => view('static.seller-guide'))->name('sellerGuide');

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Domain\Order\Jobs;
 
 use App\Domain\Order\Models\Order;
 use Illuminate\Bus\Queueable;

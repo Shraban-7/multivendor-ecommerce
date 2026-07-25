@@ -351,7 +351,7 @@
                                     </span>
                                     <select name="new_status" class="form-select" required>
                                         <option value="">-- Select Status --</option>
-                                        @foreach (\App\Enums\OrderStatus::cases() as $status)
+                                        @foreach (\App\Domain\Order\Enums\OrderStatus::cases() as $status)
                                             <option value="{{ $status->value }}"
                                                 {{ $order->status->value === $status->value ? 'selected' : '' }}>
                                                 {{ ucfirst($status->title()) }}

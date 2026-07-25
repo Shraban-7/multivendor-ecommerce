@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Domain\Order\Http\Controllers\Api;
 
+use App\Domain\Order\Http\Resources\CartResource;
 use App\Domain\Order\Models\Cart;
 use App\Domain\Order\Models\CartItem;
 use App\Domain\Order\Repositories\Contracts\CartRepositoryInterface;
@@ -9,7 +10,6 @@ use App\Domain\Product\Http\Resources\ProductListResource;
 use App\Domain\Product\Models\Product;
 use App\Domain\Product\Models\ProductVariant;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\CartResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

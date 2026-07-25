@@ -1,7 +1,7 @@
 @extends('frontend.layouts.app')
 @section('title', 'Order Details')
 <?php
-use App\Enums\OrderStatus;
+use App\Domain\Order\Enums\OrderStatus;
 
 ?>
 @section('content')

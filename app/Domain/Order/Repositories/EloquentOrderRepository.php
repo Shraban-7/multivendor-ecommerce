@@ -2,6 +2,7 @@
 
 namespace App\Domain\Order\Repositories;
 
+use App\Domain\Order\Enums\OrderStatus;
 use App\Domain\Order\Models\Order;
 use App\Domain\Order\Models\OrderBillingAddress;
 use App\Domain\Order\Models\OrderItem;
@@ -10,7 +11,6 @@ use App\Domain\Order\Repositories\Contracts\OrderRepositoryInterface;
 use App\Domain\Product\Models\Product;
 use App\Domain\Product\Models\ProductVariant;
 use App\Domain\Vendor\Models\Seller;
-use App\Enums\OrderStatus;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 

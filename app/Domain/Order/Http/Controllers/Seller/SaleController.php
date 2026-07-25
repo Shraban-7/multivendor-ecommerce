@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Seller;
+namespace App\Domain\Order\Http\Controllers\Seller;
 
 use App\Domain\Auth\Models\Customer;
 use App\Domain\Order\Models\Order;

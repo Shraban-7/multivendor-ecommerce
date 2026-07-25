@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Domain\Order\Database\Seeders\CouponSeeder;
+use App\Domain\Order\Database\Seeders\WishlistSeeder;
 use App\Domain\Product\Database\Seeders\BrandSeeder;
 use App\Domain\Product\Database\Seeders\CategoryBannerSeeder;
 use App\Domain\Product\Database\Seeders\CategoryOptionSeeder;
@@ -36,8 +38,8 @@ class DatabaseSeeder extends Seeder
             OptionSeeder::class,
             ProductSeeder::class,
             ProductStockSeeder::class,
-            // OrderSeeder::class,
-            // OrderItemSeeder::class,
+            // \App\Domain\Order\Database\Seeders\OrderSeeder::class,
+            // \App\Domain\Order\Database\Seeders\OrderItemSeeder::class,
             WishlistSeeder::class,
             // \App\Domain\Review\Database\Seeders\ReviewSeeder::class,
             CouponSeeder::class,

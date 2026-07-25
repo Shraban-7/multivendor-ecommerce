@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Domain\Order\Http\Controllers;
 
 use App\Domain\Order\Models\Order;
+use App\Http\Controllers\Controller;
 
 class InvoiceController extends Controller
 {

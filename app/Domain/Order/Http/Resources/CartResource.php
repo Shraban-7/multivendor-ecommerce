@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Domain\Order\Http\Resources;
 
 use App\Domain\Vendor\Http\Resources\SellerResource;
 use Illuminate\Http\Request;

@@ -15,4 +15,10 @@ class OrderServiceProvider extends ServiceProvider
         $this->app->bind(OrderRepositoryInterface::class, EloquentOrderRepository::class);
         $this->app->bind(CartRepositoryInterface::class, EloquentCartRepository::class);
     }
+
+    public function boot(): void
+    {
+        $this->loadRoutesFrom(__DIR__.'/../routes.php');
+        $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
+    }
 }

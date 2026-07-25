@@ -6,7 +6,6 @@ use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ImageController;
 use App\Http\Controllers\Admin\ManualPaymentMethodController;
-use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\PaymentGatewayController;
 use App\Http\Controllers\Admin\PaymentOptionController;
@@ -27,10 +26,6 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
         Route::get('{customer:username}/profile', [CustomerController::class, 'profile'])->name('profile');
     });
 
-    Route::prefix('orders')->as('orders.')->group(function () {
-        Route::get('/', [OrderController::class, 'index'])->name('index');
-        // Route::get('/payments', [PaymentController::class, 'index'])->name('payments');
-    });
     Route::prefix('payments')->as('payments.')->group(function () {
         Route::get('/', [PaymentController::class, 'index'])->name('index');
     });

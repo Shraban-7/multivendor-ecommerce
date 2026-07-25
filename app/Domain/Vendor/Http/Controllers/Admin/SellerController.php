@@ -2,6 +2,7 @@
 
 namespace App\Domain\Vendor\Http\Controllers\Admin;
 
+use App\Domain\Order\Enums\OrderStatus;
 use App\Domain\Order\Models\Order;
 use App\Domain\Product\Models\Product;
 use App\Domain\Shipping\Models\Division;
@@ -11,7 +12,6 @@ use App\Domain\Vendor\Models\Seller;
 use App\Domain\Vendor\Models\SubscriptionPlan;
 use App\Domain\Vendor\Repositories\SellerRepositoryInterface;
 use App\Domain\Vendor\Services\VendorService;
-use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;

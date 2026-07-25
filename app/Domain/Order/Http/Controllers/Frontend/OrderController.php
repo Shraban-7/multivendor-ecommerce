@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Frontend;
+namespace App\Domain\Order\Http\Controllers\Frontend;
 
+use App\Domain\Order\Enums\OrderStatus;
 use App\Domain\Order\Models\BillingAddress;
 use App\Domain\Order\Models\Order;
 use App\Domain\Order\Repositories\Contracts\CartRepositoryInterface;
@@ -13,7 +14,6 @@ use App\Domain\Shipping\Models\District;
 use App\Domain\Shipping\Models\Division;
 use App\Domain\Support\Models\Notification;
 use App\Domain\Vendor\Models\Seller;
-use App\Enums\OrderStatus;
 use App\Enums\PaymentType;
 use App\Http\Controllers\Controller;
 use Exception;

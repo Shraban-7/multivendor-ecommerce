@@ -2,7 +2,7 @@
 
 namespace App\Domain\Order\Models;
 
-use App\Enums\OrderStatus;
+use App\Domain\Order\Enums\OrderStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 

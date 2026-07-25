@@ -1,7 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Domain\Order\Http\Controllers\Api;
 
+use App\Domain\Order\Enums\OrderStatus;
+use App\Domain\Order\Http\Resources\InvoiceResource;
+use App\Domain\Order\Http\Resources\OrderResource;
 use App\Domain\Order\Models\BillingAddress;
 use App\Domain\Order\Models\Order;
 use App\Domain\Order\Repositories\Contracts\CartRepositoryInterface;
@@ -10,10 +13,7 @@ use App\Domain\Order\Services\OrderService;
 use App\Domain\Payment\Repositories\Contracts\PaymentRepositoryInterface;
 use App\Domain\Support\Models\Notification;
 use App\Domain\Vendor\Models\Seller;
-use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\InvoiceResource;
-use App\Http\Resources\OrderResource;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

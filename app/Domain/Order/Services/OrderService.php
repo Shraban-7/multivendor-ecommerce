@@ -4,6 +4,7 @@ namespace App\Domain\Order\Services;
 
 use App\Domain\Affiliate\Models\AffiliateCommission;
 use App\Domain\Auth\Models\User;
+use App\Domain\Order\Enums\OrderStatus;
 use App\Domain\Order\Models\BillingAddress;
 use App\Domain\Order\Models\Cart;
 use App\Domain\Order\Models\Order;
@@ -14,7 +15,6 @@ use App\Domain\Payment\Repositories\Contracts\PaymentRepositoryInterface;
 use App\Domain\Review\Models\Review;
 use App\Domain\Review\Models\ReviewImage;
 use App\Domain\Vendor\Models\Seller;
-use App\Enums\OrderStatus;
 use App\Enums\PaymentType;
 use App\Services\AamarpayService;
 use App\Services\AffiliateService;

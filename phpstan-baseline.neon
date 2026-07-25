@@ -286,7 +286,7 @@ parameters:
 			message: '#^Relation ''seller'' is not found in App\\Models\\Order model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Admin/OrderController.php
+			path: app/Domain/Order/Http/Controllers/Admin/OrderController.php
 
 		-
 			message: '#^Relation ''seller'' is not found in App\\Models\\Product model\.$#'
@@ -316,13 +316,13 @@ parameters:
 			message: '#^Relation ''cart_items'' is not found in App\\Models\\Cart model\.$#'
 			identifier: larastan.relationExistence
 			count: 2
-			path: app/Http/Controllers/Api/CartController.php
+			path: app/Domain/Order/Http/Controllers/Api/CartController.php
 
 		-
 			message: '#^Relation ''category'' is not found in App\\Models\\Product model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Api/CartController.php
+			path: app/Domain/Order/Http/Controllers/Api/CartController.php
 
 		-
 			message: '#^Relation ''subcategories'' is not found in App\\Models\\Category model\.$#'
@@ -340,19 +340,19 @@ parameters:
 			message: '#^Relation ''cart_items'' is not found in App\\Models\\Cart model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Api/OrderController.php
+			path: app/Domain/Order/Http/Controllers/Api/OrderController.php
 
 		-
 			message: '#^Relation ''items'' is not found in App\\Models\\Order model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Api/OrderController.php
+			path: app/Domain/Order/Http/Controllers/Api/OrderController.php
 
 		-
 			message: '#^Relation ''seller'' is not found in App\\Models\\Order model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Api/OrderController.php
+			path: app/Domain/Order/Http/Controllers/Api/OrderController.php
 
 		-
 			message: '#^Relation ''images'' is not found in App\\Models\\Product model\.$#'
@@ -388,31 +388,31 @@ parameters:
 			message: '#^Relation ''cart_items'' is not found in App\\Models\\Cart model\.$#'
 			identifier: larastan.relationExistence
 			count: 2
-			path: app/Http/Controllers/Frontend/CartController.php
+			path: app/Domain/Order/Http/Controllers/Frontend/CartController.php
 
 		-
 			message: '#^Relation ''product'' is not found in App\\Models\\CartItem model\.$#'
 			identifier: larastan.relationExistence
 			count: 2
-			path: app/Http/Controllers/Frontend/CartController.php
+			path: app/Domain/Order/Http/Controllers/Frontend/CartController.php
 
 		-
 			message: '#^Variable \$brandIds on left side of \?\? always exists and is not nullable\.$#'
 			identifier: nullCoalesce.variable
 			count: 1
-			path: app/Http/Controllers/Frontend/CartController.php
+			path: app/Domain/Order/Http/Controllers/Frontend/CartController.php
 
 		-
 			message: '#^Variable \$categoryIds on left side of \?\? always exists and is not nullable\.$#'
 			identifier: nullCoalesce.variable
 			count: 1
-			path: app/Http/Controllers/Frontend/CartController.php
+			path: app/Domain/Order/Http/Controllers/Frontend/CartController.php
 
 		-
 			message: '#^Variable \$subcategoryIds on left side of \?\? always exists and is not nullable\.$#'
 			identifier: nullCoalesce.variable
 			count: 1
-			path: app/Http/Controllers/Frontend/CartController.php
+			path: app/Domain/Order/Http/Controllers/Frontend/CartController.php
 
 		-
 			message: '#^Relation ''brand'' is not found in App\\Models\\Product model\.$#'
@@ -457,46 +457,46 @@ parameters:
 			path: app/Http/Controllers/Frontend/HomeController.php
 
 		-
-			message: '#^Call to an undefined method App\\Http\\Controllers\\Frontend\\OrderController\:\:initiatePaymentGateway\(\)\.$#'
+			message: '#^Call to an undefined method App\\Domain\\Order\\Http\\Controllers\\Frontend\\OrderController\:\:initiatePaymentGateway\(\)\.$#'
 			identifier: method.notFound
 			count: 1
-			path: app/Http/Controllers/Frontend/OrderController.php
+			path: app/Domain/Order/Http/Controllers/Frontend/OrderController.php
 
 		-
 			message: '#^Call to function compact\(\) contains possibly undefined variable \$grand_total\.$#'
 			identifier: variable.undefined
 			count: 1
-			path: app/Http/Controllers/Frontend/OrderController.php
+			path: app/Domain/Order/Http/Controllers/Frontend/OrderController.php
 
 		-
 			message: '#^Call to function compact\(\) contains undefined variable \$product\.$#'
 			identifier: variable.undefined
 			count: 1
-			path: app/Http/Controllers/Frontend/OrderController.php
+			path: app/Domain/Order/Http/Controllers/Frontend/OrderController.php
 
 		-
 			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
 			identifier: larastan.noEnvCallsOutsideOfConfig
 			count: 2
-			path: app/Http/Controllers/Frontend/OrderController.php
+			path: app/Domain/Order/Http/Controllers/Frontend/OrderController.php
 
 		-
 			message: '#^Relation ''cart_items'' is not found in App\\Models\\Cart model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Frontend/OrderController.php
+			path: app/Domain/Order/Http/Controllers/Frontend/OrderController.php
 
 		-
 			message: '#^Relation ''seller'' is not found in App\\Models\\Order model\.$#'
 			identifier: larastan.relationExistence
 			count: 2
-			path: app/Http/Controllers/Frontend/OrderController.php
+			path: app/Domain/Order/Http/Controllers/Frontend/OrderController.php
 
 		-
 			message: '#^Relation ''variants'' is not found in App\\Models\\Product model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Frontend/OrderController.php
+			path: app/Domain/Order/Http/Controllers/Frontend/OrderController.php
 
 		-
 			message: '#^Relation ''brand'' is not found in App\\Models\\Product model\.$#'
@@ -550,7 +550,7 @@ parameters:
 			message: '#^Relation ''product'' is not found in App\\Models\\Wishlist model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Frontend/WishlistController.php
+			path: app/Domain/Order/Http/Controllers/Frontend/WishlistController.php
 
 		-
 			message: '#^Relation ''product'' is not found in App\\Models\\ProductVariant model\.$#'
@@ -580,25 +580,25 @@ parameters:
 			message: '#^Relation ''items'' is not found in App\\Models\\Order model\.$#'
 			identifier: larastan.relationExistence
 			count: 2
-			path: app/Http/Controllers/Seller/PosController.php
+			path: app/Domain/Order/Http/Controllers/Seller/PosController.php
 
 		-
 			message: '#^Relation ''items'' is not found in App\\Models\\PosCart model\.$#'
 			identifier: larastan.relationExistence
 			count: 3
-			path: app/Http/Controllers/Seller/PosController.php
+			path: app/Domain/Order/Http/Controllers/Seller/PosController.php
 
 		-
 			message: '#^Relation ''variant'' is not found in App\\Models\\PosCartItem model\.$#'
 			identifier: larastan.relationExistence
 			count: 2
-			path: app/Http/Controllers/Seller/PosController.php
+			path: app/Domain/Order/Http/Controllers/Seller/PosController.php
 
 		-
 			message: '#^Relation ''variants'' is not found in App\\Models\\Product model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Seller/PosController.php
+			path: app/Domain/Order/Http/Controllers/Seller/PosController.php
 
 		-
 			message: '#^Relation ''option_values'' is not found in App\\Models\\Option model\.$#'
@@ -694,55 +694,55 @@ parameters:
 			message: '#^Relation ''items'' is not found in App\\Models\\Order model\.$#'
 			identifier: larastan.relationExistence
 			count: 3
-			path: app/Http/Controllers/Seller/SaleController.php
+			path: app/Domain/Order/Http/Controllers/Seller/SaleController.php
 
 		-
 			message: '#^Relation ''product'' is not found in App\\Models\\ProductVariant model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Http/Controllers/Seller/SaleController.php
+			path: app/Domain/Order/Http/Controllers/Seller/SaleController.php
 
 		-
 			message: '#^Relation ''variant'' is not found in App\\Models\\OrderItem model\.$#'
 			identifier: larastan.relationExistence
 			count: 2
-			path: app/Http/Controllers/Seller/SaleController.php
+			path: app/Domain/Order/Http/Controllers/Seller/SaleController.php
 
 		-
 			message: '#^Variable \$product might not be defined\.$#'
 			identifier: variable.undefined
 			count: 2
-			path: app/Http/Controllers/Seller/SaleController.php
+			path: app/Domain/Order/Http/Controllers/Seller/SaleController.php
 
 		-
 			message: '#^Variable \$sellingPrice might not be defined\.$#'
 			identifier: variable.undefined
 			count: 3
-			path: app/Http/Controllers/Seller/SaleController.php
+			path: app/Domain/Order/Http/Controllers/Seller/SaleController.php
 
 		-
 			message: '#^Variable \$sku might not be defined\.$#'
 			identifier: variable.undefined
 			count: 1
-			path: app/Http/Controllers/Seller/SaleController.php
+			path: app/Domain/Order/Http/Controllers/Seller/SaleController.php
 
 		-
 			message: '#^Variable \$unitPrice might not be defined\.$#'
 			identifier: variable.undefined
 			count: 4
-			path: app/Http/Controllers/Seller/SaleController.php
+			path: app/Domain/Order/Http/Controllers/Seller/SaleController.php
 
 		-
 			message: '#^Variable \$variantId might not be defined\.$#'
 			identifier: variable.undefined
 			count: 1
-			path: app/Http/Controllers/Seller/SaleController.php
+			path: app/Domain/Order/Http/Controllers/Seller/SaleController.php
 
 		-
 			message: '#^Variable \$variantName might not be defined\.$#'
 			identifier: variable.undefined
 			count: 1
-			path: app/Http/Controllers/Seller/SaleController.php
+			path: app/Domain/Order/Http/Controllers/Seller/SaleController.php
 
 		-
 			message: '#^Access to undefined constant App\\Models\\SellerSubscription\:\:ACTIVE\.$#'
@@ -763,52 +763,52 @@ parameters:
 			path: app/Http/Resources/BannerResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\BillingAddressResource\:\:\$address\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\BillingAddressResource\:\:\$address\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/BillingAddressResource.php
+			path: app/Domain/Order/Http/Resources/BillingAddressResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\BillingAddressResource\:\:\$customer_name\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\BillingAddressResource\:\:\$customer_name\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/BillingAddressResource.php
+			path: app/Domain/Order/Http/Resources/BillingAddressResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\BillingAddressResource\:\:\$customer_phone\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\BillingAddressResource\:\:\$customer_phone\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/BillingAddressResource.php
+			path: app/Domain/Order/Http/Resources/BillingAddressResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\BillingAddressResource\:\:\$district\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\BillingAddressResource\:\:\$district\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/BillingAddressResource.php
+			path: app/Domain/Order/Http/Resources/BillingAddressResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\BillingAddressResource\:\:\$division\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\BillingAddressResource\:\:\$division\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/BillingAddressResource.php
+			path: app/Domain/Order/Http/Resources/BillingAddressResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\BillingAddressResource\:\:\$id\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\BillingAddressResource\:\:\$id\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/BillingAddressResource.php
+			path: app/Domain/Order/Http/Resources/BillingAddressResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\BillingAddressResource\:\:\$is_default\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\BillingAddressResource\:\:\$is_default\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/BillingAddressResource.php
+			path: app/Domain/Order/Http/Resources/BillingAddressResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\BillingAddressResource\:\:\$type\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\BillingAddressResource\:\:\$type\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/BillingAddressResource.php
+			path: app/Domain/Order/Http/Resources/BillingAddressResource.php
 
 		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\BrandResource\:\:\$id\.$#'
@@ -829,34 +829,34 @@ parameters:
 			path: app/Http/Resources/BrandResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\CartItemResource\:\:\$id\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\CartItemResource\:\:\$id\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/CartItemResource.php
+			path: app/Domain/Order/Http/Resources/CartItemResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\CartItemResource\:\:\$product\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\CartItemResource\:\:\$product\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/CartItemResource.php
+			path: app/Domain/Order/Http/Resources/CartItemResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\CartItemResource\:\:\$quantity\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\CartItemResource\:\:\$quantity\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/CartItemResource.php
+			path: app/Domain/Order/Http/Resources/CartItemResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\CartItemResource\:\:\$variant\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\CartItemResource\:\:\$variant\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/CartItemResource.php
+			path: app/Domain/Order/Http/Resources/CartItemResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\CartResource\:\:\$id\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\CartResource\:\:\$id\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/CartResource.php
+			path: app/Domain/Order/Http/Resources/CartResource.php
 
 		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\CategoryResource\:\:\$app_icon\.$#'
@@ -973,58 +973,58 @@ parameters:
 			path: app/Http/Resources/FlashSaleResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceResource\:\:\$created_at\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\InvoiceResource\:\:\$created_at\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/InvoiceResource.php
+			path: app/Domain/Order/Http/Resources/InvoiceResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceResource\:\:\$discount\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\InvoiceResource\:\:\$discount\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/InvoiceResource.php
+			path: app/Domain/Order/Http/Resources/InvoiceResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceResource\:\:\$due\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\InvoiceResource\:\:\$due\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/InvoiceResource.php
+			path: app/Domain/Order/Http/Resources/InvoiceResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceResource\:\:\$id\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\InvoiceResource\:\:\$id\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/InvoiceResource.php
+			path: app/Domain/Order/Http/Resources/InvoiceResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceResource\:\:\$invoice_id\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\InvoiceResource\:\:\$invoice_id\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/InvoiceResource.php
+			path: app/Domain/Order/Http/Resources/InvoiceResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceResource\:\:\$items\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\InvoiceResource\:\:\$items\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/InvoiceResource.php
+			path: app/Domain/Order/Http/Resources/InvoiceResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceResource\:\:\$payable\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\InvoiceResource\:\:\$payable\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/InvoiceResource.php
+			path: app/Domain/Order/Http/Resources/InvoiceResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceResource\:\:\$seller\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\InvoiceResource\:\:\$seller\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/InvoiceResource.php
+			path: app/Domain/Order/Http/Resources/InvoiceResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\InvoiceResource\:\:\$total\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\InvoiceResource\:\:\$total\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/InvoiceResource.php
+			path: app/Domain/Order/Http/Resources/InvoiceResource.php
 
 		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\NotificationResource\:\:\$created_at\.$#'
@@ -1069,136 +1069,136 @@ parameters:
 			path: app/Http/Resources/OptionResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\OrderItemResource\:\:\$discount\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\OrderItemResource\:\:\$discount\.$#'
 			identifier: property.notFound
 			count: 2
-			path: app/Http/Resources/OrderItemResource.php
+			path: app/Domain/Order/Http/Resources/OrderItemResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\OrderItemResource\:\:\$id\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\OrderItemResource\:\:\$id\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/OrderItemResource.php
+			path: app/Domain/Order/Http/Resources/OrderItemResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\OrderItemResource\:\:\$is_reviewed\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\OrderItemResource\:\:\$is_reviewed\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/OrderItemResource.php
+			path: app/Domain/Order/Http/Resources/OrderItemResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\OrderItemResource\:\:\$product\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\OrderItemResource\:\:\$product\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/OrderItemResource.php
+			path: app/Domain/Order/Http/Resources/OrderItemResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\OrderItemResource\:\:\$quantity\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\OrderItemResource\:\:\$quantity\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/OrderItemResource.php
+			path: app/Domain/Order/Http/Resources/OrderItemResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\OrderItemResource\:\:\$sub_total\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\OrderItemResource\:\:\$sub_total\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/OrderItemResource.php
+			path: app/Domain/Order/Http/Resources/OrderItemResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\OrderItemResource\:\:\$unit_price\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\OrderItemResource\:\:\$unit_price\.$#'
 			identifier: property.notFound
 			count: 2
-			path: app/Http/Resources/OrderItemResource.php
+			path: app/Domain/Order/Http/Resources/OrderItemResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\OrderItemResource\:\:\$variant\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\OrderItemResource\:\:\$variant\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/OrderItemResource.php
+			path: app/Domain/Order/Http/Resources/OrderItemResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$created_at\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\OrderResource\:\:\$created_at\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/OrderResource.php
+			path: app/Domain/Order/Http/Resources/OrderResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$delivery_status\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\OrderResource\:\:\$delivery_status\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/OrderResource.php
+			path: app/Domain/Order/Http/Resources/OrderResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$discount\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\OrderResource\:\:\$discount\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/OrderResource.php
+			path: app/Domain/Order/Http/Resources/OrderResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$due\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\OrderResource\:\:\$due\.$#'
 			identifier: property.notFound
 			count: 2
-			path: app/Http/Resources/OrderResource.php
+			path: app/Domain/Order/Http/Resources/OrderResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$id\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\OrderResource\:\:\$id\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/OrderResource.php
+			path: app/Domain/Order/Http/Resources/OrderResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$invoice_id\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\OrderResource\:\:\$invoice_id\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/OrderResource.php
+			path: app/Domain/Order/Http/Resources/OrderResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$payable\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\OrderResource\:\:\$payable\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/OrderResource.php
+			path: app/Domain/Order/Http/Resources/OrderResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$payment\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\OrderResource\:\:\$payment\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/OrderResource.php
+			path: app/Domain/Order/Http/Resources/OrderResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$payment_id\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\OrderResource\:\:\$payment_id\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/OrderResource.php
+			path: app/Domain/Order/Http/Resources/OrderResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$shipping_fee\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\OrderResource\:\:\$shipping_fee\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/OrderResource.php
+			path: app/Domain/Order/Http/Resources/OrderResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$status\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\OrderResource\:\:\$status\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/OrderResource.php
+			path: app/Domain/Order/Http/Resources/OrderResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$sub_total\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\OrderResource\:\:\$sub_total\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/OrderResource.php
+			path: app/Domain/Order/Http/Resources/OrderResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$tax\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\OrderResource\:\:\$tax\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/OrderResource.php
+			path: app/Domain/Order/Http/Resources/OrderResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$total\.$#'
+			message: '#^Access to an undefined property App\\Domain\\Order\\Http\\Resources\\OrderResource\:\:\$total\.$#'
 			identifier: property.notFound
 			count: 1
-			path: app/Http/Resources/OrderResource.php
+			path: app/Domain/Order/Http/Resources/OrderResource.php
 
 		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\PaymentGatewayResource\:\:\$id\.$#'

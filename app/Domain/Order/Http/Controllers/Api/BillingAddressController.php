@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Domain\Order\Http\Controllers\Api;
 
+use App\Domain\Order\Http\Resources\BillingAddressResource;
 use App\Domain\Order\Models\BillingAddress;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\BillingAddressResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

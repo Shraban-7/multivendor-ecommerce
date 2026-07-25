@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Domain\Order\Http\Controllers\Admin;
 
 use App\Domain\Order\Repositories\Contracts\OrderRepositoryInterface;
 use App\Http\Controllers\Controller;

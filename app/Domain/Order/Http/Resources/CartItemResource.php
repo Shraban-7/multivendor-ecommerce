@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Domain\Order\Http\Resources;
 
 use App\Domain\Product\Http\Resources\CategoryResource;
 use App\Domain\Product\Http\Resources\ProductVariantResource;

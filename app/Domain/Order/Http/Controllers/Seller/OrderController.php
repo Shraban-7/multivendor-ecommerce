@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Seller;
+namespace App\Domain\Order\Http\Controllers\Seller;
 
+use App\Domain\Order\Enums\OrderStatus;
 use App\Domain\Order\Models\Order;
 use App\Domain\Order\Repositories\Contracts\OrderRepositoryInterface;
 use App\Domain\Order\Services\OrderService;
-use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 

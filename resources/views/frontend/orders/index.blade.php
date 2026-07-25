@@ -3,7 +3,7 @@
 
 @section('dashboard')
     <?php
-    use App\Enums\OrderStatus;
+    use App\Domain\Order\Enums\OrderStatus;
     use App\Domain\Payment\Models\Payment;
     ?>
 

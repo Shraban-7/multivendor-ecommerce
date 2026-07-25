@@ -2,12 +2,12 @@
 
 namespace App\Domain\Vendor\Http\Controllers\Seller;
 
+use App\Domain\Order\Enums\OrderStatus;
 use App\Domain\Order\Models\Order;
 use App\Domain\Order\Models\OrderItem;
 use App\Domain\Product\Models\Product;
 use App\Domain\Vendor\Models\Seller;
 use App\Domain\Vendor\Models\SellerExpense;
-use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;

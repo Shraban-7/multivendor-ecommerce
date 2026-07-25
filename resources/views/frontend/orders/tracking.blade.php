@@ -51,14 +51,14 @@
                     @forelse ($order->statusLogs as $log)
                         @php
                             $oldStatus =
-                                $log->old_status instanceof \App\Enums\OrderStatus
+                                $log->old_status instanceof \App\Domain\Order\Enums\OrderStatus
                                     ? $log->old_status
-                                    : \App\Enums\OrderStatus::from((int) $log->old_status);
+                                    : \App\Domain\Order\Enums\OrderStatus::from((int) $log->old_status);
 
                             $newStatus =
-                                $log->new_status instanceof \App\Enums\OrderStatus
+                                $log->new_status instanceof \App\Domain\Order\Enums\OrderStatus
                                     ? $log->new_status
-                                    : \App\Enums\OrderStatus::from((int) $log->new_status);
+                                    : \App\Domain\Order\Enums\OrderStatus::from((int) $log->new_status);
                         @endphp
 
                         <li class="mb-10 ml-6">
