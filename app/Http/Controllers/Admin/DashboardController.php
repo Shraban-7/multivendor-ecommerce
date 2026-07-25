@@ -6,67 +6,80 @@ use App\Domain\Auth\Models\User;
 use App\Domain\Order\Models\Order;
 use App\Domain\Product\Models\Product;
 use App\Domain\Vendor\Models\Seller;
+use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
     public function dashboard()
     {
-        $stats = [
-            'total_revenue' => Order::where('status', 'completed')
-                ->sum('payable'),
-            'total_orders' => Order::count(),
-            'total_vendors' => Seller::where('status', Seller::ACTIVE)->count(),
-            'total_customers' => User::count(),
-            'total_products' => Product::count(),
-            'pending_orders' => Order::where('status', 'pending')->count(),
-        ];
+        $data = Cache::remember('admin_dashboard', 300, function () {
+            $completed = OrderStatus::COMPLETED->value;
+            $pending = OrderStatus::PENDING->value;
+            $shipped = OrderStatus::SHIPPED->value;
+            $cancelled = OrderStatus::CANCELLED->value;
+            $delivered = OrderStatus::DELIVERED->value;
 
-        $recent_orders = Order::with(['user', 'seller'])
-            ->latest()
-            ->take(5)
-            ->get();
+            $counts = Order::selectRaw("
+                    COUNT(*) as total_orders,
+                    SUM(CASE WHEN status = {$pending} THEN 1 ELSE 0 END) as pending_orders_count,
+                    SUM(CASE WHEN status = {$shipped} THEN 1 ELSE 0 END) as shipped_orders_count,
+                    SUM(CASE WHEN status = {$cancelled} THEN 1 ELSE 0 END) as cancelled_orders_count,
+                    SUM(CASE WHEN status = {$delivered} THEN 1 ELSE 0 END) as delivered_orders_count,
+                    SUM(CASE WHEN status = {$completed} THEN payable ELSE 0 END) as total_revenue,
+                    SUM(CASE WHEN status = {$delivered} THEN payable ELSE 0 END) as total_sales,
+                    SUM(total_commission) as total_commission
+                ")->first();
 
-        $top_vendors = Seller::withCount('orders')
-            ->orderBy('orders_count', 'desc')
-            ->take(5)
-            ->get();
+            $stats = [
+                'total_revenue' => $counts->total_revenue,
+                'total_orders' => $counts->total_orders,
+                'total_vendors' => Seller::where('status', Seller::ACTIVE)->count(),
+                'total_customers' => User::count(),
+                'total_products' => Product::count(),
+                'pending_orders' => $counts->pending_orders_count,
+            ];
 
-        $monthly_revenue = Order::where('status', 'completed')
-            ->where('created_at', '>=', now()->subMonths(6))
-            ->select(
-                DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'),
-                DB::raw('SUM(payable) as revenue')
-            )
-            ->groupBy('month')
-            ->orderBy('month')
-            ->get();
+            $data = [
+                'total_products' => $stats['total_products'],
+                'total_orders' => $counts->total_orders,
+                'pending_orders' => $counts->pending_orders_count,
+                'shipped_orders' => $counts->shipped_orders_count,
+                'cancelled_orders' => $counts->cancelled_orders_count,
+                'delivered_orders' => $counts->delivered_orders_count,
+                'total_sales' => $counts->total_sales,
+                'total_sellers' => Seller::count(),
+                'total_customers' => Order::distinct('user_id')->count('user_id'),
+                'total_commission' => $counts->total_commission,
+            ];
 
-        $data = [];
-        $data['total_products'] = Product::count();
-        $data['total_orders'] = Order::count();
-        $data['pending_orders'] = Order::pending()->count();
-        $data['shipped_orders'] = Order::shipped()->count();
-        $data['cancelled_orders'] = Order::cancelled()->count();
-        $data['delivered_orders'] = Order::delivered()->count();
-        $data['total_sales'] = Order::delivered()->sum('payable');
-        $data['total_sellers'] = Seller::count();
-        $data['total_customers'] = Order::distinct('user_id')->count('user_id');
-        $data['total_commission'] = Order::sum('total_commission');
+            $recent_orders = Order::with(['user', 'seller', 'billing_address', 'items'])
+                ->latest()
+                ->take(5)
+                ->get();
 
-        $pending_sellers = Seller::where('status', Seller::PENDING)->get();
-        $pending_sellers_count = $pending_sellers->count();
+            $top_vendors = Seller::withCount('orders')
+                ->orderBy('orders_count', 'desc')
+                ->take(5)
+                ->get();
 
-        return view('admin.dashboard', compact(
-            'stats',
-            'recent_orders',
-            'top_vendors',
-            'monthly_revenue',
-            'pending_sellers',
-            'pending_sellers_count',
-            'data'
-        ));
+            $monthly_revenue = Order::where('status', $completed)
+                ->where('created_at', '>=', now()->subMonths(6))
+                ->select(
+                    DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'),
+                    DB::raw('SUM(payable) as revenue')
+                )
+                ->groupBy('month')
+                ->orderBy('month')
+                ->get();
+
+            $pending_sellers = Seller::where('status', Seller::PENDING)->get();
+            $pending_sellers_count = $pending_sellers->count();
+
+            return compact('stats', 'recent_orders', 'top_vendors', 'monthly_revenue', 'pending_sellers', 'pending_sellers_count', 'data');
+        });
 
         return view('admin.dashboard', $data);
     }

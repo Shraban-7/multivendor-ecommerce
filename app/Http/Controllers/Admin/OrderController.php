@@ -13,7 +13,7 @@ class OrderController extends Controller
 
     public function index()
     {
-        $orders = $this->orderRepo->getAllOrders(['seller']);
+        $orders = $this->orderRepo->getAllOrders(['seller', 'billing_address', 'user', 'items']);
 
         return view('admin.orders.index', compact('orders'));
     }

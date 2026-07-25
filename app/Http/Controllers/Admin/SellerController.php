@@ -11,6 +11,7 @@ use App\Domain\Vendor\Models\Seller;
 use App\Domain\Vendor\Models\SubscriptionPlan;
 use App\Domain\Vendor\Repositories\SellerRepositoryInterface;
 use App\Domain\Vendor\Services\VendorService;
+use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -41,17 +42,32 @@ class SellerController extends Controller
 
     public function profile(Seller $seller)
     {
-        $data = [];
+        $pending = OrderStatus::PENDING->value;
+        $shipped = OrderStatus::SHIPPED->value;
+        $cancelled = OrderStatus::CANCELLED->value;
+        $delivered = OrderStatus::DELIVERED->value;
+
+        $counts = Order::where('seller_id', $seller->id)
+            ->selectRaw("
+                COUNT(*) as total_orders,
+                SUM(CASE WHEN status = {$pending} THEN 1 ELSE 0 END) as pending_orders,
+                SUM(CASE WHEN status = {$shipped} THEN 1 ELSE 0 END) as shipped_orders,
+                SUM(CASE WHEN status = {$cancelled} THEN 1 ELSE 0 END) as cancelled_orders,
+                SUM(CASE WHEN status = {$delivered} THEN 1 ELSE 0 END) as delivered_orders,
+                SUM(CASE WHEN status = {$delivered} THEN total ELSE 0 END) as total_revenue,
+                SUM(total_commission) as total_commission
+            ")->first();
+
         $data['total_products'] = Product::where('seller_id', $seller->id)->count();
-        $data['total_orders'] = Order::where('seller_id', $seller->id)->count();
-        $data['pending_orders'] = Order::pending()->where('seller_id', $seller->id)->count();
-        $data['shipped_orders'] = Order::shipped()->where('seller_id', $seller->id)->count();
-        $data['cancelled_orders'] = Order::cancelled()->where('seller_id', $seller->id)->count();
-        $data['delivered_orders'] = Order::delivered()->where('seller_id', $seller->id)->count();
-        $data['total_revenue'] = Order::delivered()->where('seller_id', $seller->id)->sum('total');
+        $data['total_orders'] = $counts->total_orders;
+        $data['pending_orders'] = $counts->pending_orders;
+        $data['shipped_orders'] = $counts->shipped_orders;
+        $data['cancelled_orders'] = $counts->cancelled_orders;
+        $data['delivered_orders'] = $counts->delivered_orders;
+        $data['total_revenue'] = $counts->total_revenue;
         $data['total_customers'] = Order::where('seller_id', $seller->id)->distinct('user_id')->count('user_id');
-        $data['total_commission'] = Order::where('seller_id', $seller->id)->sum('total_commission');
-        $data['products'] = Product::where('seller_id', $seller->id)->paginate(102);
+        $data['total_commission'] = $counts->total_commission;
+        $data['products'] = Product::where('seller_id', $seller->id)->paginate(25);
         $data['seller'] = $seller;
 
         return view('admin.sellers.profile', $data);

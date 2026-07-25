@@ -10,7 +10,7 @@ class PaymentController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Payment::latest();
+        $query = Payment::with('order')->latest();
 
         if ($request->filled('user_name')) {
             $query->where('customer_name', 'like', '%'.$request->user_name.'%');

@@ -19,7 +19,7 @@ class ProductController extends Controller
 
     public function index()
     {
-        $products = Product::with('seller', 'unit', 'variants')->latest('id')->get();
+        $products = Product::with('seller', 'unit', 'category', 'subcategory', 'variants')->latest('id')->paginate(25);
         $categories = $this->categoryRepo->getAllWithSubcategories();
         $brands = $this->brandRepo->getAll();
 
