@@ -7,6 +7,7 @@ use App\Domain\Order\Models\Order;
 use App\Domain\Order\Models\OrderItem;
 use App\Domain\Order\Models\PosCart;
 use App\Domain\Order\Models\PosCartItem;
+use App\Domain\Order\Repositories\Contracts\OrderRepositoryInterface;
 use App\Domain\Order\Services\PosCartService;
 use App\Domain\Product\Models\Category;
 use App\Domain\Product\Models\Product;
@@ -17,10 +18,15 @@ use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use RuntimeException;
 
 class PosController extends Controller
 {
-    public function __construct(protected PosCartService $posCartService) {}
+    public function __construct(
+        protected PosCartService $posCartService,
+        private readonly OrderRepositoryInterface $orderRepo,
+    ) {}
 
     public function index(Request $request)
     {
@@ -423,109 +429,110 @@ class PosController extends Controller
         ]);
 
         $seller = Seller::find(get_seller_id());
-
         $data['seller_id'] = $seller->id;
 
-        $cart = PosCart::where('seller_id', get_seller_id())->where('is_draft', 0)->first();
-        if (! is_null($draftId)) {
-            $cart = PosCart::where('seller_id', get_seller_id())->where('is_draft', 1)->first();
-        }
+        return DB::transaction(function () use ($request, $data, $seller, $draftId) {
 
-        if (! $cart) {
-            return errorResponse('No items found in the cart!');
-        }
+            $cart = PosCart::where('seller_id', get_seller_id())
+                ->where('is_draft', $draftId ? 1 : 0)
+                ->lockForUpdate()
+                ->first();
 
-        $cartItems = $cart->items()->with('variant.product')->get();
+            if (! $cart) {
+                throw new RuntimeException('No items found in the cart!');
+            }
 
-        $sub_total = 0;
-        $total = 0;
-        $discount = 0;
-        $orderItems = [];
+            if ($cart->order_id) {
+                throw new RuntimeException('This cart has already been converted to an order.');
+            }
 
-        $itemsCollection = collect($request->items);
+            $cartItems = $cart->items()->with('variant.product')->get();
 
-        foreach ($cartItems as $item) {
+            $sub_total = 0;
+            $discount = 0;
+            $orderItems = [];
 
-            $variant = $item->variant;
-            $product = $variant->product ?? $item->product;
+            $itemsCollection = collect($request->items);
 
-            $itemPrice = $variant->selling_price ?? $product->selling_price;
+            foreach ($cartItems as $item) {
 
-            $unitPrice = $itemsCollection->firstWhere('id', $item->id)['price'];
+                $variant = $item->variant;
+                $product = $variant->product ?? $item->product;
 
-            $itemDiscount = $itemPrice > $unitPrice ? ($itemPrice - $unitPrice) : 0;
-            $itemDiscount = $itemDiscount * $item->quantity;
-            $discount += $itemDiscount;
+                $itemPrice = $variant->selling_price ?? $product->selling_price;
 
-            $itemTotal = $item->quantity * $unitPrice;
-            $itemSubtotal = $item->quantity * $itemPrice;
+                $unitPrice = $itemsCollection->firstWhere('id', $item->id)['price'] ?? $itemPrice;
 
-            $sub_total += $itemPrice * $item->quantity;
+                $itemDiscount = $itemPrice > $unitPrice ? ($itemPrice - $unitPrice) : 0;
+                $itemDiscount = $itemDiscount * $item->quantity;
+                $discount += $itemDiscount;
 
-            $orderItems[] = [
-                'product_id' => $product->id,
-                'product_variant_id' => $variant->id ?? null,
-                'sku' => $variant->sku ?? $product->sku,
-                'product_name' => $product->name,
-                'variant_name' => $variant->fullName ?? null,
-                'buying_price' => $variant->buying_price ?? $product->buying_price,
-                'selling_price' => $itemPrice,
-                'unit_price' => $unitPrice,
-                'quantity' => $item->quantity,
-                'discount' => $itemDiscount,
-                'sub_total' => $itemSubtotal,
-                'total' => $itemTotal,
-            ];
-        }
+                $itemTotal = $item->quantity * $unitPrice;
+                $itemSubtotal = $item->quantity * $itemPrice;
 
-        if (empty($orderItems)) {
-            return errorResponse('No items found in the cart!');
-        }
+                $sub_total += $itemPrice * $item->quantity;
 
-        $total = $sub_total - ($discount + $data['discount']);
-        $payableAmount = $total;
+                $orderItems[] = [
+                    'product_id' => $product->id,
+                    'product_variant_id' => $variant->id ?? null,
+                    'sku' => $variant->sku ?? $product->sku,
+                    'product_name' => $product->name,
+                    'variant_name' => $variant->fullName ?? null,
+                    'buying_price' => $variant->buying_price ?? $product->buying_price,
+                    'selling_price' => $itemPrice,
+                    'unit_price' => $unitPrice,
+                    'quantity' => $item->quantity,
+                    'discount' => $itemDiscount,
+                    'sub_total' => $itemSubtotal,
+                    'total' => $itemTotal,
+                ];
+            }
 
-        $commissionData = $seller->calculateEarning($payableAmount);
+            if (empty($orderItems)) {
+                throw new RuntimeException('No items found in the cart!');
+            }
 
-        $total_commission = $commissionData['total_commission'];
-        $sellerEarning = $commissionData['seller_earning'];
+            $total = $sub_total - ($discount + $data['discount']);
+            $payableAmount = $total;
 
-        $invoiceId = Order::generateInvoiceID($seller->id, Order::ORDER_TYPE_POS);
+            $commissionData = $seller->calculateEarning($payableAmount);
 
-        $orderData = [
-            'seller_id' => $seller->id,
-            'seller_employee_id' => $data['employee_id'] ?? null,
-            'invoice_id' => $invoiceId,
-            'sub_total' => $sub_total,
-            'discount' => $data['discount'] + $discount,
-            'additional_discount' => $data['discount'],
-            'total' => $total,
-            'payable' => $payableAmount,
-            'paid' => $data['paid'],
-            'due' => $data['due'],
-            'cash_received' => $data['cash_received'],
-            'cash_returned' => $data['cash_returned'],
-            'commission_type' => $seller->commission_type,
-            'commission_amount' => $seller->commission_amount,
-            'seller_earnings' => $sellerEarning,
-            'total_commission' => $total_commission,
-            'status' => OrderStatus::PENDING->value,
-        ];
+            $invoiceId = Order::generateInvoiceID($seller->id, Order::ORDER_TYPE_POS);
 
-        $order = Order::create($orderData);
+            $order = $this->orderRepo->create([
+                'seller_id' => $seller->id,
+                'seller_employee_id' => $data['employee_id'] ?? null,
+                'invoice_id' => $invoiceId,
+                'sub_total' => $sub_total,
+                'discount' => $data['discount'] + $discount,
+                'additional_discount' => $data['discount'],
+                'total' => $total,
+                'payable' => $payableAmount,
+                'paid' => $data['paid'],
+                'due' => $data['due'],
+                'cash_received' => $data['cash_received'],
+                'cash_returned' => $data['cash_returned'],
+                'commission_type' => $seller->commission_type,
+                'commission_amount' => $seller->commission_amount,
+                'seller_earnings' => $commissionData['seller_earning'],
+                'total_commission' => $commissionData['total_commission'],
+                'status' => OrderStatus::PENDING->value,
+            ]);
 
-        $order->items()->createMany($orderItems);
+            $this->orderRepo->createOrderItems($order, $orderItems);
 
-        $updatedVariants = [];
+            $cart->update(['order_id' => $order->id]);
 
-        $updatedVariants = [];
+            $variantIds = $order->items->pluck('product_variant_id')->filter()->unique();
+            $productIds = $order->items->pluck('product_id')->filter()->unique();
 
-        foreach ($order->items as $item) {
-            if (! empty($item->product_variant_id)) {
+            $variants = ProductVariant::whereIn('id', $variantIds)->get()->keyBy('id');
+            $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
 
-                $variant = ProductVariant::find($item->product_variant_id);
+            $updatedVariants = [];
 
-                if ($variant) {
+            foreach ($order->items as $item) {
+                if (! empty($item->product_variant_id) && $variant = $variants->get($item->product_variant_id)) {
                     $variant->increment('stock_out', $item->quantity);
                     $variant->product->increment('stock_out', $item->quantity);
 
@@ -533,69 +540,58 @@ class PosController extends Controller
                         'id' => $variant->id,
                         'availableStock' => $variant->availableStock,
                     ];
+                } elseif ($product = $products->get($item->product_id)) {
+                    $product->increment('stock_out', $item->quantity);
+
+                    $updatedVariants[] = [
+                        'id' => $product->id,
+                        'availableStock' => $product->availableStock ?? null,
+                    ];
+                }
+            }
+
+            $cart->items()->delete();
+            $cart->delete();
+
+            $sellerOrderCount = OrderItem::whereIn(
+                'order_id',
+                Order::where('seller_id', $seller->id)->pluck('id')
+            )->count();
+
+            $seller->update(['total_sold' => $sellerOrderCount]);
+
+            $this->orderRepo->update($order, ['status' => OrderStatus::COMPLETED->value]);
+            $order->addSellerEarningToBalance();
+
+            if (! empty($data['customer_name']) || ! empty($data['customer_phone'])) {
+                $customer = Customer::firstOrCreate(
+                    [
+                        'name' => $data['customer_name'] ?? null,
+                        'phone' => $data['customer_phone'] ?? null,
+                        'seller_id' => $seller->id,
+                    ],
+                    [
+                        'name' => $data['customer_name'] ?? null,
+                        'phone' => $data['customer_phone'] ?? null,
+                        'seller_id' => $seller->id,
+                    ]
+                );
+
+                if ($customer->phone && is_valid_number($customer->phone)) {
+                    $smsText = "Thank you for your purchase from {$seller->business_name}. We hope to see you again soon! Visit: www.slash-mart.com";
+                    send_sms($smsText, format_bd_phone($customer->phone));
                 }
 
-                continue;
-            }
-
-            $product = Product::find($item->product_id);
-
-            if ($product) {
-
-                $product->increment('stock_out', $item->quantity);
-
-                $updatedVariants[] = [
-                    'id' => $product->id,
-                    'availableStock' => $product->availableStock ?? null,
-                ];
-            }
-        }
-
-        $cart->items()->delete();
-        $cart->delete();
-
-        $sellerOrderIds = Order::where('seller_id', $seller->id)->pluck('id');
-        $sellerOrderCount = OrderItem::whereIn('order_id', $sellerOrderIds)->count();
-
-        $seller->update(['total_sold' => $sellerOrderCount]);
-
-        $order->update(['status' => OrderStatus::COMPLETED->value]);
-        $order->addSellerEarningToBalance();
-
-        if (! empty($data['customer_name']) || ! empty($data['customer_phone'])) {
-
-            $exist_customer = Customer::where('name', $data['customer_name'] ?? null)
-                ->where('phone', $data['customer_phone'] ?? null)
-                ->first();
-
-            if (! $exist_customer) {
-                $customer = Customer::create([
-                    'name' => $data['customer_name'] ?? null,
-                    'phone' => $data['customer_phone'] ?? null,
-                    'seller_id' => $seller->id,
-                ]);
+                $this->orderRepo->update($order, ['customer_id' => $customer->id]);
             } else {
-                $customer = $exist_customer;
+                $this->orderRepo->update($order, ['customer_id' => null]);
             }
 
-            if ($customer->phone && is_valid_number($customer->phone)) {
-                $smsText = "Thank you for your purchase from {$seller->business_name}. We hope to see you again soon! Visit: www.slash-mart.com";
-                send_sms($smsText, format_bd_phone($customer->phone));
-            }
-
-            $order->update([
-                'customer_id' => $customer->id,
-            ]);
-        } else {
-            $order->update([
-                'customer_id' => null,
-            ]);
-        }
-
-        return apiResponse([
-            'invoice_id' => $order->invoice_id,
-            'variants' => $updatedVariants,
-        ], 'Order Placed Successfully');
+            return apiResponse([
+                'invoice_id' => $order->invoice_id,
+                'variants' => $updatedVariants,
+            ], 'Order Placed Successfully');
+        });
     }
 
     public function saveDraft(Request $request)

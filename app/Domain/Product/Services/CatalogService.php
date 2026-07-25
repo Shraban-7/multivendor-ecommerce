@@ -99,25 +99,29 @@ class CatalogService
 
     public function byCategory(Category $category, int $perPage = 24): LengthAwarePaginator
     {
-        $categoryIds = [$category->id];
+        return Cache::remember('products.category.'.$category->id.'.page.'.request('page', 1), 120, function () use ($category, $perPage) {
+            $categoryIds = [$category->id];
 
-        if ($category->subcategories()->exists()) {
-            $categoryIds = array_merge(
-                $categoryIds,
-                $category->subcategories()->pluck('id')->toArray()
-            );
-        }
+            if ($category->subcategories()->exists()) {
+                $categoryIds = array_merge(
+                    $categoryIds,
+                    $category->subcategories()->pluck('id')->toArray()
+                );
+            }
 
-        return Product::active()
-            ->whereIn('category_id', $categoryIds)
-            ->with(['brand', 'images', 'variants.option_values'])
-            ->latest('id')
-            ->paginate($perPage);
+            return Product::active()
+                ->whereIn('category_id', $categoryIds)
+                ->with(['brand', 'images', 'variants.option_values'])
+                ->latest('id')
+                ->paginate($perPage);
+        });
     }
 
     public function activeFlashSale(): ?FlashSale
     {
-        return $this->flashSaleRepo->getActive();
+        return Cache::remember('flash_sale.active', 60, function () {
+            return $this->flashSaleRepo->getActive();
+        });
     }
 
     public function recordView(Product $product): void
