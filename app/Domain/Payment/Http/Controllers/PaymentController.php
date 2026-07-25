@@ -91,14 +91,7 @@ class PaymentController extends Controller
 
     public function success(Request $request)
     {
-        $invoiceId = $request->input('invoice_id') ?? $request->input('order_id');
-        $order = null;
-
-        if ($request->has('payment_id')) {
-            $order = Order::where('payment_id', $request->payment_id)->first();
-        } elseif ($invoiceId) {
-            $order = $this->orderRepo->findByInvoiceId($invoiceId);
-        }
+        $order = $this->resolveOrderFromCallback($request);
 
         if (! $order) {
             Log::error('Order not found for success callback', $request->all());
@@ -106,23 +99,20 @@ class PaymentController extends Controller
             return view('errors.404');
         }
 
+        if ($request->input('pay_status') === 'Successful') {
+            $this->recordSuccessfulPayment($order, $request);
+        }
+
         if ($order->user_id) {
             Auth::loginUsingId($order->user_id);
         }
 
-        return view('payment.success', compact('order'));
+        return view('payment.success', ['order' => $order->fresh()]);
     }
 
     public function cancelled(Request $request)
     {
-        $invoiceId = $request->input('invoice_id') ?? $request->input('order_id');
-        $order = null;
-
-        if ($request->has('payment_id')) {
-            $order = Order::where('payment_id', $request->payment_id)->first();
-        } elseif ($invoiceId) {
-            $order = $this->orderRepo->findByInvoiceId($invoiceId);
-        }
+        $order = $this->resolveOrderFromCallback($request);
 
         if (! $order) {
             Log::error('Order not found for cancelled callback', $request->all());
@@ -130,7 +120,9 @@ class PaymentController extends Controller
             return view('errors.404');
         }
 
-        $this->orderRepo->update($order, ['payment_status' => 'Cancelled']);
+        if ($order->payment_status !== 'Paid') {
+            $this->orderRepo->update($order, ['payment_status' => 'Cancelled']);
+        }
 
         if ($order->user_id) {
             Auth::loginUsingId($order->user_id);
@@ -141,14 +133,7 @@ class PaymentController extends Controller
 
     public function failed(Request $request)
     {
-        $invoiceId = $request->input('invoice_id') ?? $request->input('order_id');
-        $order = null;
-
-        if ($request->has('payment_id')) {
-            $order = Order::where('payment_id', $request->payment_id)->first();
-        } elseif ($invoiceId) {
-            $order = $this->orderRepo->findByInvoiceId($invoiceId);
-        }
+        $order = $this->resolveOrderFromCallback($request);
 
         if (! $order) {
             Log::error('Order not found for failed callback', $request->all());
@@ -156,12 +141,90 @@ class PaymentController extends Controller
             return view('errors.404');
         }
 
-        $this->orderRepo->update($order, ['payment_status' => 'Failed']);
+        if ($order->payment_status !== 'Paid') {
+            $this->orderRepo->update($order, ['payment_status' => 'Failed']);
+        }
 
         if ($order->user_id) {
             Auth::loginUsingId($order->user_id);
         }
 
         return view('payment.failed');
+    }
+
+    /**
+     * Aamarpay posts the merchant invoice back as mer_txnid; older gateways used
+     * invoice_id/order_id/payment_id. Try all of them.
+     */
+    private function resolveOrderFromCallback(Request $request): ?Order
+    {
+        $invoiceId = $request->input('mer_txnid')
+            ?? $request->input('invoice_id')
+            ?? $request->input('order_id')
+            ?? $request->input('tran_id');
+
+        if ($invoiceId) {
+            $order = $this->orderRepo->findByInvoiceId($invoiceId);
+            if ($order) {
+                return $order;
+            }
+        }
+
+        if ($request->filled('payment_id')) {
+            return Order::where('payment_id', $request->input('payment_id'))->first();
+        }
+
+        return null;
+    }
+
+    private function recordSuccessfulPayment(Order $order, Request $request): void
+    {
+        $gatewayAmount = (float) $request->input('amount', 0);
+        $expectedAmount = (float) ($order->due > 0 ? $order->due : $order->payable);
+
+        if ($gatewayAmount > 0 && abs($gatewayAmount - $expectedAmount) > 0.01) {
+            Log::error('Success callback amount mismatch', [
+                'invoice_id' => $order->invoice_id,
+                'expected' => $expectedAmount,
+                'received' => $gatewayAmount,
+            ]);
+
+            return;
+        }
+
+        $payment = $this->paymentRepo->findByTransactionId($order->invoice_id);
+
+        if ($payment && $payment->status === Payment::SUCCESSFUL) {
+            return;
+        }
+
+        $paymentData = [
+            'status' => Payment::SUCCESSFUL,
+            'gateway_trxid' => $request->input('pg_txnid'),
+            'payment_method' => $request->input('card_type'),
+        ];
+
+        if ($payment) {
+            $this->paymentRepo->update($payment, $paymentData);
+        } else {
+            $payment = $this->paymentRepo->create($paymentData + [
+                'transaction_id' => $order->invoice_id,
+                'user_id' => $order->user_id,
+                'gateway' => 'aamarpay',
+                'amount' => $expectedAmount,
+                'currency' => 'BDT',
+            ]);
+        }
+
+        $this->orderRepo->update($order, [
+            'payment_id' => $payment->id,
+            'payment_status' => 'Paid',
+            'payment_method_name' => $request->input('card_type', 'aamarpay'),
+            'paid' => $expectedAmount,
+            'due' => 0,
+            'paid_at' => now(),
+        ]);
+
+        Log::info('Payment recorded from success callback', ['invoice_id' => $order->invoice_id]);
     }
 }
