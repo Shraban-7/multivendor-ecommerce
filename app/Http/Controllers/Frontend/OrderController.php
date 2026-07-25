@@ -203,7 +203,7 @@ class OrderController extends Controller
             return back()->with('success', 'This order is already paid.');
         }
 
-        $paymentGateway = $this->orderService->initiateAamarpayGateway(
+        $paymentGateway = $this->orderService->initiatePaymentGateway(
             $order->user,
             $order->invoice_id,
             $order->due,

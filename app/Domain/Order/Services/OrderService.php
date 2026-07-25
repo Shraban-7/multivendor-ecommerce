@@ -9,8 +9,6 @@ use App\Domain\Order\Models\OrderItem;
 use App\Domain\Order\Repositories\Contracts\OrderRepositoryInterface;
 use App\Domain\Payment\Models\Payment;
 use App\Domain\Payment\Repositories\Contracts\PaymentRepositoryInterface;
-use App\Domain\Product\Models\Product;
-use App\Domain\Product\Models\ProductVariant;
 use App\Domain\Review\Models\Review;
 use App\Domain\Review\Models\ReviewImage;
 use App\Domain\Vendor\Models\Seller;
@@ -18,7 +16,6 @@ use App\Enums\OrderStatus;
 use App\Enums\PaymentType;
 use App\Services\AamarpayService;
 use App\Services\AffiliateService;
-use App\Services\BkashService;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -292,64 +289,6 @@ class OrderService
     public function initiatePaymentGateway(User $user, string $invoiceId, float $amount, string $customerName, string $customerPhone): array
     {
         $payment = $this->paymentRepo->findByTransactionId($invoiceId);
-
-        if (! $payment) {
-            $payment = $this->paymentRepo->create([
-                'gateway' => 'aamarpay',
-                'transaction_id' => $invoiceId,
-                'status' => Payment::PENDING,
-                'amount' => $amount,
-                'currency' => 'BDT',
-                'customer_name' => $customerName,
-                'customer_email' => $customerPhone,
-                'customer_phone' => $user->email,
-            ]);
-        }
-
-        if ($payment->status == Payment::SUCCESSFUL) {
-            return ['message' => 'This payment is already complete!', 'payment_url' => null];
-        }
-
-        if ($payment->status == Payment::FAILED) {
-            $this->paymentRepo->update($payment, ['status' => Payment::PENDING]);
-        }
-
-        try {
-            $aamarpay = new AamarpayService;
-            $response = $aamarpay->initiate([
-                'tran_id' => $invoiceId,
-                'success_url' => route('payment.success'),
-                'fail_url' => route('payment.cancel'),
-                'cancel_url' => route('payment.cancel'),
-                'amount' => $amount,
-                'desc' => 'order Payment',
-                'cus_name' => $customerName,
-                'cus_email' => $user->email,
-                'cus_add1' => '',
-                'cus_add2' => '',
-                'cus_city' => '',
-                'cus_state' => '',
-                'cus_postcode' => '',
-                'cus_country' => 'Bangladesh',
-                'cus_phone' => $customerPhone,
-                'opt_a' => base64_encode(json_encode([
-                    'user_id' => $user->id,
-                    'return_url' => route('orders.index'),
-                ])),
-            ]);
-
-            if (isset($response['payment_url'])) {
-                return ['message' => 'Redirecting to payment gateway', 'payment_url' => $response['payment_url']];
-            }
-            return ['message' => 'Payment URL not received.', 'payment_url' => null];
-        } catch (Exception $e) {
-            return ['message' => $e->getMessage(), 'payment_url' => null];
-        }
-    }
-
-    public function initiateAamarpayGateway(User $user, string $invoiceId, float $amount, string $customerName, string $customerPhone): array
-    {
-        $payment = $this->paymentRepo->findByTransactionId($invoiceId);
         $order = $this->orderRepo->findByInvoiceId($invoiceId);
 
         if (! $payment) {
@@ -380,12 +319,12 @@ class OrderService
             $response = $aamarpay->initiate([
                 'tran_id' => $invoiceId,
                 'success_url' => route('payment.success'),
-                'fail_url' => route('payment.cancel'),
-                'cancel_url' => route('payment.cancel'),
+                'fail_url' => route('payment.cancelled'),
+                'cancel_url' => route('payment.cancelled'),
                 'amount' => $amount,
-                'desc' => 'Test Payment',
+                'desc' => 'order Payment',
                 'cus_name' => $customerName,
-                'cus_email' => 'user@gmail.com',
+                'cus_email' => $user->email,
                 'cus_add1' => '',
                 'cus_add2' => '',
                 'cus_city' => '',
@@ -404,49 +343,6 @@ class OrderService
             }
             return ['message' => 'Payment URL not received.', 'payment_url' => null];
         } catch (Exception $e) {
-            return ['message' => $e->getMessage(), 'payment_url' => null];
-        }
-    }
-
-    public function initiateBkashGateway(User $user, string $invoiceId, float $amount, string $customerName, string $customerPhone): array
-    {
-        $payment = $this->paymentRepo->findByTransactionId($invoiceId);
-        $order = $this->orderRepo->findByInvoiceId($invoiceId);
-
-        if (! $payment) {
-            $payment = $this->paymentRepo->create([
-                'user_id' => $user->id,
-                'gateway' => 'bkash',
-                'transaction_id' => $invoiceId,
-                'status' => Payment::PENDING,
-                'amount' => $amount,
-                'currency' => 'BDT',
-                'customer_name' => $customerName,
-                'customer_email' => $user->email,
-                'customer_phone' => $customerPhone,
-            ]);
-        }
-
-        if ($payment->status === Payment::SUCCESSFUL) {
-            return ['message' => 'Payment already completed.', 'payment_url' => null];
-        }
-
-        if ($payment->status === Payment::FAILED && $order) {
-            $this->orderRepo->update($order, ['paid' => 0, 'due' => $amount]);
-            $this->paymentRepo->update($payment, ['status' => Payment::PENDING]);
-        }
-
-        try {
-            $bkash = app(BkashService::class);
-            $response = $bkash->createPayment($amount, $invoiceId);
-
-            if (! isset($response['bkashURL'])) {
-                throw new Exception('bKash payment URL not found');
-            }
-
-            return ['message' => 'Redirecting to bKash', 'payment_url' => $response['bkashURL']];
-        } catch (Exception $e) {
-            Log::error('bKash Init Error', ['invoice' => $invoiceId, 'error' => $e->getMessage()]);
             return ['message' => $e->getMessage(), 'payment_url' => null];
         }
     }

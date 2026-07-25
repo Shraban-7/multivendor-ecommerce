@@ -154,8 +154,8 @@ class OrderController extends Controller
             'message' => $paymentGateway['message'],
             'payment_url' => $paymentGateway['payment_url'],
             'success_url' => route('payment.success'),
-            'fail_url' => route('payment.cancel'),
-            'cancel_url' => route('payment.cancel'),
+            'fail_url' => route('payment.cancelled'),
+            'cancel_url' => route('payment.cancelled'),
         ]);
     }
 
@@ -231,8 +231,8 @@ class OrderController extends Controller
             'message' => $paymentGateway['message'],
             'payment_url' => $paymentGateway['payment_url'],
             'success_url' => route('payment.success'),
-            'fail_url' => route('payment.cancel'),
-            'cancel_url' => route('payment.cancel'),
+            'fail_url' => route('payment.cancelled'),
+            'cancel_url' => route('payment.cancelled'),
         ]);
     }
 }

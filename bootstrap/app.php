@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Middleware\AamarpayMiddleware;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\AffiliateReferralMiddleware;
 use App\Http\Middleware\AutoMarkNotificationsAsRead;
@@ -56,7 +55,6 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'seller' => SellerMiddleware::class,
             'admin' => AdminMiddleware::class,
-            'aamarpay' => AamarpayMiddleware::class,
             'markReadAuto' => AutoMarkNotificationsAsRead::class,
             'subscription.feature' => CheckSubscriptionFeature::class,
         ]);
