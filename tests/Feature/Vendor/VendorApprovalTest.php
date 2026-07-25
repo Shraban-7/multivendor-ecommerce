@@ -24,21 +24,22 @@ it('ApproveVendorAction is resolvable from the container', function (): void {
 
 it('ApproveVendorAction::execute merges ACTIVE status into the data array', function (): void {
     $seller = Mockery::mock(Seller::class)->makePartial();
+    $seller->id = 1;
     $seller->status = Seller::PENDING;
 
     $capturedData = null;
-    $seller->shouldReceive('update')
+    $repo = Mockery::mock(\App\Domain\Vendor\Repositories\SellerRepositoryInterface::class);
+    $repo->shouldReceive('update')
         ->once()
-        ->withArgs(function ($data) use (&$capturedData) {
+        ->withArgs(function ($s, $data) use (&$capturedData) {
             $capturedData = $data;
 
             return true;
         })
         ->andReturn(true);
+    $repo->shouldReceive('findById')->with(1)->andReturn($seller);
 
-    $seller->shouldReceive('fresh')->andReturn($seller);
-
-    $action = new ApproveVendorAction;
+    $action = new ApproveVendorAction($repo);
     $action->execute($seller, [
         'commission_type' => 'percentage',
         'commission_amount' => 10.0,
@@ -51,20 +52,21 @@ it('ApproveVendorAction::execute merges ACTIVE status into the data array', func
 
 it('ApproveVendorAction always forces status=ACTIVE regardless of caller input', function (): void {
     $seller = Mockery::mock(Seller::class)->makePartial();
+    $seller->id = 1;
 
     $capturedData = null;
-    $seller->shouldReceive('update')
+    $repo = Mockery::mock(\App\Domain\Vendor\Repositories\SellerRepositoryInterface::class);
+    $repo->shouldReceive('update')
         ->once()
-        ->withArgs(function ($data) use (&$capturedData) {
+        ->withArgs(function ($s, $data) use (&$capturedData) {
             $capturedData = $data;
 
             return true;
         })
         ->andReturn(true);
+    $repo->shouldReceive('findById')->with(1)->andReturn($seller);
 
-    $seller->shouldReceive('fresh')->andReturn($seller);
-
-    $action = new ApproveVendorAction;
+    $action = new ApproveVendorAction($repo);
     $action->execute($seller, ['status' => Seller::PENDING]); // caller tries PENDING
 
     expect($capturedData['status'])->toBe(Seller::ACTIVE);

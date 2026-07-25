@@ -9,6 +9,7 @@ use App\Domain\Vendor\Actions\ApproveVendorAction;
 use App\Domain\Vendor\Actions\RegisterVendorAction;
 use App\Domain\Vendor\Models\Seller;
 use App\Domain\Vendor\Models\SubscriptionPlan;
+use App\Domain\Vendor\Repositories\SellerRepositoryInterface;
 use App\Domain\Vendor\Services\VendorService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -21,18 +22,19 @@ class SellerController extends Controller
         private readonly VendorService $vendorService,
         private readonly RegisterVendorAction $registerAction,
         private readonly ApproveVendorAction $approveAction,
+        private readonly SellerRepositoryInterface $sellerRepo,
     ) {}
 
     public function index()
     {
-        $sellers = Seller::with('plan')->latest('id')->paginate(30);
+        $sellers = $this->sellerRepo->getPaginated()->appends(request()->query());
 
         return view('admin.sellers.index', compact('sellers'));
     }
 
     public function pending()
     {
-        $sellers = Seller::pending()->latest('id')->paginate(30);
+        $sellers = $this->sellerRepo->getPendingPaginated()->appends(request()->query());
 
         return view('admin.sellers.pending', compact('sellers'));
     }
@@ -147,7 +149,7 @@ class SellerController extends Controller
             }
         }
 
-        $seller->update($data);
+        $this->sellerRepo->update($seller, $data);
 
         return apiResponse(['redirect' => route('admin.sellers.edit', $seller->username)], 'Seller updated successfully');
     }

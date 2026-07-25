@@ -3,14 +3,19 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Domain\Product\Models\Category;
+use App\Domain\Product\Repositories\Contracts\CategoryRepositoryInterface;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
+    public function __construct(
+        private readonly CategoryRepositoryInterface $categoryRepo,
+    ) {}
+
     public function index()
     {
-        $categories = Category::category()->with('subcategories')->orderBy('name')->get();
+        $categories = $this->categoryRepo->getAllWithSubcategories();
 
         return view('admin.categories.index', compact('categories'));
     }
@@ -39,7 +44,7 @@ class CategoryController extends Controller
 
         $data['image'] = $imagePath;
 
-        Category::create($data);
+        $this->categoryRepo->store($data);
 
         return redirect()->route('admin.categories.index')->with('success', 'Category Added Successfully');
     }
@@ -70,15 +75,14 @@ class CategoryController extends Controller
             $data['image'] = upload_file($request->file('image'), 'images/categories');
         }
 
-        $category->update($data);
+        $this->categoryRepo->update($category, $data);
 
         return redirect()->route('admin.categories.index')->with('success', 'Category Updated Successfully');
     }
 
     public function toggleStatus(Category $category)
     {
-        $category->status = ! $category->status;
-        $category->save();
+        $this->categoryRepo->update($category, ['status' => !$category->status]);
 
         return redirect()->route('admin.categories.index')->with('success', 'Category Status Updated Successfully');
     }

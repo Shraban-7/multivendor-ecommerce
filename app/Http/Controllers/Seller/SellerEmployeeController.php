@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Seller;
 
-use App\Domain\Vendor\Models\Seller;
 use App\Domain\Vendor\Models\SellerEmployee;
+use App\Domain\Vendor\Repositories\SellerEmployeeRepositoryInterface;
+use App\Domain\Vendor\Repositories\SellerRepositoryInterface;
 use App\Domain\Vendor\Services\VendorService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -12,11 +13,15 @@ use Illuminate\Support\Facades\Hash;
 
 class SellerEmployeeController extends Controller
 {
-    public function __construct(private readonly VendorService $vendorService) {}
+    public function __construct(
+        private readonly VendorService $vendorService,
+        private readonly SellerRepositoryInterface $sellerRepo,
+        private readonly SellerEmployeeRepositoryInterface $employeeRepo,
+    ) {}
 
     public function index()
     {
-        $employees = SellerEmployee::where('seller_id', get_seller_id())->get();
+        $employees = $this->employeeRepo->getEmployeesForSeller(get_seller_id());
         $permissions = get_seller_routes();
 
         return view('seller.employees.index', compact('employees', 'permissions'));
@@ -36,7 +41,7 @@ class SellerEmployeeController extends Controller
             'password' => 'required|string|min:5|confirmed',
         ]);
 
-        $seller = Seller::findOrFail(get_seller_id());
+        $seller = $this->sellerRepo->findById(get_seller_id());
         $this->vendorService->createEmployee($seller, $data);
 
         return redirect()->route('seller.employees.index')->with('success', 'Employee Create Successfully');
@@ -44,14 +49,22 @@ class SellerEmployeeController extends Controller
 
     public function edit($id)
     {
-        $employee = SellerEmployee::where('seller_id', get_seller_id())->findOrFail($id);
+        $employee = $this->employeeRepo->findById($id);
+
+        if (! $employee || $employee->seller_id !== get_seller_id()) {
+            abort(404);
+        }
 
         return view('seller.employees.edit', compact('employee'));
     }
 
     public function update(Request $request, $id)
     {
-        $employee = SellerEmployee::where('seller_id', get_seller_id())->findOrFail($id);
+        $employee = $this->employeeRepo->findById($id);
+
+        if (! $employee || $employee->seller_id !== get_seller_id()) {
+            abort(404);
+        }
 
         $data = $request->validate([
             'name' => 'required|string|max:255',
@@ -67,14 +80,18 @@ class SellerEmployeeController extends Controller
             unset($data['password']);
         }
 
-        $employee->update($data);
+        $this->employeeRepo->update($employee, $data);
 
         return redirect()->route('seller.employees.index')->with('success', 'Employee Updated Successfully');
     }
 
     public function toggleActive($id)
     {
-        $employee = SellerEmployee::where('seller_id', seller()->id)->findOrFail($id);
+        $employee = $this->employeeRepo->findById($id);
+
+        if (! $employee || $employee->seller_id !== seller()->id) {
+            abort(404);
+        }
 
         $this->vendorService->toggleEmployeeActive($employee);
 
@@ -116,7 +133,7 @@ class SellerEmployeeController extends Controller
             unset($data['password']);
         }
 
-        $employee->update($data);
+        $this->employeeRepo->update($employee, $data);
 
         return redirect()->back()->with('success', 'Profile updated successfully!');
     }
@@ -131,7 +148,8 @@ class SellerEmployeeController extends Controller
             ? Carbon::parse($request->end_date)->endOfDay()
             : Carbon::now()->endOfMonth();
 
-        $employees = SellerEmployee::active()->where('seller_id', get_seller_id())
+        $employees = SellerEmployee::active()
+            ->where('seller_id', get_seller_id())
             ->withSum(['orders as total_sales' => function ($query) use ($startDate, $endDate) {
                 $query->whereBetween('created_at', [$startDate, $endDate]);
             }], 'total')

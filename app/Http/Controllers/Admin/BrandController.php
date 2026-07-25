@@ -3,14 +3,19 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Domain\Product\Models\Brand;
+use App\Domain\Product\Repositories\Contracts\BrandRepositoryInterface;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class BrandController extends Controller
 {
+    public function __construct(
+        private readonly BrandRepositoryInterface $brandRepo,
+    ) {}
+
     public function index()
     {
-        $brands = Brand::latest()->paginate(10);
+        $brands = $this->brandRepo->getPaginated();
 
         return view('admin.brands.index', compact('brands'));
     }
@@ -31,7 +36,7 @@ class BrandController extends Controller
 
         $data['image'] = $imagePath;
 
-        Brand::create($data);
+        $this->brandRepo->store($data);
 
         return redirect()->back()->with('success', 'Brand Added Successfully');
     }
@@ -53,15 +58,14 @@ class BrandController extends Controller
             $data['image'] = upload_file($request->file('image'), 'images/brands');
         }
 
-        $brand->update($data);
+        $this->brandRepo->update($brand, $data);
 
         return redirect()->back()->with('success', 'Brand Updated Successfully');
     }
 
     public function toggleStatus(Brand $brand)
     {
-        $brand->status = ! $brand->status;
-        $brand->save();
+        $this->brandRepo->update($brand, ['status' => !$brand->status]);
 
         return redirect()->back()->with('success', 'Brand Status Updated Successfully');
     }

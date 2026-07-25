@@ -4,58 +4,47 @@ namespace App\Domain\Vendor\Services;
 
 use App\Domain\Vendor\Models\Seller;
 use App\Domain\Vendor\Models\SellerEmployee;
+use App\Domain\Vendor\Repositories\SellerEmployeeRepositoryInterface;
+use App\Domain\Vendor\Repositories\SellerRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class VendorService
 {
-    /**
-     * Create a new vendor account (pending approval).
-     */
+    public function __construct(
+        private readonly SellerRepositoryInterface $sellerRepo,
+        private readonly SellerEmployeeRepositoryInterface $employeeRepo,
+    ) {}
+
     public function register(array $data): Seller
     {
         $data['username'] = str_slug('sellers', 'username', $data['name']);
         $data['code'] = Seller::generateSellerCode($data['name']);
         $data['status'] = Seller::PENDING;
 
-        return Seller::create($data);
+        return $this->sellerRepo->store($data);
     }
 
-    /**
-     * Approve a vendor and set commission details.
-     */
     public function approve(Seller $seller, array $data): void
     {
-        $seller->update(array_merge($data, ['status' => Seller::ACTIVE]));
+        $this->sellerRepo->update($seller, array_merge($data, ['status' => Seller::ACTIVE]));
     }
 
-    /**
-     * Toggle the vendor block/active status.
-     */
     public function setStatus(Seller $seller, int $status): void
     {
-        $seller->update(['status' => $status]);
+        $this->sellerRepo->setStatus($seller, $status);
     }
 
-    /**
-     * Soft-delete a vendor (mark as deleted).
-     */
     public function softDelete(Seller $seller): void
     {
-        $seller->update(['status' => Seller::DELETED]);
+        $this->sellerRepo->softDelete($seller);
     }
 
-    /**
-     * Restore a soft-deleted vendor to active.
-     */
     public function restore(Seller $seller): void
     {
-        $seller->update(['status' => Seller::ACTIVE]);
+        $this->sellerRepo->restore($seller);
     }
 
-    /**
-     * Permanently delete a vendor and all related data.
-     */
     public function permanentDelete(Seller $seller): void
     {
         DB::transaction(function () use ($seller) {
@@ -68,13 +57,11 @@ class VendorService
             $seller->chats()->delete();
             $seller->expenses()->delete();
             $seller->seller_expense_categories()->delete();
-            $seller->forceDelete();
+
+            $this->sellerRepo->permanentDelete($seller);
         });
     }
 
-    /**
-     * Update vendor personal, business, or document profile section.
-     */
     public function updateProfile(Seller $seller, string $section, array $data): void
     {
         $usernameForPath = $seller->username;
@@ -123,40 +110,28 @@ class VendorService
             unset($data['current_password'], $data['password_confirmation']);
         }
 
-        $seller->update($data);
+        $this->sellerRepo->update($seller, $data);
     }
 
-    /**
-     * Create an employee for a seller.
-     */
     public function createEmployee(Seller $seller, array $data): SellerEmployee
     {
         $data['seller_id'] = $seller->id;
 
-        return SellerEmployee::create($data);
+        return $this->employeeRepo->store($data);
     }
 
-    /**
-     * Update employee permissions.
-     */
     public function setEmployeePermissions(SellerEmployee $employee, array $permissions): void
     {
-        $employee->update(['permissions' => $permissions]);
+        $this->employeeRepo->setPermissions($employee, $permissions);
     }
 
-    /**
-     * Toggle employee active status.
-     */
     public function toggleEmployeeActive(SellerEmployee $employee): void
     {
-        $employee->update(['is_active' => ! $employee->is_active]);
+        $this->employeeRepo->toggleActive($employee);
     }
 
-    /**
-     * Toggle best-seller flag for a vendor.
-     */
     public function setBestSeller(Seller $seller, bool $isBestSeller): void
     {
-        $seller->update(['is_best_seller' => $isBestSeller]);
+        $this->sellerRepo->setBestSeller($seller, $isBestSeller);
     }
 }

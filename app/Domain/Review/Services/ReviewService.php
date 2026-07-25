@@ -3,18 +3,19 @@
 namespace App\Domain\Review\Services;
 
 use App\Domain\Review\Models\Review;
+use App\Domain\Review\Repositories\Contracts\ReviewRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 
 class ReviewService
 {
-    /**
-     * @param  array<string, mixed>  $data
-     * @param  array<int, string>  $imagePaths
-     */
+    public function __construct(
+        private readonly ReviewRepositoryInterface $reviewRepo,
+    ) {}
+
     public function createReview(array $data, array $imagePaths = []): Review
     {
         return DB::transaction(function () use ($data, $imagePaths) {
-            $review = Review::create($data);
+            $review = $this->reviewRepo->store($data);
 
             foreach ($imagePaths as $path) {
                 $review->images()->create(['image' => $path]);
@@ -26,6 +27,6 @@ class ReviewService
 
     public function averageRating(int $productId): float
     {
-        return round((float) Review::where('product_id', $productId)->avg('rating'), 2);
+        return $this->reviewRepo->averageRating($productId);
     }
 }

@@ -5,6 +5,9 @@ namespace App\Domain\Product\Services;
 use App\Domain\Product\Models\Category;
 use App\Domain\Product\Models\FlashSale;
 use App\Domain\Product\Models\Product;
+use App\Domain\Product\Repositories\Contracts\CategoryRepositoryInterface;
+use App\Domain\Product\Repositories\Contracts\FlashSaleRepositoryInterface;
+use App\Domain\Product\Repositories\Contracts\ProductRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -12,9 +15,12 @@ use Illuminate\Support\Facades\Cache;
 
 class CatalogService
 {
-    /**
-     * Return a paginated product listing filtered by the given criteria.
-     */
+    public function __construct(
+        private readonly ProductRepositoryInterface $productRepo,
+        private readonly CategoryRepositoryInterface $categoryRepo,
+        private readonly FlashSaleRepositoryInterface $flashSaleRepo,
+    ) {}
+
     public function list(array $filters = [], int $perPage = 25): LengthAwarePaginator
     {
         $query = Product::query()
@@ -26,20 +32,11 @@ class CatalogService
         return $query->latest('id')->paginate($perPage);
     }
 
-    /**
-     * Return products for a given seller, paginated.
-     */
     public function listForSeller(int $sellerId, int $perPage = 25): LengthAwarePaginator
     {
-        return Product::with(['variants.option_values', 'unit'])
-            ->where('seller_id', $sellerId)
-            ->latest('id')
-            ->paginate($perPage);
+        return $this->productRepo->getForSeller($sellerId, $perPage);
     }
 
-    /**
-     * Apply search/filter criteria to a query builder.
-     */
     private function applyFilters(Builder $query, array $filters): void
     {
         if (! empty($filters['search'])) {
@@ -86,39 +83,20 @@ class CatalogService
         }
     }
 
-    /**
-     * Return featured products with optional cache.
-     */
     public function featured(int $limit = 12): Collection
     {
         return Cache::remember('products.featured', 300, function () use ($limit) {
-            return Product::active()
-                ->where('is_featured', true)
-                ->with(['brand', 'images', 'variants.option_values'])
-                ->latest('id')
-                ->limit($limit)
-                ->get();
+            return $this->productRepo->getFeatured($limit);
         });
     }
 
-    /**
-     * Return trending products.
-     */
     public function trending(int $limit = 12): Collection
     {
         return Cache::remember('products.trending', 300, function () use ($limit) {
-            return Product::active()
-                ->trending()
-                ->with(['brand', 'images', 'variants.option_values'])
-                ->latest('id')
-                ->limit($limit)
-                ->get();
+            return $this->productRepo->getTrending($limit);
         });
     }
 
-    /**
-     * Return products for a given category (including subcategory matches).
-     */
     public function byCategory(Category $category, int $perPage = 24): LengthAwarePaginator
     {
         $categoryIds = [$category->id];
@@ -137,21 +115,13 @@ class CatalogService
             ->paginate($perPage);
     }
 
-    /**
-     * Return the active flash sale with approved products.
-     */
     public function activeFlashSale(): ?FlashSale
     {
-        return FlashSale::active()
-            ->with(['approveProducts.product.images', 'approveProducts.product.variants'])
-            ->first();
+        return $this->flashSaleRepo->getActive();
     }
 
-    /**
-     * Increment product view count.
-     */
     public function recordView(Product $product): void
     {
-        $product->increment('views');
+        $this->productRepo->incrementViews($product);
     }
 }

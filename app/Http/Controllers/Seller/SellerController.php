@@ -4,18 +4,21 @@ namespace App\Http\Controllers\Seller;
 
 use App\Domain\Shipping\Models\Division;
 use App\Domain\Vendor\Http\Requests\UpdateVendorProfileRequest;
-use App\Domain\Vendor\Models\Seller;
+use App\Domain\Vendor\Repositories\SellerRepositoryInterface;
 use App\Domain\Vendor\Services\VendorService;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 
 class SellerController extends Controller
 {
-    public function __construct(private readonly VendorService $vendorService) {}
+    public function __construct(
+        private readonly VendorService $vendorService,
+        private readonly SellerRepositoryInterface $sellerRepo,
+    ) {}
 
     public function profile(UpdateVendorProfileRequest $request)
     {
-        $seller = Seller::find(get_seller_id());
+        $seller = $this->sellerRepo->findById(get_seller_id());
         $divisions = Division::all();
 
         if ($request->isMethod('GET')) {

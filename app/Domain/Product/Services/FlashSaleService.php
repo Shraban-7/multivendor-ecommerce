@@ -5,6 +5,7 @@ namespace App\Domain\Product\Services;
 use App\Domain\Product\Models\FlashSale;
 use App\Domain\Product\Models\FlashSaleProduct;
 use App\Domain\Product\Models\Product;
+use App\Domain\Product\Repositories\Contracts\FlashSaleRepositoryInterface;
 use App\Domain\Vendor\Models\Seller;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
@@ -12,27 +13,20 @@ use RuntimeException;
 
 class FlashSaleService
 {
-    /**
-     * Return the currently active flash sale with approved products, or null.
-     */
+    public function __construct(
+        private readonly FlashSaleRepositoryInterface $flashSaleRepo,
+    ) {}
+
     public function getActive(): ?FlashSale
     {
-        return FlashSale::active()
-            ->with(['approveProducts.product'])
-            ->first();
+        return $this->flashSaleRepo->getActive();
     }
 
-    /**
-     * Return a paginated list of all flash sales (admin).
-     */
     public function all(int $perPage = 20): LengthAwarePaginator
     {
-        return FlashSale::latest()->paginate($perPage);
+        return $this->flashSaleRepo->getPaginated($perPage);
     }
 
-    /**
-     * Submit a product to a flash sale.
-     */
     public function submitProduct(
         FlashSale $flashSale,
         Product $product,
@@ -48,7 +42,7 @@ class FlashSaleService
             throw new RuntimeException('Product is already submitted to this flash sale.');
         }
 
-        return FlashSaleProduct::create([
+        return $this->flashSaleRepo->submitProduct([
             'flash_sale_id' => $flashSale->id,
             'product_id' => $product->id,
             'seller_id' => $seller->id,
@@ -58,25 +52,20 @@ class FlashSaleService
         ]);
     }
 
-    /**
-     * Approve a flash sale product.
-     */
     public function approve(FlashSaleProduct $flashSaleProduct): void
     {
-        $flashSaleProduct->update(['status' => FlashSaleProduct::STATUS_APPROVED]);
+        $this->flashSaleRepo->updateFlashSaleProduct($flashSaleProduct, [
+            'status' => FlashSaleProduct::STATUS_APPROVED,
+        ]);
     }
 
-    /**
-     * Reject a flash sale product.
-     */
     public function reject(FlashSaleProduct $flashSaleProduct): void
     {
-        $flashSaleProduct->update(['status' => FlashSaleProduct::STATUS_REJECTED]);
+        $this->flashSaleRepo->updateFlashSaleProduct($flashSaleProduct, [
+            'status' => FlashSaleProduct::STATUS_REJECTED,
+        ]);
     }
 
-    /**
-     * Return flash sale products for a given seller.
-     */
     public function forSeller(int $sellerId): Collection
     {
         return FlashSaleProduct::where('seller_id', $sellerId)

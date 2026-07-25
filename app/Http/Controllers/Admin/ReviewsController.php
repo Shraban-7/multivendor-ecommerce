@@ -2,23 +2,25 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Domain\Review\Models\ReportReview;
-use App\Domain\Review\Models\Review;
+use App\Domain\Review\Repositories\Contracts\ReviewRepositoryInterface;
 use App\Http\Controllers\Controller;
 
 class ReviewsController extends Controller
 {
+    public function __construct(
+        private readonly ReviewRepositoryInterface $reviewRepo,
+    ) {}
+
     public function index()
     {
-        $reportIds = ReportReview::pluck('review_id');
-        $reviews = Review::with('user', 'images', 'product', 'reports')->whereIn('id', $reportIds)->get();
+        $reviews = $this->reviewRepo->getReportedReviews();
 
         return view('admin.reviews.index', compact('reviews'));
     }
 
-    public function destroy(Review $review)
+    public function destroy(\App\Domain\Review\Models\Review $review)
     {
-        $review->delete();
+        $this->reviewRepo->delete($review);
 
         return redirect()->route('admin.reviews.index')->with('Review deleted successfully');
     }

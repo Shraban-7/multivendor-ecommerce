@@ -3,15 +3,14 @@
 namespace App\Domain\Vendor\Actions;
 
 use App\Domain\Vendor\Models\Seller;
+use App\Domain\Vendor\Repositories\SellerRepositoryInterface;
 
 class RegisterVendorAction
 {
-    /**
-     * Register a new vendor (sets status to PENDING, generates code and username).
-     *
-     * @param  array  $data  Validated data — must include name, email, password (hashed), username (optional).
-     *                       Image fields should already be stored paths or null.
-     */
+    public function __construct(
+        private readonly SellerRepositoryInterface $sellerRepo,
+    ) {}
+
     public function execute(array $data): Seller
     {
         if (empty($data['username'])) {
@@ -24,6 +23,6 @@ class RegisterVendorAction
 
         $data['status'] = Seller::PENDING;
 
-        return Seller::create($data);
+        return $this->sellerRepo->store($data);
     }
 }

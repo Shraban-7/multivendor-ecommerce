@@ -11,9 +11,12 @@ use App\Domain\Product\Models\ProductImage;
 use App\Domain\Product\Models\ProductUnit;
 use App\Domain\Product\Models\ProductVariant;
 use App\Domain\Product\Models\StockHistory;
+use App\Domain\Product\Repositories\Contracts\BrandRepositoryInterface;
+use App\Domain\Product\Repositories\Contracts\CategoryRepositoryInterface;
+use App\Domain\Product\Repositories\Contracts\ProductRepositoryInterface;
 use App\Domain\Product\Services\ProductService;
 use App\Domain\Product\Services\StockManagerService;
-use App\Domain\Vendor\Models\Seller;
+use App\Domain\Vendor\Repositories\SellerRepositoryInterface;
 use App\Enums\StockType;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -24,24 +27,26 @@ class ProductController extends Controller
     public function __construct(
         private readonly ProductService $productService,
         private readonly StockManagerService $stockManager,
+        private readonly ProductRepositoryInterface $productRepo,
+        private readonly CategoryRepositoryInterface $categoryRepo,
+        private readonly BrandRepositoryInterface $brandRepo,
+        private readonly SellerRepositoryInterface $sellerRepo,
     ) {}
 
     public function index()
     {
-        $categories = Category::category()->with('subcategories')->get();
-        $brands = Brand::all();
-        $products = Product::with('variants.option_values', 'unit')
-            ->where('seller_id', get_seller_id())
-            ->latest('id')
-            ->paginate(25);
+        $categories = $this->categoryRepo->getAllWithSubcategories();
+        $brands = $this->brandRepo->getAll();
+        $products = $this->productRepo->getForSeller(get_seller_id());
 
         return view('seller.products.index', compact('products', 'categories', 'brands'));
     }
 
     public function create()
     {
-        $categories = Category::category()->with('subcategories', 'options.option_values')->get();
-        $brands = Brand::all();
+        $categories = $this->categoryRepo->getAllWithSubcategories();
+        $categories->load('options.option_values');
+        $brands = $this->brandRepo->getAll();
         $units = ProductUnit::all();
         $categoryAttributes = $this->categorizedAttributes($categories);
 
@@ -50,7 +55,7 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        $seller = Seller::find(get_seller_id());
+        $seller = $this->sellerRepo->findById(get_seller_id());
 
         $validated = $request->validate([
             'category_id' => 'required|integer|exists:categories,id',
@@ -83,7 +88,7 @@ class ProductController extends Controller
             );
         }
 
-        $product = Product::create($productData);
+        $product = $this->productRepo->store($productData);
 
         $variants = json_decode($request->variants ?? 'null', true);
         if (! empty($variants) && is_array($variants)) {
@@ -121,13 +126,15 @@ class ProductController extends Controller
 
     public function edit($slug)
     {
-        $product = Product::where('slug', $slug)
-            ->withCount('variants')
-            ->withCount('images', 'seo')
-            ->first();
+        $product = $this->productRepo->findBySlug($slug);
+        if (! $product) {
+            abort(404);
+        }
 
-        $categories = Category::category()->with('subcategories')->get();
-        $brands = Brand::all();
+        $product->loadCount('variants', 'images', 'seo');
+
+        $categories = $this->categoryRepo->getAllWithSubcategories();
+        $brands = $this->brandRepo->getAll();
         $units = ProductUnit::all();
 
         return view('seller.products.edit', compact('product', 'categories', 'brands', 'units'));
@@ -135,7 +142,10 @@ class ProductController extends Controller
 
     public function update($slug, Request $request)
     {
-        $product = Product::where('slug', $slug)->first();
+        $product = $this->productRepo->findBySlug($slug);
+        if (! $product) {
+            abort(404);
+        }
         $seller = $product->seller;
 
         $validated = $request->validate([
@@ -195,7 +205,7 @@ class ProductController extends Controller
             $productData['video'] = upload_file($request->file('video'), "videos/{$seller->username}/products");
         }
 
-        $product->update($productData);
+        $this->productRepo->update($product, $productData);
 
         if ($useMainPrices) {
             $product->variants->each(function (ProductVariant $variant) use ($product) {
@@ -242,7 +252,7 @@ class ProductController extends Controller
             'images.*' => 'image|mimes:jpeg,jpg,png,webp|max:4000',
         ]);
 
-        $product = Product::findOrFail($request->product_id);
+        $product = $this->productRepo->findOrFail($request->product_id);
         $imageFolder = "{$product->seller->username}/products";
 
         $this->productService->attachImages($product, $request->file('images'), $imageFolder);
@@ -313,7 +323,10 @@ class ProductController extends Controller
 
     public function updateSeo(Request $request, $slug)
     {
-        $product = Product::where('slug', $slug)->firstOrFail();
+        $product = $this->productRepo->findBySlug($slug);
+        if (! $product) {
+            abort(404);
+        }
         $seller = $product->seller;
 
         $validated = $request->validate([
@@ -342,7 +355,7 @@ class ProductController extends Controller
 
     public function stockHistory()
     {
-        $seller = Seller::find(get_seller_id());
+        $seller = $this->sellerRepo->findById(get_seller_id());
         $productIds = Product::where('seller_id', $seller->id)->pluck('id');
 
         $stockHistories = StockHistory::with(['product', 'variant'])
@@ -359,7 +372,7 @@ class ProductController extends Controller
             ->with('variants.option_values')
             ->get();
 
-        $seller = Seller::find(get_seller_id());
+        $seller = $this->sellerRepo->findById(get_seller_id());
 
         return view('seller.barcodes.index', compact('products', 'seller'));
     }

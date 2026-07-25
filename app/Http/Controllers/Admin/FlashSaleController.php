@@ -3,15 +3,19 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Domain\Product\Models\FlashSale;
-use App\Domain\Product\Models\FlashSaleProduct;
+use App\Domain\Product\Repositories\Contracts\FlashSaleRepositoryInterface;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class FlashSaleController extends Controller
 {
+    public function __construct(
+        private readonly FlashSaleRepositoryInterface $flashSaleRepo,
+    ) {}
+
     public function index()
     {
-        $flashSales = FlashSale::latest()->paginate(20);
+        $flashSales = $this->flashSaleRepo->getPaginated();
 
         return view('admin.flash_sales.index', compact('flashSales'));
     }
@@ -42,7 +46,7 @@ class FlashSaleController extends Controller
 
         $data['image'] = $imagePath;
 
-        FlashSale::create($data);
+        $this->flashSaleRepo->store($data);
 
         return redirect()->route('admin.flash-sales.index')
             ->with('success', 'Flash Sale created successfully.');
@@ -50,14 +54,14 @@ class FlashSaleController extends Controller
 
     public function edit($id)
     {
-        $sale = FlashSale::findOrFail($id);
+        $sale = $this->flashSaleRepo->findOrFail($id);
 
         return view('admin.flash_sales.edit', compact('sale'));
     }
 
     public function update(Request $request, $id)
     {
-        $sale = FlashSale::findOrFail($id);
+        $sale = $this->flashSaleRepo->findOrFail($id);
 
         $request->validate([
             'title' => 'required|string|max:255',
@@ -78,7 +82,7 @@ class FlashSaleController extends Controller
             $data['image'] = upload_file($request->file('image'), 'flash_sale');
         }
 
-        $sale->update($data);
+        $this->flashSaleRepo->update($sale, $data);
 
         return redirect()->route('admin.flash-sales.index')
             ->with('success', 'Flash Sale updated successfully.');
@@ -97,7 +101,7 @@ class FlashSaleController extends Controller
             'status' => 'required|integer',
         ]);
 
-        $flashSale = FlashSaleProduct::where('id', $id)->where('product_id', $productId)->first();
+        $flashSale = \App\Domain\Product\Models\FlashSaleProduct::where('id', $id)->where('product_id', $productId)->first();
         $flashSale->update($data);
 
         return successResponse('Product Status Update Successfully');
@@ -105,13 +109,13 @@ class FlashSaleController extends Controller
 
     public function destroy($id)
     {
-        $sale = FlashSale::findOrFail($id);
+        $sale = $this->flashSaleRepo->findOrFail($id);
 
         if ($sale->image != null) {
             delete_file($sale->image);
         }
 
-        $sale->delete();
+        $this->flashSaleRepo->delete($sale);
 
         return redirect()->route('admin.flash-sales.index')
             ->with('success', 'Flash Sale deleted successfully.');
