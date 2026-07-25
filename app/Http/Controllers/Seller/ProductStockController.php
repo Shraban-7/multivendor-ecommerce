@@ -16,10 +16,10 @@ class ProductStockController extends Controller
     {
         $seller = Seller::find(get_seller_id());
 
-        $productIds = Product::where('seller_id', $seller->id)->pluck('id');
-
         $stockHistories = StockHistory::with(['product', 'variant'])
-            ->whereIn('product_id', $productIds)
+            ->whereIn('product_id', function ($q) use ($seller) {
+                $q->select('id')->from('products')->where('seller_id', $seller->id);
+            })
             ->latest()
             ->paginate(45);
 

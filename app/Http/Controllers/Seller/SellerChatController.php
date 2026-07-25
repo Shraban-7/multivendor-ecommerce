@@ -42,7 +42,7 @@ class SellerChatController extends Controller
             'user_id' => $request->user_id,
         ]);
 
-        $messages = $chat->messages()->orderBy('created_at')->get();
+        $messages = $chat->messages()->orderBy('created_at')->paginate(30);
 
         return view('seller.chats.messages', compact('messages'));
     }

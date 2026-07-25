@@ -35,7 +35,7 @@ class OrderController extends Controller
                 'date_from' => $request->date_from,
                 'date_to' => $request->date_to,
             ],
-            [],
+            ['billing_address', 'user', 'items'],
         );
 
         return view('seller.orders.index', compact('orders', 'type'));

@@ -416,8 +416,8 @@ class ProductController extends Controller
         $products = Product::with('variants.option_values')
             ->orderBy('name', 'ASC')
             ->where('seller_id', get_seller_id())
-            ->get()
-            ->map(fn ($product) => [
+            ->paginate(25)
+            ->through(fn ($product) => [
                 'id' => $product->id,
                 'name' => $product->name,
                 'sku' => $product->sku,

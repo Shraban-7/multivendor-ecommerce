@@ -36,7 +36,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
 
     public function getForSeller(int $sellerId, int $perPage = 25): LengthAwarePaginator
     {
-        return Product::with(['variants.option_values', 'unit'])
+        return Product::with(['category', 'variants.option_values', 'unit'])
             ->where('seller_id', $sellerId)
             ->latest('id')
             ->paginate($perPage);
