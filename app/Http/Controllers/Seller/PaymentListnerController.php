@@ -80,6 +80,8 @@ class PaymentListnerController extends Controller
             return errorResponse('Invalid device code!');
         }
 
+        $device->load('seller');
+
         if (! is_null($device->device_name) && $device->device_name != $request->device_name) {
             return errorResponse("Use this code for {$device->device_name}");
         }
@@ -150,6 +152,8 @@ class PaymentListnerController extends Controller
         if (! $device) {
             return errorResponse('Invalid device code!', 403);
         }
+
+        $device->load('seller');
 
         $data['allowed_senders'] = PaymentListenerPayment::allowed_senders();
         $data['user'] = [

@@ -41,7 +41,7 @@ class ProductResource extends JsonResource
             }),
 
             'available_options' => $this->grouped_options,
-            'variants' => ProductVariantResource::collection($this->variants),
+            'variants' => ProductVariantResource::collection($this->whenLoaded('variants')),
         ];
     }
 

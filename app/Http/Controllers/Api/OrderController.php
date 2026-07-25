@@ -161,13 +161,12 @@ class OrderController extends Controller
                 'address' => $billingAddress->address,
             ]);
 
-            foreach ($order->items as $item) {
-                if (isset($item['product_variant_id'])) {
-                    $variant = ProductVariant::find($item['product_variant_id']);
+            $variantIds = $order->items->pluck('product_variant_id')->filter()->unique();
+            $variants = ProductVariant::whereIn('id', $variantIds)->get()->keyBy('id');
 
-                    if ($variant) {
-                        $variant->increment('stock_out', $item['quantity']);
-                    }
+            foreach ($order->items as $item) {
+                if (isset($item['product_variant_id']) && $variant = $variants->get($item['product_variant_id'])) {
+                    $variant->increment('stock_out', $item['quantity']);
                 }
             }
 

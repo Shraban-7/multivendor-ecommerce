@@ -108,7 +108,7 @@ class OrderController extends Controller
         $selectedSellerId = $validated['seller_id'];
 
         $seller = Seller::find($selectedSellerId);
-        $cart = $this->cartRepo->findUserCartBySeller($user->id, $selectedSellerId)?->load('cart_items.product');
+        $cart = $this->cartRepo->findUserCartBySeller($user->id, $selectedSellerId)?->load('cart_items.product', 'cart_items.variant');
 
         if (! $cart) {
             if ($request->ajax()) {
@@ -226,19 +226,16 @@ class OrderController extends Controller
             'address' => $billingAddress->address,
         ]);
 
+        $productIds = $order->items->pluck('product_id')->filter()->unique();
+        $variantIds = $order->items->pluck('product_variant_id')->filter()->unique();
+        $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
+        $variants = ProductVariant::whereIn('id', $variantIds)->get()->keyBy('id');
+
         foreach ($order->items as $item) {
-            $product = Product::find($item['product_id']);
-
-            if (isset($item['product_variant_id'])) {
-                $variant = ProductVariant::find($item['product_variant_id']);
-
-                if ($variant) {
-                    $variant->increment('stock_out', $item['quantity']);
-                }
-            } else {
-                if ($product) {
-                    $product->increment('stock_out', $item['quantity']);
-                }
+            if (isset($item['product_variant_id']) && $variant = $variants->get($item['product_variant_id'])) {
+                $variant->increment('stock_out', $item['quantity']);
+            } elseif ($product = $products->get($item['product_id'])) {
+                $product->increment('stock_out', $item['quantity']);
             }
         }
 

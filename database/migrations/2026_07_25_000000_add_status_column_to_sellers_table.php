@@ -17,7 +17,9 @@ return new class extends Migration
         });
 
         // Sync existing is_active values into status
-        DB::statement('UPDATE sellers SET status = CASE WHEN is_active = 1 THEN 1 ELSE 0 END WHERE status = 0');
+        if (Schema::hasColumn('sellers', 'is_active')) {
+            DB::statement('UPDATE sellers SET status = CASE WHEN is_active = 1 THEN 1 ELSE 0 END WHERE status = 0');
+        }
     }
 
     public function down(): void

@@ -10,7 +10,7 @@ return new class extends Migration
     {
         $this->addIndexIfMissing('orders', ['seller_id', 'status'], 'orders_seller_id_status_index');
         $this->addIndexIfMissing('orders', ['user_id', 'created_at'], 'orders_user_id_created_at_index');
-        $this->addIndexIfMissing('products', ['seller_id', 'is_approve'], 'products_seller_id_is_approve_index');
+        $this->addIndexIfMissing('products', ['seller_id', 'status'], 'products_seller_id_status_index');
         $this->addIndexIfMissing('products', ['category_id'], 'products_category_id_index');
         $this->addIndexIfMissing('order_items', ['order_id'], 'order_items_order_id_index');
         $this->addIndexIfMissing('order_items', ['product_id'], 'order_items_product_id_index');
@@ -22,7 +22,7 @@ return new class extends Migration
     {
         $this->dropIndexIfExists('orders', 'orders_seller_id_status_index');
         $this->dropIndexIfExists('orders', 'orders_user_id_created_at_index');
-        $this->dropIndexIfExists('products', 'products_seller_id_is_approve_index');
+        $this->dropIndexIfExists('products', 'products_seller_id_status_index');
         $this->dropIndexIfExists('products', 'products_category_id_index');
         $this->dropIndexIfExists('order_items', 'order_items_order_id_index');
         $this->dropIndexIfExists('order_items', 'order_items_product_id_index');

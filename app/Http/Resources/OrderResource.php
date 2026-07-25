@@ -12,7 +12,7 @@ class OrderResource extends JsonResource
     {
         $paymentStatus = 0;
 
-        if ($this->due == 0 && ! is_null($this->payment_id) && $this->payment->status == Payment::SUCCESSFUL) {
+        if ($this->due == 0 && ! is_null($this->payment_id) && $this->whenLoaded('payment')?->status == Payment::SUCCESSFUL) {
             $paymentStatus = 1;
         }
 

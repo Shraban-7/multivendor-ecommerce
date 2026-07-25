@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Domain\Order\Models\Cart;
 use App\Domain\Order\Models\Wishlist;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
@@ -27,6 +28,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Model::preventLazyLoading(! $this->app->isProduction());
+
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
@@ -44,7 +47,7 @@ class AppServiceProvider extends ServiceProvider
 
                 // Cart Calculation
                 $carts = Cart::where('user_id', Auth::id())
-                    ->with('cart_items.product')
+                    ->with('cart_items.product', 'cart_items.variant')
                     ->get();
 
                 foreach ($carts as $cart) {

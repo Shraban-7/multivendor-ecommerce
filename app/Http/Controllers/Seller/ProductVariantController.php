@@ -108,15 +108,17 @@ class ProductVariantController extends Controller
 
         return successResponse('Variants added successfully');
     }
-
     public function update(ProductVariant $variant, Request $request)
     {
+        $variant->loadMissing('product.seller');
+
         $request->validate([
             'buying_price' => 'required',
             'selling_price' => 'required',
             'discount_type' => 'nullable',
             'discount_value' => 'nullable',
             'low_stock_quantity' => 'required',
+
             'is_default' => 'nullable',
             'image' => 'nullable|image|mimes:png,jpg,jpeg|max:4000',
         ]);

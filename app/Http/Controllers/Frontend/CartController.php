@@ -87,7 +87,7 @@ class CartController extends Controller
         $categoryIds = $subcategoryIds = $brandIds = $addedItemIds = [];
 
         $carts = Cart::where('user_id', Auth::id())
-            ->with('cart_items.product', 'cart_items.variant')
+            ->with('cart_items.product', 'cart_items.variant.option_values')
             ->get()
             ->groupBy(function ($cart) {
                 return $cart->cart_items->first()->product->seller_id ?? null;
@@ -218,7 +218,7 @@ class CartController extends Controller
         $grand_total = 0;
 
         if (Auth::check()) {
-            $carts = $this->cartRepo->findByUserId(Auth::id())->load('cart_items.product');
+            $carts = $this->cartRepo->findByUserId(Auth::id())->load('cart_items.product', 'cart_items.variant');
 
             foreach ($carts as $cart) {
                 foreach ($cart->cart_items as $item) {
