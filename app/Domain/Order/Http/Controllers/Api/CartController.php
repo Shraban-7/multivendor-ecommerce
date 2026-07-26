@@ -76,7 +76,6 @@ class CartController extends Controller
             'product_id' => 'required',
             'variant_id' => 'nullable',
             'quantity' => 'required|integer|min:1',
-            'is_default' => 'nullable|boolean',
         ]);
 
         if ($validator->fails()) {
@@ -86,17 +85,10 @@ class CartController extends Controller
         $variant = $variantId = null;
         $userId = Auth::id();
         $data = $validator->validated();
-        $product = Product::find($data['product_id']);
-        $isDefault = $request->is_default ?? false;
+        $product = Product::withCount('variants')->find($data['product_id']);
 
         if (! $product) {
             return errorResponse('Product not found!');
-        }
-
-        if ($isDefault) {
-            $variant = ProductVariant::where('product_id', $product->id)
-                ->where('is_default', 1)
-                ->first();
         }
 
         if ($data['variant_id'] != null) {
@@ -104,14 +96,16 @@ class CartController extends Controller
             if (! $variant) {
                 return errorResponse('Variant not found!');
             }
+        } elseif ($product->variants_count > 0) {
+            return errorResponse('Please select a product variant!');
         }
 
         if (! is_null($variant)) {
-            $price = $variant->discounted_price ?? $variant->selling_price;
+            $price = $variant->compare_price ?? $variant->price;
             $variantId = $variant->id;
             $availableStock = (int) $variant->available_stock;
         } else {
-            $price = $product->discounted_price ?? $product->selling_price;
+            $price = $product->compare_price ?? $product->price;
             $availableStock = (int) $product->total_stock;
         }
 

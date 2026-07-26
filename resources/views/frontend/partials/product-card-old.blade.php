@@ -4,9 +4,9 @@
     </button>
 
     @php
-        $original_price = $product['default_variant']->selling_price ?? null;
-        $discounted_price = $product['default_variant']->discounted_price ?? null;
-        $discountPercent = $discounted_price ? round((($original_price - $discounted_price) / $original_price) * 100) : null;
+        $original_price = $product['default_variant']->price ?? null;
+        $compare_price = $product['default_variant']->compare_price ?? null;
+        $discountPercent = $compare_price ? round((($original_price - $compare_price) / $original_price) * 100) : null;
     @endphp
 
 
@@ -82,9 +82,9 @@
 
         <div class="mt-4 flex items-center justify-between">
             <div class="flex items-baseline gap-2">
-                @if ($discounted_price != null || $discounted_price != 0)
+                @if ($compare_price != null || $compare_price != 0)
                     <span class="text-primary font-bold text-lg">
-                        {{ money($discounted_price) }}
+                        {{ money($compare_price) }}
                     </span>
                     <span class="text-sm text-gray-400 line-through">
                         {{ money($original_price) }}

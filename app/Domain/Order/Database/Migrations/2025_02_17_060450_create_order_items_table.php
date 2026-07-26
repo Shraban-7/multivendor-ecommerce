@@ -16,11 +16,13 @@ return new class extends Migration
             $table->unsignedBigInteger('order_id')->nullable();
             $table->unsignedBigInteger('product_id')->nullable();
             $table->unsignedBigInteger('product_variant_id')->nullable();
-            $table->decimal('buying_price', 10, 2);
+            $table->decimal('cost_price', 10, 2);
+            $table->decimal('price', 10, 2)->nullable();
             $table->decimal('unit_price', 10, 2);
             $table->integer('quantity');
             $table->decimal('discount', 10, 2);
             $table->decimal('sub_total', 10, 2);
+            $table->decimal('total', 10, 2)->nullable();
             $table->boolean('is_reviewed')->default(0);
             $table->timestamps();
         });

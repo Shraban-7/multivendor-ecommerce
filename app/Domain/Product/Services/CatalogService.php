@@ -60,11 +60,11 @@ class CatalogService
         }
 
         if (! empty($filters['min_price'])) {
-            $query->where('selling_price', '>=', $filters['min_price']);
+            $query->where('price', '>=', $filters['min_price']);
         }
 
         if (! empty($filters['max_price'])) {
-            $query->where('selling_price', '<=', $filters['max_price']);
+            $query->where('price', '<=', $filters['max_price']);
         }
 
         if (! empty($filters['in_stock'])) {
@@ -73,8 +73,8 @@ class CatalogService
 
         if (! empty($filters['sort'])) {
             match ($filters['sort']) {
-                'price_asc' => $query->orderBy('selling_price', 'asc'),
-                'price_desc' => $query->orderBy('selling_price', 'desc'),
+                'price_asc' => $query->orderBy('price', 'asc'),
+                'price_desc' => $query->orderBy('price', 'desc'),
                 'newest' => $query->latest('id'),
                 'popular' => $query->orderByDesc('views'),
                 'rating' => $query->orderByDesc('avg_rating'),

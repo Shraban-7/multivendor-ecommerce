@@ -27,23 +27,19 @@ class CartItem extends Model
         return $this->belongsTo(ProductVariant::class, 'product_variant_id');
     }
 
+    /** List / regular price (strikethrough when on sale). */
     public function getOriginalPriceAttribute()
     {
-        return $this->variant?->selling_price ?? $this->product->selling_price;
+        return $this->variant?->price ?? $this->product->price;
     }
 
+    /** Effective paid unit price: compare_price ?? price. */
     public function getDiscountedPriceAttribute()
     {
         if ($this->variant) {
-            if ($this->variant->discounted_price !== null) {
-                return $this->variant->discounted_price;
-            }
-
-            return $this->variant->selling_price;
-
-        } else {
-            return $this->product->discounted_price ?? $this->product->selling_price;
+            return $this->variant->compare_price ?? $this->variant->price;
         }
 
+        return $this->product->compare_price ?? $this->product->price;
     }
 }

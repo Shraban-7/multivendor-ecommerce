@@ -1,5 +1,5 @@
 @extends('frontend.layouts.app')
-@section('title', $seo->meta_title ?? $product['name'])
+@section('title', $seo?->meta_title ?? $product['name'])
 
 @push('meta')
     <link rel="canonical" href="{{ url()->current() }}">
@@ -199,31 +199,27 @@ $settings = settings();
             </div>
         </section>
 
-        <!-- Explore Interest Section Start  -->
-        <section class="explore-interest section-padding">
-            <!-- Section Tittle -->
-            <h2 class="mb-5 text-xl font-medium sm:text-2xl lg:text-3xl text-jet-gray md:mb-8 lg:mb-10">
-                Similar Products
-            </h2>
+        <!-- Similar Products Section Start -->
+        <section class="mb-4">
+            <h2 class="text-base sm:text-lg font-bold text-[#F85606] mb-4">Similar Products</h2>
 
             <div id="product-wrapper"
-                class="grid items-start grid-cols-2 gap-5 p-2 md:grid-cols-4 lg:grid-cols-5 xl:gap-8 lg:p-0">
+                class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
                 @include('frontend.partials.product-card-load', ['products' => $products])
             </div>
 
             @if ($products->count() >= 8)
-                <!-- Load More Btn -->
-                <div class="mt-10 text-center load-more-btn">
-                    <button data-page="1" data-type="products" data-url="{{ request()->url() }}" id="loadMoreProducts"
-                        class="text-sm font-semibold text-primary-600 border border-primary-600 px-4 py-1.5 rounded-full hover:bg-primary-600 hover:text-white transition"
+                <div class="mt-8 text-center">
+                    <button data-page="1" data-url="{{ request()->url() }}" id="loadMoreProducts"
+                        class="inline-flex items-center gap-2 px-8 py-2.5 border-2 border-[#F85606] text-[#F85606] font-semibold text-sm rounded hover:bg-[#F85606] hover:text-white eq"
                         type="button">
                         <span>Load More</span>
-                        <i class="text-sm fa-solid fa-chevron-down"></i>
+                        <i class="text-xs fa-solid fa-chevron-down"></i>
                     </button>
                 </div>
             @endif
         </section>
-        <!-- Explore Interest Section Ended  -->
+        <!-- Similar Products Section Ended -->
     </main>
 @endsection
 
@@ -297,32 +293,27 @@ $settings = settings();
                 $.ajax({
                     url: url,
                     method: 'GET',
-                    data: {
-                        page: page,
-                        type: 'products'
-                    },
+                    data: { page: page },
                     beforeSend: function() {
                         button.prop('disabled', true).html(
-                            '<i class="fa fa-spinner fa-spin"></i> Loading...'
+                            '<svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>'
                         );
                     },
                     success: function(response) {
                         if ($.trim(response) !== '') {
                             $('#product-wrapper').append(response);
-
                             button.data('page', page);
                             button.prop('disabled', false).html(
-                                '<span>Load More</span> <i class="fa-solid fa-chevron-down text-sm"></i>'
+                                '<span>Load More</span> <i class="text-xs fa-solid fa-chevron-down"></i>'
                             );
-
-                            if (typeof initFlowbite === 'function') initFlowbite();
-                            if (typeof initProductSwipers === 'function') initProductSwipers();
                         } else {
                             button.hide();
                         }
                     },
                     error: function() {
-                        button.prop('disabled', false).text('Load More');
+                        button.prop('disabled', false).html(
+                            '<span>Load More</span> <i class="text-xs fa-solid fa-chevron-down"></i>'
+                        );
                         showErrorToast('Something went wrong. Please try again.');
                     }
                 });

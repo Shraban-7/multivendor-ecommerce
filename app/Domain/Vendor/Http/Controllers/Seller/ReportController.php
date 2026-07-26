@@ -81,7 +81,7 @@ class ReportController extends Controller
                 'expense' => $calculateChange($currentMetrics['total_expense'], $lastMetrics['total_expense']),
             ];
 
-            $inventory_value = Product::where('seller_id', $seller->id)->sum(DB::raw('buying_price * (stock_in - stock_out)'));
+            $inventory_value = Product::where('seller_id', $seller->id)->sum(DB::raw('cost_price * (stock_in - stock_out)'));
 
             $lowTurnoverDays = 90;
             $cutoffDate = now()->subDays($lowTurnoverDays);
@@ -105,7 +105,7 @@ class ReportController extends Controller
 
             $inventoryByCategory = Product::where('seller_id', $seller->id)
                 ->whereHas('orderItems.order', fn ($q) => $q->whereBetween('created_at', [$startDate, $endDate]))
-                ->select('category_id', DB::raw('COUNT(*) as sku_count'), DB::raw('SUM(buying_price * (stock_in - stock_out)) as stock_value'))
+                ->select('category_id', DB::raw('COUNT(*) as sku_count'), DB::raw('SUM(cost_price * (stock_in - stock_out)) as stock_value'))
                 ->groupBy('category_id')
                 ->with('category')
                 ->get();
@@ -344,7 +344,7 @@ class ReportController extends Controller
                 $product = $group->first()->product;
                 $unitsSold = $group->sum('quantity');
                 $totalSale = $group->sum(fn ($i) => $i->unit_price * $i->quantity);
-                $totalCost = $group->sum(fn ($i) => $i->buying_price * $i->quantity);
+                $totalCost = $group->sum(fn ($i) => $i->cost_price * $i->quantity);
                 $profitMargin = $totalSale > 0 ? (($totalSale - $totalCost) / $totalSale) * 100 : 0;
                 $price = $group->avg('unit_price');
 
@@ -549,7 +549,7 @@ class ReportController extends Controller
         $costSum = OrderItem::join('orders', 'order_items.order_id', '=', 'orders.id')
             ->where('orders.seller_id', $sellerId)
             ->whereBetween('orders.created_at', [$start, $end])
-            ->sum(DB::raw('order_items.buying_price * order_items.quantity'));
+            ->sum(DB::raw('order_items.cost_price * order_items.quantity'));
 
         $priceSum = OrderItem::join('orders', 'order_items.order_id', '=', 'orders.id')
             ->where('orders.seller_id', $sellerId)
@@ -651,7 +651,7 @@ class ReportController extends Controller
             $total_product_cost = OrderItem::whereHas('order', function ($q) use ($seller, $start, $end) {
                 $q->where('seller_id', $seller->id)
                     ->whereBetween('created_at', [$start, $end]);
-            })->sum(DB::raw('buying_price * quantity'));
+            })->sum(DB::raw('cost_price * quantity'));
 
             $total_selling_price = OrderItem::whereHas('order', function ($q) use ($seller, $start, $end) {
                 $q->where('seller_id', $seller->id)
@@ -900,7 +900,7 @@ class ReportController extends Controller
         $currentCost = OrderItem::whereHas('order', function ($q) use ($seller, $currentStart, $currentEnd) {
             $q->where('seller_id', $seller->id)
                 ->whereBetween('created_at', [$currentStart, $currentEnd]);
-        })->sum(DB::raw('buying_price * quantity'));
+        })->sum(DB::raw('cost_price * quantity'));
 
         $currentProfit = $currentSales - $currentCost;
 
@@ -920,7 +920,7 @@ class ReportController extends Controller
             $lastCost = OrderItem::whereHas('order', function ($q) use ($seller, $lastStart, $lastEnd) {
                 $q->where('seller_id', $seller->id)
                     ->whereBetween('created_at', [$lastStart, $lastEnd]);
-            })->sum(DB::raw('buying_price * quantity'));
+            })->sum(DB::raw('cost_price * quantity'));
 
             $lastProfit = $lastSales - $lastCost;
 

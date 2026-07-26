@@ -264,7 +264,7 @@ use App\Domain\Order\Enums\OrderStatus;
                             <img src="{{ $product->imageUrl }}" alt="{{ $product->name }}"
                                 class="w-full h-32 object-cover rounded-md mb-2">
                             <h3 class="font-medium text-sm">{{ $product->name }}</h3>
-                            <p class="text-yellow-500 text-sm font-bold mt-1">{{ money($product->selling_price) }}</p>
+                            <p class="text-yellow-500 text-sm font-bold mt-1">{{ money($product->price) }}</p>
                         </div>
                     </a>
                 @endforeach

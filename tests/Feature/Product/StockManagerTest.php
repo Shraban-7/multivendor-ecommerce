@@ -171,8 +171,8 @@ it('incrementStock on a variant does not affect parent product stock', function 
     $variant = ProductVariant::create([
         'product_id' => $product->id,
         'sku' => 'TEST-VAR-01',
-        'buying_price' => 50,
-        'selling_price' => 100,
+        'cost_price' => 50,
+        'price' => 100,
         'stock_in' => 0,
         'stock_out' => 0,
     ]);
@@ -192,8 +192,8 @@ it('decrementStock on a variant prevents going negative', function (): void {
     $variant = ProductVariant::create([
         'product_id' => $product->id,
         'sku' => 'TEST-VAR-02',
-        'buying_price' => 50,
-        'selling_price' => 100,
+        'cost_price' => 50,
+        'price' => 100,
         'stock_in' => 3,
         'stock_out' => 0,
     ]);
@@ -208,8 +208,8 @@ it('variant stock history links both product_id and product_variant_id', functio
     $variant = ProductVariant::create([
         'product_id' => $product->id,
         'sku' => 'TEST-VAR-03',
-        'buying_price' => 50,
-        'selling_price' => 100,
+        'cost_price' => 50,
+        'price' => 100,
         'stock_in' => 20,
         'stock_out' => 0,
     ]);

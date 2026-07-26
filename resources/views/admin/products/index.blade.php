@@ -43,7 +43,7 @@
                             </div>
                         </td>
                         <td>
-                            {{ money($product->selling_price) }}
+                            {{ money($product->price) }}
                         </td>
                         <td>
                             {{ $totalStock }} {{ $product->unit->short_name }}

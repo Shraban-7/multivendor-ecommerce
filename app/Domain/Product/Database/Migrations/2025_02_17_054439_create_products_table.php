@@ -26,13 +26,9 @@ return new class extends Migration
             $table->string('thumbnail')->nullable();
             $table->string('video')->nullable();
 
-            $table->decimal('buying_price', 10, 2);
-            $table->decimal('selling_price', 10, 2);
-
-            $table->string('discount_type')->nullable();
-            $table->decimal('discount_value', 6, 1)->nullable();
-            $table->decimal('discount_amount', 8, 2)->nullable();
-            $table->decimal('discounted_price', 10, 2)->nullable();
+            $table->decimal('cost_price', 10, 2);
+            $table->decimal('price', 10, 2);
+            $table->decimal('compare_price', 10, 2)->nullable();
 
             $table->decimal('weight', 10, 2)->nullable()->comment('in kg');
             $table->decimal('height', 10, 2)->nullable()->comment('in cm');

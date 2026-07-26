@@ -135,9 +135,9 @@ it('CatalogService::list filters by category_id', function (): void {
 });
 
 it('CatalogService::list filters by price range', function (): void {
-    Product::factory()->active()->create(['selling_price' => 50]);
-    Product::factory()->active()->create(['selling_price' => 150]);
-    Product::factory()->active()->create(['selling_price' => 300]);
+    Product::factory()->active()->create(['price' => 50]);
+    Product::factory()->active()->create(['price' => 150]);
+    Product::factory()->active()->create(['price' => 300]);
 
     $page = app(CatalogService::class)->list(['min_price' => 100, 'max_price' => 200]);
 

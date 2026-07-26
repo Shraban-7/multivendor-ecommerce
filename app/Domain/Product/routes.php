@@ -134,7 +134,7 @@ Route::middleware('web')->group(function () {
     Route::prefix('products')->as('products.')->group(function () {
         Route::get('/', [FrontendProductController::class, 'index'])->name('index');
         Route::post('{slug}/get-variant', [FrontendProductController::class, 'getVariant']);
-        Route::get('{slug}', [FrontendProductController::class, 'details'])->name('details');
+        Route::get('{product}', [FrontendProductController::class, 'details'])->name('details');
     });
 
     Route::prefix('flash-sales')->as('flashSales.')->group(function () {

@@ -2,8 +2,8 @@
 
 @php
     $discountPercent = 0;
-    if ($product->selling_price > 0 && $product->discounted_price > 0) {
-        $discountPercent = round((($product->selling_price - $product->discounted_price) / $product->selling_price) * 100);
+    if ($product->price > 0 && $product->compare_price > 0) {
+        $discountPercent = round((($product->price - $product->compare_price) / $product->price) * 100);
     }
 @endphp
 

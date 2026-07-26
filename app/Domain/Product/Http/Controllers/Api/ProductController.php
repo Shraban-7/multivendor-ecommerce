@@ -45,9 +45,9 @@ class ProductController extends Controller
         if ($request->sort_by === 'popular') {
             $products->orderBy('stock_out', 'desc');
         } elseif ($request->sort_by === 'price_asc') {
-            $products->orderBy('selling_price', 'asc');
+            $products->orderBy('price', 'asc');
         } elseif ($request->sort_by === 'price_desc') {
-            $products->orderBy('selling_price', 'desc');
+            $products->orderBy('price', 'desc');
         } else {
             $products->latest();
         }

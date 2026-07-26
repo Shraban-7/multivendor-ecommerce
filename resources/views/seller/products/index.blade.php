@@ -33,8 +33,8 @@
                         $totalStockOut = $product->variants->sum('stock_out');
                     }
                     $totalStock = $product->totalStock;
-                    $minPrice = min($product->variants->min('selling_price'), $product->selling_price);
-                    $maxPrice = max($product->variants->max('selling_price'), $product->selling_price);
+                    $minPrice = min($product->variants->min('price'), $product->price);
+                    $maxPrice = max($product->variants->max('price'), $product->price);
                     $lowStockQty = $product->low_stock_quantity;
                 ?>
             <tr>
@@ -63,7 +63,7 @@
                     - {{ money($maxPrice) }}
                     @endif
                     @else
-                    {{ money($product->selling_price) }}
+                    {{ money($product->price) }}
                     @endif
                 </td>
                 
@@ -143,7 +143,7 @@
                             <td>{{ $variant->sku }}</td>
                             <td class="fw-bold">{{ $variant->label }}</td>
                             <td class="text-center">
-                                {{ money($variant->discounted_price ?? $variant->selling_price) }}
+                                {{ money($variant->compare_price ?? $variant->price) }}
                             </td>
                             <td class="text-center">{{ $variant->availableStock }}
                                 {{ $product->unit->short_name }}

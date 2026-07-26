@@ -2,7 +2,7 @@
 
 <div class="group bg-white border border-[#E5E5E5] rounded-sm overflow-hidden hover:shadow-md eq">
     <a href="{{ route('products.details', $product->slug) }}" class="block relative aspect-square bg-[#F5F5F5] overflow-hidden">
-        @php $discountPercent = $product->selling_price > 0 && $product->discounted_price > 0 ? round((($product->selling_price - $product->discounted_price) / $product->selling_price) * 100) : 0; @endphp
+        @php $discountPercent = $product->price > 0 && $product->compare_price > 0 ? round((($product->price - $product->compare_price) / $product->price) * 100) : 0; @endphp
         @if ($discountPercent > 0)
             <span class="absolute top-1 left-1 z-10 discount-badge">-{{ $discountPercent }}%</span>
         @endif
@@ -33,11 +33,11 @@
         @endif
 
         <div class="flex items-baseline gap-1.5 mt-1">
-            @if ($product->discounted_price > 0)
-                <span class="text-base font-bold text-[#F85606]">৳{{ number_format($product->discounted_price) }}</span>
-                <s class="text-xs text-[#767676]" aria-label="Original price ৳{{ number_format($product->selling_price) }}">৳{{ number_format($product->selling_price) }}</s>
+            @if ($product->compare_price > 0)
+                <span class="text-base font-bold text-[#F85606]">৳{{ number_format($product->compare_price) }}</span>
+                <s class="text-xs text-[#767676]" aria-label="Original price ৳{{ number_format($product->price) }}">৳{{ number_format($product->price) }}</s>
             @else
-                <span class="text-base font-bold text-[#191919]">৳{{ number_format($product->selling_price) }}</span>
+                <span class="text-base font-bold text-[#191919]">৳{{ number_format($product->price) }}</span>
             @endif
         </div>
     </div>

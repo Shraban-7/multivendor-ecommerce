@@ -261,7 +261,7 @@
                                 <th class="sortable" data-sort="name">Product</th>
                                 <th class="sortable qty-cell col-quantity text-end" data-sort="quantity">Stock</th>
                                 <th class="sortable price-cell col-price text-end" data-sort="price">Price</th>
-                                <th class="sortable price-cell col-discounted_price text-start" data-sort="discounted_price">Discounted Price</th>
+                                <th class="sortable price-cell col-compare_price text-start" data-sort="compare_price">Compare Price</th>
                                 <th class="text-end">SKU</th>
                                 <th class="col-image hidden-column">Img</th>
                             </tr>
@@ -300,7 +300,7 @@
         //                 name: product.name,
         //                 quantity: parseInt(variant.quantity),
         //                 price: variant.price,
-        //                 discounted_price: variant.discounted_price || 0,
+        //                 compare_price: variant.compare_price || 0,
         //                 image: variant.image || product.image,
         //                 productImage: product.image,
         //                 label: `${variant.label}`.trim()
@@ -323,7 +323,7 @@
                             name: product.name,
                             quantity: parseInt(variant.quantity ?? product.quantity),
                             price: variant.price ?? product.price,
-                            discounted_price: variant.discounted_price ?? product.discounted_price,
+                            compare_price: variant.compare_price ?? product.compare_price,
                             image: variant.image || product.image,
                             productImage: product.image,
                             label: (variant.label ?? "").trim()
@@ -336,7 +336,7 @@
                         name: product.name,
                         quantity: parseInt(product.quantity),
                         price: product.price,
-                        discounted_price: product.discounted_price,
+                        compare_price: product.compare_price,
                         image: product.image,
                         productImage: product.image,
 label: "",
@@ -357,7 +357,7 @@ label: "",
                     <td><b>${variant.name}</b> <br> <i>${variant.label}</i></td>
                     <td class="qty-cell col-quantity text-end">${variant.quantity}</td>
                     <td class="price-cell col-price text-end">${variant.price}</td>
-                    <td class="price-cell col-discounted_price text-start">${variant.discounted_price}</td>
+                    <td class="price-cell col-compare_price text-start">${variant.compare_price}</td>
                     <td class="text-end">${variant.sku}</td>
                     <td class="col-image hidden-column">
                         <img src="${variant.image}" class="thumbnail" alt="${variant.name}" onerror="handleImageError(this)">
@@ -401,7 +401,7 @@ label: "",
                 let aVal = a[key];
                 let bVal = b[key];
 
-                if (key === 'quantity' || key === 'price' || key == 'discounted_price') {
+                if (key === 'quantity' || key === 'price' || key == 'compare_price') {
                     aVal = parseFloat(aVal);
                     bVal = parseFloat(bVal);
                 } else {

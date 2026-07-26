@@ -18,10 +18,11 @@ class OrderItemResource extends JsonResource
             'name' => $product->name,
             'thumbnail' => $product->imageUrl,
             'quantity' => $this->quantity,
-            'price' => money($this->unit_price),
+            'cost_price' => money($this->cost_price),
+            'price' => money($this->price),
+            'unit_price' => money($this->unit_price),
             'discount' => money($this->discount),
             'sub_total' => money($this->sub_total),
-            'discounted_price' => money($this->unit_price - $this->discount),
             'is_reviewed' => $this->is_reviewed,
             'variant' => ProductVariantResource::make($this->variant),
         ];

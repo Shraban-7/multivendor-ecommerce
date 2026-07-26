@@ -405,7 +405,7 @@ $isDashboard = View::hasSection('dashboard');
 
                 if (variant) {
                     const basePrice = parseFloat(variant.price) || 0;
-                    const discounted = variant.discounted_price !== null ? parseFloat(variant.discounted_price) :
+                    const discounted = variant.compare_price !== null ? parseFloat(variant.compare_price) :
                         null;
 
                     const price = discounted && discounted > 0 ? discounted : basePrice;
@@ -437,7 +437,7 @@ $isDashboard = View::hasSection('dashboard');
 
                 } else {
                     const basePrice = parseFloat(product.price) || 0;
-                    const discounted = product.discounted_price !== null ? parseFloat(product.discounted_price) :
+                    const discounted = product.compare_price !== null ? parseFloat(product.compare_price) :
                         null;
                     const price = discounted && discounted > 0 ? discounted : basePrice;
 

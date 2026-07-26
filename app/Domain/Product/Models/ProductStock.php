@@ -12,7 +12,7 @@ class ProductStock extends Model
     protected $guarded = ['id'];
 
     protected $casts = [
-        'buying_price' => 'decimal:2',
+        'cost_price' => 'decimal:2',
         'sub_total' => 'decimal:2',
     ];
 

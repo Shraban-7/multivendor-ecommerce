@@ -241,7 +241,7 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="text-center">{{ money($item->selling_price) }}</td>
+                                        <td class="text-center">{{ money($item->price) }}</td>
                                         <td class="text-center">{{ money($item->discount) }}</td>
                                         <td class="text-end">{{ money($item->total) }}</td>
                                     </tr>

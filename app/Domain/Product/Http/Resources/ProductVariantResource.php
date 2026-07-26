@@ -9,13 +9,12 @@ class ProductVariantResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
-        $price = $this->selling_price;
-        $discountedPrice = $this->discounted_price;
+        $price = (float) $this->price;
+        $comparePrice = $this->compare_price !== null ? (float) $this->compare_price : null;
         $discount = null;
 
-        if ($this->discount_amount > 0) {
-            $discount = "-{$this->discount_amount}";
-            $discount .= $this->discount_type === 'percentage' ? '%' : currency();
+        if ($comparePrice !== null && $comparePrice < $price && $price > 0) {
+            $discount = '-'.round((($price - $comparePrice) / $price) * 100).'%';
         }
 
         $variantOptions = [];
@@ -36,14 +35,14 @@ class ProductVariantResource extends JsonResource
             'id' => $this->id,
             'sku' => $this->sku,
             'stock' => $this->stock_in - $this->stock_out,
+            'cost_price' => removeZeroFromDecimal($this->cost_price),
             'price' => removeZeroFromDecimal($price),
-            'discounted_price' => removeZeroFromDecimal($discountedPrice),
+            'compare_price' => removeZeroFromDecimal($comparePrice),
             'discount' => $discount,
             'image' => $this->image,
             'color_id' => $this->color_id,
             'size_id' => $this->size_id,
             'label' => $this->label,
-            'default' => $this->is_default,
             'variant_options' => $variantOptions,
         ];
     }

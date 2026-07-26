@@ -76,8 +76,9 @@ class OrderService
         foreach ($cartItems as $item) {
             $variant = $item->variant;
             $product = $variant->product ?? $item->product;
-            $sellingPrice = (float) ($variant->selling_price ?? $product->selling_price ?? 0);
-            $unitPrice = (float) ($itemsCollection->firstWhere('id', $item->id)['price'] ?? $sellingPrice);
+            $sellingPrice = (float) ($variant->price ?? $product->price ?? 0);
+            $effectivePrice = (float) ($variant->compare_price ?? $variant->price ?? $product->compare_price ?? $product->price ?? 0);
+            $unitPrice = (float) ($itemsCollection->firstWhere('id', $item->id)['price'] ?? $item->price ?? $effectivePrice);
             $qty = (int) $item->quantity;
             $itemDiscount = $sellingPrice > $unitPrice ? ($sellingPrice - $unitPrice) * $qty : 0;
 
@@ -90,8 +91,8 @@ class OrderService
                 'sku' => $variant->sku ?? $product->sku,
                 'product_name' => $product->name,
                 'variant_name' => $variant->label ?? null,
-                'buying_price' => $variant->buying_price ?? $product->buying_price ?? 0,
-                'selling_price' => $sellingPrice,
+                'cost_price' => $variant->cost_price ?? $product->cost_price ?? 0,
+                'price' => $sellingPrice,
                 'unit_price' => $unitPrice,
                 'quantity' => $qty,
                 'discount' => $itemDiscount,
@@ -115,11 +116,11 @@ class OrderService
             $product = $cartItem->product;
             $variant = $cartItem->variant;
             $unitPrice = (float) $cartItem->price;
-            $sellingPrice = (float) ($variant->selling_price ?? $product->selling_price ?? 0);
+            $sellingPrice = (float) ($variant->price ?? $product->price ?? 0);
             $qty = (int) $cartItem->quantity;
             $itemSubtotal = $qty * $sellingPrice;
             $itemTotal = $qty * $unitPrice;
-            $itemDiscount = $qty * ((float) ($cartItem->original_price ?? 0) - (float) ($cartItem->discounted_price ?? 0));
+            $itemDiscount = $qty * max(0, (float) $cartItem->original_price - (float) $cartItem->discounted_price);
 
             $subTotal += $itemSubtotal;
             $discount += $itemDiscount;
@@ -130,8 +131,8 @@ class OrderService
                 'sku' => $variant->sku ?? $product->sku,
                 'product_name' => $product->name,
                 'variant_name' => $variant->label ?? null,
-                'buying_price' => $variant->buying_price ?? $product->buying_price ?? 0,
-                'selling_price' => $sellingPrice,
+                'cost_price' => $variant->cost_price ?? $product->cost_price ?? 0,
+                'price' => $sellingPrice,
                 'unit_price' => $unitPrice,
                 'quantity' => $qty,
                 'discount' => $itemDiscount,

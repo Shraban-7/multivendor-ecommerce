@@ -10,6 +10,7 @@ use App\Domain\Review\Models\Review;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+
 class ProductController extends Controller
 {
     public function index(Request $request)
@@ -68,7 +69,7 @@ class ProductController extends Controller
         }
 
         if ($request->has('price_min') || $request->has('price_max')) {
-            $query->whereBetween('selling_price', [$priceMin, $priceMax]);
+            $query->whereBetween('price', [$priceMin, $priceMax]);
         }
 
         if (! empty($productOptionFilters)) {
@@ -92,9 +93,9 @@ class ProductController extends Controller
         if ($sortFilter === 'newest') {
             $query->latest();
         } elseif ($sortFilter === 'low_high') {
-            $query->orderBy('selling_price', 'asc');
+            $query->orderBy('price', 'asc');
         } elseif ($sortFilter === 'high_low') {
-            $query->orderBy('selling_price', 'desc');
+            $query->orderBy('price', 'desc');
         }
 
         $products = $query->paginate(20)->appends($request->query());
@@ -131,7 +132,7 @@ class ProductController extends Controller
         ));
     }
 
-    public function details(Product $product)
+    public function details(Request $request, Product $product)
     {
         $product->load([
             'images',
@@ -145,6 +146,22 @@ class ProductController extends Controller
             'seo',
         ]);
 
+        $limit = 8;
+        $page = $request->get('page', 1);
+        $skip = ($page - 1) * $limit;
+
+        $relatedProducts = $this->getRelatedProducts($product, $skip, $limit);
+
+        if ($request->ajax()) {
+            if ($relatedProducts->isEmpty()) {
+                return '';
+            }
+
+            return view('frontend.partials.product-card-load', [
+                'products' => $relatedProducts,
+            ])->render();
+        }
+
         $reviews = $product->reviews;
 
         $averageRating = $reviews->avg('rating') ?? 0;
@@ -156,13 +173,6 @@ class ProductController extends Controller
             $ratings[$i] = $totalReviews > 0 ? round(($count / $totalReviews) * 100) : 0;
         }
 
-        $relatedProducts = Product::active()
-            ->with(['variants.color', 'variants.size', 'images', 'seller', 'category', 'subcategory'])
-            ->where('id', '!=', $product->id)
-            ->where('category_id', $product->category_id)
-            ->limit(8)
-            ->get();
-
         return view('frontend.products.details', [
             'product' => $product->toDetailsArray(),
             'productModel' => $product,
@@ -172,6 +182,64 @@ class ProductController extends Controller
             'averageRating' => round($averageRating, 1),
             'seo' => $product->seo,
         ]);
+    }
+
+    private function getRelatedProducts(Product $product, int $skip, int $limit): \Illuminate\Support\Collection
+    {
+        $baseQuery = fn ($query) => $query->active()
+            ->with(['variants.color', 'variants.size', 'images', 'seller', 'category', 'subcategory'])
+            ->withCount('reviews')
+            ->withAvg('reviews', 'rating')
+            ->where('id', '!=', $product->id);
+
+        // 1) Same subcategory + same brand
+        $products = $baseQuery(Product::query())
+            ->where('subcategory_id', $product->subcategory_id)
+            ->where('brand_id', $product->brand_id)
+            ->skip($skip)->take($limit)
+            ->get();
+
+        if ($products->count() >= $limit) {
+            return $products;
+        }
+
+        // 2) Same subcategory (any brand)
+        $products = $baseQuery(Product::query())
+            ->where('subcategory_id', $product->subcategory_id)
+            ->skip($skip)->take($limit)
+            ->get();
+
+        if ($products->count() >= $limit) {
+            return $products;
+        }
+
+        // 3) Same category (any subcategory/brand)
+        $products = $baseQuery(Product::query())
+            ->where('category_id', $product->category_id)
+            ->skip($skip)->take($limit)
+            ->get();
+
+        if ($products->count() >= $limit) {
+            return $products;
+        }
+
+        // 4) Same brand (any category)
+        if ($product->brand_id) {
+            $products = $baseQuery(Product::query())
+                ->where('brand_id', $product->brand_id)
+                ->skip($skip)->take($limit)
+                ->get();
+
+            if ($products->count() >= $limit) {
+                return $products;
+            }
+        }
+
+        // 5) Fallback: latest active products
+        return $baseQuery(Product::query())
+            ->latest()
+            ->skip($skip)->take($limit)
+            ->get();
     }
 
     public function getVariant(Request $request, $slug)
@@ -199,8 +267,8 @@ class ProductController extends Controller
         return response()->json([
             'id' => $variant->id,
             'sku' => $variant->sku,
-            'price' => $variant->selling_price,
-            'discounted_price' => $variant->discounted_price,
+            'price' => $variant->price,
+            'compare_price' => $variant->compare_price,
             'stock' => $variant->stock_in - $variant->stock_out,
             'image' => $variant->image ? storage_url($variant->image) : null,
         ]);

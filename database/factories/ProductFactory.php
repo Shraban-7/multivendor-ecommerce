@@ -29,8 +29,8 @@ class ProductFactory extends Factory
             'sku' => strtoupper($this->faker->unique()->bothify('??####')),
             'short_description' => $this->faker->sentence(),
             'description' => $this->faker->paragraphs(2, true),
-            'buying_price' => $buyingPrice,
-            'selling_price' => $sellingPrice,
+            'cost_price' => $buyingPrice,
+            'price' => $sellingPrice,
             'stock_in' => $this->faker->numberBetween(0, 200),
             'stock_out' => 0,
             'low_stock_quantity' => 5,
@@ -93,20 +93,14 @@ class ProductFactory extends Factory
         ]);
     }
 
-    public function withDiscount(string $type = 'percentage', float $value = 10): static
+    public function withComparePrice(?float $comparePrice = null): static
     {
-        return $this->state(function (array $attributes) use ($type, $value) {
-            $sellingPrice = $attributes['selling_price'];
-            $discountAmount = $type === 'percentage'
-                ? $sellingPrice * ($value / 100)
-                : $value;
-            $discountedPrice = $sellingPrice - $discountAmount;
+        return $this->state(function (array $attributes) use ($comparePrice) {
+            $price = $attributes['price'];
+            $sale = $comparePrice ?? round($price * 0.9, 2);
 
             return [
-                'discount_type' => $type,
-                'discount_value' => $value,
-                'discount_amount' => $discountAmount,
-                'discounted_price' => max(0, $discountedPrice),
+                'compare_price' => max(0, min($sale, $price - 0.01)),
             ];
         });
     }

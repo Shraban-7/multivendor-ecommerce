@@ -251,6 +251,33 @@ $isDashboard = View::hasSection('dashboard');
             $('body').on('click', '.addToCartBtn', function () {
                 var $btn = $(this);
                 var originalText = $btn.html();
+                var $product_content = $btn.closest("[id^='product-wrapper']");
+                var product = $product_content.data("product");
+
+                if (!product) {
+                    showErrorToast("Product data not found!");
+                    return;
+                }
+
+                var options = product.options || [];
+                if (options.length > 0) {
+                    var selectedOptions = collectSelectedOptions($product_content);
+                    var allSelected = options.every(function(opt) {
+                        return selectedOptions[opt.id] !== undefined;
+                    });
+
+                    if (!allSelected) {
+                        var missing = options.filter(function(opt) {
+                            return selectedOptions[opt.id] === undefined;
+                        }).map(function(opt) { return opt.name; }).join(' and ');
+
+                        $product_content.find('.variant-error').removeClass('hidden')
+                            .text('Please select ' + missing + ' before adding to cart.');
+                        showErrorToast('Please select ' + missing + ' first!');
+                        return;
+                    }
+                }
+
                 $btn.html(
                     `<svg class="animate-spin h-4 w-4 text-white inline-block mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -259,23 +286,13 @@ $isDashboard = View::hasSection('dashboard');
                 ).prop('disabled', true);
 
                 var product_id = $btn.data('id');
-                var $product_content = $btn.closest("[id^='product-wrapper']");
-                var product = $product_content.data("product");
-
-                if (!product) {
-                    showErrorToast("Product data not found!");
-                    $btn.html(originalText).prop('disabled', false);
-                    return;
-                }
-
-                const selectedOptions = collectSelectedOptions($product_content);
-                const variant = getSelectedVariant(product, selectedOptions);
-                var variantId = variant ? variant.id : null;
-
-                var product_price_text = $product_content.find('.product-price').text().replace(/[^0-9.]/g,
-                    '');
+                var product_price_text = $product_content.find('.product-price').text().replace(/[^0-9.]/g, '');
                 var product_price = parseFloat(product_price_text);
                 var qtyInput = $product_content.find('.quantity').val() || 1;
+
+                var selectedOptions = collectSelectedOptions($product_content);
+                var variant = getSelectedVariant(product, selectedOptions);
+                var variantId = variant ? variant.id : null;
 
                 function addToCartRequest() {
                     return $.ajax({
@@ -539,12 +556,25 @@ $isDashboard = View::hasSection('dashboard');
             }
 
 
-            $("[id^='product-wrapper']").each(function () {
-                initDefaultVariant($(this));
-            });
-
             function storageURL(fileName) {
-                return "{{ url('/') }}" + '/storage/' + fileName;
+                if (!fileName) {
+                    return "{{ asset('assets/frontend/images/default.png') }}";
+                }
+
+                const value = String(fileName);
+                if (/^(https?:)?\/\//i.test(value)) {
+                    return value;
+                }
+
+                if (value.startsWith('/storage/')) {
+                    return "{{ url('/') }}" + value;
+                }
+
+                if (value.includes('/storage/')) {
+                    return value;
+                }
+
+                return "{{ url('/') }}" + '/storage/' + value.replace(/^\/+/, '');
             }
 
             function formatPrice(price, quantity) {
@@ -553,6 +583,38 @@ $isDashboard = View::hasSection('dashboard');
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2
                 });
+            }
+
+            function productHasVariants(product) {
+                return !!(product.has_variants || (product.variants && product.variants.length > 0));
+            }
+
+            /** Selling price matches cart: compare_price ?? price */
+            function resolveDisplayPrices(price, comparePrice) {
+                const listPrice = parseFloat(price) || 0;
+                const compare = comparePrice !== null && comparePrice !== '' && comparePrice !== undefined
+                    ? parseFloat(comparePrice)
+                    : null;
+                const hasSale = compare !== null && !isNaN(compare) && compare > 0 && compare < listPrice;
+                const selling = hasSale ? compare : listPrice;
+
+                return { listPrice, selling, hasSale };
+            }
+
+            function renderPriceUI($priceEl, $originalPriceEl, price, comparePrice, quantity) {
+                const { listPrice, selling, hasSale } = resolveDisplayPrices(price, comparePrice);
+                const qty = quantity || 1;
+
+                if (hasSale) {
+                    $originalPriceEl.removeClass('hidden');
+                    $priceEl.removeClass('text-[#191919]').addClass('text-[#F85606]')
+                        .text(`৳ ${formatPrice(selling, qty)}`);
+                    $originalPriceEl.text(`৳ ${formatPrice(listPrice, qty)}`);
+                } else {
+                    $originalPriceEl.addClass('hidden').text('');
+                    $priceEl.removeClass('text-[#F85606]').addClass('text-[#191919]')
+                        .text(`৳ ${formatPrice(selling, qty)}`);
+                }
             }
 
             function updateProductUI($wrapper, variant = null, quantity, isInitialLoad = false) {
@@ -569,119 +631,136 @@ $isDashboard = View::hasSection('dashboard');
                 const product = $wrapper.data("product");
 
                 if (variant) {
-                    const basePrice = parseFloat(variant.price) || 0;
-                    const discounted = variant.discounted_price !== null ? parseFloat(variant.discounted_price) :
-                        null;
+                    const stock = parseInt(variant.stock, 10) || 0;
+                    const safeQty = Math.max(1, Math.min(quantity || 1, stock > 0 ? stock : 1));
 
-                    const price = discounted && discounted > 0 ? discounted : basePrice;
+                    renderPriceUI($priceEl, $originalPriceEl, variant.price, variant.compare_price, safeQty);
 
-                    if (!discounted || discounted == 0) {
-                        $originalPriceEl.addClass('hidden');
-                        $priceEl.text(`৳ ${formatPrice(basePrice, quantity)}`);
-                    } else {
-                        $originalPriceEl.removeClass('hidden');
-                        $priceEl.text(`৳ ${formatPrice(discounted, quantity)}`);
-                        $originalPriceEl.text(`৳ ${formatPrice(basePrice, quantity)}`);
-                    }
-
-                    $skuEl.text(variant.sku);
-                    $stockEl.text(variant.stock);
-                    $availability.text(variant.stock > 0 ? "In Stock" : "Out of Stock");
+                    $skuEl.text(variant.sku || product.sku || 'N/A');
+                    $stockEl.text(stock);
+                    $availability
+                        .text(stock > 0 ? 'In Stock' : 'Out of Stock')
+                        .removeClass('text-gray-500')
+                        .toggleClass('text-green-600', stock > 0)
+                        .toggleClass('text-red-600', stock <= 0);
                     $variantIdInput.val(variant.id);
-                    $qtyEl.val(quantity);
-                    $qtyEl.attr('value', parseInt($qtyEl.val()));
-                    $variantError.addClass("hidden");
+                    $qtyEl.val(safeQty);
+                    $variantError.addClass('hidden');
 
-                    $addToCartBtn.prop("disabled", variant.stock <= 0).toggleClass("opacity-50 cursor-not-allowed",
-                        variant.stock <= 0);
+                    $addToCartBtn
+                        .prop('disabled', stock <= 0)
+                        .toggleClass('opacity-50 cursor-not-allowed', stock <= 0);
 
                     if (!isInitialLoad && variant.image) {
-                        const imageUrl = storageURL(variant.image);
-                        $mainImage.attr('src', imageUrl);
+                        $mainImage.attr('src', storageURL(variant.image));
                     }
-
+                } else if (productHasVariants(product)) {
+                    $originalPriceEl.addClass('hidden').text('');
+                    $priceEl.removeClass('text-[#F85606]').addClass('text-[#191919]')
+                        .text('Select options to see price');
+                    $skuEl.text('—');
+                    $stockEl.text('—');
+                    $availability
+                        .text('Select options')
+                        .removeClass('text-green-600 text-red-600')
+                        .addClass('text-gray-500');
+                    $variantIdInput.val('');
+                    $qtyEl.val(quantity || 1);
+                    $addToCartBtn.prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
                 } else {
-                    const basePrice = parseFloat(product.price) || 0;
-                    const discounted = product.discounted_price !== null ? parseFloat(product.discounted_price) :
-                        null;
-                    const price = discounted && discounted > 0 ? discounted : basePrice;
+                    const stock = parseInt(product.stock, 10) || 0;
 
-                    if (!discounted || discounted == 0) {
-                        $originalPriceEl.addClass('hidden');
-                        $priceEl.text(`৳ ${formatPrice(basePrice, quantity)}`);
-                    } else {
-                        $originalPriceEl.removeClass('hidden');
-                        $priceEl.text(`৳ ${formatPrice(discounted, quantity)}`);
-                        $originalPriceEl.text(`৳ ${formatPrice(basePrice, quantity)}`);
-                    }
+                    renderPriceUI($priceEl, $originalPriceEl, product.price, product.compare_price, quantity || 1);
 
-                    $skuEl.text(product.sku || "N/A");
-                    $stockEl.text(product.stock || 0);
-                    $availability.text((product.stock || 0) > 0 ? "In Stock" : "Out of Stock");
-                    $qtyEl.val(quantity);
-                    $qtyEl.attr('value', parseInt($qtyEl.val()));
-                    $variantIdInput.val("");
-                    $variantError.addClass("hidden");
-                    $addToCartBtn.prop("disabled", false).removeClass("opacity-50 cursor-not-allowed");
+                    $skuEl.text(product.sku || 'N/A');
+                    $stockEl.text(stock);
+                    $availability
+                        .text(stock > 0 ? 'In Stock' : 'Out of Stock')
+                        .removeClass('text-gray-500')
+                        .toggleClass('text-green-600', stock > 0)
+                        .toggleClass('text-red-600', stock <= 0);
+                    $variantIdInput.val('');
+                    $qtyEl.val(quantity || 1);
+                    $addToCartBtn
+                        .prop('disabled', stock <= 0)
+                        .toggleClass('opacity-50 cursor-not-allowed', stock <= 0);
                 }
             }
 
             function getSelectedVariant(product, selectedOptions) {
-                const colorId = selectedOptions['color'] || null;
-                const sizeId = selectedOptions['size'] || null;
-                return (product.variants || []).find(v =>
-                    v.color_id === colorId && v.size_id === sizeId
-                );
-            }
+                const hasColorOption = (product.options || []).some(o => o.id === 'color');
+                const hasSizeOption = (product.options || []).some(o => o.id === 'size');
+                const colorId = selectedOptions['color'] != null ? Number(selectedOptions['color']) : null;
+                const sizeId = selectedOptions['size'] != null ? Number(selectedOptions['size']) : null;
 
-            $(document).on('click', '.option-value-btn', function () {
-                const $btn = $(this);
-                $btn.closest('[data-option-id]')
-                    .find('.option-value-btn')
-                    .removeClass('active-option bg-primary/10 text-primary-500 border-primary-500')
-                    .addClass('bg-gray-50 text-gray-700 border-gray-300');
-                $btn
-                    .addClass('active-option bg-primary/10 text-primary-500 border-primary-500')
-                    .removeClass('bg-gray-50 text-gray-700 border-gray-300');
-            });
+                if (hasColorOption && colorId === null) return null;
+                if (hasSizeOption && sizeId === null) return null;
+
+                return (product.variants || []).find(v => {
+                    const variantColor = v.color_id != null ? Number(v.color_id) : null;
+                    const variantSize = v.size_id != null ? Number(v.size_id) : null;
+                    const colorOk = !hasColorOption || variantColor === colorId;
+                    const sizeOk = !hasSizeOption || variantSize === sizeId;
+
+                    return colorOk && sizeOk;
+                }) || null;
+            }
 
             function collectSelectedOptions($wrapper) {
                 const selectedOptions = {};
-                $wrapper.find(".option-value-btn.active-option")
-                    .each(function () {
-                        const $btn = $(this);
-                        const optId = $btn.data("option-id");
-                        const valId = $btn.data("value-id");
-                        selectedOptions[optId] = valId;
-                    });
+                $wrapper.find('.option-value-btn.active-option').each(function () {
+                    const $btn = $(this);
+                    selectedOptions[$btn.attr('data-option-id')] = Number($btn.attr('data-value-id'));
+                });
 
                 return selectedOptions;
             }
 
-            $(document).on("click", ".option-value-btn", function () {
-                const $btn = $(this);
-                const $wrapper = $btn.closest("[id^='product-wrapper']");
-                const product = $wrapper.data("product");
+            function selectOptionButton($btn) {
+                const optionId = $btn.attr('data-option-id');
+                const $group = $btn.closest('[data-option-group]');
+                const $buttons = $group.length
+                    ? $group.find('.option-value-btn')
+                    : $btn.closest('form, [id^="product-wrapper"]').find(`.option-value-btn[data-option-id="${optionId}"]`);
+
+                $buttons.each(function () {
+                    const $el = $(this);
+                    $el.removeClass('active-option bg-primary/10 text-primary-500 border-primary-500 ring-2 ring-primary-200');
+                    if ($el.attr('data-option-id') === 'color') {
+                        $el.addClass('border-gray-300');
+                    } else {
+                        $el.addClass('bg-gray-50 text-gray-700 border-gray-300');
+                    }
+                });
+
+                $btn.addClass('active-option');
+                if ($btn.attr('data-option-id') === 'color') {
+                    $btn.removeClass('border-gray-300').addClass('border-primary-500 ring-2 ring-primary-200');
+                } else {
+                    $btn.removeClass('bg-gray-50 text-gray-700 border-gray-300')
+                        .addClass('bg-primary/10 text-primary-500 border-primary-500');
+                }
+            }
+
+            function syncVariantUI($wrapper) {
+                const product = $wrapper.data('product');
                 if (!product) return;
 
-                const optId = $btn.data("option-id");
-                const valId = $btn.data("value-id");
-
-                $wrapper.find(`.option-value-btn[data-option-id="${optId}"]`).removeClass(
-                    "text-primary-500 border-primary-500"
-                ).addClass("bg-white text-gray-800 border-gray-300");
-
-                $btn.removeClass("bg-white text-gray-800 border-gray-300").addClass(
-                    "text-primary-500 border-primary-500"
-                );
-
                 const selectedOptions = collectSelectedOptions($wrapper);
-
                 const variant = getSelectedVariant(product, selectedOptions);
-
-                const quantity = parseInt($wrapper.find(".quantity").val()) || 1;
-
+                const quantity = parseInt($wrapper.find('input.quantity').val(), 10) || 1;
                 updateProductUI($wrapper, variant, quantity);
+            }
+
+            $(document).on('click', '.option-value-btn', function (e) {
+                e.preventDefault();
+                const $btn = $(this);
+                const $wrapper = $btn.closest("[id^='product-wrapper']");
+                if (!$wrapper.length) return;
+
+                $wrapper.find('.variant-error').addClass('hidden');
+                selectOptionButton($btn);
+                syncVariantUI($wrapper);
             });
 
             $(document).on("click", ".thumb-img", function () {
@@ -692,9 +771,9 @@ $isDashboard = View::hasSection('dashboard');
                 const $thumbWrapper = $wrapper.find(".thumbnailWrapper");
 
                 $mainImage.attr("src", full);
-                $thumbWrapper.find(".slide-thumb").removeClass("border-primary").addClass(
-                    "border-gray-200");
-                $img.closest(".slide-thumb").addClass("border-primary").removeClass("border-gray-200");
+                $thumbWrapper.find(".slide-thumb").removeClass("border-[#F85606]").addClass(
+                    "border-[#E5E5E5]");
+                $img.closest(".slide-thumb").addClass("border-[#F85606]").removeClass("border-[#E5E5E5]");
             });
 
             $(document).on("click", ".increaseBtn, .decreaseBtn", debounce(function () {
@@ -704,22 +783,27 @@ $isDashboard = View::hasSection('dashboard');
                 if (!product) return;
 
                 const $qtyInput = $wrapper.find("input.quantity");
-                let quantity = parseInt($qtyInput.val()) || 1;
+                let quantity = parseInt($qtyInput.val(), 10) || 1;
 
                 const selectedOptions = collectSelectedOptions($wrapper);
                 const variant = getSelectedVariant(product, selectedOptions);
-
-                const availableStock = variant ? variant.stock : product.stock;
+                const availableStock = variant
+                    ? (parseInt(variant.stock, 10) || 0)
+                    : (productHasVariants(product) ? 0 : (parseInt(product.stock, 10) || 0));
 
                 if ($btn.hasClass("increaseBtn")) {
-                    if (quantity < availableStock) quantity += 1;
-                    else {
-                        quantity = availableStock;
+                    if (productHasVariants(product) && !variant) {
+                        showWarningToast("Please select options first!");
+                        return;
+                    }
+                    if (quantity < availableStock) {
+                        quantity += 1;
+                    } else {
+                        quantity = Math.max(availableStock, 1);
                         showWarningToast("Not enough stock!");
                     }
                 } else {
-                    quantity -= 1;
-                    if (quantity < 1) quantity = 1;
+                    quantity = Math.max(1, quantity - 1);
                 }
 
                 updateProductUI($wrapper, variant, quantity);
@@ -740,56 +824,12 @@ $isDashboard = View::hasSection('dashboard');
                 updateProductUI($wrapper, variant, quantity);
             });
 
-            function initDefaultVariant($wrapper) {
-                if ($wrapper.data('variant-initialized')) return;
-
-                const product = $wrapper.data("product");
-                if (!product?.variants?.length) return;
-
-                const defaultVariant = product.variants.find(v => v.is_default);
-                if (!defaultVariant) return;
-
-                if (defaultVariant.color_id) {
-                    const $btn = $wrapper.find(`.option-value-btn[data-value-id="${defaultVariant.color_id}"][data-option-id="color"]`);
-                    if ($btn.length) {
-                        $wrapper.find(`.option-value-btn[data-option-id="color"]`)
-                            .removeClass("active-option bg-primary/10 text-primary-500 border-primary-500")
-                            .addClass("bg-gray-50 text-gray-700 border-gray-300");
-                        $btn.addClass("active-option bg-primary/10 text-primary-500 border-primary-500")
-                            .removeClass("bg-gray-50 text-gray-700 border-gray-300");
-                    }
-                }
-
-                if (defaultVariant.size_id) {
-                    const $btn = $wrapper.find(`.option-value-btn[data-value-id="${defaultVariant.size_id}"][data-option-id="size"]`);
-                    if ($btn.length) {
-                        $wrapper.find(`.option-value-btn[data-option-id="size"]`)
-                            .removeClass("active-option bg-primary/10 text-primary-500 border-primary-500")
-                            .addClass("bg-gray-50 text-gray-700 border-gray-300");
-                        $btn.addClass("active-option bg-primary/10 text-primary-500 border-primary-500")
-                            .removeClass("bg-gray-50 text-gray-700 border-gray-300");
-                    }
-                }
-
-                const quantity = parseInt($wrapper.find(".quantity").val()) || 1;
-                updateProductUI($wrapper, defaultVariant, quantity, true);
-
-                $wrapper.data('variant-initialized', true);
-            }
-
             document.addEventListener('modal:open', function (event) {
                 const modalEl = event.detail;
                 const $modal = $(modalEl);
-
-                $modal.find("[id^='product-wrapper']").each(function () {
-                    initDefaultVariant($(this));
-                });
             });
 
             function onLoadMoreProducts() {
-                $("[id^='product-wrapper']").each(function () {
-                    initDefaultVariant($(this));
-                });
             }
         });
     </script>

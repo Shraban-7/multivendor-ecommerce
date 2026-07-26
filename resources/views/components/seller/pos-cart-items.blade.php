@@ -2,8 +2,8 @@
     @php
         $product = $item->variant->product ?? $item->product;
         $name = $item->variant->label ?? $product->name;
-        $sellingPrice = $item->variant->selling_price ?? $product->selling_price;
-        $discountedPrice = $item->variant->discounted_price ?? $product->discounted_price ?? $sellingPrice;
+        $sellingPrice = $item->variant->price ?? $product->price;
+        $discountedPrice = $item->variant->compare_price ?? $product->compare_price ?? $sellingPrice;
     @endphp
 
     <tr class="cart-item" id="cart-item-{{ $item->id }}" data-id="{{ $item->id }}" data-variant-id="{{ $item->product_variant_id }}" data-product-id="{{ $item->product_id }}">

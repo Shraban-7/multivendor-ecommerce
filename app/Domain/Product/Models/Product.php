@@ -27,11 +27,9 @@ class Product extends Model
 
     protected $casts = [
         'payment_type' => PaymentType::class,
-        'buying_price' => 'decimal:2',
-        'selling_price' => 'decimal:2',
-        'discount_value' => 'decimal:2',
-        'discount_amount' => 'decimal:2',
-        'discounted_price' => 'decimal:2',
+        'cost_price' => 'decimal:2',
+        'price' => 'decimal:2',
+        'compare_price' => 'decimal:2',
     ];
 
     const STATUS_PENDING_APPROVAL = 0;
@@ -153,24 +151,23 @@ class Product extends Model
 
     public function toDetailsArray()
     {
-        $margin = $this->selling_price - $this->buying_price;
-        $marginPercent = $this->buying_price > 0 ? ($margin / $this->buying_price) * 100 : 0;
+        $margin = $this->price - $this->cost_price;
+        $marginPercent = $this->cost_price > 0 ? ($margin / $this->cost_price) * 100 : 0;
 
         $sold = $this->variants->sum('stock_out');
 
         $reviews = $this->reviews;
 
-        $images = [];
-        $images[] = $this->thumbnail;
-        foreach ($this->images as $img) {
-            $images[] = $img->image;
-        }
-
-        foreach ($this->variants as $variant) {
-            if (! is_null($variant->image)) {
-                $images[] = $variant->image;
-            }
-        }
+        $images = collect([$this->thumbnail])
+            ->merge($this->images->pluck('image'))
+            ->merge($this->variants->pluck('image'))
+            ->filter()
+            ->unique()
+            ->values()
+            ->map(fn ($path) => storage_url($path))
+            ->filter()
+            ->values()
+            ->all();
 
         return [
             'id' => $this->id,
@@ -187,8 +184,9 @@ class Product extends Model
 
             'short_description' => $this->short_description,
             'description' => $this->description,
-            'selling_price' => $this->selling_price,
-            'discounted_price' => $this->discounted_price,
+            'price' => $this->price,
+            'compare_price' => $this->compare_price,
+            'cost_price' => $this->cost_price,
             'stock_status' => $this->stock_status,
             'in_stock' => $this->stock_in,
             'sold_out' => $this->stock_out,
@@ -199,16 +197,15 @@ class Product extends Model
                     'id' => $variant->id,
                     'sku' => $variant->sku,
                     'stock' => $variant->stock_in - $variant->stock_out,
-                    'price' => $variant->selling_price,
-                    'discounted_price' => $variant->discounted_price,
-                    'image' => $variant->image,
+                    'price' => $variant->price,
+                    'compare_price' => $variant->compare_price,
+                    'cost_price' => $variant->cost_price,
+                    'image' => $variant->image ? storage_url($variant->image) : null,
                     'color_id' => $variant->color_id,
                     'size_id' => $variant->size_id,
-                    'is_default' => $variant->is_default,
                 ];
-            }),
+            })->values()->all(),
             'options' => $this->grouped_options,
-            'default_variant' => collect($this['variants'])->sortByDesc('is_default')->first(),
             'total_sold' => $sold,
             'profit' => [
                 'margin' => (float) $margin,
@@ -247,6 +244,7 @@ class Product extends Model
             ->unique('size_id')
             ->values()
             ->sortBy(fn ($v) => $v->size->sort_order)
+            ->values()
             ->map(fn ($v) => [
                 'id' => $v->size->id,
                 'value' => $v->size->name,
@@ -254,10 +252,10 @@ class Product extends Model
 
         $options = [];
         if ($colors->isNotEmpty()) {
-            $options[] = ['id' => 'color', 'name' => 'Color', 'values' => $colors->toArray()];
+            $options[] = ['id' => 'color', 'name' => 'Color', 'values' => $colors->values()->all()];
         }
         if ($sizes->isNotEmpty()) {
-            $options[] = ['id' => 'size', 'name' => 'Size', 'values' => $sizes->toArray()];
+            $options[] = ['id' => 'size', 'name' => 'Size', 'values' => $sizes->values()->all()];
         }
 
         return Attribute::make(

@@ -61,10 +61,9 @@ class ProductController extends Controller
             'subcategory_id' => 'nullable|integer|exists:categories,id',
             'brand' => 'nullable',
             'name' => 'required|string|max:255',
-            'buying_price' => 'required|numeric',
-            'selling_price' => 'required|numeric',
-            'discount_type' => 'nullable|string',
-            'discount_value' => 'nullable|numeric',
+            'cost_price' => 'required|numeric|min:0',
+            'price' => 'required|numeric|min:0|gte:cost_price',
+            'compare_price' => 'nullable|numeric|min:0|lt:price',
             'payment_type' => 'required|numeric',
             'unit_id' => 'required|numeric',
             'unit_value' => 'required|string',
@@ -101,8 +100,8 @@ class ProductController extends Controller
     {
         $product->load('variants.color', 'variants.size', 'stock_history', 'seo');
 
-        $costPrice = $product->buying_price ?? 0;
-        $sellingPrice = $product->selling_price ?? 0;
+        $costPrice = $product->cost_price ?? 0;
+        $sellingPrice = $product->price ?? 0;
 
         $profitAmount = $sellingPrice - $costPrice;
         $profitPercent = $costPrice > 0 ? ($profitAmount / $costPrice) * 100 : 0;
@@ -153,10 +152,9 @@ class ProductController extends Controller
             'short_description' => 'nullable|string',
             'description' => 'nullable|string',
             'sku' => 'nullable|string|max:255',
-            'buying_price' => 'required|numeric',
-            'selling_price' => 'required|numeric',
-            'discount_type' => 'nullable|string',
-            'discount_value' => 'nullable|numeric',
+            'cost_price' => 'required|numeric|min:0',
+            'price' => 'required|numeric|min:0|gte:cost_price',
+            'compare_price' => 'nullable|numeric|min:0|lt:price',
             'payment_type' => 'required|numeric',
             'unit_id' => 'required|numeric',
             'unit_value' => 'required|string',
@@ -207,8 +205,8 @@ class ProductController extends Controller
         if ($useMainPrices) {
             $product->variants->each(function (ProductVariant $variant) use ($product) {
                 $variant->update([
-                    'buying_price' => $product->buying_price,
-                    'selling_price' => $product->selling_price,
+                    'cost_price' => $product->cost_price,
+                    'price' => $product->price,
                 ]);
             });
         }
@@ -216,10 +214,7 @@ class ProductController extends Controller
         if ($useMainDiscount) {
             $product->variants->each(function (ProductVariant $variant) use ($product) {
                 $variant->update([
-                    'discount_type' => $product->discount_type,
-                    'discount_value' => $product->discount_value,
-                    'discount_amount' => $product->discount_amount,
-                    'discounted_price' => $product->discounted_price,
+                    'compare_price' => $product->compare_price,
                 ]);
             });
         }
@@ -389,7 +384,7 @@ class ProductController extends Controller
                 'productName' => $variant->product->name,
                 'variantName' => $variant->label,
                 'sku' => $variant->sku,
-                'price' => money($variant->selling_price),
+                'price' => money($variant->price),
                 'quantity' => $request->quantity,
             ]]);
         }
@@ -401,7 +396,7 @@ class ProductController extends Controller
                 'productName' => $product->name,
                 'variantName' => '',
                 'sku' => $product->sku,
-                'price' => money($product->selling_price),
+                'price' => money($product->price),
                 'quantity' => $request->quantity,
             ]]);
         }
@@ -420,8 +415,8 @@ class ProductController extends Controller
                 'name' => $product->name,
                 'sku' => $product->sku,
                 'quantity' => $product->stock_in - $product->stock_out,
-                'price' => removeZeroFromDecimal($product->selling_price, 'int'),
-                'discounted_price' => removeZeroFromDecimal($product->discounted_price ?? $product->selling_price, 'int'),
+                'price' => removeZeroFromDecimal($product->price, 'int'),
+                'compare_price' => removeZeroFromDecimal($product->compare_price, 'int'),
                 'image' => is_null($product->thumbnail)
                     ? asset('assets/frontend/images/placeholder-img.jpg')
                     : storage_url($product->thumbnail),
@@ -430,8 +425,8 @@ class ProductController extends Controller
                     'sku' => $variant->sku,
                     'label' => $variant->label,
                     'quantity' => $variant->stock_in - $variant->stock_out,
-                    'price' => removeZeroFromDecimal($variant->selling_price, 'int'),
-                    'discounted_price' => removeZeroFromDecimal($variant->discounted_price, 'int'),
+                    'price' => removeZeroFromDecimal($variant->price, 'int'),
+                    'compare_price' => removeZeroFromDecimal($variant->compare_price, 'int'),
                     'image' => is_null($variant->image) ? null : storage_url($variant->image),
                 ]),
             ]);

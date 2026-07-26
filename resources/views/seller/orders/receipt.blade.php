@@ -129,9 +129,9 @@ $showCurrency = false;
                 </td>
 
                 <td class="right">
-                    @if ($item->selling_price > $item->unit_price)
+                    @if ($item->price > $item->unit_price)
                     <span style="text-decoration: line-through;">
-                        {{ money($item->selling_price * $item->quantity, $showCurrency) }}
+                        {{ money($item->price * $item->quantity, $showCurrency) }}
                     </span>
                     @endif
                     {{ money($item->unit_price * $item->quantity, $showCurrency) }}

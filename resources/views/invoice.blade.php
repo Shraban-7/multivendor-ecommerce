@@ -170,9 +170,9 @@
                                     <div class="text-muted small mt-1">{{ $item->variant->label }}</div>
                                 </td>
                                 <td class="text-center">
-                                    @if ($item->selling_price > $item->unit_price)
+                                    @if ($item->price > $item->unit_price)
                                         <span style="text-decoration: line-through;">
-                                            {{ money($item->selling_price) }}
+                                            {{ money($item->price) }}
                                         </span>
                                     @endif
                                     {{ money($item->unit_price) }}  
@@ -180,9 +180,9 @@
 
                                 <td class="text-center">{{ $item->quantity }}</td>
                                 <td class="text-end">
-                                    @if ($item->selling_price > $item->unit_price)
+                                    @if ($item->price > $item->unit_price)
                                         <span style="text-decoration: line-through;">
-                                            {{ money($item->selling_price * $item->quantity) }}
+                                            {{ money($item->price * $item->quantity) }}
                                         </span>
                                     @endif
                                     {{ money($item->total) }}

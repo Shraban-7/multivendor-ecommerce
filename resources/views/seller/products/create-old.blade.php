@@ -65,13 +65,13 @@
                                 </div> -->
 
                     <div class="mb-3 col-md-3">
-                        <label class="form-label">Buying Price</label>
-                        <input name="buying_price" type="number" value="" class="form-control" required>
+                        <label class="form-label">Cost Price</label>
+                        <input name="cost_price" type="number" value="" class="form-control" required>
                     </div>
 
                     <div class="mb-3 col-md-3">
-                        <label class="form-label">Selling Price</label>
-                        <input name="selling_price" type="number" value="" class="form-control" required>
+                        <label class="form-label">Price</label>
+                        <input name="price" type="number" value="" class="form-control" required>
                     </div>
 
 
@@ -87,21 +87,8 @@
                     </div>
 
                     <div class="mb-3 col-md-3">
-                        <label class="form-label">Discount Type</label>
-                        <select name="discount_type" class="form-select w-100" id="">
-                            <option value="" selected>--Choose--</option>
-                            <option value="{{ \App\Enums\DiscountType::FLAT->value }}">
-                                {{ ucfirst(\App\Enums\DiscountType::FLAT->label()) }}
-                            </option>
-                            <option value="{{ \App\Enums\DiscountType::PERCENTAGE->value }}">
-                                {{ ucfirst(\App\Enums\DiscountType::PERCENTAGE->label()) }}
-                            </option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3 col-md-3">
-                        <label class="form-label">Discount Value</label>
-                        <input name="discount_value" type="number" value="" class="form-control">
+                        <label class="form-label">Compare Price</label>
+                        <input name="compare_price" type="number" step="0.01" min="0" value="" class="form-control" placeholder="Optional sale price">
                     </div>
 
                     <div class="mb-3 col-md-3">

@@ -7,12 +7,12 @@
 
     $variantName = $variant->label ?? 'No Variant';
 
-    $sellingPrice = $item->selling_price
-        ?? $variant->selling_price
-        ?? $product->selling_price;
+    $sellingPrice = $item->price
+        ?? $variant->price
+        ?? $product->price;
 
     $unitPrice = $item->unit_price
-        ?? ($variant->discounted_price ?? null)
+        ?? ($variant->compare_price ?? null)
         ?? ($item->price ?? null)
         ?? $sellingPrice;
 @endphp

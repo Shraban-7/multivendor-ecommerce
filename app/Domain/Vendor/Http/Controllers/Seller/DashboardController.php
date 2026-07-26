@@ -34,7 +34,7 @@ class DashboardController extends Controller
 
             $deliveredOrdersQuery = (clone $ordersQuery)->delivered();
 
-            $orders = Order::selectRaw('DATE(orders.created_at) as label, COUNT(orders.id) as order_count, SUM(orders.payable) as sale, SUM(order_items.buying_price) as buying_price')
+            $orders = Order::selectRaw('DATE(orders.created_at) as label, COUNT(orders.id) as order_count, SUM(orders.payable) as sale, SUM(order_items.cost_price) as cost_price')
                 ->join('order_items', 'orders.id', '=', 'order_items.order_id')
                 ->where('orders.seller_id', $seller->id)
                 ->whereBetween('orders.created_at', [$start, $end])
@@ -47,7 +47,7 @@ class DashboardController extends Controller
                 ->pluck('id');
 
             $orderItemProductIds = OrderItem::whereIn('order_id', $orderIds)->pluck('product_id');
-            $TotalBuyingPrice = OrderItem::whereIn('order_id', $orderIds)->sum('buying_price');
+            $TotalBuyingPrice = OrderItem::whereIn('order_id', $orderIds)->sum('cost_price');
 
             $profit = (clone $ordersQuery)->sum('seller_earnings') - $TotalBuyingPrice;
 
@@ -55,7 +55,7 @@ class DashboardController extends Controller
                 'labels' => $orders->pluck('label'),
                 'orders' => $orders->pluck('order_count'),
                 'sales' => $orders->pluck('sale'),
-                'profits' => $orders->map(fn ($order) => $order->sale - $order->buying_price),
+                'profits' => $orders->map(fn ($order) => $order->sale - $order->cost_price),
             ];
 
             $top_selling_products = Product::where('seller_id', $seller->id)
@@ -78,7 +78,7 @@ class DashboardController extends Controller
             $total_stock_product_amount = DB::table('product_variants')
                 ->join('products', 'product_variants.product_id', '=', 'products.id')
                 ->where('products.seller_id', $seller->id)
-                ->selectRaw('SUM(GREATEST(COALESCE(product_variants.stock_in, 0) - COALESCE(product_variants.stock_out, 0), 0) * product_variants.selling_price) as total')
+                ->selectRaw('SUM(GREATEST(COALESCE(product_variants.stock_in, 0) - COALESCE(product_variants.stock_out, 0), 0) * product_variants.price) as total')
                 ->value('total');
 
             $statusCounts = (clone $ordersQuery)

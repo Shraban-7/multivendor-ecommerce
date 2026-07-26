@@ -46,7 +46,7 @@
                   </a>
                 </div>
                 <div class="flex-1">
-                  <p class="font-semibold">{{ money($product->selling_price) }}</p>
+                  <p class="font-semibold">{{ money($product->price) }}</p>
                   <p class="text-xs text-gray-400 line-clamp-2">
                     {{ $product->name }}
                   </p>

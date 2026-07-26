@@ -15,9 +15,11 @@ use App\Domain\Product\Database\Seeders\ColorSeeder;
 use App\Domain\Product\Database\Seeders\FlashSaleSeeder;
 use App\Domain\Product\Database\Seeders\HomeMidBannerSeeder;
 use App\Domain\Product\Database\Seeders\OptionSeeder;
+use App\Domain\Product\Database\Seeders\ProductImageSeeder;
 use App\Domain\Product\Database\Seeders\ProductSeeder;
 use App\Domain\Product\Database\Seeders\ProductStockSeeder;
 use App\Domain\Product\Database\Seeders\ProductUnitSeeder;
+use App\Domain\Product\Database\Seeders\ProductVariantSeeder;
 use App\Domain\Product\Database\Seeders\SizeSeeder;
 use App\Domain\Shipping\Database\Seeders\DistrictSeeder;
 use App\Domain\Shipping\Database\Seeders\DivisionSeeder;
@@ -44,6 +46,8 @@ class DatabaseSeeder extends Seeder
             ColorSeeder::class,
             SizeSeeder::class,
             ProductSeeder::class,
+            ProductImageSeeder::class,
+            ProductVariantSeeder::class,
             FlashSaleSeeder::class,
             ProductStockSeeder::class,
             // \App\Domain\Order\Database\Seeders\OrderSeeder::class,
@@ -55,8 +59,6 @@ class DatabaseSeeder extends Seeder
             HomeMidBannerSeeder::class,
             SocialLinkSeeder::class,
             PaymentOptionSeeder::class,
-            // \App\Domain\Product\Database\Seeders\ProductVariantSeeder::class,
-            // \App\Domain\Product\Database\Seeders\VariantOptionSeeder::class,
             SystemSettingSeeder::class,
             PermissionSeeder::class,
             PaymentGatewaySeeder::class,

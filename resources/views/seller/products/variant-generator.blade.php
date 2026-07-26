@@ -89,10 +89,9 @@
                     <th>SKU</th>
                     <th>Color</th>
                     <th>Size</th>
-                    <th>Buying Price</th>
-                    <th>Selling Price</th>
-                    <th>Discount Type</th>
-                    <th>Discount Value</th>
+                    <th>Cost Price</th>
+                    <th>Price</th>
+                    <th>Compare Price</th>
                     <th>Image</th>
                     <th>Actions</th>
                     </tr>
@@ -123,20 +122,9 @@
                 <input type="hidden" class="variant-size-id" value="${comb.size_id || ''}" />
                 ${comb.size_name || '-'}
                 </td>
-                <td><input type="number" class="form-control form-control-sm" placeholder="Buying Price" /></td>
-                <td><input type="number" class="form-control form-control-sm" placeholder="Selling Price" /></td>
-                <td>
-                <select class="form-select form-select-sm variant-discount-type">
-                    <option value="none" selected>No Discount</option>
-                    <option value="percentage">Percentage (%)</option>
-                    <option value="flat">Flat Amount</option>
-                </select>
-                </td>
-                <td>
-                <input type="number"
-                    class="form-control form-control-sm variant-discount-value"
-                    disabled placeholder="Discount Value" />
-                </td>
+                <td><input type="number" class="form-control form-control-sm" placeholder="Cost Price" step="0.01" min="0" /></td>
+                <td><input type="number" class="form-control form-control-sm" placeholder="Price" step="0.01" min="0" /></td>
+                <td><input type="number" class="form-control form-control-sm variant-compare-price" placeholder="Compare Price" step="0.01" min="0" /></td>
                 <td><input type="file" class="form-control form-control-sm" accept="image/*" /></td>
                 <td>
                 <button type="button" class="btn btn-outline-danger btn-sm remove-variant-row-btn">Remove</button>
@@ -146,22 +134,7 @@
 
             tableHtml += `</tbody></table>`;
             variantsTableContainer.innerHTML = tableHtml;
-
-            variantsTableContainer.querySelectorAll(".variant-discount-type").forEach((select) => {
-                const input = select.closest("td").nextElementSibling.querySelector(".variant-discount-value");
-                toggleDiscountValue(select, input);
-                select.addEventListener("change", () => toggleDiscountValue(select, input));
-            });
         });
-
-        function toggleDiscountValue(discountTypeSelect, discountValueInput) {
-            if (discountTypeSelect.value === "none") {
-                discountValueInput.setAttribute("disabled", "disabled");
-                discountValueInput.value = "";
-            } else {
-                discountValueInput.removeAttribute("disabled");
-            }
-        }
 
         clearVariantsBtn.addEventListener("click", function() {
             variantsTableContainer.innerHTML = '<p class="text-muted mb-0">Click "Generate Variants" to see combinations.</p>';

@@ -64,10 +64,10 @@
                                                     href="{{ route('products.details', $product['slug']) }}">{{ $product['name'] }}</a>
                                             </h2>
 
-                                            @if ($product['discounted_price'] !== null)
+                                            @if ($product['compare_price'] !== null)
                                                 <div class="flex gap-x-2 text-nowrap text-sm sm:text-base">
                                                     <p class="font-semibold text-primary">
-                                                        {{ money($product['discounted_price']) }}
+                                                        {{ money($product['compare_price']) }}
                                                     </p>
                                                     <small class="line-through text-jet-gray align-items-end">
                                                         {{ money($product['price']) }}

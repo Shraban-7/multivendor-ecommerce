@@ -20,7 +20,7 @@ class ProductStockFactory extends Factory
 
         return [
             'quantity' => $quantity,
-            'buying_price' => $buyingPrice,
+            'cost_price' => $buyingPrice,
             'sub_total' => $buyingPrice * $quantity,
         ];
     }

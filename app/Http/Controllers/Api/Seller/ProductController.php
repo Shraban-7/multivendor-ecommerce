@@ -43,8 +43,8 @@ class ProductController extends Controller
             'thumbnail' => $p->thumbnail,
             'category' => $p->category?->name,
             'subcategory' => $p->subcategory?->name,
-            'selling_price' => (float) $p->selling_price,
-            'discounted_price' => (float) ($p->discounted_price ?? 0),
+            'price' => (float) $p->price,
+            'compare_price' => (float) ($p->compare_price ?? 0),
             'stock_in' => (int) $p->stock_in,
             'stock_out' => (int) $p->stock_out,
             'available_stock' => $p->available_stock,
@@ -71,9 +71,9 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
             'subcategory_id' => 'nullable|exists:categories,id',
             'brand_id' => 'nullable|exists:brands,id',
-            'buying_price' => 'required|numeric|min:0',
-            'selling_price' => 'required|numeric|min:0',
-            'discounted_price' => 'nullable|numeric|min:0',
+            'cost_price' => 'required|numeric|min:0',
+            'price' => 'required|numeric|min:0',
+            'compare_price' => 'nullable|numeric|min:0',
             'description' => 'nullable|string',
             'unit_id' => 'nullable|exists:units,id',
             'unit_value' => 'nullable|numeric',
@@ -125,9 +125,9 @@ class ProductController extends Controller
             'category_id' => 'sometimes|exists:categories,id',
             'subcategory_id' => 'nullable|exists:categories,id',
             'brand_id' => 'nullable|exists:brands,id',
-            'buying_price' => 'sometimes|numeric|min:0',
-            'selling_price' => 'sometimes|numeric|min:0',
-            'discounted_price' => 'nullable|numeric|min:0',
+            'cost_price' => 'sometimes|numeric|min:0',
+            'price' => 'sometimes|numeric|min:0',
+            'compare_price' => 'nullable|numeric|min:0',
             'description' => 'nullable|string',
             'stock_in' => 'sometimes|integer|min:0',
             'low_stock_quantity' => 'nullable|integer|min:0',
@@ -254,7 +254,7 @@ class ProductController extends Controller
     {
         $products = Product::where('seller_id', Auth::id())
             ->with(['category'])
-            ->select('id', 'name', 'slug', 'thumbnail', 'sku', 'stock_in', 'stock_out', 'low_stock_quantity', 'selling_price', 'category_id')
+            ->select('id', 'name', 'slug', 'thumbnail', 'sku', 'stock_in', 'stock_out', 'low_stock_quantity', 'price', 'category_id')
             ->latest()
             ->paginate($request->input('limit', 25));
 
@@ -269,7 +269,7 @@ class ProductController extends Controller
             'available' => $p->available_stock,
             'low_stock_quantity' => (int) ($p->low_stock_quantity ?? 0),
             'is_low_stock' => $p->available_stock <= ($p->low_stock_quantity ?? 0),
-            'selling_price' => (float) $p->selling_price,
+            'price' => (float) $p->price,
         ]));
     }
 
@@ -278,7 +278,7 @@ class ProductController extends Controller
         return apiResponse([
             'products' => Product::where('seller_id', Auth::id())
                 ->where('status', 1)
-                ->get(['id', 'name', 'sku', 'selling_price']),
+                ->get(['id', 'name', 'sku', 'price']),
         ]);
     }
 
@@ -287,7 +287,7 @@ class ProductController extends Controller
         return apiResponse([
             'products' => Product::where('seller_id', Auth::id())
                 ->where('status', 1)
-                ->get(['id', 'name', 'sku', 'selling_price']),
+                ->get(['id', 'name', 'sku', 'price']),
         ]);
     }
 

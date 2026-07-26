@@ -36,7 +36,6 @@ class CartController extends Controller
             'product_id' => 'required',
             'variant_id' => 'nullable|integer',
             'quantity' => 'required|integer|min:1',
-            'is_default' => 'nullable|boolean',
         ]);
 
         $variant = ! empty($data['variant_id'])
@@ -47,6 +46,12 @@ class CartController extends Controller
 
         if (! $product) {
             return response()->json(['success' => false, 'warning' => 'Product not found']);
+        }
+
+        $hasVariants = $product->variants()->count() > 0;
+
+        if ($hasVariants && empty($data['variant_id'])) {
+            return response()->json(['success' => false, 'warning' => 'Please select all product options before adding to cart.']);
         }
 
         $availableStock = $variant
@@ -73,9 +78,9 @@ class CartController extends Controller
         }
 
         if (! empty($variant)) {
-            $price = $variant->discounted_price ?? $variant->selling_price;
+            $price = $variant->compare_price ?? $variant->price;
         } else {
-            $price = $product->discounted_price ?? $product->selling_price;
+            $price = $product->compare_price ?? $product->price;
         }
 
         if ($cartItem) {
@@ -118,9 +123,9 @@ class CartController extends Controller
                 foreach ($cart->cart_items as $item) {
                     $quantity = $item->quantity;
                     $base_price = $item->original_price;
-                    $discounted_price = $item->discounted_price;
+                    $paid_price = $item->discounted_price;
                     $sub_total += $base_price * $quantity;
-                    $grand_total += $discounted_price * $quantity;
+                    $grand_total += $paid_price * $quantity;
 
                     $addedItemIds[] = $item->product->id;
                     if (! is_null($item->product->category_id)) {

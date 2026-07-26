@@ -5,7 +5,6 @@ namespace App\Domain\Product\Models;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 
 class ProductVariant extends Model
 {
@@ -14,11 +13,9 @@ class ProductVariant extends Model
     protected $guarded = ['id'];
 
     protected $casts = [
-        'buying_price' => 'decimal:2',
-        'selling_price' => 'decimal:2',
-        'discount_value' => 'decimal:2',
-        'discount_amount' => 'decimal:2',
-        'discounted_price' => 'decimal:2',
+        'cost_price' => 'decimal:2',
+        'price' => 'decimal:2',
+        'compare_price' => 'decimal:2',
     ];
 
     public function scopeWhereProduct($query, Product $product)
@@ -67,10 +64,11 @@ class ProductVariant extends Model
         );
     }
 
+    /** Effective unit price for cart / order: compare_price if set, else price. */
     public function calculatedPrice(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->discounted_price ? $this->discounted_price : $this->selling_price
+            get: fn () => $this->compare_price ?? $this->price
         );
     }
 
@@ -78,10 +76,11 @@ class ProductVariant extends Model
     {
         return Attribute::make(
             get: function () {
-                $discountedPrice = $this->discounted_price ?? 0;
-                $sellingPrice = $this->selling_price ?? 0;
+                if ($this->compare_price === null) {
+                    return 0;
+                }
 
-                return $sellingPrice - $discountedPrice;
+                return max(0, (float) $this->price - (float) $this->compare_price);
             }
         );
     }

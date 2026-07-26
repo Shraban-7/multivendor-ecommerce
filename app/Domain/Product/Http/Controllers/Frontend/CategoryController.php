@@ -1,10 +1,13 @@
-﻿<?php
+<?php
 
 namespace App\Domain\Product\Http\Controllers\Frontend;
 
 use App\Domain\Product\Models\Brand;
 use App\Domain\Product\Models\Category;
-use App\Domain\Product\Models\Product;\nuse App\Http\Controllers\Controller;
+use App\Domain\Product\Models\Color;
+use App\Domain\Product\Models\Product;
+use App\Domain\Product\Models\Size;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -36,15 +39,15 @@ class CategoryController extends Controller
         }
 
         if ($request->price == 'under') {
-            $query->where('selling_price', '<', 500);
+            $query->where('price', '<', 500);
         } elseif ($request->price == 'range') {
-            $query->whereBetween('selling_price', [500, 5000]);
+            $query->whereBetween('price', [500, 5000]);
         } elseif ($request->price == 'upper') {
-            $query->where('selling_price', '>', 5000);
+            $query->where('price', '>', 5000);
         } elseif ($request->price == 'min') {
-            $query->orderBy('selling_price', 'asc');
+            $query->orderBy('price', 'asc');
         } elseif ($request->price == 'max') {
-            $query->orderBy('selling_price', 'desc');
+            $query->orderBy('price', 'desc');
         }
 
         if ($request->filled('review')) {
@@ -52,13 +55,11 @@ class CategoryController extends Controller
                 ->having('reviews_avg_rating', '=', $request->review);
         }
 
-                }
-
         $products = $query->skip($skip)
             ->take($limit)
             ->get();
 
-                $colors = Color::all();
+        $colors = Color::all();
         $sizes = Size::all();
 
         if ($request->ajax()) {
@@ -72,4 +73,3 @@ class CategoryController extends Controller
         return view('frontend.categories.details', compact('category', 'colors', 'sizes', 'products', 'brands'));
     }
 }
-

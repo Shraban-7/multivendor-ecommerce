@@ -34,8 +34,8 @@
                             <!-- Price Info -->
                             <div class="flex items-center gap-2">
                                 <span
-                                    class="text-gray-400 line-through">{{ money($wishlist->product->selling_price) }}</span>
-                                <span class="font-semibold">{{ money($wishlist->product->discounted_price) }}</span>
+                                    class="text-gray-400 line-through">{{ money($wishlist->product->price) }}</span>
+                                <span class="font-semibold">{{ money($wishlist->product->compare_price) }}</span>
                             </div>
 
                             <!-- Stock Info -->

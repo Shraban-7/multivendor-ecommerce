@@ -8,7 +8,6 @@ use App\Domain\Product\Models\Color;
 use App\Domain\Product\Models\Product;
 use App\Domain\Product\Models\ProductVariant;
 use App\Domain\Product\Models\Size;
-use App\Domain\Vendor\Models\Seller;
 use App\Http\Controllers\Controller;
 use App\Services\ImageOptimizerService;
 use Illuminate\Http\Request;
@@ -27,10 +26,9 @@ class ProductVariantController extends Controller
             'variants' => 'required|array|min:1',
             'variants.*.color_id' => 'nullable|integer|exists:colors,id',
             'variants.*.size_id' => 'nullable|integer|exists:sizes,id',
-            'variants.*.buying_price' => 'required|numeric|min:0',
-            'variants.*.selling_price' => 'required|numeric|min:0|gte:variants.*.buying_price',
-            'variants.*.discount_type' => 'nullable|in:flat,percentage',
-            'variants.*.discount_value' => 'nullable|numeric|min:0',
+            'variants.*.cost_price' => 'required|numeric|min:0',
+            'variants.*.price' => 'required|numeric|min:0|gte:variants.*.cost_price',
+            'variants.*.compare_price' => 'nullable|numeric|min:0|lt:variants.*.price',
             'variants.*.image' => 'nullable|image|max:2048',
         ]);
 
@@ -40,8 +38,6 @@ class ProductVariantController extends Controller
 
         $imageFolder = "{$product->seller->username}/products";
 
-        $defaultExists = ProductVariant::where('product_id', $product->id)->where('is_default', 1)->exists();
-
         $colorIds = collect($variants)->pluck('color_id')->filter()->unique()->values();
         $sizeIds = collect($variants)->pluck('size_id')->filter()->unique()->values();
         $colorsById = Color::whereIn('id', $colorIds)->get()->keyBy('id');
@@ -49,7 +45,7 @@ class ProductVariantController extends Controller
 
         if (! empty($variants) && is_array($variants)) {
             foreach ($variants as $index => $v) {
-                if (empty($v['buying_price']) || empty($v['selling_price'])) {
+                if (empty($v['cost_price']) || empty($v['price'])) {
                     continue;
                 }
 
@@ -63,23 +59,10 @@ class ProductVariantController extends Controller
                 $variant->color_id = $v['color_id'] ?? null;
                 $variant->size_id = $v['size_id'] ?? null;
                 $variant->sku = $sku;
-                $variant->buying_price = $v['buying_price'];
-                $variant->selling_price = $v['selling_price'];
+                $variant->cost_price = $v['cost_price'];
+                $variant->price = $v['price'];
+                $variant->compare_price = ! empty($v['compare_price']) ? $v['compare_price'] : null;
                 $variant->stock_in = $v['stock'] ?? 0;
-
-                $variant->discount_type = ($v['discount_type'] ?? 'none') !== 'none' ? $v['discount_type'] : null;
-                $variant->discount_value = ! empty($v['discount_value']) ? $v['discount_value'] : null;
-                $hasDiscount = ! empty($variant->discount_type) && ! empty($variant->discount_value);
-
-                $variant->discount_amount = $hasDiscount
-                    ? calculate_discount_amount($v['selling_price'], $variant->discount_type, $variant->discount_value) : null;
-
-                $variant->discounted_price = $hasDiscount
-                    ? calculate_discounted_price($v['selling_price'], $variant->discount_type, $variant->discount_value) : null;
-
-                if (! $defaultExists) {
-                    $variant->is_default = $index === 0 ? 1 : 0;
-                }
 
                 if (isset($v['image']) && $request->hasFile("variants.$index.image")) {
                     $imageService = new ImageOptimizerService;
@@ -98,13 +81,10 @@ class ProductVariantController extends Controller
         $variant->loadMissing('product.seller');
 
         $request->validate([
-            'buying_price' => 'required',
-            'selling_price' => 'required',
-            'discount_type' => 'nullable',
-            'discount_value' => 'nullable',
+            'cost_price' => 'required|numeric|min:0',
+            'price' => 'required|numeric|min:0|gte:cost_price',
+            'compare_price' => 'nullable|numeric|min:0|lt:price',
             'low_stock_quantity' => 'required',
-
-            'is_default' => 'nullable',
             'image' => 'nullable|image|mimes:png,jpg,jpeg|max:4000',
         ]);
 
@@ -112,31 +92,13 @@ class ProductVariantController extends Controller
             $imageFolder = "images/{$variant->product->seller->username}/products";
             $imageService = new ImageOptimizerService;
             $variant->image = $imageService->uploadAndOptimize($request->file('image'), "$imageFolder");
-            // $variant->image = upload_file($request->file('image'), $imageFolder);
         }
 
-        if ($request->is_default && ! $variant->is_default) {
-            ProductVariant::where('product_id', $variant->product_id)->where('is_default', 1)->update(['is_default' => 0]);
-        }
-
-        $hasDiscount = ! empty($request->discount_type) && ! empty($request->discount_value);
-
-        $variant->is_default = $request->is_default ? 1 : 0;
         $variant->low_stock_quantity = $request->low_stock_quantity;
-        $variant->buying_price = $request->buying_price;
-        $variant->selling_price = $request->selling_price;
-        $variant->discount_type = $request->discount_type;
-        $variant->discount_value = $request->discount_value;
-        $variant->discount_amount = $hasDiscount ? calculate_discount_amount($request->selling_price, $request->discount_type, $request->discount_value) : null;
-        $variant->discounted_price = $hasDiscount ? calculate_discounted_price($request->selling_price, $request->discount_type, $request->discount_value) : null;
+        $variant->cost_price = $request->cost_price;
+        $variant->price = $request->price;
+        $variant->compare_price = $request->filled('compare_price') ? $request->compare_price : null;
         $variant->save();
-
-        if (! $request->is_default) {
-            $defaultExists = ProductVariant::where('product_id', $variant->product_id)->where('is_default', 1)->exists();
-            if (! $defaultExists) {
-                ProductVariant::where('product_id', $variant->product_id)->first()->update(['is_default' => 1]);
-            }
-        }
 
         return redirect()->back()->with('success', 'Variant updated successfully.');
     }
@@ -147,29 +109,14 @@ class ProductVariantController extends Controller
             return redirect()->back()->with('warning', 'This variant cannot be deleted because it has existing orders.');
         }
 
-        $product_id = $variant->product_id;
-
         CartItem::where('product_variant_id', $variant->id)->delete();
         PosCartItem::where('product_variant_id', $variant->id)->delete();
 
         $variant->delete();
 
-        $default = ProductVariant::where('product_id', $product_id)->first();
-        $variantCount = ProductVariant::where('product_id', $product_id)->count();
-
-        if ($variantCount == 0) {
-            return redirect()->back()->with('success', 'No variants remain for this product!');
-        }
-
-        $default->is_default = 1;
-        $default->save();
-
         return redirect()->back()->with('success', 'Variant Deleted Successfully!');
     }
 
-    /**
-     * Generate cartesian product of multiple arrays
-     */
     private function cartesianProduct($arrays)
     {
         $result = [[]];

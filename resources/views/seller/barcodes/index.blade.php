@@ -17,8 +17,8 @@
                                     <option value="{{ $product->id }}"
                                         data-name="{{ $product->name }}"
                                         data-variant=""
-                                        data-sellingprice="{{ $product->selling_price }}"
-                                        data-discountedprice="{{ $product->discounted_price ?? $product->selling_price }}"
+                                        data-sellingprice="{{ $product->price }}"
+                                        data-discountedprice="{{ $product->compare_price ?? $product->price }}"
                                         data-stock="{{ $product->availableStock }}"
                                         data-sku="{{ $product->sku }}">
                                         {{ $product->name }} | {{ $product->availableStock }} {{ $product->unit->short_name }}
@@ -28,8 +28,8 @@
                                     <option value="{{ $variant->id }}"
                                         data-name="{{ $product->name }}"
                                         data-variant="{{ $variant->label }}"
-                                        data-sellingprice="{{ $variant->selling_price }}"
-                                        data-discountedprice="{{ $variant->discounted_price }}"
+                                        data-sellingprice="{{ $variant->price }}"
+                                        data-discountedprice="{{ $variant->compare_price }}"
                                         data-stock="{{ $variant->availableStock }}"
                                         data-sku="{{ $variant->sku }}">
                                         {{ $product->name }} | {{ $variant->label }} | {{ $variant->availableStock }} {{ $product->unit->short_name }}

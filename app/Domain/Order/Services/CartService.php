@@ -19,7 +19,7 @@ class CartService
         $subTotal = 0.0;
         foreach ($cart->cart_items as $item) {
             /** @var CartItem $item */
-            $unit = (float) ($item->discounted_price ?? $item->price ?? 0);
+            $unit = (float) ($item->price ?? $item->discounted_price ?? 0);
             $subTotal += $unit * (int) $item->quantity;
         }
 

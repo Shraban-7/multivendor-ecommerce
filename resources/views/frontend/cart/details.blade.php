@@ -122,8 +122,8 @@
                                                                 @php
                                                                     $discountedPrice = $item->price;
                                                                     $sellingPrice = $item->variant
-                                                                        ? $item->variant->selling_price
-                                                                        : $item->product->selling_price;
+                                                                        ? $item->variant->price
+                                                                        : $item->product->price;
                                                                 @endphp
                                                                 @if ($discountedPrice != $sellingPrice)
                                                                     <!-- Discounted item -->

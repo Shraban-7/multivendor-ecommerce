@@ -109,8 +109,8 @@ class SaleController extends Controller
                         throw new \RuntimeException('Variant not found for order item.');
                     }
                     $product = $variant->product;
-                    $sellingPrice = $variant->selling_price;
-                    $unitPrice = $item['price'] ?? ($variant->discounted_price ?? $sellingPrice);
+                    $sellingPrice = $variant->price;
+                    $unitPrice = $item['price'] ?? ($variant->compare_price ?? $sellingPrice);
                     $variantId = $variant->id;
                     $sku = $variant->sku;
                     $variantName = $variant->label;
@@ -119,7 +119,7 @@ class SaleController extends Controller
                     if (! $product) {
                         throw new \RuntimeException('Product not found for order item.');
                     }
-                    $sellingPrice = $product->selling_price;
+                    $sellingPrice = $product->price;
                     $unitPrice = $item['price'] ?? $sellingPrice;
                     $sku = $product->sku;
                 }
@@ -144,7 +144,7 @@ class SaleController extends Controller
                         'sku' => $sku,
                         'product_name' => $product->name,
                         'variant_name' => $variantName,
-                        'selling_price' => $sellingPrice,
+                        'price' => $sellingPrice,
                         'unit_price' => $unitPrice,
                         'quantity' => $quantity,
                         'sub_total' => $subTotal,
@@ -264,8 +264,8 @@ class SaleController extends Controller
             $variant = ProductVariant::with(['product', 'color', 'size'])->find($data['variant_id']);
             if ($variant) {
                 $product = $variant->product;
-                $sellingPrice = $variant->selling_price;
-                $unitPrice = $variant->discounted_price ?? $sellingPrice;
+                $sellingPrice = $variant->price;
+                $unitPrice = $variant->compare_price ?? $sellingPrice;
             }
         }
 
@@ -274,8 +274,8 @@ class SaleController extends Controller
             if (! $product) {
                 return errorResponse('Product not found');
             }
-            $sellingPrice = $product->selling_price;
-            $unitPrice = $product->discounted_price ?? $sellingPrice;
+            $sellingPrice = $product->price;
+            $unitPrice = $product->compare_price ?? $sellingPrice;
         }
 
         $subTotal = $sellingPrice * $quantity;
@@ -301,8 +301,8 @@ class SaleController extends Controller
                 'sku' => $variant->sku ?? $product->sku,
                 'product_name' => $product->name,
                 'variant_name' => $variant->label ?? null,
-                'buying_price' => $variant->buying_price ?? $product->buying_price,
-                'selling_price' => $sellingPrice,
+                'cost_price' => $variant->cost_price ?? $product->cost_price,
+                'price' => $sellingPrice,
                 'unit_price' => $unitPrice,
                 'quantity' => $quantity,
                 'sub_total' => $subTotal,
@@ -345,8 +345,8 @@ class SaleController extends Controller
             }
         }
 
-        $item->sub_total = $item->selling_price * $item->quantity;
-        $item->discount = ($item->selling_price - $item->unit_price) * $item->quantity;
+        $item->sub_total = $item->price * $item->quantity;
+        $item->discount = ($item->price - $item->unit_price) * $item->quantity;
         $item->total = $item->sub_total - $item->discount;
         $item->save();
 

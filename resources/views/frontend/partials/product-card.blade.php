@@ -7,9 +7,9 @@
     </button>
 
     @php
-    $original_price = $product['default_variant']->selling_price ?? $product['selling_price'];
-    $discounted_price = $product['default_variant']->discounted_price ?? $product['discounted_price'];
-    $discountPercent = $discounted_price ? round((($original_price - $discounted_price) / $original_price) * 100) : null;
+    $original_price = $product['price'];
+    $compare_price = $product['compare_price'];
+    $discountPercent = ($compare_price && $original_price > 0) ? round((($original_price - $compare_price) / $original_price) * 100) : null;
     @endphp
 
     <!-- Discount Badge -->
@@ -41,9 +41,9 @@
 
         <!-- Price -->
         <div class="flex items-center gap-2 mb-1">
-            @if ($discounted_price != null && $discounted_price > 0)
+            @if ($compare_price != null && $compare_price > 0)
             <span class="text-primary font-semibold text-base">
-                {{ money($discounted_price) }}
+                {{ money($compare_price) }}
             </span>
             <span class="text-xs text-gray-400 line-through">
                 {{ money($original_price) }}

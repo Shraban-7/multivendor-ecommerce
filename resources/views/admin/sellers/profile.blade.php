@@ -272,7 +272,7 @@
                                 alt="{{ $product->name }}" style="height: 150px; object-fit: cover;">
                             <div class="card-body p-2">
                                 <h6 class="fw-semibold mb-1 text-truncate">{{ $product->name }}</h6>
-                                <p class="text-muted small mb-0">{{ money($product->discounted_price) }}</p>
+                                <p class="text-muted small mb-0">{{ money($product->compare_price) }}</p>
                             </div>
                         </div>
                     </a>

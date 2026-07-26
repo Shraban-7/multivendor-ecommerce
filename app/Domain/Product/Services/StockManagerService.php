@@ -184,8 +184,8 @@ class StockManagerService
             'product_id' => $product->id,
             'seller_id' => $product->seller_id,
             'quantity' => $quantity,
-            'buying_price' => $product->buying_price ?? 0,
-            'sub_total' => ($product->buying_price ?? 0) * $quantity,
+            'cost_price' => $product->cost_price ?? 0,
+            'sub_total' => ($product->cost_price ?? 0) * $quantity,
         ]);
 
         $product->stock_in = $quantity;
@@ -200,8 +200,8 @@ class StockManagerService
             'product_id' => $product->id,
             'seller_id' => $product->seller_id,
             'quantity' => $quantity,
-            'buying_price' => $product->buying_price ?? 0,
-            'sub_total' => ($product->buying_price ?? 0) * $quantity,
+            'cost_price' => $product->cost_price ?? 0,
+            'sub_total' => ($product->cost_price ?? 0) * $quantity,
         ]);
 
         // Increment stock_in — keeps it in sync with cumulative product_stocks additions

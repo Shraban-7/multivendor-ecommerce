@@ -26,7 +26,7 @@ class PosController extends Controller
             'products' => Product::where('seller_id', $sellerId)
                 ->where('status', 1)
                 ->with(['category'])
-                ->get(['id', 'name', 'slug', 'thumbnail', 'selling_price', 'discounted_price', 'stock_in', 'stock_out', 'category_id']),
+                ->get(['id', 'name', 'slug', 'thumbnail', 'price', 'compare_price', 'stock_in', 'stock_out', 'category_id']),
             'drafts' => SellerDraftCart::where('seller_id', $sellerId)->get(),
         ]);
     }
@@ -51,7 +51,7 @@ class PosController extends Controller
 
         $cart = session()->get("pos_cart_" . Auth::id(), []);
         $productId = $request->product_id;
-        $price = $request->price ?? ($product->discounted_price ?? $product->selling_price);
+        $price = $request->price ?? ($product->compare_price ?? $product->price);
 
         if (isset($cart[$productId])) {
             $cart[$productId]['quantity'] += (int) $request->quantity;

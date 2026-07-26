@@ -71,14 +71,14 @@ class PosController extends Controller
                 $orderItems = $orderItems->merge($cartItems);
 
                 $cartSubtotal = $cartItems->sum(function ($item) {
-                    $selling = $item->variant->selling_price ?? $item->product->selling_price;
+                    $selling = $item->variant->price ?? $item->product->price;
 
                     return $selling * $item->quantity;
                 });
 
                 $cartDiscount = $cartItems->sum(function ($item) {
-                    $selling = $item->variant->selling_price ?? $item->product->selling_price;
-                    $discounted = $item->variant->discounted_price ?? $item->product->discounted_price ?? $selling;
+                    $selling = $item->variant->price ?? $item->product->price;
+                    $discounted = $item->variant->compare_price ?? $item->product->compare_price ?? $selling;
 
                     return ($selling - $discounted) * $item->quantity;
                 });
@@ -121,8 +121,8 @@ class PosController extends Controller
             foreach ($cartItems as $item) {
 
                 $product = $item->variant->product ?? $item->product;
-                $selling = $item->variant->selling_price ?? $item->product->selling_price;
-                $discounted = $item->variant->discounted_price ?? $item->product->discounted_price ?? $selling;
+                $selling = $item->variant->price ?? $item->product->price;
+                $discounted = $item->variant->compare_price ?? $item->product->compare_price ?? $selling;
 
                 $subtotal += ($selling * $item->quantity);
                 $discount += (($selling - $discounted) * $item->quantity);
@@ -154,8 +154,8 @@ class PosController extends Controller
             foreach ($cartItems as $item) {
                 $product = $item->variant->product ?? $item->product;
 
-                $selling = $item->variant->selling_price ?? $item->product->selling_price;
-                $discounted = $item->variant->discounted_price ?? $item->product->discounted_price ?? $selling;
+                $selling = $item->variant->price ?? $item->product->price;
+                $discounted = $item->variant->compare_price ?? $item->product->compare_price ?? $selling;
 
                 $itemDiscount = $selling - $discounted;
 
@@ -233,10 +233,10 @@ class PosController extends Controller
         }
 
         if (! empty($variant)) {
-            $price = $variant->discounted_price ?? $variant->selling_price;
+            $price = $variant->compare_price ?? $variant->price;
             $availableStock = (int) $variant->available_stock;
         } else {
-            $price = $product->discounted_price ?? $product->selling_price;
+            $price = $product->compare_price ?? $product->price;
             $availableStock = (int) $product->total_stock;
         }
 
@@ -270,16 +270,16 @@ class PosController extends Controller
         $cartItems = $cart->items()->with(['variant.color', 'variant.size', 'variant.product', 'product'])->get();
 
         $subtotal = $cartItems->sum(function ($item) {
-            $price = $item->variant->selling_price ?? $item->product->selling_price;
+            $price = $item->variant->price ?? $item->product->price;
 
             return $price * $item->quantity;
         });
 
         $discount = $cartItems->sum(function ($item) {
-            $variantDiscount = $item->variant->discounted_price ?? null;
-            $productDiscount = $item->product->discounted_price ?? null;
+            $variantDiscount = $item->variant->compare_price ?? null;
+            $productDiscount = $item->product->compare_price ?? null;
 
-            $selling = $item->variant->selling_price ?? $item->product->selling_price;
+            $selling = $item->variant->price ?? $item->product->price;
             $discounted = $variantDiscount ?? $productDiscount;
 
             return $discounted ? ($selling - $discounted) * $item->quantity : 0;
@@ -325,15 +325,15 @@ class PosController extends Controller
 
         $subtotal = $cartItems->sum(function ($i) {
 
-            $selling = $i->variant->selling_price ?? $i->product->selling_price;
+            $selling = $i->variant->price ?? $i->product->price;
 
             return $selling * $i->quantity;
         });
 
         $discount = $cartItems->sum(function ($i) {
 
-            $selling = $i->variant->selling_price ?? $i->product->selling_price;
-            $discounted = $i->variant->discounted_price ?? $i->product->discounted_price ?? $selling;
+            $selling = $i->variant->price ?? $i->product->price;
+            $discounted = $i->variant->compare_price ?? $i->product->compare_price ?? $selling;
 
             return ($selling - $discounted) * $i->quantity;
         });
@@ -374,15 +374,15 @@ class PosController extends Controller
 
         $subtotal = $cartItems->sum(function ($i) {
 
-            $selling = $i->variant->selling_price ?? $i->product->selling_price;
+            $selling = $i->variant->price ?? $i->product->price;
 
             return $selling * $i->quantity;
         });
 
         $discount = $cartItems->sum(function ($i) {
 
-            $selling = $i->variant->selling_price ?? $i->product->selling_price;
-            $discounted = $i->variant->discounted_price ?? $i->product->discounted_price ?? $selling;
+            $selling = $i->variant->price ?? $i->product->price;
+            $discounted = $i->variant->compare_price ?? $i->product->compare_price ?? $selling;
 
             return ($selling - $discounted) * $i->quantity;
         });
@@ -481,7 +481,7 @@ class PosController extends Controller
                 $variant = $item->variant;
                 $product = $variant->product ?? $item->product;
 
-                $itemPrice = $variant->selling_price ?? $product->selling_price;
+                $itemPrice = $variant->price ?? $product->price;
 
                 $unitPrice = $itemsCollection->firstWhere('id', $item->id)['price'] ?? $itemPrice;
 
@@ -500,8 +500,8 @@ class PosController extends Controller
                     'sku' => $variant->sku ?? $product->sku,
                     'product_name' => $product->name,
                     'variant_name' => $variant->label ?? null,
-                    'buying_price' => $variant->buying_price ?? $product->buying_price,
-                    'selling_price' => $itemPrice,
+                    'cost_price' => $variant->cost_price ?? $product->cost_price,
+                    'price' => $itemPrice,
                     'unit_price' => $unitPrice,
                     'quantity' => $item->quantity,
                     'discount' => $itemDiscount,
@@ -654,7 +654,7 @@ class PosController extends Controller
             $variant = $item->variant;
             $product = $variant->product ?? $item->product;
 
-            $itemPrice = $variant->selling_price ?? $product->selling_price;
+            $itemPrice = $variant->price ?? $product->price;
 
             $unitPrice = $itemsCollection->firstWhere('id', $item->id)['price'];
 

@@ -323,7 +323,7 @@ foreach ($categories as $cat) {
                                                         {{ $product->unit->short_name }}
                                                     </td>
                                                     <td class="text-center">
-                                                        {{ money($variant->discounted_price ?? $variant->selling_price) }}
+                                                        {{ money($variant->compare_price ?? $variant->price) }}
                                                     </td>
                                                     <td class="text-center">
                                                         @if ($variant->availableStock > 0)
@@ -360,7 +360,7 @@ foreach ($categories as $cat) {
                                                         {{ $product->unit->short_name }}
                                                     </td>
                                                     <td class="text-center">
-                                                        {{ money($product->discounted_price ?? $product->selling_price) }}
+                                                        {{ money($product->compare_price ?? $product->price) }}
                                                     </td>
                                                     <td class="text-center">
 

@@ -12,16 +12,16 @@ class CartItemResource extends JsonResource
     public function toArray(Request $request): array
     {
         $product = $this->product;
-
         $variant = $this->variant;
 
-        $price = $variant ? $variant->selling_price : $product->selling_price;
-        $discountedPrice = $variant ? $variant->discounted_price : $product->discounted_price;
+        $price = (float) ($variant ? $variant->price : $product->price);
+        $comparePrice = $variant
+            ? ($variant->compare_price !== null ? (float) $variant->compare_price : null)
+            : ($product->compare_price !== null ? (float) $product->compare_price : null);
 
         $discount = null;
-        if ($product->discount_amount > 0) {
-            $discount = "-{$product->discount_amount}";
-            $discount .= $product->discount_type == 'percentage' ? '%' : currency();
+        if ($comparePrice !== null && $comparePrice < $price && $price > 0) {
+            $discount = '-'.round((($price - $comparePrice) / $price) * 100).'%';
         }
 
         return [
@@ -31,7 +31,7 @@ class CartItemResource extends JsonResource
             'thumbnail' => $product->imageUrl,
             'quantity' => $this->quantity,
             'price' => removeZeroFromDecimal($price),
-            'discounted_price' => removeZeroFromDecimal($discountedPrice),
+            'compare_price' => removeZeroFromDecimal($comparePrice),
             'discount' => $discount,
             'category' => CategoryResource::make($product->category),
             'subcategory' => CategoryResource::make($product->subcategory),

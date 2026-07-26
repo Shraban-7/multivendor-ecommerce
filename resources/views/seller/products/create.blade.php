@@ -78,13 +78,13 @@
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Buying Price</label>
-                            <input name="buying_price" type="number" min="0" class="form-control form-control-sm" required>
+                            <label class="form-label">Cost Price</label>
+                            <input name="cost_price" type="number" min="0" step="0.01" class="form-control form-control-sm" required>
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Selling Price</label>
-                            <input name="selling_price" type="number" min="0" class="form-control form-control-sm" required>
+                            <label class="form-label">Price</label>
+                            <input name="price" type="number" min="0" step="0.01" class="form-control form-control-sm" required>
                         </div>
 
                         <div class="col-md-6 mb-3">
@@ -101,17 +101,8 @@
                             <input name="low_stock_quantity" type="number" min="0" class="form-control form-control-sm" required>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Discount Type</label>
-                            <select name="discount_type" class="form-select form-select-sm">
-                                <option value="">-- None --</option>
-                                <option value="{{ \App\Enums\DiscountType::FLAT->value }}">Flat</option>
-                                <option value="{{ \App\Enums\DiscountType::PERCENTAGE->value }}">Percentage</option>
-                            </select>
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Discount Value</label>
-                            <input name="discount_value" type="number" class="form-control form-control-sm">
+                            <label class="form-label">Compare Price <span class="text-muted small">(optional sale)</span></label>
+                            <input name="compare_price" type="number" min="0" step="0.01" class="form-control form-control-sm" placeholder="Leave empty for no sale">
                         </div>
                     </div>
                 </div>
@@ -177,10 +168,8 @@
             //     const $card = $(this);
             //     const variant = {
             //         sku: $card.find('.variant-sku').val()?.trim() || null,
-            //         buying_price: $card.find('.variant-buying-price').val() || null,
-            //         selling_price: $card.find('.variant-selling-price').val() || null,
-            //         variant_discount_type: $card.find('.variant-discount-type').val() || null,
-            //         variant_discount_value: $card.find('.variant-discount-value').val() || null,
+            //         cost_price: $card.find('.variant-buying-price').val() || null,
+            //         price: $card.find('.variant-selling-price').val() || null,
             //         stock: $card.find('.variant-stock').val() || null,
             //         attributes: {}
             //     };
@@ -243,20 +232,18 @@
 
                 const sku = row.querySelector('td:nth-child(2) input')?.value.trim() || '';
 
-                const buyingPriceInput = row.querySelector('input[placeholder="Buying Price"]');
-                const sellingPriceInput = row.querySelector('input[placeholder="Selling Price"]');
-                const discountTypeSelect = row.querySelector(".variant-discount-type");
-                const discountValueInput = row.querySelector(".variant-discount-value");
+                const costPriceInput = row.querySelector('input[placeholder="Cost Price"]');
+                const priceInput = row.querySelector('input[placeholder="Price"]');
+                const comparePriceInput = row.querySelector('input[placeholder="Compare Price"]');
                 const imageInput = row.querySelector('input[type="file"]');
 
                 variants.push({
                     color_id: colorId ? parseInt(colorId) : null,
                     size_id: sizeId ? parseInt(sizeId) : null,
                     sku: sku,
-                    buying_price: buyingPriceInput?.value || '',
-                    selling_price: sellingPriceInput?.value || '',
-                    discount_type: discountTypeSelect?.value || 'none',
-                    discount_value: discountValueInput?.value || '',
+                    cost_price: costPriceInput?.value || '',
+                    price: priceInput?.value || '',
+                    compare_price: comparePriceInput?.value || '',
                     image: imageInput?.files?.[0] || null,
                 });
             });

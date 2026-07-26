@@ -2,7 +2,7 @@
     $publicProduct = [
         'name' => $product['name'],
         'price' => $product['price'],
-        'discounted_price' => $product['discounted_price'],
+        'compare_price' => $product['compare_price'],
         'sku' => $product['sku'],
         'stock' => $product['stock'],
         'slider' => $product['slider'],
@@ -10,10 +10,10 @@
     ];
 
     $defaultVariant = $product['default_variant'] ?? null;
-    $variantPrice = $defaultVariant['selling_price'] ?? null;
-    $variantDiscountedPrice = $defaultVariant['discounted_price'] ?? null;
+    $variantPrice = $defaultVariant['price'] ?? null;
+    $variantDiscountedPrice = $defaultVariant['compare_price'] ?? null;
     $showVariantDiscount = $variantDiscountedPrice !== null && $variantDiscountedPrice < $variantPrice;
-    $showProductDiscount = $product['discounted_price'] !== null && $product['discounted_price'] < $product['price'];
+    $showProductDiscount = $product['compare_price'] !== null && $product['compare_price'] < $product['price'];
     $seller = $product['seller'];
 @endphp
 
@@ -88,7 +88,7 @@
             @if ($showVariantDiscount || $showProductDiscount)
             <div class="flex items-baseline gap-2">
                 <span class="text-3xl font-bold text-gray-900">
-                    {{ money($variantDiscountedPrice ?? $product['discounted_price']) }}
+                    {{ money($variantDiscountedPrice ?? $product['compare_price']) }}
                 </span>
                 <span class="text-lg text-gray-500 line-through">
                     {{ money($variantPrice ?? $product['price']) }}

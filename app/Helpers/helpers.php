@@ -236,7 +236,29 @@ if (! function_exists('upload_with_watermark')) {
 if (! function_exists('storage_url')) {
     function storage_url($file, $disk = 'public')
     {
-        return Storage::disk($disk)->url($file);
+        if ($file === null || $file === '') {
+            return null;
+        }
+
+        $file = (string) $file;
+
+        // Already an absolute / protocol-relative URL (e.g. CDN thumbnails in seed data).
+        if (str_starts_with($file, 'http://')
+            || str_starts_with($file, 'https://')
+            || str_starts_with($file, '//')) {
+            return $file;
+        }
+
+        // Already a storage public path or full local storage URL.
+        if (str_starts_with($file, '/storage/')) {
+            return url($file);
+        }
+
+        if (str_contains($file, '/storage/')) {
+            return $file;
+        }
+
+        return Storage::disk($disk)->url(ltrim($file, '/'));
     }
 }
 

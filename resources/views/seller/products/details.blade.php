@@ -11,14 +11,9 @@
 
 <div class="d-none">
     <input type="text" name="sku" value="{{ $product->sku }}">
-    <input type="text" name="buying_price" value="{{ $product->buying_price }}">
-    <input type="text" name="selling_price" value="{{ $product->selling_price }}">
-    <input type="text" name="discount_value" value="{{ $product->discount_value }}">
-    <select name="discount_type">
-        @foreach (\App\Enums\DiscountType::cases() as $type)
-        <option value="{{ $type->value }}" @selected($type->value == $product->discount_type)>{{ $type->label() }}</option>
-        @endforeach
-    </select>
+    <input type="text" name="cost_price" value="{{ $product->cost_price }}">
+    <input type="text" name="price" value="{{ $product->price }}">
+    <input type="text" name="compare_price" value="{{ $product->compare_price }}">
 </div>
 
 <div class="row">
@@ -69,13 +64,11 @@
                         </div>
 
                         <div class="col-md-6">
-                            <div class="mb-1"><span class="text-muted">Buying Price:</span> {{ money($product->buying_price) }}</div>
-                            <div class="mb-1"><span class="text-muted">Selling Price:</span> {{ money($product->selling_price) }}</div>
+                            <div class="mb-1"><span class="text-muted">Cost Price:</span> {{ money($product->cost_price) }}</div>
+                            <div class="mb-1"><span class="text-muted">Price:</span> {{ money($product->price) }}</div>
                             <div class="mb-1">
-                                <span class="text-muted">Discount:</span>
-                                @if($product->discount_type)
-                                {{ ucfirst($product->discount_type) }}
-                                {{ $product->discount_type === 'percentage' ? $product->discount_value.'%' : money($product->discount_value) }} @else None @endif
+                                <span class="text-muted">Compare Price:</span>
+                                {{ $product->compare_price !== null ? money($product->compare_price) : '—' }}
                             </div>
                             <div class="mb-1"><span class="text-muted">Payment Type:</span> {{ ucfirst($product->payment_type->title()) }}</div>
                             <div><span class="text-muted">Status:</span>
@@ -188,10 +181,9 @@
                     <th>Image</th>
                     <th>SKU</th>
                     <th>Options</th>
-                    <th>Buying Price</th>
-                    <th>Selling Price</th>
-                    <th>Discount</th>
-                    <th>Discounted Price</th>
+                    <th>Cost Price</th>
+                    <th>Price</th>
+                    <th>Compare Price</th>
                     <th>Stock</th>
                     <th>Action</th>
                 </tr>
@@ -204,25 +196,11 @@
                     </td>
                     <td class="text-monospace small">
                         {{ $variant->sku }}
-                        @if($variant->is_default)
-                        <span class="badge bg-primary">Default</span>
-                        @endif
                     </td>
                     <td><span class="badge bg-light text-dark me-1">{{ $variant->label }}</span></td>
-                    <td>{{ money($variant->buying_price) }}</td>
-                    <td>{{ money($variant->selling_price) }}</td>
-                    <td>
-                        @if($variant->discount_type)
-                        {{ ucfirst($variant->discount_type) }} –
-                        {{ $variant->discount_type === 'percentage'
-                                    ? $variant->discount_value . '%'
-                                    : money($variant->discount_value) }}
-                        @else
-                        —
-                        @endif
-                    </td>
-
-                    <td>{{ money($variant->discounted_price ?? $variant->selling_price) }}</td>
+                    <td>{{ money($variant->cost_price) }}</td>
+                    <td>{{ money($variant->price) }}</td>
+                    <td>{{ $variant->compare_price !== null ? money($variant->compare_price) : '—' }}</td>
                     <td>{{ $variant->availableStock }}</td>
                     <td>
                         <div class="d-flex mt-2">
@@ -255,38 +233,26 @@
                                 <div class="modal-body">
                                     <div class="row">
                                         <div class="mb-3 col-6">
-                                            <label class="form-label">Buying Price</label>
+                                            <label class="form-label">Cost Price</label>
                                             <div class="input-group">
                                                 <span class="input-group-text">{{ currency() }}</span>
-                                                <input type="number" class="form-control" name="buying_price" step="0.01" value="{{ $variant->buying_price }}" required>
+                                                <input type="number" class="form-control" name="cost_price" step="0.01" value="{{ $variant->cost_price }}" required>
                                             </div>
                                         </div>
                                         <div class="mb-3 col-6">
-                                            <label class="form-label">Selling Price</label>
+                                            <label class="form-label">Price</label>
                                             <div class="input-group">
                                                 <span class="input-group-text">{{ currency() }}</span>
-                                                <input type="number" class="form-control" name="selling_price" step="0.01" value="{{ $variant->selling_price }}" required>
+                                                <input type="number" class="form-control" name="price" step="0.01" value="{{ $variant->price }}" required>
                                             </div>
                                         </div>
 
                                         <div class="mb-3 col-md-6">
-                                            <label class="form-label">Discount Type</label>
-                                            <select name="discount_type" class="form-select">
-                                                <option value="" selected>--Choose--</option>
-                                                <option value="{{ \App\Enums\DiscountType::FLAT->value }}"
-                                                    {{ $variant->discount_type == \App\Enums\DiscountType::FLAT->value ? 'selected' : '' }}>
-                                                    {{ ucfirst(\App\Enums\DiscountType::FLAT->label()) }}
-                                                </option>
-                                                <option
-                                                    value="{{ \App\Enums\DiscountType::PERCENTAGE->value }}"
-                                                    {{ $variant->discount_type == \App\Enums\DiscountType::PERCENTAGE->value ? 'selected' : '' }}>
-                                                    {{ ucfirst(\App\Enums\DiscountType::PERCENTAGE->label()) }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div class="mb-3 col-md-6">
-                                            <label class="form-label">Discount Value</label>
-                                            <input name="discount_value" type="number" value="{{ $variant->discount_value }}" class="form-control">
+                                            <label class="form-label">Compare Price</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">{{ currency() }}</span>
+                                                <input name="compare_price" type="number" step="0.01" min="0" value="{{ $variant->compare_price }}" class="form-control" placeholder="Optional sale price">
+                                            </div>
                                         </div>
                                         <div class="mb-3 col-md-12">
                                             <label class="form-label">Low Stock Quantity</label>
@@ -294,12 +260,6 @@
                                         </div>
                                         <div class="col-12 mb-3">
                                             <x-image-input name="image" :image="$variant->imageUrl" />
-                                        </div>
-                                        <div class="mb-3 col-12">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="is_default_{{ $variant->id }}" name="is_default" value="1"{{ $variant->is_default ? 'checked' : '' }}>
-                                                <label class="form-check-label" for="is_default_{{ $variant->id }}">Set as default variant</label>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -663,16 +623,14 @@
             variant.sku = skuInput?.value?.trim() || "";
 
             const colStart = 2;
-            const buyingPriceInput = row.querySelector(`td:nth-child(${colStart}) [name="buying_price"]`);
-            const sellingPriceInput = row.querySelector(`td:nth-child(${colStart + 1}) [name="selling_price"]`);
-            const discountTypeSelect = row.querySelector(".variant-discount-type");
-            const discountValueInput = row.querySelector(".variant-discount-value");
+            const costPriceInput = row.querySelector(`td:nth-child(${colStart}) [name="cost_price"]`);
+            const priceInput = row.querySelector(`td:nth-child(${colStart + 1}) [name="price"]`);
+            const comparePriceInput = row.querySelector(`td:nth-child(${colStart + 2}) [name="compare_price"], .variant-compare-price`);
             const imageInput = row.querySelector('input[type="file"]');
 
-            variant.buying_price = buyingPriceInput?.value || "";
-            variant.selling_price = sellingPriceInput?.value || "";
-            variant.discount_type = discountTypeSelect?.value || "none";
-            variant.discount_value = discountValueInput?.value || "";
+            variant.cost_price = costPriceInput?.value || "";
+            variant.price = priceInput?.value || "";
+            variant.compare_price = comparePriceInput?.value || "";
             variant.image = imageInput?.files?.[0] || null;
 
             variants.push(variant);

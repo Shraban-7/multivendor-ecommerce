@@ -71,9 +71,9 @@ class SellerController extends Controller
         if ($request->sortBy === 'popular') {
             $productQuery->orderBy('stock_out', 'desc');
         } elseif ($request->sortBy === 'low-to-high') {
-            $productQuery->orderBy('selling_price', 'asc');
+            $productQuery->orderBy('price', 'asc');
         } elseif ($request->sortBy === 'high-to-low') {
-            $productQuery->orderBy('selling_price', 'desc');
+            $productQuery->orderBy('price', 'desc');
         } else {
             $productQuery->latest();
         }

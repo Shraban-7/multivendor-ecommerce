@@ -13,7 +13,7 @@
 
                     <div class="flex flex-col">
                         <span class="font-medium">{{ $product->name }}</span>
-                        <span class="text-orange-500 text-sm">{{ money($product->selling_price) }}</span>
+                        <span class="text-orange-500 text-sm">{{ money($product->price) }}</span>
                     </div>
                 </a>
             </li>

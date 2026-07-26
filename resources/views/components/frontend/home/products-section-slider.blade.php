@@ -20,9 +20,8 @@
                 <div class="swiper-wrapper">
                     @foreach ($products as $product)
                         @php
-                            $defaultVariant = $product['default_variant'];
-                            $basePrice = $defaultVariant['selling_price'] ?? $product['selling_price'];
-                            $discountPrice = $defaultVariant['discounted_price'] ?? $product['discounted_price'];
+                            $basePrice = $product['price'];
+                            $discountPrice = $product['compare_price'];
                         @endphp
                         <div class="swiper-slide group/product-card h-full">
                             <div class="flex flex-col w-full h-full p-2">
@@ -111,9 +110,8 @@
             <div class="mt-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-4">
                 @foreach ($products as $product)
                     @php
-                        $defaultVariant = $product['default_variant'];
-                        $basePrice = $defaultVariant['selling_price'] ?? $product['selling_price'];
-                        $discountPrice = $defaultVariant['discounted_price'] ?? $product['discounted_price'];
+                        $basePrice = $product['price'];
+                        $discountPrice = $product['compare_price'];
                     @endphp
                     <div class="group/product-card h-full">
                         <div
