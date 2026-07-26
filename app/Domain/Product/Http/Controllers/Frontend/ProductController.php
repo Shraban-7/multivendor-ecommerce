@@ -106,6 +106,17 @@ class ProductController extends Controller
         }
 
         if ($request->ajax()) {
+            if ($request->get('load_more')) {
+                if ($products->isEmpty()) {
+                    return '';
+                }
+                $html = '';
+                foreach ($products as $product) {
+                    $html .= view('components.frontend.product-card', ['product' => $product])->render();
+                }
+                return $html;
+            }
+
             $html = view('components.frontend.products-page', compact(
                 'products',
                 'selectedCategories',

@@ -145,39 +145,14 @@
 
 </div>
 
-<!-- Pagination -->
-
-<!-- Pagination -->
-@if ($products->hasPages())
-    <div class="mt-5 flex flex-col items-center">
-
-        <div class="flex justify-center gap-2">
-            <a href="{{ $products->previousPageUrl() }}"
-                class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 
-                                    hover:border-primary-500 hover:text-primary-600 transition
-                                    {{ $products->onFirstPage() ? 'opacity-50 pointer-events-none' : '' }}">
-                <i class="fas fa-chevron-left"></i>
-            </a>
-            @foreach ($products->links()->elements[0] ?? [] as $page => $url)
-                @if ($page == $products->currentPage())
-                    <span
-                        class="w-10 h-10 flex items-center justify-center rounded-lg bg-primary-600 text-white font-semibold shadow-lg shadow-primary-500/30">
-                        {{ $page }}
-                    </span>
-                @else
-                    <a href="{{ $url }}"
-                        class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-600 
-                                            hover:bg-primary-50 hover:text-primary-600 hover:border-primary-200 transition font-medium">
-                        {{ $page }}
-                    </a>
-                @endif
-            @endforeach
-            <a href="{{ $products->nextPageUrl() }}"
-                class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 
-                                    hover:border-primary-500 hover:text-primary-600 transition
-                                    {{ !$products->hasMorePages() ? 'opacity-50 pointer-events-none' : '' }}">
-                <i class="fas fa-chevron-right"></i>
-            </a>
-        </div>
+<!-- Load More -->
+@if ($products->hasMorePages())
+    <div class="mt-5 text-center">
+        <button id="loadMoreProducts" data-page="{{ $products->currentPage() }}" data-url="{{ url()->current() }}"
+            class="inline-flex items-center gap-2 px-6 py-2 border border-brand text-brand text-xs font-semibold rounded-sm hover:bg-brand hover:text-white transition-colors duration-100"
+            type="button">
+            <span>Load More</span>
+            <i class="fas fa-chevron-down text-[10px]"></i>
+        </button>
     </div>
 @endif

@@ -607,5 +607,42 @@
             /* ---- REBUILD URL ---- */
             updateUrl();
         }
+
+        // Load More Products
+        $(document).on('click', '#loadMoreProducts', function() {
+            const button = $(this);
+            let page = parseInt(button.data('page')) + 1;
+            const url = button.data('url');
+            const params = buildQueryParams();
+            params.append('page', page);
+            params.append('load_more', '1');
+            const fullUrl = url + '?' + params.toString();
+
+            $.ajax({
+                url: fullUrl,
+                method: 'GET',
+                beforeSend: function() {
+                    button.prop('disabled', true).html(
+                        '<svg class="animate-spin h-4 w-4 text-brand" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>'
+                    );
+                },
+                success: function(response) {
+                    if ($.trim(response) !== '') {
+                        $('#productsContainer').append(response);
+                        button.data('page', page);
+                        button.prop('disabled', false).html(
+                            '<span>Load More</span> <i class="fas fa-chevron-down text-[10px]"></i>'
+                        );
+                    } else {
+                        button.hide();
+                    }
+                },
+                error: function() {
+                    button.prop('disabled', false).html(
+                        '<span>Load More</span> <i class="fas fa-chevron-down text-[10px]"></i>'
+                    );
+                }
+            });
+        });
     </script>
 @endpush
