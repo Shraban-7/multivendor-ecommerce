@@ -67,12 +67,22 @@ class ProductSeeder extends Seeder
                 continue;
             }
 
-            $sellerSlug = Str::slug(strtolower($productData['seller'] ?? ''));
+            $seller = null;
+            if (! empty($productData['seller'])) {
+                $sellerSlug = Str::slug($productData['seller']);
+                $seller = Seller::where('username', $sellerSlug)->first();
+            }
 
-            $seller = Seller::where('username', $sellerSlug)->first();
+            if (! $seller && ! empty($productData['seller'])) {
+                dump('Seller "'.$productData['seller'].'" not found, assigning random seller for: '.$productData['name']);
+            }
+
+            if (! $seller) {
+                $seller = Seller::inRandomOrder()->first();
+            }
 
             if (! $seller || ! $category || ! $subcategory) {
-                dump('Missing seller/category/subcategory/brand for: '.$productData['name']);
+                dump('Missing seller/category/subcategory for: '.$productData['name']);
 
                 continue;
             }

@@ -98,7 +98,7 @@ class HomeController extends Controller
         $data['flash_sales'] = FlashSale::active()
             ->withCount('approveProducts')
             ->having('approve_products_count', '>', 0)
-            ->with('approveProducts')
+            ->with('approveProducts.product')
             ->get();
 
         return view('frontend.home', $data);

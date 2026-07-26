@@ -1,200 +1,44 @@
-<div
-    class="product-card bg-white rounded-lg border border-gray-100 hover:border-primary-500 hover:shadow-md transition-all duration-300 group overflow-hidden flex flex-col h-full relative">
+@props(['product'])
 
-    <!-- SALE Badge -->
-    @if ($product->discount_amount)
-        <div class="absolute top-2 left-2 z-10 flex flex-col gap-1">
-            <span
-                class="bg-primary-600 text-white text-[9px] font-bold px-2 py-0.5 rounded shadow-sm">-{{ money($product->discount_amount) }}</span>
-        </div>
-    @endif
+<div class="group bg-white border border-[#E5E5E5] rounded-sm overflow-hidden hover:shadow-md eq">
+    <a href="{{ route('products.details', $product->slug) }}" class="block relative aspect-square bg-[#F5F5F5] overflow-hidden">
+        @php $discountPercent = $product->selling_price > 0 && $product->discounted_price > 0 ? round((($product->selling_price - $product->discounted_price) / $product->selling_price) * 100) : 0; @endphp
+        @if ($discountPercent > 0)
+            <span class="absolute top-1 left-1 z-10 discount-badge">-{{ $discountPercent }}%</span>
+        @endif
+        <img src="{{ $product->thumbnail ? storage_url($product->thumbnail) : asset('assets/frontend/images/placeholder.png') }}"
+             alt="{{ $product->name }}"
+             class="w-full h-full object-cover group-hover:scale-105 eq"
+             loading="lazy">
+    </a>
 
-    <!-- Product Image -->
-    <div
-        class="product-image-container aspect-[4/5] w-full border-b border-gray-50 relative bg-white flex items-center justify-center overflow-hidden">
-        <img src="{{ $product->imageUrl }}" loading="lazy"
-            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-
-        <!-- Hover Actions (Grid) -->
-        <div
-            class="grid-hover-actions absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center gap-2 backdrop-blur-[1px]">
-            <a href="{{ route('products.details', $product->slug) }}"
-                class="w-8 h-8 bg-white text-gray-600 rounded-full shadow-md
-                    flex items-center justify-center hover:bg-primary-600 hover:text-white
-                    transform translate-y-4 group-hover:translate-y-0 transition delay-75">
-                <i class="far fa-eye icon text-xs"></i>
-            </a>
-
-            <button data-id="{{ $product->id }}"
-                class="wishlistBtn w-8 h-8 bg-white text-gray-600 rounded-full shadow-md flex items-center justify-center hover:bg-red-500 hover:text-white transform translate-y-4 group-hover:translate-y-0 transition delay-100">
-                <i class="far fa-heart text-xs"></i>
-            </button>
-        </div>
-    </div>
-
-    <!-- Product Info -->
-    <div class="p-3 flex flex-col flex-1">
-        <a href="{{ route('products.details', $product->slug) }}">
-            <h3
-                class="text-[13.5px] font-medium text-gray-800 truncate mb-1 hover:text-primary-600 transition cursor-pointer">
-                {{ $product->name }}
-            </h3>
+    <div class="p-2 sm:p-3">
+        <a href="{{ route('products.details', $product->slug) }}" class="block text-sm text-[#191919] leading-snug line-clamp-2 hover:text-[#F85606] eq min-h-[2.5rem]">
+            {{ $product->name }}
         </a>
 
-        <div class="flex items-center gap-1 mb-1">
-            <div class="flex text-yellow-400 text-[10px]">
-                @php
-                    $avg = $product->avg_rating ?? 0;
-                    $fullStars = floor($avg);
-                    $halfStar = $avg - $fullStars >= 0.5 ? 1 : 0;
-                    $emptyStars = 5 - ($fullStars + $halfStar);
-                @endphp
-
-                @for ($i = 0; $i < $fullStars; $i++)
-                    <i class="fas fa-star"></i>
-                @endfor
-
-                @if ($halfStar)
-                    <i class="fas fa-star-half-alt"></i>
-                @endif
-                @for ($i = 0; $i < $emptyStars; $i++)
-                    <i class="far fa-star"></i>
-                @endfor
+        @if ($product->reviews_avg_rating ?? $product->rating ?? 0)
+            <div class="flex items-center gap-1 mt-1">
+                <div class="flex text-[#FFA000] text-[10px]">
+                    @for ($i = 1; $i <= 5; $i++)
+                        @if ($i <= round($product->reviews_avg_rating ?? $product->rating ?? 0))
+                            <svg class="w-3 h-3 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        @else
+                            <svg class="w-3 h-3 fill-[#E5E5E5]" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        @endif
+                    @endfor
+                </div>
+                <span class="text-[10px] text-[#767676]">({{ $product->reviews_count ?? 0 }})</span>
             </div>
-            <span class="text-[10px] text-gray-400">({{ $product->rating_count }})</span>
-        </div>
+        @endif
 
-        <div class="mt-auto flex items-center justify-between pt-1">
-            <div class="flex items-baseline gap-2">
-                @if ($product->discounted_price)
-                    <span class="text-[10px] text-gray-400 line-through">{{ money($product->selling_price) }}</span>
-                    <span class="text-primary-600 font-semibold text-[14px]">{{ money($product->discounted_price) }}</span>
-                @else
-                    <span class="text-primary-600 font-semibold text-[14px]">{{ money($product->selling_price) }}</span>
-                @endif
-            </div>
-
-            @if ($product->variants->isNotEmpty())
-                <a href="{{ route('products.details', $product->slug) }}"
-                    class="grid-view-btn w-8 h-8 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center hover:bg-primary-600 hover:text-white transition shadow-sm">
-                    <i class="fas fa-shopping-cart text-xs icon"></i>
-                </a>
+        <div class="flex items-baseline gap-1.5 mt-1">
+            @if ($product->discounted_price > 0)
+                <span class="text-base font-bold text-[#F85606]">৳{{ number_format($product->discounted_price) }}</span>
+                <s class="text-xs text-[#767676]" aria-label="Original price ৳{{ number_format($product->selling_price) }}">৳{{ number_format($product->selling_price) }}</s>
             @else
-                <button data-id="{{ $product->id }}"
-                    class="addToCartNoVariant grid-view-btn w-8 h-8 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center hover:bg-primary-600 hover:text-white transition shadow-sm">
-                    <i class="fas fa-shopping-cart text-xs icon"></i>
-                    <span
-                        class="spinner hidden w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
-                </button>
-
+                <span class="text-base font-bold text-[#191919]">৳{{ number_format($product->selling_price) }}</span>
             @endif
-
         </div>
     </div>
 </div>
-
-@if (isset($oldProduct))
-    <div
-        class="product-card bg-white rounded-xl border border-gray-100 hover:border-primary-500 hover:shadow-xl transition-all duration-300 group overflow-hidden flex flex-col h-full relative">
-        <div class="absolute top-3 left-3 z-10 flex flex-col gap-1">
-            <span class="bg-primary-600 text-white text-[10px] font-bold px-2 py-1 rounded shadow-sm"></span>
-        </div>
-
-        <div
-            class="product-image-container h-48 w-full border-b border-gray-50 relative bg-white p-4 flex items-center justify-center overflow-hidden">
-            <img src="{{ storage_url($product->thumbnail) }}"
-                class="max-h-full max-w-full object-contain mix-blend-multiply group-hover:scale-110 transition duration-500">
-            <!-- Hover Actions (Grid) -->
-            <div
-                class="grid-hover-actions absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center gap-2 backdrop-blur-[1px]">
-                <a href="{{ route('products.details', $product->slug) }}"
-                    class="w-9 h-9 bg-white text-gray-600 rounded-full shadow-lg
-                    flex items-center justify-center hover:bg-primary-600 hover:text-white
-                    transform translate-y-4 group-hover:translate-y-0 transition delay-75">
-                    <i class="far fa-eye icon"></i>
-                </a>
-
-                <button data-id="{{ $product->id }}"
-                    class="wishlistBtn w-9 h-9 bg-white text-gray-600 rounded-full shadow-lg flex items-center justify-center hover:bg-red-500 hover:text-white transform translate-y-4 group-hover:translate-y-0 transition delay-100"><i
-                        class="far fa-heart"></i></button>
-            </div>
-        </div>
-        <div class="p-3 sm:p-4 flex flex-col flex-1">
-            {{-- <span class="text-[10px] text-gray-400 uppercase tracking-wide mb-1 font-medium">{{
-                $product->category->name }}</span> --}}
-            <a href="{{ route('products.details', $product->slug) }}">
-                <h3
-                    class="text-sm font-semibold text-gray-800 line-clamp-2 mb-2 hover:text-primary-600 transition cursor-pointer">
-                    {{ $product->name }}
-                </h3>
-            </a>
-            <div class="flex items-center gap-1 mb-2">
-                <div class="flex text-yellow-400 text-[10px] sm:text-xs">
-                    @php
-                        $avg = $product->avg_rating ?? 0;
-                        $fullStars = floor($avg);
-                        $halfStar = $avg - $fullStars >= 0.5 ? 1 : 0;
-                        $emptyStars = 5 - ($fullStars + $halfStar);
-                    @endphp
-
-                    @for ($i = 0; $i < $fullStars; $i++)
-                        <i class="fas fa-star"></i>
-                    @endfor
-
-                    @if ($halfStar)
-                        <i class="fas fa-star-half-alt"></i>
-                    @endif
-                    @for ($i = 0; $i < $emptyStars; $i++)
-                        <i class="far fa-star"></i>
-                    @endfor
-
-                </div>
-
-                <span class="text-[10px] text-gray-400">({{ $product->rating_count }})</span>
-            </div>
-            <!-- List View Desc -->
-            <p class="list-view-desc hidden text-xs text-gray-500 mb-4 line-clamp-2 leading-relaxed">
-
-            </p>
-            <div class="mt-auto pt-2 flex items-end justify-between">
-                <div class="flex flex-col">
-                    @if ($product->discounted_price)
-                        <span
-                            class="text-[10px] sm:text-xs text-gray-400 line-through">{{ money($product->selling_price) }}</span>
-                        <span
-                            class="text-primary-600 font-bold text-base sm:text-lg">{{ money($product->discounted_price) }}</span>
-                    @else
-                        <span
-                            class="text-primary-600 font-bold text-base sm:text-lg">{{ money($product->selling_price) }}</span>
-                    @endif
-                </div>
-                <!-- Grid Button -->
-                @if ($product->variants->isNotEmpty())
-                    <a href="{{ route('products.details', $product->slug) }}"
-                        class="grid-view-btn w-8 h-8 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center hover:bg-primary-600 hover:text-white transition shadow-sm">
-                        <i class="fas fa-shopping-cart text-xs icon"></i>
-                    </a>
-                @else
-                    <button data-id="{{ $product->id }}"
-                        class="addToCartNoVariant grid-view-btn w-8 h-8 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center hover:bg-primary-600 hover:text-white transition shadow-sm">
-                        <i class="fas fa-shopping-cart text-xs icon"></i>
-                        <span
-                            class="spinner hidden w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
-                    </button>
-                @endif
-
-
-                <!-- List Buttons -->
-                <div class="list-view-btns hidden flex gap-2">
-                    <button
-                        class="w-9 h-9 border border-gray-200 rounded-lg flex items-center justify-center hover:border-red-300 hover:bg-red-50 hover:text-red-500 transition"><i
-                            class="far fa-heart"></i></button>
-                        <button
-                            class="px-4 py-2 bg-primary-600 text-white text-xs font-bold rounded-lg hover:bg-primary-700 shadow-lg shadow-primary-500/30 transition flex items-center gap-2">
-                            <i class="fas fa-shopping-cart"></i> Add to Cart
-                        </button>
-                </div>
-            </div>
-        </div>
-    </div>
-@endif

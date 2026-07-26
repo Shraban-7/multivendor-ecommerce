@@ -2,7 +2,11 @@
 
 namespace App\Domain\Product\Providers;
 
+use App\Domain\Product\Models\Banner;
+use App\Domain\Product\Models\Category;
 use App\Domain\Product\Models\Product;
+use App\Domain\Product\Observers\BannerObserver;
+use App\Domain\Product\Observers\CategoryObserver;
 use App\Domain\Product\Observers\ProductObserver;
 use App\Domain\Product\Repositories\Contracts\BrandRepositoryInterface;
 use App\Domain\Product\Repositories\Contracts\CategoryRepositoryInterface;
@@ -32,5 +36,7 @@ class ProductServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__.'/../routes.php');
         $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
         Product::observe(ProductObserver::class);
+        Banner::observe(BannerObserver::class);
+        Category::observe(CategoryObserver::class);
     }
 }

@@ -40,7 +40,7 @@ $seller = seller();
             </div>
         </div>
 
-        @if ($review->images->isNotEmpty())
+        @if ($review->images && $review->images->isNotEmpty())
             <div class="flex product-images gap-2 md:gap-3 py-2">
                 @foreach ($review->images as $image)
                     <div class="img-wrap w-1/3 h-28 sm:h-32 md:h-24 lg:h-36 overflow-hidden rounded-xl">

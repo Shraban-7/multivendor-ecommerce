@@ -17,11 +17,11 @@
                                 Shipping Address
                             </h2>
 
-                            <button type="button" onclick="toggleModal('addBillingAddressModal')"
-                                class="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-sm font-medium text-primary border border-primary/50 rounded-md hover:bg-primary/5 hover:border-primary transition-colors duration-150">
-                                <i class="fa-solid fa-plus text-[13px]"></i>
-                                <span>Add New</span>
-                            </button>
+                        <button type="button" onclick="toggleModal('addBillingAddressModal')"
+                            class="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-sm font-medium text-[#F85606] border border-[#F85606]/40 rounded hover:bg-[#FFF8F5] transition-colors eq">
+                            <i class="fa-solid fa-plus text-[13px]"></i>
+                            <span>Add New</span>
+                        </button>
                         </div>
 
                         <!-- Address Grid -->
@@ -33,12 +33,12 @@
                                     <label class="relative block cursor-pointer group">
                                         <input type="radio" name="billing_address_id" value="{{ $address->id }}"
                                             class="peer sr-only" {{ $address->is_default ? 'checked' : '' }}>
-                                        <div
-                                            class="p-5 rounded-xl border-2 border-primary-100  peer-checked:border-primary-500 peer-checked:bg-white relative transition-all duration-200">
-                                            <div
-                                                class="absolute top-4 right-4 text-primary-600 opacity-0 peer-checked:opacity-100">
-                                                <i data-lucide="check-circle-2" class="w-6 h-6 fill-primary-100"></i>
-                                            </div>
+                    <div
+                        class="p-5 border border-[#E5E5E5] rounded-sm peer-checked:border-[#F85606] peer-checked:bg-[#FFF8F5] relative transition-all duration-200">
+                        <div
+                            class="absolute top-4 right-4 text-[#F85606] opacity-0 peer-checked:opacity-100">
+                            <i class="fas fa-check-circle text-lg"></i>
+                        </div>
                                             <div class="flex items-center justify-between gap-2 mb-2">
                                                 <span
                                                     class="px-2 py-1 rounded-md bg-white border border-gray-200 text-xs font-bold text-gray-700 uppercase tracking-wide">{{ ucfirst($address->type->value == \App\Enums\AddressType::HOME->value ? 'Home' : 'Office') }}</span>
@@ -206,7 +206,7 @@
                     </div>
 
                     <button id="continue-payment-btn" type="button" data-seller-id="{{ $selectedSellerId }}"
-                        class="mt-6 w-full py-3 bg-primary-500 text-white text-sm font-semibold rounded-md hover:bg-primary-500/90 focus:ring-2 focus:ring-primary/40 transition">
+                        class="mt-6 w-full py-3 bg-[#F85606] text-white text-sm font-semibold hover:bg-[#C43D00] focus:outline-2 focus:outline-[#F85606]/40 eq">
                         Continue to Payment
                     </button>
                 </div>

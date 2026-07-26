@@ -4,7 +4,7 @@
 @section('content')
     <main class="review-page pb-5 sm:pb-10">
         <!-- Page Breadcrumb -->
-        <section class="page-breadcrumb-links bg-jet-gray/10 py-4 md:py-6">
+        <section class="page-breadcrumb-links bg-[#F5F5F5] py-4 md:py-6">
             <nav class="container flex" aria-label="Breadcrumb">
                 <ol class="rtl:gap-x-reverse inline-flex flex-wrap items-center gap-x-1 gap-y-2 md:gap-x-2">
                     <li class="inline-flex items-center">

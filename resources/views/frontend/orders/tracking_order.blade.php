@@ -8,7 +8,7 @@
       <section>
         <a
           href="#"
-          class="block promo-header bg-light-yellow text-white py-3 sm:py-4"
+          class="block promo-header bg-[#F85606] text-white py-3 sm:py-4"
         >
           <div
             class="container flex flex-wrap justify-center xsm:justify-start items-center gap-x-2"
@@ -22,7 +22,7 @@
       <!-- Promotional Header Ended -->
 
       <!-- Page Breadcrumb -->
-      <section class="page-breadcrumb-links bg-jet-gray/10 py-4 md:py-6">
+      <section class="page-breadcrumb-links bg-[#F5F5F5] py-4 md:py-6">
         <nav class="flex container" aria-label="Breadcrumb">
           <ol
             class="inline-flex flex-wrap items-center space-x-1 md:space-x-2 rtl:space-x-reverse"
@@ -144,7 +144,7 @@
             </p>
             <button
               type="submit"
-              class="sm:py-4 sm:px-8 py-3 px-6 bg-primary/80 text-white hover:bg-theme-dark rounded-sm font-bold uppercase eq hover:border-theme-dark flex items-center gap-2 hover:gap-3 text-sm md:text-base mt-4 md:mt-6"
+              class="sm:py-4 sm:px-8 py-3 px-6 bg-[#F85606] text-white hover:bg-[#C43D00] rounded-sm font-bold uppercase eq flex items-center gap-2 hover:gap-3 text-sm md:text-base mt-4 md:mt-6"
             >
               Track Order
               <i class="fa-solid fa-arrow-right sm:text-xl text-lg"></i>

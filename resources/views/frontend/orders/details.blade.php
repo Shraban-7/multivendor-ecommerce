@@ -9,7 +9,7 @@ use App\Domain\Order\Enums\OrderStatus;
         <div class="flex items-center justify-between mb-5">
             <div>
                 <div class="flex items-center space-x-3">
-                    <h1 class="text-xl font-bold">Order #{{ $order->invoice_id }}</h1>
+                    <h1 class="text-xl font-semibold text-[#191919]">Order #{{ $order->invoice_id }}</h1>
 
                     @if ($order->status->label() == OrderStatus::PENDING->label())
                         <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">

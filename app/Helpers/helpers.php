@@ -810,3 +810,10 @@ if (! function_exists('send_sms')) {
         return null;
     }
 }
+
+if (! function_exists('flash_sale_is_active')) {
+    function flash_sale_is_active(): bool
+    {
+        return \App\Domain\Product\Models\FlashSale::active()->exists();
+    }
+}

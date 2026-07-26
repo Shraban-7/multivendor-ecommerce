@@ -4,16 +4,14 @@
 
 @section('dashboard')
     <main class="wishlist-page">
-        <!-- Track Order Main Section Starts -->
-        <section class="track-order-section container py-8">
-            <div class="border border-jet-gray/30 rounded-lg">
-                <h1 class="text-lg font-medium px-6 py-4 text-theme-dark">
+        <section class="container py-8">
+            <div class="border border-[#E5E5E5] rounded-sm">
+                <h1 class="text-base font-semibold px-6 py-4 text-[#191919]">
                     Wishlist
                 </h1>
 
-                <!-- Table Header -->
                 <div
-                    class="hidden md:grid md:grid-cols-[2fr_1fr_1fr_1fr] gap-4 bg-jet-gray/10 border-b border-jet-gray/30 px-6 py-3 text-sm font-medium text-davy-gray">
+                    class="hidden md:grid md:grid-cols-[2fr_1fr_1fr_1fr] gap-4 bg-[#F5F5F5] border-b border-[#E5E5E5] px-6 py-3 text-xs font-semibold text-[#767676] tracking-wider">
                     <h4>PRODUCTS</h4>
                     <h4>PRICE</h4>
                     <h4>STOCK STATUS</h4>
@@ -21,7 +19,7 @@
                 </div>
 
                 <!-- Product Items -->
-                <div class="divide-y divide-gray-200 text-sm rounded-b-lg shadow-sm">
+                <div class="divide-y divide-[#E5E5E5] text-sm">
                     @foreach ($wishlists as $wishlist)
                         <div class="grid md:grid-cols-[2fr_1fr_1fr_1fr] gap-4 px-6 py-4 items-center">
                             <!-- Product Info -->
@@ -44,7 +42,7 @@
                             @php
                                 $stock = $wishlist->product->stock_in - $wishlist->product->stock_out;
                             @endphp
-                            <div class="{{ $stock > 0 ? 'text-green-600' : 'text-orange-600' }} font-medium">
+                            <div class="{{ $stock > 0 ? 'text-green-600' : 'text-[#F85606]' }} font-medium">
                                 {{ $stock > 0 ? 'IN STOCK' : 'STOCK OUT' }}
                             </div>
 
@@ -59,7 +57,7 @@
                                         ADD TO CART
                                     </button> --}}
                                     <a href="{{ route('products.details', $wishlist->product->slug) }}"
-                                        class="bg-primary-500 hover:bg-orange-500 text-white py-2 px-3 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-1">
+                                        class="bg-[#F85606] hover:bg-[#C43D00] text-white py-2 px-3 rounded text-sm font-medium eq flex items-center justify-center gap-1">
                                         <i class="fas fa-shopping-cart text-xs"></i> 
                                     </a>
                                 @endif

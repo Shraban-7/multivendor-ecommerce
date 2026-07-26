@@ -64,13 +64,22 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        $product->load(['images', 'category', 'subcategory', 'seller.district', 'seller.division']);
+        $product->load([
+            'images',
+            'category',
+            'subcategory',
+            'seller.district',
+            'seller.division',
+            'variants.option_values.option',
+            'variants.options.option_value.option',
+        ]);
 
         $data['product'] = ProductResource::make($product);
         $data['seller'] = SellerResource::make($product->seller);
 
         $relatedProducts = Product::query()
-            ->with(['variants', 'images', 'seller'])
+            ->with(['variants', 'images', 'seller', 'category', 'subcategory'])
+            ->active()
             ->where('id', '!=', $product->id)
             ->where('category_id', $product->category_id)
             ->limit(6)

@@ -1,278 +1,193 @@
-<header class="bg-white sticky top-0 z-40 shadow-sm border-b border-gray-100">
-    <div class="container mx-auto max-w-7xl px-4 py-4">
-        <div class="flex items-center justify-between gap-4 lg:gap-8">
-            <!-- Mobile Menu Toggle (Visible on Mobile) -->
-            <button id="mobileMenuBtn" class="lg:hidden text-2xl text-gray-700">
-                <i class="fas fa-bars"></i>
-            </button>
+@php
+    $categories = dropdown_categories();
+    $settings = settings();
+    $appName = app_name();
+@endphp
 
-            <a href="/" class="flex items-center gap-1 group">
-                <div>
-                    <img src="{{ asset('assets/frontend/images/sm-icon.png') }}" alt="" style="height: 36px;">
-                </div>
-                <div class="flex flex-col">
-                    <span class="text-2xl font-extrabold tracking-tight text-gray-800 leading-none">Slash<span
-                            class="text-primary-600">Mart</span></span>
-                    <!-- <span class="text-[10px] font-medium text-gray-500 tracking-widest uppercase">Premium
-                        Store</span> -->
-                </div>
-            </a>
+<header class="sticky top-0 z-50 bg-white shadow-sm border-b border-[#E5E5E5]">
+    <div class="max-w-[1400px] mx-auto px-2 sm:px-4">
+        <div class="flex items-center h-14 sm:h-16">
 
-            <!-- Search Bar (Hidden on mobile) -->
-            <div class="hidden md:flex flex-1 max-w-2xl relative">
-                <div
-                    class="flex w-full border-2 border-primary-100 rounded-full overflow-hidden hover:border-primary-300 transition-colors focus-within:border-primary-500 focus-within:ring-2 focus-within:ring-primary-200">
-                    <!-- <button
-                        class="px-4 bg-gray-50 text-gray-600 text-sm font-medium border-r border-gray-200 flex items-center gap-2 hover:bg-gray-100">
-                        All Categories <i class="fas fa-chevron-down text-xs"></i>
-                    </button> -->
-                    <input type="text" id="searchInput" placeholder="Search for products, brands or shops..."
-                        class="w-full px-4 py-2.5 outline-none text-gray-700 placeholder-gray-400">
-                    <button class="bg-primary-500 hover:bg-primary-600 text-white px-6 font-medium transition">
-                        <i class="fas fa-search"></i>
-                    </button>
-                    <!-- Suggestions -->
-                    <div id="suggestionsBox"
-                        class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-md shadow-lg hidden max-h-80 overflow-y-auto z-50">
+            <!-- Left: Hamburger + Logo -->
+            <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+                <button type="button" class="lg:hidden p-2 -ml-2 rounded hover:bg-[#F5F5F5] eq" aria-label="Open menu"
+                    onclick="document.getElementById('mobile-drawer').classList.remove('-translate-x-full'); document.getElementById('mobile-drawer-overlay').classList.remove('hidden')">
+                    <svg class="w-6 h-6 text-[#191919]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+                <a href="{{ url('/') }}" class="flex items-center gap-1" aria-label="{{ $appName }} home">
+                    @if (! empty($settings?->logo_white))
+                        <img src="{{ storage_url($settings->logo_white) }}" alt="{{ $appName }}" class="h-8 sm:h-10 w-auto">
+                    @else
+                        <span class="text-xl sm:text-2xl font-bold text-[#F85606]">{{ $appName }}</span>
+                    @endif
+                </a>
+            </div>
+
+            <!-- Center: Search Bar -->
+            <div class="flex-1 flex justify-center px-2 lg:px-4">
+                <div class="hidden sm:block w-full max-w-[600px]">
+                    <div class="relative">
+                        <form action="{{ route('products.index') }}" method="GET" class="flex">
+                            <input type="text" name="q" id="searchInput" placeholder="Search in {{ $appName }}..." autocomplete="off" value="{{ request('q') }}"
+                                class="w-full h-10 pl-4 pr-10 text-sm border-2 border-[#F85606] rounded-l focus:outline-none focus:border-[#C43D00] text-[#191919] placeholder-[#767676]"
+                                aria-label="Search products">
+                            <button type="submit" class="h-10 px-5 bg-[#F85606] hover:bg-[#C43D00] eq text-white font-medium text-sm rounded-r flex items-center gap-1.5">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                </svg>
+                                <span class="hidden lg:inline">Search</span>
+                            </button>
+                        </form>
+                        <div id="suggestionsBox" class="hidden absolute top-full left-0 right-0 bg-white border border-[#E5E5E5] rounded-b shadow-lg z-50 max-h-96 overflow-y-auto"></div>
                     </div>
                 </div>
             </div>
 
+            <!-- Right: Cart -->
+            <div class="flex items-center flex-shrink-0">
+                <a href="{{ route('cart.details') }}" class="relative p-2 rounded hover:bg-[#FFF1EA] eq" aria-label="Shopping cart">
+                    <svg class="w-6 h-6 sm:w-7 sm:h-7 text-[#F85606]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/>
+                    </svg>
+                    <span class="absolute -top-0.5 -right-0.5 bg-[#F85606] text-white text-[10px] font-bold min-w-[16px] h-[16px] flex items-center justify-center rounded-full" aria-live="polite" id="cart-count">{{ $cartCount }}</span>
+                </a>
+            </div>
+        </div>
 
-            <!-- Right Icons -->
-            <div class="flex items-center gap-4 lg:gap-6">
-                @if (request()->routeIs('products.index'))
-                    <button id="openMobileFilter" class="lg:hidden text-gray-600 hover:text-primary-600">
-                        <i class="fas fa-filter text-xl"></i>
-                    </button>
-                @endif
-                @if (!auth('web')->check() && !auth()->guard('seller')->check() && !auth()->guard('admin')->check())
-                    <a href="javascript:void(0)" class="auth-btn hidden md:flex flex-col items-center group">
-                        <i class="far fa-user text-xl text-gray-600 group-hover:text-primary-600 transition"></i>
-                        <span class="text-[10px] font-medium text-gray-500 mt-1">Login</span>
-                    </a>
+        <!-- Mobile Search Bar -->
+        <div class="sm:hidden pb-2">
+            <form action="{{ route('products.index') }}" method="GET" class="flex">
+                <input type="text" name="q" id="searchInputMobile" placeholder="Search in {{ $appName }}..." autocomplete="off" value="{{ request('q') }}"
+                    class="flex-1 h-9 px-3 text-sm border-2 border-[#F85606] rounded-l focus:outline-none text-[#191919] placeholder-[#767676]"
+                    aria-label="Search products">
+                <button type="submit" class="h-9 px-3 bg-[#F85606] hover:bg-[#C43D00] eq text-white rounded-r">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </button>
+            </form>
+            <div id="suggestionsBoxMobile" class="hidden absolute left-0 right-0 bg-white border border-[#E5E5E5] rounded-b shadow-lg z-50 max-h-96 overflow-y-auto"></div>
+        </div>
+    </div>
 
-                    <a href="{{ route('seller.signup') }}"
-                        class="hidden lg:block bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition shadow-lg shadow-gray-500/20">
-                        Become a Seller
-                    </a>
-                @else
-                    <a href="{{ route('wishlist.index') }}" class="flex flex-col items-center group relative">
-                        <div class="relative">
-                            <i class="far fa-heart text-xl text-gray-600 group-hover:text-primary-600 transition"></i>
-                            <span id="wishlistCount"
-                                class="{{ $wishlistCount > 0 ? '' : 'hidden' }} absolute -top-2 -right-2 bg-primary-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">{{ $wishlistCount }}</span>
-                        </div>
-                        <span class="text-[10px] font-medium text-gray-500 mt-1 hidden md:block">Wishlist</span>
-                    </a>
-
-                    <a href="{{ route('cart.details') }}"
-                        class="hidden md:flex flex flex-col items-center group relative">
-                        <div class="relative">
-                            <i
-                                class="fas fa-shopping-cart text-xl text-gray-600 group-hover:text-primary-600 transition"></i>
-
-                            <span id="cartCount"
-                                class="{{ $cartCount > 0 ? '' : 'hidden' }} absolute -top-2 -right-2 bg-primary-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">{{ $cartCount }}</span>
-
-                        </div>
-                        <span class="text-[10px] font-medium text-gray-500 mt-1 hidden md:block">Cart</span>
-                    </a>
-
-                    <a href="{{ route('notifications.index') }}" class="flex flex-col items-center group relative">
-                        <div class="relative">
-                            <i
-                                class="fa-regular fa-bell text-xl text-gray-600 group-hover:text-primary-600 transition"></i>
-                            @if ($notificationCount > 0)
-                                <span
-                                    class="absolute -top-2 -right-2 bg-primary-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
-                                    {{ $notificationCount }}
-                                </span>
+    <!-- Mega Menu / Category Nav (Desktop) -->
+    <nav class="hidden lg:block bg-white border-t border-[#E5E5E5]" aria-label="Category navigation">
+        <div class="max-w-[1400px] mx-auto px-4 flex items-stretch">
+            <!-- Browse Categories Dropdown -->
+            <div class="relative group">
+                <button class="flex items-center gap-2 px-5 h-11 text-sm font-medium text-white bg-[#F85606] hover:bg-[#C43D00] eq" aria-haspopup="true" aria-expanded="false">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                    <span>Categories</span>
+                    <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="absolute left-0 top-full w-[220px] bg-white border border-[#E5E5E5] shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible eq z-50">
+                    @foreach ($categories as $category)
+                        <div class="relative group/sub">
+                            <a href="{{ route('category.details', $category->slug) }}"
+                               class="flex items-center justify-between px-4 py-2.5 text-sm text-[#191919] hover:bg-[#FFF1EA] hover:text-[#F85606] eq"
+                               onmouseenter="showSubmenu(this)">
+                                @if ($category->icon)
+                                    <img src="{{ storage_url($category->icon) }}" alt="" class="w-5 h-5 mr-2" loading="lazy">
+                                @endif
+                                <span class="flex-1">{{ $category->name }}</span>
+                                @if ($category->children && $category->children->isNotEmpty())
+                                    <svg class="w-3 h-3 text-[#767676]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                    </svg>
+                                @endif
+                            </a>
+                            @if ($category->children && $category->children->isNotEmpty())
+                                <div class="submenu absolute left-full top-0 w-[600px] bg-white border border-[#E5E5E5] shadow-lg p-4 hidden z-50" style="min-height: 100%;">
+                                    <div class="grid grid-cols-3 gap-4">
+                                        @foreach ($category->children as $sub)
+                                            <div>
+                                                <a href="{{ route('category.details', $sub->slug) }}" class="font-semibold text-sm text-[#191919] hover:text-[#F85606] block mb-1">{{ $sub->name }}</a>
+                                                @if ($sub->children && $sub->children->isNotEmpty())
+                                                    <ul class="space-y-0.5">
+                                                        @foreach ($sub->children->take(5) as $child)
+                                                            <li>
+                                                                <a href="{{ route('category.details', $child->slug) }}" class="text-xs text-[#595959] hover:text-[#F85606]">{{ $child->name }}</a>
+                                                            </li>
+                                                        @endforeach
+                                                    </ul>
+                                                @endif
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
                             @endif
                         </div>
-                        <span class="text-[10px] font-medium text-gray-500 mt-1 hidden md:block">Notifications</span>
-                    </a>
+                    @endforeach
+                </div>
+            </div>
 
-                    <a href="
-                                @if (auth('web')->check()) {{ route('orders.index') }}
-                                @elseif(auth('seller')->check())
-                                    {{ route('seller.dashboard') }}
-                                @elseif(auth('admin')->check())
-                                    {{ route('admin.dashboard') }}
-                                @else
-                                    {{ route('login') }} @endif
-                            "
-                        class="hidden lg:block bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition shadow-lg shadow-gray-500/20">
-                        Dashboard
+            <!-- Static Nav Links with Daraz underline hover -->
+            <div class="flex items-center ml-3">
+                <a href="{{ url('/') }}"
+                   class="nav-link{{ request()->is('/') ? ' active' : '' }}"
+                   aria-current="{{ request()->is('/') ? 'page' : '' }}">
+                    Home
+                </a>
+                <a href="{{ route('flashSales.index') }}" class="nav-link">
+                    Flash Sale
+                </a>
+                <a href="{{ route('products.index') }}" class="nav-link">
+                    Products
+                </a>
+                @if (flash_sale_is_active())
+                    <a href="{{ route('flashSales.index') }}"
+                       class="nav-link text-[#D93025] font-semibold animate-pulse">
+                        🔥 Flash Sale
                     </a>
-
                 @endif
             </div>
         </div>
-    </div>
-
-    <div class="hidden lg:block border-t border-gray-100 bg-white">
-        <div class="container mx-auto max-w-7xl px-4">
-            <div class="flex items-center gap-8 relative">
-
-                <!-- MEGA MENU DROPDOWN PARENT -->
-                <div class="relative group py-3">
-                    <button class="flex items-center gap-2 font-bold text-gray-800 hover:text-primary-600 transition">
-                        <i class="fas fa-bars text-primary-600"></i> Browse Categories <i
-                            class="fas fa-chevron-down text-xs ml-1"></i>
-                    </button>
-
-                    <!-- MEGA MENU CONTENT -->
-                    <div
-                        class="invisible group-hover:visible opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 absolute top-full left-0 w-[800px] bg-white shadow-2xl rounded-b-xl border border-gray-100 z-50 flex overflow-hidden">
-
-                        <!-- Sidebar (Main Categories) -->
-                        <div class="w-2/5 bg-gray-50 py-2 border-r border-gray-100">
-                            <ul class="text-sm">
-                                @foreach (dropdown_categories() as $category)
-                                    <li class="menu-item-hover hover:bg-white hover:text-primary-600 px-4 py-2 cursor-pointer flex justify-between items-center font-medium text-gray-700"
-                                        onmouseover="showSubmenu('{{ $category->slug }}')">
-                                        <a>
-                                            @if (!empty($category->icon))
-                                                <i class="{{ $category->icon }} w-5 text-center mr-2"></i>
-                                            @endif {{ $category->name }}
-                                        </a>
-                                        <i class="fas fa-chevron-right text-[10px]"></i>
-                                    </li>
-                                @endforeach
-
-                            </ul>
-                        </div>
-
-                        <!-- Subcategories Content Area -->
-                        <div class="w-3/4 p-6 bg-white min-h-[350px]">
-
-                            <!-- Electronics Content (Default) -->
-                            @foreach (dropdown_categories() as $index => $category)
-                                <div id="{{ $category->slug }}"
-                                    class="{{ $index !== 0 ? 'hidden' : '' }} submenu-content grid grid-cols-3 gap-6">
-                                    <div>
-                                        <a href="{{ route('products.index',['category'=>$category->slug]) }}">
-                                            <h4 class="font-bold text-gray-900 mb-3 border-b border-gray-100 pb-1">
-                                                {{ $category->name }}</h4>
-                                        </a>
-                                        <ul class="space-y-2 text-sm text-gray-500">
-                                            @foreach ($category->subcategories as $subcategory)
-                                                <li><a href="{{ route('products.index',['subcategory'=>$subcategory->slug]) }}"
-                                                        class="hover:text-primary-600">{{ $subcategory->name }}</a>
-                                                </li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
-                                    {{-- <div class="col-span-1">
-                                        <img src="https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?q=80&w=300"
-                                            class="rounded-lg mb-3 h-32 w-full object-cover">
-                                        <h5 class="font-bold text-primary-600">New Arrivals</h5>
-                                        <p class="text-xs text-gray-500">Check out the latest gadgets.</p>
-                                    </div> --}}
-                                </div>
-                            @endforeach
-                            <!-- Fashion Content (Hidden by default) -->
-                            <div id="fashion" class="submenu-content hidden grid grid-cols-3 gap-6">
-                                <div>
-                                    <h4 class="font-bold text-gray-900 mb-3 border-b border-gray-100 pb-1">Men's
-                                        Fashion</h4>
-                                    <ul class="space-y-2 text-sm text-gray-500">
-                                        <li><a href="#" class="hover:text-primary-600">T-Shirts</a></li>
-                                        <li><a href="#" class="hover:text-primary-600">Jeans</a></li>
-                                        <li><a href="#" class="hover:text-primary-600">Watches</a></li>
-                                        <li><a href="#" class="hover:text-primary-600">Shoes</a></li>
-                                    </ul>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-gray-900 mb-3 border-b border-gray-100 pb-1">Women's
-                                        Fashion</h4>
-                                    <ul class="space-y-2 text-sm text-gray-500">
-                                        <li><a href="#" class="hover:text-primary-600">Sarees</a></li>
-                                        <li><a href="#" class="hover:text-primary-600">Kurtis</a></li>
-                                        <li><a href="#" class="hover:text-primary-600">Jewelry</a></li>
-                                        <li><a href="#" class="hover:text-primary-600">Handbags</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <!-- Other contents (Hidden) -->
-                            <div id="home" class="submenu-content hidden">
-                                <h4 class="font-bold text-gray-900">Home & Living</h4>
-                                <p class="text-sm text-gray-500 mt-2">Bedding, Furniture, Decor...</p>
-                            </div>
-                            <div id="beauty" class="submenu-content hidden">
-                                <h4 class="font-bold text-gray-900">Beauty & Health</h4>
-                                <p class="text-sm text-gray-500 mt-2">Makeup, Skincare, Haircare...</p>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Standard Nav Links -->
-                <nav class="flex items-center gap-6 text-sm font-medium text-gray-600">
-                    <a href="{{ route('home') }}" class="hover:text-primary-600 transition">Home</a>
-                    <a href="{{ route('products.index') }}" class="hover:text-primary-600 transition">Shop</a>
-                    <a href="{{ route('sellers.index') }}" class="hover:text-primary-600 transition">Vendors</a>
-                    {{-- <a href="#" class="hover:text-primary-600 transition flex items-center gap-1">Offers <span
-                            class="bg-red-500 text-white text-[9px] px-1.5 rounded-sm">HOT</span></a> --}}
-                    {{-- <a href="#" class="hover:text-primary-600 transition">Contact</a> --}}
-                </nav>
-
-                {{-- <div class="ml-auto text-sm font-bold text-gray-800 flex items-center gap-2">
-                    <i class="fas fa-bolt text-primary-500"></i> Black Friday Deals
-                </div> --}}
-            </div>
-        </div>
-    </div>
+    </nav>
 </header>
 
+<style>
+    .nav-link {
+        position: relative;
+        padding: 0 0.75rem;
+        height: 2.75rem;
+        display: flex;
+        align-items: center;
+        font-size: 0.875rem;
+        color: #595959;
+        transition: all 0.2s ease-in-out;
+    }
+    .nav-link::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: #F85606;
+        transform: scaleX(0);
+        transition: transform 0.2s ease-in-out;
+    }
+    .nav-link:hover { color: #F85606; }
+    .nav-link:hover::after,
+    .nav-link.active::after { transform: scaleX(1); }
+</style>
+
 <script>
-    // --- Mega Menu Interaction (Desktop) ---
-    function showSubmenu(id) {
-        // Hide all submenus
-        document.querySelectorAll('.submenu-content').forEach(el => {
-            el.classList.add('hidden');
-        });
-        // Show specific submenu
-        const target = document.getElementById(id);
-        if (target) target.classList.remove('hidden');
+    function showSubmenu(el) {
+        const submenu = el.nextElementSibling;
+        document.querySelectorAll('.submenu').forEach(s => s !== submenu && s.classList.add('hidden'));
+        if (submenu) submenu.classList.remove('hidden');
     }
-
-    // --- Mobile Menu Logic ---
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const closeMobileMenu = document.getElementById('closeMobileMenu');
-    const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
-    const mobileMenuDrawer = document.getElementById('mobileMenuDrawer');
-
-    function toggleMobileMenu(show) {
-        if (show) {
-            mobileMenuOverlay.classList.remove('hidden');
-            setTimeout(() => mobileMenuOverlay.classList.remove('opacity-0'), 10);
-            mobileMenuDrawer.classList.remove('-translate-x-full');
-        } else {
-            mobileMenuOverlay.classList.add('opacity-0');
-            mobileMenuDrawer.classList.add('-translate-x-full');
-            setTimeout(() => mobileMenuOverlay.classList.add('hidden'), 300);
+    document.addEventListener('mouseover', function(e) {
+        const submenu = e.target.closest('.submenu');
+        if (!submenu) {
+            document.querySelectorAll('.submenu').forEach(s => s.classList.add('hidden'));
         }
-    }
-
-    mobileMenuBtn?.addEventListener('click', () => toggleMobileMenu(true));
-    closeMobileMenu?.addEventListener('click', () => toggleMobileMenu(false));
-    mobileMenuOverlay?.addEventListener('click', () => toggleMobileMenu(false));
-
-    // --- Mobile Accordion Logic ---
-    function toggleMobileSubmenu(id) {
-        const submenu = document.getElementById(id);
-        const icon = document.getElementById('icon-' + id);
-
-        if (submenu.classList.contains('open')) {
-            submenu.classList.remove('open');
-            icon.style.transform = 'rotate(0deg)';
-        } else {
-            submenu.classList.add('open');
-            icon.style.transform = 'rotate(180deg)';
-        }
-    }
+    });
 </script>

@@ -1,123 +1,123 @@
-<?php
-$contactLinks = [['title' => 'Help Center', 'route' => route('pages.show', 'help-center')], ['title' => 'Returns & Refunds', 'route' => route('pages.show', 'returns-refunds')], ['title' => 'Contact Us', 'route' => route('pages.show', 'contact-us')]];
+@php
+    $settings = settings();
+    $appName = app_name();
+    $socialLinks = social_links();
+@endphp
 
-$infoLinks = [['title' => 'About Us', 'route' => route('pages.show', 'about-us')], ['title' => 'Privacy Policy', 'route' => route('pages.show', 'privacy-policy')], ['title' => 'Terms and Conditions', 'route' => route('pages.show', 'terms-and-conditions')], ['title' => 'Become a Seller', 'route' => route('pages.show', 'become-a-seller')]];
+<footer class="bg-[#191919] text-[#F5F5F5] mt-8">
+    <!-- Main Footer Links -->
+    <div class="max-w-[1400px] mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
 
-$hideFooter = request()->is('/') ? '' : 'hidden md:block';
-?>
-
-<footer class="bg-gray-900 text-gray-300 pt-16 relative overflow-hidden {{ $hideFooter }}">
-    <!-- Decorative Top Border -->
-    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-600 via-orange-400 to-primary-600"></div>
-
-    <div class="container mx-auto max-w-7xl px-4 pb-8">
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <!-- Brand Column -->
+            <!-- Brand -->
             <div>
-                <a href="#" class="flex items-center gap-1 mb-6">
-                    <div>
-                        <img src="{{ asset('assets/frontend/images/sm-icon.png') }}" alt="" style="height: 36px;">
+                <div class="flex items-center gap-2 mb-4">
+                    @if (! empty($settings?->logo_white))
+                        <img src="{{ storage_url($settings->logo_white) }}" alt="{{ $appName }}" class="h-8 w-auto">
+                    @else
+                        <span class="text-lg font-bold text-[#F85606]">{{ $appName }}</span>
+                    @endif
+                </div>
+                <p class="text-sm text-[#767676] mb-4">Bangladesh's leading online marketplace with thousands of products at the best prices.</p>
+                @if ($socialLinks->isNotEmpty())
+                    <div class="flex items-center gap-3">
+                        @foreach ($socialLinks as $link)
+                            <a href="{{ $link->link }}" target="_blank" rel="noopener noreferrer" class="w-9 h-9 flex items-center justify-center rounded-full bg-[#2A2A2A] hover:bg-[#F85606] eq text-[#F5F5F5]" aria-label="{{ $link->name }}">
+                                <i class="{{ $link->icon_name }}"></i>
+                            </a>
+                        @endforeach
                     </div>
-                    <span class="text-2xl font-bold text-white">Slash<span class="text-primary-500">Mart</span></span>
-                </a>
-                <p class="text-gray-400 text-sm mb-6 leading-relaxed">{{ $settings->footer_text }}</p>
-                <div class="flex gap-3">
-                    @foreach (social_links() as $socialLink)
-                        @php
-                            $color = $socialLink->color;
-                            $bg = "bg-{$color}-100";
-                            $text = "text-{$color}-600";
-                            $hoverBg = "hover:bg-{$color}-600";
-                            $hoverText = 'hover:text-white';
-                        @endphp
+                @endif
+            </div>
 
-                        {{-- <a href="{{ $socialLink->link }}"
-                        class="w-9 h-9 rounded-full flex items-center justify-center transition {{ $bg }} {{ $text }} {{ $hoverBg }} {{ $hoverText }}">
-                        <i class="fa-brands {{ $socialLink->icon_name }}"></i> --}}
-                        <a href="{{ $socialLink->link }}" target="_blank"
-                            class="w-9 h-9 rounded-full bg-gray-800 flex items-center justify-center text-white {{ $hoverBg }} hover:-translate-y-1 transition duration-300"><i
-                                class="fab {{ $socialLink->icon_name }}"></i></a>
-                        </a>
-                    @endforeach
-
+            <!-- Quick Links -->
+            <div class="footer-accordion">
+                <button class="flex items-center justify-between w-full sm:cursor-default text-sm font-semibold text-[#F5F5F5] mb-3 sm:mb-4 py-2 sm:py-0" onclick="toggleAccordion(this)" aria-expanded="false">
+                    Quick Links
+                    <svg class="w-4 h-4 sm:hidden transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="footer-accordion-content hidden sm:block space-y-2">
+                    <a href="{{ url('/') }}" class="block text-sm text-[#767676] hover:text-[#F85606] eq">Home</a>
+                    <a href="{{ route('products.index') }}" class="block text-sm text-[#767676] hover:text-[#F85606] eq">All Products</a>
+                    <a href="{{ route('sellers.index') }}" class="block text-sm text-[#767676] hover:text-[#F85606] eq">Top Sellers</a>
+                    <a href="{{ route('flashSales.index') }}" class="block text-sm text-[#767676] hover:text-[#F85606] eq">Flash Sales</a>
+                    <a href="{{ route('pages.show', 'about-us') }}" class="block text-sm text-[#767676] hover:text-[#F85606] eq">About Us</a>
                 </div>
             </div>
 
-            <div>
-                <h4 class="text-white font-bold text-lg mb-6 relative inline-block">
-                    Quick Links
-                    <span class="absolute -bottom-2 left-0 w-10 h-1 bg-primary-500 rounded-full"></span>
-                </h4>
-                <ul class="space-y-3 text-sm">
-                    @foreach ($infoLinks as $link)
-                        <li><a href="{{ $link['route'] }}"
-                                class="hover:text-primary-500 hover:pl-2 transition-all duration-300 block">{{ $link['title'] }}</a>
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
-
-            <div>
-                <h4 class="text-white font-bold text-lg mb-6 relative inline-block">
+            <!-- Customer Care -->
+            <div class="footer-accordion">
+                <button class="flex items-center justify-between w-full sm:cursor-default text-sm font-semibold text-[#F5F5F5] mb-3 sm:mb-4 py-2 sm:py-0" onclick="toggleAccordion(this)" aria-expanded="false">
                     Customer Care
-                    <span class="absolute -bottom-2 left-0 w-10 h-1 bg-primary-500 rounded-full"></span>
-                </h4>
-                <ul class="space-y-3 text-sm">
-                    @foreach ($contactLinks as $link)
-                        <li><a href="{{ $link['route'] }}"
-                                class="hover:text-primary-500 hover:pl-2 transition-all duration-300 block">{{ $link['title'] }}</a>
-                        </li>
-                    @endforeach
-                </ul>
+                    <svg class="w-4 h-4 sm:hidden transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="footer-accordion-content hidden sm:block space-y-2">
+                    <a href="{{ route('pages.show', 'help-center') }}" class="block text-sm text-[#767676] hover:text-[#F85606] eq">Help Center</a>
+                    <a href="{{ route('pages.show', 'return-policy') }}" class="block text-sm text-[#767676] hover:text-[#F85606] eq">Return Policy</a>
+                    <a href="{{ route('pages.show', 'shipping-info') }}" class="block text-sm text-[#767676] hover:text-[#F85606] eq">Shipping Info</a>
+                    <a href="{{ route('contactUs') }}" class="block text-sm text-[#767676] hover:text-[#F85606] eq">Contact Us</a>
+                    <a href="{{ route('pages.show', 'faq') }}" class="block text-sm text-[#767676] hover:text-[#F85606] eq">FAQ</a>
+                </div>
             </div>
 
+            <!-- Contact -->
             <div>
-                <h4 class="text-white font-bold text-lg mb-6 relative inline-block">
-                    Contact Info
-                    <span class="absolute -bottom-2 left-0 w-10 h-1 bg-primary-500 rounded-full"></span>
-                </h4>
-                <ul class="space-y-4 text-sm">
-                    @if ($settings->address)
-                        <li class="flex gap-3 items-start">
-                            <i class="fas fa-map-marker-alt text-primary-500 text-lg"></i>
-                            <span class="text-gray-400">{{ $settings->address }}</span>
-                        </li>
+                <h3 class="text-sm font-semibold text-[#F5F5F5] mb-4">Contact Info</h3>
+                <div class="space-y-3">
+                    @if (! empty($settings?->address))
+                        <div class="flex items-start gap-2">
+                            <svg class="w-4 h-4 mt-0.5 text-[#F85606] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                            <span class="text-sm text-[#767676]">{{ $settings->address }}</span>
+                        </div>
                     @endif
-                    @if ($settings->email)
-                        <li class="flex gap-3 items-center">
-                            <i class="fas fa-envelope text-primary-500 text-lg"></i>
-                            <span class="text-gray-400 hover:text-white cursor-pointer">{{ $settings->email }}</span>
-                        </li>
+                    @if (! empty($settings?->phone))
+                        <div class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-[#F85606]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                            </svg>
+                            <a href="tel:{{ $settings->phone }}" class="text-sm text-[#767676] hover:text-[#F85606] eq">{{ $settings->phone }}</a>
+                        </div>
                     @endif
-                    @if ($settings->phone)
-                        <li class="flex gap-3 items-center">
-                            <i class="fas fa-phone-alt text-primary-500 text-lg"></i>
-                            <span
-                                class="text-gray-400 font-bold hover:text-white cursor-pointer">{{ $settings->phone }}</span>
-                        </li>
+                    @if (! empty($settings?->email))
+                        <div class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-[#F85606]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                            </svg>
+                            <a href="mailto:{{ $settings->email }}" class="text-sm text-[#767676] hover:text-[#F85606] eq">{{ $settings->email }}</a>
+                        </div>
                     @endif
-                </ul>
-                <!-- <div class="mt-6">
-                    <h5 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Payment Methods</h5>
-                    <div class="flex gap-2">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/MasterCard_Logo.svg/1200px-MasterCard_Logo.svg.png" class="h-6 bg-white px-1 rounded">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png" class="h-6 bg-white px-1 rounded">
-                        <img src="https://seeklogo.com/images/B/bkash-logo-0C52960A6D-seeklogo.com.png" class="h-6 bg-white px-1 rounded">
-                    </div>
-                </div> -->
+                </div>
             </div>
         </div>
+    </div>
 
-        <!-- Copyright -->
-        <div
-            class="border-t border-gray-800 mt-12 pt-6 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
-            <p>&copy; {{ date('Y') }} SlashMart. All Rights Reserved.</p>
-            <div class="flex gap-4 mt-2 md:mt-0">
-                <a href="{{ route('pages.show','terms-and-conditions') }}" class="hover:text-white transition">Terms</a>
-                <a href="{{ route('pages.show','privacy-policy') }}" class="hover:text-white transition">Privacy</a>
-                <a href="#" class="hover:text-white transition">Cookies</a>
+    <!-- Copyright Bar -->
+    <div class="border-t border-[#2A2A2A]">
+        <div class="max-w-[1400px] mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <p class="text-xs text-[#595959]">&copy; {{ date('Y') }} {{ $appName }}. All rights reserved.</p>
+            <div class="flex items-center gap-4 text-xs text-[#595959]">
+                <a href="{{ route('pages.show', 'terms-and-conditions') }}" class="hover:text-[#F85606] eq">Terms &amp; Conditions</a>
+                <a href="{{ route('pages.show', 'privacy-policy') }}" class="hover:text-[#F85606] eq">Privacy Policy</a>
+                <a href="{{ route('pages.show', 'cookie-policy') }}" class="hover:text-[#F85606] eq">Cookie Policy</a>
             </div>
         </div>
     </div>
 </footer>
+
+<script>
+    function toggleAccordion(btn) {
+        const content = btn.nextElementSibling;
+        const isOpen = !content.classList.contains('hidden');
+        content.classList.toggle('hidden');
+        btn.setAttribute('aria-expanded', !isOpen);
+        const icon = btn.querySelector('svg');
+        if (icon) icon.classList.toggle('rotate-180');
+    }
+</script>

@@ -6,7 +6,7 @@
     {{-- <div class="bg-gray-50 min-h-screen pb-12 font-sans">
     <div class="bg-white shadow-sm border-b border-gray-200">
         <div class="relative w-full h-48 md:h-64 bg-gray-300 overflow-hidden group">
-            @if ($seller->banner_images->isNotEmpty())
+            @if ($seller->banner_images && $seller->banner_images->isNotEmpty())
             <img src="{{ storage_url($seller->banner_images->first()->image) }}"
 alt="Banner"
 class="w-full h-full object-cover">

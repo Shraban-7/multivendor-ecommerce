@@ -19,7 +19,7 @@ $settings = settings();
         <p class="text-gray-600 text-sm">Join our community and unlock exclusive features.</p>
     </div>
 
-    <form action="{{ route('home') }}" method="POST" class="space-y-5">
+    <form action="{{ route('signup') }}" method="POST" class="space-y-5">
         @csrf
         <div>
             <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
@@ -89,7 +89,7 @@ $settings = settings();
 
     <div class="text-center text-sm text-gray-600">
         Already have an account?
-        <a href="{{ route('home') }}" class="text-yellow-600 hover:underline">Login here</a>
+        <a href="{{ route('login') }}" class="text-yellow-600 hover:underline">Login here</a>
     </div>
 </div>
 @endsection

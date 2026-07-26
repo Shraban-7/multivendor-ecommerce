@@ -8,16 +8,16 @@
     ?>
 
     <main>
-        @if ($orders->isNotEmpty())
+        @if ($orders && $orders->isNotEmpty())
             <section class="orders-section container mx-auto">
-                <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
-                    <div class="flex items-center justify-between px-6 py-4 border-b border-jet-gray/30">
-                        <h1 class="text-xl font-semibold text-gray-800">My Orders</h1>
+                <div class="bg-white border border-[#E5E5E5] rounded-sm">
+                    <div class="flex items-center justify-between px-6 py-4 border-b border-[#E5E5E5]">
+                        <h1 class="text-base font-semibold text-[#191919]">My Orders</h1>
                     </div>
 
                     <div class="overflow-x-auto p-4">
-                        <table id="order-table" class="w-full text-sm text-left text-gray-700">
-                            <thead class="bg-gray-100 text-xs uppercase font-medium text-gray-600">
+                        <table id="order-table" class="w-full text-sm text-left text-[#595959]">
+                            <thead class="bg-[#F5F5F5] text-xs uppercase font-semibold text-[#767676]">
                                 <tr>
                                     <th scope="col" class="px-6 py-3">Invoice #</th>
                                     <th scope="col" class="px-6 py-3">Date</th>

@@ -162,7 +162,15 @@ class OrderController extends Controller
 
     public function show(Order $order)
     {
-        $order->load(['items.product', 'items.variant', 'seller.district', 'seller.division', 'billing_address', 'payment']);
+        $order->load([
+            'items.product',
+            'items.variant',
+            'seller.district',
+            'seller.division',
+            'billing_address.division',
+            'billing_address.district',
+            'payment',
+        ]);
 
         return apiResponse(OrderResource::make($order));
     }

@@ -42,6 +42,20 @@ class Product extends Model
 
     const STATUS_DELETED = 3;
 
+    /**
+     * Allow /api/products/{product} to resolve by id or slug.
+     */
+    public function resolveRouteBinding($value, $field = null)
+    {
+        if ($field !== null) {
+            return $this->where($field, $value)->firstOrFail();
+        }
+
+        return $this->where(function ($query) use ($value) {
+            $query->where('id', $value)->orWhere('slug', $value);
+        })->firstOrFail();
+    }
+
     public function statusName(): Attribute
     {
         $statusName = match ($this->status) {

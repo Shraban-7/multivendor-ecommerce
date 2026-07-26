@@ -33,6 +33,15 @@ class OrderResource extends JsonResource
             'created_at' => $this->created_at->format('d m Y h:i A'),
             'seller' => SellerResource::make($this->whenLoaded('seller')),
             'items' => OrderItemResource::collection($this->whenLoaded('items')),
+            'billing_address' => $this->whenLoaded('billing_address', function () {
+                return [
+                    'customer_name' => $this->billing_address->customer_name,
+                    'customer_phone' => $this->billing_address->customer_phone,
+                    'address' => $this->billing_address->address,
+                    'division' => $this->billing_address->division?->name,
+                    'district' => $this->billing_address->district?->name,
+                ];
+            }),
         ];
     }
 }

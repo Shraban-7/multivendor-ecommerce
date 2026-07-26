@@ -28,7 +28,7 @@
                             <!-- Store/Seller Header with Select All for this seller -->
                             <div class="mb-6 seller-section">
                                 @if ($seller)
-                                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg mb-4">
+                                    <div class="flex items-center justify-between p-4 bg-[#F5F5F5] rounded-sm mb-4">
                                         <div class="flex items-center gap-3">
                                             <label for="selectSeller{{ $sellerId }}"
                                                 class="flex items-center cursor-pointer">
@@ -221,7 +221,7 @@
                         <div class="mt-6 space-y-3">
                             <a href="{{ route('orders.checkout') }}" id="checkoutLink" class="block">
                                 <button id="checkoutBtn" type="button"
-                                    class="w-full py-3 bg-primary-500 text-white text-sm font-semibold rounded-md hover:bg-primary-500/90 focus:ring-2 focus:ring-primary/40 transition">
+                                    class="w-full py-3 bg-[#F85606] text-white text-sm font-semibold hover:bg-[#C43D00] eq">
                                     Checkout (0)
                                 </button>
                             </a>
@@ -236,7 +236,7 @@
                     </div>
 
                     <!-- Additional information -->
-                    <div class="p-5 mt-5 bg-white border border-gray-200 rounded-xl shadow-sm">
+                    <div class="p-5 mt-5 bg-white border border-[#E5E5E5] rounded-sm">
                         <div class="space-y-5 text-sm text-gray-600">
                             <!-- Security info -->
                             <div class="flex items-start gap-3">

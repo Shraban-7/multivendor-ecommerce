@@ -1,33 +1,21 @@
-<div class="bg-gray-900 text-white text-xs py-2 hidden md:block">
-    <div class="container mx-auto px-4 flex justify-between items-center">
-        <div class="flex gap-4">
-            @if ($settings->phone)
-                <span><i class="fas fa-phone-alt mr-1 text-primary-500"></i> {{ $settings->phone }}</span>
-            @endif
-            @if ($settings->email)
-                <span><i class="fas fa-envelope mr-1 text-primary-500"></i> {{ $settings->email }}</span>
-            @endif
-        </div>
-        <div class="flex gap-4 items-center">
-            @php
-            $flash_sales =  \App\Domain\Product\Models\FlashSale::active()
-                ->withCount("approveProducts")
-                ->having("approve_products_count", ">", 0)
-                ->with("approveProducts")
-                ->get();
-            @endphp
-            @if($flash_sales)
-            <span><i class="fas fa-bolt text-primary-500"></i> <a href="{{ route('flashSales.index') }}" class="hover:text-primary-500 transition">Flash Sale</a></span>
-            @endif
-            {{-- <span><i class="fas fa-truck mr-1 text-primary-500"></i> Free Shipping over ৳2000</span> --}}
-            <span class="h-3 w-[1px] bg-gray-700"></span>
-            <a href="#" class="hover:text-primary-500 transition">Sell on SlashMart</a>
-            <span class="h-3 w-[1px] bg-gray-700"></span>
-            <div class="flex gap-1 cursor-pointer hover:text-primary-500">
-                <span>English</span>
-                <i class="fas fa-chevron-down mt-0.5"></i>
-            </div>
-        </div>
+<div class="hidden lg:block bg-[#191919] text-white text-xs">
+    <div class="max-w-[1400px] mx-auto px-4 flex items-center justify-end h-9 gap-5">
+        @auth
+            <a href="{{ route('profile') }}" class="hover:text-[#F85606] eq">My Account</a>
+            <span class="w-[1px] h-3 bg-[#2A2A2A]"></span>
+            <form method="POST" action="{{ route('logout') }}" class="inline">
+                @csrf
+                <button type="submit" class="hover:text-[#F85606] eq">Logout</button>
+            </form>
+        @else
+            <a href="{{ route('login') }}" class="hover:text-[#F85606] eq">Login</a>
+            <span class="w-[1px] h-3 bg-[#2A2A2A]"></span>
+            <a href="{{ route('signup') }}" class="hover:text-[#F85606] eq">Sign Up</a>
+        @endauth
+        <span class="w-[1px] h-3 bg-[#2A2A2A]"></span>
+        <a href="{{ route('seller.signup') }}" class="hover:text-[#F85606] eq font-medium">Become a Seller</a>
+        <span class="w-[1px] h-3 bg-[#2A2A2A]"></span>
+        <a href="{{ route('pages.show', 'help-center') }}" class="hover:text-[#F85606] eq">Help & Support</a>
     </div>
 </div>
 

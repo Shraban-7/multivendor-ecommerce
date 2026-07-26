@@ -107,17 +107,13 @@
 @endpush
 
 @section('breadcrumbs')
-    <div class="bg-white border-b border-gray-200 py-3">
-        <div class="container mx-auto max-w-7xl px-4">
-            <nav class="flex text-sm text-gray-500" aria-label="Breadcrumb">
-                <ol class="inline-flex items-center space-x-2">
-                    <li>
-                        <a href="{{ route('home') }}" class="hover:text-primary-600 transition">
-                            <i class="fas fa-home mr-1"></i> Home
-                        </a>
-                    </li>
-                    <li><i class="fas fa-chevron-right text-[10px] text-gray-400"></i></li>
-                    <li class="font-medium text-gray-900" aria-current="page">Products</li>
+    <div class="bg-white border-b border-[#E5E5E5] py-2">
+        <div class="max-w-[1400px] mx-auto px-4">
+            <nav class="flex text-sm text-[#767676]" aria-label="Breadcrumb">
+                <ol class="inline-flex items-center gap-1.5">
+                    <li><a href="{{ route('home') }}" class="hover:text-[#F85606] eq"><i class="fas fa-home mr-1"></i> Home</a></li>
+                    <li><i class="fas fa-chevron-right text-[10px] text-[#C7C7C7]"></i></li>
+                    <li class="font-medium text-[#191919]" aria-current="page">Products</li>
                 </ol>
             </nav>
         </div>
@@ -136,19 +132,18 @@
 
                 <!-- Sidebar Content -->
                 <div id="sidebarContent"
-                    class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 sticky top-24 h-full lg:h-auto overflow-y-auto">
+                    class="bg-white border border-[#E5E5E5] rounded-sm p-4 sticky top-24 h-full lg:h-auto overflow-y-auto">
 
                     <!-- Mobile Header -->
-                    <div class="flex items-center justify-between mb-6 lg:hidden">
-                        <h2 class="text-xl font-bold text-gray-900">Filters</h2>
-                        <button id="closeMobileFilter" class="text-gray-400 hover:text-red-500"><i
-                                class="fas fa-times text-xl"></i></button>
+                    <div class="flex items-center justify-between mb-5 lg:hidden">
+                        <h2 class="text-base font-bold text-[#191919]">Filters</h2>
+                        <button id="closeMobileFilter" class="text-[#767676] hover:text-[#D93025]"><i class="fas fa-times text-lg"></i></button>
                     </div>
 
                     <!-- Categories -->
-                    <div class="mb-6 border-b border-gray-100 pb-5">
-                        <h3 class="font-bold text-gray-800 mb-3 text-sm uppercase tracking-wider">Categories</h3>
-                        <ul class="space-y-2 text-sm text-gray-600">
+                    <div class="mb-5 border-b border-[#E5E5E5] pb-4">
+                        <h3 class="font-semibold text-[#191919] mb-3 text-xs uppercase tracking-wider">Categories</h3>
+                        <ul class="space-y-1.5 text-sm text-[#595959]">
                             @foreach ($categories as $category)
                                 <li>
                                     @if (in_array($category->slug, $selectedCategories))
