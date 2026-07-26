@@ -35,20 +35,19 @@
         <div class="border-t border-[#E5E5E5] pt-2">
             <p class="px-4 py-2 text-[11px] font-semibold text-[#767676] uppercase tracking-wider">Categories</p>
             @foreach (dropdown_categories() as $cat)
-                <div x-data="{ open: false }">
-                    <button type="button" @click="open = !open"
-                        class="w-full flex items-center justify-between px-4 py-3 text-sm text-[#191919] hover:bg-[#FFF1EA] hover:text-[#F85606] eq">
+                <div class="cat-accordion">
+                    <button type="button" class="cat-accordion-btn w-full flex items-center justify-between px-4 py-3 text-sm text-[#191919] hover:bg-[#FFF1EA] hover:text-[#F85606] eq">
                         <div class="flex items-center gap-3">
                             @if ($cat->icon)
                                 <img src="{{ storage_url($cat->icon) }}" alt="" class="w-5 h-5" loading="lazy">
                             @endif
                             <span>{{ $cat->name }}</span>
                         </div>
-                        <svg class="w-3 h-3 text-[#767676] transition-transform duration-200" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="cat-accordion-arrow w-3 h-3 text-[#767676] transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
-                    <div x-show="open" x-collapse class="bg-[#FAFAFA]">
+                    <div class="cat-accordion-body hidden bg-[#FAFAFA]">
                         <a href="{{ route('category.details', $cat->slug) }}"
                            class="block px-4 py-2.5 pl-12 text-sm text-[#595959] hover:text-[#F85606] hover:bg-[#FFF1EA] eq font-medium">
                             {{ $cat->name }}
@@ -140,4 +139,13 @@
 
 <div id="mobile-drawer-overlay" class="fixed inset-0 bg-black/50 z-50 hidden" onclick="document.getElementById('mobile-drawer').classList.add('-translate-x-full'); this.classList.add('hidden')"></div>
 
-<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('.cat-accordion-btn').on('click', function() {
+        const body = $(this).next('.cat-accordion-body');
+        const arrow = $(this).find('.cat-accordion-arrow');
+        body.slideToggle(200);
+        arrow.toggleClass('rotate-180');
+    });
+});
+</script>
