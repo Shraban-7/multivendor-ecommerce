@@ -10,7 +10,7 @@
     <title>@yield('title') | eCommerce Marketplace</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="{{ asset('assets/libs/jquery/jquery-3.7.1.min.js') }}"></script>
@@ -23,43 +23,94 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Poppins', 'sans-serif'],
+                        sans: ['"Noto Sans"', '-apple-system', 'BlinkMacSystemFont', 'Roboto', '"Helvetica Neue"', 'Helvetica', 'Arial', '"PingFang SC"', '"Microsoft YaHei"', 'sans-serif'],
                     },
                     colors: {
+                        brand: {
+                            DEFAULT: '#F85606',
+                            deep: '#C43D00',
+                            tint: '#FFF1EA',
+                        },
+                        'ds-text': {
+                            primary: '#191919',
+                            secondary: '#595959',
+                            tertiary: '#767676',
+                            inverse: '#FFFFFF',
+                        },
+                        'ds-surface': {
+                            base: '#FFFFFF',
+                            muted: '#F5F5F5',
+                            raised: '#FFFFFF',
+                            strong: '#191919',
+                        },
+                        'ds-border': {
+                            default: '#E5E5E5',
+                            strong: '#C7C7C7',
+                        },
+                        'ds-feedback': {
+                            success: '#1D8A45',
+                            danger: '#D93025',
+                            warning: '#B7791A',
+                            info: '#0F6FC5',
+                        },
+                        'ds-star': '#FFA000',
                         primary: {
-                            50: '#fff7ed',
-                            100: '#ffedd5',
-                            500: '#f97316', // Orange-500
-                            600: '#ea580c', // Orange-600
-                            700: '#c2410c',
+                            50: '#FFF1EA',
+                            100: '#FFE0CC',
+                            500: '#F85606',
+                            600: '#C43D00',
+                            700: '#9A2E00',
                         }
-                    }
+                    },
+                    borderRadius: {
+                        'xs': '2px',
+                        'sm': '4px',
+                        'md': '6px',
+                    },
+                    boxShadow: {
+                        'card': '0 1px 2px rgba(25,25,25,0.08)',
+                        'raised': '0 2px 8px rgba(25,25,25,0.12)',
+                    },
                 }
             }
         }
     </script>
 
     <style>
-        /* Custom Scrollbar */
+        /* === Design System: Focus & Accessibility === */
+        *:focus-visible {
+            outline: 2px solid #C43D00;
+            outline-offset: 2px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        /* === Custom Scrollbar (design tokens) === */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
         }
 
         ::-webkit-scrollbar-track {
-            background: #f1f1f1;
+            background: #F5F5F5;
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
+            background: #C7C7C7;
             border-radius: 4px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: #f97316;
+            background: #F85606;
         }
 
-        /* Hide scrollbar for smooth sliders but keep functionality */
         .hide-scroll::-webkit-scrollbar {
             display: none;
         }
@@ -67,6 +118,55 @@
         .hide-scroll {
             -ms-overflow-style: none;
             scrollbar-width: none;
+        }
+
+        /* === Tab System === */
+        .ds-tab-btn {
+            position: relative;
+            padding: 10px 16px;
+            font-weight: 500;
+            font-size: 14px;
+            color: #595959;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            transition: color 100ms ease, border-color 100ms ease;
+            cursor: pointer;
+        }
+        .ds-tab-btn:hover {
+            color: #F85606;
+        }
+        .ds-tab-btn.tab-active,
+        .ds-tab-btn[aria-selected="true"] {
+            color: #C43D00;
+            border-bottom-color: #C43D00;
+            font-weight: 600;
+        }
+
+        /* === Thumbnail strip === */
+        .ds-thumb-strip {
+            scrollbar-width: thin;
+            scrollbar-color: #C7C7C7 transparent;
+        }
+        .ds-thumb-strip::-webkit-scrollbar {
+            height: 3px;
+        }
+        .ds-thumb-strip::-webkit-scrollbar-thumb {
+            background-color: #C7C7C7;
+            border-radius: 10px;
+        }
+        .ds-thumb-strip::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        /* === Rating bar animation === */
+        .ds-rating-bar-fill {
+            transition: width 600ms cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        /* === Image gallery hover zoom === */
+        .ds-gallery-main {
+            transition: opacity 200ms cubic-bezier(0.2, 0, 0, 1);
         }
     </style>
 
@@ -82,7 +182,7 @@ $notificationCount = notificationCount();
 $isDashboard = View::hasSection('dashboard');
 ?>
 
-<body class="bg-gray-50 font-sans min-h-screen text-gray-800 antialiased">
+<body class="bg-ds-surface-muted font-sans min-h-screen text-ds-text-primary antialiased">
 
     @include('components.frontend.global-loader')
 
@@ -763,17 +863,27 @@ $isDashboard = View::hasSection('dashboard');
                 syncVariantUI($wrapper);
             });
 
-            $(document).on("click", ".thumb-img", function () {
-                const $img = $(this);
-                const full = $img.data("full");
-                const $wrapper = $img.closest("[id^='product-wrapper']");
-                const $mainImage = $wrapper.find(".main-product-image");
+            $(document).on("click", ".slide-thumb", function (e) {
+                e.preventDefault();
+                const $thumb = $(this);
+                const $wrapper = $thumb.closest("[id^='product-wrapper']");
+                if (!$wrapper.length) return;
+
+                const full = $thumb.attr("data-full")
+                    || $thumb.find(".thumb-img").attr("data-full")
+                    || $thumb.find(".thumb-img").attr("src");
+                if (!full) return;
+
+                const $mainImage = $wrapper.find(".main-product-image").first();
                 const $thumbWrapper = $wrapper.find(".thumbnailWrapper");
 
                 $mainImage.attr("src", full);
-                $thumbWrapper.find(".slide-thumb").removeClass("border-[#F85606]").addClass(
-                    "border-[#E5E5E5]");
-                $img.closest(".slide-thumb").addClass("border-[#F85606]").removeClass("border-[#E5E5E5]");
+                $thumbWrapper.find(".slide-thumb")
+                    .removeClass("border-brand")
+                    .addClass("border-ds-border-default hover:border-ds-border-strong");
+                $thumb
+                    .removeClass("border-ds-border-default hover:border-ds-border-strong")
+                    .addClass("border-brand");
             });
 
             $(document).on("click", ".increaseBtn, .decreaseBtn", debounce(function () {
