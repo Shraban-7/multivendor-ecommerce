@@ -88,16 +88,22 @@
 
         <!-- ==================== 4. PRODUCT GRID ==================== -->
         @if($products->count() > 0)
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+        <div id="flash-products-grid" class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3">
             @foreach($products as $productItem)
-                <x-frontend.flash-sale-card :productItem="$productItem" />
+                <x-frontend.flash-sale-card :product="$productItem->product" />
             @endforeach
         </div>
 
-        <!-- Pagination -->
-        <div class="mt-10">
-            {{ $products->links() }}
+        @if ($products->hasMorePages())
+        <div class="mt-6 text-center">
+            <button id="loadMoreFlashProducts" data-page="1" data-url="{{ request()->url() }}"
+                class="inline-flex items-center gap-2 px-6 py-2 border border-brand text-brand text-xs font-semibold rounded-sm hover:bg-brand hover:text-white transition-colors duration-100"
+                type="button">
+                <span>Load More</span>
+                <i class="fas fa-chevron-down text-[10px]"></i>
+            </button>
         </div>
+        @endif
 
         @else
         <!-- ==================== EMPTY STATE ==================== -->
@@ -124,7 +130,6 @@
         if (!timerContainer) return;
 
         const endTimeStr = timerContainer.getAttribute('data-endtime');
-        // Ensure format works for JS Date (ISO 8601 preferred)
         const endTime = new Date(endTimeStr).getTime();
 
         const daysEl = document.getElementById('days');
@@ -154,7 +159,41 @@
         };
 
         const interval = setInterval(updateTimer, 1000);
-        updateTimer(); // Initial call
+        updateTimer();
+    });
+
+    // Load More Flash Products
+    $(document).on('click', '#loadMoreFlashProducts', function() {
+        const button = $(this);
+        let page = parseInt(button.data('page')) + 1;
+        const url = button.data('url');
+
+        $.ajax({
+            url: url,
+            method: 'GET',
+            data: { page: page },
+            beforeSend: function() {
+                button.prop('disabled', true).html(
+                    '<svg class="animate-spin h-4 w-4 text-brand" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>'
+                );
+            },
+            success: function(response) {
+                if ($.trim(response) !== '') {
+                    $('#flash-products-grid').append(response);
+                    button.data('page', page);
+                    button.prop('disabled', false).html(
+                        '<span>Load More</span> <i class="fas fa-chevron-down text-[10px]"></i>'
+                    );
+                } else {
+                    button.hide();
+                }
+            },
+            error: function() {
+                button.prop('disabled', false).html(
+                    '<span>Load More</span> <i class="fas fa-chevron-down text-[10px]"></i>'
+                );
+            }
+        });
     });
 </script>
 @endpush
