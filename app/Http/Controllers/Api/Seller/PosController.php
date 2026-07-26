@@ -6,6 +6,7 @@ use App\Domain\Order\Enums\OrderStatus;
 use App\Domain\Order\Models\Order;
 use App\Domain\Order\Services\OrderService;
 use App\Domain\Product\Models\Product;
+use App\Domain\Product\Services\StockManagerService;
 use App\Domain\Vendor\Models\SellerDraftCart;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -16,6 +17,7 @@ class PosController extends Controller
 {
     public function __construct(
         private readonly OrderService $orderService,
+        private readonly StockManagerService $stockManager,
     ) {}
 
     public function index()
@@ -183,7 +185,12 @@ class PosController extends Controller
 
                 $product = Product::find($item['product_id']);
                 if ($product) {
-                    $product->increment('stock_out', $item['quantity']);
+                    $this->stockManager->decrementStock(
+                        $product,
+                        null,
+                        (int) $item['quantity'],
+                        'POS Order #'.($order->invoice_id ?? $order->id)
+                    );
                 }
             }
 

@@ -2,17 +2,24 @@
 
 namespace App\Http\Controllers\Api\Seller;
 
+use App\Domain\Product\Enums\StockType;
 use App\Domain\Product\Models\Product;
 use App\Domain\Product\Models\ProductImage;
 use App\Domain\Product\Models\ProductVariant;
+use App\Domain\Product\Services\StockManagerService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use RuntimeException;
 
 class ProductController extends Controller
 {
+    public function __construct(
+        private readonly StockManagerService $stockManager,
+    ) {}
+
     public function index(Request $request)
     {
         $query = Product::where('seller_id', Auth::id())
@@ -172,30 +179,47 @@ class ProductController extends Controller
         $validator = validateRequest($request, [
             'type' => 'required|in:ADD,REMOVE,SET',
             'quantity' => 'required|integer|min:0',
+            'variant_id' => 'nullable|integer',
+            'note' => 'nullable|string|max:500',
         ]);
 
         if ($validator->fails()) {
             return sendValidationError($validator->errors());
         }
 
-        $type = $request->type;
-        $quantity = (int) $request->quantity;
+        $type = match ($request->type) {
+            'ADD' => StockType::ADD_STOCK,
+            'REMOVE' => StockType::REMOVE_STOCK,
+            'SET' => StockType::SET_EXACT_STOCK,
+        };
 
-        DB::transaction(function () use ($product, $type, $quantity) {
-            if ($type === 'ADD') {
-                $product->increment('stock_in', $quantity);
-            } elseif ($type === 'REMOVE') {
-                if ($quantity > ($product->stock_in - $product->stock_out)) {
-                    throw new \RuntimeException('Insufficient stock.');
-                }
-                $product->increment('stock_out', $quantity);
-            } elseif ($type === 'SET') {
-                $product->update(['stock_in' => $quantity, 'stock_out' => 0]);
+        $variant = null;
+        if ($request->filled('variant_id')) {
+            $variant = ProductVariant::where('id', $request->variant_id)
+                ->where('product_id', $product->id)
+                ->first();
+
+            if (! $variant) {
+                return errorResponse('Variant not found.');
             }
-        });
+        }
+
+        try {
+            $this->stockManager->adjustStock(
+                $product,
+                $variant,
+                (int) $request->quantity,
+                $type,
+                $request->note ?? 'API stock update'
+            );
+        } catch (RuntimeException $e) {
+            return errorResponse($e->getMessage());
+        }
+
+        $fresh = $variant ? $variant->fresh() : $product->fresh();
 
         return apiResponse([
-            'available_stock' => $product->fresh()->available_stock,
+            'available_stock' => (int) $fresh->availableStock,
         ], 'Stock updated successfully.');
     }
 
@@ -313,11 +337,20 @@ class ProductController extends Controller
             return sendValidationError($validator->errors());
         }
 
-        foreach ($request->products as $item) {
-            $product = Product::where('id', $item['id'])->where('seller_id', Auth::id())->first();
-            if ($product) {
-                $product->update(['stock_in' => $item['stock_in'], 'stock_out' => 0]);
+        try {
+            foreach ($request->products as $item) {
+                $product = Product::where('id', $item['id'])->where('seller_id', Auth::id())->first();
+                if ($product) {
+                    $this->stockManager->setStock(
+                        $product,
+                        null,
+                        (int) $item['stock_in'],
+                        'Bulk stock update'
+                    );
+                }
             }
+        } catch (RuntimeException $e) {
+            return errorResponse($e->getMessage());
         }
 
         return successResponse('Stock updated successfully.');

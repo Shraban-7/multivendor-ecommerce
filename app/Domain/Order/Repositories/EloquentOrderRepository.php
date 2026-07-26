@@ -10,12 +10,17 @@ use App\Domain\Order\Models\OrderStatusLog;
 use App\Domain\Order\Repositories\Contracts\OrderRepositoryInterface;
 use App\Domain\Product\Models\Product;
 use App\Domain\Product\Models\ProductVariant;
+use App\Domain\Product\Services\StockManagerService;
 use App\Domain\Vendor\Models\Seller;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 class EloquentOrderRepository implements OrderRepositoryInterface
 {
+    public function __construct(
+        private readonly StockManagerService $stockManager,
+    ) {}
+
     public function findById(int $id, array $relations = []): ?Order
     {
         return Order::with($relations)->find($id);
@@ -151,12 +156,21 @@ class EloquentOrderRepository implements OrderRepositoryInterface
 
         $variants = ProductVariant::whereIn('id', $variantIds)->get()->keyBy('id');
         $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
+        $note = 'Order #'.($order->invoice_id ?? $order->id);
 
         foreach ($order->items as $item) {
+            $quantity = (int) $item->quantity;
+            if ($quantity <= 0) {
+                continue;
+            }
+
             if (! empty($item->product_variant_id) && $variant = $variants->get($item->product_variant_id)) {
-                $variant->increment('stock_out', $item->quantity);
+                $product = $products->get($item->product_id) ?? $variant->product;
+                if ($product) {
+                    $this->stockManager->decrementStock($product, $variant, $quantity, $note);
+                }
             } elseif ($product = $products->get($item->product_id)) {
-                $product->increment('stock_out', $item->quantity);
+                $this->stockManager->decrementStock($product, null, $quantity, $note);
             }
         }
     }

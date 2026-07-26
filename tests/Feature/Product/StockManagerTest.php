@@ -223,6 +223,88 @@ it('variant stock history links both product_id and product_variant_id', functio
         ->and($history->product_variant_id)->toBe($variant->id);
 });
 
+it('incrementStock on a variant creates product_stocks with product_variant_id', function (): void {
+    $product = Product::factory()->create(['stock_in' => 0, 'stock_out' => 0]);
+
+    $variant = ProductVariant::create([
+        'product_id' => $product->id,
+        'sku' => 'TEST-VAR-04',
+        'cost_price' => 50,
+        'price' => 100,
+        'stock_in' => 0,
+        'stock_out' => 0,
+    ]);
+
+    app(StockManagerService::class)->incrementStock($product, $variant, 12, 'Variant restock');
+
+    $row = ProductStock::where('product_variant_id', $variant->id)->first();
+
+    expect($row)->not->toBeNull()
+        ->and($row->product_id)->toBe($product->id)
+        ->and((int) $row->quantity)->toBe(12);
+});
+
+// ─── restoreStock ─────────────────────────────────────────────────────────────
+
+it('restoreStock decreases stock_out without increasing stock_in', function (): void {
+    $product = Product::factory()->create(['stock_in' => 20, 'stock_out' => 8]);
+
+    app(StockManagerService::class)->restoreStock($product, null, 3, 'Restored: Order #99');
+
+    $product->refresh();
+    expect($product->stock_in)->toBe(20)
+        ->and($product->stock_out)->toBe(5)
+        ->and($product->availableStock)->toBe(15);
+});
+
+it('restoreStock writes ADD_STOCK history with restore note', function (): void {
+    $product = Product::factory()->create(['stock_in' => 10, 'stock_out' => 4]);
+
+    app(StockManagerService::class)->restoreStock($product, null, 2, 'Restored: Order #55');
+
+    $history = StockHistory::where('product_id', $product->id)->latest('id')->first();
+
+    expect($history)->not->toBeNull()
+        ->and($history->type)->toBe(StockType::ADD_STOCK)
+        ->and($history->quantity)->toBe(2)
+        ->and($history->note)->toBe('Restored: Order #55');
+});
+
+it('restoreStock on a variant reduces variant stock_out', function (): void {
+    $product = Product::factory()->create(['stock_in' => 0, 'stock_out' => 0]);
+
+    $variant = ProductVariant::create([
+        'product_id' => $product->id,
+        'sku' => 'TEST-VAR-05',
+        'cost_price' => 50,
+        'price' => 100,
+        'stock_in' => 15,
+        'stock_out' => 6,
+    ]);
+
+    app(StockManagerService::class)->restoreStock($product, $variant, 4, 'Restored: Sale cancelled');
+
+    $variant->refresh();
+    expect($variant->stock_out)->toBe(2)
+        ->and($variant->availableStock)->toBe(13);
+});
+
+it('restoreStock clamps stock_out at zero', function (): void {
+    $product = Product::factory()->create(['stock_in' => 10, 'stock_out' => 2]);
+
+    app(StockManagerService::class)->restoreStock($product, null, 10, 'Restored: over-restore');
+
+    $product->refresh();
+    expect($product->stock_out)->toBe(0);
+});
+
+it('restoreStock throws when quantity is zero or negative', function (): void {
+    $product = Product::factory()->create(['stock_in' => 10, 'stock_out' => 2]);
+
+    expect(fn () => app(StockManagerService::class)->restoreStock($product, null, 0))
+        ->toThrow(RuntimeException::class);
+});
+
 // ─── transaction rollback on error ────────────────────────────────────────────
 
 it('adjustStock rolls back when decrement exceeds available stock', function (): void {

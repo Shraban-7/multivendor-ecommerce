@@ -292,19 +292,22 @@ class Product extends Model
     public function availableStock(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->stock_in - $this->stock_out
+            get: fn () => (int) $this->stock_in - (int) $this->stock_out
         );
     }
 
     public function totalStock(): Attribute
     {
-        $totalStock = $this->availableStock;
-        foreach ($this->variants as $variant) {
-            $totalStock += $variant->availableStock;
-        }
-
         return Attribute::make(
-            get: fn () => $totalStock
+            get: function () {
+                $total = (int) $this->availableStock;
+
+                foreach ($this->variants as $variant) {
+                    $total += (int) $variant->availableStock;
+                }
+
+                return $total;
+            }
         );
     }
 

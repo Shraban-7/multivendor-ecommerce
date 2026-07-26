@@ -7,14 +7,20 @@ use App\Domain\Order\Models\Order;
 use App\Domain\Order\Models\OrderItem;
 use App\Domain\Product\Models\Product;
 use App\Domain\Product\Models\ProductVariant;
+use App\Domain\Product\Services\StockManagerService;
 use App\Domain\Vendor\Models\Seller;
 use App\Domain\Vendor\Models\SellerEmployee;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use RuntimeException;
 
 class SaleController extends Controller
 {
+    public function __construct(
+        private readonly StockManagerService $stockManager,
+    ) {}
+
     public function index(Request $request)
     {
         $orders = Order::where('seller_id', get_seller_id())->with('employee')
@@ -209,26 +215,25 @@ class SaleController extends Controller
         }
 
         foreach ($order->items as $item) {
+            $quantity = (int) $item->quantity;
+            if ($quantity <= 0) {
+                continue;
+            }
+
+            $note = 'Restored: Sale deleted #'.($order->invoice_id ?? $order->id);
+
             if (! empty($item->product_variant_id)) {
-
                 $variant = ProductVariant::find($item->product_variant_id);
+                $product = $variant?->product ?? Product::find($item->product_id);
 
-                if ($variant) {
-                    $variant->decrement('stock_out', $item->quantity);
-
-                    if ($variant->stock_out < 0) {
-                        $variant->update(['stock_out' => 0]);
-                    }
+                if ($variant && $product) {
+                    $this->stockManager->restoreStock($product, $variant, $quantity, $note);
                 }
             } else {
                 $product = Product::find($item->product_id);
 
                 if ($product) {
-                    $product->decrement('stock_out', $item->quantity);
-
-                    if ($product->stock_out < 0) {
-                        $product->update(['stock_out' => 0]);
-                    }
+                    $this->stockManager->restoreStock($product, null, $quantity, $note);
                 }
             }
         }
@@ -311,8 +316,24 @@ class SaleController extends Controller
             ]);
         }
 
-        if ($variant) {
-            $variant->increment('stock_out', $quantity);
+        try {
+            if ($variant) {
+                $this->stockManager->decrementStock(
+                    $product,
+                    $variant,
+                    $quantity,
+                    'Sale item added #'.($order->invoice_id ?? $order->id)
+                );
+            } else {
+                $this->stockManager->decrementStock(
+                    $product,
+                    null,
+                    $quantity,
+                    'Sale item added #'.($order->invoice_id ?? $order->id)
+                );
+            }
+        } catch (RuntimeException $e) {
+            return errorResponse($e->getMessage());
         }
 
         return $this->refreshOrderSummary($order, 'Item added successfully');
@@ -332,17 +353,22 @@ class SaleController extends Controller
 
         $variant = $item->variant;
         $product = $variant?->product ?? $item->product;
+        $note = 'Sale item qty change #'.($item->order->invoice_id ?? $item->order_id);
 
-        if ($request->action === 'increase') {
-            $item->quantity += 1;
-            if ($variant) {
-                $variant->increment('stock_out');
+        try {
+            if ($request->action === 'increase') {
+                $item->quantity += 1;
+                if ($product) {
+                    $this->stockManager->decrementStock($product, $variant, 1, $note);
+                }
+            } elseif ($request->action === 'decrease' && $item->quantity > 1) {
+                $item->quantity -= 1;
+                if ($product) {
+                    $this->stockManager->restoreStock($product, $variant, 1, 'Restored: '.$note);
+                }
             }
-        } elseif ($request->action === 'decrease' && $item->quantity > 1) {
-            $item->quantity -= 1;
-            if ($variant) {
-                $variant->decrement('stock_out');
-            }
+        } catch (RuntimeException $e) {
+            return errorResponse($e->getMessage());
         }
 
         $item->sub_total = $item->price * $item->quantity;
@@ -363,9 +389,15 @@ class SaleController extends Controller
         }
 
         $variant = $item->variant;
+        $product = $variant?->product ?? $item->product;
 
-        if ($variant) {
-            $variant->decrement('stock_out', $item->quantity);
+        if ($product && (int) $item->quantity > 0) {
+            $this->stockManager->restoreStock(
+                $product,
+                $variant,
+                (int) $item->quantity,
+                'Restored: Sale item removed #'.($item->order->invoice_id ?? $item->order_id)
+            );
         }
 
         $order = $item->order;

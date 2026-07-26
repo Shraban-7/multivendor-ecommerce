@@ -84,6 +84,51 @@ class StockManagerService
     }
 
     /**
+     * Restore stock after a cancelled sale/order by reducing stock_out (not increasing stock_in).
+     */
+    public function restoreStock(
+        Product $product,
+        ?ProductVariant $variant,
+        int $quantity,
+        ?string $note = null
+    ): void {
+        if ($quantity <= 0) {
+            throw new RuntimeException('Restore quantity must be positive.');
+        }
+
+        DB::transaction(function () use ($product, $variant, $quantity, $note) {
+            $historyNote = $note ?? 'Stock restored';
+
+            if ($variant !== null) {
+                /** @var ProductVariant $locked */
+                $locked = ProductVariant::lockForUpdate()->findOrFail($variant->id);
+                $locked->stock_out = max(0, ($locked->stock_out ?? 0) - $quantity);
+                $locked->save();
+
+                StockHistory::create([
+                    'product_id' => $product->id,
+                    'product_variant_id' => $locked->id,
+                    'quantity' => $quantity,
+                    'type' => StockType::ADD_STOCK,
+                    'note' => $historyNote,
+                ]);
+            } else {
+                /** @var Product $locked */
+                $locked = Product::lockForUpdate()->findOrFail($product->id);
+                $locked->stock_out = max(0, ($locked->stock_out ?? 0) - $quantity);
+                $locked->save();
+
+                StockHistory::create([
+                    'product_id' => $locked->id,
+                    'quantity' => $quantity,
+                    'type' => StockType::ADD_STOCK,
+                    'note' => $historyNote,
+                ]);
+            }
+        });
+    }
+
+    /**
      * Get the current available stock for a product (without variants).
      */
     public function availableStock(Product $product): int
@@ -165,8 +210,8 @@ class StockManagerService
         ]);
 
         match ($type) {
-            StockType::SET_EXACT_STOCK => $this->applySetExactToVariant($locked, $quantity),
-            StockType::ADD_STOCK => $this->applyAddToVariant($locked, $quantity),
+            StockType::SET_EXACT_STOCK => $this->applySetExactToVariant($product, $locked, $quantity),
+            StockType::ADD_STOCK => $this->applyAddToVariant($product, $locked, $quantity),
             StockType::REMOVE_STOCK => $this->applyRemoveFromVariant($locked, $quantity),
         };
     }
@@ -175,7 +220,6 @@ class StockManagerService
 
     private function applySetExactToProduct(Product $product, int $quantity): void
     {
-        // Clear existing product_stocks entries and create fresh one as SoT
         ProductStock::where('product_id', $product->id)
             ->whereNull('product_variant_id')
             ->delete();
@@ -195,7 +239,6 @@ class StockManagerService
 
     private function applyAddToProduct(Product $product, int $quantity): void
     {
-        // Record in product_stocks as the SoT for incoming inventory
         ProductStock::create([
             'product_id' => $product->id,
             'seller_id' => $product->seller_id,
@@ -204,7 +247,6 @@ class StockManagerService
             'sub_total' => ($product->cost_price ?? 0) * $quantity,
         ]);
 
-        // Increment stock_in — keeps it in sync with cumulative product_stocks additions
         $product->stock_in = ($product->stock_in ?? 0) + $quantity;
         $product->save();
     }
@@ -217,15 +259,37 @@ class StockManagerService
 
     // --- Variant mutations ---
 
-    private function applySetExactToVariant(ProductVariant $variant, int $quantity): void
+    private function applySetExactToVariant(Product $product, ProductVariant $variant, int $quantity): void
     {
+        ProductStock::where('product_id', $product->id)
+            ->where('product_variant_id', $variant->id)
+            ->delete();
+
+        ProductStock::create([
+            'product_id' => $product->id,
+            'product_variant_id' => $variant->id,
+            'seller_id' => $product->seller_id,
+            'quantity' => $quantity,
+            'cost_price' => $variant->cost_price ?? $product->cost_price ?? 0,
+            'sub_total' => ($variant->cost_price ?? $product->cost_price ?? 0) * $quantity,
+        ]);
+
         $variant->stock_in = $quantity;
         $variant->stock_out = 0;
         $variant->save();
     }
 
-    private function applyAddToVariant(ProductVariant $variant, int $quantity): void
+    private function applyAddToVariant(Product $product, ProductVariant $variant, int $quantity): void
     {
+        ProductStock::create([
+            'product_id' => $product->id,
+            'product_variant_id' => $variant->id,
+            'seller_id' => $product->seller_id,
+            'quantity' => $quantity,
+            'cost_price' => $variant->cost_price ?? $product->cost_price ?? 0,
+            'sub_total' => ($variant->cost_price ?? $product->cost_price ?? 0) * $quantity,
+        ]);
+
         $variant->stock_in = ($variant->stock_in ?? 0) + $quantity;
         $variant->save();
     }

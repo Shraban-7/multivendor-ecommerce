@@ -414,7 +414,8 @@ class ProductController extends Controller
                 'id' => $product->id,
                 'name' => $product->name,
                 'sku' => $product->sku,
-                'quantity' => $product->stock_in - $product->stock_out,
+                'quantity' => (int) $product->availableStock,
+                'total_stock' => (int) $product->totalStock,
                 'price' => removeZeroFromDecimal($product->price, 'int'),
                 'compare_price' => removeZeroFromDecimal($product->compare_price, 'int'),
                 'image' => is_null($product->thumbnail)
@@ -424,7 +425,7 @@ class ProductController extends Controller
                     'id' => $variant->id,
                     'sku' => $variant->sku,
                     'label' => $variant->label,
-                    'quantity' => $variant->stock_in - $variant->stock_out,
+                    'quantity' => (int) $variant->availableStock,
                     'price' => removeZeroFromDecimal($variant->price, 'int'),
                     'compare_price' => removeZeroFromDecimal($variant->compare_price, 'int'),
                     'image' => is_null($variant->image) ? null : storage_url($variant->image),

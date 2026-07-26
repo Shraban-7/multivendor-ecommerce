@@ -6,17 +6,23 @@ use App\Domain\Product\Enums\StockType;
 use App\Domain\Product\Models\Product;
 use App\Domain\Product\Models\ProductVariant;
 use App\Domain\Product\Models\StockHistory;
+use App\Domain\Product\Services\StockManagerService;
 use App\Domain\Vendor\Models\Seller;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use RuntimeException;
 
 class ProductStockController extends Controller
 {
+    public function __construct(
+        private readonly StockManagerService $stockManager,
+    ) {}
+
     public function index()
     {
         $seller = Seller::find(get_seller_id());
 
-        $stockHistories = StockHistory::with(['product', 'variant'])
+        $stockHistories = StockHistory::with(['product', 'variant.color', 'variant.size'])
             ->whereIn('product_id', function ($q) use ($seller) {
                 $q->select('id')->from('products')->where('seller_id', $seller->id);
             })
@@ -29,6 +35,7 @@ class ProductStockController extends Controller
     public function products()
     {
         $products = Product::select('id', 'name', 'sku', 'stock_in', 'stock_out')
+            ->with('variants:id,product_id,stock_in,stock_out')
             ->where('seller_id', get_seller_id())
             ->get()
             ->map(function ($product) {
@@ -36,7 +43,8 @@ class ProductStockController extends Controller
                     'id' => $product->id,
                     'name' => $product->name,
                     'sku' => $product->sku,
-                    'current_stock' => max($product->totalStock, 0),
+                    'current_stock' => max((int) $product->totalStock, 0),
+                    'has_variants' => $product->variants->isNotEmpty(),
                 ];
             });
 
@@ -45,17 +53,19 @@ class ProductStockController extends Controller
 
     public function variants(Request $request)
     {
-        $variants = ProductVariant::where('product_id', $request->product_id)
+        $product = Product::where('id', $request->product_id)
+            ->where('seller_id', get_seller_id())
+            ->firstOrFail();
+
+        $variants = ProductVariant::where('product_id', $product->id)
             ->with('color', 'size')
             ->get()
             ->map(function ($variant) {
-                $currentStock = (int) $variant->stock_in - (int) $variant->stock_out;
-
                 return [
                     'id' => $variant->id,
                     'name' => $variant->label,
                     'sku' => $variant->sku,
-                    'current_stock' => max($currentStock, 0),
+                    'current_stock' => max((int) $variant->availableStock, 0),
                 ];
             });
 
@@ -65,72 +75,49 @@ class ProductStockController extends Controller
     public function update(Request $request)
     {
         $data = $request->validate([
-            'product_id' => 'required',
-            'variant_id' => 'nullable',
-            'quantity' => 'nullable|numeric|min:0',
-            'stock_action' => 'nullable|numeric',
-            'note' => 'nullable|string',
+            'product_id' => 'required|integer',
+            'variant_id' => 'nullable|integer',
+            'quantity' => 'required|integer|min:0',
+            'stock_action' => 'required|integer',
+            'note' => 'nullable|string|max:500',
         ]);
 
-        $variant = ProductVariant::find($data['variant_id']);
-        $product = Product::find($data['product_id']);
+        $product = Product::where('id', $data['product_id'])
+            ->where('seller_id', get_seller_id())
+            ->first();
 
-        $action = $data['stock_action'];
-        $quantity = $data['quantity'];
-        $note = $data['note'];
-
-        $currentStock = $variant ? ($variant->stock_in - $variant->stock_out) : ($product->stock_in - $product->stock_out);
-
-        if ($action == StockType::REMOVE_STOCK->value && $quantity > $currentStock) {
-            return redirect()->back()->with('warning', 'Insufficient stock! You cannot remove more than the available quantity.');
+        if (! $product) {
+            return redirect()->back()->with('warning', 'Product not found.');
         }
 
-        if ($variant) {
-            StockHistory::create([
-                'product_id' => $product->id,
-                'product_variant_id' => $variant->id,
-                'quantity' => $quantity,
-                'type' => $action,
-                'note' => $note,
-            ]);
+        $variant = null;
+        if (! empty($data['variant_id'])) {
+            $variant = ProductVariant::where('id', $data['variant_id'])
+                ->where('product_id', $product->id)
+                ->first();
 
-            if ($action == StockType::SET_EXACT_STOCK->value) {
-                $variant->stock_in = $quantity;
-                $variant->stock_out = 0;
-            } elseif ($action == StockType::ADD_STOCK->value) {
-                $variant->stock_in += $quantity;
-            } elseif ($action == StockType::REMOVE_STOCK->value) {
-                $variant->stock_in -= $quantity;
-                if ($variant->stock_in < 0) {
-                    $variant->stock_in = 0;
-                }
+            if (! $variant) {
+                return redirect()->back()->with('warning', 'Variant not found for this product.');
             }
+        }
 
-            $variant->save();
-        } else {
-            StockHistory::create([
-                'product_id' => $product->id,
-                'quantity' => $quantity,
-                'type' => $action,
-                'note' => $note,
-            ]);
+        $type = StockType::tryFrom((int) $data['stock_action']);
+        if ($type === null) {
+            return redirect()->back()->with('warning', 'Invalid stock action.');
+        }
 
-            if ($action == StockType::SET_EXACT_STOCK->value) {
-                $product->stock_in = $quantity;
-                $product->stock_out = 0;
-            } elseif ($action == StockType::ADD_STOCK->value) {
-                $product->stock_in += $quantity;
-            } elseif ($action == StockType::REMOVE_STOCK->value) {
-                $product->stock_in -= $quantity;
-                if ($product->stock_in < 0) {
-                    $product->stock_in = 0;
-                }
-            }
-
-            $product->save();
+        try {
+            $this->stockManager->adjustStock(
+                $product,
+                $variant,
+                (int) $data['quantity'],
+                $type,
+                $data['note'] ?? ''
+            );
+        } catch (RuntimeException $e) {
+            return redirect()->back()->with('warning', $e->getMessage());
         }
 
         return redirect()->back()->with('success', 'Stock updated successfully!');
     }
 }
-

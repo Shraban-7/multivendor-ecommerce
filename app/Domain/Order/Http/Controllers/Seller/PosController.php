@@ -13,6 +13,7 @@ use App\Domain\Order\Services\PosCartService;
 use App\Domain\Product\Models\Category;
 use App\Domain\Product\Models\Product;
 use App\Domain\Product\Models\ProductVariant;
+use App\Domain\Product\Services\StockManagerService;
 use App\Domain\Vendor\Models\Seller;
 use App\Domain\Vendor\Models\SellerEmployee;
 use App\Http\Controllers\Controller;
@@ -26,6 +27,7 @@ class PosController extends Controller
     public function __construct(
         protected PosCartService $posCartService,
         private readonly OrderRepositoryInterface $orderRepo,
+        private readonly StockManagerService $stockManager,
     ) {}
 
     public function index(Request $request)
@@ -552,17 +554,26 @@ class PosController extends Controller
             $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
 
             $updatedVariants = [];
+            $note = 'POS Order #'.($order->invoice_id ?? $order->id);
 
             foreach ($order->items as $item) {
+                $quantity = (int) $item->quantity;
+                if ($quantity <= 0) {
+                    continue;
+                }
+
                 if (! empty($item->product_variant_id) && $variant = $variants->get($item->product_variant_id)) {
-                    $variant->increment('stock_out', $item->quantity);
+                    $product = $products->get($item->product_id) ?? $variant->product;
+                    $this->stockManager->decrementStock($product, $variant, $quantity, $note);
+                    $variant->refresh();
 
                     $updatedVariants[] = [
                         'id' => $variant->id,
                         'availableStock' => $variant->availableStock,
                     ];
                 } elseif ($product = $products->get($item->product_id)) {
-                    $product->increment('stock_out', $item->quantity);
+                    $this->stockManager->decrementStock($product, null, $quantity, $note);
+                    $product->refresh();
 
                     $updatedVariants[] = [
                         'id' => $product->id,

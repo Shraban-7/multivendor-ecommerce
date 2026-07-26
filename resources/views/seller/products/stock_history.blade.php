@@ -19,6 +19,8 @@
             <thead>
                 <tr>
                     <th>Product</th>
+                    <th>SKU</th>
+                    <th>Type</th>
                     <th>Quantity</th>
                     <th>Note</th>
                     <th>Date</th>
@@ -28,24 +30,39 @@
                 @foreach ($stockHistories as $history)
                     <tr>
                         <td>
-                            <p class="fw-bold mb-0">{{ $history->product->name }}</p>
-                            <span class="small text-muted">{{ $history->variant->full_name ?? 'default' }}</span>
+                            <p class="fw-bold mb-0">{{ $history->product?->name ?? '—' }}</p>
+                            <span class="small text-muted">{{ $history->variant?->label ?: 'Simple product' }}</span>
+                        </td>
+                        <td>
+                            <span class="small">{{ $history->variant?->sku ?? $history->product?->sku ?? '—' }}</span>
                         </td>
                         <td>
                             @switch($history->type)
                                 @case(\App\Domain\Product\Enums\StockType::ADD_STOCK)
-                                    <span class="badge bg-success">+{{ $history->quantity }}
-                                        {{ $history->product->unit->short_name }}</span>
+                                    <span class="badge bg-success">Add</span>
                                 @break
 
                                 @case(\App\Domain\Product\Enums\StockType::REMOVE_STOCK)
-                                    <span class="badge bg-danger">-{{ $history->quantity }}
-                                        {{ $history->product->unit->short_name }}</span>
+                                    <span class="badge bg-danger">Remove</span>
                                 @break
 
                                 @case(\App\Domain\Product\Enums\StockType::SET_EXACT_STOCK)
-                                    <span class="badge bg-warning text-dark">Adjusted: {{ $history->quantity }}
-                                        {{ $history->product->unit->short_name }}</span>
+                                    <span class="badge bg-warning text-dark">Set</span>
+                                @break
+                            @endswitch
+                        </td>
+                        <td>
+                            @switch($history->type)
+                                @case(\App\Domain\Product\Enums\StockType::ADD_STOCK)
+                                    <span class="text-success fw-semibold">+{{ $history->quantity }}</span>
+                                @break
+
+                                @case(\App\Domain\Product\Enums\StockType::REMOVE_STOCK)
+                                    <span class="text-danger fw-semibold">-{{ $history->quantity }}</span>
+                                @break
+
+                                @case(\App\Domain\Product\Enums\StockType::SET_EXACT_STOCK)
+                                    <span class="fw-semibold">{{ $history->quantity }}</span>
                                 @break
                             @endswitch
                         </td>
@@ -164,8 +181,10 @@
 
                 $productSelect.on('change', function() {
                     const productId = $(this).val();
+                    const selected = $productSelect.find('option:selected');
                     if (!productId) {
                         $variantContainer.addClass('d-none');
+                        $variantSelect.prop('required', false).val('');
                         return;
                     }
 
@@ -178,6 +197,7 @@
                         success: function(response) {
                             if (response.variants && response.variants.length > 0) {
                                 $variantContainer.removeClass('d-none');
+                                $variantSelect.prop('required', true);
                                 $variantSelect.html(
                                     '<option value="">-- Select Variant --</option>');
                                 $.each(response.variants, function(i, variant) {
@@ -187,6 +207,7 @@
                                 });
                             } else {
                                 $variantContainer.addClass('d-none');
+                                $variantSelect.prop('required', false).val('');
                             }
                         },
                         error: function() {
