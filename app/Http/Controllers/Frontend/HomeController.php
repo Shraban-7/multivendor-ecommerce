@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Domain\Product\Models\Banner;
-use App\Domain\Product\Models\Brand;
 use App\Domain\Product\Models\Category;
 use App\Domain\Product\Models\FlashSale;
 use App\Domain\Product\Models\Product;
@@ -15,56 +14,10 @@ class HomeController extends Controller
 {
     public function index(Request $request)
     {
-        $limit = 10;
+        $limit = 48;
         $page = $request->get('page', 1);
         $skip = ($page - 1) * $limit;
         $data['categories'] = Category::category()->limit(16)->get();
-
-        // $data['special_category'] = Category::special()->with(['banners', 'products'])->first();
-
-        $new_arrival_products = Product::withDefaultRelations()
-            ->active()
-            ->withAvg('reviews', 'rating')
-            // ->where('is_featured', 0)
-            ->withCount('reviews')
-            ->orderByDesc('id')
-            ->limit(16)
-            ->get();
-
-        // $data['new_arrival_products'] = $new_arrival_products->map(fn($product) => $product->toDetailsArray());
-
-        // $trending_products = Product::withDefaultRelations()
-        //     ->active()
-        //     ->withAvg('reviews', 'rating')
-        //     ->where('is_trending', 1)
-        //     ->withCount('reviews')
-        //     ->orderByDesc('id')
-        //     ->limit(16)
-        //     ->get();
-
-        // $data['trending_products'] = $trending_products->map(fn($product) => $product->toDetailsArray());
-
-        // $bestselling_products = Product::withDefaultRelations()
-        //     ->active()
-        //     ->withAvg('reviews', 'rating')
-        //     ->where('best_selling', 1)
-        //     ->withCount('reviews')
-        //     ->orderByDesc('id')
-        //     ->limit(10)
-        //     ->get();
-
-        // $data['bestselling_products'] = $bestselling_products->map(fn($product) => $product->toDetailsArray());
-
-        // $featured_products = Product::withDefaultRelations()
-        //     ->active()
-        //     ->withAvg('reviews', 'rating')
-        //     ->where('is_featured', 1)
-        //     ->withCount('reviews')
-        //     ->orderByDesc('id')
-        //     ->limit(10)
-        //     ->get();
-
-        // $data['featured_products'] = $featured_products->map(fn($product) => $product->toDetailsArray());
 
         $data['banners'] = Banner::where('is_active', true)
             ->orderBy('sort_order', 'asc')
@@ -72,11 +25,6 @@ class HomeController extends Controller
             ->groupBy('section');
 
         $data['sellers'] = Seller::active()->limit(8)->get();
-
-        $data['brands'] = Brand::where('status', 1)
-            ->orderBy('name')
-            ->limit(12)
-            ->get();
         $data['products'] = Product::withDefaultRelations()
             ->active()
             ->latest()

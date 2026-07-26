@@ -168,88 +168,30 @@
         </div>
     </section>
 
-    <!-- ==================== TOP SELLERS ==================== -->
+
+
+    <!-- ==================== JUST FOR YOU ==================== -->
     <section class="mb-4">
-        <div class="bg-white p-4 sm:p-5 border border-[#E5E5E5] rounded-sm">
-            <div class="flex items-center justify-between mb-4 px-1">
-                <h2 class="text-base font-semibold text-[#191919]">Top Sellers</h2>
-                <a href="{{ route('sellers.index') }}" class="text-xs font-medium text-[#F85606] hover:underline">View All</a>
-            </div>
-            <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 sm:gap-4">
-                @foreach ($sellers as $seller)
-                    <div class="group flex flex-col items-center bg-white border border-[#E5E5E5] rounded-sm p-3 sm:p-4 eq hover:border-[#F85606]">
-                        <div class="relative w-16 h-16 rounded-full bg-[#F5F5F5] flex items-center justify-center p-2 mb-3">
-                            <img src="{{ $seller->business_logo ? storage_url($seller->business_logo) : asset('assets/frontend/images/provider-logo-2.png') }}"
-                                alt="{{ $seller->business_name }}" class="max-w-full max-h-full object-contain">
-                            @if ($seller->is_best_seller)
-                                <div class="absolute -bottom-1 -right-0.5 bg-white rounded-full">
-                                    <svg class="w-4 h-4 text-[#FFA000]" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                                    </svg>
-                                </div>
-                            @endif
-                        </div>
+        <h2 class="text-base sm:text-lg font-bold text-[#F85606] mb-4">Just For You</h2>
 
-                        <div class="text-center w-full mb-3">
-                            <h3 class="text-sm font-semibold text-[#191919] line-clamp-1 mb-1">{{ $seller->business_name }}</h3>
-                            <div class="flex items-center justify-center gap-2 text-[10px] text-[#595959]">
-                                <span class="flex items-center text-[#FFA000]">
-                                    <i class="fas fa-star mr-1"></i> {{ number_format($seller->rating, 1) }}
-                                </span>
-                                <span class="text-[#E5E5E5]">|</span>
-                                <span>{{ number_format($seller->followers_count ?? 0) }} Followers</span>
-                            </div>
-                        </div>
-
-                        <a href="{{ route('sellers.shop', $seller->username) }}"
-                            class="w-full text-center py-1.5 bg-[#FFF1EA] text-[#F85606] text-[11px] font-medium rounded hover:bg-[#F85606] hover:text-white eq">
-                            Visit Shop
-                        </a>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
-
-    <!-- ==================== FEATURED PRODUCTS ==================== -->
-    <section class="mb-4">
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-base sm:text-lg font-bold text-[#191919]">Featured <span class="text-[#F85606]">Products</span></h2>
-            <a href="{{ route('products.index') }}" class="text-sm font-medium text-[#F85606] hover:underline">View All</a>
-        </div>
-
-        <div id="product-wrapper" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+        <div id="product-wrapper" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
             @foreach ($products as $product)
                 <x-frontend.product-card :product="$product" />
             @endforeach
         </div>
 
-        @if ($products->count() >= 8)
-            <div class="mt-6 text-center load-more-btn">
+        @if ($products->count() >= 48)
+            <div class="mt-8 text-center">
                 <button data-page="1" data-url="{{ url()->current() }}" id="loadMoreProducts"
-                    class="btn btn-secondary btn-sm eq" type="button">
+                    class="inline-flex items-center gap-2 px-8 py-2.5 border-2 border-[#F85606] text-[#F85606] font-semibold text-sm rounded hover:bg-[#F85606] hover:text-white eq" type="button">
                     <span>Load More</span>
-                    <i class="text-xs fa-solid fa-chevron-down ml-1"></i>
+                    <i class="text-xs fa-solid fa-chevron-down"></i>
                 </button>
             </div>
         @endif
     </section>
 
-    <!-- ==================== POPULAR BRANDS ==================== -->
-    <section class="mb-4">
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-base sm:text-lg font-bold text-[#191919]">Popular <span class="text-[#F85606]">Brands</span></h2>
-        </div>
-        <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
-            @foreach ($brands as $brand)
-                <div class="border border-[#E5E5E5] bg-white p-4 flex flex-col items-center hover:shadow-sm eq">
-                    <img src="{{ $brand->image ? storage_url($brand->image) : asset('assets/frontend/images/placeholder.png') }}"
-                        alt="{{ $brand->name }}" class="h-10 mb-3 object-contain">
-                    <span class="text-xs text-[#595959] font-medium">{{ $brand->name }}</span>
-                </div>
-            @endforeach
-        </div>
-    </section>
+
 
 
 
@@ -328,7 +270,7 @@
                     data: { page: page },
                     beforeSend: function () {
                         button.prop('disabled', true).html(
-                            '<i class="fa fa-spinner fa-spin"></i> Loading...'
+                            '<svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>'
                         );
                     },
                     success: function (response) {
@@ -336,14 +278,16 @@
                             $('#product-wrapper').append(response);
                             button.data('page', page);
                             button.prop('disabled', false).html(
-                                '<span>Load More</span> <i class="fa-solid fa-chevron-down text-sm"></i>'
+                                '<span>Load More</span> <i class="text-xs fa-solid fa-chevron-down"></i>'
                             );
                         } else {
                             button.hide();
                         }
                     },
                     error: function () {
-                        button.prop('disabled', false).text('Load More');
+                        button.prop('disabled', false).html(
+                            '<span>Load More</span> <i class="text-xs fa-solid fa-chevron-down"></i>'
+                        );
                         showErrorToast('Something went wrong. Please try again.');
                     }
                 });

@@ -77,10 +77,7 @@
                 </svg>
                 All Products
             </a>
-            <a href="{{ route('sellers.index') }}" class="flex items-center gap-3 px-4 py-3 text-sm text-[#191919] hover:bg-[#FFF1EA] hover:text-[#F85606] eq">
-                <i class="fas fa-store w-5 text-center text-[#595959]"></i>
-                Top Sellers
-            </a>
+
             @auth
                 <a href="{{ route('orders.index') }}" class="flex items-center gap-3 px-4 py-3 text-sm text-[#191919] hover:bg-[#FFF1EA] hover:text-[#F85606] eq">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

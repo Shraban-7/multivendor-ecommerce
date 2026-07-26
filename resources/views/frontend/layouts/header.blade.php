@@ -134,18 +134,12 @@
                    aria-current="{{ request()->is('/') ? 'page' : '' }}">
                     Home
                 </a>
-                <a href="{{ route('flashSales.index') }}" class="nav-link">
-                    Flash Sale
-                </a>
                 <a href="{{ route('products.index') }}" class="nav-link">
                     Products
                 </a>
-                @if (flash_sale_is_active())
-                    <a href="{{ route('flashSales.index') }}"
-                       class="nav-link text-[#D93025] font-semibold animate-pulse">
-                        🔥 Flash Sale
-                    </a>
-                @endif
+                <a href="{{ route('flashSales.index') }}" class="nav-link @if (flash_sale_is_active()) text-[#D93025] font-semibold animate-pulse @endif">
+                    @if (flash_sale_is_active())🔥 @endif Flash Sale
+                </a>
             </div>
         </div>
     </nav>
