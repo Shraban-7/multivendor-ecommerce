@@ -4,9 +4,8 @@ namespace App\Domain\Product\Http\Controllers\Frontend;
 
 use App\Domain\Product\Models\Brand;
 use App\Domain\Product\Models\Category;
-use App\Domain\Product\Models\Color;
 use App\Domain\Product\Models\Product;
-use App\Domain\Product\Models\Size;
+use App\Domain\Product\Models\ProductVariant;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -14,62 +13,127 @@ class CategoryController extends Controller
 {
     public function details($slug, Request $request)
     {
-        $limit = 16;
-        $page = $request->get('page', 1);
-        $skip = ($page - 1) * $limit;
-
         $category = Category::where('slug', $slug)
-            ->with(['products', 'subcategories'])
+            ->with(['subcategories'])
             ->firstOrFail();
 
-        $brands = Brand::all();
+        $brands = Brand::withCount('products')->get();
+
+        $selectedSubcategory = $request->get('subcategory', 'all');
+        $selectedBrands = $request->has('brand') ? explode(',', $request->brand) : [];
+        $sortFilter = $request->get('sort', '');
+
+        $productOptionFilters = [];
+        foreach (['color', 'size'] as $option) {
+            if ($request->has($option)) {
+                $productOptionFilters[$option] = $request->input($option);
+            }
+        }
+
+        $productOptions = [];
+        $allVariants = ProductVariant::whereHas('product', function ($q) use ($category) {
+            $q->where('category_id', $category->id);
+        })->with(['color', 'size'])->get();
+
+        $uniqueColors = $allVariants->filter->color->unique('color_id')->map(fn ($v) => [
+            'id' => $v->color->id,
+            'value' => $v->color->name,
+        ])->values()->toArray();
+
+        $uniqueSizes = $allVariants->filter->size->unique('size_id')->sortBy('size.sort_order')->map(fn ($v) => [
+            'id' => $v->size->id,
+            'value' => $v->size->name,
+        ])->values()->toArray();
+
+        if (count($uniqueColors) > 0) {
+            $productOptions['Color'] = $uniqueColors;
+        }
+        if (count($uniqueSizes) > 0) {
+            $productOptions['Size'] = $uniqueSizes;
+        }
 
         $query = Product::where('category_id', $category->id)->withDefaultRelations()->active();
 
-        if ($request->filled('subcategory') && $request->subcategory !== 'all') {
-            $query->whereHas('subcategory', function ($q) use ($request) {
-                $q->where('slug', $request->subcategory);
+        if ($selectedSubcategory !== 'all') {
+            $query->whereHas('subcategory', function ($q) use ($selectedSubcategory) {
+                $q->where('slug', $selectedSubcategory);
             });
         }
 
-        if ($request->filled('brand')) {
-            $query->whereHas('brand', function ($q) use ($request) {
-                $q->where('slug', $request->brand);
+        if (! empty($selectedBrands)) {
+            $query->whereHas('brand', function ($q) use ($selectedBrands) {
+                $q->whereIn('slug', $selectedBrands);
             });
         }
 
-        if ($request->price == 'under') {
-            $query->where('price', '<', 500);
-        } elseif ($request->price == 'range') {
-            $query->whereBetween('price', [500, 5000]);
-        } elseif ($request->price == 'upper') {
-            $query->where('price', '>', 5000);
-        } elseif ($request->price == 'min') {
+        $priceMin = $request->has('price_min') ? (int) $request->price_min : 0;
+        $priceMax = $request->has('price_max') ? (int) $request->price_max : 50000;
+
+        if ($request->has('price_min') || $request->has('price_max')) {
+            $query->whereBetween('price', [$priceMin, $priceMax]);
+        }
+
+        if (! empty($productOptionFilters)) {
+            foreach ($productOptionFilters as $optionKey => $value) {
+                $valueIds = is_array($value) ? $value : explode(',', $value);
+                $optionKey = str_replace('_', ' ', $optionKey);
+                $optionKey = ucwords($optionKey);
+
+                if ($optionKey === 'Color') {
+                    $query->whereHas('variants', function ($q) use ($valueIds) {
+                        $q->whereIn('color_id', $valueIds);
+                    });
+                } elseif ($optionKey === 'Size') {
+                    $query->whereHas('variants', function ($q) use ($valueIds) {
+                        $q->whereIn('size_id', $valueIds);
+                    });
+                }
+            }
+        }
+
+        if ($sortFilter === 'newest') {
+            $query->latest();
+        } elseif ($sortFilter === 'low_high') {
             $query->orderBy('price', 'asc');
-        } elseif ($request->price == 'max') {
+        } elseif ($sortFilter === 'high_low') {
             $query->orderBy('price', 'desc');
         }
 
-        if ($request->filled('review')) {
-            $query->withAvg('reviews', 'rating')
-                ->having('reviews_avg_rating', '=', $request->review);
-        }
-
-        $products = $query->skip($skip)
-            ->take($limit)
-            ->get();
-
-        $colors = Color::all();
-        $sizes = Size::all();
+        $products = $query->paginate(20)->appends($request->query());
 
         if ($request->ajax()) {
-            if ($products->isEmpty()) {
-                return '';
+            if ($request->get('load_more')) {
+                if ($products->isEmpty()) {
+                    return '';
+                }
+                $html = '';
+                foreach ($products as $product) {
+                    $html .= view('components.frontend.product-card', ['product' => $product])->render();
+                }
+                return $html;
             }
 
-            return view('frontend.partials.product-card-load', compact('products'))->render();
+            $html = view('components.frontend.category-products-page', compact(
+                'category',
+                'products',
+                'brands',
+                'selectedBrands',
+                'selectedSubcategory',
+                'productOptions',
+                'productOptionFilters',
+            ))->render();
+
+            return response()->json(['html' => $html]);
         }
 
-        return view('frontend.categories.details', compact('category', 'colors', 'sizes', 'products', 'brands'));
+        return view('frontend.categories.details', compact(
+            'category',
+            'products',
+            'brands',
+            'selectedBrands',
+            'selectedSubcategory',
+            'productOptions',
+            'productOptionFilters',
+        ));
     }
 }

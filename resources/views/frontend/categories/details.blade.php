@@ -2,304 +2,386 @@
 @section('title', $category->name)
 
 @section('content')
-    <div class="mt-2 mb-8">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <aside class="hidden md:block md:col-span-1">
-                <div class="bg-white shadow rounded-lg p-5 space-y-6">
-                    <h2 class="text-xl font-semibold text-gray-900 border-b pb-3">Filters</h2>
+    <section class="container mx-auto pb-20 lg:pb-8">
+        <div class="flex flex-col lg:flex-row gap-8">
 
-                    <label for="subcategory" class="block text-sm font-medium text-gray-700">Subcategories</label>
-                    <select name="subcategory" id="subcategorySelect"
-                        class="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
-                        <option value="all" {{ request('subcategory') == 'all' ? 'selected' : '' }}>All Categories
-                        </option>
-                        @foreach ($category->subcategories as $subcategory)
-                            <option value="{{ $subcategory->slug }}"
-                                {{ request('subcategory') == $subcategory->slug ? 'selected' : '' }}>
-                                {{ $subcategory->name }}
-                            </option>
-                        @endforeach
-                    </select>
+            {{-- SIDEBAR --}}
+            <aside id="sidebar" class="hidden lg:block lg:w-64 shrink-0 transition-all duration-300 z-30">
+                <div id="sidebarOverlay" class="fixed inset-0 bg-black/50 lg:hidden hidden"></div>
 
-                    <div class="space-y-6" id="filterOptions">
-                        @foreach ($productOptions as $productOption)
-                            <div class="rounded-lg border border-gray-200 bg-white p-4">
-                                <h3 class="mb-3 text-sm font-semibold text-gray-800">
-                                    {{ $productOption->name }}
-                                </h3>
-                                <div class="space-y-2"
-                                    style="max-height: 200px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #d1d5db #f3f4f6;">
-                                    <label class="group flex cursor-pointer items-center space-x-3">
-                                        <input type="checkbox"
-                                            class="filter-checkbox h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary focus:ring-offset-0"
-                                            value="all" data-attribute="{{ Str::lower($productOption->name) }}" />
-                                        <span
-                                            class="text-sm text-gray-700 transition-colors duration-150 group-hover:text-primary">
-                                            All {{ $productOption->name }}
-                                        </span>
-                                    </label>
+                <div id="sidebarContent"
+                    class="bg-white border border-ds-border-default rounded-sm p-4 sticky top-24 h-full lg:h-auto overflow-y-auto">
 
-                                    @foreach ($productOption->option_values as $value)
-                                        <label class="group flex cursor-pointer items-center space-x-3">
-                                            <input type="checkbox"
-                                                class="filter-checkbox h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary focus:ring-offset-0"
-                                                value="{{ $value->value }}"
-                                                data-attribute="{{ Str::lower($productOption->name) }}" />
-                                            <span
-                                                class="text-sm text-gray-700 transition-colors duration-150 group-hover:text-primary">
-                                                {{ ucwords($value->value) }}
-                                            </span>
-                                        </label>
-                                    @endforeach
-                                </div>
+                    {{-- Mobile Header --}}
+                    <div class="flex items-center justify-between mb-5 lg:hidden">
+                        <h2 class="text-base font-bold text-ds-text-primary">Filters</h2>
+                        <button id="closeMobileFilter" class="text-ds-text-tertiary hover:text-ds-feedback-danger"><i class="fas fa-times text-lg"></i></button>
+                    </div>
+
+                    {{-- Subcategories --}}
+                    <div class="mb-5 border-b border-ds-border-default pb-4">
+                        <h3 class="font-semibold text-ds-text-primary mb-3 text-xs uppercase tracking-wider">Subcategories</h3>
+                        <select id="subcategorySelect"
+                            class="w-full appearance-none bg-ds-surface-muted border border-ds-border-default text-ds-text-secondary text-xs rounded-sm p-2.5 pr-8 cursor-pointer focus:ring-brand focus:border-brand">
+                            <option value="all" {{ $selectedSubcategory === 'all' ? 'selected' : '' }}>All</option>
+                            @foreach ($category->subcategories as $subcategory)
+                                <option value="{{ $subcategory->slug }}" {{ $selectedSubcategory === $subcategory->slug ? 'selected' : '' }}>
+                                    {{ $subcategory->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    {{-- Price Range --}}
+                    <div class="mb-5 border-b border-ds-border-default pb-4">
+                        <h3 class="font-semibold text-ds-text-primary mb-3 text-xs uppercase tracking-wider">Price Range</h3>
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-2">
+                                <input id="priceMin" type="number" placeholder="Min" value="{{ request('price_min', '') }}"
+                                    class="w-full bg-ds-surface-muted border border-ds-border-default rounded-sm px-2.5 py-1.5 text-xs text-ds-text-primary focus:ring-brand focus:border-brand">
+                                <span class="text-ds-text-tertiary text-xs">-</span>
+                                <input id="priceMax" type="number" placeholder="Max" value="{{ request('price_max', '') }}"
+                                    class="w-full bg-ds-surface-muted border border-ds-border-default rounded-sm px-2.5 py-1.5 text-xs text-ds-text-primary focus:ring-brand focus:border-brand">
                             </div>
+                        </div>
+                    </div>
+
+                    {{-- Brands --}}
+                    <div class="mb-5 border-b border-ds-border-default pb-4">
+                        <h3 class="font-semibold text-ds-text-primary mb-3 text-xs uppercase tracking-wider">Brands</h3>
+                        <div class="space-y-2 max-h-40 overflow-y-auto pr-2">
+                            @foreach ($brands as $brand)
+                                @if ($brand->products_count > 0)
+                                    <label class="flex items-center gap-3 cursor-pointer group">
+                                        <input type="checkbox" value="{{ $brand->slug }}" class="brand-filter w-3.5 h-3.5 rounded border-ds-border-default text-brand focus:ring-brand"
+                                            @if (in_array($brand->slug, $selectedBrands)) checked @endif>
+                                        <span class="text-xs text-ds-text-secondary">{{ $brand->name }}</span>
+                                    </label>
+                                @endif
+                            @endforeach
+                        </div>
+                    </div>
+
+                    {{-- Product Options --}}
+                    <div class="space-y-4" id="attribute-filters">
+                        @foreach ($productOptions as $optionName => $values)
+                            @if (count($values) > 0)
+                                <div class="border-b border-ds-border-default pb-3">
+                                    <h3 class="font-semibold text-ds-text-primary mb-3 text-xs uppercase tracking-wider option-btn">
+                                        {{ $optionName }}
+                                    </h3>
+                                    <div class="space-y-2 max-h-40 overflow-y-auto pr-2">
+                                        @foreach ($values as $value)
+                                            @php
+                                                $key = strtolower(str_replace(' ', '_', $optionName));
+                                                $checkedValues = isset($productOptionFilters[$key])
+                                                    ? (is_array($productOptionFilters[$key]) ? $productOptionFilters[$key] : explode(',', $productOptionFilters[$key]))
+                                                    : [];
+                                            @endphp
+                                            <label class="flex items-center gap-3 cursor-pointer group">
+                                                <input type="checkbox" value="{{ $value['id'] }}"
+                                                    class="attribute-filter w-3.5 h-3.5 rounded border-ds-border-default text-brand focus:ring-brand"
+                                                    @if (in_array((string) $value['id'], array_map('strval', $checkedValues))) checked @endif>
+                                                <span class="text-xs text-ds-text-secondary">{{ $value['value'] }}</span>
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
                         @endforeach
                     </div>
+
+                    <button id="applyFiltersBtn"
+                        class="w-full bg-brand text-white py-2.5 rounded-sm font-bold text-xs lg:hidden mt-4 hover:bg-brand-deep transition">
+                        Apply Filters
+                    </button>
                 </div>
             </aside>
-            <section class="md:col-span-3">
-                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-3">
-                    <h2 class="text-2xl font-semibold text-gray-800">{{ strtoupper($category->name) }}</h2>
-                    <button data-drawer-target="filters-drawer" data-drawer-show="filters-drawer"
-                        aria-controls="filters-drawer"
-                        class="md:hidden flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-theme-dark transition">
-                        <i class="fa-solid fa-filter"></i>
-                        <span>Filters</span>
-                    </button>
-                    <form class="w-full md:w-auto">
-                        <select id="sort-by"
-                            class="w-full md:w-auto border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
-                            <option value="">Sort By: Relevance</option>
-                            <option value="best-selling">Best Selling</option>
-                            <option value="trending">Trending</option>
-                            <option value="popularity">Popularity</option>
-                            <option value="new-arrivals">New Arrivals</option>
-                        </select>
 
-                    </form>
-                </div>
-                <div id="product-list" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
-                    @include('frontend.partials.product-card-load', ['products' => $products])
-                </div>
-
-                @if ($products->count() >= 16)
-                    <div class="mt-5 text-center">
-                        <button data-page="1" data-url="{{ route('category.details', $category->slug) }}" id="loadMoreBtn"
-                            class="text-sm font-semibold text-primary-600 border border-primary-600 px-4 py-1.5 rounded-full hover:bg-primary-600 hover:text-white transition">
-                            <span>Load More</span>
-                            <i class="fa-solid fa-chevron-down text-xs"></i>
-                        </button>
-                    </div>
-                @endif
-            </section>
+            {{-- MAIN CONTENT --}}
+            <main class="flex-1" id="products-container">
+                @include('components.frontend.category-products-page')
+            </main>
         </div>
-    </div>
+    </section>
 
+    {{-- Mobile Filter Drawer --}}
     <div id="filters-drawer"
         class="fixed top-0 left-0 z-50 w-80 h-screen p-6 overflow-y-auto transition-transform -translate-x-full bg-white shadow-lg"
         tabindex="-1" aria-labelledby="filters-drawer-label">
         <div class="flex items-center justify-between mb-4">
-            <h5 id="filters-drawer-label" class="text-lg font-semibold text-gray-900">Filters</h5>
+            <h5 id="filters-drawer-label" class="text-lg font-semibold text-ds-text-primary">Filters</h5>
             <button type="button" data-drawer-hide="filters-drawer" aria-controls="filters-drawer"
-                class="text-gray-500 hover:text-gray-900">
-                <i class="fa-solid fa-xmark text-xl"></i>
+                class="text-ds-text-tertiary hover:text-ds-text-primary">
+                <i class="fas fa-times text-xl"></i>
             </button>
         </div>
 
         <div class="space-y-6">
-            <form method="GET" action="{{ route('category.details', $category->slug) }}" class="space-y-3">
-                <label for="subcategory-mobile" class="block text-sm font-medium text-gray-700">Subcategories</label>
-                <select name="subcategory" id="subcategory-mobile" onchange="this.form.submit()"
-                    class="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
-                    <option value="all" {{ request('subcategory') == 'all' ? 'selected' : '' }}>All Categories</option>
+            {{-- Subcategories --}}
+            <div>
+                <label class="block text-xs font-semibold text-ds-text-primary mb-2 uppercase tracking-wider">Subcategories</label>
+                <select id="subcategoryMobile"
+                    class="w-full appearance-none bg-ds-surface-muted border border-ds-border-default text-ds-text-secondary text-xs rounded-sm p-2.5 focus:ring-brand focus:border-brand">
+                    <option value="all" {{ $selectedSubcategory === 'all' ? 'selected' : '' }}>All</option>
                     @foreach ($category->subcategories as $subcategory)
-                        <option value="{{ $subcategory->slug }}"
-                            {{ request('subcategory') == $subcategory->slug ? 'selected' : '' }}>
+                        <option value="{{ $subcategory->slug }}" {{ $selectedSubcategory === $subcategory->slug ? 'selected' : '' }}>
                             {{ $subcategory->name }}
                         </option>
                     @endforeach
                 </select>
-            </form>
+            </div>
 
-            @foreach ($productOptions as $productOption)
-                <form method="GET" action="{{ route('category.details', $category->slug) }}" class="space-y-3">
-                    <label for="attribute-mobile-{{ $productOption->name }}"
-                        class="block text-sm font-medium text-gray-700">{{ $productOption->name }}</label>
-                    <select name="{{ strtolower($productOption->name) }}" id="attribute-mobile-{{ $productOption->name }}"
-                        onchange="this.form.submit()"
-                        class="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
-                        <option value="all" {{ request(strtolower($productOption->name)) == 'all' ? 'selected' : '' }}>
-                            All {{ $productOption->name }}
-                        </option>
-                        @if (!empty($productOption->options))
-                            @foreach ($productOption->options as $option)
-                                <option value="{{ $option->value }}"
-                                    {{ request(strtolower($productOption->name)) == $option->value ? 'selected' : '' }}>
-                                    {{ strtoupper($option->value) }}
-                                </option>
-                            @endforeach
+            {{-- Brands --}}
+            <div>
+                <label class="block text-xs font-semibold text-ds-text-primary mb-2 uppercase tracking-wider">Brands</label>
+                <div class="space-y-2 max-h-40 overflow-y-auto">
+                    @foreach ($brands as $brand)
+                        @if ($brand->products_count > 0)
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="checkbox" value="{{ $brand->slug }}" class="brand-filter-mobile w-3.5 h-3.5 rounded border-ds-border-default text-brand focus:ring-brand"
+                                    @if (in_array($brand->slug, $selectedBrands)) checked @endif>
+                                <span class="text-xs text-ds-text-secondary">{{ $brand->name }}</span>
+                            </label>
                         @endif
-                    </select>
-                </form>
+                    @endforeach
+                </div>
+            </div>
+
+            {{-- Product Options --}}
+            @foreach ($productOptions as $optionName => $values)
+                @if (count($values) > 0)
+                    <div>
+                        <label class="block text-xs font-semibold text-ds-text-primary mb-2 uppercase tracking-wider">{{ $optionName }}</label>
+                        <div class="space-y-2 max-h-40 overflow-y-auto">
+                            @foreach ($values as $value)
+                                @php
+                                    $key = strtolower(str_replace(' ', '_', $optionName));
+                                    $checkedValues = isset($productOptionFilters[$key])
+                                        ? (is_array($productOptionFilters[$key]) ? $productOptionFilters[$key] : explode(',', $productOptionFilters[$key]))
+                                        : [];
+                                @endphp
+                                <label class="flex items-center gap-3 cursor-pointer">
+                                    <input type="checkbox" value="{{ $value['id'] }}"
+                                        class="attribute-filter-mobile w-3.5 h-3.5 rounded border-ds-border-default text-brand focus:ring-brand"
+                                        data-option="{{ $key }}"
+                                        @if (in_array((string) $value['id'], array_map('strval', $checkedValues))) checked @endif>
+                                    <span class="text-xs text-ds-text-secondary">{{ $value['value'] }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
             @endforeach
 
-            <form class="space-y-3">
-                <label for="review-filter-mobile" class="block text-sm font-medium text-gray-700">Review</label>
-                <select id="review-filter-mobile"
-                    class="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
-                    <option selected>All Reviews</option>
-                    <option value="highest-rated">Highest Rated</option>
-                    <option value="most-reviewed">Most Reviewed</option>
-                    <option value="verified-reviews">Verified Reviews</option>
-                </select>
-            </form>
-
-            <form class="space-y-3">
-                <label for="recommended-filter-mobile" class="block text-sm font-medium text-gray-700">Recommended</label>
-                <select id="recommended-filter-mobile"
-                    class="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
-                    <option selected>All</option>
-                    <option value="best-sellers">Best Sellers</option>
-                    <option value="editor-pick">Editor's Pick</option>
-                    <option value="customers-choice">Customers' Choice</option>
-                </select>
-            </form>
+            <button id="applyMobileFilters"
+                class="w-full bg-brand text-white py-2.5 rounded-sm font-bold text-xs hover:bg-brand-deep transition">
+                Apply Filters
+            </button>
         </div>
     </div>
 
     @push('scripts')
         <script>
-            let filterState = {
-                subcategory: $('#subcategorySelect').val(),
-                sortBy: $('#sort-by').val(),
-                attributes: {}
-            };
+            document.addEventListener('DOMContentLoaded', () => {
+                // --- Mobile Filter Sidebar ---
+                const openFilterBtn = document.getElementById('openMobileFilter');
+                const closeFilterBtn = document.getElementById('closeMobileFilter');
+                const applyFiltersBtn = document.getElementById('applyFiltersBtn');
+                const applyMobileFilters = document.getElementById('applyMobileFilters');
+                const sidebar = document.getElementById('sidebar');
+                const sidebarContent = document.getElementById('sidebarContent');
+                const sidebarOverlay = document.getElementById('sidebarOverlay');
 
-            $('#subcategorySelect').on('change', function() {
-                filterState.subcategory = $(this).val();
-                updateFilters();
-            });
-
-            $('#sort-by').on('change', function() {
-                filterState.sortBy = $(this).val();
-                updateFilters();
-            });
-
-            $(document).on('change', '.filter-checkbox', function() {
-                const attr = $(this).data('attribute');
-                const value = $(this).val();
-                const isChecked = $(this).is(':checked');
-
-                if (!filterState.attributes[attr]) {
-                    filterState.attributes[attr] = [];
-                }
-
-                if (isChecked) {
-                    if (value === 'all') {
-                        // select only "all", deselect others
-                        filterState.attributes[attr] = ['all'];
-                        $(`.filter-checkbox[data-attribute="${attr}"]`).not(this).prop('checked', false);
+                function toggleFilter(show) {
+                    if (show) {
+                        sidebar.classList.remove('hidden');
+                        sidebar.classList.add('fixed', 'inset-0', 'flex', 'z-50');
+                        sidebarOverlay.classList.remove('hidden');
+                        sidebarContent.classList.remove('sticky', 'top-24');
+                        sidebarContent.classList.add('relative', 'w-80', 'max-w-[80%]', 'h-full', 'bg-white', 'shadow-2xl', 'p-6');
                     } else {
-                        // remove "all" if present
-                        filterState.attributes[attr] = filterState.attributes[attr].filter(v => v !== 'all');
-                        if (!filterState.attributes[attr].includes(value)) {
-                            filterState.attributes[attr].push(value);
-                        }
-                        $(`.filter-checkbox[data-attribute="${attr}"][value="all"]`).prop('checked', false);
-                    }
-                } else {
-                    // remove unchecked value
-                    filterState.attributes[attr] = filterState.attributes[attr].filter(v => v !== value);
-                    if (filterState.attributes[attr].length === 0) {
-                        delete filterState.attributes[attr];
+                        sidebar.classList.add('hidden');
+                        sidebar.classList.remove('fixed', 'inset-0', 'flex', 'z-50');
+                        sidebarOverlay.classList.add('hidden');
+                        sidebarContent.classList.add('sticky', 'top-24');
+                        sidebarContent.classList.remove('relative', 'w-80', 'max-w-[80%]', 'h-full', 'bg-white', 'shadow-2xl', 'p-6');
                     }
                 }
 
-                updateFilters();
+                if (openFilterBtn) openFilterBtn.addEventListener('click', () => toggleFilter(true));
+                if (closeFilterBtn) closeFilterBtn.addEventListener('click', () => toggleFilter(false));
+                if (applyFiltersBtn) applyFiltersBtn.addEventListener('click', () => toggleFilter(false));
+                if (applyMobileFilters) applyMobileFilters.addEventListener('click', () => {
+                    // Sync mobile checkboxes to desktop
+                    document.querySelectorAll('.brand-filter-mobile').forEach(mob => {
+                        const desk = document.querySelector(`.brand-filter[value="${mob.value}"]`);
+                        if (desk) desk.checked = mob.checked;
+                    });
+                    document.querySelectorAll('.attribute-filter-mobile').forEach(mob => {
+                        const desk = document.querySelector(`.attribute-filter[value="${mob.value}"]`);
+                        if (desk) desk.checked = mob.checked;
+                    });
+                    const mobSub = document.getElementById('subcategoryMobile');
+                    const deskSub = document.getElementById('subcategorySelect');
+                    if (mobSub && deskSub) deskSub.value = mobSub.value;
+                    toggleFilter(false);
+                    updateFilters();
+                });
+                if (sidebarOverlay) sidebarOverlay.addEventListener('click', () => toggleFilter(false));
             });
+
+            // --- Filter Logic ---
+            function buildQueryParams() {
+                const params = new URLSearchParams();
+
+                const sub = document.getElementById('subcategorySelect')?.value;
+                if (sub && sub !== 'all') params.append('subcategory', sub);
+
+                const selectedBrands = [];
+                document.querySelectorAll('.brand-filter:checked').forEach(el => selectedBrands.push(el.value));
+                if (selectedBrands.length) params.append('brand', selectedBrands.join(','));
+
+                const sortValue = document.querySelector('.sort-filter')?.value;
+                if (sortValue) params.append('sort', sortValue);
+
+                let min = document.getElementById('priceMin')?.value;
+                let max = document.getElementById('priceMax')?.value;
+                if (min) params.append('price_min', min);
+                if (max) params.append('price_max', max);
+
+                const selectedOptions = {};
+                document.querySelectorAll('.attribute-filter:checked').forEach(el => {
+                    const container = el.closest('.border-b');
+                    if (!container) return;
+                    const nameEl = container.querySelector('.option-btn');
+                    if (!nameEl) return;
+                    const name = nameEl.textContent.trim();
+                    if (!selectedOptions[name]) selectedOptions[name] = [];
+                    selectedOptions[name].push(el.value);
+                });
+                for (const [name, values] of Object.entries(selectedOptions)) {
+                    if (values.length) params.append(name.toLowerCase().replace(/\s+/g, '_'), values.join(','));
+                }
+
+                return params;
+            }
 
             function updateFilters() {
-                let serializedData = {
-                    subcategory: filterState.subcategory,
-                    sortBy: filterState.sortBy,
-                };
-
-                $.each(filterState.attributes, function(attr, values) {
-                    values.forEach(function(value) {
-                        serializedData[`attributes[${attr}][]`] = serializedData[`attributes[${attr}][]`] || [];
-                        serializedData[`attributes[${attr}][]`].push(value);
-                    });
-                });
-
-                const queryString = $.param(serializedData, true);
+                const params = buildQueryParams();
                 const urlBase = "{{ route('category.details', $category->slug) }}";
-                const fullUrl = queryString ? `${urlBase}?${queryString}` : urlBase;
+                const qs = params.toString();
+                const fullUrl = qs ? `${urlBase}?${qs}` : urlBase;
 
                 window.history.pushState({}, '', fullUrl);
 
                 $.ajax({
                     url: fullUrl,
                     method: 'GET',
-                    beforeSend: function() {
-                        $('#product-list').html(`
-                        <div class="col-span-full text-center py-10">
-                            <i class="fa fa-spinner fa-spin text-2xl text-primary"></i>
-                            <p class="text-gray-600 mt-2 text-sm">Loading products...</p>
-                        </div>
-                    `);
+                    beforeSend: function () {
+                        $('#products-container').html(`
+                            <div class="col-span-full text-center py-16">
+                                <svg class="animate-spin h-6 w-6 text-brand mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                <p class="text-ds-text-tertiary mt-2 text-xs">Loading products...</p>
+                            </div>
+                        `);
                     },
-                    success: function(response) {
-                        $('#product-list').html(response);
-                        if (typeof initFlowbite === 'function') initFlowbite();
+                    success: function (response) {
+                        $('#products-container').html(response.html);
                     },
-                    error: function() {
-                        $('#product-list').html(`
-                        <div class="col-span-full text-center text-red-600 py-10">
-                            Something went wrong. Please try again.
-                        </div>
-                    `);
+                    error: function () {
+                        $('#products-container').html(`
+                            <div class="col-span-full text-center text-ds-feedback-danger py-16 text-xs">
+                                Something went wrong. Please try again.
+                            </div>
+                        `);
                     }
                 });
             }
 
-            $('#loadMoreBtn').on('click', function() {
-                let button = $(this);
-                let page = parseInt(button.data('page')) + 1;
-                let url = button.data('url');
+            // Event listeners
+            document.getElementById('subcategorySelect')?.addEventListener('change', updateFilters);
+            document.querySelector('.sort-filter')?.addEventListener('change', updateFilters);
+            document.querySelectorAll('.brand-filter').forEach(el => el.addEventListener('change', updateFilters));
+            document.querySelectorAll('.attribute-filter').forEach(el => el.addEventListener('change', updateFilters));
 
-                let data = {
-                    page: page,
-                    subcategory: filterState.subcategory,
-                    sortBy: filterState.sortBy
-                };
-
-                $.each(filterState.attributes, function(attr, values) {
-                    data[`attributes[${attr}][]`] = values;
+            let priceTimer = null;
+            ['priceMin', 'priceMax'].forEach(id => {
+                document.getElementById(id)?.addEventListener('keyup', () => {
+                    clearTimeout(priceTimer);
+                    priceTimer = setTimeout(updateFilters, 500);
                 });
+            });
+
+            document.addEventListener('click', function (e) {
+                const btn = e.target.closest('.remove-filter');
+                if (!btn) return;
+
+                const type = btn.dataset.type;
+                const slug = btn.dataset.slug;
+
+                if (type === 'subcategory') {
+                    document.getElementById('subcategorySelect').value = 'all';
+                }
+                if (type === 'brand') {
+                    document.querySelectorAll('.brand-filter').forEach(el => {
+                        if (el.value === slug) el.checked = false;
+                    });
+                }
+                if (type === 'attribute') {
+                    const [, valueId] = slug.split('|');
+                    document.querySelectorAll('.attribute-filter').forEach(el => {
+                        if (el.value === valueId) el.checked = false;
+                    });
+                }
+
+                updateFilters();
+            });
+
+            function clearAll() {
+                document.getElementById('subcategorySelect').value = 'all';
+                document.querySelectorAll('.brand-filter').forEach(el => el.checked = false);
+                document.querySelectorAll('.attribute-filter').forEach(el => el.checked = false);
+                document.getElementById('priceMin').value = '';
+                document.getElementById('priceMax').value = '';
+                const sort = document.querySelector('.sort-filter');
+                if (sort) sort.value = '';
+                updateFilters();
+            }
+
+            // Load More
+            $(document).on('click', '#loadMoreProducts', function () {
+                const button = $(this);
+                let page = parseInt(button.data('page')) + 1;
+                const url = button.data('url');
+                const params = buildQueryParams();
+                params.append('page', page);
+                params.append('load_more', '1');
+                const fullUrl = url + '?' + params.toString();
 
                 $.ajax({
-                    url: url,
+                    url: fullUrl,
                     method: 'GET',
-                    data: data,
-                    beforeSend: function() {
+                    beforeSend: function () {
                         button.prop('disabled', true).html(
-                            '<i class="fa fa-spinner fa-spin"></i> Loading...');
+                            '<svg class="animate-spin h-4 w-4 text-brand" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>'
+                        );
                     },
-                    success: function(response) {
-                        if (response.trim() !== '') {
-                            $('#product-list').append(response);
+                    success: function (response) {
+                        if ($.trim(response) !== '') {
+                            $('#productsContainer').append(response);
                             button.data('page', page);
                             button.prop('disabled', false).html(
-                                '<span>Load More</span> <i class="fa-solid fa-chevron-down text-sm"></i>'
+                                '<span>Load More</span> <i class="fas fa-chevron-down text-[10px]"></i>'
                             );
-                            if (typeof initFlowbite === 'function') initFlowbite();
                         } else {
                             button.hide();
                         }
                     },
-                    error: function() {
-                        button.prop('disabled', false).text('Load More');
-                        alert('Something went wrong. Please try again.');
+                    error: function () {
+                        button.prop('disabled', false).html(
+                            '<span>Load More</span> <i class="fas fa-chevron-down text-[10px]"></i>'
+                        );
                     }
                 });
             });

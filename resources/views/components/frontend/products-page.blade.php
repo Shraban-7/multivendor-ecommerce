@@ -27,20 +27,6 @@
             </div>
         </div>
 
-        <!-- View Toggle -->
-        <div class="flex bg-gray-100 p-1 rounded-lg shrink-0">
-            <button id="gridViewBtn"
-                class="w-8 h-8 rounded flex items-center justify-center
-                           bg-white text-primary-600 shadow-sm transition">
-                <i class="fas fa-th-large"></i>
-            </button>
-            <button id="listViewBtn"
-                class="w-8 h-8 rounded flex items-center justify-center
-                           text-gray-400 hover:text-gray-600 transition">
-                <i class="fas fa-list"></i>
-            </button>
-        </div>
-
     </div>
 </div>
 
