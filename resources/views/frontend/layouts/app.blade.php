@@ -17,6 +17,7 @@
     {{--
     <link rel="stylesheet" href="{{ asset('assets/libs/toastr/css/toastr.min.css') }}"> --}}
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="{{ asset('assets/js/sliders.js') }}"></script>
     <script>
         tailwind.config = {
             theme: {

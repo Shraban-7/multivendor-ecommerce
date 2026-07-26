@@ -123,14 +123,16 @@
     <!-- ==================== CATEGORY GRID ==================== -->
     <section class="mb-4">
         <div class="bg-white p-4 sm:p-5 border border-[#E5E5E5] rounded-sm">
-            <div class="flex items-center gap-2 mb-5">
+            <div class="flex items-center justify-between mb-5">
                 <h2 class="text-base font-semibold text-[#191919]">Shop by Category</h2>
+                <a href="{{ route('products.index') }}" class="text-xs font-medium text-[#F85606] hover:underline">View All</a>
             </div>
-            <div class="flex flex-wrap justify-between md:justify-center gap-y-5 gap-x-4 sm:gap-x-7">
+
+            <div class="hidden lg:grid grid-cols-8 gap-3">
                 @foreach ($categories as $category)
                     <a href="{{ route('category.details', $category->slug) }}"
-                        class="group flex flex-col items-center gap-2 w-16 sm:w-20">
-                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#F5F5F5] border border-[#E5E5E5] group-hover:border-[#F85606] eq flex items-center justify-center p-3 overflow-hidden">
+                        class="group flex flex-col items-center gap-2 p-2 rounded-sm border border-transparent hover:border-[#E5E5E5] eq">
+                        <div class="w-full aspect-square rounded-sm bg-[#F5F5F5] border border-[#E5E5E5] group-hover:border-[#F85606] eq flex items-center justify-center p-3 overflow-hidden">
                             @if ($category->image)
                                 <img src="{{ storage_url($category->image) }}" alt="{{ $category->name }}"
                                     class="max-w-full max-h-full object-contain group-hover:scale-110 eq">
@@ -138,7 +140,26 @@
                                 <i class="fas fa-tag text-[#C7C7C7] text-sm"></i>
                             @endif
                         </div>
-                        <span class="text-[11px] sm:text-xs text-[#595959] text-center line-clamp-1 group-hover:text-[#F85606] eq">
+                        <span class="text-[11px] text-[#595959] text-center leading-tight line-clamp-2 group-hover:text-[#F85606] eq">
+                            {{ $category->name }}
+                        </span>
+                    </a>
+                @endforeach
+            </div>
+
+            <div id="category-slider-track" class="lg:hidden flex gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory scroll-smooth pb-1">
+                @foreach ($categories as $category)
+                    <a href="{{ route('category.details', $category->slug) }}"
+                        class="snap-start shrink-0 w-24 group flex flex-col items-center gap-2 p-2 rounded-sm border border-[#E5E5E5] hover:border-[#F85606] eq">
+                        <div class="w-full aspect-square rounded-sm bg-[#F5F5F5] flex items-center justify-center p-2 overflow-hidden">
+                            @if ($category->image)
+                                <img src="{{ storage_url($category->image) }}" alt="{{ $category->name }}"
+                                    class="max-w-full max-h-full object-contain group-hover:scale-110 eq">
+                            @else
+                                <i class="fas fa-tag text-[#C7C7C7] text-sm"></i>
+                            @endif
+                        </div>
+                        <span class="text-[11px] text-[#595959] text-center leading-tight line-clamp-2 group-hover:text-[#F85606] eq">
                             {{ $category->name }}
                         </span>
                     </a>
@@ -257,44 +278,6 @@
                     });
                 });
             }
-
-            // Flash sale slider
-            document.querySelectorAll('.flash-slider-track').forEach(track => {
-                const wrapper = track.parentElement;
-                const prev = wrapper.querySelector('.flash-slider-prev');
-                const next = wrapper.querySelector('.flash-slider-next');
-                const scrollAmount = () => {
-                    const card = track.querySelector('.flex-shrink-0');
-                    return card ? card.offsetWidth + 12 : 200;
-                };
-                const updateBtns = () => {
-                    if (prev) prev.disabled = track.scrollLeft <= 0;
-                    if (next) next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 2;
-                };
-                if (prev) prev.addEventListener('click', () => { track.scrollBy({ left: -scrollAmount(), behavior: 'smooth' }); setTimeout(updateBtns, 100); });
-                if (next) next.addEventListener('click', () => { track.scrollBy({ left: scrollAmount(), behavior: 'smooth' }); setTimeout(updateBtns, 100); });
-                track.addEventListener('scroll', updateBtns);
-                setTimeout(updateBtns, 200);
-
-                // Auto-play
-                let autoplay = setInterval(() => {
-                    if (track.scrollLeft + track.clientWidth >= track.scrollWidth - 2) {
-                        track.scrollTo({ left: 0, behavior: 'smooth' });
-                    } else {
-                        track.scrollBy({ left: scrollAmount(), behavior: 'smooth' });
-                    }
-                }, 1500);
-                wrapper.addEventListener('mouseenter', () => clearInterval(autoplay));
-                wrapper.addEventListener('mouseleave', () => {
-                    autoplay = setInterval(() => {
-                        if (track.scrollLeft + track.clientWidth >= track.scrollWidth - 2) {
-                            track.scrollTo({ left: 0, behavior: 'smooth' });
-                        } else {
-                            track.scrollBy({ left: scrollAmount(), behavior: 'smooth' });
-                        }
-                    }, 1500);
-                });
-            });
 
             // Flash sale countdown
             @if ($flash_sales)

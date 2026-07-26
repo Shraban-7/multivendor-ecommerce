@@ -18,7 +18,7 @@ class HomeController extends Controller
         $limit = 10;
         $page = $request->get('page', 1);
         $skip = ($page - 1) * $limit;
-        $data['categories'] = Category::category()->get();
+        $data['categories'] = Category::category()->limit(16)->get();
 
         // $data['special_category'] = Category::special()->with(['banners', 'products'])->first();
 
