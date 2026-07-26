@@ -95,23 +95,33 @@ class SaleController extends Controller
             foreach ($items as $item) {
                 $orderItem = $order->items()->find($item['id']);
 
-                if (isset($item['variant_id']) && $item['variant_id']) {
-                    $variant = ProductVariant::find($item['variant_id']);
-                    if ($variant) {
-                        $product = $variant->product;
-                        $sellingPrice = $variant->selling_price;
-                        $unitPrice = $item['price'] ?? ($variant->discounted_price ?? $sellingPrice);
-                        $variantId = $variant->id;
-                        $sku = $variant->sku;
-                        $variantName = $variant->fullName;
+                $product = null;
+                $variant = null;
+                $sellingPrice = null;
+                $unitPrice = null;
+                $variantId = null;
+                $sku = null;
+                $variantName = null;
+
+                if (! empty($item['variant_id'])) {
+                    $variant = ProductVariant::with(['product', 'color', 'size'])->find($item['variant_id']);
+                    if (! $variant) {
+                        throw new \RuntimeException('Variant not found for order item.');
                     }
+                    $product = $variant->product;
+                    $sellingPrice = $variant->selling_price;
+                    $unitPrice = $item['price'] ?? ($variant->discounted_price ?? $sellingPrice);
+                    $variantId = $variant->id;
+                    $sku = $variant->sku;
+                    $variantName = $variant->label;
                 } else {
-                    $product = Product::find($item['product_id']);
+                    $product = Product::find($item['product_id'] ?? null);
+                    if (! $product) {
+                        throw new \RuntimeException('Product not found for order item.');
+                    }
                     $sellingPrice = $product->selling_price;
                     $unitPrice = $item['price'] ?? $sellingPrice;
-                    $variantId = null;
                     $sku = $product->sku;
-                    $variantName = null;
                 }
 
                 $quantity = $item['quantity'];
@@ -251,7 +261,7 @@ class SaleController extends Controller
         $product = null;
 
         if (! empty($data['variant_id'])) {
-            $variant = ProductVariant::with('product')->find($data['variant_id']);
+            $variant = ProductVariant::with(['product', 'color', 'size'])->find($data['variant_id']);
             if ($variant) {
                 $product = $variant->product;
                 $sellingPrice = $variant->selling_price;
@@ -290,7 +300,7 @@ class SaleController extends Controller
                 'product_variant_id' => $variant->id ?? null,
                 'sku' => $variant->sku ?? $product->sku,
                 'product_name' => $product->name,
-                'variant_name' => $variant->fullName ?? null,
+                'variant_name' => $variant->label ?? null,
                 'buying_price' => $variant->buying_price ?? $product->buying_price,
                 'selling_price' => $sellingPrice,
                 'unit_price' => $unitPrice,

@@ -303,7 +303,7 @@
         //                 discounted_price: variant.discounted_price || 0,
         //                 image: variant.image || product.image,
         //                 productImage: product.image,
-        //                 fullName: `${variant.fullName}`.trim()
+        //                 label: `${variant.label}`.trim()
         //             });
         //         });
         //     });
@@ -326,7 +326,7 @@
                             discounted_price: variant.discounted_price ?? product.discounted_price,
                             image: variant.image || product.image,
                             productImage: product.image,
-                            fullName: (variant.fullName ?? "").trim()
+                            label: (variant.label ?? "").trim()
                         });
                     });
                 } else {
@@ -339,8 +339,8 @@
                         discounted_price: product.discounted_price,
                         image: product.image,
                         productImage: product.image,
-                        fullName: ""
-                    });
+label: "",
+                        });
                 }
             });
 
@@ -354,7 +354,7 @@
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td class="col-id hidden-column">${variant.id}</td>
-                    <td><b>${variant.name}</b> <br> <i>${variant.fullName}</i></td>
+                    <td><b>${variant.name}</b> <br> <i>${variant.label}</i></td>
                     <td class="qty-cell col-quantity text-end">${variant.quantity}</td>
                     <td class="price-cell col-price text-end">${variant.price}</td>
                     <td class="price-cell col-discounted_price text-start">${variant.discounted_price}</td>
@@ -379,7 +379,7 @@
 
             filteredVariants = flattenVariants(products).filter(variant =>
                 variant.name.toLowerCase().includes(searchTerm) ||
-                variant.fullName.toLowerCase().includes(searchTerm) ||
+                variant.label.toLowerCase().includes(searchTerm) ||
                 variant.sku.toLowerCase().includes(searchTerm)
             );
 

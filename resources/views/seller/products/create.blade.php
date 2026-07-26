@@ -139,16 +139,7 @@
 
 <script>
     $(function() {
-        $('.option_values').select2({
-            tags: true,
-            placeholder: 'Select or type a value',
-            dropdownParent: null,
-            allowClear: true,
-            width: '100%',
-            closeOnSelect: false
-        });
-
-        $(".brand-select").select2({
+                $(".brand-select").select2({
             tags: true,
             theme: "bootstrap-5",
         });
@@ -157,8 +148,7 @@
 
         $('#categorySelect').change(function() {
             selectedCategoryId = $(this).val();
-            showVariantOptions(selectedCategoryId);
-
+            
             let hasOptions = false;
             $('#subcategorySelect').val('').trigger('change');
             $('#subcategorySelect option').each(function() {
@@ -174,15 +164,7 @@
             $('#subcategorySelect').attr('disabled', !hasOptions);
         });
 
-        function showVariantOptions(categoryId) {
-            $('.attributeColumn').addClass('d-none');
-            const $visibleColumns = $('.attributeColumn[data-category="' + categoryId + '"]').removeClass('d-none');
-            if ($visibleColumns.length > 0) {
-                $('#variantGenerator').removeClass('d-none');
-            } else {
-                $('#variantGenerator').addClass('d-none');
-            }
-        }
+                }
 
         $('#submitBtn').click(function(e) {
             e.preventDefault();
@@ -255,59 +237,28 @@
             const variantRows = variantBody.querySelectorAll("tr");
             const variants = [];
 
-            // Get headers only from THIS table
-            const table = variantBody.closest("table");
-            const headerCells = table.querySelectorAll("thead th");
-
-            // Extract only attribute columns (skip fixed ones)
-            const skipColumns = [
-                "#",
-                "SKU",
-                "Buying Price",
-                "Selling Price",
-                "Discount Type",
-                "Discount Value",
-                "Image",
-                "Actions",
-            ];
-
-            const attributeHeaders = Array.from(headerCells)
-                .map((cell) => cell.textContent.trim())
-                .filter((title) => !skipColumns.includes(title) && title !== "");
-
             variantRows.forEach((row) => {
-                const variant = {};
-                variant.sku =
-                    row.querySelector('td:nth-child(2) input')?.value.trim() || "";
+                const colorId = row.dataset.colorId || '';
+                const sizeId = row.dataset.sizeId || '';
 
-                // Collect attribute values
-                variant.attributes = {};
+                const sku = row.querySelector('td:nth-child(2) input')?.value.trim() || '';
 
-                attributeHeaders.forEach((title, i) => {
-                    // +3 because the 1st column is #, 2nd is SKU
-                    const cellInput = row.querySelector(`td:nth-child(${i + 3}) input`);
-                    variant.attributes[title] = cellInput?.value?.trim() || "";
-                });
-
-                // Prices
-                const colStart = 3 + attributeHeaders.length;
-                const buyingPriceInput = row.querySelector(
-                    `td:nth-child(${colStart}) input`
-                );
-                const sellingPriceInput = row.querySelector(
-                    `td:nth-child(${colStart + 1}) input`
-                );
+                const buyingPriceInput = row.querySelector('input[placeholder="Buying Price"]');
+                const sellingPriceInput = row.querySelector('input[placeholder="Selling Price"]');
                 const discountTypeSelect = row.querySelector(".variant-discount-type");
                 const discountValueInput = row.querySelector(".variant-discount-value");
                 const imageInput = row.querySelector('input[type="file"]');
 
-                variant.buying_price = buyingPriceInput?.value || "";
-                variant.selling_price = sellingPriceInput?.value || "";
-                variant.discount_type = discountTypeSelect?.value || "none";
-                variant.discount_value = discountValueInput?.value || "";
-                variant.image = imageInput?.files?.[0] || null;
-
-                variants.push(variant);
+                variants.push({
+                    color_id: colorId ? parseInt(colorId) : null,
+                    size_id: sizeId ? parseInt(sizeId) : null,
+                    sku: sku,
+                    buying_price: buyingPriceInput?.value || '',
+                    selling_price: sellingPriceInput?.value || '',
+                    discount_type: discountTypeSelect?.value || 'none',
+                    discount_value: discountValueInput?.value || '',
+                    image: imageInput?.files?.[0] || null,
+                });
             });
 
             return variants;

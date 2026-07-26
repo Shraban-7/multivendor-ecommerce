@@ -39,7 +39,9 @@ class CartController extends Controller
             'is_default' => 'nullable|boolean',
         ]);
 
-        $variant = ProductVariant::find($data['variant_id']);
+        $variant = ! empty($data['variant_id'])
+            ? ProductVariant::find($data['variant_id'])
+            : null;
         $userId = Auth::id();
         $product = Product::find($data['product_id']);
 
@@ -47,13 +49,28 @@ class CartController extends Controller
             return response()->json(['success' => false, 'warning' => 'Product not found']);
         }
 
-        if ($data['quantity'] > $product->total_stock) {
-            return response()->json(['success' => false, 'warning' => 'Not Enough stock']);
-        }
+        $availableStock = $variant
+            ? (int) $variant->available_stock
+            : (int) $product->total_stock;
 
+        $existingQty = 0;
         $cart = Cart::firstOrCreate(
             ['user_id' => $userId, 'seller_id' => $product->seller_id],
         );
+
+        $variantId = $variant->id ?? null;
+        $cartItem = CartItem::where('cart_id', $cart->id)
+            ->where('product_variant_id', $variantId)
+            ->where('product_id', $product->id)
+            ->first();
+
+        if ($cartItem) {
+            $existingQty = (int) $cartItem->quantity;
+        }
+
+        if (($existingQty + $data['quantity']) > $availableStock) {
+            return response()->json(['success' => false, 'warning' => 'Not Enough stock']);
+        }
 
         if (! empty($variant)) {
             $price = $variant->discounted_price ?? $variant->selling_price;
@@ -61,12 +78,10 @@ class CartController extends Controller
             $price = $product->discounted_price ?? $product->selling_price;
         }
 
-        $variantId = $variant->id ?? null;
-
-        $cartItem = CartItem::where('cart_id', $cart->id)->where('product_variant_id', $variantId)->where('product_id', $product->id)->first();
-
         if ($cartItem) {
-            $cartItem->increment('quantity', $data['quantity']);
+            $cartItem->quantity = $existingQty + $data['quantity'];
+            $cartItem->price = $price;
+            $cartItem->save();
         } else {
             $this->cartRepo->addItem($cart, [
                 'product_id' => $product->id,
@@ -88,7 +103,7 @@ class CartController extends Controller
         $categoryIds = $subcategoryIds = $brandIds = $addedItemIds = [];
 
         $carts = Cart::where('user_id', Auth::id())
-            ->with('cart_items.product', 'cart_items.variant.option_values')
+            ->with('cart_items.product', 'cart_items.variant.color', 'cart_items.variant.size')
             ->get()
             ->groupBy(function ($cart) {
                 return $cart->cart_items->first()->product->seller_id ?? null;
@@ -174,7 +189,7 @@ class CartController extends Controller
                 ->with('product', 'variant')
                 ->get()
                 ->sum(function ($item) {
-                    return $item->quantity * $item->product_original_price;
+                    return $item->quantity * $item->original_price;
                 });
 
             $discount = $grandTotal - $subTotal;

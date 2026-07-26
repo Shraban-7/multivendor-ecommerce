@@ -84,7 +84,7 @@
             @foreach ($order->items as $item)
             <tr>
                 <td class="left">{{ $item->product->name }} @if ($item->variant)
-                    <small>({{ $item->variant->fullName }})</small>
+                    <small>({{ $item->variant->label }})</small>
                 @endif </td>
                 <td class="center">{{ $item->quantity }}</td>
                 <td class="right">{{ money($item->unit_price * $item->quantity, $showCurrency) }}</td>

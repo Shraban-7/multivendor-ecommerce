@@ -32,7 +32,7 @@ class SellerSeeder extends Seeder
                 'name' => 'Merinor',
                 'image' => 'merinor-logo.jpg',
                 'email' => 'merinor@gmail.com',
-                'phone' => '01720000001',
+                'phone' => '01720000002',
                 'password' => Hash::make('password'),
                 'business_name' => 'Merinor',
                 'business_logo' => 'merinor-logo.jpg',
@@ -47,7 +47,7 @@ class SellerSeeder extends Seeder
                 'name' => 'Pluxio',
                 'image' => 'pluxio-logo.jpg',
                 'email' => 'pluxio@gmail.com',
-                'phone' => '01720000001',
+                'phone' => '01720000003',
                 'password' => Hash::make('password'),
                 'business_name' => 'Pluxio',
                 'business_logo' => 'pluxio-logo.jpg',
@@ -62,7 +62,7 @@ class SellerSeeder extends Seeder
                 'name' => 'Lianoa',
                 'image' => 'lianoa-logo.jpg',
                 'email' => 'lianoa@gmail.com',
-                'phone' => '01720000001',
+                'phone' => '01720000004',
                 'password' => Hash::make('password'),
                 'business_name' => 'Lianoa',
                 'business_logo' => 'lianoa-logo.jpg',
@@ -77,7 +77,7 @@ class SellerSeeder extends Seeder
                 'name' => 'Sneaktra',
                 'image' => 'sneaktra-logo.jpg',
                 'email' => 'sneaktra@gmail.com',
-                'phone' => '01720000001',
+                'phone' => '01720000005',
                 'password' => Hash::make('password'),
                 'business_name' => 'Sneaktra',
                 'business_logo' => 'sneaktra-logo.jpg',
@@ -92,7 +92,7 @@ class SellerSeeder extends Seeder
                 'name' => 'Babee Shop',
                 'image' => 'babee-shop-logo.jpg',
                 'email' => 'babeeshop@gmail.com',
-                'phone' => '01720000001',
+                'phone' => '01720000006',
                 'password' => Hash::make('password'),
                 'business_name' => 'Babee Shop',
                 'business_logo' => 'babee-shop-logo.jpg',
@@ -103,17 +103,48 @@ class SellerSeeder extends Seeder
                 'commission_type' => CommissionType::PERCENTAGE->value,
                 'commission_amount' => 10.5,
             ],
+            // Sellers referenced by database/data/products.json
+            ['name' => 'FashionHub', 'email' => 'fashionhub@gmail.com', 'phone' => '01720000011'],
+            ['name' => 'FreshMart', 'email' => 'freshmart@gmail.com', 'phone' => '01720000012'],
+            ['name' => 'GadgetZone', 'email' => 'gadgetzone@gmail.com', 'phone' => '01720000013'],
+            ['name' => 'SportMax', 'email' => 'sportmax@gmail.com', 'phone' => '01720000014'],
+            ['name' => 'StyleCraft', 'email' => 'stylecraft@gmail.com', 'phone' => '01720000015'],
+            ['name' => 'DailyNeeds', 'email' => 'dailyneeds@gmail.com', 'phone' => '01720000016'],
+            ['name' => 'HomeEase', 'email' => 'homeease@gmail.com', 'phone' => '01720000017'],
+            ['name' => 'BeautyGlow', 'email' => 'beautyglow@gmail.com', 'phone' => '01720000018'],
+            ['name' => 'BookNest', 'email' => 'booknest@gmail.com', 'phone' => '01720000019'],
+            ['name' => 'TechMart', 'email' => 'techmart@gmail.com', 'phone' => '01720000020'],
+            ['name' => 'KitchenPro', 'email' => 'kitchenpro@gmail.com', 'phone' => '01720000021'],
         ];
 
-        foreach ($sellers as $seller) {
-            $username = Str::slug($seller['name']);
-            $seller['username'] = $username;
-            $seller['code'] = Seller::generateSellerCode($seller['name']);
-            $seller['status'] = ($seller['is_active'] ?? 0) ? Seller::ACTIVE : 0;
-            $seller['image'] = "images/{$username}/logo/{$seller['image']}";
-            $seller['business_logo'] = "images/{$username}/logo/{$seller['business_logo']}";
+        foreach ($sellers as $index => $seller) {
+            $name = $seller['name'];
+            $username = Str::slug($name);
+            $logoFile = isset($seller['image'])
+                ? basename($seller['image'])
+                : Str::slug($name).'-logo.jpg';
+            $logoPath = "images/{$username}/logo/{$logoFile}";
 
-            Seller::create($seller);
+            Seller::updateOrCreate(
+                ['email' => $seller['email']],
+                [
+                    'name' => $name,
+                    'username' => $username,
+                    'phone' => $seller['phone'],
+                    'password' => $seller['password'] ?? Hash::make('password'),
+                    'image' => $logoPath,
+                    'business_name' => $seller['business_name'] ?? $name,
+                    'business_logo' => $logoPath,
+                    'business_email' => $seller['business_email'] ?? 'business.'.$seller['email'],
+                    'business_address' => $seller['business_address'] ?? 'Dhaka',
+                    'shipping_cost' => $seller['shipping_cost'] ?? 100,
+                    'is_active' => $seller['is_active'] ?? 1,
+                    'status' => Seller::ACTIVE,
+                    'code' => Seller::generateSellerCode($name),
+                    'commission_type' => $seller['commission_type'] ?? CommissionType::PERCENTAGE->value,
+                    'commission_amount' => $seller['commission_amount'] ?? 10.5,
+                ]
+            );
         }
     }
 

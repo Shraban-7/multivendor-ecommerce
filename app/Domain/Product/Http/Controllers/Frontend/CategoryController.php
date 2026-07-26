@@ -1,14 +1,10 @@
-<?php
+﻿<?php
 
 namespace App\Domain\Product\Http\Controllers\Frontend;
 
 use App\Domain\Product\Models\Brand;
 use App\Domain\Product\Models\Category;
-use App\Domain\Product\Models\CategoryOption;
-use App\Domain\Product\Models\Option;
-use App\Domain\Product\Models\Product;
-use App\Domain\Product\Models\ProductVariantOption;
-use App\Http\Controllers\Controller;
+use App\Domain\Product\Models\Product;\nuse App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -56,33 +52,14 @@ class CategoryController extends Controller
                 ->having('reviews_avg_rating', '=', $request->review);
         }
 
-        if ($request->has('attributes')) {
-            foreach ($request->attributes as $optionName => $values) {
-
-                if (! empty($values) && ! in_array('all', $values)) {
-                    $ok = $query->whereHas('variants.variantOptions.optionValue.option', function ($q) use ($optionName) {
-                        $q->where('name', $optionName);
-                    })->whereHas('variants.variantOptions.optionValue', function ($q) use ($values) {
-                        $q->whereIn('value', (array) $values);
-                    });
                 }
-            }
-        }
 
         $products = $query->skip($skip)
             ->take($limit)
             ->get();
 
-        $optionIds = CategoryOption::where('category_id', $category->id)->pluck('option_id');
-        $usedOptionValueIds = ProductVariantOption::distinct()->pluck('option_value_id');
-        $productOptions = Option::query()
-            ->whereIn('id', $optionIds)
-            ->with([
-                'option_values' => function ($q) use ($usedOptionValueIds) {
-                    $q->whereIn('id', $usedOptionValueIds);
-                },
-            ])
-            ->get();
+                $colors = Color::all();
+        $sizes = Size::all();
 
         if ($request->ajax()) {
             if ($products->isEmpty()) {
@@ -92,6 +69,7 @@ class CategoryController extends Controller
             return view('frontend.partials.product-card-load', compact('products'))->render();
         }
 
-        return view('frontend.categories.details', compact('category', 'productOptions', 'products', 'brands'));
+        return view('frontend.categories.details', compact('category', 'colors', 'sizes', 'products', 'brands'));
     }
 }
+

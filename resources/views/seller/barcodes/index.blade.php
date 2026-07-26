@@ -27,12 +27,12 @@
                                     @foreach ($product->variants as $variant)
                                     <option value="{{ $variant->id }}"
                                         data-name="{{ $product->name }}"
-                                        data-variant="{{ $variant->fullName }}"
+                                        data-variant="{{ $variant->label }}"
                                         data-sellingprice="{{ $variant->selling_price }}"
                                         data-discountedprice="{{ $variant->discounted_price }}"
                                         data-stock="{{ $variant->availableStock }}"
                                         data-sku="{{ $variant->sku }}">
-                                        {{ $product->name }} | {{ $variant->fullName }} | {{ $variant->availableStock }} {{ $product->unit->short_name }}
+                                        {{ $product->name }} | {{ $variant->label }} | {{ $variant->availableStock }} {{ $product->unit->short_name }}
                                     </option>
                                     @endforeach
                                 @endif

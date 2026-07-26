@@ -24,7 +24,7 @@ class CatalogService
     public function list(array $filters = [], int $perPage = 25): LengthAwarePaginator
     {
         $query = Product::query()
-            ->with(['brand', 'images', 'category', 'unit', 'variants.option_values'])
+            ->with(['brand', 'images', 'category', 'unit', 'variants.color', 'variants.size'])
             ->active();
 
         $this->applyFilters($query, $filters);
@@ -111,7 +111,7 @@ class CatalogService
 
             return Product::active()
                 ->whereIn('category_id', $categoryIds)
-                ->with(['brand', 'images', 'variants.option_values'])
+                ->with(['brand', 'images', 'variants.color', 'variants.size'])
                 ->latest('id')
                 ->paginate($perPage);
         });

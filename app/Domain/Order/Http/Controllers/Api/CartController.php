@@ -26,7 +26,8 @@ class CartController extends Controller
             ->with([
                 'cart_items.product.category',
                 'cart_items.product.subcategory',
-                'cart_items.variant',
+                'cart_items.variant.color',
+                'cart_items.variant.size',
                 'seller.district',
                 'seller.division',
             ])
@@ -105,24 +106,34 @@ class CartController extends Controller
             }
         }
 
-        $cart = Cart::firstOrCreate(
-            ['user_id' => $userId, 'seller_id' => $product->seller_id],
-        );
-
         if (! is_null($variant)) {
             $price = $variant->discounted_price ?? $variant->selling_price;
             $variantId = $variant->id;
+            $availableStock = (int) $variant->available_stock;
         } else {
             $price = $product->discounted_price ?? $product->selling_price;
+            $availableStock = (int) $product->total_stock;
         }
+
+        $cart = Cart::firstOrCreate(
+            ['user_id' => $userId, 'seller_id' => $product->seller_id],
+        );
 
         $cartItem = CartItem::where('cart_id', $cart->id)
             ->where('product_variant_id', $variantId)
             ->where('product_id', $product->id)
             ->first();
 
+        $existingQty = $cartItem ? (int) $cartItem->quantity : 0;
+
+        if (($existingQty + $data['quantity']) > $availableStock) {
+            return errorResponse('Not enough stock');
+        }
+
         if ($cartItem) {
-            $cartItem->increment('quantity', $data['quantity']);
+            $cartItem->quantity = $existingQty + $data['quantity'];
+            $cartItem->price = $price;
+            $cartItem->save();
         } else {
             $this->cartRepo->addItem($cart, [
                 'product_id' => $product->id,

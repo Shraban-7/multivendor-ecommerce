@@ -28,7 +28,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
 
     public function getActivePaginated(int $perPage = 25): LengthAwarePaginator
     {
-        return Product::with(['brand', 'images', 'category', 'unit', 'variants.option_values'])
+        return Product::with(['brand', 'images', 'category', 'unit', 'variants.color', 'variants.size'])
             ->active()
             ->latest('id')
             ->paginate($perPage);
@@ -36,7 +36,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
 
     public function getForSeller(int $sellerId, int $perPage = 25): LengthAwarePaginator
     {
-        return Product::with(['category', 'variants.option_values', 'unit'])
+        return Product::with(['category', 'variants.color', 'variants.size', 'unit'])
             ->where('seller_id', $sellerId)
             ->latest('id')
             ->paginate($perPage);
@@ -61,7 +61,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
     {
         return Product::active()
             ->featured()
-            ->with(['brand', 'images', 'variants.option_values'])
+            ->with(['brand', 'images', 'variants.color', 'variants.size'])
             ->latest('id')
             ->limit($limit)
             ->get();
@@ -71,7 +71,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
     {
         return Product::active()
             ->trending()
-            ->with(['brand', 'images', 'variants.option_values'])
+            ->with(['brand', 'images', 'variants.color', 'variants.size'])
             ->latest('id')
             ->limit($limit)
             ->get();

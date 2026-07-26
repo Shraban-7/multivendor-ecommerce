@@ -4,12 +4,12 @@ namespace App\Domain\Product\Http\Controllers\Seller;
 
 use App\Domain\Product\Enums\StockType;
 use App\Domain\Product\Models\Category;
-use App\Domain\Product\Models\CategoryOption;
-use App\Domain\Product\Models\Option;
+use App\Domain\Product\Models\Color;
 use App\Domain\Product\Models\Product;
 use App\Domain\Product\Models\ProductImage;
 use App\Domain\Product\Models\ProductUnit;
 use App\Domain\Product\Models\ProductVariant;
+use App\Domain\Product\Models\Size;
 use App\Domain\Product\Models\StockHistory;
 use App\Domain\Product\Repositories\Contracts\BrandRepositoryInterface;
 use App\Domain\Product\Repositories\Contracts\CategoryRepositoryInterface;
@@ -44,12 +44,12 @@ class ProductController extends Controller
     public function create()
     {
         $categories = $this->categoryRepo->getAllWithSubcategories();
-        $categories->load('options.option_values');
+        $colors = Color::orderBy('name')->get();
+        $sizes = Size::orderBy('sort_order')->get();
         $brands = $this->brandRepo->getAll();
         $units = ProductUnit::all();
-        $categoryAttributes = $this->categorizedAttributes($categories);
 
-        return view('seller.products.create', compact('categories', 'brands', 'units', 'categoryAttributes'));
+        return view('seller.products.create', compact('categories', 'colors', 'sizes', 'brands', 'units'));
     }
 
     public function store(Request $request)
@@ -99,7 +99,7 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        $product->load('variants.option_values', 'stock_history', 'seo');
+        $product->load('variants.color', 'variants.size', 'stock_history', 'seo');
 
         $costPrice = $product->buying_price ?? 0;
         $sellingPrice = $product->selling_price ?? 0;
@@ -115,12 +115,10 @@ class ProductController extends Controller
             $variant->stock = ($variant->stock_in ?? 0) - ($variant->stock_out ?? 0);
         }
 
-        $optionIds = CategoryOption::where('category_id', $product->category_id)->pluck('option_id')->toArray();
-        $product_options = Option::whereIn('id', $optionIds)->with('option_values')->get();
-        $categories = Category::where('id', $product->category_id)->with('options.option_values')->get();
-        $categoryAttributes = $this->categorizedAttributes($categories, $product->category_id);
+        $colors = Color::orderBy('name')->get();
+        $sizes = Size::orderBy('sort_order')->get();
 
-        return view('seller.products.details', compact('product', 'product_options', 'categoryAttributes'));
+        return view('seller.products.details', compact('product', 'colors', 'sizes'));
     }
 
     public function edit($slug)
@@ -368,7 +366,7 @@ class ProductController extends Controller
     public function printBarcode(Request $request)
     {
         $products = Product::where('seller_id', get_seller_id())
-            ->with('variants.option_values')
+            ->with('variants.color', 'variants.size')
             ->get();
 
         $seller = $this->sellerRepo->findById(get_seller_id());
@@ -389,7 +387,7 @@ class ProductController extends Controller
             return view('seller.barcodes.print_new', ['data' => [
                 'sellerName' => $variant->product->seller->business_name,
                 'productName' => $variant->product->name,
-                'variantName' => $variant->fullName,
+                'variantName' => $variant->label,
                 'sku' => $variant->sku,
                 'price' => money($variant->selling_price),
                 'quantity' => $request->quantity,
@@ -413,7 +411,7 @@ class ProductController extends Controller
 
     public function inventory()
     {
-        $products = Product::with('variants.option_values')
+        $products = Product::with('variants.color', 'variants.size')
             ->orderBy('name', 'ASC')
             ->where('seller_id', get_seller_id())
             ->paginate(25)
@@ -430,7 +428,7 @@ class ProductController extends Controller
                 'variants' => $product->variants->map(fn ($variant) => [
                     'id' => $variant->id,
                     'sku' => $variant->sku,
-                    'fullName' => $variant->fullName,
+                    'label' => $variant->label,
                     'quantity' => $variant->stock_in - $variant->stock_out,
                     'price' => removeZeroFromDecimal($variant->selling_price, 'int'),
                     'discounted_price' => removeZeroFromDecimal($variant->discounted_price, 'int'),
@@ -439,26 +437,5 @@ class ProductController extends Controller
             ]);
 
         return view('seller.products.inventory', compact('products'));
-    }
-
-    // ─── Private helpers ───────────────────────────────────────────────────────
-
-    private function categorizedAttributes($categories, $category_id = null): array
-    {
-        $data = [];
-        foreach ($categories as $cat) {
-            if (! is_null($category_id) && $cat->id != $category_id) {
-                continue;
-            }
-            foreach ($cat->options as $option) {
-                $data[$cat->id][] = [
-                    'id' => $option->id,
-                    'name' => $option->name,
-                    'values' => $option->option_values->select('id', 'value'),
-                ];
-            }
-        }
-
-        return $data;
     }
 }

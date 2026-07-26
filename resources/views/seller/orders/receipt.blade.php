@@ -123,7 +123,7 @@ $showCurrency = false;
 
                     @if ($item->variant)
                     <small class="text-muted d-block">
-                        {{ $item->variant->fullName }}
+                        {{ $item->variant->label }}
                     </small>
                     @endif
                 </td>

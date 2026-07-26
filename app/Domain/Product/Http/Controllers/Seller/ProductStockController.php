@@ -46,14 +46,14 @@ class ProductStockController extends Controller
     public function variants(Request $request)
     {
         $variants = ProductVariant::where('product_id', $request->product_id)
-            ->with('option_values.option')
+            ->with('color', 'size')
             ->get()
             ->map(function ($variant) {
                 $currentStock = (int) $variant->stock_in - (int) $variant->stock_out;
 
                 return [
                     'id' => $variant->id,
-                    'name' => $variant->fullName,
+                    'name' => $variant->label,
                     'sku' => $variant->sku,
                     'current_stock' => max($currentStock, 0),
                 ];
@@ -133,3 +133,4 @@ class ProductStockController extends Controller
         return redirect()->back()->with('success', 'Stock updated successfully!');
     }
 }
+

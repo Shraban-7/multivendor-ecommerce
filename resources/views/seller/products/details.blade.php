@@ -140,7 +140,7 @@
                                 </td>
                                 @if ($variantCount > 0)
                                 <td class="text-nowrap small">
-                                    {{ $history->variant?->fullName === null ? 'Default' : $history->variant->fullName }}
+                                    {{ $history->variant?->label === null ? 'Default' : $history->variant->label }}
                                 </td>
                                 @endif
                                 <td class="text-center small">
@@ -208,7 +208,7 @@
                         <span class="badge bg-primary">Default</span>
                         @endif
                     </td>
-                    <td><span class="badge bg-light text-dark me-1">{{ $variant->fullName }}</span></td>
+                    <td><span class="badge bg-light text-dark me-1">{{ $variant->label }}</span></td>
                     <td>{{ money($variant->buying_price) }}</td>
                     <td>{{ money($variant->selling_price) }}</td>
                     <td>
@@ -245,7 +245,7 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="editVariantModalLabel{{ $variant->id }}">
-                                    Edit Variant ({{ $variant->fullName }})
+                                    Edit Variant ({{ $variant->label }})
                                 </h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
@@ -426,7 +426,7 @@
 
                     @if ($variantCount > 0)
                     @foreach ($product->variants as $variant)
-                    <h5>{{ $variant->fullName == null ? 'Default' : $variant->fullName }}</h5>
+                    <h5>{{ $variant->label ?? "Default" }}</h5>
                     <div class="row">
                         <div class="col-md-4 mb-2">
                             <select class="form-select form-select-sm"
@@ -525,10 +525,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="addOptionModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <form method="POST" action="{{ route('seller.options.store', $product->id) }}">
+@endsectiont->id) }}">
                 @csrf
                 <div class="modal-header bg-white text-dark">
                     <h5 class="modal-title" id="addOptionModalLabel">Add Product Option</h5>
@@ -574,28 +571,6 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     $(document).ready(function() {
-        const categoryId = "{{ $product->category_id }}";
-        showVariantOptions(categoryId);
-
-        function showVariantOptions(categoryId) {
-            $('.attributeColumn').addClass('d-none');
-            const $visibleColumns = $('.attributeColumn[data-category="' + categoryId + '"]').removeClass('d-none');
-            if ($visibleColumns.length > 0) {
-                $('#variantGenerator').removeClass('d-none');
-            } else {
-                $('#variantGenerator').addClass('d-none');
-            }
-        }
-
-        $('.option_values').select2({
-            tags: true,
-            placeholder: 'Select or type a value',
-            dropdownParent: '#addVariantModal',
-            allowClear: true,
-            width: '100%',
-            closeOnSelect: false
-        });
-
         $('.toggle-desc').on('click', function() {
             let expanded = $(this).attr('aria-expanded') === 'true';
             $(this).text(expanded ? 'Read less' : 'Read more');
@@ -678,48 +653,18 @@
         const variantRows = variantBody.querySelectorAll("tr");
         const variants = [];
 
-        // Get headers only from THIS table
-        const table = variantBody.closest("table");
-        const headerCells = table.querySelectorAll("thead th");
-
-        // Extract only attribute columns (skip fixed ones)
-        const skipColumns = [
-            "#",
-            "SKU",
-            "Buying Price",
-            "Selling Price",
-            "Discount Type",
-            "Discount Value",
-            "Image",
-            "Actions",
-        ];
-
-        const attributeHeaders = Array.from(headerCells)
-            .map((cell) => cell.textContent.trim())
-            .filter((title) => !skipColumns.includes(title) && title !== "");
-
         variantRows.forEach((row) => {
             const variant = {};
-            variant.sku =
-                row.querySelector('td:nth-child(2) input')?.value.trim() || "";
 
-            // Collect attribute values
-            variant.attributes = {};
+            variant.color_id = row.dataset.colorId || null;
+            variant.size_id = row.dataset.sizeId || null;
 
-            attributeHeaders.forEach((title, i) => {
-                // +3 because the 1st column is #, 2nd is SKU
-                const cellInput = row.querySelector(`td:nth-child(${i + 3}) input`);
-                variant.attributes[title] = cellInput?.value?.trim() || "";
-            });
+            const skuInput = row.querySelector('[name="sku"]');
+            variant.sku = skuInput?.value?.trim() || "";
 
-            // Prices
-            const colStart = 3 + attributeHeaders.length;
-            const buyingPriceInput = row.querySelector(
-                `td:nth-child(${colStart}) input`
-            );
-            const sellingPriceInput = row.querySelector(
-                `td:nth-child(${colStart + 1}) input`
-            );
+            const colStart = 2;
+            const buyingPriceInput = row.querySelector(`td:nth-child(${colStart}) [name="buying_price"]`);
+            const sellingPriceInput = row.querySelector(`td:nth-child(${colStart + 1}) [name="selling_price"]`);
             const discountTypeSelect = row.querySelector(".variant-discount-type");
             const discountValueInput = row.querySelector(".variant-discount-value");
             const imageInput = row.querySelector('input[type="file"]');
@@ -735,32 +680,6 @@
 
         return variants;
     }
-
-    $('#generateSkuBtn').on('click', function() {
-        let skuParts = [];
-
-        let productId = $('input[name="product_id"]').val();
-        if (productId) {
-            skuParts.push('PID' + productId);
-        }
-
-        $('select[name^="attributes"]').each(function() {
-            let name = $(this).attr('name').match(/\[(.*?)\]/)[1];
-            let value = $(this).val();
-            if (value) {
-                let formatted = name.toUpperCase().replace(/\s+/g, '') + '-' + value.toUpperCase()
-                    .replace(/\s+/g, '');
-                skuParts.push(formatted);
-            }
-        });
-
-        let timestamp = Date.now();
-        skuParts.push('TS' + timestamp);
-
-        let generatedSku = skuParts.join('_');
-
-        $('#skuInput').val(generatedSku);
-    });
 
     $('#seoUpdateBtn').click(function(e) {
         let form = $('#productSeoForm')[0];

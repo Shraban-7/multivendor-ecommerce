@@ -627,9 +627,10 @@ $isDashboard = View::hasSection('dashboard');
             }
 
             function getSelectedVariant(product, selectedOptions) {
-                const selectedIds = Object.values(selectedOptions).map(Number).sort();
+                const colorId = selectedOptions['color'] || null;
+                const sizeId = selectedOptions['size'] || null;
                 return (product.variants || []).find(v =>
-                    JSON.stringify([...v.value_ids].sort()) === JSON.stringify(selectedIds)
+                    v.color_id === colorId && v.size_id === sizeId
                 );
             }
 
@@ -651,7 +652,7 @@ $isDashboard = View::hasSection('dashboard');
                         const $btn = $(this);
                         const optId = $btn.data("option-id");
                         const valId = $btn.data("value-id");
-                        selectedOptions[optId] = parseInt(valId);
+                        selectedOptions[optId] = valId;
                     });
 
                 return selectedOptions;
@@ -748,17 +749,27 @@ $isDashboard = View::hasSection('dashboard');
                 const defaultVariant = product.variants.find(v => v.is_default);
                 if (!defaultVariant) return;
 
-                defaultVariant.value_ids.forEach(valId => {
-                    const $btn = $wrapper.find(`.option-value-btn[data-value-id="${valId}"]`);
-                    const optId = $btn.data("option-id");
+                if (defaultVariant.color_id) {
+                    const $btn = $wrapper.find(`.option-value-btn[data-value-id="${defaultVariant.color_id}"][data-option-id="color"]`);
+                    if ($btn.length) {
+                        $wrapper.find(`.option-value-btn[data-option-id="color"]`)
+                            .removeClass("active-option bg-primary/10 text-primary-500 border-primary-500")
+                            .addClass("bg-gray-50 text-gray-700 border-gray-300");
+                        $btn.addClass("active-option bg-primary/10 text-primary-500 border-primary-500")
+                            .removeClass("bg-gray-50 text-gray-700 border-gray-300");
+                    }
+                }
 
-                    $wrapper.find(`.option-value-btn[data-option-id="${optId}"]`)
-                        .removeClass("bg-primary/10 text-primary border-primary")
-                        .addClass("bg-white text-gray-800 border-gray-300");
-
-                    $btn.removeClass("bg-white text-gray-800 border-gray-300")
-                        .addClass("bg-primary/10 text-primary border-primary");
-                });
+                if (defaultVariant.size_id) {
+                    const $btn = $wrapper.find(`.option-value-btn[data-value-id="${defaultVariant.size_id}"][data-option-id="size"]`);
+                    if ($btn.length) {
+                        $wrapper.find(`.option-value-btn[data-option-id="size"]`)
+                            .removeClass("active-option bg-primary/10 text-primary-500 border-primary-500")
+                            .addClass("bg-gray-50 text-gray-700 border-gray-300");
+                        $btn.addClass("active-option bg-primary/10 text-primary-500 border-primary-500")
+                            .removeClass("bg-gray-50 text-gray-700 border-gray-300");
+                    }
+                }
 
                 const quantity = parseInt($wrapper.find(".quantity").val()) || 1;
                 updateProductUI($wrapper, defaultVariant, quantity, true);

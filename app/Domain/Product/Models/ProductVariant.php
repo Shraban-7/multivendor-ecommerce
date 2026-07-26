@@ -14,7 +14,6 @@ class ProductVariant extends Model
     protected $guarded = ['id'];
 
     protected $casts = [
-        'option_ids' => 'array',
         'buying_price' => 'decimal:2',
         'selling_price' => 'decimal:2',
         'discount_value' => 'decimal:2',
@@ -32,15 +31,14 @@ class ProductVariant extends Model
         return $this->belongsTo(Product::class);
     }
 
-    public function option_values()
+    public function color()
     {
-        return $this->belongsToMany(OptionValue::class, 'product_variant_options', 'product_variant_id', 'option_value_id')
-            ->with('option');
+        return $this->belongsTo(Color::class);
     }
 
-    public function options()
+    public function size()
     {
-        return $this->hasMany(ProductVariantOption::class, 'product_variant_id');
+        return $this->belongsTo(Size::class);
     }
 
     public function stockHistories()
@@ -48,25 +46,18 @@ class ProductVariant extends Model
         return $this->hasMany(StockHistory::class, 'product_variant_id');
     }
 
-    public function fullName(): Attribute
+    public function label(): Attribute
     {
-        $options = [];
-        foreach ($this->option_values as $optionValue) {
-            $options[] = $optionValue->option->name.': '.$optionValue->value;
-        }
-
         return Attribute::make(
-            get: fn () => implode(', ', $options)
+            get: function () {
+                $parts = array_filter([
+                    $this->color?->name,
+                    $this->size?->name,
+                ]);
+
+                return implode(' / ', $parts) ?: 'Default';
+            }
         );
-    }
-
-    public static function generate_sku(): string
-    {
-        do {
-            $sku = strtoupper(Str::random(8));
-        } while (self::where('sku', $sku)->exists());
-
-        return $sku;
     }
 
     public function availableStock(): Attribute

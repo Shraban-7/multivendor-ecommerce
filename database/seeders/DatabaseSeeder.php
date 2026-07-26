@@ -11,12 +11,14 @@ use App\Domain\Product\Database\Seeders\BrandSeeder;
 use App\Domain\Product\Database\Seeders\CategoryBannerSeeder;
 use App\Domain\Product\Database\Seeders\CategoryOptionSeeder;
 use App\Domain\Product\Database\Seeders\CategorySeeder;
+use App\Domain\Product\Database\Seeders\ColorSeeder;
 use App\Domain\Product\Database\Seeders\FlashSaleSeeder;
 use App\Domain\Product\Database\Seeders\HomeMidBannerSeeder;
 use App\Domain\Product\Database\Seeders\OptionSeeder;
 use App\Domain\Product\Database\Seeders\ProductSeeder;
 use App\Domain\Product\Database\Seeders\ProductStockSeeder;
 use App\Domain\Product\Database\Seeders\ProductUnitSeeder;
+use App\Domain\Product\Database\Seeders\SizeSeeder;
 use App\Domain\Shipping\Database\Seeders\DistrictSeeder;
 use App\Domain\Shipping\Database\Seeders\DivisionSeeder;
 use App\Domain\Shipping\Database\Seeders\UnionSeeder;
@@ -39,6 +41,8 @@ class DatabaseSeeder extends Seeder
             BrandSeeder::class,
             ProductUnitSeeder::class,
             OptionSeeder::class,
+            ColorSeeder::class,
+            SizeSeeder::class,
             ProductSeeder::class,
             FlashSaleSeeder::class,
             ProductStockSeeder::class,

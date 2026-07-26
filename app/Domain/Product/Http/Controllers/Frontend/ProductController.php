@@ -2,30 +2,58 @@
 
 namespace App\Domain\Product\Http\Controllers\Frontend;
 
-use App\Domain\Affiliate\Models\AffiliateClick;
-use App\Domain\Auth\Models\User;
 use App\Domain\Product\Models\Brand;
 use App\Domain\Product\Models\Category;
-use App\Domain\Product\Models\OptionValue;
 use App\Domain\Product\Models\Product;
+use App\Domain\Product\Models\ProductVariant;
 use App\Domain\Review\Models\Review;
-use App\Domain\Vendor\Models\Seller;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Collection;
 class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::withDefaultRelations();
+        $categories = Category::withCount('products')
+            ->whereNull('category_id')
+            ->where('status', true)
+            ->get();
+
+        $brands = Brand::withCount('products')->get();
 
         $selectedCategories = $request->category ? explode(',', $request->category) : [];
         $selectedBrands = $request->brand ? explode(',', $request->brand) : [];
-        $sortFilter = $request->sort ?? 'newest';
+        $sortFilter = $request->sort ?? '';
         $priceMin = $request->price_min ?? 0;
         $priceMax = $request->price_max ?? 50000;
+
+        $productOptionFilters = [];
+        $filterableOptions = ['color', 'size'];
+        foreach ($filterableOptions as $option) {
+            if ($request->has($option)) {
+                $productOptionFilters[$option] = $request->input($option);
+            }
+        }
+
+        $productOptions = [];
+        $allVariants = ProductVariant::with(['color', 'size'])->get();
+        $uniqueColors = $allVariants->filter->color->unique('color_id')->map(fn ($v) => [
+            'id' => $v->color->id,
+            'value' => $v->color->name,
+        ])->values()->toArray();
+        $uniqueSizes = $allVariants->filter->size->unique('size_id')->sortBy('size.sort_order')->map(fn ($v) => [
+            'id' => $v->size->id,
+            'value' => $v->size->name,
+        ])->values()->toArray();
+
+        if (count($uniqueColors) > 0) {
+            $productOptions['Color'] = $uniqueColors;
+        }
+        if (count($uniqueSizes) > 0) {
+            $productOptions['Size'] = $uniqueSizes;
+        }
+
+        $query = Product::active()->withDefaultRelations();
 
         if (! empty($selectedCategories)) {
             $query->whereHas('category', function ($q) use ($selectedCategories) {
@@ -43,206 +71,138 @@ class ProductController extends Controller
             $query->whereBetween('selling_price', [$priceMin, $priceMax]);
         }
 
-        $subcategorySlug = $request->query('subcategory');
+        if (! empty($productOptionFilters)) {
+            foreach ($productOptionFilters as $optionKey => $value) {
+                $valueIds = is_array($value) ? $value : explode(',', $value);
+                $optionKey = str_replace('_', ' ', $optionKey);
+                $optionKey = ucwords($optionKey);
 
-        if (! empty($subcategorySlug)) {
-
-            $subcategory = Category::where('slug', $subcategorySlug)->first();
-
-            if ($subcategory) {
-                $query->where('subcategory_id', $subcategory->id);
+                if ($optionKey === 'Color') {
+                    $query->whereHas('variants', function ($q) use ($valueIds) {
+                        $q->whereIn('color_id', $valueIds);
+                    });
+                } elseif ($optionKey === 'Size') {
+                    $query->whereHas('variants', function ($q) use ($valueIds) {
+                        $q->whereIn('size_id', $valueIds);
+                    });
+                }
             }
         }
 
-        $productOptionFilters = $request->except(['category', 'brand', 'sort', 'price_min', 'price_max', 'subcategory']);
-
-        foreach ($productOptionFilters as $optionKey => $values) {
-            $valuesArray = is_array($values) ? $values : explode(',', $values);
-
-            $query->whereHas('variants.option_values', function ($q) use ($valuesArray) {
-                $q->whereIn('option_values.id', $valuesArray);
-            });
+        if ($sortFilter === 'newest') {
+            $query->latest();
+        } elseif ($sortFilter === 'low_high') {
+            $query->orderBy('selling_price', 'asc');
+        } elseif ($sortFilter === 'high_low') {
+            $query->orderBy('selling_price', 'desc');
         }
 
-        switch ($sortFilter) {
+        $products = $query->paginate(20)->appends($request->query());
 
-            case 'newest':
-                $query->orderBy('created_at', 'desc');
-                break;
-
-            case 'popularity':
-                $query->orderBy('stock_out', 'desc');
-                break;
-
-            case 'low_high':
-                $query->orderBy('selling_price', 'asc');
-                break;
-
-            case 'high_low':
-                $query->orderBy('selling_price', 'desc');
-                break;
-
-            default:
-                $query->orderBy('stock_out', 'desc');
-                break;
+        $selectedPrice = null;
+        if ($request->has('price_min') || $request->has('price_max')) {
+            $selectedPrice = ['min' => $priceMin, 'max' => $priceMax];
         }
-
-        $products = $query->simplePaginate(16)->appends($request->query());
-
-        $categories = Category::category()
-            ->withCount('products')
-            ->having('products_count', '>', 0)
-            ->get();
-
-        $optionValues = OptionValue::whereHas('variants')->with('option')->get();
-        $productOptions = [];
-        foreach ($optionValues as $optionValue) {
-            $productOptions[$optionValue->option->name][] = [
-                'id' => $optionValue->id,
-                'value' => $optionValue->value,
-            ];
-        }
-
-        $brands = Brand::withCount('products')
-            ->having('products_count', '>', 0)
-            ->get();
 
         if ($request->ajax()) {
             $html = view('components.frontend.products-page', compact(
                 'products',
+                'selectedCategories',
+                'selectedBrands',
                 'categories',
                 'brands',
                 'productOptions',
-                'selectedCategories',
-                'selectedBrands',
-                'sortFilter',
-                'productOptionFilters'
+                'productOptionFilters',
+                'selectedPrice',
             ))->render();
 
-            return response()->json([
-                'html' => $html,
-            ]);
+            return response()->json(['html' => $html]);
         }
 
         return view('frontend.products.index', compact(
             'products',
+            'selectedCategories',
+            'selectedBrands',
             'categories',
             'brands',
             'productOptions',
-            'selectedCategories',
-            'selectedBrands',
-            'sortFilter',
-            'productOptionFilters'
+            'productOptionFilters',
+            'selectedPrice',
         ));
     }
 
-    public function details($slug, Request $request)
+    public function details(Product $product)
     {
-        $limit = 10;
-        $page = $request->get('page', 1);
-        $skip = ($page - 1) * $limit;
+        $product->load([
+            'images',
+            'category',
+            'subcategory',
+            'brand',
+            'variants.color',
+            'variants.size',
+            'seller',
+            'reviews.user',
+            'seo',
+        ]);
 
-        $productModel = Product::where('slug', $slug)->withDefaultRelations()->firstOrFail();
+        $reviews = $product->reviews;
 
-        $categoryId = $productModel->category->id;
-        $sellerId = $productModel->seller->id;
+        $averageRating = $reviews->avg('rating') ?? 0;
+        $totalReviews = $reviews->count();
 
-        $product = $productModel->toDetailsArray();
-
-        if ($request->has('ref')) {
-            $refCode = $request->query('ref');
-
-            $cookieValue = Cookie::get('affiliate_refs');
-            $affiliateRefs = json_decode($cookieValue, true) ?: [];
-
-            $affiliateUser = User::where('referral_code', $refCode)->first();
-
-            $affiliateRefs[$slug][] = $refCode;
-            $affiliateRefs[$slug] = array_unique($affiliateRefs[$slug]);
-
-            Cookie::queue('affiliate_refs', json_encode($affiliateRefs), 60 * 24 * 7);
-
-            AffiliateClick::create([
-                'affiliate_id' => $affiliateUser->id,
-                'product_id' => $product['id'],
-                'ip_address' => $request->ip(),
-                'user_agent' => $request->userAgent(),
-                'clicked_at' => now(),
-            ]);
+        $ratings = collect();
+        for ($i = 1; $i <= 5; $i++) {
+            $count = $reviews->where('rating', $i)->count();
+            $ratings[$i] = $totalReviews > 0 ? round(($count / $totalReviews) * 100) : 0;
         }
 
-        $interest_products = Product::withDefaultRelations()->where('category_id', $categoryId)
-            ->active()
-            ->where('id', '!=', $product['id'])
-            ->latest()
-            ->skip($skip)
-            ->take($limit)
+        $relatedProducts = Product::active()
+            ->with(['variants.color', 'variants.size', 'images', 'seller', 'category', 'subcategory'])
+            ->where('id', '!=', $product->id)
+            ->where('category_id', $product->category_id)
+            ->limit(8)
             ->get();
 
-        $products = $interest_products;
-
-        $reviewStats = Review::where('product_id', $product['id'])
-            ->select('rating', DB::raw('count(*) as count'))
-            ->groupBy('rating')
-            ->pluck('count', 'rating')
-            ->toArray();
-
-        $totalReviews = array_sum($reviewStats);
-        $averageRating = $product['rating'];
-
-        $ratings = collect(range(1, 5))->mapWithKeys(function ($star) use ($reviewStats) {
-            return [$star => $reviewStats[$star] ?? 0];
-        });
-
-        // $sellerModel = Seller::where('id', $sellerId)->with('followers')->first();
-
-        // $seller = [
-        //     'username'        => $sellerModel->username,
-        //     'business_name'       => $sellerModel->business_name,
-        //     'business_logo'       => $sellerModel->business_logo,
-        //     'total_followers' => number_shorten_format($sellerModel->followers->count()),
-        //     'rating'          => round($averageRating),
-        //     'total_products'  => Product::active()->where('seller_id', $sellerId)->count(),
-        // ];
-
-        if ($request->ajax()) {
-            $type = $request->get('type');
-
-            if ($type === 'products') {
-                if ($products->isEmpty()) {
-                    return '';
-                }
-
-                return view('frontend.partials.product-card-load', [
-                    'products' => $products,
-                ])->render();
-            }
-
-            if ($type === 'reviews') {
-                $reviews = Review::with('user', 'images')->where('product_id', $product['id'])
-                    ->latest()
-                    ->skip($request->offset ?? 0)
-                    ->take(2)
-                    ->get();
-
-                if ($reviews->isEmpty()) {
-                    return '';
-                }
-
-                return view('frontend.partials.review-card', [
-                    'reviews' => $reviews,
-                ])->render();
-            }
-        }
-
         return view('frontend.products.details', [
-            'product' => $product,
-            'products' => $products,
+            'product' => $product->toDetailsArray(),
+            'productModel' => $product,
+            'products' => $relatedProducts,
             'ratings' => $ratings,
             'totalReviews' => $totalReviews,
             'averageRating' => round($averageRating, 1),
-            // 'seller' => $seller,
-            'seo' => $productModel->seo,
+            'seo' => $product->seo,
+        ]);
+    }
+
+    public function getVariant(Request $request, $slug)
+    {
+        $product = Product::where('slug', $slug)->firstOrFail();
+
+        $colorId = $request->input('color_id');
+        $sizeId = $request->input('size_id');
+
+        $query = ProductVariant::where('product_id', $product->id);
+
+        if ($colorId) {
+            $query->where('color_id', $colorId);
+        }
+        if ($sizeId) {
+            $query->where('size_id', $sizeId);
+        }
+
+        $variant = $query->first();
+
+        if (! $variant) {
+            return response()->json(['message' => 'Variant not found'], 404);
+        }
+
+        return response()->json([
+            'id' => $variant->id,
+            'sku' => $variant->sku,
+            'price' => $variant->selling_price,
+            'discounted_price' => $variant->discounted_price,
+            'stock' => $variant->stock_in - $variant->stock_out,
+            'image' => $variant->image ? storage_url($variant->image) : null,
         ]);
     }
 

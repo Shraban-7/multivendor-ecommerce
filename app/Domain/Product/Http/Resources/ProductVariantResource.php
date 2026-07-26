@@ -18,6 +18,20 @@ class ProductVariantResource extends JsonResource
             $discount .= $this->discount_type === 'percentage' ? '%' : currency();
         }
 
+        $variantOptions = [];
+        if ($this->relationLoaded('color') && $this->color) {
+            $variantOptions[] = [
+                'option' => 'Color',
+                'value' => $this->color->name,
+            ];
+        }
+        if ($this->relationLoaded('size') && $this->size) {
+            $variantOptions[] = [
+                'option' => 'Size',
+                'value' => $this->size->name,
+            ];
+        }
+
         return [
             'id' => $this->id,
             'sku' => $this->sku,
@@ -26,9 +40,11 @@ class ProductVariantResource extends JsonResource
             'discounted_price' => removeZeroFromDecimal($discountedPrice),
             'discount' => $discount,
             'image' => $this->image,
-            'value_ids' => $this->option_values->pluck('id')->sort()->values()->toArray(),
+            'color_id' => $this->color_id,
+            'size_id' => $this->size_id,
+            'label' => $this->label,
             'default' => $this->is_default,
-            'variant_options' => ProductVariantOptionResource::collection($this->options),
+            'variant_options' => $variantOptions,
         ];
     }
 }

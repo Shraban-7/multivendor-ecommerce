@@ -167,15 +167,7 @@
                             <tr>
                                 <td>
                                     {{ $item->product->name }}
-                                    @if ($item->product_variant_id && $item->variant && $item->variant->option_values)
-                                        <div class="text-muted small mt-1">
-                                            @foreach ($item->variant->option_values as $value)
-                                                <span class="me-2">
-                                                    {{ $value->option->name ?? '' }}: {{ $value->value }}
-                                                </span>
-                                            @endforeach
-                                        </div>
-                                    @endif
+                                    <div class="text-muted small mt-1">{{ $item->variant->label }}</div>
                                 </td>
                                 <td class="text-center">
                                     @if ($item->selling_price > $item->unit_price)

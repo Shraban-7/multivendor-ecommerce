@@ -35,7 +35,7 @@ class OrderItem extends Model
     public function variant()
     {
         return $this->belongsTo(ProductVariant::class, 'product_variant_id')
-            ->with('option_values.option');
+            ->with('color', 'size');
     }
 
     public function getOriginalPriceAttribute()

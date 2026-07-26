@@ -104,16 +104,7 @@
                                                                     {{ $item->product->name }}
                                                                 </h2>
 
-                                                                @if ($item->product_variant_id && $item->variant && $item->variant->option_values)
-                                                                    <div class="mt-1 text-xs text-gray-500">
-                                                                        @foreach ($item->variant->option_values as $value)
-                                                                            <span class="mr-2">
-                                                                                {{ $value->option->name ?? '' }}:
-                                                                                {{ $value->value }}
-                                                                            </span>
-                                                                        @endforeach
-                                                                    </div>
-                                                                @endif
+                                                                <div class="text-muted small mt-1">{{ $item->variant->label }}</div>
                                                             </div>
 
                                                             <!-- Delete button -->

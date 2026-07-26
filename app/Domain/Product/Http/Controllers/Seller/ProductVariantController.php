@@ -4,16 +4,16 @@ namespace App\Domain\Product\Http\Controllers\Seller;
 
 use App\Domain\Order\Models\CartItem;
 use App\Domain\Order\Models\PosCartItem;
-use App\Domain\Product\Models\Option;
-use App\Domain\Product\Models\OptionValue;
+use App\Domain\Product\Models\Color;
 use App\Domain\Product\Models\Product;
 use App\Domain\Product\Models\ProductVariant;
-use App\Domain\Product\Models\ProductVariantOption;
+use App\Domain\Product\Models\Size;
 use App\Domain\Vendor\Models\Seller;
 use App\Http\Controllers\Controller;
 use App\Services\ImageOptimizerService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class ProductVariantController extends Controller
 {
@@ -25,10 +25,8 @@ class ProductVariantController extends Controller
             'variants' => $variants,
         ], [
             'variants' => 'required|array|min:1',
-            'variants.*.sku' => 'required|string|max:255|unique:product_variants,sku',
-            'variants.*.attributes' => 'required|array',
-            'variants.*.attributes.Size' => 'required|string',
-            'variants.*.attributes.Color' => 'required|string',
+            'variants.*.color_id' => 'nullable|integer|exists:colors,id',
+            'variants.*.size_id' => 'nullable|integer|exists:sizes,id',
             'variants.*.buying_price' => 'required|numeric|min:0',
             'variants.*.selling_price' => 'required|numeric|min:0|gte:variants.*.buying_price',
             'variants.*.discount_type' => 'nullable|in:flat,percentage',
@@ -40,12 +38,14 @@ class ProductVariantController extends Controller
             return sendValidationError($validator->errors());
         }
 
-        $product = Product::find($request->product_id);
-
-        // $imageFolder = "images/{$product->seller->username}/products";
         $imageFolder = "{$product->seller->username}/products";
 
         $defaultExists = ProductVariant::where('product_id', $product->id)->where('is_default', 1)->exists();
+
+        $colorIds = collect($variants)->pluck('color_id')->filter()->unique()->values();
+        $sizeIds = collect($variants)->pluck('size_id')->filter()->unique()->values();
+        $colorsById = Color::whereIn('id', $colorIds)->get()->keyBy('id');
+        $sizesById = Size::whereIn('id', $sizeIds)->get()->keyBy('id');
 
         if (! empty($variants) && is_array($variants)) {
             foreach ($variants as $index => $v) {
@@ -53,9 +53,16 @@ class ProductVariantController extends Controller
                     continue;
                 }
 
+                $colorSlug = ! empty($v['color_id']) ? $colorsById->get($v['color_id'])?->slug : null;
+                $sizeSlug = ! empty($v['size_id']) ? $sizesById->get($v['size_id'])?->slug : null;
+                $skuParts = array_filter([$product->slug, $colorSlug, $sizeSlug]);
+                $sku = strtoupper(Str::slug(implode('-', $skuParts)));
+
                 $variant = new ProductVariant;
                 $variant->product_id = $product->id;
-                $variant->sku = ProductVariant::generate_sku();
+                $variant->color_id = $v['color_id'] ?? null;
+                $variant->size_id = $v['size_id'] ?? null;
+                $variant->sku = $sku;
                 $variant->buying_price = $v['buying_price'];
                 $variant->selling_price = $v['selling_price'];
                 $variant->stock_in = $v['stock'] ?? 0;
@@ -77,32 +84,9 @@ class ProductVariantController extends Controller
                 if (isset($v['image']) && $request->hasFile("variants.$index.image")) {
                     $imageService = new ImageOptimizerService;
                     $variant->image = $imageService->uploadAndOptimize($request->file("variants.$index.image"), "$imageFolder");
-                    // $variant->image = upload_file($request->file("variants.$index.image"), "$imageFolder/variants");
                 }
 
                 $variant->save();
-
-                if (! empty($v['attributes']) && is_array($v['attributes'])) {
-                    foreach ($v['attributes'] as $key => $value) {
-                        $key = trim($key);
-                        $value = trim($value);
-                        if (! $key || ! $value) {
-                            continue;
-                        }
-
-                        $option = Option::firstOrCreate(['name' => $key]);
-
-                        $optionValue = OptionValue::firstOrCreate([
-                            'option_id' => $option->id,
-                            'value' => $value,
-                        ]);
-
-                        ProductVariantOption::create([
-                            'product_variant_id' => $variant->id,
-                            'option_value_id' => $optionValue->id,
-                        ]);
-                    }
-                }
             }
         }
 

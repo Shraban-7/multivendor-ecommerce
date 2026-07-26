@@ -232,16 +232,7 @@
                                                             {{ $item->quantity }}</span>
                                                     </div>
 
-                                                    @if ($item->product_variant_id && $item->variant && $item->variant->option_values)
-                                                        <div class="mt-1 small text-muted">
-                                                            @foreach ($item->variant->option_values as $value)
-                                                                <span class="me-2">
-                                                                    <strong>{{ $value->option->name ?? '' }}:</strong>
-                                                                    {{ $value->value }}
-                                                                </span>
-                                                            @endforeach
-                                                        </div>
-                                                    @endif
+                                                    <div class="text-muted small mt-1">{{ $item->variant->label }}</div>
 
                                                     @if (isset($item->variant))
                                                         <small class="text-muted d-block">SKU:

@@ -35,7 +35,7 @@ class PosController extends Controller
         $employees = SellerEmployee::active()->where('seller_id', $seller->id)->get();
 
         $products = Product::where('seller_id', $seller->id)
-            ->with('variants.option_values', 'unit')
+            ->with('variants.color', 'variants.size', 'unit')
             ->get();
 
         $categories = Category::category()->get();
@@ -62,11 +62,11 @@ class PosController extends Controller
                 ->first();
 
             if ($order) {
-                $orderItems = $order->items()->with(['variant.product', 'product'])->get();
+                $orderItems = $order->items()->with(['variant.product', 'variant.color', 'variant.size', 'product'])->get();
 
                 $cart = PosCart::where('order_id', $order->id)->first();
 
-                $cartItems = $cart ? $cart->items()->with(['variant.product', 'product'])->get() : collect();
+                $cartItems = $cart ? $cart->items()->with(['variant.product', 'variant.color', 'variant.size', 'product'])->get() : collect();
 
                 $orderItems = $orderItems->merge($cartItems);
 
@@ -220,20 +220,42 @@ class PosController extends Controller
 
         $product = Product::find($data['product_id']);
 
-        $variant = ProductVariant::find($data['variant_id']);
+        if (! $product) {
+            return errorResponse('Product not found');
+        }
+
+        $variant = ! empty($data['variant_id'])
+            ? ProductVariant::find($data['variant_id'])
+            : null;
+
+        if (! empty($data['variant_id']) && ! $variant) {
+            return errorResponse('Variant not found');
+        }
 
         if (! empty($variant)) {
             $price = $variant->discounted_price ?? $variant->selling_price;
+            $availableStock = (int) $variant->available_stock;
         } else {
             $price = $product->discounted_price ?? $product->selling_price;
+            $availableStock = (int) $product->total_stock;
         }
 
         $variantId = $variant->id ?? null;
 
-        $cartItem = PosCartItem::where('pos_cart_id', $cart->id)->where('product_variant_id', $variantId)->where('product_id', $product->id)->first();
+        $cartItem = PosCartItem::where('pos_cart_id', $cart->id)
+            ->where('product_variant_id', $variantId)
+            ->where('product_id', $product->id)
+            ->first();
+
+        $existingQty = $cartItem ? (int) $cartItem->quantity : 0;
+
+        if (($existingQty + $data['quantity']) > $availableStock) {
+            return errorResponse('Not enough stock');
+        }
 
         if ($cartItem) {
-            $cartItem->quantity += $data['quantity'];
+            $cartItem->quantity = $existingQty + $data['quantity'];
+            $cartItem->price = $price;
             $cartItem->save();
         } else {
             PosCartItem::create([
@@ -245,7 +267,7 @@ class PosController extends Controller
             ]);
         }
 
-        $cartItems = $cart->items()->with(['variant.product', 'product'])->get();
+        $cartItems = $cart->items()->with(['variant.color', 'variant.size', 'variant.product', 'product'])->get();
 
         $subtotal = $cartItems->sum(function ($item) {
             $price = $item->variant->selling_price ?? $item->product->selling_price;
@@ -299,7 +321,7 @@ class PosController extends Controller
         $item->save();
 
         $cart = $item->pos_cart;
-        $cartItems = $cart->items()->with(['variant.product', 'product'])->get();
+        $cartItems = $cart->items()->with(['variant.product', 'variant.color', 'variant.size', 'product'])->get();
 
         $subtotal = $cartItems->sum(function ($i) {
 
@@ -348,7 +370,7 @@ class PosController extends Controller
 
         $item->delete();
 
-        $cartItems = $cart->items()->with(['variant.product', 'product'])->get();
+        $cartItems = $cart->items()->with(['variant.product', 'variant.color', 'variant.size', 'product'])->get();
 
         $subtotal = $cartItems->sum(function ($i) {
 
@@ -446,7 +468,7 @@ class PosController extends Controller
                 throw new RuntimeException('This cart has already been converted to an order.');
             }
 
-            $cartItems = $cart->items()->with('variant.product')->get();
+            $cartItems = $cart->items()->with(['variant.product', 'variant.color', 'variant.size', 'product'])->get();
 
             $sub_total = 0;
             $discount = 0;
@@ -477,7 +499,7 @@ class PosController extends Controller
                     'product_variant_id' => $variant->id ?? null,
                     'sku' => $variant->sku ?? $product->sku,
                     'product_name' => $product->name,
-                    'variant_name' => $variant->fullName ?? null,
+                    'variant_name' => $variant->label ?? null,
                     'buying_price' => $variant->buying_price ?? $product->buying_price,
                     'selling_price' => $itemPrice,
                     'unit_price' => $unitPrice,
@@ -534,7 +556,6 @@ class PosController extends Controller
             foreach ($order->items as $item) {
                 if (! empty($item->product_variant_id) && $variant = $variants->get($item->product_variant_id)) {
                     $variant->increment('stock_out', $item->quantity);
-                    $variant->product->increment('stock_out', $item->quantity);
 
                     $updatedVariants[] = [
                         'id' => $variant->id,
@@ -619,7 +640,7 @@ class PosController extends Controller
             return errorResponse('Cart is empty!');
         }
 
-        $cartItems = $cart->items()->with('variant.product')->get();
+        $cartItems = $cart->items()->with(['variant.product', 'variant.color', 'variant.size', 'product'])->get();
 
         $sub_total = 0;
         $total = 0;

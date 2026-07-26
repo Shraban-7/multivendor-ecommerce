@@ -1073,8 +1073,8 @@ class ReportController extends Controller
             ->take(5)
             ->get()
             ->map(function ($item) {
-                $name = $item->variant?->fullName
-                    ? $item->product->name.' '.$item->variant->fullName
+                $name = $item->variant?->label
+                    ? $item->product->name.' '.$item->variant->label
                     : $item->product->name;
                 $stock = $item->variant
                     ? ($item->variant->stock_in - $item->variant->stock_out)
@@ -1091,3 +1091,4 @@ class ReportController extends Controller
         return view('seller.reports.overview', compact('calculateMetrics', 'chartData', 'quickFacts', 'filter', 'topProducts'));
     }
 }
+

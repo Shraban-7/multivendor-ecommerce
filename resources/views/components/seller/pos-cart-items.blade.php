@@ -1,7 +1,7 @@
 @forelse ($cartItems as $item)
     @php
         $product = $item->variant->product ?? $item->product;
-        $name = $item->variant->fullName ?? $product->name;
+        $name = $item->variant->label ?? $product->name;
         $sellingPrice = $item->variant->selling_price ?? $product->selling_price;
         $discountedPrice = $item->variant->discounted_price ?? $product->discounted_price ?? $sellingPrice;
     @endphp
@@ -12,7 +12,7 @@
 
             {{-- Variant exists → show variant full name --}}
             @if ($item->variant)
-                <small class="text-muted">{{ $item->variant->fullName }}</small>
+                <small class="text-muted">{{ $item->variant->label }}</small>
             @endif
         </td>
 

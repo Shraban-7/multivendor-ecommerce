@@ -5,7 +5,7 @@
 
     $productName = $product->name;
 
-    $variantName = $variant->fullName ?? 'No Variant';
+    $variantName = $variant->label ?? 'No Variant';
 
     $sellingPrice = $item->selling_price
         ?? $variant->selling_price

@@ -155,7 +155,6 @@ class EloquentOrderRepository implements OrderRepositoryInterface
         foreach ($order->items as $item) {
             if (! empty($item->product_variant_id) && $variant = $variants->get($item->product_variant_id)) {
                 $variant->increment('stock_out', $item->quantity);
-                $variant->product->increment('stock_out', $item->quantity);
             } elseif ($product = $products->get($item->product_id)) {
                 $product->increment('stock_out', $item->quantity);
             }

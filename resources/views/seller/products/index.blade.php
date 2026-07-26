@@ -141,7 +141,7 @@
                         @foreach ($product->variants as $variant)
                         <tr>
                             <td>{{ $variant->sku }}</td>
-                            <td class="fw-bold">{{ $variant->fullName }}</td>
+                            <td class="fw-bold">{{ $variant->label }}</td>
                             <td class="text-center">
                                 {{ money($variant->discounted_price ?? $variant->selling_price) }}
                             </td>

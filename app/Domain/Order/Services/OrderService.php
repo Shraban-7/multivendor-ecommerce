@@ -89,7 +89,7 @@ class OrderService
                 'product_variant_id' => $variant->id ?? null,
                 'sku' => $variant->sku ?? $product->sku,
                 'product_name' => $product->name,
-                'variant_name' => $variant->fullName ?? null,
+                'variant_name' => $variant->label ?? null,
                 'buying_price' => $variant->buying_price ?? $product->buying_price ?? 0,
                 'selling_price' => $sellingPrice,
                 'unit_price' => $unitPrice,
@@ -105,7 +105,7 @@ class OrderService
 
     public function buildOrderItemsFromCart($cart): array
     {
-        $cart->loadMissing('cart_items.product', 'cart_items.variant');
+        $cart->loadMissing('cart_items.product', 'cart_items.variant.color', 'cart_items.variant.size');
 
         $subTotal = 0;
         $discount = 0;
@@ -129,7 +129,7 @@ class OrderService
                 'product_variant_id' => $cartItem->product_variant_id ?? null,
                 'sku' => $variant->sku ?? $product->sku,
                 'product_name' => $product->name,
-                'variant_name' => $variant->fullName ?? null,
+                'variant_name' => $variant->label ?? null,
                 'buying_price' => $variant->buying_price ?? $product->buying_price ?? 0,
                 'selling_price' => $sellingPrice,
                 'unit_price' => $unitPrice,

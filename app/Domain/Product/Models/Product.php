@@ -202,7 +202,8 @@ class Product extends Model
                     'price' => $variant->selling_price,
                     'discounted_price' => $variant->discounted_price,
                     'image' => $variant->image,
-                    'value_ids' => $variant->option_values->pluck('id')->sort()->values()->toArray(),
+                    'color_id' => $variant->color_id,
+                    'size_id' => $variant->size_id,
                     'is_default' => $variant->is_default,
                 ];
             }),
@@ -213,7 +214,7 @@ class Product extends Model
                 'margin' => (float) $margin,
                 'percent' => round($marginPercent, 2),
             ],
-            'seller' => [
+            'seller' => $this->seller ? [
                 'id' => $this->seller->id,
                 'username' => $this->seller->username,
                 'business_name' => $this->seller->business_name,
@@ -221,7 +222,7 @@ class Product extends Model
                 'best_seller' => $this->seller->is_best_seller,
                 'total_followers' => $this->seller->total_followers,
                 'rating' => round($this->rating),
-            ],
+            ] : null,
             'reviews' => $reviews,
             'rating' => number_format($reviews->avg('rating') ?? 0, 1),
             'total_reviews' => $reviews->count(),
@@ -232,23 +233,32 @@ class Product extends Model
 
     public function groupedOptions(): Attribute
     {
-        $options = $this->variants
-            ->flatMap(fn ($variant) => $variant->option_values)
-            ->groupBy(fn ($val) => $val->option->id)
-            ->map(function ($group) {
-                $option = $group->first()->option;
-
-                return [
-                    'id' => $option->id,
-                    'name' => $option->name,
-                    'values' => $group->unique('id')->map(fn ($v) => [
-                        'id' => $v->id,
-                        'value' => $v->value,
-                    ])->values()->toArray(),
-                ];
-            })
+        $colors = $this->variants->filter(fn ($v) => $v->color)
+            ->unique('color_id')
             ->values()
-            ->toArray();
+            ->map(fn ($v) => [
+                'id' => $v->color->id,
+                'value' => $v->color->name,
+                'hex' => $v->color->hex_code,
+                'image' => $v->color->image,
+            ]);
+
+        $sizes = $this->variants->filter(fn ($v) => $v->size)
+            ->unique('size_id')
+            ->values()
+            ->sortBy(fn ($v) => $v->size->sort_order)
+            ->map(fn ($v) => [
+                'id' => $v->size->id,
+                'value' => $v->size->name,
+            ]);
+
+        $options = [];
+        if ($colors->isNotEmpty()) {
+            $options[] = ['id' => 'color', 'name' => 'Color', 'values' => $colors->toArray()];
+        }
+        if ($sizes->isNotEmpty()) {
+            $options[] = ['id' => 'size', 'name' => 'Size', 'values' => $sizes->toArray()];
+        }
 
         return Attribute::make(
             get: fn () => $options
@@ -262,7 +272,7 @@ class Product extends Model
             'images',
             'category',
             'subcategory',
-            'variants.option_values',
+            'variants.color', 'variants.size',
             'seller',
             'reviews.user',
             'unit',
@@ -333,3 +343,4 @@ class Product extends Model
         });
     }
 }
+

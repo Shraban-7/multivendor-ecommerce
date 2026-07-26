@@ -40,7 +40,7 @@ class OrderController extends Controller
         );
 
         $interestProducts = Product::with([
-            'category', 'subcategory', 'images', 'seller', 'variants.option_values.option', 'reviews.user',
+            'category', 'subcategory', 'images', 'seller', 'variants.color', 'variants.size', 'reviews.user',
         ])->inRandomOrder()->limit(8)->get();
 
         return view('frontend.orders.index', [
@@ -224,3 +224,4 @@ class OrderController extends Controller
         return redirect()->away($paymentGateway['payment_url']);
     }
 }
+

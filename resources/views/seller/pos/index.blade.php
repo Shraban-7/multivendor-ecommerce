@@ -140,7 +140,7 @@ foreach ($categories as $cat) {
                                                         </p>
                                                         @if ($item->variant)
                                                         <span
-                                                            class="text-muted small">({{ $item->variant->fullName }})</span>
+                                                            class="text-muted small">({{ $item->variant->label }})</span>
                                                         @endif
                                                     </li>
                                                     @endforeach
@@ -318,7 +318,7 @@ foreach ($categories as $cat) {
                                                 @foreach ($product->variants as $variant)
                                                 <tr>
                                                     <td>{{ $variant->sku }}</td>
-                                                    <td class="fw-bold">{{ $variant->fullName }}</td>
+                                                    <td class="fw-bold">{{ $variant->label }}</td>
                                                     <td class="text-center">{{ $variant->availableStock }}
                                                         {{ $product->unit->short_name }}
                                                     </td>
