@@ -18,7 +18,7 @@ class BillingAddressController extends Controller
             'district_id' => 'required',
             'address' => 'required|string',
             'type' => 'required|numeric|in:1,2',
-            'is_default' => 'required|boolean',
+            'is_default' => 'nullable|boolean',
         ]);
 
         $user_id = Auth::id();
@@ -69,5 +69,20 @@ class BillingAddressController extends Controller
         $address->update($data);
 
         return redirect()->back()->with('success', 'Billing address updated successfully');
+    }
+
+    public function destroy(BillingAddress $address)
+    {
+        if ($address->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $address->delete();
+
+        if (request()->ajax()) {
+            return response()->json(['status' => true, 'message' => 'Address deleted successfully']);
+        }
+
+        return redirect()->back()->with('success', 'Address deleted successfully');
     }
 }

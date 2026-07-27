@@ -100,6 +100,7 @@ Route::middleware('web')->group(function () {
         Route::prefix('billing-addresses')->as('billing_addresses.')->group(function () {
             Route::post('/store', [FrontendBillingAddressController::class, 'store'])->name('store');
             Route::post('/{address}/update', [FrontendBillingAddressController::class, 'update'])->name('update');
+            Route::post('/{address}/delete', [FrontendBillingAddressController::class, 'destroy'])->name('delete');
         });
     });
 
