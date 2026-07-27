@@ -11,7 +11,7 @@
                 </div>
             @else
                 <div>
-                    <a href="{{ route('login') }}" class="text-sm font-medium hover:underline">Login / Register</a>
+                    <a href="javascript:void(0)" class="auth-btn text-sm font-medium hover:underline">Login / Register</a>
                 </div>
             @endauth
         </div>

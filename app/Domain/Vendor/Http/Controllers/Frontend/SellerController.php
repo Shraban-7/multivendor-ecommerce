@@ -15,12 +15,20 @@ use Illuminate\Support\Facades\Auth;
 
 class SellerController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $sellers = Seller::orderBy('name')
             ->with('division', 'district', 'banner_images')
             ->withCount('products')
-            ->simplePaginate(100);
+            ->paginate(20);
+
+        if ($request->ajax()) {
+            if ($sellers->isEmpty()) {
+                return '';
+            }
+
+            return view('frontend.partials.seller-card', compact('sellers'))->render();
+        }
 
         return view('frontend.shops.index', compact('sellers'));
     }

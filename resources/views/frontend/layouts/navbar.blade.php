@@ -12,9 +12,7 @@
                 <a href="{{ route('seller.dashboard') }}" class="hover:text-[#F85606] eq font-medium">Seller Panel</a>
             @endif
         @else
-            <a href="{{ route('login') }}" class="hover:text-[#F85606] eq">Login</a>
-            <span class="w-[1px] h-3 bg-[#2A2A2A]"></span>
-            <a href="{{ route('signup') }}" class="hover:text-[#F85606] eq">Sign Up</a>
+            <a href="javascript:void(0)" class="auth-btn hover:text-[#F85606] eq">Login</a>
         @endauth
         <span class="w-[1px] h-3 bg-[#2A2A2A]"></span>
         <a href="{{ route('seller.signup') }}" class="hover:text-[#F85606] eq font-medium">Become a Seller</a>

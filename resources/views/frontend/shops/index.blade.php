@@ -1,102 +1,77 @@
 @extends('frontend.layouts.app')
-@section('title', 'Shops')
+@section('title', 'All Shops')
 
 @section('content')
-
-    <div class=" ">
-        <div class="mb-4">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <!-- <h2 class="text-2xl font-bold text-gray-900 text-center md:text-left">
-                    Our <span class="text-primary-600">Sellers</span>
-                </h2> -->
-                <form method="GET" action="#" class="relative w-full md:w-auto max-w-xl rounded-full">
-                    <input type="text" name="name" placeholder="Search for shop name..."
-                        class="w-full md:w-96 pl-6 pr-16 py-3 rounded-full border-none ring-1 ring-gray-200 focus:ring-2 focus:ring-primary-500 outline-none transition-all text-sm md:text-base">
-
-                    <button type="submit"
-                        class="absolute right-2 top-1/2 -translate-y-1/2 bg-primary-600 hover:bg-primary-700 text-white w-10 h-10 flex items-center justify-center rounded-full transition-colors">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </form>
+    <div class="max-w-[1400px] mx-auto px-2 sm:px-4">
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 py-5">
+            <div>
+                <h1 class="text-xl sm:text-2xl font-bold text-[#191919]">Our Shops</h1>
+                <p class="text-xs text-[#767676] mt-0.5">{{ $sellers->total() }} sellers on {{ app_name() }}</p>
             </div>
+            <form method="GET" action="{{ route('sellers.index') }}" class="relative w-full sm:w-72">
+                <input type="text" name="name" placeholder="Search shop name..."
+                    value="{{ request('name') }}"
+                    class="w-full h-9 pl-4 pr-9 text-xs border border-[#E5E5E5] rounded-sm focus:outline-none focus:border-[#F85606] focus:ring-1 focus:ring-[#F85606] transition-colors duration-100 placeholder-[#767676]">
+                <button type="submit"
+                    class="absolute right-0 top-0 h-9 w-9 flex items-center justify-center text-[#767676] hover:text-[#F85606] transition-colors duration-100">
+                    <i class="fas fa-search text-sm"></i>
+                </button>
+            </form>
         </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
-            @foreach ($sellers as $seller)
-                <div
-                    class="group bg-white rounded-xl shadow-card hover:shadow-card-hover transition-all duration-300 transform hover:-translate-y-1 overflow-hidden border border-gray-100 relative">
-                    <div class="h-28 md:h-32 w-full relative overflow-hidden">
-                        @if ($seller->cover_image)
-                            <img src="{{ storage_url($seller->cover_image) }}"
-                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                        @endif
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-
-                        <span
-                            class="absolute top-3 right-3 bg-white/90 text-primary-700 text-[10px] font-bold px-2 py-1 rounded shadow-sm">
-                            VERIFIED
-                        </span>
-                    </div>
-                    <div class="px-4 pb-5 relative">
-                        <div class="absolute -top-8 left-1/2 -translate-x-1/2">
-                            <div
-                                class="w-16 h-16 md:w-20 md:h-20 rounded-full border-[3px] border-white shadow-md bg-white p-0.5">
-                                <img src="{{ storage_url($seller->business_logo) }}"
-                                    class="w-full h-full rounded-full object-cover">
-                            </div>
-                        </div>
-
-                        <div class="pt-10 md:pt-12 text-center">
-                            <a href="{{ route('sellers.shop', $seller->username) }}">
-                                <h3
-                                    class="text-sm md:text-lg font-bold text-gray-900 flex justify-center items-center gap-1">
-                                    {{ $seller->business_name }}
-                                    <i class="fa-solid fa-circle-check text-blue-500 text-sm" title="Verified Seller"></i>
-                                </h3>
-                            </a>
-
-                            @if ($seller->division)
-                                <p class="text-[11px] text-gray-500 mb-3">
-                                    {{ $seller->district->name ?? '' }} | {{ $seller->division->name ?? '' }}
-                                </p>
-                            @endif
-
-                            <div class="flex justify-center items-center gap-4 mb-4 text-xs">
-                                <div class="text-center">
-                                    <span class="block font-bold text-gray-800">{{ $seller->total_followers }}</span>
-                                    <span class="text-gray-400 text-[10px]">Followers</span>
-                                </div>
-
-                                <div class="w-px h-6 bg-gray-200"></div>
-
-                                <div class="text-center">
-                                    <div class="flex items-center justify-center gap-1 text-yellow-400">
-                                        <span class="font-bold text-gray-800">{{ $seller->rating }}</span>
-                                        <i class="fa-solid fa-star text-xs"></i>
-                                    </div>
-                                    <span class="text-gray-400 text-[10px]">Rating</span>
-                                </div>
-                            </div>
-                            <button onclick="toggleFollow(this)"
-                                class="w-full bg-primary-600 hover:bg-primary-700 text-white py-2 rounded-full text-xs md:text-sm transition active:scale-95 flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-plus"></i> Follow
-                            </button>
-                        </div>
-                    </div>
-                    <div
-                        class="bg-gray-50 px-4 py-3 border-t text-xs text-gray-500 flex justify-between items-center group-hover:bg-primary-50 transition">
-                        <span class="flex items-center gap-1">
-                            <i class="fa-solid fa-box"></i> {{ $seller->products_count }}+ Products
-                        </span>
-
-                        <a href="{{ route('sellers.shop', $seller->username) }}"
-                            class="font-medium text-gray-800 hover:text-primary-600 flex items-center gap-1 transition">
-                            Visit <i class="fa-solid fa-arrow-right text-xs"></i>
-                        </a>
-                    </div>
-                </div>
-            @endforeach
+        <!-- Sellers Grid -->
+        <div id="sellersContainer" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
+            @include('frontend.partials.seller-card')
         </div>
+
+        <!-- Load More -->
+        @if ($sellers->hasMorePages())
+            <div class="mt-6 text-center pb-8">
+                <button id="loadMoreSellers" data-page="{{ $sellers->currentPage() }}" data-url="{{ url()->current() }}"
+                    class="inline-flex items-center gap-2 px-6 py-2 border border-[#F85606] text-[#F85606] text-xs font-semibold rounded-sm hover:bg-[#F85606] hover:text-white transition-colors duration-100"
+                    type="button">
+                    <span>Load More</span>
+                    <i class="fas fa-chevron-down text-[10px]"></i>
+                </button>
+            </div>
+        @endif
     </div>
-
 @endsection
+
+@push('scripts')
+    <script>
+        $(document).on('click', '#loadMoreSellers', function() {
+            const button = $(this);
+            let page = parseInt(button.data('page')) + 1;
+            const url = button.data('url');
+
+            $.ajax({
+                url: url,
+                method: 'GET',
+                data: { page: page },
+                beforeSend: function() {
+                    button.prop('disabled', true).html(
+                        '<svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>'
+                    );
+                },
+                success: function(response) {
+                    if ($.trim(response) !== '') {
+                        $('#sellersContainer').append(response);
+                        button.data('page', page);
+                        button.prop('disabled', false).html(
+                            '<span>Load More</span> <i class="fas fa-chevron-down text-[10px]"></i>'
+                        );
+                    } else {
+                        button.hide();
+                    }
+                },
+                error: function() {
+                    button.prop('disabled', false).html(
+                        '<span>Load More</span> <i class="fas fa-chevron-down text-[10px]"></i>'
+                    );
+                }
+            });
+        });
+    </script>
+@endpush
