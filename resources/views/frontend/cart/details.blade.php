@@ -380,53 +380,6 @@
                 updateOrderSummary();
             });
 
-            function updateCartQuantity(cartItemId, quantity, input) {
-                $.ajax({
-                    url: "{{ route('cart.update') }}",
-                    type: "POST",
-                    data: {
-                        id: cartItemId,
-                        quantity: quantity,
-                    },
-                    success: function(response) {
-                        input.val(quantity);
-
-                        if (response.success) {
-                            updateOrderTotals(response);
-                            showSuccessToast(response.message);
-                            updateCartData();
-                            updateOrderSummary();
-                        } else {
-                            showErrorToast(response.message);
-                        }
-                    },
-                    error: function() {
-                        showErrorToast('An error occurred while updating the cart.');
-                    }
-                });
-            }
-
-            function deleteCartItem(cartItemId) {
-                $.ajax({
-                    url: "{{ route('cart.delete') }}",
-                    type: "POST",
-                    data: {
-                        id: cartItemId,
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            showSuccessToast(response.message);
-                            location.reload();
-                        } else {
-                            showErrorToast(response.message);
-                        }
-                    },
-                    error: function() {
-                        showErrorToast('An error occurred while deleting the product.');
-                    }
-                });
-            }
-
             function updateOrderTotals(response) {
                 $('#itemsTotal').text(response.order_total);
                 $('#estimatedTotal').text(response.order_subtotal);
@@ -508,20 +461,6 @@
                 } else {
                     checkoutBtn.prop('disabled', false).removeClass('opacity-50 cursor-not-allowed');
                 }
-            }
-
-            function updateCartData() {
-                $.ajax({
-                    url: "{{ route('cart.data') }}",
-                    type: "GET",
-                    success: function(data) {
-                        $('#cartCount').text(data.cartCount);
-                        $('#totalPrice').text(data.totalPrice);
-                    },
-                    error: function() {
-                        showErrorToast('Failed to update cart data.');
-                    }
-                });
             }
 
             function formatCurrency(amount) {

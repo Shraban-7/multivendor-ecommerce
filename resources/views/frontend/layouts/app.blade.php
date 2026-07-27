@@ -383,22 +383,49 @@ $isDashboard = View::hasSection('dashboard');
                 timer = setTimeout(() => func.apply(context, args), delay);
             };
         }
-        $(function () {
-            function refreshCsrfToken() {
-                return $.get("{{ route('refresh.csrf') }}").then(function (data) {
-                    const newToken = data.token;
-                    $('meta[name="csrf-token"]').attr('content', newToken);
 
-                    $.ajaxSetup({
-                        headers: {
-                            'X-CSRF-TOKEN': newToken
-                        }
-                    });
-
-                    return newToken;
+        function refreshCsrfToken() {
+            return $.get("{{ route('refresh.csrf') }}").then(function (data) {
+                const newToken = data.token;
+                $('meta[name="csrf-token"]').attr('content', newToken);
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': newToken
+                    }
                 });
-            }
+                return newToken;
+            });
+        }
 
+        function getSelectedVariant(product, selectedOptions) {
+            const hasColorOption = (product.options || []).some(o => o.id === 'color');
+            const hasSizeOption = (product.options || []).some(o => o.id === 'size');
+            const colorId = selectedOptions['color'] != null ? Number(selectedOptions['color']) : null;
+            const sizeId = selectedOptions['size'] != null ? Number(selectedOptions['size']) : null;
+
+            if (hasColorOption && colorId === null) return null;
+            if (hasSizeOption && sizeId === null) return null;
+
+            return (product.variants || []).find(v => {
+                const variantColor = v.color_id != null ? Number(v.color_id) : null;
+                const variantSize = v.size_id != null ? Number(v.size_id) : null;
+                const colorOk = !hasColorOption || variantColor === colorId;
+                const sizeOk = !hasSizeOption || variantSize === sizeId;
+
+                return colorOk && sizeOk;
+            }) || null;
+        }
+
+        function collectSelectedOptions($wrapper) {
+            const selectedOptions = {};
+            $wrapper.find('.option-value-btn.active-option').each(function () {
+                const $btn = $(this);
+                selectedOptions[$btn.attr('data-option-id')] = Number($btn.attr('data-value-id'));
+            });
+            return selectedOptions;
+        }
+
+        $(function () {
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -441,157 +468,6 @@ $isDashboard = View::hasSection('dashboard');
                     $eyeSlash.hide();
                 }
             };
-
-            $('body').on('click', '.addToCartBtn', function () {
-                var $btn = $(this);
-                var originalText = $btn.html();
-                var $product_content = $btn.closest("[id^='product-wrapper']");
-                var product = $product_content.data("product");
-
-                if (!product) {
-                    showErrorToast("Product data not found!");
-                    return;
-                }
-
-                var options = product.options || [];
-                if (options.length > 0) {
-                    var selectedOptions = collectSelectedOptions($product_content);
-                    var allSelected = options.every(function(opt) {
-                        return selectedOptions[opt.id] !== undefined;
-                    });
-
-                    if (!allSelected) {
-                        var missing = options.filter(function(opt) {
-                            return selectedOptions[opt.id] === undefined;
-                        }).map(function(opt) { return opt.name; }).join(' and ');
-
-                        $product_content.find('.variant-error').removeClass('hidden')
-                            .text('Please select ' + missing + ' before adding to cart.');
-                        showErrorToast('Please select ' + missing + ' first!');
-                        return;
-                    }
-                }
-
-                $btn.html(
-                    `<svg class="animate-spin h-4 w-4 text-white inline-block mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
-                    </svg> Adding...`
-                ).prop('disabled', true);
-
-                var product_id = $btn.data('id');
-                var product_price_text = $product_content.find('.product-price').text().replace(/[^0-9.]/g, '');
-                var product_price = parseFloat(product_price_text);
-                var qtyInput = $product_content.find('.quantity').val() || 1;
-
-                var selectedOptions = collectSelectedOptions($product_content);
-                var variant = getSelectedVariant(product, selectedOptions);
-                var variantId = variant ? variant.id : null;
-
-                function addToCartRequest() {
-                    return $.ajax({
-                        url: "{{ route('cart.add') }}",
-                        type: "POST",
-                        data: {
-                            product_id: product_id,
-                            variant_id: variantId,
-                            quantity: qtyInput,
-                            price: product_price,
-                        },
-                        success: function (data) {
-                            if (data.success) {
-                                showSuccessToast(data.message);
-                                updateCartData();
-
-                                if ("{{ Route::currentRouteName() }}" === 'cart.details' &&
-                                    data.action === 'add_to_cart') {
-                                    window.location.reload();
-                                }
-                            } else if (data.warning) {
-                                showWarningToast(data.warning);
-                            } else {
-                                showErrorToast('Unexpected response!');
-                            }
-                        },
-                        error: async function (xhr) {
-                            if (xhr.status === 419) {
-                                await refreshCsrfToken();
-                                addToCartRequest();
-                            } else if (xhr.status === 401) {
-                                showWarningToast(xhr.responseJSON.error);
-                                auth.toggleModal(true);
-                            } else{
-                                showErrorToast(xhr.responseJSON.error);
-                            }
-                        },
-                        complete: function () {
-                            $btn.html(originalText).prop('disabled', false);
-                        }
-                    });
-                }
-
-                addToCartRequest();
-            });
-
-            $('body').on('click', '.addToCartNoVariant', function () {
-
-                let $btn = $(this);
-                let $icon = $btn.find('.icon');
-                let $spinner = $btn.find('.spinner');
-
-                $icon.addClass('hidden');
-                $spinner.removeClass('hidden');
-                $btn.prop('disabled', true);
-
-                let product_id = $btn.data('id');
-
-                function sendRequest() {
-                    return $.ajax({
-                        url: "{{ route('cart.add') }}",
-                        type: "POST",
-                        data: {
-                            product_id: product_id,
-                            variant_id: null,
-                            quantity: 1,
-                        },
-                        success: function (data) {
-                            if (data.success) {
-                                showSuccessToast(data.message);
-                                updateCartData();
-
-                                if ("{{ Route::currentRouteName() }}" === "cart.details" &&
-                                    data.action === "add_to_cart") {
-                                    window.location.reload();
-                                }
-                            } else if (data.warning) {
-                                showWarningToast(data.warning);
-                            } else {
-                                showErrorToast("Unexpected response!");
-                            }
-                        },
-                        error: async function (xhr) {
-                            if (xhr.status === 419) {
-                                await refreshCsrfToken();
-                                return sendRequest();
-                            }
-                            if (xhr.status === 401) {
-                                showWarningToast(xhr.responseJSON.error);
-                                auth.toggleModal(true);
-                            } else {
-                                showErrorToast(xhr.responseJSON.error);
-                            }
-                        },
-                        complete: function () {
-                            // Restore icon and hide spinner
-                            $spinner.addClass('hidden');
-                            $icon.removeClass('hidden');
-                            $btn.prop('disabled', false);
-                        }
-                    });
-                }
-
-                sendRequest();
-            });
 
             $('.buyNowBtn').click(function () {
                 var product_id = $(this).data('id');
@@ -713,26 +589,6 @@ $isDashboard = View::hasSection('dashboard');
                     }
                 });
             });
-
-            function updateCartData() {
-                $.ajax({
-                    url: "{{ route('cart.data') }}",
-                    type: "GET",
-                    success: function (data) {
-                        const el = $('#cartCount');
-                        el.text(data.cartCount);
-                        if (data.cartCount > 0) {
-                            el.removeClass('hidden');
-                        } else {
-                            el.addClass('hidden');
-                        }
-                        $('#totalPrice').text(data.totalPrice);
-                    },
-                    error: function () {
-                        showErrorToast('Failed to update cart data.');
-                    }
-                });
-            }
 
             function updateWishlistData() {
                 $.ajax({
@@ -881,35 +737,6 @@ $isDashboard = View::hasSection('dashboard');
                         .prop('disabled', stock <= 0)
                         .toggleClass('opacity-50 cursor-not-allowed', stock <= 0);
                 }
-            }
-
-            function getSelectedVariant(product, selectedOptions) {
-                const hasColorOption = (product.options || []).some(o => o.id === 'color');
-                const hasSizeOption = (product.options || []).some(o => o.id === 'size');
-                const colorId = selectedOptions['color'] != null ? Number(selectedOptions['color']) : null;
-                const sizeId = selectedOptions['size'] != null ? Number(selectedOptions['size']) : null;
-
-                if (hasColorOption && colorId === null) return null;
-                if (hasSizeOption && sizeId === null) return null;
-
-                return (product.variants || []).find(v => {
-                    const variantColor = v.color_id != null ? Number(v.color_id) : null;
-                    const variantSize = v.size_id != null ? Number(v.size_id) : null;
-                    const colorOk = !hasColorOption || variantColor === colorId;
-                    const sizeOk = !hasSizeOption || variantSize === sizeId;
-
-                    return colorOk && sizeOk;
-                }) || null;
-            }
-
-            function collectSelectedOptions($wrapper) {
-                const selectedOptions = {};
-                $wrapper.find('.option-value-btn.active-option').each(function () {
-                    const $btn = $(this);
-                    selectedOptions[$btn.attr('data-option-id')] = Number($btn.attr('data-value-id'));
-                });
-
-                return selectedOptions;
             }
 
             function selectOptionButton($btn) {
@@ -1114,6 +941,16 @@ $isDashboard = View::hasSection('dashboard');
     @stack('scripts')
     <script src="{{ asset('assets/libs/swiper/js/swiper-bundle.min.js') }}"></script>
     <script src="{{ asset('assets/js/sliders.js') }}?v=3"></script>
+    <script>
+        window.CartRoutes = {
+            add: "{{ route('cart.add') }}",
+            data: "{{ route('cart.data') }}",
+            update: "{{ route('cart.update') }}",
+            delete: "{{ route('cart.delete') }}",
+        };
+        window.CurrentRouteName = "{{ Route::currentRouteName() }}";
+    </script>
+    <script src="{{ asset('assets/js/cart.js') }}?v=1"></script>
 </body>
 
 </html>
