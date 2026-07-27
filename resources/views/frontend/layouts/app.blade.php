@@ -305,9 +305,9 @@ $isDashboard = View::hasSection('dashboard');
 
     @if ($isDashboard)
         <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mb-10" id="main">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 items-start">
-                @include('frontend.layouts.sidebar')
-                <section class="md:col-span-3 space-y-6">
+            <div class="space-y-6">
+                @include('frontend.layouts.dashboard-nav')
+                <section class="space-y-6">
                     @yield('dashboard')
                 </section>
             </div>
@@ -430,26 +430,6 @@ $isDashboard = View::hasSection('dashboard');
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
-            });
-
-            const $sidebarToggle = $("#sidebar-toggle");
-            const $mobileSidebar = $("#mobile-sidebar");
-            const $sidebarBackdrop = $("#sidebar-backdrop");
-
-            $sidebarToggle.on("click", function () {
-                const isOpen = !$mobileSidebar.hasClass("-translate-x-full");
-                if (isOpen) {
-                    $mobileSidebar.addClass("-translate-x-full");
-                    $sidebarBackdrop.addClass("hidden");
-                } else {
-                    $mobileSidebar.removeClass("-translate-x-full");
-                    $sidebarBackdrop.removeClass("hidden");
-                }
-            });
-
-            $sidebarBackdrop.on("click", function () {
-                $mobileSidebar.addClass("-translate-x-full");
-                $sidebarBackdrop.addClass("hidden");
             });
 
             window.togglePassword = function (inputId, button) {

@@ -80,62 +80,55 @@ $nameInitials = isset($user) ? getInitials($user->name) : '';
 ?>
 
 
-<aside class="hidden md:block bg-white rounded-lg border border-gray-200 p-4 md:col-span-1 space-y-2 h-auto">
-
-    <div class="flex items-center mb-8 p-4 rounded-lg bg-yellow-50">
-        <div class="h-12 w-12 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-700 font-bold">
+<aside class="hidden md:block bg-white rounded-sm border border-[#E5E5E5] p-4 md:col-span-1 space-y-2 h-auto">
+    <div class="flex items-center gap-3 mb-6 p-3 rounded-sm bg-[#FFF8F5]">
+        <div class="h-10 w-10 rounded-full bg-[#F85606]/10 flex items-center justify-center text-[#F85606] font-bold text-sm shrink-0">
             {{ $nameInitials }}
         </div>
-        <div class="ml-3">
-            <p class="font-semibold">{{ $user->name }}</p>
-            <p class="text-sm text-gray-500">{{ $user->email }}</p>
+        <div class="min-w-0">
+            <p class="font-semibold text-sm text-[#191919] truncate">{{ $user->name }}</p>
+            <p class="text-xs text-[#767676] truncate">{{ $user->email }}</p>
         </div>
     </div>
-
-    <nav class="space-y-2">
+    <nav class="space-y-1">
         @foreach ($links as $link)
             <a href="{{ $link['route'] }}"
-                class="block p-3 rounded-md {{ $link['active'] ? 'bg-yellow-500 text-white font-medium' : 'hover:bg-yellow-100' }}">
+                class="block px-3 py-2 text-sm rounded-sm {{ $link['active'] ? 'bg-[#F85606] text-white font-medium' : 'text-[#595959] hover:bg-[#FFF8F5] hover:text-[#F85606]' }} transition-colors">
                 {{ $link['title'] }}
             </a>
         @endforeach
-        <a href="{{ route('logout') }}" class="block p-3 rounded-md text-red-600 hover:bg-red-50"
+        <a href="{{ route('logout') }}"
+            class="block px-3 py-2 text-sm rounded-sm text-red-500 hover:bg-red-50 transition-colors"
             onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
             Logout
         </a>
-
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
-            @csrf
-        </form>
-
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">@csrf</form>
     </nav>
 </aside>
 
+<div class="fixed inset-0 bg-black/50 z-40 hidden" id="sidebar-backdrop"></div>
 
-<!-- Mobile Offcanvas Sidebar -->
-<div class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden" id="sidebar-backdrop"></div>
-
-<aside
-    class="fixed inset-y-0 left-0 w-64 bg-white shadow-lg transform -translate-x-full transition-transform duration-200 ease-in-out z-50 p-4 space-y-2"
-    id="mobile-sidebar">
-    <div class="flex justify-between items-center mb-4">
-        <h2 class="text-lg font-semibold">My Account</h2>
-        <button class="text-gray-500 hover:text-gray-700" id="sidebar-close">✕</button>
+<aside class="fixed inset-y-0 left-0 w-64 bg-white shadow-lg transform -translate-x-full transition-transform duration-200 ease-in-out z-50 p-4 space-y-2" id="mobile-sidebar">
+    <div class="flex items-center justify-between mb-4">
+        <h2 class="text-base font-semibold text-[#191919]">My Account</h2>
+        <button class="text-[#A0A0A0] hover:text-[#191919] transition-colors" id="sidebar-close">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
     </div>
-    <nav class="space-y-2">
+    <nav class="space-y-1">
         @foreach ($links as $link)
             <a href="{{ $link['route'] }}"
-                class="block p-3 rounded-md {{ $link['active'] ? 'bg-yellow-500 text-white font-medium' : 'hover:bg-yellow-100' }}">
+                class="block px-3 py-2 text-sm rounded-sm {{ $link['active'] ? 'bg-[#F85606] text-white font-medium' : 'text-[#595959] hover:bg-[#FFF8F5] hover:text-[#F85606]' }} transition-colors">
                 {{ $link['title'] }}
             </a>
         @endforeach
-        <a href="{{ route('logout') }}" class="block p-3 rounded-md text-red-600 hover:bg-red-50"
+        <a href="{{ route('logout') }}"
+            class="block px-3 py-2 text-sm rounded-sm text-red-500 hover:bg-red-50 transition-colors"
             onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
             Logout
         </a>
-
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
-            @csrf
-        </form>
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">@csrf</form>
     </nav>
 </aside>

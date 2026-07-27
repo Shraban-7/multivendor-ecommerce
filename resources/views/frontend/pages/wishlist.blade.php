@@ -1,77 +1,73 @@
 @extends('frontend.layouts.app')
-
 @section('title', 'Wishlist')
 
 @section('dashboard')
-    <main class="wishlist-page">
-        <section class="container py-8">
-            <div class="border border-[#E5E5E5] rounded-sm">
-                <h1 class="text-base font-semibold px-6 py-4 text-[#191919]">
-                    Wishlist
-                </h1>
+    <div class="space-y-6">
+        <div class="bg-white rounded-sm border border-[#E5E5E5]">
+            <div class="px-5 py-3.5 border-b border-[#E5E5E5]">
+                <h2 class="text-base font-semibold text-[#191919]">Wishlist</h2>
+            </div>
 
-                <div
-                    class="hidden md:grid md:grid-cols-[2fr_1fr_1fr_1fr] gap-4 bg-[#F5F5F5] border-b border-[#E5E5E5] px-6 py-3 text-xs font-semibold text-[#767676] tracking-wider">
-                    <h4>PRODUCTS</h4>
-                    <h4>PRICE</h4>
-                    <h4>STOCK STATUS</h4>
-                    <h4>ACTIONS</h4>
+            @if ($wishlists && $wishlists->isNotEmpty())
+                <div class="hidden md:grid md:grid-cols-[2fr_1fr_1fr_80px] gap-4 px-5 py-3 bg-[#F5F5F5] text-xs font-semibold text-[#767676] uppercase tracking-wider border-b border-[#E5E5E5]">
+                    <span>Product</span>
+                    <span>Price</span>
+                    <span>Stock</span>
+                    <span></span>
                 </div>
 
-                <!-- Product Items -->
-                <div class="divide-y divide-[#E5E5E5] text-sm">
+                <div class="divide-y divide-[#E5E5E5]">
                     @foreach ($wishlists as $wishlist)
-                        <div class="grid md:grid-cols-[2fr_1fr_1fr_1fr] gap-4 px-6 py-4 items-center">
-                            <!-- Product Info -->
-                            <div class="flex items-center gap-4">
-                                <div class="w-20 h-20 flex items-center justify-center">
-                                    <img src="{{ storage_url($wishlist->product->thumbnail) }}" alt="Product Image"
-                                        class="object-contain w-full h-full" />
+                        @php $stock = $wishlist->product->stock_in - $wishlist->product->stock_out; @endphp
+                        <div class="grid md:grid-cols-[2fr_1fr_1fr_80px] gap-4 px-5 py-4 items-center">
+                            <div class="flex items-center gap-4 min-w-0">
+                                <div class="w-16 h-16 shrink-0 rounded-sm overflow-hidden border border-[#E5E5E5]">
+                                    <img src="{{ storage_url($wishlist->product->thumbnail) }}" alt=""
+                                        class="w-full h-full object-cover">
                                 </div>
-                                <p class="text-sm text-gray-800 line-clamp-2">{{ $wishlist->product->name }}</p>
+                                <p class="text-sm text-[#191919] truncate">{{ $wishlist->product->name }}</p>
                             </div>
-
-                            <!-- Price Info -->
                             <div class="flex items-center gap-2">
-                                <span
-                                    class="text-gray-400 line-through">{{ money($wishlist->product->price) }}</span>
-                                <span class="font-semibold">{{ money($wishlist->product->compare_price) }}</span>
+                                <span class="text-xs text-[#A0A0A0] line-through">{{ money($wishlist->product->price) }}</span>
+                                <span class="text-sm font-semibold text-[#191919]">{{ money($wishlist->product->compare_price) }}</span>
                             </div>
-
-                            <!-- Stock Info -->
-                            @php
-                                $stock = $wishlist->product->stock_in - $wishlist->product->stock_out;
-                            @endphp
-                            <div class="{{ $stock > 0 ? 'text-green-600' : 'text-[#F85606]' }} font-medium">
-                                {{ $stock > 0 ? 'IN STOCK' : 'STOCK OUT' }}
+                            <div class="text-sm font-medium {{ $stock > 0 ? 'text-green-600' : 'text-[#F85606]' }}">
+                                {{ $stock > 0 ? 'In Stock' : 'Out of Stock' }}
                             </div>
-
-                            <!-- Actions -->
-                            <div class="flex items-center gap-3">
-                                <input type="hidden" name="quantity" class="qtyInputValue"
-                                    id="qtyInput{{ $wishlist->product->id }}">
+                            <div class="flex items-center gap-2">
                                 @if ($stock > 0)
-                                    {{-- <button type="button"
-                                        class="cartBtn px-3 py-2 text-xs sm:text-sm bg-orange-500 text-white rounded hover:bg-orange-600"
-                                        data-id="{{ $wishlist->product->id }}" data-wishlist-id="{{ $wishlist->id }}">
-                                        ADD TO CART
-                                    </button> --}}
                                     <a href="{{ route('products.details', $wishlist->product->slug) }}"
-                                        class="bg-[#F85606] hover:bg-[#C43D00] text-white py-2 px-3 rounded text-sm font-medium eq flex items-center justify-center gap-1">
-                                        <i class="fas fa-shopping-cart text-xs"></i> 
+                                        class="flex items-center justify-center w-8 h-8 bg-[#F85606] text-white rounded-sm hover:bg-[#E04D05] transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/>
+                                        </svg>
                                     </a>
                                 @endif
-                                <button type="button" class="wishlistRemoveBtn text-gray-400 hover:text-gray-600"
+                                <button type="button" class="wishlistRemoveBtn flex items-center justify-center w-8 h-8 text-[#A0A0A0] hover:text-red-500 hover:bg-red-50 rounded-sm transition-colors"
                                     data-id="{{ $wishlist->id }}">
-                                    <i class="fas fa-x"></i>
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                    </svg>
                                 </button>
                             </div>
                         </div>
                     @endforeach
                 </div>
-            </div>
-        </section>
-
-        <!-- Track Order Main Section Ended -->
-    </main>
+            @else
+                <div class="flex flex-col items-center justify-center py-16 text-center">
+                    <div class="w-16 h-16 mb-4 bg-[#F5F5F5] rounded-full flex items-center justify-center">
+                        <svg class="w-8 h-8 text-[#A0A0A0]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-base font-semibold text-[#191919]">Your wishlist is empty</h3>
+                    <p class="text-sm text-[#767676] mt-1">Save your favorite items here.</p>
+                    <a href="{{ route('home') }}"
+                        class="mt-4 inline-flex items-center gap-2 px-5 py-2 bg-[#F85606] text-white text-sm font-semibold rounded-sm hover:bg-[#E04D05] transition-colors">
+                        Browse Products
+                    </a>
+                </div>
+            @endif
+        </div>
+    </div>
 @endsection
