@@ -154,7 +154,7 @@ class EloquentOrderRepository implements OrderRepositoryInterface
         $variantIds = $order->items->pluck('product_variant_id')->filter()->unique();
         $productIds = $order->items->pluck('product_id')->filter()->unique();
 
-        $variants = ProductVariant::whereIn('id', $variantIds)->get()->keyBy('id');
+        $variants = ProductVariant::with('product')->whereIn('id', $variantIds)->get()->keyBy('id');
         $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
         $note = 'Order #'.($order->invoice_id ?? $order->id);
 

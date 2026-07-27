@@ -128,7 +128,7 @@ class PaymentController extends Controller
             Auth::loginUsingId($order->user_id);
         }
 
-        return view('payment.cancelled');
+        return view('payment.cancelled', ['order' => $order->fresh()]);
     }
 
     public function failed(Request $request)
@@ -149,7 +149,7 @@ class PaymentController extends Controller
             Auth::loginUsingId($order->user_id);
         }
 
-        return view('payment.failed');
+        return view('payment.failed', ['order' => $order->fresh()]);
     }
 
     /**

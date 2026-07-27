@@ -72,7 +72,7 @@
                                         </td>
                                         <td class="px-6 py-4">
 
-                                            @if (!is_null($order->payment_id) && $order->payment->status == Payment::SUCCESSFUL)
+                                            @if ($order->payment?->status == Payment::SUCCESSFUL)
                                                 <span
                                                     class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
                                                     Paid

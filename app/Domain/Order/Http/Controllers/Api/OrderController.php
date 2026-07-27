@@ -40,7 +40,7 @@ class OrderController extends Controller
         $orders = $this->orderRepo->searchUserOrders(
             Auth::id(),
             $filters,
-            ['seller.district', 'seller.division', 'items.product', 'items.variant', 'billing_address', 'payment'],
+            ['seller.district', 'seller.division', 'items.product', 'items.variant.color', 'items.variant.size', 'billing_address', 'payment'],
         );
 
         return apiResourceResponse(OrderResource::collection($orders));
@@ -61,7 +61,11 @@ class OrderController extends Controller
         $selectedSellerId = $request->input('seller_id');
         $seller = Seller::findOrFail($selectedSellerId);
 
-        $cart = $this->cartRepo->findUserCartBySeller($user->id, $selectedSellerId)?->load('cart_items.product', 'cart_items.variant');
+        $cart = $this->cartRepo->findUserCartBySeller($user->id, $selectedSellerId)?->load(
+            'cart_items.product',
+            'cart_items.variant.color',
+            'cart_items.variant.size',
+        );
 
         if (! $cart || $cart->cart_items->isEmpty()) {
             return errorResponse('Cart is empty or not found for the selected seller.');
@@ -164,7 +168,8 @@ class OrderController extends Controller
     {
         $order->load([
             'items.product',
-            'items.variant',
+            'items.variant.color',
+            'items.variant.size',
             'seller.district',
             'seller.division',
             'billing_address.division',
@@ -214,7 +219,7 @@ class OrderController extends Controller
 
     public function invoice(Order $order)
     {
-        $order->load(['items.product', 'items.variant', 'seller.district', 'seller.division', 'billing_address', 'payment', 'user.country']);
+        $order->load(['items.product', 'items.variant.color', 'items.variant.size', 'seller.district', 'seller.division', 'billing_address', 'payment', 'user.country']);
 
         return apiResourceResponse(InvoiceResource::make($order));
     }

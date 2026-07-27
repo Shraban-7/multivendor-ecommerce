@@ -36,7 +36,7 @@ class OrderController extends Controller
         $orders = $this->orderRepo->searchUserOrders(
             Auth::id(),
             ['status' => $statusLabel !== 'all' ? $statusValue : null],
-            ['seller'],
+            ['seller', 'payment'],
         );
 
         $interestProducts = Product::with([
@@ -73,7 +73,11 @@ class OrderController extends Controller
         $selectedSellerId = $validated['seller_id'];
         $seller = Seller::find($selectedSellerId);
 
-        $cart = $this->cartRepo->findUserCartBySeller($user->id, $selectedSellerId)?->load('cart_items.product', 'cart_items.variant');
+        $cart = $this->cartRepo->findUserCartBySeller($user->id, $selectedSellerId)?->load(
+            'cart_items.product',
+            'cart_items.variant.color',
+            'cart_items.variant.size',
+        );
 
         if (! $cart) {
             if ($request->ajax()) {
@@ -139,7 +143,12 @@ class OrderController extends Controller
                 'status' => true,
                 'message' => $result['message'],
                 'payment_url' => $result['payment_url'],
-                'order' => $order,
+                'order' => [
+                    'id' => $order->id,
+                    'invoice_id' => $order->invoice_id,
+                    'total' => $order->total,
+                    'payable' => $order->payable,
+                ],
             ]);
         } catch (Exception $e) {
             if ($request->ajax() || $request->wantsJson()) {

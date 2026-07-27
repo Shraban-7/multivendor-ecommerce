@@ -1,121 +1,82 @@
-@extends('layouts.app')
+@extends('frontend.layouts.app')
+
 @section('title', 'Payment Failed')
+
 @section('content')
+    <main class="pb-10">
+        <section class="container section-padding my-12 md:my-16">
+            <div class="mx-auto max-w-lg flex flex-col items-center text-center gap-3 md:gap-4">
+                <span
+                    class="mb-2 flex h-14 w-14 xsm:h-16 xsm:w-16 items-center justify-center rounded-full border-2 xsm:border-[5px] border-red-500 bg-red-500/15 text-3xl xsm:text-4xl text-red-600">
+                    <i class="fa-solid fa-xmark"></i>
+                </span>
 
-<div class="min-h-screen flex items-center justify-center px-4 py-12">
-    <div class="max-w-lg w-full">
-        <!-- Error Icon -->
-        <div class="text-center mb-8">
-            <div class="mx-auto flex items-center justify-center h-24 w-24 rounded-full bg-red-100 mb-6">
-                <svg class="h-16 w-16 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </div>
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">Payment Failed</h1>
-            <p class="text-gray-600">We couldn't process your payment.</p>
-        </div>
-
-        <!-- Error Details Card -->
-        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-            <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
-                <div class="flex items-start">
-                    <i class="fas fa-exclamation-triangle text-red-600 mt-1 mr-3"></i>
-                    <div>
-                        <p class="text-sm font-medium text-red-900">Transaction Declined</p>
-                        <p class="text-xs text-red-700 mt-1">Your payment could not be processed at this time</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="space-y-3">
-                <p class="text-sm font-medium text-gray-900 mb-2">Common reasons for payment failure:</p>
-                <div class="flex items-start">
-                    <i class="fas fa-circle text-red-600 text-xs mt-1.5 mr-3"></i>
-                    <p class="text-sm text-gray-700">Insufficient funds in account</p>
-                </div>
-                <div class="flex items-start">
-                    <i class="fas fa-circle text-red-600 text-xs mt-1.5 mr-3"></i>
-                    <p class="text-sm text-gray-700">Incorrect payment details</p>
-                </div>
-                <div class="flex items-start">
-                    <i class="fas fa-circle text-red-600 text-xs mt-1.5 mr-3"></i>
-                    <p class="text-sm text-gray-700">Card limit exceeded</p>
-                </div>
-                <div class="flex items-start">
-                    <i class="fas fa-circle text-red-600 text-xs mt-1.5 mr-3"></i>
-                    <p class="text-sm text-gray-700">Bank security check failed</p>
-                </div>
-                <div class="flex items-start">
-                    <i class="fas fa-circle text-red-600 text-xs mt-1.5 mr-3"></i>
-                    <p class="text-sm text-gray-700">Network or connection issues</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- What to do next -->
-        <div class="bg-gray-50 rounded-lg p-4 mb-6">
-            <p class="text-sm font-medium text-gray-900 mb-3">
-                <i class="fas fa-question-circle text-brand-blue mr-2"></i>What should you do?
-            </p>
-            <div class="space-y-2 text-xs text-gray-700">
-                <p>✓ Verify your payment information</p>
-                <p>✓ Check your account balance</p>
-                <p>✓ Contact your bank if needed</p>
-                <p>✓ Try a different payment method</p>
-            </div>
-        </div>
-
-        <!-- Redirect Message -->
-        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-            <div class="flex items-center">
-                <i class="fas fa-info-circle text-brand-blue mr-3"></i>
-                <p class="text-sm text-gray-700">
-                    Redirecting in <span id="countdown" class="font-bold text-brand-blue">3.5</span> seconds...
+                <h1 class="text-lg xsm:text-xl md:text-2xl font-semibold text-theme-dark">
+                    Payment Failed
+                </h1>
+                <p class="text-sm text-davy-gray w-11/12 sm:w-4/5">
+                    We could not process your payment. Please try again or use a different payment method.
                 </p>
+
+                @if (! empty($order))
+                    <div class="mt-2 w-full rounded-sm border border-ds-border-default bg-ds-surface-muted px-4 py-3 text-left">
+                        <p class="text-xs text-davy-gray">Invoice</p>
+                        <p class="text-sm font-semibold text-theme-dark">{{ $order->invoice_id }}</p>
+                    </div>
+                @endif
+
+                <p class="mt-2 text-sm text-davy-gray">
+                    Redirecting in <span id="countdown" class="font-semibold text-primary">5</span> seconds…
+                </p>
+
+                <div class="mt-3 flex flex-wrap items-center justify-center gap-2 xsm:gap-4 text-xs xsm:text-sm">
+                    @if (! empty($order))
+                        <form action="{{ route('orders.payNow', $order) }}" method="POST" class="inline">
+                            @csrf
+                            <button type="submit"
+                                class="inline-flex items-center border-2 border-primary bg-primary px-4 py-2 font-bold uppercase text-white eq hover:bg-theme-dark hover:border-theme-dark rounded-sm">
+                                Try Again
+                            </button>
+                        </form>
+                        <a href="{{ route('orders.details', $order->invoice_id) }}"
+                            class="inline-flex items-center border-2 border-primary/30 px-4 py-2 font-bold uppercase text-primary eq hover:bg-primary hover:text-white rounded-sm">
+                            View Order
+                        </a>
+                    @else
+                        <a href="{{ route('orders.index') }}"
+                            class="inline-flex items-center border-2 border-primary bg-primary px-4 py-2 font-bold uppercase text-white eq hover:bg-theme-dark hover:border-theme-dark rounded-sm">
+                            My Orders
+                        </a>
+                    @endif
+                    <a href="{{ route('home') }}"
+                        class="inline-flex items-center border-2 border-primary/30 px-4 py-2 font-bold uppercase text-primary eq hover:bg-primary hover:text-white rounded-sm">
+                        Go Home
+                    </a>
+                </div>
             </div>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="flex flex-col sm:flex-row gap-3">
-            <a href="{{ route('checkout.index') }}" class="flex-1 bg-brand-blue text-white py-3 px-6 rounded-lg font-medium hover:bg-brand-blue-600 transition text-center">
-                <i class="fas fa-redo mr-2"></i>Try Again
-            </a>
-            @auth
-            <a href="{{ route('orders.index') }}" class="flex-1 border-2 border-brand-blue text-brand-blue py-3 px-6 rounded-lg font-medium hover:bg-brand-blue hover:text-white transition text-center">
-                <i class="fas fa-shopping-bag mr-2"></i>View Orders
-            </a>
-            @else
-            <a href="{{ route('home') }}" class="flex-1 border-2 border-brand-blue text-brand-blue py-3 px-6 rounded-lg font-medium hover:bg-brand-blue hover:text-white transition text-center">
-                <i class="fas fa-home mr-2"></i>Go to Home
-            </a>
-            @endauth
-        </div>
-
-        <!-- Support Contact -->
-        <div class="mt-6 text-center">
-            <p class="text-sm text-gray-600">
-                Need help? <a href="#" class="text-brand-blue font-medium hover:underline">Contact Support</a>
-            </p>
-        </div>
-    </div>
-</div>
+        </section>
+    </main>
+@endsection
 
 @push('scripts')
-<script>
-    let timeLeft = 3.5;
-    const countdownElement = document.getElementById('countdown');
-    const redirectUrl = "<?php echo auth()->check() ? route('orders.index') : route('home'); ?>";
+    <script>
+        let timeLeft = 5;
+        const countdownElement = document.getElementById('countdown');
+        const redirectUrl = @json(
+            ! empty($order)
+                ? route('orders.details', $order->invoice_id)
+                : route('orders.index')
+        );
 
-    const timer = setInterval(() => {
-        timeLeft -= 0.1;
-        countdownElement.textContent = Math.max(0, timeLeft).toFixed(1);
-
-        if (timeLeft <= 0) {
-            clearInterval(timer);
-            window.location.href = redirectUrl;
-        }
-    }, 100);
-</script>
+        const timer = setInterval(() => {
+            timeLeft -= 1;
+            if (countdownElement) {
+                countdownElement.textContent = Math.max(0, timeLeft);
+            }
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                window.location.href = redirectUrl;
+            }
+        }, 1000);
+    </script>
 @endpush
-
-@endsection

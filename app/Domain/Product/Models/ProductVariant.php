@@ -12,6 +12,9 @@ class ProductVariant extends Model
 
     protected $guarded = ['id'];
 
+    /** Always needed for labels / storefront display; avoids lazy-load violations. */
+    protected $with = ['color', 'size'];
+
     protected $casts = [
         'cost_price' => 'decimal:2',
         'price' => 'decimal:2',
@@ -48,8 +51,8 @@ class ProductVariant extends Model
         return Attribute::make(
             get: function () {
                 $parts = array_filter([
-                    $this->color?->name,
-                    $this->size?->name,
+                    $this->relationLoaded('color') ? $this->getRelation('color')?->name : null,
+                    $this->relationLoaded('size') ? $this->getRelation('size')?->name : null,
                 ]);
 
                 return implode(' / ', $parts) ?: 'Default';

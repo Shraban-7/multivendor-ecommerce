@@ -73,6 +73,10 @@ class OrderService
         $orderItems = [];
         $itemsCollection = collect($requestItems);
 
+        if ($cartItems instanceof \Illuminate\Support\Collection) {
+            $cartItems->loadMissing(['product', 'variant.color', 'variant.size', 'variant.product']);
+        }
+
         foreach ($cartItems as $item) {
             $variant = $item->variant;
             $product = $variant->product ?? $item->product;
@@ -90,7 +94,7 @@ class OrderService
                 'product_variant_id' => $variant->id ?? null,
                 'sku' => $variant->sku ?? $product->sku,
                 'product_name' => $product->name,
-                'variant_name' => $variant->label ?? null,
+                'variant_name' => $this->resolveVariantName($variant),
                 'cost_price' => $variant->cost_price ?? $product->cost_price ?? 0,
                 'price' => $sellingPrice,
                 'unit_price' => $unitPrice,
@@ -106,7 +110,10 @@ class OrderService
 
     public function buildOrderItemsFromCart($cart): array
     {
-        $cart->loadMissing('cart_items.product', 'cart_items.variant.color', 'cart_items.variant.size');
+        $cart->load([
+            'cart_items.product',
+            'cart_items.variant' => fn ($q) => $q->with(['color', 'size']),
+        ]);
 
         $subTotal = 0;
         $discount = 0;
@@ -116,7 +123,7 @@ class OrderService
             $product = $cartItem->product;
             $variant = $cartItem->variant;
             $unitPrice = (float) $cartItem->price;
-            $sellingPrice = (float) ($variant->price ?? $product->price ?? 0);
+            $sellingPrice = (float) ($variant?->price ?? $product->price ?? 0);
             $qty = (int) $cartItem->quantity;
             $itemSubtotal = $qty * $sellingPrice;
             $itemTotal = $qty * $unitPrice;
@@ -128,10 +135,10 @@ class OrderService
             $orderItems[] = [
                 'product_id' => $product->id,
                 'product_variant_id' => $cartItem->product_variant_id ?? null,
-                'sku' => $variant->sku ?? $product->sku,
+                'sku' => $variant?->sku ?? $product->sku,
                 'product_name' => $product->name,
-                'variant_name' => $variant->label ?? null,
-                'cost_price' => $variant->cost_price ?? $product->cost_price ?? 0,
+                'variant_name' => $this->resolveVariantName($variant),
+                'cost_price' => $variant?->cost_price ?? $product->cost_price ?? 0,
                 'price' => $sellingPrice,
                 'unit_price' => $unitPrice,
                 'quantity' => $qty,
@@ -203,6 +210,7 @@ class OrderService
 
             $this->orderRepo->updateSellerTotalSold($seller->id);
 
+            $order->load('items.product');
             $this->affiliateService->processCommissions($order->items, $user, $order->invoice_id);
             $this->affiliateService->updateOrderAffiliateId($order);
 
@@ -355,5 +363,23 @@ class OrderService
     public function pendingStatus(): int|string
     {
         return OrderStatus::PENDING->value;
+    }
+
+    /**
+     * Build a display name without triggering lazy loads on color/size.
+     */
+    private function resolveVariantName($variant): ?string
+    {
+        if (! $variant) {
+            return null;
+        }
+
+        if ($variant->relationLoaded('color') && $variant->relationLoaded('size')) {
+            return $variant->label;
+        }
+
+        $variant->loadMissing('color', 'size');
+
+        return $variant->label;
     }
 }

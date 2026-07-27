@@ -14,7 +14,7 @@ class CartService
      */
     public function calculateTotals(Cart $cart, ?Coupon $coupon = null): array
     {
-        $cart->loadMissing('cart_items.product', 'cart_items.variant');
+        $cart->loadMissing('cart_items.product', 'cart_items.variant.color', 'cart_items.variant.size');
 
         $subTotal = 0.0;
         foreach ($cart->cart_items as $item) {

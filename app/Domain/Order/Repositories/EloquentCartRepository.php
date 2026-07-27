@@ -56,7 +56,7 @@ class EloquentCartRepository implements CartRepositoryInterface
 
     public function getCartItems(Cart $cart): Collection
     {
-        return $cart->cart_items()->with(['product', 'variant'])->get();
+        return $cart->cart_items()->with(['product', 'variant.color', 'variant.size'])->get();
     }
 
     public function getCount(int $userId): int

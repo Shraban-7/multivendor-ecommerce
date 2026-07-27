@@ -239,7 +239,11 @@ class CartController extends Controller
         $grand_total = 0;
 
         if (Auth::check()) {
-            $carts = $this->cartRepo->findByUserId(Auth::id())->load('cart_items.product', 'cart_items.variant');
+            $carts = $this->cartRepo->findByUserId(Auth::id())->load(
+                'cart_items.product',
+                'cart_items.variant.color',
+                'cart_items.variant.size',
+            );
 
             foreach ($carts as $cart) {
                 foreach ($cart->cart_items as $item) {

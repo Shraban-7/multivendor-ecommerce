@@ -47,7 +47,7 @@ class AppServiceProvider extends ServiceProvider
 
                 // Cart Calculation
                 $carts = Cart::where('user_id', Auth::id())
-                    ->with('cart_items.product', 'cart_items.variant')
+                    ->with('cart_items.product', 'cart_items.variant.color', 'cart_items.variant.size')
                     ->get();
 
                 foreach ($carts as $cart) {

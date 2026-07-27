@@ -230,24 +230,28 @@ class Product extends Model
 
     public function groupedOptions(): Attribute
     {
-        $colors = $this->variants->filter(fn ($v) => $v->color)
+        $this->loadMissing('variants.color', 'variants.size');
+
+        $colors = $this->variants
+            ->filter(fn ($v) => $v->relationLoaded('color') && $v->getRelation('color'))
             ->unique('color_id')
             ->values()
             ->map(fn ($v) => [
-                'id' => $v->color->id,
-                'value' => $v->color->name,
-                'hex' => $v->color->hex_code,
-                'image' => $v->color->image,
+                'id' => $v->getRelation('color')->id,
+                'value' => $v->getRelation('color')->name,
+                'hex' => $v->getRelation('color')->hex_code,
+                'image' => $v->getRelation('color')->image,
             ]);
 
-        $sizes = $this->variants->filter(fn ($v) => $v->size)
+        $sizes = $this->variants
+            ->filter(fn ($v) => $v->relationLoaded('size') && $v->getRelation('size'))
             ->unique('size_id')
             ->values()
-            ->sortBy(fn ($v) => $v->size->sort_order)
+            ->sortBy(fn ($v) => $v->getRelation('size')->sort_order)
             ->values()
             ->map(fn ($v) => [
-                'id' => $v->size->id,
-                'value' => $v->size->name,
+                'id' => $v->getRelation('size')->id,
+                'value' => $v->getRelation('size')->name,
             ]);
 
         $options = [];
