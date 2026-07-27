@@ -19,6 +19,7 @@ Route::post('/seller-signup/upload-img', [AuthController::class, 'uploadTempImag
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'profile'])->name('profile');
+    Route::get('/addresses', [ProfileController::class, 'addresses'])->name('addresses');
     Route::post('/update-account', [ProfileController::class, 'updateAccount'])->name('accountUpdate');
     Route::post('/update-password', [ProfileController::class, 'updatePassword'])->name('updatePassword');
 });

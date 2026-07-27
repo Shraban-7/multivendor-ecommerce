@@ -15,12 +15,19 @@ class ProfileController extends Controller
     public function profile()
     {
         $user = Auth::user();
+
+        return view('frontend.profile', compact('user'));
+    }
+
+    public function addresses()
+    {
+        $user = Auth::user();
         $divisions = Division::get();
         $billingAddresses = BillingAddress::where('user_id', $user->id)
             ->latest()
             ->get();
 
-        return view('frontend.profile', compact('divisions', 'billingAddresses', 'user'));
+        return view('frontend.addresses', compact('divisions', 'billingAddresses', 'user'));
     }
 
     public function updateAccount(Request $request)

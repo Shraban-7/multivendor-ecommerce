@@ -73,7 +73,11 @@ class OrderController extends Controller
     {
         $user = Auth::user();
         $order = $this->orderRepo->findByInvoiceId($invoice_id)?->load('seller', 'payment', 'items.review', 'returnRequest');
-        $products = Product::latest('id')->limit(8)->get();
+        $products = Product::active()->latest('id')
+            ->withCount('reviews')
+            ->withAvg('reviews', 'rating')
+            ->limit(12)
+            ->get();
 
         return view('frontend.orders.details', compact('order', 'user', 'products'));
     }
