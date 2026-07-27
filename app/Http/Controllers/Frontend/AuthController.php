@@ -76,58 +76,38 @@ class AuthController extends Controller
                     'name' => 'required|string|max:255',
                     'email' => 'required|string|email|max:255|unique:sellers,email',
                     'phone' => 'required|string|max:200',
-                    'nid_no' => 'required|string|max:50',
                     'password' => 'required|string|min:5|confirmed',
                 ]);
 
-                $sessionData = $request->except(['image', 'nid_front_image', 'nid_back_image']);
-
-                if (! session()->has('image')) {
-                    return errorResponse('The image field is required!');
-                }
-                if (! session()->has('nid_front_image')) {
-                    return errorResponse('NID front image is required!');
-                }
-                if (! session()->has('nid_back_image')) {
-                    return errorResponse('NID back image is required!');
-                }
+                $sessionData = $request->only(['name', 'email', 'phone', 'password']);
 
                 session(['seller_step1' => $sessionData]);
 
-                return apiResponse(['next_step' => 2], 'Step 1 complete');
+                return apiResponse(['next_step' => 3], 'Step 1 complete');
 
             case 2:
                 $request->validate([
                     'business_name' => 'required|string|max:255',
                     'business_email' => 'required|string|email|max:255|unique:sellers,business_email',
-                    'business_address' => 'required|string|max:1000',
-                    'division_id' => 'required|exists:divisions,id',
-                    'district_id' => 'required|exists:districts,id',
+                    'shop_type' => 'required|string|in:individual,organization',
                 ]);
 
-                $sessionData = $request->except(['business_logo']);
+                $sessionData = $request->only(['business_name', 'business_email', 'shop_type']);
 
                 session(['seller_step2' => $sessionData]);
 
-                if (! session()->has('business_logo')) {
-                    return errorResponse('Business logo is required!');
-                }
-
-                return apiResponse(['next_step' => 3], 'Step 2 complete');
+                return apiResponse(['next_step' => 4], 'Step 2 complete');
 
             case 3:
                 $request->validate([
+                    'nid_no' => 'required|string|max:50',
+                    'business_address' => 'required|string|max:1000',
+                    'division_id' => 'required|exists:divisions,id',
+                    'district_id' => 'required|exists:districts,id',
                     'trade_license_no' => 'required|string|max:100',
                 ]);
 
-                if (! session()->has('trade_license_image')) {
-                    return errorResponse('Trade license image is required!');
-                }
-                if (! session()->has('shop_image')) {
-                    return errorResponse('Shop image is required!');
-                }
-
-                $sessionData = $request->except(['trade_license_image', 'shop_image']);
+                $sessionData = $request->only(['nid_no', 'business_address', 'division_id', 'district_id', 'trade_license_no']);
 
                 $step1 = session('seller_step1', []);
                 $step2 = session('seller_step2', []);
@@ -135,23 +115,6 @@ class AuthController extends Controller
 
                 $allData['username'] = str_slug('sellers', 'username', $allData['name']);
                 $allData['code'] = Seller::generateSellerCode($allData['name']);
-                $username = $allData['username'];
-
-                $destinationDir = $username;
-                if (! Storage::disk('public')->exists($destinationDir)) {
-                    Storage::disk('public')->makeDirectory($destinationDir);
-                }
-
-                $imageData = [
-                    'image' => $this->moveTempImage(session('image'), $destinationDir),
-                    'nid_front_image' => $this->moveTempImage(session('nid_front_image'), $destinationDir),
-                    'nid_back_image' => $this->moveTempImage(session('nid_back_image'), $destinationDir),
-                    'business_logo' => $this->moveTempImage(session('business_logo'), $destinationDir),
-                    'trade_license_image' => $this->moveTempImage(session('trade_license_image'), $destinationDir),
-                    'shop_image' => $this->moveTempImage(session('shop_image'), $destinationDir),
-                ];
-
-                $allData = array_merge($allData, $imageData);
 
                 try {
                     $seller = Seller::create($allData);
@@ -159,19 +122,13 @@ class AuthController extends Controller
                     session()->forget([
                         'seller_step1',
                         'seller_step2',
-                        'image',
-                        'nid_front_image',
-                        'nid_back_image',
-                        'business_logo',
-                        'trade_license_image',
-                        'shop_image',
                     ]);
 
                     $request->session()->put('verify_email', $seller->email);
 
                     session()->flash('message_data', [
                         'title' => 'Thank You for Registering!',
-                        'message' => 'Your seller account is under review. We’ve sent a confirmation email.',
+                        'message' => 'Your seller account is under review. We\'ve sent a confirmation email.',
                         'buttonText' => 'Go to Home',
                         'buttonUrl' => route('home'),
                         'type' => 'success',
