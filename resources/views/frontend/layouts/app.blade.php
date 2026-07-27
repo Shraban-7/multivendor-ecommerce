@@ -449,64 +449,6 @@ $isDashboard = View::hasSection('dashboard');
                 }
             };
 
-            $('.buyNowBtn').click(function () {
-                var product_id = $(this).data('id');
-                var seller_id = $(this).data('seller');
-                var wishlistId = $(this).data('wishlist-id');
-                var variantSku = $('#variantSku').val();
-                var product_price_text = $('.product-price').text().replace(/[^0-9.]/g, '');
-                var product_price = parseFloat(product_price_text);
-                var $row = $(this).closest('.grid');
-
-                let selectedOptionIds = [];
-
-                $('.variant-option:checked').each(function () {
-                    selectedOptionIds.push($(this).val());
-                });
-
-                if (!product_id) {
-                    alert("No Product Selected!");
-                    return;
-                }
-                var qtyInput = $('#qtyInput' + product_id).val();
-
-                $.ajax({
-                    url: "{{ route('cart.add') }}",
-                    type: "POST",
-                    data: {
-                        product_id: product_id,
-                        seller_id: seller_id,
-                        variant_sku: variantSku,
-                        quantity: qtyInput,
-                        price: product_price,
-                        option_ids: selectedOptionIds,
-                    },
-                    success: function (data) {
-                        if (data.unauthorized) {
-                            window.location.href = "{{ route('home') }}";
-                        } else if (data.success) {
-                            $row.fadeOut(300, function () {
-                                $(this).remove();
-                            });
-                            showSuccessToast(data.message);
-                            updateCartData();
-
-                            window.location.href = "{{ route('orders.checkout') }}" +
-                                "?seller_id=" + seller_id;
-                        } else {
-                            showErrorToast(data.error);
-                        }
-                    },
-                    error: function (xhr) {
-                        if (xhr.status === 401) {
-                            window.location.href = "{{ route('home') }}";
-                        } else {
-                            showErrorToast(xhr.responseJSON.error);
-                        }
-                    }
-                });
-            });
-
             $('.wishlistBtn').click(function () {
                 var product_id = $(this).data('id');
                 if (!product_id) {
@@ -666,6 +608,7 @@ $isDashboard = View::hasSection('dashboard');
                 const $availability = $wrapper.find(".availability-text");
                 const $variantError = $wrapper.find(".variant-error");
                 const $addToCartBtn = $wrapper.find(".addToCartBtn");
+                const $buyNowBtn = $wrapper.find(".buyNowBtn");
                 const $variantIdInput = $wrapper.find("input.variantId");
                 const product = $wrapper.data("product");
 
@@ -689,6 +632,9 @@ $isDashboard = View::hasSection('dashboard');
                     $addToCartBtn
                         .prop('disabled', stock <= 0)
                         .toggleClass('opacity-50 cursor-not-allowed', stock <= 0);
+                    $buyNowBtn
+                        .prop('disabled', stock <= 0)
+                        .toggleClass('opacity-50 cursor-not-allowed', stock <= 0);
 
                     if (!isInitialLoad && variant.image) {
                         $mainImage.attr('src', storageURL(variant.image));
@@ -706,6 +652,7 @@ $isDashboard = View::hasSection('dashboard');
                     $variantIdInput.val('');
                     $qtyEl.val(quantity || 1);
                     $addToCartBtn.prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
+                    $buyNowBtn.prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
                 } else {
                     const stock = parseInt(product.stock, 10) || 0;
 
@@ -721,6 +668,9 @@ $isDashboard = View::hasSection('dashboard');
                     $variantIdInput.val('');
                     $qtyEl.val(quantity || 1);
                     $addToCartBtn
+                        .prop('disabled', stock <= 0)
+                        .toggleClass('opacity-50 cursor-not-allowed', stock <= 0);
+                    $buyNowBtn
                         .prop('disabled', stock <= 0)
                         .toggleClass('opacity-50 cursor-not-allowed', stock <= 0);
                 }
@@ -935,6 +885,7 @@ $isDashboard = View::hasSection('dashboard');
             update: "{{ route('cart.update') }}",
             delete: "{{ route('cart.delete') }}",
         };
+        window.CheckoutRoute = "{{ route('orders.checkout') }}";
         window.CurrentRouteName = "{{ Route::currentRouteName() }}";
     </script>
     <script src="{{ asset('assets/js/cart.js') }}?v=1"></script>

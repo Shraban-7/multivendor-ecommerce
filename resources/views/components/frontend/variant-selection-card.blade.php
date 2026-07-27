@@ -77,7 +77,7 @@
                 </button>
             </div>
 
-            {{-- Add to Cart + Wishlist --}}
+            {{-- Add to Cart + Buy Now + Wishlist --}}
             <div class="flex flex-1 gap-2">
                 <button data-id="{{ $product['id'] }}" type="button"
                     class="addToCartBtn flex-1 h-9 bg-brand-deep hover:bg-brand-deep/90 active:bg-brand-deep/80 text-white px-4 rounded-sm text-sm font-semibold transition-colors duration-100 flex items-center justify-center gap-2 {{ $hasVariants ? 'opacity-50 cursor-not-allowed' : (($product['stock'] ?? 0) <= 0 ? 'opacity-50 cursor-not-allowed' : '') }}"
@@ -85,6 +85,14 @@
                     aria-label="Add to Cart">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/></svg>
                     Add to Cart
+                </button>
+
+                <button data-id="{{ $product['id'] }}" type="button" data-seller="{{ $product['seller']['id'] ?? '' }}"
+                    class="buyNowBtn flex-1 h-9 bg-ds-feedback-danger hover:bg-red-700 active:bg-red-800 text-white px-4 rounded-sm text-sm font-semibold transition-colors duration-100 flex items-center justify-center gap-2 {{ $hasVariants ? 'opacity-50 cursor-not-allowed' : (($product['stock'] ?? 0) <= 0 ? 'opacity-50 cursor-not-allowed' : '') }}"
+                    @disabled($hasVariants || ($product['stock'] ?? 0) <= 0)
+                    aria-label="Buy Now">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    Buy Now
                 </button>
 
                 <button type="button"

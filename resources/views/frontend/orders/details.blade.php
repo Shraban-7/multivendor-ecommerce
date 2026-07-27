@@ -98,7 +98,7 @@ use App\Domain\Order\Enums\OrderStatus;
                             </div>
                             <div class="flex justify-between items-end mt-1">
                                 <div class="text-sm text-gray-500">
-                                    <p>{{ $item->variant->fullname ?? '' }} • Qty: {{ $item->quantity }}</p>
+                                    <p>{{ $item->variant_name ?? $item->variant?->label ?? '' }} • Qty: {{ $item->quantity }}</p>
                                 </div>
                             </div>
                         </div>
@@ -318,7 +318,7 @@ use App\Domain\Order\Enums\OrderStatus;
                                     <input type="checkbox" name="items[{{ $item->id }}][id]" value="{{ $item->id }}" disabled class="item-checkbox accent-[#F85606]">
                                     <div class="flex-1 min-w-0">
                                         <p class="text-sm text-[#191919] truncate">{{ $item->product_name }}</p>
-                                        <p class="text-xs text-[#767676]">{{ $item->variant?->fullname ?? '' }} × Qty: {{ $item->quantity }} — {{ money($item->total) }}</p>
+                                        <p class="text-xs text-[#767676]">{{ $item->variant_name ?? $item->variant?->label ?? '' }} × Qty: {{ $item->quantity }} — {{ money($item->total) }}</p>
                                     </div>
                                     <select name="items[{{ $item->id }}][quantity]" class="text-xs border border-[#E5E5E5] rounded-sm px-1 py-0.5">
                                         @for ($i = 1; $i <= $item->quantity; $i++)

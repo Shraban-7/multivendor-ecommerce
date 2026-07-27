@@ -60,7 +60,7 @@ class OrderController extends Controller
         $items = $order->items->map(fn ($item) => [
             'id' => $item->id,
             'product_name' => $item->product_name,
-            'variant_name' => $item->variant?->fullname ?? '',
+            'variant_name' => $item->variant_name ?? $item->variant?->label ?? '',
             'quantity' => $item->quantity,
             'total' => $item->total,
             'total_formatted' => money($item->total),
@@ -72,7 +72,16 @@ class OrderController extends Controller
     public function details($invoice_id)
     {
         $user = Auth::user();
-        $order = $this->orderRepo->findByInvoiceId($invoice_id)?->load('seller', 'payment', 'items.review', 'returnRequest');
+        $order = $this->orderRepo->findByInvoiceId($invoice_id)?->load(
+            'seller',
+            'payment',
+            'billing_address',
+            'items.product',
+            'items.variant.color',
+            'items.variant.size',
+            'items.review',
+            'returnRequest',
+        );
         $products = Product::active()->latest('id')
             ->withCount('reviews')
             ->withAvg('reviews', 'rating')
