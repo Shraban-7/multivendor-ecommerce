@@ -129,18 +129,12 @@ use App\Domain\Order\Enums\OrderStatus;
 
                 <!-- Quick Actions -->
                 <div class="mt-4 flex flex-wrap gap-2">
-                    {{-- <button class="text-xs px-3 py-1.5 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
-                    Return Item
-                </button>
-                <button class="text-xs px-3 py-1.5 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
-                    Report Issue
-                </button> --}}
-                    {{-- @if ($item->is_reviewed == 0)
-                        <button id="open-review-modal"
-                            class="text-xs px-3 py-1.5 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
-                            Write Review
+                    @if ($order->status->value == App\Domain\Order\Enums\OrderStatus::DELIVERED->value)
+                        <button type="button" id="open-return-modal"
+                            class="text-xs px-3 py-1.5 border border-[#F85606] text-[#F85606] rounded-sm hover:bg-[#FFF8F5] transition-colors font-medium">
+                            Request Return
                         </button>
-                    @endif --}}
+                    @endif
                 </div>
             </div>
 
@@ -272,6 +266,40 @@ use App\Domain\Order\Enums\OrderStatus;
         </div>
     </main>
 
+    {{-- Return Request Modal --}}
+    <div id="return-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+        <div class="bg-white rounded-sm shadow-lg w-full max-w-lg mx-4">
+            <div class="px-5 py-3.5 border-b border-[#E5E5E5] flex items-center justify-between">
+                <h2 class="text-base font-semibold text-[#191919]">Request Return</h2>
+                <button type="button" id="close-return-modal" class="text-[#A0A0A0] hover:text-[#191919] transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <form action="{{ route('returns.store') }}" method="POST" class="p-5 space-y-4">
+                @csrf
+                <input type="hidden" name="order_id" value="{{ $order->id }}">
+                <div class="space-y-1.5">
+                    <label for="reason" class="text-sm font-medium text-[#191919]">Reason for Return</label>
+                    <textarea name="reason" id="reason" rows="4" required
+                        class="w-full px-3.5 py-2.5 border border-[#E5E5E5] rounded-sm text-sm focus:outline-none focus:border-[#F85606] focus:ring-1 focus:ring-[#F85606]/20 transition-colors resize-none"
+                        placeholder="Tell us why you want to return this order..."></textarea>
+                </div>
+                <div class="flex gap-3 justify-end">
+                    <button type="button" id="cancel-return"
+                        class="px-4 py-2 text-sm font-medium text-[#595959] border border-[#E5E5E5] rounded-sm hover:bg-[#F5F5F5] transition-colors">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                        class="px-4 py-2 text-sm font-semibold text-white bg-[#F85606] rounded-sm hover:bg-[#E04D05] transition-colors">
+                        Submit Request
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 @endsection
 
 @push('scripts')
@@ -398,6 +426,18 @@ use App\Domain\Order\Enums\OrderStatus;
                 selectedFiles.forEach(f => dt.items.add(f));
                 $input[0].files = dt.files;
             }
+
+            // Return Modal
+            const $returnModal = $('#return-modal');
+            $('#open-return-modal').on('click', function () {
+                $returnModal.removeClass('hidden');
+            });
+            $('#close-return-modal, #cancel-return').on('click', function () {
+                $returnModal.addClass('hidden');
+            });
+            $returnModal.on('click', function (e) {
+                if (e.target === this) $returnModal.addClass('hidden');
+            });
         });
     </script>
 @endpush

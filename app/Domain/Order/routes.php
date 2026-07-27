@@ -7,6 +7,7 @@ use App\Domain\Order\Http\Controllers\Api\OrderController as ApiOrderController;
 use App\Domain\Order\Http\Controllers\Frontend\BillingAddressController as FrontendBillingAddressController;
 use App\Domain\Order\Http\Controllers\Frontend\CartController as FrontendCartController;
 use App\Domain\Order\Http\Controllers\Frontend\OrderController as FrontendOrderController;
+use App\Domain\Order\Http\Controllers\Frontend\ReturnController;
 use App\Domain\Order\Http\Controllers\Frontend\WishlistController;
 use App\Domain\Order\Http\Controllers\InvoiceController;
 use App\Domain\Order\Http\Controllers\Seller\OrderController as SellerOrderController;
@@ -95,6 +96,11 @@ Route::middleware('web')->group(function () {
             Route::get('/success/{invoice_id}', [FrontendOrderController::class, 'success'])->name('success');
             Route::get('/tracking/{invoice_id}', [FrontendOrderController::class, 'tracking'])->name('tracking');
             Route::match(['get', 'post'], '/review', [FrontendOrderController::class, 'review'])->name('review');
+        });
+
+        Route::prefix('returns')->as('returns.')->group(function () {
+            Route::get('/', [ReturnController::class, 'index'])->name('index');
+            Route::post('/store', [ReturnController::class, 'store'])->name('store');
         });
 
         Route::prefix('billing-addresses')->as('billing_addresses.')->group(function () {
