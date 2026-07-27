@@ -58,8 +58,8 @@
     @if ($flash_sales)
         @foreach ($flash_sales as $flash_sale)
             <section class="mb-4">
-                <div class="bg-white border border-[#E5E5E5] rounded-sm overflow-hidden">
-                    <div class="bg-gradient-to-r from-[#F85606] to-[#E04800] px-4 sm:px-5 py-3 flex items-center justify-between">
+                <div class="bg-white border border-[#E5E5E5] rounded-sm">
+                    <div class="bg-gradient-to-r from-[#F85606] to-[#E04800] px-4 sm:px-5 py-3 flex items-center justify-between rounded-t-sm">
                         <div class="flex items-center gap-3">
                             <h2 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
                                 <i class="fas fa-bolt"></i>
@@ -100,19 +100,20 @@
                             class="text-xs font-medium text-white border border-white/40 px-3 py-1.5 rounded hover:bg-white hover:text-[#F85606] eq flex-shrink-0">See All</a>
                     </div>
 
-                    <div class="p-4 sm:p-5 relative group/slider">
-                        <button type="button" class="flash-slider-prev absolute left-1 top-1/2 -translate-y-1/2 z-20 w-9 h-9 flex items-center justify-center bg-white rounded-full shadow-md border border-[#E5E5E5] hover:bg-[#F85606] hover:text-white eq opacity-0 group-hover/slider:opacity-100 disabled:opacity-30 disabled:cursor-not-allowed transition-opacity">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
-                        </button>
-                        <button type="button" class="flash-slider-next absolute right-1 top-1/2 -translate-y-1/2 z-20 w-9 h-9 flex items-center justify-center bg-white rounded-full shadow-md border border-[#E5E5E5] hover:bg-[#F85606] hover:text-white eq opacity-0 group-hover/slider:opacity-100 disabled:opacity-30 disabled:cursor-not-allowed transition-opacity">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
-                        </button>
-                        <div class="flex gap-3 overflow-hidden snap-x snap-mandatory scroll-smooth flash-slider-track">
-                            @foreach ($flash_sale->approveProducts as $productItem)
-                                <div class="snap-start flex-shrink-0">
-                                    <x-frontend.flash-sale-card :product="$productItem->product" />
-                                </div>
-                            @endforeach
+                    <div class="p-3 sm:p-4 relative overflow-visible">
+                        <div class="swiper flash-sale-swiper">
+                            <div class="swiper-wrapper">
+                                @foreach ($flash_sale->approveProducts as $productItem)
+                                    @continue(! $productItem->product)
+                                    <div class="swiper-slide flash-sale-slide">
+                                        <div class="flash-sale-card-wrap">
+                                            <x-frontend.flash-sale-card :product="$productItem->product" />
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                            <div class="swiper-button-prev" aria-label="Previous"></div>
+                            <div class="swiper-button-next" aria-label="Next"></div>
                         </div>
                     </div>
                 </div>
@@ -147,23 +148,29 @@
                 @endforeach
             </div>
 
-            <div id="category-slider-track" class="lg:hidden flex gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory scroll-smooth pb-1">
-                @foreach ($categories as $category)
-                    <a href="{{ route('category.details', $category->slug) }}"
-                        class="snap-start shrink-0 w-24 group flex flex-col items-center gap-2 p-2 rounded-sm border border-[#E5E5E5] hover:border-[#F85606] eq">
-                        <div class="w-full aspect-square rounded-sm bg-[#F5F5F5] flex items-center justify-center p-2 overflow-hidden">
-                            @if ($category->image)
-                                <img src="{{ storage_url($category->image) }}" alt="{{ $category->name }}"
-                                    class="max-w-full max-h-full object-contain group-hover:scale-110 eq">
-                            @else
-                                <i class="fas fa-tag text-[#C7C7C7] text-sm"></i>
-                            @endif
+            <div class="swiper category-swiper lg:hidden">
+                <div class="swiper-wrapper">
+                    @foreach ($categories as $category)
+                        <div class="swiper-slide category-slide">
+                            <div class="category-card-wrap">
+                                <a href="{{ route('category.details', $category->slug) }}"
+                                    class="group flex flex-col items-center gap-2 p-2 rounded-sm border border-[#E5E5E5] hover:border-[#F85606] eq">
+                                    <div class="w-full aspect-square rounded-sm bg-[#F5F5F5] flex items-center justify-center p-2 overflow-hidden">
+                                        @if ($category->image)
+                                            <img src="{{ storage_url($category->image) }}" alt="{{ $category->name }}"
+                                                class="max-w-full max-h-full object-contain group-hover:scale-110 eq">
+                                        @else
+                                            <i class="fas fa-tag text-[#C7C7C7] text-sm"></i>
+                                        @endif
+                                    </div>
+                                    <span class="text-[11px] text-[#595959] text-center leading-tight line-clamp-2 group-hover:text-[#F85606] eq">
+                                        {{ $category->name }}
+                                    </span>
+                                </a>
+                            </div>
                         </div>
-                        <span class="text-[11px] text-[#595959] text-center leading-tight line-clamp-2 group-hover:text-[#F85606] eq">
-                            {{ $category->name }}
-                        </span>
-                    </a>
-                @endforeach
+                    @endforeach
+                </div>
             </div>
         </div>
     </section>

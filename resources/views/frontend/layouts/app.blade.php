@@ -17,7 +17,7 @@
     {{--
     <link rel="stylesheet" href="{{ asset('assets/libs/toastr/css/toastr.min.css') }}"> --}}
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="{{ asset('assets/js/sliders.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset('assets/libs/swiper/css/swiper-bundle.min.css') }}">
     <script>
         tailwind.config = {
             theme: {
@@ -164,9 +164,103 @@
             transition: width 600ms cubic-bezier(0.2, 0, 0, 1);
         }
 
-        /* === Image gallery hover zoom === */
-        .ds-gallery-main {
-            transition: opacity 200ms cubic-bezier(0.2, 0, 0, 1);
+        /* === Home / product Swiper nav === */
+        .hero-swiper .swiper-button-next,
+        .hero-swiper .swiper-button-prev {
+            width: 2.25rem;
+            height: 2.25rem;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 9999px;
+            color: #191919;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+            opacity: 0;
+            transition: opacity 0.2s ease, background 0.2s ease;
+        }
+        .hero-swiper:hover .swiper-button-next,
+        .hero-swiper:hover .swiper-button-prev {
+            opacity: 1;
+        }
+        .hero-swiper .swiper-button-next:after,
+        .hero-swiper .swiper-button-prev:after {
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .hero-swiper .swiper-pagination-bullet {
+            background: rgba(255, 255, 255, 0.7);
+            opacity: 1;
+            width: 0.5rem;
+            height: 0.5rem;
+            border-radius: 9999px;
+            transition: width 0.25s ease, background 0.25s ease;
+        }
+        .hero-swiper .swiper-pagination-bullet-active {
+            background: #F85606;
+            width: 1.5rem;
+        }
+        .flash-sale-swiper .swiper-button-next,
+        .flash-sale-swiper .swiper-button-prev {
+            width: 2.25rem;
+            height: 2.25rem;
+            background: #fff;
+            border: 1px solid #E5E5E5;
+            border-radius: 9999px;
+            color: #191919;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            top: 42%;
+            margin-top: 0;
+            transition: opacity 0.2s ease, background 0.2s ease, color 0.2s ease;
+            z-index: 20;
+        }
+        .flash-sale-swiper:hover .swiper-button-next,
+        .flash-sale-swiper:hover .swiper-button-prev {
+            opacity: 1;
+        }
+        .flash-sale-swiper .swiper-button-next:hover,
+        .flash-sale-swiper .swiper-button-prev:hover {
+            background: #F85606;
+            color: #fff;
+            border-color: #F85606;
+        }
+        .flash-sale-swiper .swiper-button-next:after,
+        .flash-sale-swiper .swiper-button-prev:after {
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .flash-sale-swiper .swiper-button-disabled {
+            opacity: 0.3 !important;
+            cursor: not-allowed;
+        }
+        .flash-sale-swiper .flash-sale-slide {
+            width: auto !important;
+            height: auto;
+            box-sizing: border-box;
+        }
+        .flash-sale-swiper .flash-sale-card-wrap {
+            width: 132px;
+            margin-right: 16px;
+            height: 100%;
+        }
+        @media (min-width: 640px) {
+            .flash-sale-swiper .flash-sale-card-wrap {
+                width: 148px;
+                margin-right: 20px;
+            }
+        }
+        .flash-sale-swiper .swiper-slide:last-child .flash-sale-card-wrap {
+            margin-right: 0;
+        }
+        .category-swiper .category-slide {
+            width: auto !important;
+            height: auto;
+            box-sizing: border-box;
+        }
+        .category-swiper .category-card-wrap {
+            width: 96px;
+            margin-right: 12px;
+        }
+        .category-swiper .swiper-slide:last-child .category-card-wrap {
+            margin-right: 0;
         }
     </style>
 
@@ -1016,6 +1110,8 @@ $isDashboard = View::hasSection('dashboard');
     </script>
 
     @stack('scripts')
+    <script src="{{ asset('assets/libs/swiper/js/swiper-bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/js/sliders.js') }}?v=3"></script>
 </body>
 
 </html>
