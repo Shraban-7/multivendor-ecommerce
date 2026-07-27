@@ -719,11 +719,13 @@ $isDashboard = View::hasSection('dashboard');
                     url: "{{ route('cart.data') }}",
                     type: "GET",
                     success: function (data) {
+                        const el = $('#cartCount');
+                        el.text(data.cartCount);
                         if (data.cartCount > 0) {
-                            $('#cartCount').removeClass('hidden')
-                            $('#totalPrice').removeClass('hidden')
+                            el.removeClass('hidden');
+                        } else {
+                            el.addClass('hidden');
                         }
-                        $('#cartCount').text(data.cartCount);
                         $('#totalPrice').text(data.totalPrice);
                     },
                     error: function () {
