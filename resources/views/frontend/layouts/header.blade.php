@@ -45,8 +45,14 @@
                 </div>
             </div>
 
-            <!-- Right: Cart -->
+            <!-- Right: Wishlist + Cart -->
             <div class="flex items-center flex-shrink-0">
+                <a href="{{ route('wishlist.index') }}" class="relative p-2 rounded hover:bg-[#FFF1EA] eq" aria-label="Wishlist">
+                    <svg class="w-6 h-6 sm:w-7 sm:h-7 text-[#F85606]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                    </svg>
+                    <span class="absolute -top-0.5 -right-0.5 bg-[#F85606] text-white text-[10px] font-bold min-w-[16px] h-[16px] flex items-center justify-center rounded-full {{ $wishlistCount > 0 ? '' : 'hidden' }}" aria-live="polite" id="wishlistCount">{{ $wishlistCount }}</span>
+                </a>
                 <a href="{{ route('cart.details') }}" class="relative p-2 rounded hover:bg-[#FFF1EA] eq" aria-label="Shopping cart">
                     <svg class="w-6 h-6 sm:w-7 sm:h-7 text-[#F85606]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/>

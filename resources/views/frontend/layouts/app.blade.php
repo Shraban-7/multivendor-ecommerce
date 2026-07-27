@@ -559,6 +559,11 @@ $isDashboard = View::hasSection('dashboard');
                                 $(this).remove();
                                 showSuccessToast(response.message);
                                 updateWishlistData();
+                                if ($('#wishlist-items').children().length === 0) {
+                                    $('#wishlist-header').addClass('hidden');
+                                    $('#wishlist-items').addClass('hidden');
+                                    $('#wishlist-empty').removeClass('hidden');
+                                }
                             });
                         } else {
                             alert(response.message || 'Failed to remove item');
@@ -575,11 +580,13 @@ $isDashboard = View::hasSection('dashboard');
                     url: "{{ route('wishlist.data') }}",
                     type: "GET",
                     success: function (data) {
+                        const badge = $('#wishlistCount');
+                        badge.text(data.wishlistCount);
                         if (data.wishlistCount > 0) {
-                            $('#wishlistCount').removeClass('hidden');
+                            badge.removeClass('hidden');
+                        } else {
+                            badge.addClass('hidden');
                         }
-
-                        $('#wishlistCount').text(data.wishlistCount);
                     },
                     error: function () {
                         showErrorToast('Failed to update wishlist data.');
