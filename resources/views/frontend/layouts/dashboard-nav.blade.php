@@ -19,7 +19,7 @@
             'route' => route('profile'),
             'active' => $profileActive,
         ];
-        $ordersActive = request()->routeIs('orders.index');
+        $ordersActive = request()->routeIs('orders.index') || request()->routeIs('orders.details');
         if ($ordersActive) $hasActive = true;
         $links[] = [
             'title' => 'Orders',

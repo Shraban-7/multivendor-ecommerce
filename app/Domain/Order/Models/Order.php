@@ -29,6 +29,7 @@ class Order extends Model
         'payment_type' => PaymentType::class,
         'created_at' => 'datetime',
         'delivery_status' => 'integer',
+        'refund_amount' => 'float',
     ];
 
     public const ORDER_TYPE_CUSTOMER = 'C';
@@ -120,6 +121,11 @@ class Order extends Model
     public function trackings(): HasMany
     {
         return $this->hasMany(OrderTracking::class);
+    }
+
+    public function returnRequest(): HasOne
+    {
+        return $this->hasOne(ReturnRequest::class);
     }
 
     public static function generateInvoiceID($sellerId, $orderType = self::ORDER_TYPE_CUSTOMER)

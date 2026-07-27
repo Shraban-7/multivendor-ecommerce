@@ -5,6 +5,7 @@ namespace App\Domain\Order\Http\Controllers\Seller;
 use App\Domain\Order\Enums\OrderStatus;
 use App\Domain\Order\Models\Order;
 use App\Domain\Order\Repositories\Contracts\OrderRepositoryInterface;
+use App\Domain\Order\Models\ReturnRequest;
 use App\Domain\Order\Services\OrderService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -81,6 +82,22 @@ class OrderController extends Controller
 
         if ($order->status->value == OrderStatus::COMPLETED->value) {
             $this->orderService->approveAffiliateCommission($order);
+        }
+
+        if ($order->status->value == OrderStatus::RETURN_APPROVED->value) {
+            ReturnRequest::where('order_id', $order->id)
+                ->where('status', 'pending')
+                ->update(['status' => 'approved', 'approved_at' => now()]);
+        }
+
+        if (in_array($order->status->value, [OrderStatus::RETURNED->value, OrderStatus::REFUNDED->value])) {
+            $returnRequest = ReturnRequest::where('order_id', $order->id)->first();
+            if ($returnRequest && $returnRequest->status !== 'refunded') {
+                $refundAmount = $returnRequest->items()->sum('refund_amount');
+                $refundAmount = $request->input('refund_amount', $refundAmount ?: $order->payable);
+                $returnRequest->update(['status' => 'refunded', 'refunded_at' => now()]);
+                $order->update(['refund_amount' => $refundAmount]);
+            }
         }
 
         return redirect()->back()->with('success', 'Order updated successfully');

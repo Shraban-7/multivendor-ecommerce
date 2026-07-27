@@ -14,6 +14,9 @@
                             <tr>
                                 <th class="px-5 py-3">Order</th>
                                 <th class="px-5 py-3">Date</th>
+                                <th class="px-5 py-3">Type</th>
+                                <th class="px-5 py-3">Items</th>
+                                <th class="px-5 py-3">Exchange Note</th>
                                 <th class="px-5 py-3">Reason</th>
                                 <th class="px-5 py-3">Status</th>
                             </tr>
@@ -23,16 +26,33 @@
                                 <tr class="hover:bg-[#FAFAFA] transition-colors">
                                     <td class="px-5 py-4 font-semibold text-[#191919]">#{{ $return->order->invoice_id }}</td>
                                     <td class="px-5 py-4 text-[#595959]">{{ $return->created_at->format('M d, Y') }}</td>
-                                    <td class="px-5 py-4 text-[#595959] max-w-[300px] truncate">{{ $return->reason }}</td>
                                     <td class="px-5 py-4">
-                                        <span class="text-xs font-semibold px-2.5 py-1 rounded-sm <span class="text-xs font-semibold px-2.5 py-1 rounded-sm
-    @switch($return->status)
-        @case('pending') bg-yellow-50 text-yellow-700 @break
-        @case('approved') bg-green-50 text-green-700 @break
-        @case('rejected') bg-red-50 text-red-700 @break
-        @case('refunded') bg-blue-50 text-blue-700 @break
-        @default bg-gray-50 text-gray-700
-    @endswitch">
+                                        <span class="text-xs font-semibold px-2.5 py-1 rounded-sm
+                                            @switch($return->type)
+                                                @case('full') bg-purple-50 text-purple-700 @break
+                                                @case('partial') bg-blue-50 text-blue-700 @break
+                                                @case('exchange') bg-teal-50 text-teal-700 @break
+                                                @default bg-gray-50 text-gray-700
+                                            @endswitch">
+                                            {{ $return->typeLabel() }}
+                                        </span>
+                                    </td>
+                                    <td class="px-5 py-4 text-[#595959]">
+                                        @foreach ($return->items as $ri)
+                                            <div class="text-xs">{{ $ri->orderItem->product_name }} × {{ $ri->quantity }}</div>
+                                        @endforeach
+                                    </td>
+                                    <td class="px-5 py-4 text-[#595959] max-w-[200px] truncate">{{ $return->exchange_note ?? '-' }}</td>
+                                    <td class="px-5 py-4 text-[#595959] max-w-[200px] truncate">{{ $return->reason }}</td>
+                                    <td class="px-5 py-4">
+                                        <span class="text-xs font-semibold px-2.5 py-1 rounded-sm
+                                            @switch($return->status)
+                                                @case('pending') bg-yellow-50 text-yellow-700 @break
+                                                @case('approved') bg-green-50 text-green-700 @break
+                                                @case('rejected') bg-red-50 text-red-700 @break
+                                                @case('refunded') bg-blue-50 text-blue-700 @break
+                                                @default bg-gray-50 text-gray-700
+                                            @endswitch">
                                             {{ $return->label() }}
                                         </span>
                                     </td>

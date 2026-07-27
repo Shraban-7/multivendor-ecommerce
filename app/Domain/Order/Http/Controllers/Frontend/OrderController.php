@@ -36,7 +36,7 @@ class OrderController extends Controller
         $orders = $this->orderRepo->searchUserOrders(
             Auth::id(),
             ['status' => $statusLabel !== 'all' ? $statusValue : null],
-            ['seller', 'payment'],
+            ['seller', 'payment', 'returnRequest'],
         );
 
         $interestProducts = Product::with([
@@ -50,10 +50,29 @@ class OrderController extends Controller
         ]);
     }
 
+    public function orderData(Request $request)
+    {
+        $order = Order::where('id', $request->order_id)
+            ->where('user_id', Auth::id())
+            ->with('items.variant.color', 'items.variant.size')
+            ->firstOrFail();
+
+        $items = $order->items->map(fn ($item) => [
+            'id' => $item->id,
+            'product_name' => $item->product_name,
+            'variant_name' => $item->variant?->fullname ?? '',
+            'quantity' => $item->quantity,
+            'total' => $item->total,
+            'total_formatted' => money($item->total),
+        ]);
+
+        return response()->json(['items' => $items]);
+    }
+
     public function details($invoice_id)
     {
         $user = Auth::user();
-        $order = $this->orderRepo->findByInvoiceId($invoice_id)?->load('seller', 'payment', 'items.review');
+        $order = $this->orderRepo->findByInvoiceId($invoice_id)?->load('seller', 'payment', 'items.review', 'returnRequest');
         $products = Product::latest('id')->limit(8)->get();
 
         return view('frontend.orders.details', compact('order', 'user', 'products'));

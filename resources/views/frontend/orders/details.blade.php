@@ -5,7 +5,9 @@ use App\Domain\Order\Enums\OrderStatus;
 
 ?>
 @section('content')
-    <main class="max-w-5xl mx-auto px-4 py-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mb-10">
+        @include('frontend.layouts.dashboard-nav')
+        <div class="mt-6">
         <div class="flex items-center justify-between mb-5">
             <div>
                 <div class="flex items-center space-x-3">
@@ -31,13 +33,21 @@ use App\Domain\Order\Enums\OrderStatus;
                         <span class="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
                             {{ OrderStatus::CANCELLED->label() }}
                         </span>
+                    @elseif ($order->status->label() == OrderStatus::RETURN_REQUESTED->label())
+                        <span class="bg-orange-100 text-orange-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                            {{ OrderStatus::RETURN_REQUESTED->title() }}
+                        </span>
+                    @elseif ($order->status->label() == OrderStatus::RETURN_APPROVED->label())
+                        <span class="bg-amber-100 text-amber-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                            {{ OrderStatus::RETURN_APPROVED->title() }}
+                        </span>
                     @elseif ($order->status->label() == OrderStatus::RETURNED->label())
                         <span class="bg-gray-200 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
-                            {{ OrderStatus::RETURNED->label() }}
+                            {{ OrderStatus::RETURNED->title() }}
                         </span>
                     @elseif ($order->status->label() == OrderStatus::REFUNDED->label())
                         <span class="bg-cyan-100 text-cyan-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
-                            {{ OrderStatus::REFUNDED->label() }}
+                            {{ OrderStatus::REFUNDED->title() }}
                         </span>
                     @endif
 
@@ -237,6 +247,12 @@ use App\Domain\Order\Enums\OrderStatus;
                         <span>Total</span>
                         <span>{{ $order->payable }}</span>
                     </div>
+                    @if ($order->refund_amount > 0)
+                        <div class="flex items-center justify-between text-cyan-700 font-medium pt-1">
+                            <span>Refunded</span>
+                            <span>{{ money($order->refund_amount) }}</span>
+                        </div>
+                    @endif
                 </div>
 
                 <!-- Need Help -->
@@ -250,26 +266,18 @@ use App\Domain\Order\Enums\OrderStatus;
         </div>
 
         <div class="mt-8">
-            <h2 class="text-lg font-medium mb-4">You May Also Like</h2>
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                @foreach ($products as $product)
-                    <a href="{{ route('products.details', $product->slug) }}">
-                        <div class="bg-white p-3 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                            <img src="{{ $product->imageUrl }}" alt="{{ $product->name }}"
-                                class="w-full h-32 object-cover rounded-md mb-2">
-                            <h3 class="font-medium text-sm">{{ $product->name }}</h3>
-                            <p class="text-yellow-500 text-sm font-bold mt-1">{{ money($product->price) }}</p>
-                        </div>
-                    </a>
-                @endforeach
+            <h2 class="text-base font-bold text-brand">Similar Products</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mt-4">
+                @include('frontend.partials.product-card-load', ['products' => $products])
             </div>
         </div>
-    </main>
+    </div>
+</div>
 
     {{-- Return Request Modal --}}
     <div id="return-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-        <div class="bg-white rounded-sm shadow-lg w-full max-w-lg mx-4">
-            <div class="px-5 py-3.5 border-b border-[#E5E5E5] flex items-center justify-between">
+        <div class="bg-white rounded-sm shadow-lg w-full max-w-xl mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="px-5 py-3.5 border-b border-[#E5E5E5] flex items-center justify-between sticky top-0 bg-white">
                 <h2 class="text-base font-semibold text-[#191919]">Request Return</h2>
                 <button type="button" id="close-return-modal" class="text-[#A0A0A0] hover:text-[#191919] transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -277,26 +285,79 @@ use App\Domain\Order\Enums\OrderStatus;
                     </svg>
                 </button>
             </div>
-            <form action="{{ route('returns.store') }}" method="POST" class="p-5 space-y-4">
-                @csrf
-                <input type="hidden" name="order_id" value="{{ $order->id }}">
-                <div class="space-y-1.5">
-                    <label for="reason" class="text-sm font-medium text-[#191919]">Reason for Return</label>
-                    <textarea name="reason" id="reason" rows="4" required
-                        class="w-full px-3.5 py-2.5 border border-[#E5E5E5] rounded-sm text-sm focus:outline-none focus:border-[#F85606] focus:ring-1 focus:ring-[#F85606]/20 transition-colors resize-none"
-                        placeholder="Tell us why you want to return this order..."></textarea>
-                </div>
-                <div class="flex gap-3 justify-end">
-                    <button type="button" id="cancel-return"
-                        class="px-4 py-2 text-sm font-medium text-[#595959] border border-[#E5E5E5] rounded-sm hover:bg-[#F5F5F5] transition-colors">
-                        Cancel
-                    </button>
-                    <button type="submit"
-                        class="px-4 py-2 text-sm font-semibold text-white bg-[#F85606] rounded-sm hover:bg-[#E04D05] transition-colors">
-                        Submit Request
-                    </button>
-                </div>
-            </form>
+            <div class="p-5">
+                <form action="{{ route('returns.store') }}" method="POST" class="space-y-4" id="return-form">
+                    @csrf
+                    <input type="hidden" name="order_id" value="{{ $order->id }}">
+
+                    {{-- Return Type --}}
+                    <div>
+                        <label class="text-sm font-medium text-[#191919] block mb-2">Return Type</label>
+                        <div class="flex flex-wrap gap-3">
+                            <label class="flex items-center gap-2 px-3 py-2 border border-[#E5E5E5] rounded-sm cursor-pointer hover:border-[#F85606] has-[:checked]:border-[#F85606] has-[:checked]:bg-[#FFF8F5] transition-colors">
+                                <input type="radio" name="type" value="full" checked class="accent-[#F85606]">
+                                <span class="text-sm text-[#191919]">Full Refund</span>
+                            </label>
+                            <label class="flex items-center gap-2 px-3 py-2 border border-[#E5E5E5] rounded-sm cursor-pointer hover:border-[#F85606] has-[:checked]:border-[#F85606] has-[:checked]:bg-[#FFF8F5] transition-colors">
+                                <input type="radio" name="type" value="partial" class="accent-[#F85606]">
+                                <span class="text-sm text-[#191919]">Partial Refund</span>
+                            </label>
+                            <label class="flex items-center gap-2 px-3 py-2 border border-[#E5E5E5] rounded-sm cursor-pointer hover:border-[#F85606] has-[:checked]:border-[#F85606] has-[:checked]:bg-[#FFF8F5] transition-colors">
+                                <input type="radio" name="type" value="exchange" class="accent-[#F85606]">
+                                <span class="text-sm text-[#191919]">Exchange</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    {{-- Items --}}
+                    <div id="return-items-section" class="hidden space-y-2">
+                        <label class="text-sm font-medium text-[#191919] block">Select Items</label>
+                        <div class="space-y-2 max-h-48 overflow-y-auto border border-[#E5E5E5] rounded-sm p-3">
+                            @foreach ($order->items as $item)
+                                <label class="flex items-center gap-3 p-2 border border-[#E5E5E5] rounded-sm hover:bg-[#FAFAFA] cursor-pointer">
+                                    <input type="checkbox" name="items[{{ $item->id }}][id]" value="{{ $item->id }}" disabled class="item-checkbox accent-[#F85606]">
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm text-[#191919] truncate">{{ $item->product_name }}</p>
+                                        <p class="text-xs text-[#767676]">{{ $item->variant?->fullname ?? '' }} × Qty: {{ $item->quantity }} — {{ money($item->total) }}</p>
+                                    </div>
+                                    <select name="items[{{ $item->id }}][quantity]" class="text-xs border border-[#E5E5E5] rounded-sm px-1 py-0.5">
+                                        @for ($i = 1; $i <= $item->quantity; $i++)
+                                            <option value="{{ $i }}">{{ $i }}</option>
+                                        @endfor
+                                    </select>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    {{-- Exchange Note --}}
+                    <div id="exchange-note-section" class="hidden space-y-1.5">
+                        <label for="exchange_note" class="text-sm font-medium text-[#191919]">What do you want instead?</label>
+                        <textarea name="exchange_note" id="exchange_note" rows="2"
+                            class="w-full px-3.5 py-2.5 border border-[#E5E5E5] rounded-sm text-sm focus:outline-none focus:border-[#F85606] focus:ring-1 focus:ring-[#F85606]/20 transition-colors resize-none"
+                            placeholder="Describe the product, size, color, or variant you want in exchange..."></textarea>
+                    </div>
+
+                    {{-- Reason --}}
+                    <div class="space-y-1.5">
+                        <label for="reason" class="text-sm font-medium text-[#191919]">Reason for Return</label>
+                        <textarea name="reason" id="reason" rows="3" required
+                            class="w-full px-3.5 py-2.5 border border-[#E5E5E5] rounded-sm text-sm focus:outline-none focus:border-[#F85606] focus:ring-1 focus:ring-[#F85606]/20 transition-colors resize-none"
+                            placeholder="Tell us why you want to return this order..."></textarea>
+                    </div>
+
+                    <div class="flex gap-3 justify-end pt-2">
+                        <button type="button" id="cancel-return"
+                            class="px-4 py-2 text-sm font-medium text-[#595959] border border-[#E5E5E5] rounded-sm hover:bg-[#F5F5F5] transition-colors">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                            class="px-4 py-2 text-sm font-semibold text-white bg-[#F85606] rounded-sm hover:bg-[#E04D05] transition-colors">
+                            Submit Request
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -429,7 +490,38 @@ use App\Domain\Order\Enums\OrderStatus;
 
             // Return Modal
             const $returnModal = $('#return-modal');
+            const $typeRadios = $returnModal.find('input[name="type"]');
+            const $itemsSection = $returnModal.find('#return-items-section');
+            const $itemCheckboxes = $returnModal.find('.item-checkbox');
+            const $exchangeNoteSection = $returnModal.find('#exchange-note-section');
+            const $exchangeNote = $returnModal.find('#exchange_note');
+
+            $typeRadios.on('change', function () {
+                const val = $(this).val();
+                if (val === 'full') {
+                    $itemsSection.addClass('hidden');
+                    $itemCheckboxes.prop('disabled', true);
+                    $exchangeNoteSection.addClass('hidden');
+                    $exchangeNote.prop('disabled', true);
+                } else {
+                    $itemsSection.removeClass('hidden');
+                    $itemCheckboxes.prop('disabled', false);
+                    if (val === 'exchange') {
+                        $exchangeNoteSection.removeClass('hidden');
+                        $exchangeNote.prop('disabled', false);
+                    } else {
+                        $exchangeNoteSection.addClass('hidden');
+                        $exchangeNote.prop('disabled', true);
+                    }
+                }
+            });
+
             $('#open-return-modal').on('click', function () {
+                $('input[name="type"][value="full"]').prop('checked', true);
+                $itemsSection.addClass('hidden');
+                $itemCheckboxes.prop('disabled', true).prop('checked', false);
+                $exchangeNoteSection.addClass('hidden');
+                $exchangeNote.prop('disabled', true);
                 $returnModal.removeClass('hidden');
             });
             $('#close-return-modal, #cancel-return').on('click', function () {
