@@ -20,9 +20,13 @@ class SellerPayout extends Model
     ];
 
     const STATUS_PENDING = 0;
+
     const STATUS_PROCESSING = 1;
+
     const STATUS_COMPLETED = 2;
+
     const STATUS_CANCELLED = 3;
+
     const STATUS_FAILED = 4;
 
     public function seller(): BelongsTo

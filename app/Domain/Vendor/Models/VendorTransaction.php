@@ -2,7 +2,6 @@
 
 namespace App\Domain\Vendor\Models;
 
-use App\Domain\Order\Models\Order;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -20,10 +19,15 @@ class VendorTransaction extends Model
     ];
 
     const TYPE_ORDER_EARNED = 'order_earned';
+
     const TYPE_COMMISSION_DEDUCTED = 'commission_deducted';
+
     const TYPE_PAYOUT = 'payout';
+
     const TYPE_PAYOUT_CANCELLED = 'payout_cancelled';
+
     const TYPE_REFUND = 'refund';
+
     const TYPE_ADJUSTMENT = 'adjustment';
 
     public function seller(): BelongsTo

@@ -1,12 +1,15 @@
 <?php
 
+use App\Domain\Vendor\Http\Controllers\Admin\AdminPayoutController;
 use App\Domain\Vendor\Http\Controllers\Admin\SellerController as AdminSellerController;
+use App\Domain\Vendor\Http\Controllers\Admin\SellerPerformanceController as AdminSellerPerformanceController;
 use App\Domain\Vendor\Http\Controllers\Admin\SellerSubscriptionController;
 use App\Domain\Vendor\Http\Controllers\Admin\SubscriptionPlanController as AdminSubscriptionPlanController;
 use App\Domain\Vendor\Http\Controllers\Api\SellerChatController as ApiSellerChatController;
 use App\Domain\Vendor\Http\Controllers\Api\SellerController as ApiSellerController;
 use App\Domain\Vendor\Http\Controllers\Frontend\SellerController as FrontendSellerController;
 use App\Domain\Vendor\Http\Controllers\Seller\DashboardController;
+use App\Domain\Vendor\Http\Controllers\Seller\PerformanceController as SellerPerformanceController;
 use App\Domain\Vendor\Http\Controllers\Seller\ReportController;
 use App\Domain\Vendor\Http\Controllers\Seller\SellerChatController;
 use App\Domain\Vendor\Http\Controllers\Seller\SellerController;
@@ -14,7 +17,6 @@ use App\Domain\Vendor\Http\Controllers\Seller\SellerEmployeeController;
 use App\Domain\Vendor\Http\Controllers\Seller\SellerExpenseController;
 use App\Domain\Vendor\Http\Controllers\Seller\SellerPayoutController;
 use App\Domain\Vendor\Http\Controllers\Seller\SellerReviewController;
-use App\Domain\Vendor\Http\Controllers\Admin\AdminPayoutController;
 use App\Domain\Vendor\Http\Controllers\Seller\SettingController;
 use App\Domain\Vendor\Http\Controllers\Seller\SubscriptionPlanController;
 use Illuminate\Support\Facades\Route;
@@ -54,6 +56,12 @@ Route::middleware(['web', 'admin'])->prefix('admin')->as('admin.')->group(functi
         Route::post('{payout}/complete', [AdminPayoutController::class, 'complete'])->name('complete');
         Route::post('{payout}/cancel', [AdminPayoutController::class, 'cancel'])->name('cancel');
         Route::post('{payout}/fail', [AdminPayoutController::class, 'markFailed'])->name('fail');
+    });
+
+    Route::prefix('seller-performance')->as('seller-performance.')->group(function () {
+        Route::get('/', [AdminSellerPerformanceController::class, 'index'])->name('index');
+        Route::get('{seller}', [AdminSellerPerformanceController::class, 'show'])->name('show');
+        Route::post('{seller}/recompute', [AdminSellerPerformanceController::class, 'recompute'])->name('recompute');
     });
 });
 
@@ -130,6 +138,12 @@ Route::middleware(['web', 'seller'])->prefix('seller')->as('seller.')->group(fun
         Route::get('/sales', [ReportController::class, 'sales'])->name('sales');
         Route::get('/customers', [ReportController::class, 'customers'])->name('customers');
         Route::get('/overview', [ReportController::class, 'overview'])->name('overview');
+    });
+
+    Route::prefix('performance')->as('performance.')->group(function () {
+        Route::get('/', [SellerPerformanceController::class, 'dashboard'])->name('dashboard');
+        Route::get('/history', [SellerPerformanceController::class, 'history'])->name('history');
+        Route::post('/recompute', [SellerPerformanceController::class, 'recompute'])->name('recompute');
     });
 });
 

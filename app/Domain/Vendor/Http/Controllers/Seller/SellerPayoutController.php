@@ -65,14 +65,15 @@ class SellerPayoutController extends Controller
                 'required',
                 'numeric',
                 'min:1',
-                'max:' . $seller->balance,
+                'max:'.$seller->balance,
             ],
-            'payout_method_id' => 'required|exists:seller_payout_methods,id,seller_id,' . $seller->id,
+            'payout_method_id' => 'required|exists:seller_payout_methods,id,seller_id,'.$seller->id,
             'seller_note' => 'nullable|string|max:500',
         ]);
 
         try {
             $payout = $this->payoutService->requestPayout($seller, $data);
+
             return redirect()->route('seller.payouts.index')
                 ->with('success', 'Payout request submitted successfully.');
         } catch (\InvalidArgumentException $e) {
@@ -88,6 +89,7 @@ class SellerPayoutController extends Controller
         }
 
         $payout->load('payoutMethod');
+
         return view('seller.payouts.show', compact('payout'));
     }
 
@@ -116,7 +118,7 @@ class SellerPayoutController extends Controller
 
         $data['seller_id'] = $seller->id;
 
-        if (!empty($data['is_default'])) {
+        if (! empty($data['is_default'])) {
             SellerPayoutMethod::where('seller_id', $seller->id)->update(['is_default' => false]);
         }
 
@@ -144,7 +146,7 @@ class SellerPayoutController extends Controller
             'is_default' => 'nullable|boolean',
         ]);
 
-        if (!empty($data['is_default'])) {
+        if (! empty($data['is_default'])) {
             SellerPayoutMethod::where('seller_id', $seller->id)->where('id', '!=', $method->id)->update(['is_default' => false]);
         }
 

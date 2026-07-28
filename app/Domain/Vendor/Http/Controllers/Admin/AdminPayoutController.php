@@ -48,12 +48,13 @@ class AdminPayoutController extends Controller
     public function show(SellerPayout $payout)
     {
         $payout->load('seller', 'payoutMethod', 'processedBy');
+
         return view('admin.payouts.show', compact('payout'));
     }
 
     public function approve(SellerPayout $payout)
     {
-        if (!$payout->isPending()) {
+        if (! $payout->isPending()) {
             return back()->with('error', 'Only pending payouts can be approved.');
         }
 
@@ -65,7 +66,7 @@ class AdminPayoutController extends Controller
 
     public function complete(Request $request, SellerPayout $payout)
     {
-        if (!$payout->isProcessing()) {
+        if (! $payout->isProcessing()) {
             return back()->with('error', 'Only processing payouts can be completed.');
         }
 

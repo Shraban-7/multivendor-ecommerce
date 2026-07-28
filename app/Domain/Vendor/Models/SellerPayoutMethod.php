@@ -48,7 +48,8 @@ class SellerPayoutMethod extends Model
         if ($len <= 4) {
             return $this->account_number;
         }
-        return str_repeat('*', $len - 4) . substr($this->account_number, -4);
+
+        return str_repeat('*', $len - 4).substr($this->account_number, -4);
     }
 
     public function methodLabel(): string

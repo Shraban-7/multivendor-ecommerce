@@ -2,7 +2,6 @@
 
 namespace App\Domain\Vendor\Http\Controllers\Seller;
 
-use App\Domain\Product\Models\Product;
 use App\Domain\Review\Models\Review;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -119,7 +118,7 @@ class SellerReviewController extends Controller
             abort(403);
         }
 
-        $review->update(['is_approved' => !$review->is_approved]);
+        $review->update(['is_approved' => ! $review->is_approved]);
 
         $review->product->recalculateRating();
         $review->seller?->recalculateRating();

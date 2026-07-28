@@ -10,3 +10,4 @@ Artisan::command('inspire', function () {
 
 Schedule::command('subscriptions:expire')->daily();
 Schedule::command('send-subscription-expiry-reminders')->daily();
+Schedule::command('seller:performance:recompute')->dailyAt('02:00');

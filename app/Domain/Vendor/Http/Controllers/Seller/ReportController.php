@@ -1091,4 +1091,3 @@ class ReportController extends Controller
         return view('seller.reports.overview', compact('calculateMetrics', 'chartData', 'quickFacts', 'filter', 'topProducts'));
     }
 }
-

@@ -5,7 +5,6 @@ namespace App\Domain\Vendor\Services;
 use App\Domain\Order\Models\Order;
 use App\Domain\Order\Models\OrderItem;
 use App\Domain\Product\Models\Product;
-use App\Domain\Vendor\Models\Seller;
 use App\Domain\Vendor\Models\SellerExpense;
 use App\Domain\Vendor\Models\SellerPayout;
 use Illuminate\Support\Collection;
@@ -19,8 +18,8 @@ class DashboardService
         $cacheKey = "dashboard:{$sellerId}:{$startDate}:{$endDate}";
 
         return Cache::remember($cacheKey, 300, function () use ($sellerId, $startDate, $endDate) {
-            $start = $startDate . ' 00:00:00';
-            $end = $endDate . ' 23:59:59';
+            $start = $startDate.' 00:00:00';
+            $end = $endDate.' 23:59:59';
 
             return [
                 'overview' => $this->overview($sellerId, $start, $end),
@@ -162,6 +161,7 @@ class DashboardService
             ->get()
             ->map(function ($product) {
                 $product->available_stock = (int) $product->stock_in - (int) $product->stock_out;
+
                 return $product;
             });
     }

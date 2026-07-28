@@ -2,6 +2,13 @@
 
 namespace App\Domain\Vendor\Providers;
 
+use App\Domain\Order\Models\Order;
+use App\Domain\Order\Models\ReturnRequest;
+use App\Domain\Order\Models\ReturnRequestItem;
+use App\Domain\Review\Models\Review;
+use App\Domain\Vendor\Models\SellerChat;
+use App\Domain\Vendor\Models\SellerChatMessage;
+use App\Domain\Vendor\Observers\SellerPerformanceObserver;
 use App\Domain\Vendor\Repositories\EloquentSellerEmployeeRepository;
 use App\Domain\Vendor\Repositories\EloquentSellerRepository;
 use App\Domain\Vendor\Repositories\SellerEmployeeRepositoryInterface;
@@ -20,5 +27,18 @@ class VendorServiceProvider extends ServiceProvider
     {
         $this->loadRoutesFrom(__DIR__.'/../routes.php');
         $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
+        $this->registerObservers();
+    }
+
+    protected function registerObservers(): void
+    {
+        $observer = $this->app->make(SellerPerformanceObserver::class);
+
+        Review::observe($observer);
+        ReturnRequest::observe($observer);
+        ReturnRequestItem::observe($observer);
+        Order::observe($observer);
+        SellerChat::observe($observer);
+        SellerChatMessage::observe($observer);
     }
 }

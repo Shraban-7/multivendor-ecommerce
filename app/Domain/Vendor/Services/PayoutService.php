@@ -4,7 +4,6 @@ namespace App\Domain\Vendor\Services;
 
 use App\Domain\Vendor\Models\Seller;
 use App\Domain\Vendor\Models\SellerPayout;
-use App\Domain\Vendor\Models\SellerPayoutMethod;
 use App\Domain\Vendor\Models\VendorTransaction;
 use Illuminate\Support\Facades\DB;
 
