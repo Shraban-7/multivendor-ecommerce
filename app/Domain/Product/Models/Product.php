@@ -203,7 +203,7 @@ class Product extends Model
             'sold_out' => $this->stock_out,
             'stock' => $this->stock_in - $this->stock_out,
             'almost_sold_out' => ($this->stock_in - $this->stock_out) <= $this->low_stock_quantity ? true : false,
-            'variants' => $this->variants->map(function ($variant) {
+            'variants' => $this->variants->where('status', true)->map(function ($variant) {
                 return [
                     'id' => $variant->id,
                     'sku' => $variant->sku,

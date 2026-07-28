@@ -87,11 +87,13 @@
                     <tr>
                     <th scope="col" class="small fw-semibold text-muted">#</th>
                     <th scope="col" class="small fw-semibold text-muted">SKU</th>
+                    <th scope="col" class="small fw-semibold text-muted">Barcode</th>
                     <th scope="col" class="small fw-semibold text-muted">Color</th>
                     <th scope="col" class="small fw-semibold text-muted">Size</th>
                     <th scope="col" class="small fw-semibold text-muted">Cost Price</th>
                     <th scope="col" class="small fw-semibold text-muted">Price</th>
                     <th scope="col" class="small fw-semibold text-muted">Compare Price</th>
+                    <th scope="col" class="small fw-semibold text-muted">Weight (kg)</th>
                     <th scope="col" class="small fw-semibold text-muted">Image</th>
                     <th scope="col" class="small fw-semibold text-muted">Actions</th>
                     </tr>
@@ -112,7 +114,10 @@
                 <tr data-variant-row-id="${variantId}" data-color-id="${comb.color_id || ''}" data-size-id="${comb.size_id || ''}">
                 <td>${variantId}</td>
                 <td>
-                <input type="text" class="form-control form-control-sm" value="${sku}" />
+                <input type="text" name="sku" class="form-control form-control-sm" value="${sku}" />
+                </td>
+                <td>
+                <input type="text" name="barcode" class="form-control form-control-sm" placeholder="Barcode" />
                 </td>
                 <td>
                 <input type="hidden" class="variant-color-id" value="${comb.color_id || ''}" />
@@ -122,9 +127,10 @@
                 <input type="hidden" class="variant-size-id" value="${comb.size_id || ''}" />
                 ${comb.size_name || '-'}
                 </td>
-                <td><input type="number" class="form-control form-control-sm" placeholder="Cost Price" step="0.01" min="0" /></td>
-                <td><input type="number" class="form-control form-control-sm" placeholder="Price" step="0.01" min="0" /></td>
-                <td><input type="number" class="form-control form-control-sm variant-compare-price" placeholder="Compare Price" step="0.01" min="0" /></td>
+                <td><input type="number" name="cost_price" class="form-control form-control-sm" placeholder="Cost Price" step="0.01" min="0" /></td>
+                <td><input type="number" name="price" class="form-control form-control-sm" placeholder="Price" step="0.01" min="0" /></td>
+                <td><input type="number" name="compare_price" class="form-control form-control-sm variant-compare-price" placeholder="Compare Price" step="0.01" min="0" /></td>
+                <td><input type="number" name="weight" class="form-control form-control-sm" placeholder="Weight" step="0.01" min="0" /></td>
                 <td><input type="file" class="form-control form-control-sm" accept="image/*" /></td>
                 <td>
                 <button type="button" class="btn btn-outline-danger btn-sm d-inline-flex align-items-center gap-1 remove-variant-row-btn">Remove</button>

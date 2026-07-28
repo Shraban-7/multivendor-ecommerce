@@ -2,645 +2,441 @@
 @section('title', 'Edit Product')
 
 @push('styles')
-    <link href="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.css" rel="stylesheet">
+<link href="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+    .section-card { border-radius: 12px; border: 0; box-shadow: 0 1px 3px rgba(0,0,0,.08); margin-bottom: 1rem; }
+    .section-card .card-header { background: #fff; border-bottom: 1px solid #e9ecef; padding: .75rem 1.1rem; }
+    .section-card .card-header h5 { font-size: .9rem; font-weight: 600; margin: 0; }
+    .section-card .card-body { padding: 1.1rem; }
+    .sticky-sidebar { position: sticky; top: 1rem; }
+    .form-label-sm { font-size: .82rem; margin-bottom: .25rem; font-weight: 500; }
+    .cropper-preview { width: 180px; height: 180px; margin: 0 auto; cursor: pointer; overflow: hidden; border-radius: 8px; border: 2px dashed #dee2e6; transition: border-color .2s; background: #f8f9fa; display: flex; align-items: center; justify-content: center; }
+    .cropper-preview:hover { border-color: #0d6efd; }
+    .collapsible-header { cursor: pointer; user-select: none; }
+    .collapsible-header.collapsed .collapse-icon-open { display: none; }
+    .collapsible-header:not(.collapsed) .collapse-icon-closed { display: none; }
+</style>
 @endpush
 
 @section('content')
-
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="fw-bold mb-0 text-dark">Edit Product</h4>
-        <a href="{{ route('seller.products.show', $product->slug) }}" class="btn btn-secondary btn-sm d-inline-flex align-items-center gap-1">← Back to Details</a>
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
+    <div class="d-flex align-items-start gap-2">
+        <a href="{{ route('seller.products.show', $product->slug) }}" class="btn btn-light border btn-sm d-inline-flex align-items-center gap-1 mt-1" title="Back to Details">
+            <i data-feather="arrow-left" style="width:16px;height:16px;"></i>
+        </a>
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <h4 class="fw-bold mb-0 text-dark">Edit Product</h4>
+                @if ($product->status == $product::STATUS_ACTIVE)
+                <span class="badge bg-success">Active</span>
+                @elseif ($product->status == $product::STATUS_PENDING_APPROVAL)
+                <span class="badge bg-warning text-dark">Pending</span>
+                @elseif ($product->status == $product::STATUS_INACTIVE)
+                <span class="badge bg-secondary">Inactive</span>
+                @elseif ($product->status == $product::STATUS_DRAFT)
+                <span class="badge bg-info text-dark">Draft</span>
+                @endif
+            </div>
+            <div class="small text-muted d-flex align-items-center gap-3">
+                <span>SKU: <strong>{{ $product->sku }}</strong></span>
+                <span>Added: {{ $product->created_at->format('d M, Y') }}</span>
+            </div>
+        </div>
     </div>
-    <div class="card shadow-sm border-0 mb-3" style="border-radius: 12px;">
-        <div class="card-body p-4">
-            <form id="productUpdateForm" enctype="multipart/form-data" method="POST">
-                @csrf
-                <div class="row g-4">
-                    <div class="col-12 col-lg-8">
-                        <div class="row g-3">
-                            <div class="col-12">
-                                <label class="form-label fw-semibold">Product Name</label>
-                                <input type="text" class="form-control form-control-sm" value="{{ $product->name }}"
-                                    name="name" required />
-                            </div>
+    <button type="submit" form="productUpdateForm" id="updateBtn" class="btn btn-primary d-inline-flex align-items-center gap-1">
+        <i data-feather="save" style="width:16px;height:16px;"></i> Update Product
+    </button>
+</div>
 
-                            <div class="col-md-4">
-                                <label class="form-label fw-semibold">Brand</label>
-                                <select name="brand" class="form-select form-select-sm">
-                                    <option value="">--Choose--</option>
-                                    @foreach ($brands as $brand)
-                                        <option value="{{ $brand->id }}"
-                                            {{ $product->brand_id == $brand->id ? 'selected' : '' }}>{{ $brand->name }}
-                                        </option>
+<form id="productUpdateForm" enctype="multipart/form-data" method="POST">
+    @csrf
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card section-card">
+                <div class="card-header">
+                    <h5><i class="fas fa-info-circle me-2 text-primary"></i>Basic Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label-sm">Product Name</label>
+                            <input type="text" class="form-control form-control-sm" value="{{ $product->name }}" name="name" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label-sm">Brand</label>
+                            <select name="brand" class="form-select form-select-sm brand-select">
+                                <option value="">—</option>
+                                @foreach ($brands as $brand)
+                                <option value="{{ $brand->id }}" {{ $product->brand_id == $brand->id ? 'selected' : '' }}>{{ $brand->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label-sm">Category</label>
+                            <select name="category_id" class="form-select form-select-sm" id="categorySelect" required>
+                                <option value="" disabled>—</option>
+                                @foreach ($categories as $category)
+                                <option value="{{ $category->id }}" @selected($category->id == $product->category_id)>{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label-sm">Subcategory</label>
+                            <select name="subcategory_id" class="form-select form-select-sm" id="subcategorySelect" {{ $product->subcategory_id ? '' : 'disabled' }}>
+                                <option value="" disabled>—</option>
+                                @foreach ($categories as $category)
+                                @foreach ($category->subcategories as $subcategory)
+                                <option value="{{ $subcategory->id }}" data-category="{{ $category->id }}" @selected($subcategory->id == $product->subcategory_id)>{{ $subcategory->name }}</option>
+                                @endforeach
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label-sm">Unit</label>
+                            <div class="input-group input-group-sm">
+                                <input type="number" step="0.01" name="unit_value" value="{{ $product->unit_value }}" class="form-control" placeholder="Value" required>
+                                <select name="unit_id" class="form-select" required>
+                                    <option value="" disabled {{ $product->unit_id === null ? 'selected' : '' }}>—</option>
+                                    @foreach ($units as $unit)
+                                    <option value="{{ $unit->id }}" {{ $product->unit_id == $unit->id ? 'selected' : '' }}>{{ $unit->short_name }}</option>
                                     @endforeach
                                 </select>
                             </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label-sm">Tags <span class="text-muted">(comma sep.)</span></label>
+                            <input type="text" name="tags" class="form-control form-control-sm" value="{{ $product->tags->pluck('name')->implode(', ') }}" placeholder="e.g. cotton, summer">
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                            <div class="col-md-4">
-                                <label class="form-label fw-semibold">Category</label>
-                                <select name="category_id" class="form-select form-select-sm" id="categorySelect" required>
-                                    <option value="" disabled>--Choose--</option>
-                                    @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}" @selected($category->id == $product->category_id)>
-                                            {{ $category->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+            <div class="card section-card">
+                <div class="card-header">
+                    <h5><i class="fas fa-tags me-2 text-primary"></i>Pricing & Inventory</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label-sm">Cost Price</label>
+                            <input type="number" name="cost_price" step="0.01" min="0" class="form-control form-control-sm" value="{{ $product->cost_price }}" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label-sm">Selling Price</label>
+                            <input type="number" name="price" step="0.01" min="0" class="form-control form-control-sm" value="{{ $product->price }}" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label-sm">Compare Price <span class="text-muted">(sale)</span></label>
+                            <input name="compare_price" type="number" step="0.01" min="0" class="form-control form-control-sm" value="{{ $product->compare_price }}" placeholder="Optional">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label-sm">Low Stock Qty</label>
+                            <input name="low_stock_quantity" type="number" min="0" class="form-control form-control-sm" value="{{ $product->low_stock_quantity }}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label-sm">Payment Type</label>
+                            <select name="payment_type" class="form-select form-select-sm">
+                                @foreach (App\Enums\PaymentType::cases() as $paymentType)
+                                <option value="{{ $paymentType->value }}" @selected($paymentType->value == $product->payment_type->value)>{{ $paymentType->title() }}</option>
+                                @endforeach
+                            </select>
+                        </div>
 
-                            <div class="col-md-4">
-                                <label class="form-label fw-semibold">Subcategory</label>
-                                <select name="subcategory_id" class="form-select form-select-sm" id="subcategorySelect"
-                                    {{ $product->subcategory_id ? '' : 'disabled' }}>
-                                    <option value="" disabled>--Choose--</option>
-                                    @foreach ($categories as $category)
-                                        @foreach ($category->subcategories as $subcategory)
-                                            <option value="{{ $subcategory->id }}" data-category="{{ $category->id }}"
-                                                @selected($subcategory->id == $product->subcategory_id)>
-                                                {{ $subcategory->name }}
-                                            </option>
-                                        @endforeach
-                                    @endforeach
-                                </select>
-                            </div>
+                    </div>
+                </div>
+            </div>
 
-                            <div class="col-md-4">
-                                <label class="form-label">Unit <small class="text-muted">(e.g., 2.5 kg)</small></label>
-                                <div class="input-group">
-                                    <input type="number" step="0.01" name="unit_value"
-                                        value="{{ $product->unit_value }}" class="form-control form-control-sm"
-                                        placeholder="Value" style="width: 60%;" required>
-                                    <select name="unit_id" class="form-select form-select-sm" style="width: 40%;" required>
-                                        <option value="" disabled {{ $product->unit_id === null ? 'selected' : '' }}>
-                                            --
-                                        </option>
-                                        @foreach ($units as $unit)
-                                            <option value="{{ $unit->id }}"
-                                                {{ $product->unit_id == $unit->id ? 'selected' : '' }}>
-                                                {{ $unit->short_name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <label class="form-label">Payment Type</label>
-                                <select name="payment_type" class="form-select form-select-sm w-100">
-                                    @foreach (App\Enums\PaymentType::cases() as $paymentType)
-                                        <option value="{{ $paymentType->value }}" @selected($paymentType->value == $product->payment_type->value)>
-                                            {{ $paymentType->title() }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div class="col-md-4">
-                                <label class="form-label">Low Stock Quantity</label>
-                                <input name="low_stock_quantity" type="number" min="0"
-                                    class="form-control form-control-sm" value="{{ $product->low_stock_quantity }}"
-                                    required>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label class="form-label">Cost Price</label>
-                                <input type="number" name="cost_price" step="0.01" min="0" class="form-control form-control-sm"
-                                    value="{{ $product->cost_price }}" required>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label class="form-label">Price</label>
-                                <input type="number" name="price" step="0.01" min="0" class="form-control form-control-sm"
-                                    value="{{ $product->price }}" required>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label class="form-label">Compare Price <span class="text-muted small">(optional sale)</span></label>
-                                <input name="compare_price" type="number" step="0.01" min="0" class="form-control form-control-sm"
-                                    value="{{ $product->compare_price }}" placeholder="Leave empty for no sale">
-                            </div>
-
-                            @if ($product->variants_count > 0)
-                                <div class="col-md-6">
-                                    <div class="form-check form-switch mb-3">
-                                        <input class="form-check-input" type="checkbox" id="useMainPrices"
-                                            name="useMainPrices">
-                                        <label class="form-check-label fw-semibold" for="useMainPrices">
-                                            Use main prices for all variants
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="useMainDiscount"
-                                            name="useMainDiscount">
-                                        <label class="form-check-label fw-semibold" for="useMainDiscount">
-                                            Use main compare price for all variants
-                                        </label>
-                                    </div>
-                                </div>
-                            @endif
-
-                            <div class="col-12">
-                                <label class="form-label">Short Description</label>
-                                <x-textarea-input name="short_description" :value="$product->short_description" />
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">Description</label>
-                                <x-textarea-input name="description" :value="$product->description" />
-                            </div>
-
-                            <div class="col-12">
-                                <label class="form-label">Specifications <span class="text-muted small">(key:value pairs, one per line)</span></label>
-                                <textarea name="specifications" class="form-control form-control-sm" rows="4" placeholder="e.g. Material: Cotton&#10;Color: Red&#10;Warranty: 1 Year">@if($product->specifications)@foreach($product->specifications as $key => $value){{ $key }}: {{ $value }}
+            <div class="card section-card">
+                <div class="card-header">
+                    <h5><i class="fas fa-align-left me-2 text-primary"></i>Description &amp; Specifications</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label-sm">Short Description</label>
+                            <textarea name="short_description" class="form-control form-control-sm" rows="2">{{ $product->short_description }}</textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label-sm">Full Description</label>
+                            <textarea name="description" class="form-control form-control-sm" rows="5">{{ $product->description }}</textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label-sm">Specifications <span class="text-muted">(key:value per line)</span></label>
+                            <textarea name="specifications" class="form-control form-control-sm" rows="3">@if($product->specifications)@foreach($product->specifications as $key => $value){{ $key }}: {{ $value }}
 @endforeach @endif</textarea>
-                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                            <div class="col-md-4">
-                                <label class="form-label">Country of Origin</label>
-                                <input type="text" name="country_of_origin" class="form-control form-control-sm" value="{{ $product->country_of_origin }}" placeholder="e.g. Bangladesh">
-                            </div>
+            <div class="card section-card">
+                <div class="card-header">
+                    <h5><i class="fas fa-image me-2 text-primary"></i>Gallery Images</h5>
+                </div>
+                <div class="card-body">
+                    @include('seller.products.partials.upload-images')
+                </div>
+            </div>
 
-                            <div class="col-md-4">
-                                <label class="form-label">Manufacturer Name</label>
-                                <input type="text" name="manufacturer_name" class="form-control form-control-sm" value="{{ $product->manufacturer_name }}" placeholder="Manufacturer name">
-                            </div>
+            <div class="card section-card">
+                <div class="card-header">
+                    <h5><i class="fas fa-truck me-2 text-primary"></i>Shipping &amp; Manufacturer</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label-sm">Weight (kg)</label>
+                            <input type="number" step="0.01" name="weight" class="form-control form-control-sm" value="{{ $product->weight }}" placeholder="0.00">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label-sm">Height (cm)</label>
+                            <input type="number" step="0.01" name="height" class="form-control form-control-sm" value="{{ $product->height }}" placeholder="0.00">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label-sm">Width (cm)</label>
+                            <input type="number" step="0.01" name="width" class="form-control form-control-sm" value="{{ $product->width }}" placeholder="0.00">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label-sm">Length (cm)</label>
+                            <input type="number" step="0.01" name="length" class="form-control form-control-sm" value="{{ $product->length }}" placeholder="0.00">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label-sm">Country of Origin</label>
+                            <input type="text" name="country_of_origin" class="form-control form-control-sm" value="{{ $product->country_of_origin }}" placeholder="e.g. Bangladesh">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label-sm">Manufacturer</label>
+                            <input type="text" name="manufacturer_name" class="form-control form-control-sm" value="{{ $product->manufacturer_name }}" placeholder="Name">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label-sm">Manufacturer Details</label>
+                            <input type="text" name="manufacturer_details" class="form-control form-control-sm" value="{{ $product->manufacturer_details }}" placeholder="Address / contact">
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                            <div class="col-md-4">
-                                <label class="form-label">Manufacturer Details</label>
-                                <input type="text" name="manufacturer_details" class="form-control form-control-sm" value="{{ $product->manufacturer_details }}" placeholder="Address / contact">
-                            </div>
+            <div class="card section-card">
+                <div class="card-header">
+                    <h5><i class="fas fa-eye me-2 text-primary"></i>Visibility</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex gap-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" name="is_featured" {{ $product->is_featured ? 'checked' : '' }}>
+                            <label class="form-check-label small">Featured</label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" name="best_selling" {{ $product->best_selling ? 'checked' : '' }}>
+                            <label class="form-check-label small">Best Selling</label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" name="is_visible" {{ $product->is_visible ? 'checked' : '' }}>
+                            <label class="form-check-label small">Visible on Storefront</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+            <div class="card section-card">
+                <div class="card-header collapsible-header collapsed" data-bs-toggle="collapse" data-bs-target="#seoCollapse" aria-expanded="false" role="button">
+                    <h5 class="d-flex align-items-center">
+                        <i data-feather="chevron-down" class="collapse-icon-closed me-2 text-muted" style="width:14px;height:14px;"></i>
+                        <i data-feather="chevron-up" class="collapse-icon-open me-2 text-muted" style="width:14px;height:14px;"></i>
+                        <i data-feather="search" class="me-2 text-primary" style="width:16px;height:16px;"></i>SEO &amp; Social Share
+                    </h5>
+                </div>
+                <div class="collapse" id="seoCollapse">
+                    @php $seo = $product->seo; @endphp
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label-sm">Meta Title <span class="text-muted">(max 70)</span></label>
+                                <input type="text" name="meta_title" maxlength="70" class="form-control form-control-sm" value="{{ $seo?->meta_title }}" placeholder="e.g. Red Cotton T-Shirt – Buy Online">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label-sm">Meta Keywords <span class="text-muted">(comma sep.)</span></label>
+                                <input type="text" name="meta_keywords" maxlength="255" class="form-control form-control-sm" value="{{ $seo?->meta_keywords }}" placeholder="e.g. t-shirt, cotton">
+                            </div>
                             <div class="col-12">
-                                <label class="form-label">Tags <span class="text-muted small">(comma separated)</span></label>
-                                <input type="text" name="tags" class="form-control form-control-sm" value="{{ $product->tags->pluck('name')->implode(', ') }}" placeholder="e.g. cotton, summer, casual">
+                                <label class="form-label-sm">Meta Description <span class="text-muted">(max 160)</span></label>
+                                <textarea name="meta_description" maxlength="160" rows="2" class="form-control form-control-sm" placeholder="Shown in search results.">{{ $seo?->meta_description }}</textarea>
+                            </div>
+                            <hr class="my-1">
+                            <h6 class="small fw-semibold">Open Graph</h6>
+                            <div class="col-md-6">
+                                <label class="form-label-sm">OG Title</label>
+                                <input type="text" name="og_title" maxlength="70" class="form-control form-control-sm" value="{{ $seo?->og_title }}" placeholder="Social sharing title">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label-sm">OG Image</label>
+                                <input type="file" name="og_image" class="form-control form-control-sm">
+                                @if (!empty($seo->og_image))
+                                <div class="mt-1"><img src="{{ storage_url($seo->og_image) }}" alt="OG" class="img-thumbnail" style="max-width:100px;"></div>
+                                @endif
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label-sm">OG Description</label>
+                                <textarea name="og_description" maxlength="160" rows="2" class="form-control form-control-sm" placeholder="Appears below the title when shared.">{{ $seo?->og_description }}</textarea>
+                            </div>
+                            <div class="col-12">
+                                <button type="button" id="seoUpdateBtn" class="btn btn-outline-primary btn-sm d-inline-flex align-items-center gap-1"><i class="fas fa-save"></i> Save SEO</button>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-lg-4">
-                        <div class="mb-3 d-flex justify-content-center">
+                </div>
+            </div>
+
+            <div id="alertBox"></div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="sticky-sidebar">
+                <div class="card section-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-camera me-2 text-primary"></i>Thumbnail</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="cropper-preview" id="thumbnailPreview" data-bs-toggle="modal" data-bs-target="#thumbnailCropperModal">
+                            <img src="{{ $product->imageUrl }}" alt="Thumbnail" class="img-fluid" style="max-width:100%;max-height:100%;object-fit:cover;">
+                        </div>
+                        <span class="text-muted small mt-2 d-block">Click to crop &amp; change. 3:4 ratio</span>
+                        <input type="file" name="thumbnail" class="d-none" accept="image/*">
+                    </div>
+                </div>
+
+                <div class="card section-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-layer-group me-2 text-primary"></i>Product Stats</h5>
+                    </div>
+                    <div class="card-body">
+                        @php
+                            $vc = $product->variants->count();
+                            $totalStock = $product->totalStock;
+                            $margin = $product->price - $product->cost_price;
+                            $marginPct = $product->cost_price > 0 ? round(($margin / $product->cost_price) * 100, 1) : 0;
+                        @endphp
+                        <div class="d-flex justify-content-around text-center mb-3">
                             <div>
-                                <label class="form-label">Thumbnail <span class="text-muted small">(Ratio
-                                        1:1)</span></label>
-                                <div style="width: 250px;">
-                                    <div class="form-group">
-                                        <div class="image-preview border bg-light d-flex justify-content-center text-center align-items-center position-relative"
-                                            style="width: 200px; height: 200px; cursor: pointer; overflow: hidden;">
-                                            <img src="{{ $product->imageUrl }}" alt="image" class="img-fluid rounded"
-                                                style="width: 100%; height: 100%; object-fit: cover;">
-                                        </div>
-                                        <input type="file" name="thumbnail" class="d-none file-input"
-                                            accept="image/*">
-                                        <button type="button"
-                                            class="btn btn-danger btn-sm mt-2 remove-image d-none">Remove
-                                            Image</button>
-                                    </div>
-                                </div>
-                                <span class="text-muted small mt-2">NB: JPG/PNG/WEBP only, max 10MB</span>
+                                <div class="fs-5 fw-bold text-primary">{{ $vc }}</div>
+                                <div class="small text-muted">Variants</div>
+                            </div>
+                            <div>
+                                <div class="fs-5 fw-bold {{ $totalStock <= $product->low_stock_quantity ? 'text-danger' : 'text-success' }}">{{ $totalStock }}</div>
+                                <div class="small text-muted">Stock</div>
+                            </div>
+                            <div>
+                                <div class="fs-5 fw-bold {{ $margin > 0 ? 'text-success' : 'text-danger' }}">{{ $marginPct }}%</div>
+                                <div class="small text-muted">Margin</div>
                             </div>
                         </div>
-
-                        <div class="mt-3 border-top pt-3">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" name="is_featured"
-                                    {{ $product->is_featured ? 'checked' : '' }} />
-                                <label class="form-check-label small">Featured Product</label>
-                            </div>
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" name="best_selling"
-                                    {{ $product->best_selling ? 'checked' : '' }} />
-                                <label class="form-check-label small">Best Selling</label>
-                            </div>
-                            <div class="form-check form-switch mt-2">
-                                <input class="form-check-input" type="checkbox" name="is_visible"
-                                    {{ $product->is_visible ? 'checked' : '' }} />
-                                <label class="form-check-label small">Visible on Storefront</label>
-                            </div>
+                        <div class="small text-muted mb-2">
+                            <span>Created: {{ $product->created_at->format('d M, Y') }}</span><br>
+                            <span>Updated: {{ $product->updated_at->format('d M, Y h:ia') }}</span>
                         </div>
-
-                        <div class="mt-3 border-top pt-3">
-                            <h6 class="small fw-bold text-muted mb-2">Physical Properties</h6>
-                            <div class="mb-2">
-                                <label class="form-label small">Weight (kg)</label>
-                                <input type="number" step="0.01" name="weight" class="form-control form-control-sm" value="{{ $product->weight }}">
-                            </div>
-                            <div class="row g-1">
-                                <div class="col-4">
-                                    <label class="form-label small">Height (cm)</label>
-                                    <input type="number" step="0.01" name="height" class="form-control form-control-sm" value="{{ $product->height }}">
-                                </div>
-                                <div class="col-4">
-                                    <label class="form-label small">Width (cm)</label>
-                                    <input type="number" step="0.01" name="width" class="form-control form-control-sm" value="{{ $product->width }}">
-                                </div>
-                                <div class="col-4">
-                                    <label class="form-label small">Length (cm)</label>
-                                    <input type="number" step="0.01" name="length" class="form-control form-control-sm" value="{{ $product->length }}">
-                                </div>
-                            </div>
-                        </div>
+                        <a href="{{ route('seller.products.show', $product->slug) }}" class="btn btn-outline-secondary btn-sm w-100 d-inline-flex align-items-center justify-content-center gap-1" target="__blank">
+                            <i data-feather="external-link" class="icon-xs"></i> View Details
+                        </a>
                     </div>
-
-                    <div class="col-12">
-                        <button type="button" id="updateBtn" class="btn btn-primary d-inline-flex align-items-center gap-1">
-                            Update
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    @include('seller.products.partials.upload-images')
-
-    @php
-        $seo = $product->seo;
-    @endphp
-    <div class="card border-0 shadow-sm" style="border-radius: 12px;">
-        <div class="card-header bg-white">
-            <h5 class="fw-semibold mb-0">SEO & Social Share Settings</h5>
-        </div>
-
-        <div class="card-body">
-            <form id="productSeoForm" method="POST" enctype="multipart/form-data">
-                @csrf
-                <h5 class="fw-semibold mb-3">Meta Information (Search Engines)</h5>
-
-                <div class="mb-3">
-                    <label class="form-label">Meta Title
-                        <small class="text-muted">(max 70 characters)</small>
-                    </label>
-                    <input type="text" name="meta_title" maxlength="70" class="form-control"
-                        placeholder="e.g. Red Cotton T-Shirt – Buy Online" value="{{ $seo?->meta_title }}">
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Meta Description
-                        <small class="text-muted">(recommended up to 160 characters)</small>
-                    </label>
-                    <textarea name="meta_description" maxlength="160" rows="3" class="form-control"
-                        placeholder="Short, keyword-rich description shown in Google results.">{{ $seo?->meta_description }}</textarea>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Meta Keywords
-                        <small class="text-muted">(comma separated)</small>
-                    </label>
-                    <input type="text" name="meta_keywords" maxlength="255" class="form-control"
-                        placeholder="e.g. t-shirt, red cotton shirt, mens fashion" value="{{ $seo?->meta_keywords }}">
-                    <small class="text-muted d-block mt-1">
-                        *Keywords are optional; modern search engines rely more on content.
-                    </small>
-                </div>
-
-                <hr class="my-4">
-
-                <!-- Open Graph Section -->
-                <h5 class="fw-semibold mb-3">Open Graph (Social Media Preview)</h5>
-                <p class="small text-muted">
-                    These fields control how the product appears when shared on Facebook, WhatsApp,
-                    LinkedIn, etc. If left blank, the Meta Title/Description will be used.
-                </p>
-
-                <div class="mb-3">
-                    <label class="form-label">OG Title
-                        <small class="text-muted">(max 70 characters)</small>
-                    </label>
-                    <input type="text" name="og_title" maxlength="70" class="form-control"
-                        placeholder="Catchy title for social sharing" value="{{ $seo?->og_title }}">
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">OG Description
-                        <small class="text-muted">(recommended up to 160 characters)</small>
-                    </label>
-                    <textarea name="og_description" maxlength="160" rows="3" class="form-control"
-                        placeholder="Appears below the title when shared on social media.">{{ $seo?->og_description }}</textarea>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">OG Image</label>
-                    <input type="file" name="og_image" class="form-control">
-
-                    @if (!empty($seo->og_image))
-                        <div class="mt-2">
-                            <p class="mb-1">Current OG Image:</p>
-                            <img src="{{ storage_url($seo->og_image) }}" alt="OG Image" class="img-thumbnail"
-                                style="max-width: 200px;">
-                        </div>
-                    @endif
-
-                    <small class="text-muted d-block mt-1">
-                        Recommended size: <strong>1200 × 630 px</strong>, JPG/PNG/WebP, max 2 MB.
-                        This image will be shown as the preview when the link is shared.
-                    </small>
-                </div>
-                <div>
-                    <button type="button" id="seoUpdateBtn" class="btn btn-primary d-inline-flex align-items-center gap-1">
-                        Save SEO Settings
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div id="alertBox"></div>
-
-    <!-- Image Cropper Modal -->
-    <div class="modal fade" id="thumbnailCropperModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content border-0">
-                <div class="modal-header">
-                    <h5 class="modal-title">Crop Thumbnail</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-                        id="closeCropperModalBtn"></button>
-                </div>
-                <div class="modal-body text-center">
-                    <input type="file" id="thumbnailUploadInput" accept="image/*" class="form-control mb-3">
-                    <img id="thumbnailCropperImage" src="#" class="d-none img-fluid" style="max-height: 400px;">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-success d-inline-flex align-items-center gap-1" id="cropThumbnailBtn">Crop & Insert</button>
                 </div>
             </div>
         </div>
     </div>
+</form>
+
+<div class="modal fade" id="thumbnailCropperModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0">
+            <div class="modal-header"><h5 class="modal-title">Crop Thumbnail</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeCropperModalBtn"></button></div>
+            <div class="modal-body text-center">
+                <input type="file" id="thumbnailUploadInput" accept="image/*" class="form-control form-control-sm mb-3">
+                <img id="thumbnailCropperImage" src="#" class="d-none img-fluid" style="max-height:400px;">
+            </div>
+            <div class="modal-footer"><button type="button" class="btn btn-success btn-sm" id="cropThumbnailBtn"><i class="fas fa-check me-1"></i>Crop &amp; Insert</button></div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
-    <script>
-        $(".brand-select").select2({
-            tags: true,
-            theme: "bootstrap-5",
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.js"></script>
+<script>
+    feather.replace();
+
+    $(".brand-select").select2({ tags: true, theme: "bootstrap-5" });
+
+    $('#categorySelect').change(function() {
+        let catId = $(this).val(), hasOpts = false;
+        $('#subcategorySelect').val('').trigger('change');
+        $('#subcategorySelect option').each(function() {
+            if (catId == $(this).data('category')) { $(this).show(); hasOpts = true; }
+            else { $(this).hide(); }
         });
+        $('#subcategorySelect').attr('disabled', !hasOpts);
+    });
 
-        $("#files").on("change", function(event) {
-            var selectedFiles = event.target.files;
-            var $imageContainer = $("#selectedImages");
-
-            $imageContainer.empty();
-
-            $.each(selectedFiles, function(i, file) {
-                var reader = new FileReader();
-
-                reader.onload = function(e) {
-                    var $imgElement = $("<img>", {
-                        src: e.target.result,
-                        class: "col-2",
-                        css: {
-                            width: "100%",
-                            height: "150px"
-                        }
-                    });
-
-                    var $deleteButton = $("<button>", {
-                        text: "Delete",
-                        class: "btn btn-danger btn-sm mt-2",
-                        css: {
-                            width: "50%"
-                        }
-                    });
-
-                    var $imageWrapper = $("<div>", {
-                        class: "col-2 mb-2"
-                    });
-
-                    $imageWrapper.append($imgElement).append($deleteButton);
-                    $imageContainer.append($imageWrapper);
-
-                    $deleteButton.on("click", function() {
-                        $imageWrapper.remove();
-                    });
-                };
-
-                reader.readAsDataURL(file);
-            });
-        });
-
-        $(document).ready(function() {
-            if (!"{{ $product->subcategory_id ? 'true' : 'false' }}") {
-                $('#subcategorySelect').attr('disabled', true).val('');
-                $('#hiddenSubcategoryId').val('');
+    $('#updateBtn').on('click', function(e) {
+        e.preventDefault();
+        let formData = new FormData($('#productUpdateForm')[0]);
+        $.ajax({
+            url: "{{ route('seller.products.update', $product->slug) }}",
+            type: 'POST', data: formData, processData: false, contentType: false,
+            beforeSend: () => { $('#updateBtn').attr('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span> Updating...'); },
+            success: (res) => { showSuccessToast('Product updated!'); setTimeout(() => window.location.href = res.redirect, 1500); },
+            error: (xhr) => {
+                $('#updateBtn').attr('disabled', false).html('<i class="fas fa-save me-1"></i> Update Product');
+                if (xhr.status === 422) showErrorToast(Object.values(xhr.responseJSON.errors).map(i => i[0]).join('<br>'));
+                else showErrorToast(xhr.responseJSON?.message || 'Something went wrong.');
             }
         });
+    });
 
-        $('#categorySelect').change(function() {
-            var selectedCategoryId = $(this).val();
-            var hasOptions = false;
-
-            $('#subcategorySelect').val('').trigger('change');
-
-            $('#subcategorySelect option').each(function() {
-                var optionCategoryId = $(this).data('category');
-
-                if (selectedCategoryId == optionCategoryId || selectedCategoryId == "") {
-                    $(this).show();
-                    hasOptions = true;
-                } else {
-                    $(this).hide();
-                }
-            });
-
-            if (hasOptions == true) {
-                $('#subcategorySelect').attr('disabled', false);
-            } else {
-                $('#subcategorySelect').attr('disabled', true);
-                $('#hiddenSubcategoryId').val(null);
-            }
-
-            if (!selectedCategoryId) {
-                $('#subcategorySelect').val('').trigger('change');
-                $('#hiddenSubcategoryId').val(null);
-
-            }
+    $('#seoUpdateBtn').on('click', function(e) {
+        e.preventDefault();
+        let btn = $(this);
+        let formData = new FormData($('#productUpdateForm')[0]);
+        $.ajax({
+            url: "{{ route('seller.products.updateSeo', $product->slug) }}",
+            type: 'POST', data: formData, processData: false, contentType: false,
+            beforeSend: () => btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span> Saving...'),
+            success: (res) => { showSuccessToast(res.message); btn.prop('disabled', false).html('<i class="fas fa-save me-1"></i> Save SEO'); },
+            error: (xhr) => { btn.prop('disabled', false).html('<i class="fas fa-save me-1"></i> Save SEO'); showErrorToast(xhr.responseJSON?.message || 'Error saving SEO.'); }
         });
+    });
 
-        $('#updateBtn').on('click', function(e) {
-            e.preventDefault();
-
-            let form = $('#productUpdateForm')[0];
-            let formData = new FormData(form);
-
-            $.ajax({
-                url: "{{ route('seller.products.update', $product->slug) }}",
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                beforeSend: function() {
-                    $('#updateBtn').attr('disabled', true).text('Updating...');
-                },
-                success: function(response) {
-                    showSuccessToast('Product updated successfully!');
-
-                    setTimeout(function() {
-                        window.location.href = response.redirect;
-                    }, 1500);
-                },
-                error: function(xhr) {
-                    $('#updateBtn').attr('disabled', false).text('Update');
-
-                    if (xhr.status === 422) {
-                        let errors = xhr.responseJSON.errors;
-                        let messages = Object.values(errors)
-                            .map(item => item[0])
-                            .join('<br>');
-                        showErrorToast(messages);
-                    } else {
-                        let errorMessage = 'Something went wrong. Please try again.';
-                        if (xhr.responseJSON?.message) {
-                            errorMessage = xhr.responseJSON.message;
-                        } else if (xhr.responseText) {
-                            errorMessage = xhr.responseText;
-                        }
-                        showErrorToast(errorMessage);
-                    }
-                }
-            });
-        });
-
-        $('#seoUpdateBtn').on('click', function (e) {
-            e.preventDefault();
-
-            let button = $(this);
-            let form = $('#productSeoForm')[0];
-            let formData = new FormData(form);
-
-            $.ajax({
-                url: "{{ route('seller.products.updateSeo', $product->slug) }}",
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-
-                beforeSend: function () {
-                    button.prop('disabled', true).text('Updating...');
-                },
-
-                success: function (response) {
-                    showSuccessToast(response.message);
-                    button.prop('disabled', false).text('Save SEO Settings');
-                },
-
-                error: function (xhr) {
-                    button.prop('disabled', false).text('Save SEO Settings');
-
-                    if (xhr.status === 422) {
-                        let errors = xhr.responseJSON.errors;
-                        let messages = Object.values(errors)
-                            .map(item => item[0])
-                            .join('<br>');
-                        showErrorToast(messages);
-                    } else {
-                        let errorMessage = 'Something went wrong. Please try again.';
-                        if (xhr.responseJSON?.message) {
-                            errorMessage = xhr.responseJSON.message;
-                        } else if (xhr.responseText) {
-                            errorMessage = xhr.responseText;
-                        }
-                        showErrorToast(errorMessage);
-                    }
-                }
-            });
-        });
-
-    </script>
-
-    <script src="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.js"></script>
-    <script>
-        let cropper;
-        const modal = new bootstrap.Modal(document.getElementById('thumbnailCropperModal'));
-
-        const thumbnailInput = document.getElementById('thumbnailUploadInput');
-        const cropperImage = document.getElementById('thumbnailCropperImage');
-        const cropButton = document.getElementById('cropThumbnailBtn');
-
-        const imageInputComponent = document.querySelector('input[name="thumbnail"]');
-        const imagePreviewDiv = imageInputComponent.closest('.form-group').querySelector('.image-preview');
-        const removeImageBtn = imageInputComponent.closest('.form-group').querySelector('.remove-image');
-
-        // imagePreviewDiv.addEventListener('click', function(e) {
-        //     e.preventDefault();
-        //     e.stopPropagation();
-        //     modal.show();
-        // });
-
-        thumbnailInput.addEventListener('change', function() {
-            const file = this.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                cropperImage.src = e.target.result;
-                cropperImage.classList.remove('d-none');
-
-                if (cropper) cropper.destroy();
-                // cropper = new Cropper(cropperImage, {
-                //     aspectRatio: 1,
-                //     viewMode: 2,
-                //     // autoCropArea: 1,
-                //     // autoCropArea: 0.8,
-                //     minCropBoxWidth: 800,
-                //     minCropBoxHeight: 800,
-                //     cropBoxResizable: false,
-                //     movable: true,
-                //     zoomable: true,
-                // });
-                cropper = new Cropper(cropperImage, {
-                    aspectRatio: 3 / 4,
-                    viewMode: 1,
-                    autoCropArea: 1,
-                    responsive: true,
-                    movable: true,
-                    zoomable: true,
-                    scalable: false,
-                    cropBoxResizable: true,
-                });
-            };
-            reader.readAsDataURL(file);
-        });
-
-        cropButton.addEventListener('click', function() {
-            if (!cropper) return;
-
-            const cropperOptions = {
-                // width: 800,
-                // height: 800,
-                width: 900,
-                height: 1200,
-                imageSmoothingEnabled: true,
-                imageSmoothingQuality: 'high'
-            };
-
-            cropper.getCroppedCanvas(cropperOptions).toBlob(function(blob) {
-                const previewURL = URL.createObjectURL(blob);
-
-                imagePreviewDiv.innerHTML =
-                    `<img src="${previewURL}" class="w-100 h-100 position-absolute top-0 start-0 object-fit-cover" style="z-index: 1;">`;
-                removeImageBtn.classList.remove('d-none');
-
-                const file = new File([blob], "thumbnail.png", {
-                    type: 'image/png'
-                });
-                const dataTransfer = new DataTransfer();
-                dataTransfer.items.add(file);
-                imageInputComponent.files = dataTransfer.files;
-
-                modal.hide();
-                thumbnailInput.value = '';
-                cropperImage.classList.add('d-none');
-                cropper.destroy();
-                cropper = null;
-            }, 'image/png');
-        });
-
-        document.getElementById('closeCropperModalBtn').addEventListener('click', () => {
-            if (cropper) {
-                cropper.destroy();
-                cropper = null;
-            }
-            thumbnailInput.value = '';
-            cropperImage.classList.add('d-none');
-        });
-    </script>
+    let cropper;
+    const cm = new bootstrap.Modal(document.getElementById('thumbnailCropperModal'));
+    document.getElementById('thumbnailUploadInput').addEventListener('change', function() {
+        const file = this.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = document.getElementById('thumbnailCropperImage');
+            img.src = e.target.result; img.classList.remove('d-none');
+            if (cropper) cropper.destroy();
+            cropper = new Cropper(img, { aspectRatio: 3/4, viewMode: 1, autoCropArea: 1 });
+        };
+        reader.readAsDataURL(file);
+    });
+    document.getElementById('cropThumbnailBtn').addEventListener('click', function() {
+        if (!cropper) return;
+        cropper.getCroppedCanvas({ width: 900, height: 1200, imageSmoothingEnabled: true, imageSmoothingQuality: 'high' }).toBlob(function(blob) {
+            document.getElementById('thumbnailPreview').innerHTML = `<img src="${URL.createObjectURL(blob)}" class="img-fluid" style="max-width:100%;max-height:100%;object-fit:cover;">`;
+            const dt = new DataTransfer();
+            dt.items.add(new File([blob], "thumbnail.png", { type: 'image/png' }));
+            document.querySelector('input[name="thumbnail"]').files = dt.files;
+            cm.hide();
+            document.getElementById('thumbnailUploadInput').value = '';
+            document.getElementById('thumbnailCropperImage').classList.add('d-none');
+            cropper.destroy(); cropper = null;
+        }, 'image/png');
+    });
+    document.getElementById('closeCropperModalBtn').addEventListener('click', () => {
+        if (cropper) { cropper.destroy(); cropper = null; }
+        document.getElementById('thumbnailUploadInput').value = '';
+        document.getElementById('thumbnailCropperImage').classList.add('d-none');
+    });
+</script>
 @endpush

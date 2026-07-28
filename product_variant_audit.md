@@ -1,195 +1,185 @@
 # Product Variant Module Audit
 
-**Date:** 2026-07-29
-**Score:** 6/10
+**Date:** 2026-07-29  
+**Auditor:** Senior Laravel Architect  
+**Scope:** Database schema, CRUD flows, Multivendor security, Inventory, Validation  
+**Score:** 4.5/10
 
 ---
 
 ## Executive Summary
 
-The Product Variant module has a solid foundation with color/size specialization, stock source-of-truth via `product_stocks`, and frontend selection. However, it suffers from incomplete admin UI (no views for Colors or Sizes), missing admin routes, lack of variant lifecycle events, and no per-product SKU enforcement after dropping global uniqueness. The multivendor architecture is correctly respected — variants belong to products which belong to sellers — but no explicit variant-level policies or gates exist.
+The existing variant system has a functional foundation but was built incrementally — the addition of dedicated `colors`/`sizes` tables was retrofitted on top of a generic `options`/`option_values` system, leaving technical debt. Several critical features from the spec (barcode, weight, variant status/disable, variant images gallery, SKU per-product uniqueness, duplicate combination prevention, inventory transactions) are entirely missing.
 
 ---
 
-## Database Schema
+## Architecture Mapping
 
-### `product_variants` (Core table)
-
-| Column | Type | Notes |
-|--------|------|-------|
-| id | bigint (PK) | Auto-increment |
-| product_id | bigint (FK→products) | Nullable; defines seller ownership implicitly |
-| color_id | bigint (FK→colors) | Nullable, nullOnDelete |
-| size_id | bigint (FK→sizes) | Nullable, nullOnDelete |
-| sku | string | **No longer globally unique** (dropped in migration `2026_07_27_000003`) |
-| image | string (nullable) | Single image stored as path string; **no relation table** |
-| cost_price | decimal(10,2) | |
-| price | decimal(10,2) | |
-| compare_price | decimal(10,2) | Nullable |
-| stock_in | int (default 0) | Denormalized; SoT is `product_stocks` |
-| stock_out | int (default 0) | Denormalized |
-| low_stock_quantity | int (default 0) | |
-| timestamps | | |
-
-### `product_variant_options` (Pivot table)
-
-Connects variants to generic `option_values` for arbitrary attributes beyond color/size.
-
-### `colors` (Lookup table)
-
-| Column | Type |
-|--------|------|
-| id | bigint (PK) |
-| name | string |
-| slug | string |
-| hex_code | string(7) |
-| image | string (nullable) |
-
-### `sizes` (Lookup table)
-
-| Column | Type |
-|--------|------|
-| id | bigint (PK) |
-| name | string |
-| slug | string |
-| sort_order | int |
+| Spec Term | Existing Term | Status |
+|-----------|---------------|--------|
+| `attributes` | `options` | ✅ Exists (renamed) |
+| `attribute_values` | `option_values` | ✅ Exists (renamed) |
+| `variant_attribute_values` | `product_variant_options` (pivot) | ✅ Exists |
+| `product_variants.sku` | `product_variants.sku` | ⚠️ Global unique dropped, no per-product enforcement |
+| `product_variants.barcode` | — | ❌ Missing |
+| `product_variants.discount_price` | `compare_price` (inverse convention) | ⚠️ Concept exists with opposite naming |
+| `product_variants.cost_price` | `cost_price` | ✅ Exists |
+| `product_variants.weight` | — | ❌ Missing |
+| `product_variants.status` | — | ❌ Missing (no enable/disable) |
+| `product_variant_images` | — | ❌ Missing (single image column only) |
+| `inventory_transactions` | — | ❌ Missing (no stock journal) |
+| Variant combination uniqueness | — | ❌ Missing |
 
 ---
 
-## Audit Checklist
+## Detailed Audit
 
-| # | Criteria | Status | Score | Notes |
-|---|----------|--------|-------|-------|
-| 1 | **Variant Creation** | ✅ Present | 1/1 | `ProductVariantController::store()` + `ProductService::createVariants()` — batch create via JSON array |
-| 2 | **Attributes (Generic)** | ✅ Present | 1/1 | `Option`/`OptionValue` models; `options`/`option_values` tables; admin CRUD via `Admin\OptionController` |
-| 3 | **Attribute Values** | ✅ Present | 1/1 | OptionValues CRUD; linked via `product_variant_options` pivot |
-| 4 | **Color** | 🟡 Partial | 0.5/1 | `Color` model + table + `Admin\ColorController` exists; **no admin view, no admin routes, no sidebar link** |
-| 5 | **Size** | 🟡 Partial | 0.5/1 | Same as Color — model + table + controller exist; **no admin view, no admin routes, no sidebar link** |
-| 6 | **Variant Images** | 🟡 Partial | 0.3/1 | Stored as single string column on `product_variants.image`; **no `product_variant_images` table** — only one image per variant supported |
-| 7 | **Variant SKU** | 🟡 Partial | 0.5/1 | Auto-generated from product slug + color + size slugs; **global unique constraint dropped** but no per-product unique enforcement added |
-| 8 | **Variant Pricing** | ✅ Present | 1/1 | cost_price, price, compare_price per variant; calculatedPrice/calculatedDiscount accessors; discount display on frontend |
-| 9 | **Variant Stock** | ✅ Present | 0.8/1 | `product_stocks` as SoT with row-level locking; `StockManagerService` variant-aware; stock history with variant FK; denormalized stock_in/stock_out on variants table for quick reads |
-| 10 | **Multivendor Compatibility** | ✅ Present | 0.9/1 | Variants belong to products which belong to sellers; ownership verified via product seller in controller; **no explicit `VariantPolicy`** or gates |
+### 1. Database Tables
 
-**Total Score: 6/10**
+#### Existing Tables
 
----
+| Table | Purpose | Status |
+|-------|---------|--------|
+| `product_variants` | Core variant data | ⚠️ Missing barcode, weight, status, discount_price |
+| `product_variant_options` | Variant ↔ option values pivot | ✅ Exists |
+| `options` | Attributes (Color, Size, Storage...) | ✅ Exists (missing `status` column) |
+| `option_values` | Attribute values (Black, M, 128GB...) | ✅ Exists |
+| `category_options` | Category ↔ attribute binding | ✅ Exists |
+| `colors` | Specialized color lookup | ✅ Exists (retrofit, overlaps with options) |
+| `sizes` | Specialized size lookup | ✅ Exists (retrofit, overlaps with options) |
 
-## Detailed Findings
+#### Missing Tables
 
-### Strengths (Score = 1)
+| Table | Spec Requirement | Impact |
+|-------|-----------------|--------|
+| `product_variant_images` | Multiple images per variant, gallery support | Cannot upload separate images for each variant |
+| `inventory_transactions` | Stock journal (purchase, sale, adjustment) | No audit trail for variant stock changes |
 
-1. **Variant Creation** — Batch variant generation from color × size cartesian product. Variants can be created during product creation (`ProductService::createVariants`) or added later (`ProductVariantController::store`). Frontend JS generates the grid in `variant-generator.blade.php`.
+### 2. Missing Columns on `product_variants`
 
-2. **Generic Attributes** — `Option`/`OptionValue` models with a pivot `product_variant_options` allow attaching arbitrary attribute values to variants beyond color/size. Admin manages these via `Admin\OptionController`.
+| Column | Spec | Current State |
+|--------|------|---------------|
+| `barcode` | Unique product identifier | ❌ Not present |
+| `weight` | Per-variant shipping weight | ❌ Not present |
+| `status` | Enable/disable individual variant (boolean) | ❌ Not present |
+| `discount_price` | Sale/discounted price | ⚠️ `compare_price` used instead (inverse convention: compare > price = discounted) |
 
-3. **Attribute Values** — Full CRUD for option values with inline editing via modals.
+### 3. Validation Gaps
 
-4. **Variant Pricing** — Each variant has its own cost_price, price, compare_price. The `calculatedPrice()` accessor returns `compare_price ?? price` for effective display. Discount calculations in `calculatedDiscount()`.
+| Validation | Spec Requirement | Current State |
+|------------|-----------------|---------------|
+| SKU unique per product | `TSH-BLK-M` cannot exist twice for same product | ❌ Global unique dropped (`2026_07_27_000003`), no per-product replacement |
+| Barcode unique | `890123456789` cannot be duplicated | ❌ Entirely missing |
+| Duplicate combination | `Black + M` + `Black + M` not allowed | ❌ No check before insertion |
+| Variant min fields | Must have at least one attribute value | ❌ Not enforced |
 
-5. **Variant Stock** — Robust architecture: `product_stocks` table is the source of truth (with `product_variant_id` nullable FK), adjusted via `StockManagerService` with atomic transactions and row-level locking. Denormalized `stock_in`/`stock_out` on variants for fast reads. Stock history with variant FK.
+### 4. Security Issues
 
-6. **Multivendor** — All variants cascade from `product → seller`. Seller controllers validate ownership by checking `$variant->product->seller_id === get_seller_id()`. Resources include seller data.
+| Issue | Severity | Details |
+|-------|----------|---------|
+| No variant-specific policy | Medium | Ownership check is inline in controllers, no reusable `VariantPolicy` |
+| No FormRequest validation | Low | Validation is done inline with `$request->validate()` |
+| Color/Size delete cascade | Low | Colors/sizes use `nullOnDelete` — safe |
 
-### Weaknesses (Score < 1)
+### 5. Performance Issues
 
-1. **Colors — Missing Admin UI** — `Color` model, table (`colors`), and controller (`Admin\ColorController`) exist with full CRUD methods, but:
-   - **No routes** registered in `app/Domain/Product/routes.php`
-   - **No admin view** at `resources/views/admin/colors/index.blade.php`
-   - **No sidebar link** in admin sidebar
+| Issue | Impact | Details |
+|-------|--------|---------|
+| `$with = ['color', 'size']` on ProductVariant | Always eager-loads even when not needed | Forces 2 extra queries on every variant load |
+| No variant count cache on product | Listing queries N+1 risk | `$product->variants->count()` hits DB every time |
+| Stock denormalization drift | `stock_in`/`stock_out` can desync from `product_stocks` SoT | No scheduled reconciliation |
 
-2. **Sizes — Missing Admin UI** — Same as Colors.
-   - **No routes** registered in routes.php
-   - **No admin view** at `resources/views/admin/sizes/index.blade.php`
-   - **No sidebar link** in admin sidebar
+### 6. Features vs Spec
 
-3. **Variant Images** — Only one image per variant (string column). No `product_variant_images` table for multiple images per variant. The `imageUrl()` accessor provides a default fallback.
-
-4. **Variant SKU** — The migration `2026_07_27_000003` dropped the global unique constraint on `product_variants.sku` to allow same SKU across different products (multi-vendor concern). However, **no per-product unique constraint** was added, so a seller could accidentally create two variants with the same SKU for the same product.
-
-5. **Stock Denormalization** — `stock_in`/`stock_out` on `product_variants` is a cached/denormalized mirror of `product_stocks`. While this enables fast listing queries, it creates a risk of drift if the `StockManagerService` isn't the only code path that modifies stock.
-
-### Missing Entirely
-
-- **ProductVariantPolicy** (no gates/policies)
-- **Variant lifecycle events** (no `VariantCreated`/`VariantUpdated`/`VariantDeleted` events)
-- **FormRequest classes** for variant validation
-- **Bulk price sync** when parent product price changes
-- **ProductVariant repository** (access is direct via Eloquent)
-- **Attribute validation per category** (CategoryOption links exist but no enforcement)
-
----
-
-## Recommendations
-
-### Critical (Must Fix)
-
-| Priority | Issue | Fix |
-|----------|-------|-----|
-| P0 | Missing admin routes for Colors/Sizes | Add to `routes.php` |
-| P0 | Missing admin views for Colors/Sizes | Create `index.blade.php` following admin layouts |
-| P1 | Missing sidebar links for Colors/Sizes | Add under "Manage Catalogs" in admin sidebar |
-
-### High Priority (Should Fix)
-
-| Priority | Issue | Fix |
-|----------|-------|-----|
-| P1 | No per-product unique SKU | Add validation in `ProductVariantController::store` to check SKU uniqueness per `product_id` |
-| P2 | Variant image limited to 1 | Create `product_variant_images` table with sort_order, or allow multiple image uploads |
-
-### Medium Priority (Nice to Have)
-
-| Priority | Issue | Fix |
-|----------|-------|-----|
-| P2 | No FormRequest validation | Create `StoreVariantRequest`/`UpdateVariantRequest` |
-| P2 | No variant policies | Create `VariantPolicy` with `before()` for seller check |
-| P3 | No lifecycle events | Fire events on create/update/delete for hookable side effects |
-| P3 | No bulk price sync | Add "Apply product prices to all variants" button in seller UI |
+| Feature | Spec | Status |
+|---------|------|--------|
+| Enable variants toggle on product | Seller enables/disables variant mode | ❌ Missing |
+| Select attributes per product | Checkboxes for Color, Size, Storage... | ⚠️ Partial (color/size only, no generic attribute selection) |
+| Generate combinations | Cartesian product of selected values | ✅ Exists (color × size only) |
+| Edit variant price | Per-variant pricing | ✅ Exists |
+| Edit variant SKU | Per-variant SKU override | ⚠️ SKU is auto-generated, not easily editable |
+| Edit variant barcode | Per-variant barcode | ❌ Missing |
+| Upload variant image | Single variant image | ✅ Exists (single image only) |
+| Multiple variant images | Gallery per variant | ❌ Missing |
+| Variant enable/disable | Status toggle per variant | ❌ Missing |
+| Variant weight | Per-variant shipping weight | ❌ Missing |
+| Delete variant | Remove variant | ✅ Exists |
+| Stock deduction on order | Real-time stock sync | ⚠️ Partial (uses stock_in/stock_out directly, no inventory transactions journal) |
+| Inventory transactions | Purchase/sale/adjustment history | ❌ Missing |
 
 ---
 
-## Migration History (Variant-Related)
+## Implementation Roadmap
 
-| File | Purpose | Status |
-|------|---------|--------|
-| `2025_02_17_055937_create_product_variants_table.php` | Core variants table | ✅ Migrated |
-| `2025_06_30_094812_create_product_variant_options_table.php` | Variant ↔ option values pivot | ✅ Migrated |
-| `2026_07_27_000001_create_colors_table.php` | Colors lookup | ✅ Migrated |
-| `2026_07_27_000002_create_sizes_table.php` | Sizes lookup | ✅ Migrated |
-| `2026_07_27_000003_add_color_size_to_product_variants_table.php` | Added color_id/size_id FK; dropped global unique SKU | ✅ Migrated |
-| `2026_07_27_030000_drop_is_default_from_product_variants_table.php` | Dropped deprecated is_default column | ✅ Migrated |
-| `2026_07_25_000001_add_variant_id_to_product_stocks_table.php` | Added product_variant_id to stock SoT | ✅ Migrated |
-| `2026_07_25_200000_add_additional_indexes.php` | Added variant indexes across tables | ✅ Migrated |
+### P0 — Critical (Implement Now)
+
+| # | Task | Files |
+|---|------|-------|
+| 1 | **Migration: Add barcode, weight, status** to `product_variants` | New migration file |
+| 2 | **Migration: Create `product_variant_images`** table | New migration file |
+| 3 | **Update ProductVariant model**: Add new fields to casts, add `discountPrice` accessor, `variantImages()` hasMany, `optionValues()` belongsToMany, `scopeActive()`, `scopeForSeller()` | `ProductVariant.php` |
+| 4 | **Create ProductVariantImage model** | New model file |
+| 5 | **Add per-product SKU uniqueness validation** | `ProductVariantController::store()` |
+| 6 | **Add barcode uniqueness validation** | `ProductVariantController::store()` |
+| 7 | **Add duplicate combination prevention** | `ProductVariantController::store()` |
+| 8 | **Update ProductVariantController::update**: Handle barcode, weight, status fields | `ProductVariantController.php` |
+| 9 | **Update ProductService::createVariants**: Handle barcode, weight, status | `ProductService.php` |
+
+### P1 — High Priority
+
+| # | Task | Files |
+|---|------|-------|
+| 10 | **Update variant generator UI**: Add barcode, weight fields | `variant-generator.blade.php` |
+| 11 | **Update variant detail view**: Show status toggle, image gallery | `seller/products/details.blade.php` |
+| 12 | **Update product index**: Show variant status badge | `seller/products/index.blade.php` |
+| 13 | **Add status toggle to ProductVariantController** | `ProductVariantController.php` + routes |
+
+### P2 — Medium Priority
+
+| # | Task | Files |
+|---|------|-------|
+| 14 | Create `VariantPolicy` for reusable authorization | New policy file |
+| 15 | Create `StoreVariantRequest`/`UpdateVariantRequest` FormRequests | New form request files |
+| 16 | Add `is_variant` toggle on product create form | `create.blade.php` + `ProductService.php` |
+| 17 | Fire `VariantCreated`/`VariantUpdated`/`VariantDeleted` events | New event + listener files |
+| 18 | Add `options` table `status` column (enable/disable attributes) | Migration |
+
+### P3 — Low Priority
+
+| # | Task | Files |
+|---|------|-------|
+| 19 | Create `inventory_transactions` table + model + service | New module |
+| 20 | Add scheduled reconciliation between `product_variants.stock_in/out` and `product_stocks` | Console command |
+| 21 | Remove `$with = ['color', 'size']` from ProductVariant and use explicit eager loading | `ProductVariant.php` |
+| 22 | Add variant count cache column to `products` table | Migration |
 
 ---
 
-## File Map
+## Recommended Final Schema
 
-### Existing Files
-- `app/Domain/Product/Models/ProductVariant.php` — Variant model with color/size relations, accessors
-- `app/Domain/Product/Models/ProductVariantOption.php` — Pivot model
-- `app/Domain/Product/Models/Option.php` — Generic attribute model
-- `app/Domain/Product/Models/OptionValue.php` — Attribute value model
-- `app/Domain/Product/Models/Color.php` — Color lookup model
-- `app/Domain/Product/Models/Size.php` — Size lookup model
-- `app/Domain/Product/Models/CategoryOption.php` — Category-option pivot
-- `app/Domain/Product/Models/Product.php` — Has `variants()`, `groupedOptions()`, `toDetailsArray()`
-- `app/Domain/Product/Http/Controllers/Seller/ProductVariantController.php` — Batch store, update, destroy
-- `app/Domain/Product/Http/Controllers/Seller/ProductController.php` — Variant operations in product context
-- `app/Domain/Product/Http/Controllers/Seller/ProductStockController.php` — Variant stock adjustments
-- `app/Domain/Product/Http/Controllers/Admin/OptionController.php` — Option/attribute CRUD
-- `app/Domain/Product/Http/Controllers/Admin/ColorController.php` — **Missing routes + view**
-- `app/Domain/Product/Http/Controllers/Admin/SizeController.php` — **Missing routes + view**
-- `app/Domain/Product/Http/Controllers/Frontend/ProductController.php` — Variant lookup, filtering
-- `app/Domain/Product/Http/Resources/ProductVariantResource.php` — API transformer
-- `app/Domain/Product/Services/ProductService.php` — `createVariants()`, `duplicate()` with variants
-- `app/Domain/Product/Services/StockManagerService.php` — Variant-aware stock management
-- `resources/views/seller/products/variant-generator.blade.php` — JS variant grid generator
-- `resources/views/components/frontend/variant-selection-card.blade.php` — Frontend color/size selector
-- `resources/views/seller/products/details.blade.php` — Variant management UI
-- `resources/views/seller/products/inventory.blade.php` — Flat variants inventory view
-- `resources/views/admin/options/index.blade.php` — Admin option management
+```sql
+-- Attributes (renamed from options)
+attributes: id, name, status, created_at, updated_at
 
-### Missing Files (To Create)
-- `resources/views/admin/colors/index.blade.php`
-- `resources/views/admin/sizes/index.blade.php`
+-- Attribute values (renamed from option_values)
+attribute_values: id, attribute_id, value, created_at, updated_at
+
+-- Product variants (enhanced)
+product_variants:
+  id, product_id, sku, barcode, price, discount_price, cost_price,
+  stock_in, stock_out, low_stock_quantity, weight, image, status,
+  color_id (nullable FK→colors), size_id (nullable FK→sizes),
+  created_at, updated_at
+
+-- Variant attribute mapping (exists as product_variant_options)
+variant_attribute_values: variant_id, attribute_value_id
+
+-- Variant images (NEW)
+product_variant_images:
+  id, product_variant_id, image_path, is_primary, sort_order, created_at, updated_at
+
+-- Inventory transactions (NEW)
+inventory_transactions:
+  id, product_variant_id, type (purchase/sale/adjustment/return),
+  quantity, reference_type, reference_id, notes, created_at
+```

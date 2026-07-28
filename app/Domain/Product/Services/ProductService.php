@@ -193,15 +193,28 @@ class ProductService
                 $v['size_slug'] ?? null,
             ]);
 
+            $sku = strtoupper(Str::slug(implode('-', $skuParts)) ?: Str::random(8));
+
+            $skuExists = ProductVariant::where('product_id', $product->id)
+                ->where('sku', $sku)
+                ->exists();
+
+            if ($skuExists) {
+                $sku = $sku . '-' . Str::random(4);
+            }
+
             ProductVariant::create([
                 'product_id' => $product->id,
                 'color_id' => $v['color_id'] ?? null,
                 'size_id' => $v['size_id'] ?? null,
-                'sku' => strtoupper(Str::slug(implode('-', $skuParts)) ?: Str::random(8)),
+                'sku' => $sku,
+                'barcode' => $v['barcode'] ?? null,
                 'cost_price' => $v['cost_price'],
                 'price' => $v['price'],
                 'compare_price' => ! empty($v['compare_price']) ? $v['compare_price'] : null,
+                'weight' => $v['weight'] ?? null,
                 'stock_in' => $v['stock'] ?? 0,
+                'status' => true,
             ]);
         }
     }

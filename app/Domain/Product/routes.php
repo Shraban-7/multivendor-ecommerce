@@ -130,6 +130,7 @@ Route::middleware(['web', 'seller'])->prefix('seller')->as('seller.')->group(fun
     Route::prefix('product-variants')->as('productVariants.')->group(function () {
         Route::post('{product}/store', [ProductVariantController::class, 'store'])->name('store');
         Route::post('{variant}/update', [ProductVariantController::class, 'update'])->name('update');
+        Route::post('{variant}/toggle-status', [ProductVariantController::class, 'toggleStatus'])->name('toggleStatus');
         Route::post('{variant}/delete', [ProductVariantController::class, 'destroy'])->name('delete');
     });
 

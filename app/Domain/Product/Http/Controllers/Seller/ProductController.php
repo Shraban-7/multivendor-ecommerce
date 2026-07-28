@@ -134,10 +134,12 @@ class ProductController extends Controller
         $product->loadCount('variants', 'images', 'seo');
 
         $categories = $this->categoryRepo->getAllWithSubcategories();
+        $colors = Color::orderBy('name')->get();
+        $sizes = Size::orderBy('sort_order')->get();
         $brands = $this->brandRepo->getAll();
         $units = ProductUnit::all();
 
-        return view('seller.products.edit', compact('product', 'categories', 'brands', 'units'));
+        return view('seller.products.edit', compact('product', 'categories', 'colors', 'sizes', 'brands', 'units'));
     }
 
     public function update($slug, UpdateProductRequest $request)

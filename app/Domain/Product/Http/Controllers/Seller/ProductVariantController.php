@@ -29,6 +29,8 @@ class ProductVariantController extends Controller
             'variants.*.cost_price' => 'required|numeric|min:0',
             'variants.*.price' => 'required|numeric|min:0|gte:variants.*.cost_price',
             'variants.*.compare_price' => 'nullable|numeric|min:0|lt:variants.*.price',
+            'variants.*.barcode' => 'nullable|string|max:100|unique:product_variants,barcode',
+            'variants.*.weight' => 'nullable|numeric|min:0',
             'variants.*.image' => 'nullable|image|max:2048',
         ]);
 
@@ -49,20 +51,43 @@ class ProductVariantController extends Controller
                     continue;
                 }
 
-                $colorSlug = ! empty($v['color_id']) ? $colorsById->get($v['color_id'])?->slug : null;
-                $sizeSlug = ! empty($v['size_id']) ? $sizesById->get($v['size_id'])?->slug : null;
+                $colorId = $v['color_id'] ?? null;
+                $sizeId = $v['size_id'] ?? null;
+
+                $exists = ProductVariant::where('product_id', $product->id)
+                    ->where('color_id', $colorId)
+                    ->where('size_id', $sizeId)
+                    ->exists();
+
+                if ($exists) {
+                    return sendValidationError("Duplicate variant: this combination already exists.");
+                }
+
+                $colorSlug = ! empty($colorId) ? $colorsById->get($colorId)?->slug : null;
+                $sizeSlug = ! empty($sizeId) ? $sizesById->get($sizeId)?->slug : null;
                 $skuParts = array_filter([$product->slug, $colorSlug, $sizeSlug]);
                 $sku = strtoupper(Str::slug(implode('-', $skuParts)));
 
+                $skuExists = ProductVariant::where('product_id', $product->id)
+                    ->where('sku', $sku)
+                    ->exists();
+
+                if ($skuExists) {
+                    $sku = $sku . '-' . Str::random(4);
+                }
+
                 $variant = new ProductVariant;
                 $variant->product_id = $product->id;
-                $variant->color_id = $v['color_id'] ?? null;
-                $variant->size_id = $v['size_id'] ?? null;
+                $variant->color_id = $colorId;
+                $variant->size_id = $sizeId;
                 $variant->sku = $sku;
+                $variant->barcode = $v['barcode'] ?? null;
                 $variant->cost_price = $v['cost_price'];
                 $variant->price = $v['price'];
                 $variant->compare_price = ! empty($v['compare_price']) ? $v['compare_price'] : null;
+                $variant->weight = $v['weight'] ?? null;
                 $variant->stock_in = $v['stock'] ?? 0;
+                $variant->status = true;
 
                 if (isset($v['image']) && $request->hasFile("variants.$index.image")) {
                     $imageService = new ImageOptimizerService;
@@ -85,6 +110,9 @@ class ProductVariantController extends Controller
             'price' => 'required|numeric|min:0|gte:cost_price',
             'compare_price' => 'nullable|numeric|min:0|lt:price',
             'low_stock_quantity' => 'required',
+            'barcode' => 'nullable|string|max:100|unique:product_variants,barcode,' . $variant->id,
+            'weight' => 'nullable|numeric|min:0',
+            'status' => 'nullable|boolean',
             'image' => 'nullable|image|mimes:png,jpg,jpeg|max:4000',
         ]);
 
@@ -98,9 +126,26 @@ class ProductVariantController extends Controller
         $variant->cost_price = $request->cost_price;
         $variant->price = $request->price;
         $variant->compare_price = $request->filled('compare_price') ? $request->compare_price : null;
+        $variant->barcode = $request->filled('barcode') ? $request->barcode : null;
+        $variant->weight = $request->filled('weight') ? $request->weight : null;
+
+        if ($request->has('status')) {
+            $variant->status = $request->boolean('status');
+        }
+
         $variant->save();
 
         return redirect()->back()->with('success', 'Variant updated successfully.');
+    }
+
+    public function toggleStatus(ProductVariant $variant)
+    {
+        $variant->status = ! $variant->status;
+        $variant->save();
+
+        $state = $variant->status ? 'enabled' : 'disabled';
+
+        return redirect()->back()->with('success', "Variant {$state} successfully.");
     }
 
     public function destroy(ProductVariant $variant)
@@ -112,6 +157,7 @@ class ProductVariantController extends Controller
         CartItem::where('product_variant_id', $variant->id)->delete();
         PosCartItem::where('product_variant_id', $variant->id)->delete();
 
+        $variant->variantImages()->delete();
         $variant->delete();
 
         return redirect()->back()->with('success', 'Variant Deleted Successfully!');

@@ -3,152 +3,340 @@
 
 @push('styles')
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+    .section-card { border-radius: 12px; border: 0; box-shadow: 0 1px 3px rgba(0,0,0,.08); margin-bottom: 1.25rem; }
+    .section-card .card-header { background: #fff; border-bottom: 1px solid #e9ecef; padding: .85rem 1.25rem; }
+    .section-card .card-header h5 { font-size: .95rem; font-weight: 600; margin: 0; }
+    .section-card .card-body { padding: 1.25rem; }
+    .detail-label { color: #6c757d; font-size: .8rem; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; }
+    .detail-value { font-size: .95rem; }
+    .thumbnail-gallery-img { width: 52px; height: 52px; object-fit: cover; border-radius: 6px; cursor: pointer; border: 2px solid transparent; transition: border-color .15s; }
+    .thumbnail-gallery-img:hover, .thumbnail-gallery-img.active { border-color: #0d6efd; }
+</style>
 @endpush
 
 @section('content')
+<?php
+    $variantCount = $product->variants->count();
+    $totalStock = $product->variants->sum('stock_in') - $product->variants->sum('stock_out');
+    $margin = $product->price - $product->cost_price;
+    $marginPercent = $product->cost_price > 0 ? round(($margin / $product->cost_price) * 100, 1) : 0;
+    $seo = $product->seo;
+?>
 
-<?php $variantCount = $product->variants->count(); ?>
-
-<div class="d-none">
-    <input type="text" name="sku" value="{{ $product->sku }}">
-    <input type="text" name="cost_price" value="{{ $product->cost_price }}">
-    <input type="text" name="price" value="{{ $product->price }}">
-    <input type="text" name="compare_price" value="{{ $product->compare_price }}">
+{{-- Header --}}
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <div>
+        <h4 class="fw-bold mb-1 text-dark">{{ $product->name }}</h4>
+        <div class="d-flex align-items-center gap-2 small text-muted">
+            <span>SKU: <strong>{{ $product->sku }}</strong></span>
+            <span class="text-muted">|</span>
+            <span>Added: {{ $product->created_at->format('d M, Y h:i A') }}</span>
+            <span class="text-muted">|</span>
+            <span>
+                @if ($product->status == $product::STATUS_ACTIVE)
+                <span class="badge badge-soft-success">Active</span>
+                @elseif ($product->status == $product::STATUS_PENDING_APPROVAL)
+                <span class="badge badge-soft-warning">Waiting for Approval</span>
+                @elseif ($product->status == $product::STATUS_INACTIVE)
+                <span class="badge badge-soft-secondary">Inactive</span>
+                @elseif ($product->status == $product::STATUS_DELETED)
+                <span class="badge badge-soft-danger">Deleted</span>
+                @endif
+                @if ($product->is_visible)
+                <span class="badge badge-soft-success ms-1">Visible</span>
+                @else
+                <span class="badge badge-soft-secondary ms-1">Hidden</span>
+                @endif
+            </span>
+        </div>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+        <a href="{{ route('seller.products.edit', $product->slug) }}" class="btn btn-primary btn-sm d-inline-flex align-items-center gap-1">
+            <i data-feather="edit" class="icon-xs"></i> Edit Product
+        </a>
+        <a href="{{ route('seller.products.edit', $product->slug) }}#variantSection" class="btn btn-outline-primary btn-sm d-inline-flex align-items-center gap-1">
+            <i data-feather="layers" class="icon-xs"></i> Manage Variants
+        </a>
+        <button type="button" class="btn btn-outline-danger btn-sm d-inline-flex align-items-center gap-1"
+            data-bs-toggle="modal" data-bs-target="#deleteModal-{{ $product->id }}">
+            <i data-feather="trash-2" class="icon-xs"></i> Delete
+        </button>
+    </div>
 </div>
 
 <div class="row">
-    <div class="col-md-6">
-        <div class="card shadow-sm border-0 mb-4 px-3 pt-3 pb-2" style="border-radius: 12px;">
-            <div class="d-flex flex-wrap align-items-start gap-4">
-                <div style="width:180px; flex-shrink:0;">
-                    <div class="border rounded position-relative overflow-hidden bg-light">
-                        <img
-                            src="{{ $product->imageUrl }}"
-                            alt="{{ $product->name }}"
-                            class="img-fluid"
-                            style="width:100%; height:180px; object-fit:contain;" />
-                    </div>
-                    @if($product->images->count() > 0)
-                    <div class="d-flex flex-wrap gap-1 mt-2">
-                        @foreach($product->images as $image)
-                        <img
-                            src="{{ storage_url($image->image) }}"
-                            class="rounded border"
-                            style="width:42px; height:42px; object-fit:cover;"
-                            alt="Gallery image" />
-                        @endforeach
-                    </div>
-                    @endif
-                </div>
-                <div class="flex-grow-1">
-                    <div class="row g-0 small lh-sm">
-                        <div class="col-md-6">
-                            <div class="mb-2">
-                                <h2 class="mb-0 fw-semibold">{{ $product->name }}</h2>
-                            </div>
-                            <div class="mb-1"><span class="text-muted">Added:</span> {{ $product->created_at->format('d M, Y') }}</div>
-                            <div class="mb-1"><span class="text-muted">SKU:</span> {{ $product->sku }}</div>
-                            <div class="mb-1"><span class="text-muted">Brand:</span> {{ $product->brand->name ?? '—' }}</div>
-                            <div class="mb-1">
-                                <span class="text-muted">Category:</span>
-                                {{ $product->category->name ?? '—' }}
-                                @if($product->subcategory)
-                                › {{ $product->subcategory->name }}
-                                @endif
-                            </div>
-                            <div class="mb-1">
-                                <span class="text-muted">Unit:</span>
-                                {{ $product->unit_value ?? '' }} {{ $product->unit->short_name ?? '' }}
-                            </div>
-                            <div><span class="text-muted">Low Stock Qty:</span> {{ $product->low_stock_quantity ?? 0 }}</div>
+    {{-- LEFT COLUMN: Image gallery + info --}}
+    <div class="col-lg-7">
+        <div class="card section-card">
+            <div class="card-body">
+                <div class="row g-4">
+                    {{-- Main image --}}
+                    <div class="col-md-5 text-center">
+                        <div class="border rounded bg-light d-flex align-items-center justify-content-center overflow-hidden"
+                            style="height:300px;">
+                            <img id="mainProductImage"
+                                src="{{ $product->imageUrl }}"
+                                alt="{{ $product->name }}"
+                                class="img-fluid"
+                                style="max-height:100%; object-fit:contain;" />
                         </div>
-
-                        <div class="col-md-6">
-                            <div class="mb-1"><span class="text-muted">Cost Price:</span> {{ money($product->cost_price) }}</div>
-                            <div class="mb-1"><span class="text-muted">Price:</span> {{ money($product->price) }}</div>
-                            <div class="mb-1">
-                                <span class="text-muted">Compare Price:</span>
-                                {{ $product->compare_price !== null ? money($product->compare_price) : '—' }}
-                            </div>
-                            <div class="mb-1"><span class="text-muted">Payment Type:</span> {{ ucfirst($product->payment_type->title()) }}</div>
-                            <div><span class="text-muted">Status:</span>
-                                @if ($product->status == $product::STATUS_ACTIVE)
-                                <span class="badge badge-soft-success">Active</span>
-                                @elseif ($product->status == $product::STATUS_PENDING_APPROVAL)
-                                <span class="badge badge-soft-warning">Waiting for Approval</span>
-                                @elseif ($product->status == $product::STATUS_INACTIVE)
-                                <span class="badge badge-soft-secondary">Inactive</span>
-                                @elseif ($product->status == $product::STATUS_DELETED)
-                                <span class="badge badge-soft-danger">Deleted</span>
-                                @endif
-                            </div>
+                        @if($product->images->count() > 0)
+                        <div class="d-flex flex-wrap gap-1 mt-2 justify-content-center">
+                            <img src="{{ $product->imageUrl }}"
+                                class="thumbnail-gallery-img active"
+                                onclick="switchImage(this, '{{ $product->imageUrl }}')"
+                                alt="Thumbnail">
+                            @foreach($product->images as $image)
+                            <img src="{{ storage_url($image->image) }}"
+                                class="thumbnail-gallery-img"
+                                onclick="switchImage(this, '{{ storage_url($image->image) }}')"
+                                alt="Gallery image">
+                            @endforeach
                         </div>
+                        @endif
+                    </div>
+
+                    {{-- Product details --}}
+                    <div class="col-md-7">
+                        <table class="table table-sm table-borderless mb-0">
+                            <tr>
+                                <td class="detail-label" style="width:110px;">Category</td>
+                                <td class="detail-value">{{ $product->category->name ?? '—' }}
+                                    @if($product->subcategory) › {{ $product->subcategory->name }} @endif
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="detail-label">Brand</td>
+                                <td class="detail-value">{{ $product->brand->name ?? '—' }}</td>
+                            </tr>
+                            <tr>
+                                <td class="detail-label">Unit</td>
+                                <td class="detail-value">{{ $product->unit_value ?? '' }} {{ $product->unit->short_name ?? '' }}</td>
+                            </tr>
+                            <tr>
+                                <td class="detail-label">Payment</td>
+                                <td class="detail-value">{{ ucfirst($product->payment_type->title()) }}</td>
+                            </tr>
+                            <tr>
+                                <td class="detail-label">Tags</td>
+                                <td class="detail-value">
+                                    @forelse($product->tags as $tag)
+                                    <span class="badge bg-light text-dark me-1">{{ $tag->name }}</span>
+                                    @empty
+                                    <span class="text-muted">—</span>
+                                    @endforelse
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="detail-label">Variants</td>
+                                <td class="detail-value">
+                                    <span class="badge bg-primary">{{ $variantCount }}</span>
+                                    <a href="{{ route('seller.products.edit', $product->slug) }}#variantSection" class="small ms-2">Manage</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="detail-label">Total Stock</td>
+                                <td class="detail-value">
+                                    <span class="fw-semibold {{ $totalStock <= $product->low_stock_quantity ? 'text-danger' : '' }}">
+                                        {{ $totalStock }} {{ $product->unit->short_name ?? 'pcs' }}
+                                    </span>
+                                    @if($totalStock <= $product->low_stock_quantity)
+                                    <span class="badge badge-soft-danger ms-1">Low Stock</span>
+                                    @endif
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
-            </div>
-            <div class="d-flex gap-2 mt-3 border-top pt-3">
-                <a href="{{ route('seller.products.edit', $product->slug) }}" class="btn btn-primary btn-sm d-inline-flex align-items-center gap-1">
-                    <i data-feather="edit" class="icon-xs"></i> Edit Product
-                </a>
-
-                <button
-                    type="button"
-                    class="btn btn-outline-danger btn-sm d-inline-flex align-items-center gap-1"
-                    data-bs-toggle="modal"
-                    data-bs-target="#deleteModal-{{ $product->id }}">
-                    <i data-feather="trash-2" class="icon-xs"></i> Delete
-                </button>
             </div>
         </div>
     </div>
-    <div class="col-md-6">
-        <div class="mb-4 shadow-sm card border-0" style="border-radius: 12px;">
-            <div class="bg-white card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0 card-title fw-semibold">Stock</h5>
-                <div>
-                    <button type="button" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1" data-bs-toggle="modal"
-                        data-bs-target="#stockUpdateModal">
-                        <i class="fas fa-plus-circle"></i> Update
-                    </button>
+
+    {{-- RIGHT COLUMN: Pricing + profit summary --}}
+    <div class="col-lg-5">
+        <div class="card section-card h-100">
+            <div class="card-header">
+                <h5><i class="fas fa-chart-bar me-2 text-primary"></i>Pricing Summary</h5>
+            </div>
+            <div class="card-body d-flex flex-column justify-content-center">
+                <div class="row g-3 text-center">
+                    <div class="col-4">
+                        <div class="p-3 rounded-3 bg-light">
+                            <div class="detail-label mb-1">Cost Price</div>
+                            <div class="fs-5 fw-bold text-secondary">{{ money($product->cost_price) }}</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-3 rounded-3 bg-light">
+                            <div class="detail-label mb-1">Selling Price</div>
+                            <div class="fs-5 fw-bold text-primary">{{ money($product->price) }}</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-3 rounded-3 bg-light">
+                            <div class="detail-label mb-1">Compare Price</div>
+                            <div class="fs-5 fw-bold {{ $product->compare_price ? 'text-success' : 'text-muted' }}">
+                                {{ $product->compare_price ? money($product->compare_price) : '—' }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 mt-3">
+                        <div class="p-3 rounded-3 border">
+                            <div class="detail-label mb-1">Profit Margin</div>
+                            <div class="fs-5 fw-bold {{ $margin > 0 ? 'text-success' : 'text-danger' }}">
+                                {{ money($margin) }} ({{ $marginPercent }}%)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 mt-3">
+                        <div class="p-3 rounded-3 border">
+                            <div class="detail-label mb-1">Low Stock Threshold</div>
+                            <div class="fs-5 fw-bold">{{ $product->low_stock_quantity }}</div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="card-body" style="max-height: 220px; overflow-y:scroll;">
+        </div>
+    </div>
+</div>
+
+{{-- Tabs / Sections --}}
+<ul class="nav nav-tabs mb-3" id="productTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="variants-tab" data-bs-toggle="tab" data-bs-target="#variants" type="button" role="tab">
+            <i class="fas fa-layer-group me-1"></i>Variants ({{ $variantCount }})
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="stock-tab" data-bs-toggle="tab" data-bs-target="#stock" type="button" role="tab">
+            <i class="fas fa-boxes me-1"></i>Stock History
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab">
+            <i class="fas fa-align-left me-1"></i>Description
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="shipping-tab" data-bs-toggle="tab" data-bs-target="#shipping" type="button" role="tab">
+            <i class="fas fa-truck me-1"></i>Shipping
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="seo-tab" data-bs-toggle="tab" data-bs-target="#seo" type="button" role="tab">
+            <i class="fas fa-search me-1"></i>SEO
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content" id="productTabsContent">
+    {{-- TAB: Variants --}}
+    <div class="tab-pane fade show active" id="variants" role="tabpanel">
+        <div class="card section-card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5><i class="fas fa-layer-group me-2 text-primary"></i>All Variants</h5>
+                <a href="{{ route('seller.products.edit', $product->slug) }}#variantSection" class="btn btn-primary btn-sm d-inline-flex align-items-center gap-1">
+                    <i class="fas fa-plus"></i> Add Variant
+                </a>
+            </div>
+            <div class="card-body p-0">
+                @if($variantCount > 0)
                 <div class="table-responsive">
-                    <table class="table table-sm table-hover table-bordered align-middle">
-                        <thead class="table-light text-center">
+                    <table class="table table-sm table-hover align-middle mb-0">
+                        <thead class="table-light">
                             <tr>
-                                <th scope="col" class="small fw-semibold text-muted">Date</th>
-                                @if ($variantCount > 0)
-                                <th scope="col" class="small fw-semibold text-muted">Variant</th>
-                                @endif
-                                <th scope="col" class="small fw-semibold text-muted">Quantity</th>
-                                <th scope="col" class="small fw-semibold text-muted">Action</th>
+                                <th class="small fw-semibold text-muted">Image</th>
+                                <th class="small fw-semibold text-muted">SKU</th>
+                                <th class="small fw-semibold text-muted">Barcode</th>
+                                <th class="small fw-semibold text-muted">Options</th>
+                                <th class="small fw-semibold text-muted text-end">Cost</th>
+                                <th class="small fw-semibold text-muted text-end">Price</th>
+                                <th class="small fw-semibold text-muted text-end">Compare</th>
+                                <th class="small fw-semibold text-muted text-end">Weight</th>
+                                <th class="small fw-semibold text-muted text-center">Stock</th>
+                                <th class="small fw-semibold text-muted text-center">Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($product->stock_history as $history)
+                            @foreach($product->variants as $variant)
                             <tr>
-                                <td class="text-nowrap small">
-                                    {{ $history->created_at->format('d/m/y h:i A') }}
+                                <td><img src="{{ $variant->imageUrl }}" class="rounded" style="width:36px;height:36px;object-fit:cover;"></td>
+                                <td class="text-monospace small">{{ $variant->sku }}</td>
+                                <td class="small text-muted">{{ $variant->barcode ?? '—' }}</td>
+                                <td><span class="badge badge-soft-secondary">{{ $variant->label }}</span></td>
+                                <td class="small text-end">{{ money($variant->cost_price) }}</td>
+                                <td class="text-end">{{ money($variant->price) }}</td>
+                                <td class="text-end">{{ $variant->compare_price ? money($variant->compare_price) : '—' }}</td>
+                                <td class="small text-end">{{ $variant->weight ? $variant->weight.' kg' : '—' }}</td>
+                                <td class="text-center">
+                                    <span class="badge {{ $variant->availableStock > 0 ? 'bg-primary' : 'bg-secondary' }}">
+                                        {{ $variant->availableStock }}
+                                    </span>
                                 </td>
-                                @if ($variantCount > 0)
-                                <td class="text-nowrap small">
-                                    {{ $history->variant?->label === null ? 'Default' : $history->variant->label }}
+                                <td class="text-center">
+                                    @if($variant->status)
+                                    <span class="badge badge-soft-success">Active</span>
+                                    @else
+                                    <span class="badge badge-soft-secondary">Disabled</span>
+                                    @endif
                                 </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                @else
+                <div class="text-center text-muted py-4">
+                    <p class="mb-1">No variants configured for this product.</p>
+                    <a href="{{ route('seller.products.edit', $product->slug) }}#variantSection" class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus"></i> Add Variants
+                    </a>
+                </div>
+                @endif
+            </div>
+        </div>
+    </div>
+
+    {{-- TAB: Stock History --}}
+    <div class="tab-pane fade" id="stock" role="tabpanel">
+        <div class="card section-card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5><i class="fas fa-boxes me-2 text-primary"></i>Stock History</h5>
+                <button type="button" class="btn btn-outline-primary btn-sm d-inline-flex align-items-center gap-1"
+                    data-bs-toggle="modal" data-bs-target="#stockUpdateModal">
+                    <i class="fas fa-plus-circle"></i> Update Stock
+                </button>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive" style="max-height:400px; overflow-y:auto;">
+                    <table class="table table-sm table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="small fw-semibold text-muted">Date</th>
+                                @if($variantCount > 0)
+                                <th class="small fw-semibold text-muted">Variant</th>
                                 @endif
-                                <td class="text-center small">
-                                    {{ abs($history->quantity ?? 0) }}
-                                </td>
+                                <th class="small fw-semibold text-muted text-center">Qty</th>
+                                <th class="small fw-semibold text-muted text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($product->stock_history as $history)
+                            <tr>
+                                <td class="text-nowrap small">{{ $history->created_at->format('d/m/y h:i A') }}</td>
+                                @if($variantCount > 0)
+                                <td class="text-nowrap small">{{ $history->variant?->label ?? 'Default' }}</td>
+                                @endif
+                                <td class="text-center small">{{ abs($history->quantity ?? 0) }}</td>
                                 <td class="text-center small">
                                     @switch($history->type)
                                     @case(\App\Domain\Product\Enums\StockType::ADD_STOCK)
                                     <span class="badge badge-soft-success">Added</span>
                                     @break
-
                                     @case(\App\Domain\Product\Enums\StockType::REMOVE_STOCK)
                                     <span class="badge badge-soft-danger">Removed</span>
                                     @break
-
                                     @case(\App\Domain\Product\Enums\StockType::SET_EXACT_STOCK)
                                     <span class="badge badge-soft-warning">Set Exact</span>
                                     @break
@@ -157,7 +345,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="4" class="text-center text-muted">No stock history available</td>
+                                <td colspan="{{ $variantCount > 0 ? 4 : 3 }}" class="text-center text-muted py-4">No stock history</td>
                             </tr>
                             @endforelse
                         </tbody>
@@ -166,174 +354,138 @@
             </div>
         </div>
     </div>
-</div>
 
-<div class="card shadow-sm border-0 mb-4" style="border-radius: 12px;">
-    <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
-        <h5 class="fw-semibold mb-0">@if($variantCount > 0) {{ $variantCount }} @endif Variants</h5>
-        <button class="btn btn-light btn-sm border d-inline-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#addVariantModal">+ Add Variants</button>
+    {{-- TAB: Description --}}
+    <div class="tab-pane fade" id="description" role="tabpanel">
+        <div class="card section-card">
+            <div class="card-header">
+                <h5><i class="fas fa-align-left me-2 text-primary"></i>Description & Specifications</h5>
+            </div>
+            <div class="card-body">
+                <h6 class="fw-semibold text-muted small text-uppercase">Short Description</h6>
+                <p class="mb-4">{{ $product->short_description ?? '—' }}</p>
+
+                <h6 class="fw-semibold text-muted small text-uppercase">Full Description</h6>
+                <div class="mb-4">{!! nl2br(e($product->description ?? '—')) !!}</div>
+
+                @if($product->specifications)
+                <h6 class="fw-semibold text-muted small text-uppercase">Specifications</h6>
+                <table class="table table-sm table-borderless" style="max-width:400px;">
+                    @foreach($product->specifications as $key => $value)
+                    <tr>
+                        <td class="fw-semibold text-muted" style="width:140px;">{{ $key }}</td>
+                        <td>{{ $value }}</td>
+                    </tr>
+                    @endforeach
+                </table>
+                @endif
+            </div>
+        </div>
     </div>
-    @if($variantCount > 0)
-    <div class="table-responsive">
-        <table class="table align-middle mb-0 table-hover">
-            <thead class="table-light">
-                <tr>
-                    <th scope="col" class="small fw-semibold text-muted">Image</th>
-                    <th scope="col" class="small fw-semibold text-muted">SKU</th>
-                    <th scope="col" class="small fw-semibold text-muted">Options</th>
-                    <th scope="col" class="small fw-semibold text-muted">Cost Price</th>
-                    <th scope="col" class="small fw-semibold text-muted">Price</th>
-                    <th scope="col" class="small fw-semibold text-muted">Compare Price</th>
-                    <th scope="col" class="small fw-semibold text-muted">Stock</th>
-                    <th scope="col" class="small fw-semibold text-muted">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($product->variants as $variant)
-                <tr>
-                    <td>
-                        <img src="{{ $variant->imageUrl }}" class="img-thumbnail" style="width:45px; height:45px; object-fit:cover;" alt="variant-img">
-                    </td>
-                    <td class="text-monospace small">
-                        {{ $variant->sku }}
-                    </td>
-                    <td><span class="badge badge-soft-secondary me-1">{{ $variant->label }}</span></td>
-                    <td>{{ money($variant->cost_price) }}</td>
-                    <td>{{ money($variant->price) }}</td>
-                    <td>{{ $variant->compare_price !== null ? money($variant->compare_price) : '—' }}</td>
-                    <td>{{ $variant->availableStock }}</td>
-                    <td>
-                        <div class="d-flex mt-2">
-                            <button class="btn btn-light border btn-sm me-1 d-inline-flex align-items-center" data-bs-toggle="modal"
-                                data-bs-target="#editVariantModal{{ $variant->id }}">
-                                <i data-feather="edit" class="icon-xs"></i>
-                            </button>
 
-                            @if ($variant->stock_out <= 0)
-                                <button class="btn btn-danger border btn-sm d-inline-flex align-items-center" data-bs-toggle="modal"
-                                data-bs-target="#deleteVariantModal{{ $variant->id }}">
-                                <i data-feather="trash" class="icon-xs"></i>
-                                </button>
-                                @endif
-                        </div>
-                    </td>
-                </tr>
-                <div class="modal fade" id="editVariantModal{{ $variant->id }}" tabindex="-1" aria-labelledby="editVariantModalLabel{{ $variant->id }}" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content border-0">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="editVariantModalLabel{{ $variant->id }}">
-                                    Edit Variant ({{ $variant->label }})
-                                </h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <form action="{{ route('seller.productVariants.update', $variant->id) }}" method="POST" enctype="multipart/form-data">
-                                @csrf
-                                <div class="modal-body">
-                                    <div class="row">
-                                        <div class="mb-3 col-6">
-                                            <label class="form-label">Cost Price</label>
-                                            <div class="input-group">
-                                                <span class="input-group-text">{{ currency() }}</span>
-                                                <input type="number" class="form-control" name="cost_price" step="0.01" value="{{ $variant->cost_price }}" required>
-                                            </div>
-                                        </div>
-                                        <div class="mb-3 col-6">
-                                            <label class="form-label">Price</label>
-                                            <div class="input-group">
-                                                <span class="input-group-text">{{ currency() }}</span>
-                                                <input type="number" class="form-control" name="price" step="0.01" value="{{ $variant->price }}" required>
-                                            </div>
-                                        </div>
-
-                                        <div class="mb-3 col-md-6">
-                                            <label class="form-label">Compare Price</label>
-                                            <div class="input-group">
-                                                <span class="input-group-text">{{ currency() }}</span>
-                                                <input name="compare_price" type="number" step="0.01" min="0" value="{{ $variant->compare_price }}" class="form-control" placeholder="Optional sale price">
-                                            </div>
-                                        </div>
-                                        <div class="mb-3 col-md-12">
-                                            <label class="form-label">Low Stock Quantity</label>
-                                            <input name="low_stock_quantity" type="number" value="{{ $variant->low_stock_quantity }}" class="form-control">
-                                        </div>
-                                        <div class="col-12 mb-3">
-                                            <x-image-input name="image" :image="$variant->imageUrl" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Cancel</button>
-                                    <button type="submit" class="btn btn-success d-inline-flex align-items-center gap-1">Update</button>
-                                </div>
-                            </form>
-                        </div>
+    {{-- TAB: Shipping --}}
+    <div class="tab-pane fade" id="shipping" role="tabpanel">
+        <div class="card section-card">
+            <div class="card-header">
+                <h5><i class="fas fa-truck me-2 text-primary"></i>Shipping & Manufacturer</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <table class="table table-sm table-borderless mb-0">
+                            <tr>
+                                <td class="detail-label" style="width:140px;">Weight</td>
+                                <td class="detail-value">{{ $product->weight ? $product->weight.' kg' : '—' }}</td>
+                            </tr>
+                            <tr>
+                                <td class="detail-label">Dimensions</td>
+                                <td class="detail-value">
+                                    {{ $product->height ? $product->height.' × '.$product->width.' × '.$product->length.' cm' : '—' }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="detail-label">Country</td>
+                                <td class="detail-value">{{ $product->country_of_origin ?? '—' }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-sm table-borderless mb-0">
+                            <tr>
+                                <td class="detail-label" style="width:140px;">Manufacturer</td>
+                                <td class="detail-value">{{ $product->manufacturer_name ?? '—' }}</td>
+                            </tr>
+                            <tr>
+                                <td class="detail-label">Details</td>
+                                <td class="detail-value">{{ $product->manufacturer_details ?? '—' }}</td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
 
-                <!-- Delete Variant Modal -->
-                <div class="modal fade" id="deleteVariantModal{{ $variant->id }}" tabindex="-1"
-                    aria-labelledby="deleteModalLabel-{{ $variant->id }}" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content border-0">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Confirm Delete</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <div class="text-center modal-body">
-                                <div class="alert alert-warning d-flex align-items-center justify-content-center"
-                                    role="alert">
-                                    <i class="bi bi-exclamation-circle-fill me-2 text-danger"
-                                        style="font-size: 1.5rem;"></i>
-                                    <p class="mb-0 text-secondary">
-                                        Are you sure you want to delete this variant
-                                        ({{ $variant->sku }})?
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="modal-footer justify-content-center">
-                                <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">Cancel</button>
-                                <form action="{{ route('seller.productVariants.delete', $variant->id) }}"
-                                    method="POST">
-                                    @csrf
-                                    <button type="submit" class="btn btn-danger d-inline-flex align-items-center gap-1">Delete</button>
-                                </form>
-                            </div>
-                        </div>
+    {{-- TAB: SEO --}}
+    <div class="tab-pane fade" id="seo" role="tabpanel">
+        <div class="card section-card">
+            <div class="card-header">
+                <h5><i class="fas fa-search me-2 text-primary"></i>SEO & Social Share</h5>
+            </div>
+            <div class="card-body">
+                @if($seo)
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <h6 class="fw-semibold text-muted small text-uppercase">Meta Title</h6>
+                        <p>{{ $seo->meta_title ?? '—' }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="fw-semibold text-muted small text-uppercase">Meta Keywords</h6>
+                        <p>{{ $seo->meta_keywords ?? '—' }}</p>
+                    </div>
+                    <div class="col-12">
+                        <h6 class="fw-semibold text-muted small text-uppercase">Meta Description</h6>
+                        <p>{{ $seo->meta_description ?? '—' }}</p>
+                    </div>
+                    <hr>
+                    <h6 class="fw-semibold">Open Graph</h6>
+                    <div class="col-md-6">
+                        <h6 class="fw-semibold text-muted small text-uppercase">OG Title</h6>
+                        <p>{{ $seo->og_title ?? '—' }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="fw-semibold text-muted small text-uppercase">OG Image</h6>
+                        @if(!empty($seo->og_image))
+                        <img src="{{ storage_url($seo->og_image) }}" class="img-thumbnail" style="max-width:150px;">
+                        @else
+                        <p class="text-muted">—</p>
+                        @endif
+                    </div>
+                    <div class="col-12">
+                        <h6 class="fw-semibold text-muted small text-uppercase">OG Description</h6>
+                        <p>{{ $seo->og_description ?? '—' }}</p>
                     </div>
                 </div>
-
-                @endforeach
-            </tbody>
-        </table>
+                @else
+                <p class="text-muted mb-0">No SEO data configured.</p>
+                @endif
+            </div>
+        </div>
     </div>
-    @else
-    <div class="card-body text-center text-muted">
-        <p class="mb-0">No variants found for this product.</p>
-    </div>
-    @endif
 </div>
 
-<div id="alertBox"></div>
-
-<div class="modal fade" id="deleteModal-{{ $product->id }}" tabindex="-1"
-    aria-labelledby="deleteModalLabel-{{ $product->id }}" aria-hidden="true">
+{{-- Delete Modal --}}
+<div class="modal fade" id="deleteModal-{{ $product->id }}" tabindex="-1" aria-labelledby="deleteModalLabel-{{ $product->id }}" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel-{{ $product->id }}">Confirm
-                    Delete</h5>
+                <h5 class="modal-title" id="deleteModalLabel-{{ $product->id }}">Confirm Delete</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="text-center modal-body">
                 <div class="alert alert-warning d-flex" role="alert">
                     <i class="bi bi-exclamation-circle-fill me-2 text-danger" style="font-size: 1.5rem;"></i>
-                    <p class="mt-1 text-secondary">
-                        Are you sure you want to delete this Product?
-                    </p>
+                    <p class="mt-1 text-secondary">Are you sure you want to delete this Product?</p>
                 </div>
             </div>
             <div class="modal-footer">
@@ -348,6 +500,7 @@
     </div>
 </div>
 
+{{-- Stock Update Modal --}}
 <div class="modal fade" id="stockUpdateModal" tabindex="-1" aria-hidden="true" data-id="{{ $product->id }}">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0">
@@ -357,92 +510,62 @@
                     <h4 class="modal-title fw-bold">Update Inventory</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <div class="modal-body">
                     <div class="mb-3">
                         <button class="btn btn-outline-info btn-sm d-inline-flex align-items-center gap-1" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#stockInstruction" aria-expanded="false"
-                            aria-controls="stockInstruction">
-                            ℹ️ স্টক আপডেট নির্দেশনা দেখুন
+                            data-bs-target="#stockInstruction" aria-expanded="false" aria-controls="stockInstruction">
+                            ℹ️ Stock update instructions
                         </button>
                         <div class="collapse mt-2" id="stockInstruction">
-                            <div class="alert alert-info mb-0" role="alert">
-                                <h5 class="alert-heading">📦 স্টক আপডেট করার নিয়ম</h5>
-                                <ul class="mb-0">
-                                    <li><strong>স্টক অ্যাকশন</strong> অপশন থেকে নির্বাচন করুন:</li>
-                                    <ul>
-                                        <li><strong>স্টক যুক্ত করুন (Add Stock)</strong> – নতুন পণ্য যোগ করতে।</li>
-                                        <li><strong>স্টক বাদ দিন (Remove Stock)</strong> – স্টক কমাতে।</li>
-                                        <li><strong>স্টক নির্ধারণ করুন (Set Exact Stock)</strong> – স্টক ঠিক করে
-                                            দিতে।</li>
-                                    </ul>
-                                    <li><strong>Qty</strong> ঘরে সংখ্যাটি দিন (যেমন: 5, 10)।</li>
-                                    <li><strong>Note</strong> ঘরে চাইলে মন্তব্য দিন (ঐচ্ছিক)।</li>
-                                    <li>বর্তমান স্টক পরিমাণ ব্র্যাকেটের ভিতরে দেখানো হয়েছে।</li>
+                            <div class="alert alert-info mb-0">
+                                <ul class="mb-0 small">
+                                    <li><strong>Add Stock</strong> – Increase stock quantity.</li>
+                                    <li><strong>Remove Stock</strong> – Decrease stock.</li>
+                                    <li><strong>Set Exact Stock</strong> – Set to a precise number.</li>
                                 </ul>
                             </div>
                         </div>
                     </div>
 
-                    @if ($variantCount > 0)
-                    @foreach ($product->variants as $variant)
-                    <h5>{{ $variant->label ?? "Default" }}</h5>
-                    <div class="row">
+                    @if($variantCount > 0)
+                    @foreach($product->variants as $variant)
+                    <h6 class="fw-semibold">{{ $variant->label ?? 'Default' }}</h6>
+                    <div class="row mb-3">
                         <div class="col-md-4 mb-2">
-                            <select class="form-select form-select-sm"
-                                name="stock_action[{{ $variant->id }}]">
-                                <option value="{{ \App\Domain\Product\Enums\StockType::ADD_STOCK->value }}">
-                                    {{ \App\Domain\Product\Enums\StockType::ADD_STOCK->label() }}
-                                </option>
-                                <option value="{{ \App\Domain\Product\Enums\StockType::REMOVE_STOCK->value }}">
-                                    {{ \App\Domain\Product\Enums\StockType::REMOVE_STOCK->label() }}
-                                </option>
-                                <option value="{{ \App\Domain\Product\Enums\StockType::SET_EXACT_STOCK->value }}">
-                                    {{ \App\Domain\Product\Enums\StockType::SET_EXACT_STOCK->label() }}
-                                </option>
+                            <select class="form-select form-select-sm" name="stock_action[{{ $variant->id }}]">
+                                <option value="{{ \App\Domain\Product\Enums\StockType::ADD_STOCK->value }}">{{ \App\Domain\Product\Enums\StockType::ADD_STOCK->label() }}</option>
+                                <option value="{{ \App\Domain\Product\Enums\StockType::REMOVE_STOCK->value }}">{{ \App\Domain\Product\Enums\StockType::REMOVE_STOCK->label() }}</option>
+                                <option value="{{ \App\Domain\Product\Enums\StockType::SET_EXACT_STOCK->value }}">{{ \App\Domain\Product\Enums\StockType::SET_EXACT_STOCK->label() }}</option>
                             </select>
                         </div>
                         <div class="col-md-4 mb-2">
                             <div class="input-group input-group-sm">
-                                <span class="input-group-text">Qty
-                                    ({{ $variant->stock_in - $variant->stock_out }})
-                                </span>
-                                <input type="number" class="form-control"
-                                    name="stock_quantity[{{ $variant->id }}]" min="1">
+                                <span class="input-group-text">Qty ({{ $variant->availableStock }})</span>
+                                <input type="number" class="form-control" name="stock_quantity[{{ $variant->id }}]" min="1">
                             </div>
                         </div>
                         <div class="col-md-4 mb-2">
                             <div class="input-group input-group-sm">
                                 <span class="input-group-text">Note</span>
-                                <input type="text" class="form-control"
-                                    name="stock_note[{{ $variant->id }}]">
+                                <input type="text" class="form-control" name="stock_note[{{ $variant->id }}]">
                             </div>
                         </div>
                     </div>
-                    <hr>
+                    @if(!$loop->last)<hr>@endif
                     @endforeach
                     @else
                     <div class="row">
                         <div class="col-md-4 mb-2">
                             <select class="form-select form-select-sm" name="stock_action_product">
-                                <option value="{{ \App\Domain\Product\Enums\StockType::ADD_STOCK->value }}">
-                                    {{ \App\Domain\Product\Enums\StockType::ADD_STOCK->label() }}
-                                </option>
-                                <option value="{{ \App\Domain\Product\Enums\StockType::REMOVE_STOCK->value }}">
-                                    {{ \App\Domain\Product\Enums\StockType::REMOVE_STOCK->label() }}
-                                </option>
-                                <option value="{{ \App\Domain\Product\Enums\StockType::SET_EXACT_STOCK->value }}">
-                                    {{ \App\Domain\Product\Enums\StockType::SET_EXACT_STOCK->label() }}
-                                </option>
+                                <option value="{{ \App\Domain\Product\Enums\StockType::ADD_STOCK->value }}">{{ \App\Domain\Product\Enums\StockType::ADD_STOCK->label() }}</option>
+                                <option value="{{ \App\Domain\Product\Enums\StockType::REMOVE_STOCK->value }}">{{ \App\Domain\Product\Enums\StockType::REMOVE_STOCK->label() }}</option>
+                                <option value="{{ \App\Domain\Product\Enums\StockType::SET_EXACT_STOCK->value }}">{{ \App\Domain\Product\Enums\StockType::SET_EXACT_STOCK->label() }}</option>
                             </select>
                         </div>
                         <div class="col-md-4 mb-2">
                             <div class="input-group input-group-sm">
-                                <span class="input-group-text">Qty
-                                    ({{ $product->stock_in - $product->stock_out }})
-                                </span>
-                                <input type="number" class="form-control" name="stock_quantity_product"
-                                    min="1">
+                                <span class="input-group-text">Qty ({{ $product->stock_in - $product->stock_out }})</span>
+                                <input type="number" class="form-control" name="stock_quantity_product" min="1">
                             </div>
                         </div>
                         <div class="col-md-4 mb-2">
@@ -454,7 +577,6 @@
                     </div>
                     @endif
                 </div>
-
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-primary d-inline-flex align-items-center gap-1">Update Stocks</button>
@@ -464,237 +586,15 @@
     </div>
 </div>
 
-<div class="modal fade" id="addVariantModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
-    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl">
-        <div class="modal-content border-0">
-            <div class="modal-header">
-                <h5 class="modal-title">Add Variant</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div id="variantAlert"></div>
-                <form id="variantForm">
-                    @include('seller.products.variant-generator')
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary d-inline-flex align-items-center gap-1" id="saveVariantsBtn">Save Variants</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-@endsectiont->id) }}">
-                @csrf
-                <div class="modal-header bg-white text-dark">
-                    <h5 class="modal-title" id="addOptionModalLabel">Add Product Option</h5>
-                    <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body">
-                    <div class="mb-4">
-                        <label for="attribute_name" class="form-label fw-bold">Select Existing Option</label>
-                        <select class="form-select" id="attribute_name" name="option_id">
-                            <option value="" disabled selected>Select an option</option>
-                            @foreach ($product_options as $option)
-                            <option value="{{ $option->id }}">{{ $option->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="text-center mb-3 fw-semibold text-muted">— or create new —</div>
-                    <div class="mb-3">
-                        <label for="new_attribute_name" class="form-label fw-bold">New Option Name</label>
-                        <input type="text" class="form-control" id="new_attribute_name" name="name"
-                            placeholder="Enter new attribute name">
-                    </div>
-                    <div class="mb-3">
-                        <label for="attribute_value" class="form-label fw-bold">Value <span
-                                class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="attribute_value" name="value"
-                            placeholder="e.g., Red, XL" required>
-                    </div>
-                </div>
-
-                <div class="modal-footer bg-light">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
+<div id="alertBox"></div>
 @endsection
+
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-    $(document).ready(function() {
-        $('.toggle-desc').on('click', function() {
-            let expanded = $(this).attr('aria-expanded') === 'true';
-            $(this).text(expanded ? 'Read less' : 'Read more');
-        });
-    });
-
-    $(".multiple-select-clear-field").select2({
-        theme: "bootstrap-5",
-        placeholder: "Choose options",
-        allowClear: true,
-        selectionCssClass: "select2",
-        dropdownCssClass: "select2"
-    });
-
-    $('#saveVariantsBtn').click(function(e) {
-        const variants = collectVariantsData();
-
-        let formData = new FormData();
-        formData.append('variants', JSON.stringify(variants));
-        formData.append('_token', '{{ csrf_token() }}');
-        formData.append('product_id', "{{ $product->id }}");
-
-        $('#variantAlert').html('');
-        $('#saveVariantsBtn').attr('disabled', true).text('Saving...');
-
-        $.ajax({
-            url: "{{ route('seller.productVariants.store', $product->id) }}",
-            method: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                $('#variantAlert').html(`
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            Variant added successfully!
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    `);
-
-                setTimeout(function() {
-                    $('#addVariantModal').modal('hide');
-                    location.reload();
-                }, 1000);
-            },
-            error: function(xhr) {
-                $('#saveVariantsBtn').attr('disabled', false).text('Save Variants');
-                $('#variantAlert').html(`
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        `+xhr.responseJSON.message+`
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                `);
-
-                if (xhr.status === 422) {
-                    let errors = xhr.responseJSON.errors;
-                    let messages = Object.values(errors).map(item => `<div>${item[0]}</div>`).join(
-                        '');
-                    $('#variantAlert').html(`
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                ${messages}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        `);
-                } else {
-                    $('#variantAlert').html(`
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                Something went wrong. Please try again.
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        `);
-                }
-            }
-        });
-    });
-
-    function collectVariantsData() {
-        const variantBody = document.getElementById("variantsTableBody");
-        if (!variantBody) return [];
-
-        const variantRows = variantBody.querySelectorAll("tr");
-        const variants = [];
-
-        variantRows.forEach((row) => {
-            const variant = {};
-
-            variant.color_id = row.dataset.colorId || null;
-            variant.size_id = row.dataset.sizeId || null;
-
-            const skuInput = row.querySelector('[name="sku"]');
-            variant.sku = skuInput?.value?.trim() || "";
-
-            const colStart = 2;
-            const costPriceInput = row.querySelector(`td:nth-child(${colStart}) [name="cost_price"]`);
-            const priceInput = row.querySelector(`td:nth-child(${colStart + 1}) [name="price"]`);
-            const comparePriceInput = row.querySelector(`td:nth-child(${colStart + 2}) [name="compare_price"], .variant-compare-price`);
-            const imageInput = row.querySelector('input[type="file"]');
-
-            variant.cost_price = costPriceInput?.value || "";
-            variant.price = priceInput?.value || "";
-            variant.compare_price = comparePriceInput?.value || "";
-            variant.image = imageInput?.files?.[0] || null;
-
-            variants.push(variant);
-        });
-
-        return variants;
+    function switchImage(el, url) {
+        document.querySelectorAll('.thumbnail-gallery-img').forEach(i => i.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('mainProductImage').src = url;
     }
-
-    $('#seoUpdateBtn').click(function(e) {
-        let form = $('#productSeoForm')[0];
-        let formData = new FormData(form);
-
-        $('#alertBox').html('');
-
-        $.ajax({
-            url: "{{ route('seller.products.updateSeo', $product->slug) }}",
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            beforeSend: function() {
-                $('#seoUpdateBtn').attr('disabled', true).text('Updating...');
-            },
-            success: function(response) {
-                $('#seoUpdateBtn').attr('disabled', false).text('Save SEO Settings');
-                $('#alertBox').html(`
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        Product updated successfully!
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                `);
-                setTimeout(function() {
-                    location.reload();
-                }, 1500);
-            },
-            error: function(xhr) {
-                $('#seoUpdateBtn').attr('disabled', false).text('Save SEO Settings');
-
-                if (xhr.status === 422) {
-                    let errors = xhr.responseJSON.errors;
-                    let messages = Object.values(errors).map(item =>
-                        `<div>${item[0]}</div>`).join('');
-                    $('#alertBox').html(`
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            ${messages}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    `);
-                } else {
-                    let errorMessage = "Something went wrong. Please try again.";
-                    if (xhr.responseJSON && xhr.responseJSON.message) {
-                        errorMessage = xhr.responseJSON.message;
-                    } else if (xhr.responseText) {
-                        errorMessage = xhr.responseText;
-                    }
-                    $('#alertBox').html(`
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            ${errorMessage}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    `);
-                }
-            }
-        });
-    });
 </script>
 @endpush
