@@ -36,6 +36,11 @@ class Order extends Model
 
     public const ORDER_TYPE_POS = 'P';
 
+    public function coupon(): BelongsTo
+    {
+        return $this->belongsTo(Coupon::class);
+    }
+
     public function billing_address(): HasOne
     {
         return $this->hasOne(OrderBillingAddress::class, 'order_id');

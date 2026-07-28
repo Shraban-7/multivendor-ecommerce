@@ -4,9 +4,11 @@ namespace App\Domain\Order\Http\Controllers\Frontend;
 
 use App\Domain\Order\Enums\OrderStatus;
 use App\Domain\Order\Models\BillingAddress;
+use App\Domain\Order\Models\Coupon;
 use App\Domain\Order\Models\Order;
 use App\Domain\Order\Repositories\Contracts\CartRepositoryInterface;
 use App\Domain\Order\Repositories\Contracts\OrderRepositoryInterface;
+use App\Domain\Order\Services\CouponService;
 use App\Domain\Order\Services\OrderService;
 use App\Domain\Payment\Models\PaymentGateway;
 use App\Domain\Product\Models\Product;
@@ -26,6 +28,7 @@ class OrderController extends Controller
         private readonly OrderRepositoryInterface $orderRepo,
         private readonly CartRepositoryInterface $cartRepo,
         private readonly OrderService $orderService,
+        private readonly CouponService $couponService,
     ) {}
 
     public function index(Request $request)
@@ -124,7 +127,24 @@ class OrderController extends Controller
         $shippingFee = (float) $seller->shipping_cost;
         $total = array_sum(array_column($orderItems, 'total'));
         $allCod = collect($cart->cart_items)->every(fn ($item) => ($item->product->payment_type->value ?? PaymentType::COD_ONLY->value) === PaymentType::COD_ONLY->value);
-        $grand_total = $subTotal + $discount;
+
+        $couponDiscount = 0;
+        $appliedCoupon = null;
+        $couponCode = $request->input('coupon_code', session('checkout.coupon_code.' . $selectedSellerId));
+
+        if ($couponCode) {
+            $coupon = Coupon::where('code', $couponCode)->active()->first();
+            if ($coupon) {
+                $subTotalForCheck = $subTotal - $discount;
+                $validation = $this->couponService->validateCoupon($couponCode, $selectedSellerId, $subTotalForCheck, $cart->cart_items);
+                if ($validation['valid']) {
+                    $couponDiscount = $validation['discount'];
+                    $appliedCoupon = $coupon;
+                }
+            }
+        }
+
+        $grandTotal = max(0, ($subTotal - $discount) + $shippingFee - $couponDiscount);
 
         if ($request->isMethod('GET')) {
             $paymentGateways = PaymentGateway::where('is_enabled', true)->get();
@@ -138,22 +158,31 @@ class OrderController extends Controller
 
             return view('frontend.pages.checkout', compact(
                 'user', 'selectedSellerId', 'sub_total', 'discount', 'shipping_fee',
-                'payment_gateways', 'divisions', 'districts', 'billingAddresses', 'total', 'allCod', 'grand_total'
+                'payment_gateways', 'divisions', 'districts', 'billingAddresses', 'total',
+                'allCod', 'couponDiscount', 'appliedCoupon', 'grandTotal'
             ));
         }
 
         try {
+            $couponId = $appliedCoupon?->id;
+            if ($couponId) {
+                $this->couponService->apply($appliedCoupon);
+            }
+
             $result = $this->orderService->placeFrontendOrder(
                 $user,
                 $seller,
                 $validated,
                 ['items' => $orderItems, 'total' => $total],
                 $subTotal,
-                $discount,
+                $discount + $couponDiscount,
                 $request->payment_method,
+                $couponId,
             );
 
             $order = $result['order'];
+
+            session()->forget('checkout.coupon_code.' . $selectedSellerId);
 
             notify_user(
                 $user->id,
@@ -189,6 +218,50 @@ class OrderController extends Controller
 
             return back()->withInput()->with('error', $e->getMessage());
         }
+    }
+
+    public function applyCoupon(Request $request)
+    {
+        $request->validate([
+            'code' => 'required|string|max:50',
+            'seller_id' => 'required|exists:sellers,id',
+        ]);
+
+        $user = Auth::user();
+        $sellerId = $request->seller_id;
+
+        $cart = $this->cartRepo->findUserCartBySeller($user->id, $sellerId)?->load(
+            'cart_items.product',
+            'cart_items.variant.color',
+            'cart_items.variant.size',
+        );
+
+        if (! $cart) {
+            return response()->json(['valid' => false, 'message' => 'Cart not found.'], 404);
+        }
+
+        [$subTotal, $discount] = $this->orderService->buildOrderItemsFromCart($cart);
+        $subTotalForCheck = $subTotal - $discount;
+
+        $validation = $this->couponService->validateCoupon($request->code, $sellerId, $subTotalForCheck, $cart->cart_items);
+
+        if ($validation['valid']) {
+            session()->put('checkout.coupon_code.' . $sellerId, $request->code);
+
+            return response()->json([
+                'valid' => true,
+                'discount' => $validation['discount'],
+                'discount_formatted' => money($validation['discount']),
+                'message' => $validation['message'],
+            ]);
+        }
+
+        session()->forget('checkout.coupon_code.' . $sellerId);
+
+        return response()->json([
+            'valid' => false,
+            'message' => $validation['message'],
+        ]);
     }
 
     public function success($invoice_id)

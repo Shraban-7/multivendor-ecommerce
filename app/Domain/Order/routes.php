@@ -111,6 +111,7 @@ Route::middleware('web')->group(function () {
         Route::prefix('orders')->as('orders.')->group(function () {
             Route::get('/', [FrontendOrderController::class, 'index'])->name('index');
             Route::match(['get', 'post'], 'checkout', [FrontendOrderController::class, 'checkout'])->name('checkout');
+            Route::post('checkout/apply-coupon', [FrontendOrderController::class, 'applyCoupon'])->name('checkout.applyCoupon');
             Route::post('{order}/pay-now', [FrontendOrderController::class, 'payNow'])->name('payNow');
             Route::get('/data', [FrontendOrderController::class, 'orderData'])->name('data');
             Route::get('/details/{invoice_id}', [FrontendOrderController::class, 'details'])->name('details');

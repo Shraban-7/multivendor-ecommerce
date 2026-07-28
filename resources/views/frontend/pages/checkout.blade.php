@@ -70,14 +70,24 @@
                     </h2>
 
                     <dl class="text-sm space-y-2 mb-4">
+
                         <div class="flex justify-between">
                             <dt>Subtotal</dt>
                             <dd class="font-medium">{{ money($total) }}</dd>
                         </div>
-                        {{-- <div class="flex justify-between">
-                            <dt>Discount</dt>
-                            <dd class="text-primary">-{{ money($discount) }}</dd>
-            </div> --}}
+
+                        @if ($discount > 0)
+                            <div class="flex justify-between">
+                                <dt>Item Discount</dt>
+                                <dd class="text-green-600">-{{ money($discount) }}</dd>
+                            </div>
+                        @endif
+
+                        <div class="flex justify-between" id="coupon-discount-row" @if ($couponDiscount <= 0) style="display:none" @endif>
+                            <dt>Coupon Discount</dt>
+                            <dd class="text-primary" id="coupon-discount-amount">-{{ money($couponDiscount) }}</dd>
+                        </div>
+
                         <div class="flex justify-between">
                             <dt>Shipping Fee</dt>
                             <dd>+{{ money($shipping_fee) }}</dd>
@@ -88,7 +98,27 @@
 
                     <div class="flex justify-between items-center text-base font-semibold mb-2">
                         <span>Total</span>
-                        <span class="text-lg text-primary">{{ money($total + $shipping_fee) }}</span>
+                        <span class="text-lg text-primary" id="grand-total-amount">{{ money($grandTotal) }}</span>
+                    </div>
+
+                    <div class="mt-4 mb-4">
+                        <label class="form-label text-sm fw-semibold text-gray-800">Coupon Code</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="coupon-code-input" name="coupon_code"
+                                class="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#F85606]/40 focus:border-[#F85606]"
+                                placeholder="Enter coupon code" value="{{ $appliedCoupon->code ?? '' }}" data-seller-id="{{ $selectedSellerId }}"
+                                @if ($appliedCoupon) readonly @endif>
+                            <button type="button" id="apply-coupon-btn"
+                                class="px-4 py-2 text-sm font-semibold rounded {{ $appliedCoupon ? 'bg-gray-200 text-gray-600' : 'bg-[#F85606] text-white hover:bg-[#C43D00]' }} eq"
+                                @if ($appliedCoupon) onclick="removeCoupon()" @endif>
+                                {{ $appliedCoupon ? 'Remove' : 'Apply' }}
+                            </button>
+                        </div>
+                        <div id="coupon-message" class="mt-1 text-xs @if ($appliedCoupon) text-green-600 @endif">
+                            @if ($appliedCoupon)
+                                Coupon applied! You saved {{ money($couponDiscount) }}.
+                            @endif
+                        </div>
                     </div>
 
                     <div class="mt-5">
@@ -438,6 +468,67 @@
                     loadDistricts(divisionId, selectedDistrictId, $district);
                 }
             });
+
+            $('#apply-coupon-btn').on('click', function() {
+                const $btn = $(this);
+                const $input = $('#coupon-code-input');
+                const code = $input.val().trim();
+                const sellerId = $input.data('seller-id');
+
+                if ($btn.text() === 'Remove') {
+                    removeCoupon();
+                    return;
+                }
+
+                if (!code) {
+                    $('#coupon-message').text('Please enter a coupon code.').removeClass('text-green-600').addClass('text-red-500');
+                    return;
+                }
+
+                $.ajax({
+                    url: "{{ route('orders.checkout.applyCoupon') }}",
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        code: code,
+                        seller_id: sellerId,
+                    },
+                    success: function(res) {
+                        if (res.valid) {
+                            $('#coupon-message').text(res.message).removeClass('text-red-500').addClass('text-green-600');
+                            $('#coupon-discount-amount').text('-' + res.discount_formatted);
+                            $('#coupon-discount-row').show();
+                            $input.prop('readonly', true);
+                            $btn.text('Remove').removeClass('bg-[#F85606] text-white hover:bg-[#C43D00]').addClass('bg-gray-200 text-gray-600');
+                            updateGrandTotal(res.discount);
+                        } else {
+                            $('#coupon-message').text(res.message).removeClass('text-green-600').addClass('text-red-500');
+                            $('#coupon-discount-row').hide();
+                        }
+                    },
+                    error: function(xhr) {
+                        const msg = xhr.responseJSON?.message || 'Failed to apply coupon.';
+                        $('#coupon-message').text(msg).removeClass('text-green-600').addClass('text-red-500');
+                    }
+                });
+            });
+
+            window.removeCoupon = function() {
+                const $input = $('#coupon-code-input');
+                $input.val('').prop('readonly', false);
+                $('#apply-coupon-btn').text('Apply').removeClass('bg-gray-200 text-gray-600').addClass('bg-[#F85606] text-white hover:bg-[#C43D00]');
+                $('#coupon-discount-row').hide();
+                $('#coupon-message').text('').removeClass('text-red-500 text-green-600');
+                updateGrandTotal(0);
+            };
+
+            window.updateGrandTotal = function(couponDiscount) {
+                const subtotal = {{ $total }};
+                const itemDiscount = {{ $discount }};
+                const shipping = {{ $shipping_fee }};
+                const total = Math.max(0, subtotal - itemDiscount + shipping - couponDiscount);
+                $('#grand-total-amount').text('৳' + total.toFixed(2));
+            };
 
             const billingAddresses = @json($billingAddressesArray);
 

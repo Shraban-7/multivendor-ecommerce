@@ -159,8 +159,9 @@ class OrderService
         float $subTotal,
         float $discount,
         string $paymentMethod,
+        ?int $couponId = null,
     ): array {
-        return DB::transaction(function () use ($user, $seller, $validated, $orderItemsData, $subTotal, $discount, $paymentMethod) {
+        return DB::transaction(function () use ($user, $seller, $validated, $orderItemsData, $subTotal, $discount, $paymentMethod, $couponId) {
             $sellerData = $seller->calculateEarning($orderItemsData['total'] ?? 0);
             $shippingFee = (float) $seller->shipping_cost;
             $payableAmount = ($orderItemsData['total'] ?? $subTotal) + $shippingFee;
@@ -169,6 +170,7 @@ class OrderService
             $order = $this->orderRepo->create([
                 'user_id' => $user->id,
                 'seller_id' => $seller->id,
+                'coupon_id' => $couponId,
                 'invoice_id' => $invoiceId,
                 'sub_total' => $subTotal,
                 'total' => $orderItemsData['total'] ?? $subTotal,
