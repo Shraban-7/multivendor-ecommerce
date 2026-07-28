@@ -3,6 +3,7 @@
 namespace App\Domain\Order\Models;
 
 use App\Domain\Auth\Models\User;
+use App\Domain\Shipping\Models\ShippingCarrier;
 use App\Domain\Vendor\Models\Seller;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -27,5 +28,10 @@ class OrderTracking extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function carrier(): BelongsTo
+    {
+        return $this->belongsTo(ShippingCarrier::class);
     }
 }

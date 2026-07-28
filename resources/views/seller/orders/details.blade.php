@@ -140,8 +140,12 @@
 
             @if (!$isPos)
                 <div class="card border-0 shadow-sm mb-3" style="border-radius: 12px;">
-                    <div class="card-header bg-white">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
                         <h5 class="fw-semibold mb-0">Shipping Details</h5>
+                        <a href="{{ route('seller.orders.tracking', $order) }}"
+                           class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1">
+                            <i data-feather="truck" style="width: 14px; height: 14px;"></i> Add Tracking
+                        </a>
                     </div>
                     <div class="card-body">
                         <address class="mb-0">
@@ -153,6 +157,20 @@
                                 {{ $order->billing_address->address }}
                             </p>
                         </address>
+
+                        @if ($order->trackings->count() > 0)
+                            <hr>
+                            <h6 class="fw-semibold mb-2">Tracking Info</h6>
+                            @foreach ($order->trackings as $tracking)
+                                <div class="d-flex align-items-center gap-2 mb-1">
+                                    <i data-feather="package" style="width: 14px; height: 14px;" class="text-primary"></i>
+                                    <span class="small">
+                                        <strong>{{ $tracking->carrier->name ?? $tracking->courier_name ?? 'Carrier' }}:</strong>
+                                        <code>{{ $tracking->tracking_number }}</code>
+                                    </span>
+                                </div>
+                            @endforeach
+                        @endif
                     </div>
                 </div>
             @endif

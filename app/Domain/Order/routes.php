@@ -1,5 +1,6 @@
 <?php
 
+use App\Domain\Order\Http\Controllers\Admin\AdminCouponController;
 use App\Domain\Order\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Domain\Order\Http\Controllers\Api\BillingAddressController as ApiBillingAddressController;
 use App\Domain\Order\Http\Controllers\Api\CartController as ApiCartController;
@@ -13,12 +14,22 @@ use App\Domain\Order\Http\Controllers\InvoiceController;
 use App\Domain\Order\Http\Controllers\Seller\OrderController as SellerOrderController;
 use App\Domain\Order\Http\Controllers\Seller\PosController;
 use App\Domain\Order\Http\Controllers\Seller\SaleController;
+use App\Domain\Order\Http\Controllers\Seller\SellerCouponController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['web', 'admin'])->prefix('admin')->as('admin.')->group(function () {
     Route::prefix('orders')->as('orders.')->group(function () {
         Route::get('/', [AdminOrderController::class, 'index'])->name('index');
         // Route::get('/payments', [PaymentController::class, 'index'])->name('payments');
+    });
+
+    Route::prefix('coupons')->as('coupons.')->group(function () {
+        Route::get('/', [AdminCouponController::class, 'index'])->name('index');
+        Route::get('/create', [AdminCouponController::class, 'create'])->name('create');
+        Route::post('/store', [AdminCouponController::class, 'store'])->name('store');
+        Route::get('{coupon}/edit', [AdminCouponController::class, 'edit'])->name('edit');
+        Route::post('{coupon}/update', [AdminCouponController::class, 'update'])->name('update');
+        Route::delete('{coupon}/destroy', [AdminCouponController::class, 'destroy'])->name('destroy');
     });
 });
 
@@ -56,6 +67,15 @@ Route::middleware(['web', 'seller'])->prefix('seller')->as('seller.')->group(fun
         Route::get('/pos-orders', [SellerOrderController::class, 'pos_orders'])->name('pos_orders');
         Route::get('/{invoice_id}/details', [SellerOrderController::class, 'details'])->name('details');
         Route::post('/{order}/update-status', [SellerOrderController::class, 'updateStatus'])->name('updateStatus');
+    });
+
+    Route::prefix('coupons')->as('coupons.')->group(function () {
+        Route::get('/', [SellerCouponController::class, 'index'])->name('index');
+        Route::get('/create', [SellerCouponController::class, 'create'])->name('create');
+        Route::post('/store', [SellerCouponController::class, 'store'])->name('store');
+        Route::get('{coupon}/edit', [SellerCouponController::class, 'edit'])->name('edit');
+        Route::post('{coupon}/update', [SellerCouponController::class, 'update'])->name('update');
+        Route::delete('{coupon}/destroy', [SellerCouponController::class, 'destroy'])->name('destroy');
     });
 });
 

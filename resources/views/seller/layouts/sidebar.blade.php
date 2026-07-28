@@ -128,7 +128,7 @@ $route = request()->route()->getName();
                 </div>
             </li>
 
-            {{-- ═══ 4. FLASH SALES ═══ --}}
+            {{-- ═══ 4. PROMOTIONS ═══ --}}
             <div class="sidebar-heading px-4 pt-3 pb-1 text-uppercase fw-semibold">Promotions</div>
 
             <li class="nav-item">
@@ -139,13 +139,45 @@ $route = request()->route()->getName();
                 </a>
             </li>
 
+            @if ($seller || $employee->hasPermission('seller.coupons.index'))
+                <li class="nav-item">
+                    <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center" href="#!"
+                        data-bs-toggle="collapse" data-bs-target="#navCoupons"
+                        aria-expanded="{{ request()->routeIs('seller.coupons.*') ? 'true' : 'false' }}" aria-controls="navCoupons">
+                        <div class="d-flex align-items-center">
+                            <i data-feather="tag" class="nav-icon me-3" style="width: 18px; height: 18px;"></i>
+                            <span>Coupons</span>
+                        </div>
+                        <i data-feather="chevron-right" class="chevron-icon" style="width: 16px; height: 16px;"></i>
+                    </a>
+                    <div id="navCoupons" class="collapse {{ request()->routeIs('seller.coupons.*') ? 'show' : '' }}" data-bs-parent="#sideNavbar">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link d-flex align-items-center {{ request()->routeIs('seller.coupons.index') ? 'active' : '' }}"
+                                    href="{{ route('seller.coupons.index') }}">
+                                    <i data-feather="list" class="nav-icon me-2" style="width: 14px; height: 14px;"></i>
+                                    <span>All Coupons</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link d-flex align-items-center {{ request()->routeIs('seller.coupons.create') ? 'active' : '' }}"
+                                    href="{{ route('seller.coupons.create') }}">
+                                    <i data-feather="plus" class="nav-icon me-2" style="width: 14px; height: 14px;"></i>
+                                    <span>Create Coupon</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            @endif
+
             {{-- ═══ 5. ORDERS ═══ --}}
             <div class="sidebar-heading px-4 pt-3 pb-1 text-uppercase fw-semibold">Orders</div>
 
             <li class="nav-item">
                 <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center" href="#!"
                     data-bs-toggle="collapse" data-bs-target="#navOrders"
-                    aria-expanded="{{ request()->routeIs('seller.orders.*') ? 'true' : 'false' }}" aria-controls="navOrders">
+                    aria-expanded="{{ request()->routeIs('seller.orders.*') || request()->routeIs('seller.shipping.*') ? 'true' : 'false' }}" aria-controls="navOrders">
                     <div class="d-flex align-items-center">
                         <i data-feather="shopping-bag" class="nav-icon me-3" style="width: 18px; height: 18px;"></i>
                         <span>Manage Orders</span>
@@ -221,6 +253,16 @@ $route = request()->route()->getName();
                 </div>
             </li>
 
+            @if ($seller || $employee->hasPermission('seller.shipping.zones'))
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center {{ request()->routeIs('seller.shipping.*') ? 'active' : '' }}"
+                        href="{{ route('seller.shipping.zones') }}">
+                        <i data-feather="truck" class="nav-icon me-3" style="width: 18px; height: 18px;"></i>
+                        <span>Shipping Zones</span>
+                    </a>
+                </li>
+            @endif
+
             {{-- ═══ 6. PEOPLE ═══ --}}
             <div class="sidebar-heading px-4 pt-3 pb-1 text-uppercase fw-semibold">People</div>
 
@@ -295,6 +337,45 @@ $route = request()->route()->getName();
                         <i data-feather="dollar-sign" class="nav-icon me-3" style="width: 18px; height: 18px;"></i>
                         <span>Expenses</span>
                     </a>
+                </li>
+            @endif
+
+            @if ($seller || $employee->hasPermission('seller.payouts.index'))
+                <li class="nav-item">
+                    <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center" href="#!"
+                        data-bs-toggle="collapse" data-bs-target="#navPayouts"
+                        aria-expanded="{{ request()->routeIs('seller.payouts.*') ? 'true' : 'false' }}" aria-controls="navPayouts">
+                        <div class="d-flex align-items-center">
+                            <i data-feather="credit-card" class="nav-icon me-3" style="width: 18px; height: 18px;"></i>
+                            <span>Payouts</span>
+                        </div>
+                        <i data-feather="chevron-right" class="chevron-icon" style="width: 16px; height: 16px;"></i>
+                    </a>
+                    <div id="navPayouts" class="collapse {{ request()->routeIs('seller.payouts.*') ? 'show' : '' }}" data-bs-parent="#sideNavbar">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link d-flex align-items-center {{ request()->routeIs('seller.payouts.index') && !request()->routeIs('seller.payouts.create') && !request()->routeIs('seller.payouts.methods.*') ? 'active' : '' }}"
+                                    href="{{ route('seller.payouts.index') }}">
+                                    <i data-feather="list" class="nav-icon me-2" style="width: 14px; height: 14px;"></i>
+                                    <span>Payout History</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link d-flex align-items-center {{ request()->routeIs('seller.payouts.create') ? 'active' : '' }}"
+                                    href="{{ route('seller.payouts.create') }}">
+                                    <i data-feather="plus" class="nav-icon me-2" style="width: 14px; height: 14px;"></i>
+                                    <span>Request Payout</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link d-flex align-items-center {{ request()->routeIs('seller.payouts.methods.*') ? 'active' : '' }}"
+                                    href="{{ route('seller.payouts.methods.index') }}">
+                                    <i data-feather="credit-card" class="nav-icon me-2" style="width: 14px; height: 14px;"></i>
+                                    <span>Payment Methods</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
             @endif
 

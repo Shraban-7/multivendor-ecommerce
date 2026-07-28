@@ -74,6 +74,10 @@ $settings = settings();
                 <i data-feather="zap" class="nav-icon icon-xs me-2"></i> Flash Sales
             </x-dashboard.nav-item-link>
 
+            <x-dashboard.nav-item-link :route="'admin.coupons.index'">
+                <i data-feather="tag" class="nav-icon icon-xs me-2"></i> Coupons
+            </x-dashboard.nav-item-link>
+
             @if (hasPermission('admin.sellers.index') ||
                     hasPermission('admin.seller.create') ||
                     hasPermission('admin.sellers.pending'))
@@ -119,7 +123,7 @@ $settings = settings();
             <li class="nav-item">
                 <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center" href="#!"
                     data-bs-toggle="collapse" data-bs-target="#navOrders"
-                    aria-expanded="{{ request()->routeIs('admin.orders.*') || request()->routeIs('admin.payments.*') ? 'true' : 'false' }}"
+                    aria-expanded="{{ request()->routeIs('admin.orders.*') || request()->routeIs('admin.payments.*') || request()->routeIs('admin.payouts.*') || request()->routeIs('admin.reviews.*') ? 'true' : 'false' }}"
                     aria-controls="navOrders">
 
                     <div>
@@ -131,7 +135,7 @@ $settings = settings();
                 </a>
 
                 <div id="navOrders"
-                    class="collapse {{ request()->routeIs('admin.orders.*') || request()->routeIs('admin.payments.*') ||request()->routeIs('admin.reviews.*') ? 'show' : '' }}"
+                    class="collapse {{ request()->routeIs('admin.orders.*') || request()->routeIs('admin.payments.*') || request()->routeIs('admin.payouts.*') || request()->routeIs('admin.reviews.*') ? 'show' : '' }}"
                     data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
                         <x-dashboard.nav-item-link :route="'admin.orders.index'">
@@ -139,6 +143,9 @@ $settings = settings();
                         </x-dashboard.nav-item-link>
                         <x-dashboard.nav-item-link :route="'admin.payments.index'">
                             Payments
+                        </x-dashboard.nav-item-link>
+                        <x-dashboard.nav-item-link :route="'admin.payouts.index'">
+                            Seller Payouts
                         </x-dashboard.nav-item-link>
                         @if (hasPermission('admin.reviews.index'))
                             <x-dashboard.nav-item-link :route="'admin.reviews.index'">
@@ -148,6 +155,12 @@ $settings = settings();
                     </ul>
                 </div>
             </li>
+
+            @if (hasPermission('admin.shipping.carriers.index'))
+                <x-dashboard.nav-item-link :route="'admin.shipping.carriers.index'">
+                    <i data-feather="truck" class="nav-icon icon-xs me-2"></i> Shipping Carriers
+                </x-dashboard.nav-item-link>
+            @endif
 
             <li class="nav-item">
                 <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center" href="#!"

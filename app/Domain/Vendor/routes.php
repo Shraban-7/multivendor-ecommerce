@@ -12,6 +12,8 @@ use App\Domain\Vendor\Http\Controllers\Seller\SellerChatController;
 use App\Domain\Vendor\Http\Controllers\Seller\SellerController;
 use App\Domain\Vendor\Http\Controllers\Seller\SellerEmployeeController;
 use App\Domain\Vendor\Http\Controllers\Seller\SellerExpenseController;
+use App\Domain\Vendor\Http\Controllers\Seller\SellerPayoutController;
+use App\Domain\Vendor\Http\Controllers\Admin\AdminPayoutController;
 use App\Domain\Vendor\Http\Controllers\Seller\SettingController;
 use App\Domain\Vendor\Http\Controllers\Seller\SubscriptionPlanController;
 use Illuminate\Support\Facades\Route;
@@ -42,6 +44,15 @@ Route::middleware(['web', 'admin'])->prefix('admin')->as('admin.')->group(functi
 
     Route::prefix('subscriptions')->name('subscriptions.')->group(function () {
         Route::get('/', [SellerSubscriptionController::class, 'index'])->name('index');
+    });
+
+    Route::prefix('payouts')->as('payouts.')->group(function () {
+        Route::get('/', [AdminPayoutController::class, 'index'])->name('index');
+        Route::get('{payout}', [AdminPayoutController::class, 'show'])->name('show');
+        Route::post('{payout}/approve', [AdminPayoutController::class, 'approve'])->name('approve');
+        Route::post('{payout}/complete', [AdminPayoutController::class, 'complete'])->name('complete');
+        Route::post('{payout}/cancel', [AdminPayoutController::class, 'cancel'])->name('cancel');
+        Route::post('{payout}/fail', [AdminPayoutController::class, 'markFailed'])->name('fail');
     });
 });
 
@@ -85,6 +96,21 @@ Route::middleware(['web', 'seller'])->prefix('seller')->as('seller.')->group(fun
     Route::prefix('plans')->as('plans.')->group(function () {
         Route::get('/', [SubscriptionPlanController::class, 'index'])->name('index');
         Route::post('/{plan}/subscribe', [SubscriptionPlanController::class, 'subscribe'])->name('subscribe');
+    });
+
+    Route::prefix('payouts')->as('payouts.')->group(function () {
+        Route::get('/', [SellerPayoutController::class, 'index'])->name('index');
+        Route::get('/create', [SellerPayoutController::class, 'create'])->name('create');
+        Route::post('/store', [SellerPayoutController::class, 'store'])->name('store');
+        Route::get('{payout}', [SellerPayoutController::class, 'show'])->name('show');
+
+        Route::prefix('methods')->as('methods.')->group(function () {
+            Route::get('/', [SellerPayoutController::class, 'methods'])->name('index');
+            Route::post('/store', [SellerPayoutController::class, 'storeMethod'])->name('store');
+            Route::post('{method}/update', [SellerPayoutController::class, 'updateMethod'])->name('update');
+            Route::delete('{method}/destroy', [SellerPayoutController::class, 'destroyMethod'])->name('destroy');
+            Route::post('{method}/default', [SellerPayoutController::class, 'setDefaultMethod'])->name('default');
+        });
     });
 
     Route::post('banner-image/{image}/', [SettingController::class, 'deleteImage'])->name('bannerImages.delete');
