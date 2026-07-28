@@ -129,7 +129,7 @@ $settings = settings();
             <li class="nav-item">
                 <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center" href="#!"
                     data-bs-toggle="collapse" data-bs-target="#navOrders"
-                    aria-expanded="{{ request()->routeIs('admin.orders.*') || request()->routeIs('admin.payments.*') || request()->routeIs('admin.payouts.*') || request()->routeIs('admin.reviews.*') ? 'true' : 'false' }}"
+                    aria-expanded="{{ request()->routeIs('admin.orders.*') || request()->routeIs('admin.payments.*') || request()->routeIs('admin.payouts.*') || request()->routeIs('admin.reviews.*') || request()->routeIs('admin.returns.*') ? 'true' : 'false' }}"
                     aria-controls="navOrders">
 
                     <div>
@@ -141,11 +141,14 @@ $settings = settings();
                 </a>
 
                 <div id="navOrders"
-                    class="collapse {{ request()->routeIs('admin.orders.*') || request()->routeIs('admin.payments.*') || request()->routeIs('admin.payouts.*') || request()->routeIs('admin.reviews.*') ? 'show' : '' }}"
+                    class="collapse {{ request()->routeIs('admin.orders.*') || request()->routeIs('admin.payments.*') || request()->routeIs('admin.payouts.*') || request()->routeIs('admin.reviews.*') || request()->routeIs('admin.returns.*') ? 'show' : '' }}"
                     data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
                         <x-dashboard.nav-item-link :route="'admin.orders.index'">
                             Orders
+                        </x-dashboard.nav-item-link>
+                        <x-dashboard.nav-item-link :route="'admin.returns.index'">
+                            Returns &amp; Refunds
                         </x-dashboard.nav-item-link>
                         <x-dashboard.nav-item-link :route="'admin.payments.index'">
                             Payments
@@ -161,6 +164,18 @@ $settings = settings();
                     </ul>
                 </div>
             </li>
+
+            @if (hasPermission('admin.seller-performance.index'))
+                <x-dashboard.nav-item-link :route="'admin.seller-performance.index'">
+                    <i data-feather="trending-up" class="nav-icon icon-xs me-2"></i> Seller Performance
+                </x-dashboard.nav-item-link>
+            @endif
+
+            @if (hasPermission('admin.support.index'))
+                <x-dashboard.nav-item-link :route="'admin.support.index'">
+                    <i data-feather="life-buoy" class="nav-icon icon-xs me-2"></i> Support Tickets
+                </x-dashboard.nav-item-link>
+            @endif
 
             @if (hasPermission('admin.shipping.carriers.index'))
                 <x-dashboard.nav-item-link :route="'admin.shipping.carriers.index'">
@@ -207,7 +222,7 @@ $settings = settings();
 
             <?php
             $gatewayExpanded = request()->routeIs('admin.paymentGateways.*') || request()->routeIs('admin.manualGateways.*') ? true : false;
-            ?>
+?>
 
             <li class="nav-item">
                 <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center" href="#!"
@@ -280,8 +295,8 @@ $settings = settings();
             </li>
 
             <?php
-            $subscriptionExpanded = request()->routeIs('admin.subscription-plans.*') || request()->routeIs('admin.subscriptions.*') ? true : false;
-            ?>
+$subscriptionExpanded = request()->routeIs('admin.subscription-plans.*') || request()->routeIs('admin.subscriptions.*') ? true : false;
+?>
 
             <li class="nav-item">
                 <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center"

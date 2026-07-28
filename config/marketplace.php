@@ -37,4 +37,21 @@ return [
         // Daily snapshot retention (days)
         'snapshot_retention_days' => (int) env('MARKETPLACE_PERF_SNAPSHOT_DAYS', 180),
     ],
+    'support' => [
+        // SLA — first admin response time per priority (hours)
+        'sla_hours' => [
+            'low' => (int) env('SUPPORT_SLA_LOW_HOURS', 72),
+            'normal' => (int) env('SUPPORT_SLA_NORMAL_HOURS', 48),
+            'high' => (int) env('SUPPORT_SLA_HIGH_HOURS', 24),
+            'urgent' => (int) env('SUPPORT_SLA_URGENT_HOURS', 4),
+        ],
+        // Ticket number prefix
+        'ticket_prefix' => env('SUPPORT_TICKET_PREFIX', 'SUP'),
+        // Send reminder notifications when SLA is about to breach
+        'sla_warning_minutes_before' => (int) env('SUPPORT_SLA_WARNING_MINUTES', 60),
+        // Allow sellers to mark their tickets as resolved themselves
+        'allow_self_resolve' => env('SUPPORT_ALLOW_SELF_RESOLVE', true),
+        // Allow seller→seller internal admin notes to be hidden from sellers
+        'allow_internal_notes' => env('SUPPORT_ALLOW_INTERNAL_NOTES', true),
+    ],
 ];

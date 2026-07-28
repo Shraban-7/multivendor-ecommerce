@@ -268,11 +268,40 @@ $route = request()->route()->getName();
                                 </a>
                             </li>
                         @endif
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center {{ request()->routeIs('seller.returns.*') ? 'active' : '' }}"
+                                href="{{ route('seller.returns.index') }}">
+                                <i data-feather="rotate-ccw" class="nav-icon me-2" style="width: 14px; height: 14px;"></i>
+                                <span>Returns &amp; Refunds</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </li>
 
-            {{-- ═══ 7. PEOPLE ═══ --}}
+            {{-- ═══ 7. PERFORMANCE ═══ --}}
+            @if ($seller || $employee->hasPermission('seller.performance.dashboard'))
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center {{ request()->routeIs('seller.performance.*') ? 'active' : '' }}"
+                        href="{{ route('seller.performance.dashboard') }}">
+                        <i data-feather="trending-up" class="nav-icon me-3" style="width: 18px; height: 18px;"></i>
+                        <span>Performance</span>
+                    </a>
+                </li>
+            @endif
+
+            {{-- ═══ 8. SUPPORT ═══ --}}
+            @if ($seller || $employee->hasPermission('seller.support.index'))
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center {{ request()->routeIs('seller.support.*') ? 'active' : '' }}"
+                        href="{{ route('seller.support.index') }}">
+                        <i data-feather="life-buoy" class="nav-icon me-3" style="width: 18px; height: 18px;"></i>
+                        <span>Support</span>
+                    </a>
+                </li>
+            @endif
+
+            {{-- ═══ 9. PEOPLE ═══ --}}
             <div class="sidebar-heading px-4 pt-3 pb-1 text-uppercase fw-semibold">People</div>
 
             <li class="nav-item">
@@ -336,7 +365,7 @@ $route = request()->route()->getName();
                 </li>
             @endif
 
-            {{-- ═══ 8. FINANCE ═══ --}}
+            {{-- ═══ 10. FINANCE ═══ --}}
             <div class="sidebar-heading px-4 pt-3 pb-1 text-uppercase fw-semibold">Finance</div>
 
             @if ($seller || $employee->hasPermission('seller.expenses.index'))

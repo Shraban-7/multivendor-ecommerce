@@ -4,6 +4,7 @@ use App\Domain\Affiliate\Providers\AffiliateServiceProvider;
 use App\Domain\Bundle\Providers\BundleServiceProvider;
 use App\Domain\BulkUpload\Providers\BulkUploadServiceProvider;
 use App\Domain\Media\Providers\MediaServiceProvider;
+use App\Domain\Support\Providers\SupportServiceProvider;
 use App\Domain\Tax\Providers\TaxServiceProvider;
 use App\Domain\Order\Providers\OrderServiceProvider;
 use App\Domain\Payment\Providers\PaymentServiceProvider;
@@ -30,4 +31,5 @@ return [
     TaxServiceProvider::class,
     BulkUploadServiceProvider::class,
     BundleServiceProvider::class,
+    SupportServiceProvider::class,
 ];
