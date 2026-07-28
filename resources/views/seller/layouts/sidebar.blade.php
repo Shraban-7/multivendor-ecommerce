@@ -115,6 +115,15 @@ $route = request()->route()->getName();
                                 </a>
                             </li>
                         @endif
+                        @if ($seller || $employee->hasPermission('seller.bulk-upload.index'))
+                            <li class="nav-item">
+                                <a class="nav-link d-flex align-items-center {{ request()->routeIs('seller.bulk-upload.*') ? 'active' : '' }}"
+                                    href="{{ route('seller.bulk-upload.index') }}">
+                                    <i data-feather="upload" class="nav-icon me-2" style="width: 14px; height: 14px;"></i>
+                                    <span>Bulk Upload</span>
+                                </a>
+                            </li>
+                        @endif
                         @if ($seller || $employee->hasPermission('seller.products.printBarcode'))
                             <li class="nav-item">
                                 <a class="nav-link d-flex align-items-center {{ request()->routeIs('seller.products.printBarcode*') ? 'active' : '' }}"

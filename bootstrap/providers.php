@@ -1,6 +1,7 @@
 <?php
 
 use App\Domain\Affiliate\Providers\AffiliateServiceProvider;
+use App\Domain\BulkUpload\Providers\BulkUploadServiceProvider;
 use App\Domain\Media\Providers\MediaServiceProvider;
 use App\Domain\Tax\Providers\TaxServiceProvider;
 use App\Domain\Order\Providers\OrderServiceProvider;
@@ -26,4 +27,5 @@ return [
     MediaServiceProvider::class,
     AffiliateServiceProvider::class,
     TaxServiceProvider::class,
+    BulkUploadServiceProvider::class,
 ];
