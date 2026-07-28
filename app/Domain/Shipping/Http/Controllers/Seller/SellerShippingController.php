@@ -4,14 +4,21 @@ namespace App\Domain\Shipping\Http\Controllers\Seller;
 
 use App\Domain\Order\Models\Order;
 use App\Domain\Order\Models\OrderTracking;
+use App\Domain\Order\Enums\OrderStatus;
 use App\Domain\Shipping\Models\SellerShippingZone;
+use App\Domain\Shipping\Models\Shipment;
 use App\Domain\Shipping\Models\ShippingCarrier;
 use App\Domain\Shipping\Models\District;
+use App\Domain\Shipping\Repositories\ShippingRepositoryInterface;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class SellerShippingController extends Controller
 {
+    public function __construct(
+        private readonly ShippingRepositoryInterface $shippingRepo,
+    ) {}
+
     public function zones()
     {
         $seller = seller();
@@ -139,16 +146,153 @@ class SellerShippingController extends Controller
 
         OrderTracking::create($data);
 
-        if ($order->status->value < 3) {
-            $order->update(['status' => 3]);
+        if ($order->status->value < OrderStatus::DELIVERED->value) {
+            $oldStatus = $order->status->value;
+            $order->update(['status' => OrderStatus::DELIVERED->value]);
             $order->statusLogs()->create([
-                'old_status' => $order->status->value - 1,
-                'new_status' => 3,
+                'old_status' => $oldStatus,
+                'new_status' => OrderStatus::DELIVERED->value,
                 'changed_by' => 'seller',
             ]);
         }
 
         return redirect()->route('seller.orders.details', $order->invoice_id)
             ->with('success', 'Tracking information added.');
+    }
+
+    public function shipments(Request $request)
+    {
+        $seller = seller();
+        $filters = array_filter([
+            'status' => $request->status,
+            'tracking_number' => $request->tracking_number,
+            'order_id' => $request->order_id,
+            'date_from' => $request->date_from,
+            'date_to' => $request->date_to,
+        ]);
+
+        $shipments = $this->shippingRepo->getShipmentsBySeller($seller->id, $filters);
+
+        return view('seller.shipping.shipments', compact('shipments'));
+    }
+
+    public function shipmentShow($id)
+    {
+        $seller = seller();
+        $shipment = $this->shippingRepo->findShipmentById((int) $id, $seller->id);
+
+        if (! $shipment) {
+            return redirect()->route('seller.shipping.shipments')
+                ->with('error', 'Shipment not found.');
+        }
+
+        return view('seller.shipping.shipment_show', compact('shipment'));
+    }
+
+    public function shipmentCreate(Order $order)
+    {
+        $seller = seller();
+        if ($order->seller_id !== $seller->id) {
+            abort(403);
+        }
+
+        $carriers = ShippingCarrier::where('is_active', true)->get();
+
+        return view('seller.shipping.shipment_create', compact('order', 'carriers'));
+    }
+
+    public function shipmentStore(Request $request)
+    {
+        $seller = seller();
+
+        $data = $request->validate([
+            'order_id' => 'required|exists:orders,id',
+            'shipping_carrier_id' => 'required|exists:shipping_carriers,id',
+            'tracking_number' => 'required|string|max:255',
+            'weight' => 'nullable|numeric|min:0',
+            'shipping_cost' => 'nullable|numeric|min:0',
+            'cod_amount' => 'nullable|numeric|min:0',
+            'notes' => 'nullable|string|max:1000',
+        ]);
+
+        $order = Order::findOrFail($data['order_id']);
+        if ($order->seller_id !== $seller->id) {
+            abort(403);
+        }
+
+        $data['seller_id'] = $seller->id;
+        $data['status'] = Shipment::STATUS_PENDING;
+        $data['pickup_address'] = $seller->address ?? $seller->business_address;
+        $data['delivery_address'] = $order->billing_address?->address;
+
+        $shipment = $this->shippingRepo->createShipment($data);
+
+        $this->shippingRepo->createTrackingLog(
+            $shipment->id,
+            Shipment::STATUS_PENDING,
+            null,
+            'Shipment created and ready for pickup.'
+        );
+
+        $carrierName = $shipment->carrier?->name ?? 'Carrier';
+        OrderTracking::create([
+            'order_id' => $order->id,
+            'seller_id' => $seller->id,
+            'status_id' => $order->status->value,
+            'tracking_number' => $data['tracking_number'],
+            'courier_name' => $carrierName,
+            'notes' => 'Shipment created',
+        ]);
+
+        return redirect()->route('seller.shipping.shipments')
+            ->with('success', 'Shipment created successfully.');
+    }
+
+    public function shipmentUpdateStatus(Request $request, $id)
+    {
+        $seller = seller();
+        $shipment = $this->shippingRepo->findShipmentById((int) $id, $seller->id);
+
+        if (! $shipment) {
+            return response()->json(['message' => 'Shipment not found'], 404);
+        }
+
+        $data = $request->validate([
+            'status' => 'required|string|in:'.implode(',', array_keys(Shipment::statuses())),
+            'location' => 'nullable|string|max:255',
+            'description' => 'nullable|string|max:1000',
+        ]);
+
+        $oldStatus = $shipment->status;
+        $this->shippingRepo->updateShipment($shipment, ['status' => $data['status']]);
+
+        if ($data['status'] === Shipment::STATUS_DELIVERED) {
+            $shipment->update(['delivered_at' => now()]);
+        }
+        if ($data['status'] === Shipment::STATUS_PICKED_UP && ! $shipment->shipped_at) {
+            $shipment->update(['shipped_at' => now()]);
+        }
+
+        $this->shippingRepo->createTrackingLog(
+            $shipment->id,
+            $data['status'],
+            $data['location'] ?? null,
+            $data['description'] ?? null,
+        );
+
+        if ($data['status'] === Shipment::STATUS_DELIVERED && $oldStatus !== Shipment::STATUS_DELIVERED) {
+            $order = $shipment->order;
+            if ($order && $order->seller_id === $seller->id) {
+                $oldOrderStatus = $order->status->value;
+                $order->update(['status' => OrderStatus::DELIVERED->value]);
+                $order->statusLogs()->create([
+                    'old_status' => $oldOrderStatus,
+                    'new_status' => OrderStatus::DELIVERED->value,
+                    'changed_by' => 'seller',
+                ]);
+            }
+        }
+
+        return redirect()->back()->with('success', 'Shipment status updated to '.Shipment::statuses()[$data['status']]);
     }
 }

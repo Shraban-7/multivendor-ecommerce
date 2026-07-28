@@ -130,10 +130,16 @@
             <div class="card border-0 shadow-sm mb-3" style="border-radius: 12px;">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                     <h5 class="fw-semibold mb-0">Shipping Details</h5>
-                    <a href="{{ route('seller.orders.tracking', $order) }}"
-                       class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1">
-                        <i data-feather="truck" style="width: 14px; height: 14px;"></i> Add Tracking
-                    </a>
+                    <div class="d-flex gap-2">
+                        <a href="{{ route('seller.shipping.shipments.create', $order) }}"
+                           class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1">
+                            <i data-feather="package" style="width: 14px; height: 14px;"></i> Create Shipment
+                        </a>
+                        <a href="{{ route('seller.orders.tracking', $order) }}"
+                           class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1">
+                            <i data-feather="truck" style="width: 14px; height: 14px;"></i> Add Tracking
+                        </a>
+                    </div>
                 </div>
                 <div class="card-body">
                     <address class="mb-0">

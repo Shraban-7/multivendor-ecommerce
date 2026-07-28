@@ -8,6 +8,8 @@ interface LocationRepositoryInterface
 {
     public function getAllDivisions(): Collection;
 
+    public function getAllDistricts(): Collection;
+
     public function getDistrictsByDivisionId(int $divisionId): Collection;
 
     public function getUpazilasByDistrictId(int $districtId): Collection;

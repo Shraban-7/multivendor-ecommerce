@@ -24,7 +24,23 @@ $route = request()->route()->getName();
                 </a>
             </li>
 
+            {{-- ═══ 2. SHIPPING ═══ --}}
+            <div class="sidebar-heading px-4 pt-3 pb-1 text-uppercase fw-semibold">Shipping</div>
 
+            <li class="nav-item">
+                <a class="nav-link d-flex align-items-center {{ request()->routeIs('seller.shipping.shipments*') ? 'active' : '' }}"
+                    href="{{ route('seller.shipping.shipments') }}">
+                    <i data-feather="truck" class="nav-icon me-3" style="width: 18px; height: 18px;"></i>
+                    <span>Shipments</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link d-flex align-items-center {{ request()->routeIs('seller.shipping.zones*') ? 'active' : '' }}"
+                    href="{{ route('seller.shipping.zones') }}">
+                    <i data-feather="map-pin" class="nav-icon me-3" style="width: 18px; height: 18px;"></i>
+                    <span>Zones</span>
+                </a>
+            </li>
 
             {{-- ═══ 3. CATALOG ═══ --}}
             <div class="sidebar-heading px-4 pt-3 pb-1 text-uppercase fw-semibold">Catalog</div>
@@ -235,16 +251,6 @@ $route = request()->route()->getName();
                     </ul>
                 </div>
             </li>
-
-            @if ($seller || $employee->hasPermission('seller.shipping.zones'))
-                <li class="nav-item">
-                    <a class="nav-link d-flex align-items-center {{ request()->routeIs('seller.shipping.*') ? 'active' : '' }}"
-                        href="{{ route('seller.shipping.zones') }}">
-                        <i data-feather="truck" class="nav-icon me-3" style="width: 18px; height: 18px;"></i>
-                        <span>Shipping Zones</span>
-                    </a>
-                </li>
-            @endif
 
             {{-- ═══ 6. PEOPLE ═══ --}}
             <div class="sidebar-heading px-4 pt-3 pb-1 text-uppercase fw-semibold">People</div>

@@ -1,0 +1,37 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('shipments', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('order_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('seller_id')->constrained('sellers')->cascadeOnDelete();
+            $table->foreignId('shipping_carrier_id')->nullable()->constrained()->nullOnDelete();
+            $table->string('tracking_number')->nullable();
+            $table->string('status', 30)->default('pending');
+            $table->decimal('weight', 10, 2)->nullable();
+            $table->decimal('shipping_cost', 10, 2)->nullable();
+            $table->decimal('cod_amount', 10, 2)->nullable();
+            $table->text('pickup_address')->nullable();
+            $table->text('delivery_address')->nullable();
+            $table->text('notes')->nullable();
+            $table->timestamp('shipped_at')->nullable();
+            $table->timestamp('delivered_at')->nullable();
+            $table->timestamps();
+
+            $table->index(['seller_id', 'status']);
+            $table->index('tracking_number');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('shipments');
+    }
+};

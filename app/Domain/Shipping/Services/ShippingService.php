@@ -25,7 +25,7 @@ class ShippingService
             return $this->locationRepository->getDistrictsByDivisionId($divisionId);
         }
 
-        return $this->locationRepository->getAllDivisions();
+        return $this->locationRepository->getAllDistricts();
     }
 
     public function calculateCharge(?int $districtId, float $orderTotal = 0): float

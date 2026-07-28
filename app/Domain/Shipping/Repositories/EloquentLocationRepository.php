@@ -18,6 +18,13 @@ class EloquentLocationRepository implements LocationRepositoryInterface
         });
     }
 
+    public function getAllDistricts(): Collection
+    {
+        return Cache::remember('districts:all', 86400, function () {
+            return District::orderBy('name', 'ASC')->get();
+        });
+    }
+
     public function getDistrictsByDivisionId(int $divisionId): Collection
     {
         return Cache::remember("districts:division:$divisionId", 86400, function () use ($divisionId) {

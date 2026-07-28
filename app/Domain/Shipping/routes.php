@@ -27,6 +27,12 @@ Route::middleware(['web', 'seller'])->prefix('seller')->as('seller.')->group(fun
         Route::post('/zones/store', [SellerShippingController::class, 'storeZone'])->name('zones.store');
         Route::post('/zones/{zone}/update', [SellerShippingController::class, 'updateZone'])->name('zones.update');
         Route::delete('/zones/{zone}/destroy', [SellerShippingController::class, 'destroyZone'])->name('zones.destroy');
+
+        Route::get('/shipments', [SellerShippingController::class, 'shipments'])->name('shipments');
+        Route::get('/shipments/create/{order}', [SellerShippingController::class, 'shipmentCreate'])->name('shipments.create');
+        Route::post('/shipments/store', [SellerShippingController::class, 'shipmentStore'])->name('shipments.store');
+        Route::get('/shipments/{id}', [SellerShippingController::class, 'shipmentShow'])->name('shipments.show');
+        Route::post('/shipments/{id}/update-status', [SellerShippingController::class, 'shipmentUpdateStatus'])->name('shipments.update-status');
     });
 
     Route::prefix('orders')->as('orders.')->group(function () {
