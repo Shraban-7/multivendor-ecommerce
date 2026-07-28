@@ -40,8 +40,9 @@ class DashboardService
             ->whereBetween('created_at', [$start, $end])
             ->selectRaw('
                 COUNT(*) as total_orders,
-                SUM(seller_earnings) as total_sales,
+                SUM(payable) as gross_sales,
                 SUM(total_commission) as total_commission,
+                SUM(seller_earnings) as total_earnings,
                 COUNT(DISTINCT user_id) as total_customers,
                 SUM(CASE WHEN status = 0 THEN 1 ELSE 0 END) as pending_orders,
                 SUM(CASE WHEN status = 2 THEN 1 ELSE 0 END) as shipped_orders,
@@ -77,7 +78,8 @@ class DashboardService
 
         return [
             'total_orders' => (int) $aggregates->total_orders,
-            'total_sales' => (float) $aggregates->total_sales,
+            'gross_sales' => (float) $aggregates->gross_sales,
+            'total_earnings' => (float) $aggregates->total_earnings,
             'total_commission' => (float) $aggregates->total_commission,
             'total_customers' => (int) $aggregates->total_customers,
             'pending_orders' => (int) $aggregates->pending_orders,

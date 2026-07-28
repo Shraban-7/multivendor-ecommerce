@@ -10,6 +10,7 @@ use App\Domain\Product\Models\Product;
 use App\Domain\Review\Models\Review;
 use App\Domain\Vendor\Models\Seller;
 use App\Domain\Vendor\Models\SellerEmployee;
+use App\Domain\Vendor\Models\VendorTransaction;
 use App\Enums\PaymentType;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -204,10 +205,10 @@ class Order extends Model
         }
     }
 
-    public function addSellerEarningToBalance($commission = 0)
+    public function addSellerEarningToBalance(): bool
     {
         if ($this->status->value != OrderStatus::DELIVERED->value || $this->seller_earning_added ?? false) {
-            return;
+            return false;
         }
 
         if (is_null($this->seller_id) || $this->seller_earnings == 0) {
@@ -219,13 +220,18 @@ class Order extends Model
             return false;
         }
 
-        if ($this->user_id != null) {
-            $seller->balance = $seller->balance + $this->seller_earnings;
-        } else {
-            $seller->balance = $seller->balance - $commission;
-        }
-
+        $balanceBefore = (float) $seller->balance;
+        $seller->balance = $balanceBefore + (float) $this->seller_earnings;
         $seller->save();
+
+        VendorTransaction::record(
+            $seller,
+            VendorTransaction::TYPE_ORDER_EARNED,
+            (float) $this->seller_earnings,
+            $balanceBefore,
+            $this,
+            "Order #{$this->invoice_id} delivered — earned {$this->seller_earnings}, commission {$this->total_commission}",
+        );
 
         $this->seller_earning_added = true;
         $this->save();

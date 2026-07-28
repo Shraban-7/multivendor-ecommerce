@@ -102,7 +102,6 @@ Route::middleware(['web', 'seller'])->prefix('seller')->as('seller.')->group(fun
         Route::get('/', [SellerPayoutController::class, 'index'])->name('index');
         Route::get('/create', [SellerPayoutController::class, 'create'])->name('create');
         Route::post('/store', [SellerPayoutController::class, 'store'])->name('store');
-        Route::get('{payout}', [SellerPayoutController::class, 'show'])->name('show');
 
         Route::prefix('methods')->as('methods.')->group(function () {
             Route::get('/', [SellerPayoutController::class, 'methods'])->name('index');
@@ -111,6 +110,8 @@ Route::middleware(['web', 'seller'])->prefix('seller')->as('seller.')->group(fun
             Route::delete('{method}/destroy', [SellerPayoutController::class, 'destroyMethod'])->name('destroy');
             Route::post('{method}/default', [SellerPayoutController::class, 'setDefaultMethod'])->name('default');
         });
+
+        Route::get('{payout}', [SellerPayoutController::class, 'show'])->name('show');
     });
 
     Route::post('banner-image/{image}/', [SettingController::class, 'deleteImage'])->name('bannerImages.delete');

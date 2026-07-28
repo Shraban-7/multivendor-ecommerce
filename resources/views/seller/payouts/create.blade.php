@@ -59,7 +59,7 @@
                             @else
                                 <div class="alert alert-warning mb-0">
                                     No payout methods found.
-                                    <a href="{{ route('seller.payouts.methods') }}" class="alert-link">Add a payout method</a> first.
+                                    <a href="{{ route('seller.payouts.methods.index') }}" class="alert-link">Add a payout method</a> first.
                                 </div>
                             @endif
                         </div>

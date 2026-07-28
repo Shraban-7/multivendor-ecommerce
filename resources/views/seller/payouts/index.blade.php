@@ -6,7 +6,7 @@
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
         <h4 class="fw-bold mb-0 text-dark">Payouts</h4>
         <div class="d-flex gap-2">
-            <a href="{{ route('seller.payouts.methods') }}" class="btn btn-outline-primary d-inline-flex align-items-center gap-1">
+            <a href="{{ route('seller.payouts.methods.index') }}" class="btn btn-outline-primary d-inline-flex align-items-center gap-1">
                 <i data-feather="credit-card" style="width: 16px; height: 16px;"></i> Payment Methods
             </a>
             <a href="{{ route('seller.payouts.create') }}" class="btn btn-primary d-inline-flex align-items-center gap-1">
@@ -16,7 +16,7 @@
     </div>
 
     <div class="row g-3 mb-4">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card border-0 shadow-sm" style="border-radius: 12px;">
                 <div class="card-body">
                     <div class="d-flex align-items-center">
@@ -31,7 +31,22 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm" style="border-radius: 12px;">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="icon-bg-info me-3">
+                            <i data-feather="trending-up" style="width: 24px; height: 24px;"></i>
+                        </div>
+                        <div>
+                            <p class="text-muted mb-0 small">Pending Earnings</p>
+                            <h3 class="fw-bold mb-0 text-dark">{{ money($pendingEarnings) }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
             <div class="card border-0 shadow-sm" style="border-radius: 12px;">
                 <div class="card-body">
                     <div class="d-flex align-items-center">
@@ -46,7 +61,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card border-0 shadow-sm" style="border-radius: 12px;">
                 <div class="card-body">
                     <div class="d-flex align-items-center">

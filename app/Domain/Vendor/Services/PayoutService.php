@@ -5,6 +5,7 @@ namespace App\Domain\Vendor\Services;
 use App\Domain\Vendor\Models\Seller;
 use App\Domain\Vendor\Models\SellerPayout;
 use App\Domain\Vendor\Models\SellerPayoutMethod;
+use App\Domain\Vendor\Models\VendorTransaction;
 use Illuminate\Support\Facades\DB;
 
 class PayoutService
@@ -33,7 +34,17 @@ class PayoutService
                 'requested_at' => now(),
             ]);
 
+            $balanceBefore = (float) $seller->balance;
             $seller->decrement('balance', $amount);
+
+            VendorTransaction::record(
+                $seller,
+                VendorTransaction::TYPE_PAYOUT,
+                -$amount,
+                $balanceBefore,
+                $payout,
+                "Payout request #{$payout->id} — amount {$amount}, charge {$charge}, net {$netAmount}",
+            );
 
             return $payout;
         });
@@ -71,7 +82,18 @@ class PayoutService
                 'admin_note' => $note,
             ]);
 
-            $payout->seller()->increment('balance', $payout->amount);
+            $seller = $payout->seller;
+            $balanceBefore = (float) $seller->balance;
+            $seller->increment('balance', $payout->amount);
+
+            VendorTransaction::record(
+                $seller,
+                VendorTransaction::TYPE_PAYOUT_CANCELLED,
+                (float) $payout->amount,
+                $balanceBefore,
+                $payout,
+                "Payout #{$payout->id} cancelled — balance restored {$payout->amount}",
+            );
         });
     }
 
@@ -84,7 +106,18 @@ class PayoutService
                 'admin_note' => $note,
             ]);
 
-            $payout->seller()->increment('balance', $payout->amount);
+            $seller = $payout->seller;
+            $balanceBefore = (float) $seller->balance;
+            $seller->increment('balance', $payout->amount);
+
+            VendorTransaction::record(
+                $seller,
+                VendorTransaction::TYPE_PAYOUT_CANCELLED,
+                (float) $payout->amount,
+                $balanceBefore,
+                $payout,
+                "Payout #{$payout->id} failed — balance restored {$payout->amount}",
+            );
         });
     }
 
@@ -123,5 +156,14 @@ class PayoutService
         return (float) SellerPayout::where('seller_id', $seller->id)
             ->where('status', SellerPayout::STATUS_COMPLETED)
             ->sum('amount');
+    }
+
+    public function getPendingEarnings(Seller $seller): float
+    {
+        return (float) DB::table('orders')
+            ->where('seller_id', $seller->id)
+            ->where('status', 3)
+            ->where('seller_earning_added', false)
+            ->sum('seller_earnings');
     }
 }

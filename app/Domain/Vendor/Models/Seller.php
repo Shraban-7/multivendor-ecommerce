@@ -200,6 +200,11 @@ class Seller extends Authenticatable
         return $this->hasMany(SellerPayout::class);
     }
 
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(VendorTransaction::class);
+    }
+
     public function calculateEarning($total): array
     {
         $total_commission = 0;

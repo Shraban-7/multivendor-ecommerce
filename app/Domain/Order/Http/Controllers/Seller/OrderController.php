@@ -10,6 +10,8 @@ use App\Domain\Order\Services\OrderService;
 use App\Domain\Product\Models\Product;
 use App\Domain\Product\Models\ProductVariant;
 use App\Domain\Product\Services\StockManagerService;
+use App\Domain\Vendor\Models\Seller;
+use App\Domain\Vendor\Models\VendorTransaction;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -132,6 +134,23 @@ class OrderController extends Controller
                 $refundAmount = $refundAmount ?: $order->payable;
                 $returnRequest->update(['status' => 'refunded', 'refunded_at' => now()]);
                 $order->update(['refund_amount' => $refundAmount]);
+
+                if ($order->seller_earning_added) {
+                    $seller = Seller::find($order->seller_id);
+                    if ($seller) {
+                        $balanceBefore = (float) $seller->balance;
+                        $seller->decrement('balance', (float) $order->seller_earnings);
+
+                        VendorTransaction::record(
+                            $seller,
+                            VendorTransaction::TYPE_REFUND,
+                            -(float) $order->seller_earnings,
+                            $balanceBefore,
+                            $order,
+                            "Refund for order #{$order->invoice_id} — deducted {$order->seller_earnings}",
+                        );
+                    }
+                }
             }
         }
 

@@ -1,7 +1,7 @@
 @php $m = $method ?? null; @endphp
 
 <div class="mb-3">
-    <label class="form-label">Method Type <span class="text-danger">*</span></label>
+    <label class="form-label">Method Type </label>
     <select name="method_type" class="form-select method-type-select" required>
         <option value="">Select type...</option>
         @foreach (\App\Domain\Vendor\Models\SellerPayoutMethod::methodTypes() as $value => $label)
@@ -11,12 +11,12 @@
 </div>
 
 <div class="mb-3">
-    <label class="form-label">Account Name <span class="text-danger">*</span></label>
+    <label class="form-label">Account Name </label>
     <input type="text" name="account_name" class="form-control" value="{{ old('account_name', $m->account_name ?? '') }}" required>
 </div>
 
 <div class="mb-3">
-    <label class="form-label">Account Number <span class="text-danger">*</span></label>
+    <label class="form-label">Account Number</label>
     <input type="text" name="account_number" class="form-control" value="{{ old('account_number', $m->account_number ?? '') }}" required>
 </div>
 

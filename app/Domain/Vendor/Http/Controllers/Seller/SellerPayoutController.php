@@ -25,6 +25,7 @@ class SellerPayoutController extends Controller
         $availableBalance = $this->payoutService->getAvailableBalance($seller);
         $pendingBalance = $this->payoutService->getPendingBalance($seller);
         $totalWithdrawn = $this->payoutService->getTotalWithdrawn($seller);
+        $pendingEarnings = $this->payoutService->getPendingEarnings($seller);
 
         $statusFilter = $request->get('status');
 
@@ -41,6 +42,7 @@ class SellerPayoutController extends Controller
             'availableBalance',
             'pendingBalance',
             'totalWithdrawn',
+            'pendingEarnings',
             'statusFilter'
         ));
     }
@@ -120,7 +122,7 @@ class SellerPayoutController extends Controller
 
         SellerPayoutMethod::create($data);
 
-        return redirect()->route('seller.payouts.methods')
+        return redirect()->route('seller.payouts.methods.index')
             ->with('success', 'Payout method added successfully.');
     }
 
@@ -148,7 +150,7 @@ class SellerPayoutController extends Controller
 
         $method->update($data);
 
-        return redirect()->route('seller.payouts.methods')
+        return redirect()->route('seller.payouts.methods.index')
             ->with('success', 'Payout method updated successfully.');
     }
 
@@ -161,7 +163,7 @@ class SellerPayoutController extends Controller
 
         $method->delete();
 
-        return redirect()->route('seller.payouts.methods')
+        return redirect()->route('seller.payouts.methods.index')
             ->with('success', 'Payout method deleted.');
     }
 
@@ -175,7 +177,7 @@ class SellerPayoutController extends Controller
         SellerPayoutMethod::where('seller_id', $seller->id)->update(['is_default' => false]);
         $method->update(['is_default' => true]);
 
-        return redirect()->route('seller.payouts.methods')
+        return redirect()->route('seller.payouts.methods.index')
             ->with('success', 'Default payout method updated.');
     }
 }

@@ -4,7 +4,6 @@ use App\Http\Controllers\Api\Seller\AuthController;
 use App\Http\Controllers\Api\Seller\DashboardController;
 use App\Http\Controllers\Api\Seller\ProductController;
 use App\Http\Controllers\Api\Seller\OrderController;
-use App\Http\Controllers\Api\Seller\PosController;
 use App\Http\Controllers\Api\Seller\EmployeeController;
 use App\Http\Controllers\Api\Seller\ExpenseController;
 use App\Http\Controllers\Api\Seller\ChatController;
@@ -61,24 +60,8 @@ Route::middleware('auth:sanctum')->prefix('seller')->group(function () {
     Route::get('/orders/cancelled', [OrderController::class, 'cancelled']);
     Route::get('/orders/refunded', [OrderController::class, 'refunded']);
     Route::get('/orders/returned', [OrderController::class, 'returned']);
-    Route::get('/orders/pos-orders', [OrderController::class, 'posOrders']);
     Route::get('/orders/{invoice_id}/details', [OrderController::class, 'details']);
     Route::post('/orders/{order}/update-status', [OrderController::class, 'updateStatus']);
-
-    // POS
-    Route::prefix('pos')->group(function () {
-        Route::get('/', [PosController::class, 'index']);
-        Route::post('/cart-add', [PosController::class, 'cartAdd']);
-        Route::post('/cart/update', [PosController::class, 'cartUpdate']);
-        Route::post('/cart-item/remove', [PosController::class, 'cartItemRemove']);
-        Route::post('/cart-clear', [PosController::class, 'cartClear']);
-        Route::post('/place-order', [PosController::class, 'placeOrder']);
-        Route::post('/save-draft', [PosController::class, 'saveDraft']);
-        Route::post('/draft-clear/{draft}', [PosController::class, 'clearDraft']);
-        Route::get('/customers/search', [PosController::class, 'customerSearch']);
-        Route::get('/sales', [PosController::class, 'sales']);
-        Route::post('/sales/{order}/pay', [PosController::class, 'pay']);
-    });
 
     // Employees
     Route::get('/employees', [EmployeeController::class, 'index']);

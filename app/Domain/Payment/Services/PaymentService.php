@@ -6,6 +6,7 @@ use App\Domain\Order\Models\Order;
 use App\Domain\Payment\Models\Payment;
 use App\Domain\Payment\Repositories\Contracts\PaymentRepositoryInterface;
 use App\Domain\Vendor\Models\Seller;
+use App\Domain\Vendor\Models\VendorTransaction;
 use App\Services\AffiliateService;
 use App\Services\BkashService;
 use Illuminate\Support\Facades\DB;
@@ -122,9 +123,20 @@ class PaymentService
 
                 $seller = Seller::find($order->seller_id);
                 if ($seller) {
+                    $balanceBefore = (float) $seller->balance;
                     $seller->update([
-                        'balance' => $seller->balance + $order->seller_earnings,
+                        'balance' => $balanceBefore + (float) $order->seller_earnings,
                     ]);
+                    $order->update(['seller_earning_added' => true]);
+
+                    VendorTransaction::record(
+                        $seller,
+                        VendorTransaction::TYPE_ORDER_EARNED,
+                        (float) $order->seller_earnings,
+                        $balanceBefore,
+                        $order,
+                        "Online payment #{$order->invoice_id} — earned {$order->seller_earnings}, commission {$order->total_commission}",
+                    );
                 }
 
                 $this->affiliateService->approveCommission($order);
