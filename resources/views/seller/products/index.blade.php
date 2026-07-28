@@ -94,6 +94,7 @@
                         <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 py-1" style="min-width:150px;">
                             <li><a class="dropdown-item py-1.5" href="{{ route('seller.products.show', $product->slug) }}" target="__blank"><i data-feather="eye" class="icon-xs me-2"></i>View Details</a></li>
                             <li><a class="dropdown-item py-1.5" href="{{ route('seller.products.edit', $product->slug) }}" target="__blank"><i data-feather="edit" class="icon-xs me-2"></i>Edit</a></li>
+                            <li><a class="dropdown-item py-1.5" href="{{ route('seller.products.media.index', $product) }}"><i data-feather="image" class="icon-xs me-2"></i>Media</a></li>
                             @if ($product->status != $product::STATUS_DELETED)
                             <li><hr class="dropdown-divider my-1"></li>
                             <li>

@@ -251,7 +251,7 @@ class ProductController extends Controller
     {
         $request->validate([
             'images' => 'required|array',
-            'images.*' => 'image|mimes:jpeg,jpg,png,webp|max:4000',
+            'images.*' => 'required|image|mimes:jpeg,jpg,png,webp|max:4096',
         ]);
 
         $product = $this->productRepo->findOrFail($request->product_id);
@@ -265,10 +265,22 @@ class ProductController extends Controller
 
     public function deleteImage(ProductImage $image)
     {
+        abort_unless($image->product->seller_id === get_seller_id(), 403);
+
         delete_file($image->image);
+        $wasPrimary = $image->is_primary;
         $image->delete();
 
-        return redirect()->back()->with('success', 'Images deleted Successfully');
+        if ($wasPrimary) {
+            $firstRemaining = ProductImage::where('product_id', $image->product_id)
+                ->ordered()
+                ->first();
+            if ($firstRemaining) {
+                $firstRemaining->update(['is_primary' => true]);
+            }
+        }
+
+        return redirect()->back()->with('success', 'Image deleted successfully');
     }
 
     public function deleteVariant(ProductVariant $variant)

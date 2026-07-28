@@ -17,6 +17,7 @@ use App\Domain\Product\Http\Controllers\Frontend\ProductController as FrontendPr
 use App\Domain\Product\Http\Controllers\Seller\FlashSaleController as SellerFlashSaleController;
 use App\Domain\Product\Http\Controllers\Seller\OptionController as SellerOptionController;
 use App\Domain\Product\Http\Controllers\Seller\ProductController as SellerProductController;
+use App\Domain\Product\Http\Controllers\Seller\ProductMediaController;
 use App\Domain\Product\Http\Controllers\Seller\ProductStockController;
 use App\Domain\Product\Http\Controllers\Seller\ProductVariantController;
 use Illuminate\Support\Facades\Route;
@@ -103,6 +104,16 @@ Route::middleware(['web', 'seller'])->prefix('seller')->as('seller.')->group(fun
         Route::delete('/delete-variant/{variant}', [SellerProductController::class, 'deleteVariant'])->name('deleteVariant');
         Route::post('images/upload', [SellerProductController::class, 'uploadImages'])->name('uploadImages');
         Route::delete('images/{image}/delete', [SellerProductController::class, 'deleteImage'])->name('image.delete');
+
+        Route::prefix('{product}/media')->as('media.')->group(function () {
+            Route::get('/', [ProductMediaController::class, 'index'])->name('index');
+            Route::post('/upload', [ProductMediaController::class, 'upload'])->name('upload');
+            Route::delete('{image}', [ProductMediaController::class, 'destroy'])->name('destroy');
+            Route::post('/reorder', [ProductMediaController::class, 'reorder'])->name('reorder');
+            Route::post('{image}/primary', [ProductMediaController::class, 'setPrimary'])->name('setPrimary');
+            Route::post('{image}/replace', [ProductMediaController::class, 'replace'])->name('replace');
+        });
+
         Route::post('/{product}/duplicate', [SellerProductController::class, 'duplicate'])->name('duplicate');
         Route::post('/{product}/toggle-visibility', [SellerProductController::class, 'toggleVisibility'])->name('toggleVisibility');
         Route::delete('/{product}/delete', [SellerProductController::class, 'delete'])->name('delete');

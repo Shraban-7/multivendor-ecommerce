@@ -27,7 +27,7 @@ class StoreProductRequest extends FormRequest
             'unit_id' => 'required|numeric',
             'unit_value' => 'required|string',
             'low_stock_quantity' => 'required|numeric',
-            'thumbnail' => 'nullable|image|max:10000',
+            'thumbnail' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:3072',
             'variants' => 'nullable|string',
             'specifications' => 'nullable|string',
             'country_of_origin' => 'nullable|string|max:100',

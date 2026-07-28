@@ -3,6 +3,7 @@
 namespace App\Domain\Product\Services;
 
 use App\Domain\Product\Models\Product;
+use App\Domain\Product\Models\ProductImage;
 use App\Domain\Product\Models\ProductVariant;
 use App\Domain\Product\Repositories\Contracts\ProductRepositoryInterface;
 use App\Domain\Vendor\Models\Seller;
@@ -163,7 +164,12 @@ class ProductService
         }
 
         foreach ($original->images as $image) {
-            $duplicated->images()->create(['image' => $image->image]);
+            $duplicated->images()->create([
+                'image' => $image->image,
+                'type' => $image->type,
+                'position' => $image->position,
+                'is_primary' => $image->is_primary,
+            ]);
         }
 
         if ($original->seo) {
@@ -215,6 +221,25 @@ class ProductService
                 'weight' => $v['weight'] ?? null,
                 'stock_in' => $v['stock'] ?? 0,
                 'status' => true,
+            ]);
+        }
+    }
+
+    public function attachImages(Product $product, array $files, string $imageFolder): void
+    {
+        $imageService = app(ImageOptimizerService::class);
+        $maxPosition = $product->images()->max('position') ?? 0;
+        $hasImages = $product->images()->exists();
+
+        foreach ($files as $file) {
+            $path = $imageService->uploadAndOptimize($file, $imageFolder);
+            $maxPosition++;
+
+            $product->images()->create([
+                'image' => $path,
+                'type' => 'gallery',
+                'position' => $maxPosition,
+                'is_primary' => ! $hasImages && $maxPosition === 1,
             ]);
         }
     }
