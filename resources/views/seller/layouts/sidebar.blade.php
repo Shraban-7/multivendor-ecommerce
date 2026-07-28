@@ -127,7 +127,20 @@ $route = request()->route()->getName();
                 </div>
             </li>
 
-            {{-- ═══ 4. PROMOTIONS ═══ --}}
+            {{-- ═══ 4. REVIEWS ═══ --}}
+            <div class="sidebar-heading px-4 pt-3 pb-1 text-uppercase fw-semibold">Reviews</div>
+
+            @if ($seller || $employee->hasPermission('seller.reviews.index'))
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center {{ request()->routeIs('seller.reviews.*') ? 'active' : '' }}"
+                        href="{{ route('seller.reviews.index') }}">
+                        <i data-feather="message-square" class="nav-icon me-3" style="width: 18px; height: 18px;"></i>
+                        <span>Product Reviews</span>
+                    </a>
+                </li>
+            @endif
+
+            {{-- ═══ 5. PROMOTIONS ═══ --}}
             <div class="sidebar-heading px-4 pt-3 pb-1 text-uppercase fw-semibold">Promotions</div>
 
             <li class="nav-item">
@@ -259,7 +272,7 @@ $route = request()->route()->getName();
                 </div>
             </li>
 
-            {{-- ═══ 6. PEOPLE ═══ --}}
+            {{-- ═══ 7. PEOPLE ═══ --}}
             <div class="sidebar-heading px-4 pt-3 pb-1 text-uppercase fw-semibold">People</div>
 
             <li class="nav-item">
@@ -323,7 +336,7 @@ $route = request()->route()->getName();
                 </li>
             @endif
 
-            {{-- ═══ 7. FINANCE ═══ --}}
+            {{-- ═══ 8. FINANCE ═══ --}}
             <div class="sidebar-heading px-4 pt-3 pb-1 text-uppercase fw-semibold">Finance</div>
 
             @if ($seller || $employee->hasPermission('seller.expenses.index'))
@@ -375,7 +388,7 @@ $route = request()->route()->getName();
                 </li>
             @endif
 
-            {{-- ═══ 8. REPORTS ═══ --}}
+            {{-- ═══ 9. REPORTS ═══ --}}
             <div class="sidebar-heading px-4 pt-3 pb-1 text-uppercase fw-semibold">Reports</div>
 
             <li class="nav-item">
@@ -422,7 +435,7 @@ $route = request()->route()->getName();
                 </div>
             </li>
 
-            {{-- ═══ 9. SYSTEM ═══ --}}
+            {{-- ═══ 10. SYSTEM ═══ --}}
             <div class="sidebar-heading px-4 pt-3 pb-1 text-uppercase fw-semibold">System</div>
 
             @if ($seller || $employee->hasPermission('seller.settings.index'))

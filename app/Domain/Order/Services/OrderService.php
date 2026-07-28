@@ -277,9 +277,9 @@ class OrderService
             'description' => $data['description'],
         ]);
 
-        $review->product->addRating($review->rating);
+        $review->product->recalculateRating();
         $seller = Seller::find($review->product->seller_id);
-        $seller?->addRating($review->rating);
+        $seller?->recalculateRating();
 
         if (! empty($data['images'])) {
             foreach ($data['images'] as $file) {

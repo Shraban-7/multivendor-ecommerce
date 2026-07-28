@@ -229,10 +229,10 @@ class Product extends Model
                 'business_logo' => $this->seller->business_logo,
                 'best_seller' => $this->seller->is_best_seller,
                 'total_followers' => $this->seller->total_followers,
-                'rating' => round($this->rating),
+                'rating' => round($this->avg_rating),
             ] : null,
             'reviews' => $reviews,
-            'rating' => number_format($reviews->avg('rating') ?? 0, 1),
+            'rating' => number_format($this->avg_rating ?? 0, 1),
             'total_reviews' => $reviews->count(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
@@ -326,10 +326,10 @@ class Product extends Model
         );
     }
 
-    public function addRating($newRating)
+    public function recalculateRating(): void
     {
-        $this->avg_rating = (($this->avg_rating * $this->rating_count) + $newRating) / ($this->rating_count + 1);
-        $this->rating_count += 1;
+        $this->avg_rating = round((float) $this->reviews()->approved()->avg('rating') ?? 0, 1);
+        $this->rating_count = $this->reviews()->approved()->count();
         $this->save();
     }
 

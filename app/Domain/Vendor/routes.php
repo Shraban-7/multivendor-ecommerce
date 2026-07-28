@@ -13,6 +13,7 @@ use App\Domain\Vendor\Http\Controllers\Seller\SellerController;
 use App\Domain\Vendor\Http\Controllers\Seller\SellerEmployeeController;
 use App\Domain\Vendor\Http\Controllers\Seller\SellerExpenseController;
 use App\Domain\Vendor\Http\Controllers\Seller\SellerPayoutController;
+use App\Domain\Vendor\Http\Controllers\Seller\SellerReviewController;
 use App\Domain\Vendor\Http\Controllers\Admin\AdminPayoutController;
 use App\Domain\Vendor\Http\Controllers\Seller\SettingController;
 use App\Domain\Vendor\Http\Controllers\Seller\SubscriptionPlanController;
@@ -115,6 +116,14 @@ Route::middleware(['web', 'seller'])->prefix('seller')->as('seller.')->group(fun
     });
 
     Route::post('banner-image/{image}/', [SettingController::class, 'deleteImage'])->name('bannerImages.delete');
+
+    Route::prefix('reviews')->as('reviews.')->group(function () {
+        Route::get('/', [SellerReviewController::class, 'index'])->name('index');
+        Route::get('{review}', [SellerReviewController::class, 'show'])->name('show');
+        Route::post('{review}/reply', [SellerReviewController::class, 'reply'])->name('reply');
+        Route::post('{review}/delete-reply', [SellerReviewController::class, 'deleteReply'])->name('deleteReply');
+        Route::post('{review}/toggle-approval', [SellerReviewController::class, 'toggleApproval'])->name('toggleApproval');
+    });
 
     Route::prefix('reports')->as('reports.')->group(function () {
         Route::get('/financial', [ReportController::class, 'financial'])->name('financial');

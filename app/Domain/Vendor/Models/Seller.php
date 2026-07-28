@@ -257,10 +257,10 @@ class Seller extends Authenticatable
         );
     }
 
-    public function addRating($newRating): void
+    public function recalculateRating(): void
     {
-        $this->rating = (($this->rating * $this->rating_count) + $newRating) / ($this->rating_count + 1);
-        $this->rating_count += 1;
+        $this->rating = round((float) $this->reviews()->approved()->avg('rating') ?? 0, 2);
+        $this->rating_count = $this->reviews()->approved()->count();
         $this->save();
     }
 
