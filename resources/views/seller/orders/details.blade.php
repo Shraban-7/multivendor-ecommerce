@@ -2,19 +2,9 @@
 @section('title', 'Order Details | ' . $order->invoice_id)
 @section('content')
 
-    <?php
-    $isPos = is_null($order->user_id) ? true : false;
-    ?>
-
     <div class="mb-2">
         <div class="d-flex justify-content-between align-items-center">
             <h4 class="fw-bold mb-0 text-dark">Order Details</h4>
-            @if ($isPos)
-                <a href="{{ route('seller.pos.index', ['order_id' => $order->invoice_id]) }}"
-                    class="btn btn-primary border btn-sm d-inline-flex align-items-center gap-1 me-1" title="Details">
-                    <i data-feather="edit" class="icon-xs"></i> Edit Order
-                </a>
-            @endif
         </div>
     </div>
 
@@ -24,12 +14,6 @@
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                     <h5 class="fw-semibold mb-0">Summary</h5>
                     <div class="d-flex">
-                        @if ($isPos)
-                            <button type="button" class="btn btn-light border btn-sm d-inline-flex align-items-center gap-1 me-1"
-                                onclick="printReceipt('{{ route('receipt', $order->invoice_id) }}')">
-                                <i data-feather="printer" class="icon-xs"></i> Receipt
-                            </button>
-                        @endif
                         <button type="button" class="btn btn-light border btn-sm d-inline-flex align-items-center gap-1 me-1"
                             onclick="printReceipt('{{ route('invoice', $order->invoice_id) }}')">
                             <i data-feather="download" class="icon-xs"></i>Invoice
@@ -57,37 +41,42 @@
                         <li class="list-group-item d-flex align-items-center justify-content-between px-0">
                             <span>Status:</span>
                             <div class="d-flex align-items-center gap-2">
-                                @if ($order->status->label() === 'pending')
+                                @php $label = $order->status->label(); @endphp
+                                @if ($label === 'pending')
                                     <span class="badge badge-soft-warning">Pending</span>
-                                @elseif ($order->status->label() === 'accepted')
+                                @elseif ($label === 'accepted')
                                     <span class="badge badge-soft-secondary">Accepted</span>
-                                @elseif ($order->status->label() === 'shipped')
+                                @elseif ($label === 'shipped')
                                     <span class="badge badge-soft-primary">Shipped</span>
-                                @elseif ($order->status->label() === 'cancelled')
+                                @elseif ($label === 'cancelled')
                                     <span class="badge badge-soft-danger">Cancelled</span>
-                                @elseif ($order->status->label() === 'delivered')
+                                @elseif ($label === 'delivered')
                                     <span class="badge badge-soft-success">Delivered</span>
-                                @elseif ($order->status->label() === 'returned')
+                                @elseif ($label === 'returned')
                                     <span class="badge badge-soft-secondary">Returned</span>
-                                @elseif ($order->status->label() === 'refunded')
+                                @elseif ($label === 'refunded')
                                     <span class="badge badge-soft-info">Refunded</span>
-                                @elseif ($order->status->label() === 'completed')
+                                @elseif ($label === 'completed')
                                     <span class="badge badge-soft-success">Completed</span>
+                                @elseif ($label === 'return_requested')
+                                    <span class="badge badge-soft-warning">Return Requested</span>
+                                @elseif ($label === 'return_approved')
+                                    <span class="badge badge-soft-info">Return Approved</span>
+                                @else
+                                    <span class="badge badge-soft-secondary">{{ $order->status->title() }}</span>
                                 @endif
 
-                                @if ($order->user_id != null)
-                                    <button class="btn btn-sm btn-light border d-inline-flex align-items-center gap-1"
-                                        data-bs-toggle="modal" data-bs-target="#changeStatusModal">
-                                        <i class="bi bi-arrow-repeat text-secondary"></i>
-                                        Update
-                                    </button>
-                                @endif
+                                <button class="btn btn-sm btn-light border d-inline-flex align-items-center gap-1"
+                                    data-bs-toggle="modal" data-bs-target="#changeStatusModal">
+                                    <i class="bi bi-arrow-repeat text-secondary"></i>
+                                    Update
+                                </button>
                             </div>
                         </li>
 
                         <li class="list-group-item d-flex justify-content-between px-0">
                             <span>Payment Method:</span>
-                            <span class="fw-medium">{{ $order?->payment_method }}</span>
+                            <span class="fw-medium">{{ $order->payment_method_name ?? ($order->payment?->gateway ?? 'N/A') }}</span>
                         </li>
                         <li class="list-group-item d-flex align-items-center justify-content-between px-0">
                             <span>Payment Status:</span>
@@ -138,69 +127,40 @@
                 </div>
             </div>
 
-            @if (!$isPos)
-                <div class="card border-0 shadow-sm mb-3" style="border-radius: 12px;">
-                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                        <h5 class="fw-semibold mb-0">Shipping Details</h5>
-                        <a href="{{ route('seller.orders.tracking', $order) }}"
-                           class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1">
-                            <i data-feather="truck" style="width: 14px; height: 14px;"></i> Add Tracking
-                        </a>
-                    </div>
-                    <div class="card-body">
-                        <address class="mb-0">
-                            <h6 class="fw-bold">{{ $order->billing_address->customer_name }}</h6>
-                            <p class="mb-1"><i data-feather="phone" class="icon-xs me-1"></i>
-                                {{ $order->billing_address->customer_phone }}
-                            </p>
-                            <p class="mb-1"><i data-feather="home" class="icon-xs me-1"></i>
-                                {{ $order->billing_address->address }}
-                            </p>
-                        </address>
-
-                        @if ($order->trackings->count() > 0)
-                            <hr>
-                            <h6 class="fw-semibold mb-2">Tracking Info</h6>
-                            @foreach ($order->trackings as $tracking)
-                                <div class="d-flex align-items-center gap-2 mb-1">
-                                    <i data-feather="package" style="width: 14px; height: 14px;" class="text-primary"></i>
-                                    <span class="small">
-                                        <strong>{{ $tracking->carrier->name ?? $tracking->courier_name ?? 'Carrier' }}:</strong>
-                                        <code>{{ $tracking->tracking_number }}</code>
-                                    </span>
-                                </div>
-                            @endforeach
-                        @endif
-                    </div>
+            <div class="card border-0 shadow-sm mb-3" style="border-radius: 12px;">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="fw-semibold mb-0">Shipping Details</h5>
+                    <a href="{{ route('seller.orders.tracking', $order) }}"
+                       class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1">
+                        <i data-feather="truck" style="width: 14px; height: 14px;"></i> Add Tracking
+                    </a>
                 </div>
-            @endif
-
-            @if ($isPos)
                 <div class="card-body">
-                    <button class="btn btn-danger w-100 delete-cart-item-btn d-inline-flex align-items-center justify-content-center gap-1" data-id="{{ $order->id }}"
-                        data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">
-                        Delete This Order
-                    </button>
-                </div>
+                    <address class="mb-0">
+                        <h6 class="fw-bold">{{ $order->billing_address->customer_name }}</h6>
+                        <p class="mb-1"><i data-feather="phone" class="icon-xs me-1"></i>
+                            {{ $order->billing_address->customer_phone }}
+                        </p>
+                        <p class="mb-1"><i data-feather="home" class="icon-xs me-1"></i>
+                            {{ $order->billing_address->address }}
+                        </p>
+                    </address>
 
-                <div class="modal fade" id="deleteConfirmModal" tabindex="-1">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content border-0">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Confirm Delete</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    @if ($order->trackings->count() > 0)
+                        <hr>
+                        <h6 class="fw-semibold mb-2">Tracking Info</h6>
+                        @foreach ($order->trackings as $tracking)
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <i data-feather="package" style="width: 14px; height: 14px;" class="text-primary"></i>
+                                <span class="small">
+                                    <strong>{{ $tracking->carrier->name ?? $tracking->courier_name ?? 'Carrier' }}:</strong>
+                                    <code>{{ $tracking->tracking_number }}</code>
+                                </span>
                             </div>
-                            <div class="modal-body">
-                                Are you sure you want to remove this order?
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
-                            </div>
-                        </div>
-                    </div>
+                        @endforeach
+                    @endif
                 </div>
-            @endif
+            </div>
         </div>
 
         <div class="col-lg-8">
@@ -220,7 +180,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($order->items as $item)
+                                @forelse ($order->items as $item)
                                     <tr>
                                         <td>
                                             <div class="d-flex align-items-center">
@@ -249,7 +209,7 @@
                                                             {{ $item->quantity }}</span>
                                                     </div>
 
-                                                    <div class="text-muted small mt-1">{{ $item->variant->label }}</div>
+                                                    <div class="text-muted small mt-1">{{ $item->variant?->label ?? $item->variant_name }}</div>
 
                                                     @if (isset($item->variant))
                                                         <small class="text-muted d-block">SKU:
@@ -262,7 +222,9 @@
                                         <td class="text-center">{{ money($item->discount) }}</td>
                                         <td class="text-end">{{ money($item->total) }}</td>
                                     </tr>
-                                @endforeach
+                                @empty
+                                    <tr><td colspan="4" class="text-center text-muted py-4">No items in this order.</td></tr>
+                                @endforelse
                             </tbody>
                             <tfoot class="table-white">
                                 <tr>
@@ -301,37 +263,35 @@
                 </div>
             </div>
 
-            @if (!$isPos)
-                @if ($order->review)
-                    <div class="card border-0 shadow-sm mt-4" style="border-radius: 12px;">
-                        <div class="card-header bg-white">
-                            <h5 class="fw-semibold mb-0">Order Review</h5>
+            @if ($order->review)
+                <div class="card border-0 shadow-sm mt-4" style="border-radius: 12px;">
+                    <div class="card-header bg-white">
+                        <h5 class="fw-semibold mb-0">Order Review</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <span class="fw-medium">Rating:</span>
+                            <span class="text-warning">
+                                @for ($i = 1; $i <= $order->review->rating; $i++)
+                                    <i data-feather="star" class="text-warning"></i>
+                                @endfor
+                                @for ($i = $order->review->rating + 1; $i <= 5; $i++)
+                                    <i data-feather="star" class="text-muted"></i>
+                                @endfor
+                            </span>
                         </div>
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <span class="fw-medium">Rating:</span>
-                                <span class="text-warning">
-                                    @for ($i = 1; $i <= $order->review->rating; $i++)
-                                        <i data-feather="star" class="text-warning"></i>
-                                    @endfor
-                                    @for ($i = $order->review->rating + 1; $i <= 5; $i++)
-                                        <i data-feather="star" class="text-muted"></i>
-                                    @endfor
-                                </span>
-                            </div>
-                            <div class="mt-3">
-                                <p class="mb-0 mt-2"><span
-                                        class="fw-medium me-2">Review:</span>{{ $order->review->description }}</p>
-                            </div>
-                            <div class="text-muted mt-3">
-                                <span>Reviewed on:
-                                    {{ \Carbon\Carbon::parse($order->review->created_at)->format('d-m-Y h:i A') }}</span>
-                            </div>
+                        <div class="mt-3">
+                            <p class="mb-0 mt-2"><span
+                                    class="fw-medium me-2">Review:</span>{{ $order->review->description }}</p>
+                        </div>
+                        <div class="text-muted mt-3">
+                            <span>Reviewed on:
+                                {{ \Carbon\Carbon::parse($order->review->created_at)->format('d-m-Y h:i A') }}</span>
                         </div>
                     </div>
-                @else
-                    <p class="text-muted mb-0">No review provided.</p>
-                @endif
+                </div>
+            @else
+                <p class="text-muted mb-0">No review provided.</p>
             @endif
         </div>
 
@@ -401,39 +361,6 @@
                 };
             }
 
-            let deleteOrderId = null;
 
-            $(document).on('click', '.delete-cart-item-btn', function() {
-                deleteOrderId = $(this).data('id');
-            });
-
-            $('#confirmDeleteBtn').on('click', function() {
-                if (!deleteOrderId) return;
-
-                $.ajax({
-                    url: "{{ route('seller.pos.sales.delete', ':id') }}".replace(':id', deleteOrderId),
-                    type: "POST",
-                    data: {
-                        _token: "{{ csrf_token() }}"
-                    },
-                    success: function(response) {
-                        if (response.status) {
-                            showSuccessToast(response.message || "Order deleted successfully!");
-                            $('#deleteConfirmModal').modal('hide');
-
-                            setTimeout(() => {
-                                window.location.href = "{{ route('seller.pos.sales.index') }}";
-                            }, 800);
-
-                            deleteOrderId = null;
-                        } else {
-                            showErrorToast(response.message || "Failed to delete order!");
-                        }
-                    },
-                    error: function(xhr) {
-                        showErrorToast("Something went wrong!");
-                    }
-                });
-            });
         </script>
     @endpush

@@ -6,13 +6,6 @@
     </a>
 
     <ul class="navbar-nav navbar-right-wrap ms-auto d-flex align-items-center gap-2 nav-top-wrap">
-        <li class="nav-item">
-            <a href="{{ route('seller.pos.index') }}" class="btn btn-primary btn-sm d-flex align-items-center gap-1 px-3">
-                <i class="bi bi-cart"></i>
-                <span>POS</span>
-            </a>
-        </li>
-
         <li class="nav-item position-relative">
             <a class="d-flex align-items-center justify-content-center position-relative p-1"
                 href="{{ route('seller.notifications.index') }}" style="width: 40px; height: 40px;">

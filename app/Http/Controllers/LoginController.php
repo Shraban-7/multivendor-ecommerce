@@ -21,7 +21,7 @@ class LoginController extends Controller
                 return redirect()->route('seller.dashboard');
             }
             if (Auth::guard('employee')->check()) {
-                return redirect()->route('seller.pos.index');
+                return redirect()->route('seller.dashboard');
             }
             if (Auth::guard('admin')->check()) {
                 return redirect()->route('admin.dashboard');
@@ -53,7 +53,7 @@ class LoginController extends Controller
             'employee' => [
                 'model' => SellerEmployee::class,
                 'guard' => 'employee',
-                'redirect' => route('seller.pos.index'),
+                'redirect' => route('seller.dashboard'),
                 'check' => fn ($employee) => $employee->is_active == 1,
                 'inactiveMessage' => 'Your account is inactive, contact with seller',
             ],
@@ -155,7 +155,7 @@ class LoginController extends Controller
     //         $request->session()->regenerate();
     //         session()->flash('success', 'Login successful');
 
-    //         return redirect()->route('seller.pos.index')->with('success', 'You successfully login');
+    //         return redirect()->route('seller.dashboard')->with('success', 'You successfully login');
     //     }
 
     //     if ($admin) {

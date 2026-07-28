@@ -24,7 +24,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($orders as $order)
+                @forelse ($orders as $order)
                     <tr>
                         <td>
                             <a href="{{ route('seller.orders.details', $order->invoice_id) }}" target="__blank">#
@@ -38,7 +38,15 @@
                                 </p>
                             @endif
                         </td>
-                        <td> {{ $order->user->name }} </td>
+                        <td>
+                            @if ($order->user)
+                                {{ $order->user->name }}
+                            @elseif ($order->customer)
+                                {{ $order->customer->name }}
+                            @else
+                                <span class="text-muted">Guest</span>
+                            @endif
+                        </td>
                         <td> <span class="text-dark">{{ money($order->payable) }}</span> </td>
                         <td> <span class="text-danger"> {{ money($order->due) }}</span> </td>
                         <td>
@@ -50,22 +58,29 @@
                             @endif
                         </td>
                         <td>
-                            @if ($order->status->label() === 'pending')
+                            @php $label = $order->status->label(); @endphp
+                            @if ($label === 'pending')
                                 <span class="badge badge-soft-warning">Pending</span>
-                            @elseif ($order->status->label() === 'accepted')
+                            @elseif ($label === 'accepted')
                                 <span class="badge badge-soft-secondary">Accepted</span>
-                            @elseif ($order->status->label() === 'shipped')
+                            @elseif ($label === 'shipped')
                                 <span class="badge badge-soft-primary">Shipped</span>
-                            @elseif ($order->status->label() === 'cancelled')
+                            @elseif ($label === 'cancelled')
                                 <span class="badge badge-soft-danger">Cancelled</span>
-                            @elseif ($order->status->label() === 'delivered')
+                            @elseif ($label === 'delivered')
                                 <span class="badge badge-soft-success">Delivered</span>
-                            @elseif ($order->status->label() === 'returned')
+                            @elseif ($label === 'returned')
                                 <span class="badge badge-soft-secondary">Returned</span>
-                            @elseif ($order->status->label() === 'refunded')
+                            @elseif ($label === 'refunded')
                                 <span class="badge badge-soft-info">Refunded</span>
-                            @elseif ($order->status->label() === 'completed')
+                            @elseif ($label === 'completed')
                                 <span class="badge badge-soft-success">Completed</span>
+                            @elseif ($label === 'return_requested')
+                                <span class="badge badge-soft-warning">Return Requested</span>
+                            @elseif ($label === 'return_approved')
+                                <span class="badge badge-soft-info">Return Approved</span>
+                            @else
+                                <span class="badge badge-soft-secondary">{{ $order->status->title() }}</span>
                             @endif
                         </td>
                         <td>
@@ -79,7 +94,11 @@
                             </a>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-4">No orders found.</td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
 

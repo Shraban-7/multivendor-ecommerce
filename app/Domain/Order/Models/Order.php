@@ -36,8 +36,6 @@ class Order extends Model
 
     public const ORDER_TYPE_CUSTOMER = 'C';
 
-    public const ORDER_TYPE_POS = 'P';
-
     public function coupon(): BelongsTo
     {
         return $this->belongsTo(Coupon::class);

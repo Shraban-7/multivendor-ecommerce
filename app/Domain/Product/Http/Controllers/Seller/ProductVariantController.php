@@ -3,7 +3,6 @@
 namespace App\Domain\Product\Http\Controllers\Seller;
 
 use App\Domain\Order\Models\CartItem;
-use App\Domain\Order\Models\PosCartItem;
 use App\Domain\Product\Models\Color;
 use App\Domain\Product\Models\Product;
 use App\Domain\Product\Models\ProductVariant;
@@ -155,7 +154,6 @@ class ProductVariantController extends Controller
         }
 
         CartItem::where('product_variant_id', $variant->id)->delete();
-        PosCartItem::where('product_variant_id', $variant->id)->delete();
 
         $variant->variantImages()->delete();
         $variant->delete();

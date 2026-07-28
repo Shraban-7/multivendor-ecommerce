@@ -26,7 +26,7 @@
 
 <body>
     <div class="container-scroller">
-        <div id="db-wrapper" class="{{ request()->route()->getName() == 'seller.pos.index' ? 'toggled' : '' }}">
+        <div id="db-wrapper">
             @include('seller.layouts.sidebar')
             <div id="page-content">
                 <div class="header">

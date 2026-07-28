@@ -110,10 +110,16 @@ class EloquentOrderRepository implements OrderRepositoryInterface
             $query->where('invoice_id', 'like', '%'.$filters['invoice_id'].'%');
         }
         if (! empty($filters['customer_name'])) {
-            $query->whereHas('user', fn ($q) => $q->where('name', 'like', '%'.$filters['customer_name'].'%'));
+            $query->where(function ($q) use ($filters) {
+                $q->whereHas('user', fn ($q2) => $q2->where('name', 'like', '%'.$filters['customer_name'].'%'))
+                  ->orWhereHas('customer', fn ($q2) => $q2->where('name', 'like', '%'.$filters['customer_name'].'%'));
+            });
         }
         if (! empty($filters['customer_phone'])) {
-            $query->whereHas('user', fn ($q) => $q->where('phone', 'like', '%'.$filters['customer_phone'].'%'));
+            $query->where(function ($q) use ($filters) {
+                $q->whereHas('user', fn ($q2) => $q2->where('phone', 'like', '%'.$filters['customer_phone'].'%'))
+                  ->orWhereHas('customer', fn ($q2) => $q2->where('phone', 'like', '%'.$filters['customer_phone'].'%'));
+            });
         }
         if (! empty($filters['date_from'])) {
             $query->whereDate('created_at', '>=', $filters['date_from']);

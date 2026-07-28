@@ -24,42 +24,7 @@ $route = request()->route()->getName();
                 </a>
             </li>
 
-            {{-- ═══ 2. POS ═══ --}}
-            <div class="sidebar-heading px-4 pt-3 pb-1 text-uppercase fw-semibold">Point of Sale</div>
 
-            <li class="nav-item">
-                <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center" href="#!"
-                    data-bs-toggle="collapse" data-bs-target="#navPos"
-                    aria-expanded="{{ request()->routeIs('seller.pos.*') ? 'true' : 'false' }}" aria-controls="navPos">
-                    <div class="d-flex align-items-center">
-                        <i data-feather="shopping-cart" class="nav-icon me-3" style="width: 18px; height: 18px;"></i>
-                        <span>POS</span>
-                    </div>
-                    <i data-feather="chevron-right" class="chevron-icon" style="width: 16px; height: 16px;"></i>
-                </a>
-                <div id="navPos" class="collapse {{ request()->routeIs('seller.pos.*') ? 'show' : '' }}" data-bs-parent="#sideNavbar">
-                    <ul class="nav flex-column">
-                        @if ($seller || $employee->hasPermission('seller.pos.index'))
-                            <li class="nav-item">
-                                <a class="nav-link d-flex align-items-center {{ request()->routeIs('seller.pos.index') && !request()->routeIs('seller.pos.sales.*') ? 'active' : '' }}"
-                                    href="{{ route('seller.pos.index') }}">
-                                    <i data-feather="plus-circle" class="nav-icon me-2" style="width: 14px; height: 14px;"></i>
-                                    <span>New Sale</span>
-                                </a>
-                            </li>
-                        @endif
-                        @if ($seller || $employee->hasPermission('seller.pos.sales.index'))
-                            <li class="nav-item">
-                                <a class="nav-link d-flex align-items-center {{ request()->routeIs('seller.pos.sales.*') ? 'active' : '' }}"
-                                    href="{{ route('seller.pos.sales.index') }}">
-                                    <i data-feather="list" class="nav-icon me-2" style="width: 14px; height: 14px;"></i>
-                                    <span>Sales History</span>
-                                </a>
-                            </li>
-                        @endif
-                    </ul>
-                </div>
-            </li>
 
             {{-- ═══ 3. CATALOG ═══ --}}
             <div class="sidebar-heading px-4 pt-3 pb-1 text-uppercase fw-semibold">Catalog</div>
