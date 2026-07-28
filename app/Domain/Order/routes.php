@@ -50,6 +50,7 @@ Route::middleware(['web', 'seller'])->prefix('seller')->as('seller.')->group(fun
 
     Route::prefix('coupons')->as('coupons.')->group(function () {
         Route::get('/', [SellerCouponController::class, 'index'])->name('index');
+        Route::get('/analytics', [SellerCouponController::class, 'analytics'])->name('analytics');
         Route::get('/create', [SellerCouponController::class, 'create'])->name('create');
         Route::post('/store', [SellerCouponController::class, 'store'])->name('store');
         Route::get('{coupon}/edit', [SellerCouponController::class, 'edit'])->name('edit');

@@ -3,9 +3,11 @@
 namespace App\Domain\Order\Http\Controllers\Seller;
 
 use App\Domain\Order\Models\Coupon;
+use App\Domain\Order\Models\Order;
 use App\Domain\Product\Models\Product;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SellerCouponController extends Controller
 {
@@ -117,6 +119,42 @@ class SellerCouponController extends Controller
 
         return redirect()->route('seller.coupons.index')
             ->with('success', 'Coupon updated successfully.');
+    }
+
+    public function analytics()
+    {
+        $seller = seller();
+
+        $overview = Coupon::where('seller_id', $seller->id)
+            ->selectRaw('
+                COUNT(*) as total_coupons,
+                SUM(used_count) as total_uses,
+                COALESCE(SUM(CASE WHEN status = 1 THEN 1 ELSE 0 END), 0) as active_coupons
+            ')
+            ->first();
+
+        $totalDiscountGiven = (float) Order::whereHas('coupon', function ($q) use ($seller) {
+            $q->where('seller_id', $seller->id);
+        })->sum('discount');
+
+        $topCoupons = Coupon::where('seller_id', $seller->id)
+            ->where('used_count', '>', 0)
+            ->orderBy('used_count', 'desc')
+            ->take(5)
+            ->get();
+
+        $monthlyUsage = Coupon::where('seller_id', $seller->id)
+            ->selectRaw('
+                DATE_FORMAT(created_at, "%Y-%m") as month,
+                SUM(used_count) as uses
+            ')
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get();
+
+        return view('seller.coupons.analytics', compact(
+            'overview', 'totalDiscountGiven', 'topCoupons', 'monthlyUsage'
+        ));
     }
 
     public function destroy(Coupon $coupon)

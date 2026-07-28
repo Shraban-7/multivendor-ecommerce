@@ -8,6 +8,7 @@ use App\Domain\Order\Models\OrderBillingAddress;
 use App\Domain\Order\Models\OrderItem;
 use App\Domain\Order\Models\OrderStatusLog;
 use App\Domain\Order\Repositories\Contracts\OrderRepositoryInterface;
+use App\Domain\Product\Models\FlashSaleProduct;
 use App\Domain\Product\Models\Product;
 use App\Domain\Product\Models\ProductVariant;
 use App\Domain\Product\Services\StockManagerService;
@@ -162,6 +163,11 @@ class EloquentOrderRepository implements OrderRepositoryInterface
 
         $variants = ProductVariant::with('product')->whereIn('id', $variantIds)->get()->keyBy('id');
         $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
+
+        $flashSaleProducts = FlashSaleProduct::whereIn('product_id', $productIds)
+            ->where('status', FlashSaleProduct::STATUS_APPROVED)
+            ->get()->keyBy('product_id');
+
         $note = 'Order #'.($order->invoice_id ?? $order->id);
 
         foreach ($order->items as $item) {
@@ -177,6 +183,10 @@ class EloquentOrderRepository implements OrderRepositoryInterface
                 }
             } elseif ($product = $products->get($item->product_id)) {
                 $this->stockManager->decrementStock($product, null, $quantity, $note);
+            }
+
+            if (isset($flashSaleProducts[$item->product_id])) {
+                $flashSaleProducts[$item->product_id]->increment('stock_out', $quantity);
             }
         }
     }

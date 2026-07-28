@@ -165,6 +165,13 @@ $route = request()->route()->getName();
                                     <span>Create Coupon</span>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link d-flex align-items-center {{ request()->routeIs('seller.coupons.analytics') ? 'active' : '' }}"
+                                    href="{{ route('seller.coupons.analytics') }}">
+                                    <i data-feather="bar-chart-2" class="nav-icon me-2" style="width: 14px; height: 14px;"></i>
+                                    <span>Analytics</span>
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </li>

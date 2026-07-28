@@ -38,13 +38,18 @@ class CartService
 
     public function applyCouponDiscount(float $subTotal, Coupon $coupon): float
     {
-        $type = $coupon->discount_type ?? $coupon->type ?? 'fixed';
-        $value = (float) ($coupon->discount_amount ?? $coupon->amount ?? 0);
+        $value = (float) $coupon->discount_value;
 
-        if (in_array($type, ['percent', 'percentage', 1, '1'], true)) {
-            return min($subTotal, ($subTotal * $value) / 100);
+        if ($coupon->discount_type === 'percentage') {
+            $discount = ($subTotal * $value) / 100;
+        } else {
+            $discount = $value;
         }
 
-        return min($subTotal, $value);
+        if ($coupon->max_discount && $discount > (float) $coupon->max_discount) {
+            $discount = (float) $coupon->max_discount;
+        }
+
+        return round(min($discount, $subTotal), 2);
     }
 }
