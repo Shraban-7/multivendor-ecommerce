@@ -12,175 +12,136 @@ use RuntimeException;
 
 class StockManagerService
 {
-    /**
-     * Adjust stock for a product or variant atomically.
-     *
-     * product_stocks is the single source of truth for incoming stock.
-     * Adjustments are wrapped in a DB transaction with row-level locking
-     * to prevent race conditions and ensure stock never goes negative.
-     */
     public function adjustStock(
         Product $product,
         ?ProductVariant $variant,
         int $quantity,
         StockType $type,
-        string $note = ''
+        string $note = '',
+        string $reason = 'adjustment',
+        ?string $referenceType = null,
+        ?int $referenceId = null,
     ): void {
-        DB::transaction(function () use ($product, $variant, $quantity, $type, $note) {
+        DB::transaction(function () use ($product, $variant, $quantity, $type, $note, $reason, $referenceType, $referenceId) {
             if ($variant !== null) {
-                $this->adjustVariantStock($product, $variant, $quantity, $type, $note);
+                $this->adjustVariantStock($product, $variant, $quantity, $type, $note, $reason, $referenceType, $referenceId);
             } else {
-                $this->adjustProductStock($product, $quantity, $type, $note);
+                $this->adjustProductStock($product, $quantity, $type, $note, $reason, $referenceType, $referenceId);
             }
         });
     }
 
-    /**
-     * Atomically increment stock for a product or variant.
-     */
     public function incrementStock(
         Product $product,
         ?ProductVariant $variant,
         int $quantity,
-        ?string $note = null
+        ?string $note = null,
+        string $reason = 'addition',
     ): void {
-        if ($quantity <= 0) {
-            throw new RuntimeException('Increment quantity must be positive.');
-        }
-
-        $this->adjustStock($product, $variant, $quantity, StockType::ADD_STOCK, $note ?? 'Stock increment');
+        if ($quantity <= 0) throw new RuntimeException('Increment quantity must be positive.');
+        $this->adjustStock($product, $variant, $quantity, StockType::ADD_STOCK, $note ?? 'Stock increment', $reason);
     }
 
-    /**
-     * Atomically decrement stock. Throws if insufficient stock.
-     */
     public function decrementStock(
         Product $product,
         ?ProductVariant $variant,
         int $quantity,
-        ?string $note = null
+        ?string $note = null,
+        string $reason = 'sale',
     ): void {
-        if ($quantity <= 0) {
-            throw new RuntimeException('Decrement quantity must be positive.');
-        }
-
-        $this->adjustStock($product, $variant, $quantity, StockType::REMOVE_STOCK, $note ?? 'Stock decrement');
+        if ($quantity <= 0) throw new RuntimeException('Decrement quantity must be positive.');
+        $this->adjustStock($product, $variant, $quantity, StockType::REMOVE_STOCK, $note ?? 'Stock decrement', $reason);
     }
 
-    /**
-     * Set exact stock level for a product or variant.
-     */
     public function setStock(
         Product $product,
         ?ProductVariant $variant,
         int $quantity,
-        ?string $note = null
+        ?string $note = null,
+        string $reason = 'adjustment',
     ): void {
-        if ($quantity < 0) {
-            throw new RuntimeException('Stock quantity cannot be negative.');
-        }
-
-        $this->adjustStock($product, $variant, $quantity, StockType::SET_EXACT_STOCK, $note ?? 'Stock set');
+        if ($quantity < 0) throw new RuntimeException('Stock quantity cannot be negative.');
+        $this->adjustStock($product, $variant, $quantity, StockType::SET_EXACT_STOCK, $note ?? 'Stock set', $reason);
     }
 
-    /**
-     * Restore stock after a cancelled sale/order by reducing stock_out (not increasing stock_in).
-     */
     public function restoreStock(
         Product $product,
         ?ProductVariant $variant,
         int $quantity,
-        ?string $note = null
+        ?string $note = null,
+        string $reason = 'return',
     ): void {
-        if ($quantity <= 0) {
-            throw new RuntimeException('Restore quantity must be positive.');
-        }
+        if ($quantity <= 0) throw new RuntimeException('Restore quantity must be positive.');
 
-        DB::transaction(function () use ($product, $variant, $quantity, $note) {
+        DB::transaction(function () use ($product, $variant, $quantity, $note, $reason) {
             $historyNote = $note ?? 'Stock restored';
+            $sellerId = $product->seller_id;
 
             if ($variant !== null) {
-                /** @var ProductVariant $locked */
                 $locked = ProductVariant::lockForUpdate()->findOrFail($variant->id);
+                $stockBefore = ($locked->stock_in ?? 0) - ($locked->stock_out ?? 0);
                 $locked->stock_out = max(0, ($locked->stock_out ?? 0) - $quantity);
                 $locked->save();
+                $stockAfter = ($locked->stock_in ?? 0) - ($locked->stock_out ?? 0);
 
-                StockHistory::create([
-                    'product_id' => $product->id,
-                    'product_variant_id' => $locked->id,
-                    'quantity' => $quantity,
-                    'type' => StockType::ADD_STOCK,
-                    'note' => $historyNote,
-                ]);
+                $this->logStockHistory($product->id, $locked->id, $quantity, StockType::ADD_STOCK, $historyNote, $sellerId, $reason);
+                $this->logInventoryTransaction($product->id, $locked->id, $sellerId, 'addition', $quantity, $stockBefore, $stockAfter, $reason, $historyNote);
             } else {
-                /** @var Product $locked */
                 $locked = Product::lockForUpdate()->findOrFail($product->id);
+                $stockBefore = ($locked->stock_in ?? 0) - ($locked->stock_out ?? 0);
                 $locked->stock_out = max(0, ($locked->stock_out ?? 0) - $quantity);
                 $locked->save();
+                $stockAfter = ($locked->stock_in ?? 0) - ($locked->stock_out ?? 0);
 
-                StockHistory::create([
-                    'product_id' => $locked->id,
-                    'quantity' => $quantity,
-                    'type' => StockType::ADD_STOCK,
-                    'note' => $historyNote,
-                ]);
+                $this->logStockHistory($product->id, null, $quantity, StockType::ADD_STOCK, $historyNote, $sellerId, $reason);
+                $this->logInventoryTransaction($product->id, null, $sellerId, 'addition', $quantity, $stockBefore, $stockAfter, $reason, $historyNote);
             }
         });
     }
 
-    /**
-     * Get the current available stock for a product (without variants).
-     */
     public function availableStock(Product $product): int
     {
-        $freshProduct = Product::lockForUpdate()->find($product->id);
-
-        return max(0, ($freshProduct->stock_in ?? 0) - ($freshProduct->stock_out ?? 0));
+        $fresh = Product::lockForUpdate()->find($product->id);
+        return max(0, ($fresh->stock_in ?? 0) - ($fresh->stock_out ?? 0));
     }
 
-    /**
-     * Get available stock for a variant.
-     */
     public function variantAvailableStock(ProductVariant $variant): int
     {
-        $freshVariant = ProductVariant::lockForUpdate()->find($variant->id);
-
-        return max(0, ($freshVariant->stock_in ?? 0) - ($freshVariant->stock_out ?? 0));
+        $fresh = ProductVariant::lockForUpdate()->find($variant->id);
+        return max(0, ($fresh->stock_in ?? 0) - ($fresh->stock_out ?? 0));
     }
 
-    // -------------------------------------------------------------------------
-    // Private helpers
-    // -------------------------------------------------------------------------
+    // -----------------------------------------------------------------------
 
     private function adjustProductStock(
         Product $product,
         int $quantity,
         StockType $type,
-        string $note
+        string $note,
+        string $reason,
+        ?string $referenceType,
+        ?int $referenceId,
     ): void {
-        /** @var Product $locked */
         $locked = Product::lockForUpdate()->findOrFail($product->id);
-
         $currentStock = ($locked->stock_in ?? 0) - ($locked->stock_out ?? 0);
 
         if ($type === StockType::REMOVE_STOCK && $quantity > $currentStock) {
-            throw new RuntimeException(
-                "Insufficient stock. Available: {$currentStock}, requested: {$quantity}."
-            );
+            throw new RuntimeException("Insufficient stock. Available: {$currentStock}, requested: {$quantity}.");
         }
 
-        StockHistory::create([
-            'product_id' => $locked->id,
-            'quantity' => $quantity,
-            'type' => $type,
-            'note' => $note,
-        ]);
+        $stockBefore = $currentStock;
+
+        $this->logStockHistory($locked->id, null, $quantity, $type, $note, $locked->seller_id, $reason);
 
         match ($type) {
             StockType::SET_EXACT_STOCK => $this->applySetExactToProduct($locked, $quantity),
             StockType::ADD_STOCK => $this->applyAddToProduct($locked, $quantity),
             StockType::REMOVE_STOCK => $this->applyRemoveFromProduct($locked, $quantity),
         };
+
+        $stockAfter = ($locked->stock_in ?? 0) - ($locked->stock_out ?? 0);
+        $txType = $type === StockType::ADD_STOCK ? 'addition' : ($type === StockType::REMOVE_STOCK ? 'removal' : 'set');
+        $this->logInventoryTransaction($locked->id, null, $locked->seller_id, $txType, $quantity, $stockBefore, $stockAfter, $reason, $note, $referenceType, $referenceId);
     }
 
     private function adjustVariantStock(
@@ -188,42 +149,38 @@ class StockManagerService
         ProductVariant $variant,
         int $quantity,
         StockType $type,
-        string $note
+        string $note,
+        string $reason,
+        ?string $referenceType,
+        ?int $referenceId,
     ): void {
-        /** @var ProductVariant $locked */
         $locked = ProductVariant::lockForUpdate()->findOrFail($variant->id);
-
         $currentStock = ($locked->stock_in ?? 0) - ($locked->stock_out ?? 0);
 
         if ($type === StockType::REMOVE_STOCK && $quantity > $currentStock) {
-            throw new RuntimeException(
-                "Insufficient variant stock. Available: {$currentStock}, requested: {$quantity}."
-            );
+            throw new RuntimeException("Insufficient variant stock. Available: {$currentStock}, requested: {$quantity}.");
         }
 
-        StockHistory::create([
-            'product_id' => $product->id,
-            'product_variant_id' => $locked->id,
-            'quantity' => $quantity,
-            'type' => $type,
-            'note' => $note,
-        ]);
+        $stockBefore = $currentStock;
+
+        $this->logStockHistory($product->id, $locked->id, $quantity, $type, $note, $locked->product->seller_id, $reason);
 
         match ($type) {
             StockType::SET_EXACT_STOCK => $this->applySetExactToVariant($product, $locked, $quantity),
             StockType::ADD_STOCK => $this->applyAddToVariant($product, $locked, $quantity),
             StockType::REMOVE_STOCK => $this->applyRemoveFromVariant($locked, $quantity),
         };
+
+        $stockAfter = ($locked->stock_in ?? 0) - ($locked->stock_out ?? 0);
+        $txType = $type === StockType::ADD_STOCK ? 'addition' : ($type === StockType::REMOVE_STOCK ? 'removal' : 'set');
+        $this->logInventoryTransaction($product->id, $locked->id, $locked->product->seller_id, $txType, $quantity, $stockBefore, $stockAfter, $reason, $note, $referenceType, $referenceId);
     }
 
     // --- Product mutations ---
 
     private function applySetExactToProduct(Product $product, int $quantity): void
     {
-        ProductStock::where('product_id', $product->id)
-            ->whereNull('product_variant_id')
-            ->delete();
-
+        ProductStock::where('product_id', $product->id)->whereNull('product_variant_id')->delete();
         ProductStock::create([
             'product_id' => $product->id,
             'seller_id' => $product->seller_id,
@@ -231,7 +188,6 @@ class StockManagerService
             'cost_price' => $product->cost_price ?? 0,
             'sub_total' => ($product->cost_price ?? 0) * $quantity,
         ]);
-
         $product->stock_in = $quantity;
         $product->stock_out = 0;
         $product->save();
@@ -246,7 +202,6 @@ class StockManagerService
             'cost_price' => $product->cost_price ?? 0,
             'sub_total' => ($product->cost_price ?? 0) * $quantity,
         ]);
-
         $product->stock_in = ($product->stock_in ?? 0) + $quantity;
         $product->save();
     }
@@ -261,10 +216,7 @@ class StockManagerService
 
     private function applySetExactToVariant(Product $product, ProductVariant $variant, int $quantity): void
     {
-        ProductStock::where('product_id', $product->id)
-            ->where('product_variant_id', $variant->id)
-            ->delete();
-
+        ProductStock::where('product_id', $product->id)->where('product_variant_id', $variant->id)->delete();
         ProductStock::create([
             'product_id' => $product->id,
             'product_variant_id' => $variant->id,
@@ -273,7 +225,6 @@ class StockManagerService
             'cost_price' => $variant->cost_price ?? $product->cost_price ?? 0,
             'sub_total' => ($variant->cost_price ?? $product->cost_price ?? 0) * $quantity,
         ]);
-
         $variant->stock_in = $quantity;
         $variant->stock_out = 0;
         $variant->save();
@@ -289,7 +240,6 @@ class StockManagerService
             'cost_price' => $variant->cost_price ?? $product->cost_price ?? 0,
             'sub_total' => ($variant->cost_price ?? $product->cost_price ?? 0) * $quantity,
         ]);
-
         $variant->stock_in = ($variant->stock_in ?? 0) + $quantity;
         $variant->save();
     }
@@ -298,5 +248,48 @@ class StockManagerService
     {
         $variant->stock_out = ($variant->stock_out ?? 0) + $quantity;
         $variant->save();
+    }
+
+    // --- Logging ---
+
+    private function logStockHistory(int $productId, ?int $variantId, int $quantity, StockType $type, string $note, int $sellerId, string $reason): void
+    {
+        StockHistory::create([
+            'product_id' => $productId,
+            'product_variant_id' => $variantId,
+            'quantity' => $quantity,
+            'type' => $type,
+            'note' => $note,
+            'seller_id' => $sellerId,
+            'reason' => $reason,
+        ]);
+    }
+
+    private function logInventoryTransaction(
+        int $productId,
+        ?int $variantId,
+        int $sellerId,
+        string $type,
+        int $quantity,
+        int $stockBefore,
+        int $stockAfter,
+        string $reason,
+        ?string $notes = null,
+        ?string $referenceType = null,
+        ?int $referenceId = null,
+    ): void {
+        \App\Domain\Product\Models\InventoryTransaction::create([
+            'product_id' => $productId,
+            'product_variant_id' => $variantId,
+            'seller_id' => $sellerId,
+            'type' => $type,
+            'quantity' => $quantity,
+            'stock_before' => $stockBefore,
+            'stock_after' => $stockAfter,
+            'reason' => $reason,
+            'notes' => $notes,
+            'reference_type' => $referenceType,
+            'reference_id' => $referenceId,
+        ]);
     }
 }

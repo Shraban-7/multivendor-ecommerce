@@ -2,33 +2,36 @@
 
 namespace App\Domain\Product\Models;
 
-use App\Domain\Product\Enums\StockType;
+use App\Domain\Vendor\Models\Seller;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class StockHistory extends Model
+class InventoryTransaction extends Model
 {
     use HasFactory;
 
     protected $guarded = ['id'];
 
     protected $casts = [
-        'type' => StockType::class,
+        'quantity' => 'integer',
+        'stock_before' => 'integer',
+        'stock_after' => 'integer',
     ];
 
-    public function product()
+    public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }
 
-    public function variant()
+    public function variant(): BelongsTo
     {
         return $this->belongsTo(ProductVariant::class, 'product_variant_id');
     }
 
-    public function seller()
+    public function seller(): BelongsTo
     {
-        return $this->belongsTo(\App\Domain\Vendor\Models\Seller::class);
+        return $this->belongsTo(Seller::class);
     }
 
     public function scopeForSeller($query, int $sellerId)
@@ -38,6 +41,6 @@ class StockHistory extends Model
 
     public function scopeRecent($query)
     {
-        return $query->latest()->limit(100);
+        return $query->latest()->limit(50);
     }
 }

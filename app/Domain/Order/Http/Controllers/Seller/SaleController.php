@@ -208,7 +208,9 @@ class SaleController extends Controller
 
     public function delete($id)
     {
-        $order = Order::with('items')->find($id);
+        $order = Order::with('items')
+            ->where('seller_id', get_seller_id())
+            ->find($id);
 
         if (! $order) {
             return response()->json(['message' => 'Order not found'], 404);

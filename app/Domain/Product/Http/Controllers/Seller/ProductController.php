@@ -445,8 +445,8 @@ class ProductController extends Controller
         $products = Product::with('variants.color', 'variants.size')
             ->orderBy('name', 'ASC')
             ->where('seller_id', get_seller_id())
-            ->paginate(25)
-            ->through(fn ($product) => [
+            ->get()
+            ->map(fn ($product) => [
                 'id' => $product->id,
                 'name' => $product->name,
                 'sku' => $product->sku,
@@ -466,7 +466,8 @@ class ProductController extends Controller
                     'compare_price' => removeZeroFromDecimal($variant->compare_price, 'int'),
                     'image' => is_null($variant->image) ? null : storage_url($variant->image),
                 ]),
-            ]);
+            ])
+            ->values();
 
         return view('seller.products.inventory', compact('products'));
     }
