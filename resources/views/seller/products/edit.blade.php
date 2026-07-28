@@ -149,6 +149,32 @@
                                 <label class="form-label">Description</label>
                                 <x-textarea-input name="description" :value="$product->description" />
                             </div>
+
+                            <div class="col-12">
+                                <label class="form-label">Specifications <span class="text-muted small">(key:value pairs, one per line)</span></label>
+                                <textarea name="specifications" class="form-control form-control-sm" rows="4" placeholder="e.g. Material: Cotton&#10;Color: Red&#10;Warranty: 1 Year">@if($product->specifications)@foreach($product->specifications as $key => $value){{ $key }}: {{ $value }}
+@endforeach @endif</textarea>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">Country of Origin</label>
+                                <input type="text" name="country_of_origin" class="form-control form-control-sm" value="{{ $product->country_of_origin }}" placeholder="e.g. Bangladesh">
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">Manufacturer Name</label>
+                                <input type="text" name="manufacturer_name" class="form-control form-control-sm" value="{{ $product->manufacturer_name }}" placeholder="Manufacturer name">
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">Manufacturer Details</label>
+                                <input type="text" name="manufacturer_details" class="form-control form-control-sm" value="{{ $product->manufacturer_details }}" placeholder="Address / contact">
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">Tags <span class="text-muted small">(comma separated)</span></label>
+                                <input type="text" name="tags" class="form-control form-control-sm" value="{{ $product->tags->pluck('name')->implode(', ') }}" placeholder="e.g. cotton, summer, casual">
+                            </div>
                         </div>
                     </div>
                     <div class="col-12 col-lg-4">
@@ -184,6 +210,33 @@
                                 <input class="form-check-input" type="checkbox" name="best_selling"
                                     {{ $product->best_selling ? 'checked' : '' }} />
                                 <label class="form-check-label small">Best Selling</label>
+                            </div>
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" name="is_visible"
+                                    {{ $product->is_visible ? 'checked' : '' }} />
+                                <label class="form-check-label small">Visible on Storefront</label>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 border-top pt-3">
+                            <h6 class="small fw-bold text-muted mb-2">Physical Properties</h6>
+                            <div class="mb-2">
+                                <label class="form-label small">Weight (kg)</label>
+                                <input type="number" step="0.01" name="weight" class="form-control form-control-sm" value="{{ $product->weight }}">
+                            </div>
+                            <div class="row g-1">
+                                <div class="col-4">
+                                    <label class="form-label small">Height (cm)</label>
+                                    <input type="number" step="0.01" name="height" class="form-control form-control-sm" value="{{ $product->height }}">
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label small">Width (cm)</label>
+                                    <input type="number" step="0.01" name="width" class="form-control form-control-sm" value="{{ $product->width }}">
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label small">Length (cm)</label>
+                                    <input type="number" step="0.01" name="length" class="form-control form-control-sm" value="{{ $product->length }}">
+                                </div>
                             </div>
                         </div>
                     </div>

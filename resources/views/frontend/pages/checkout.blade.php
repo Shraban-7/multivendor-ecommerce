@@ -92,6 +92,13 @@
                             <dt>Shipping Fee</dt>
                             <dd>+{{ money($shipping_fee) }}</dd>
                         </div>
+
+                        @if ($taxAmount > 0)
+                        <div class="flex justify-between">
+                            <dt>Tax</dt>
+                            <dd>+{{ money($taxAmount) }}</dd>
+                        </div>
+                        @endif
                     </dl>
 
                     <div class="border-t border-dashed my-3"></div>
@@ -526,7 +533,8 @@
                 const subtotal = {{ $total }};
                 const itemDiscount = {{ $discount }};
                 const shipping = {{ $shipping_fee }};
-                const total = Math.max(0, subtotal - itemDiscount + shipping - couponDiscount);
+                const tax = parseFloat('{{ $taxAmount }}') || 0;
+                const total = Math.max(0, subtotal - itemDiscount + shipping + tax - couponDiscount);
                 $('#grand-total-amount').text('৳' + total.toFixed(2));
             };
 

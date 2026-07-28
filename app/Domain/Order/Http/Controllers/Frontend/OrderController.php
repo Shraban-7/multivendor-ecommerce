@@ -11,6 +11,7 @@ use App\Domain\Order\Repositories\Contracts\OrderRepositoryInterface;
 use App\Domain\Order\Services\CouponService;
 use App\Domain\Order\Services\OrderService;
 use App\Domain\Payment\Models\PaymentGateway;
+use App\Domain\Tax\Services\TaxCalculatorService;
 use App\Domain\Product\Models\Product;
 use App\Domain\Shipping\Models\District;
 use App\Domain\Shipping\Models\Division;
@@ -29,6 +30,7 @@ class OrderController extends Controller
         private readonly CartRepositoryInterface $cartRepo,
         private readonly OrderService $orderService,
         private readonly CouponService $couponService,
+        private readonly TaxCalculatorService $taxCalculator,
     ) {}
 
     public function index(Request $request)
@@ -144,7 +146,14 @@ class OrderController extends Controller
             }
         }
 
-        $grandTotal = max(0, ($subTotal - $discount) + $shippingFee - $couponDiscount);
+        $taxResult = $this->taxCalculator->calculateForOrder(
+            $seller,
+            collect($orderItems),
+            $subTotal,
+            $discount,
+        );
+        $taxAmount = $taxResult['total_tax'];
+        $grandTotal = max(0, ($subTotal - $discount) + $shippingFee - $couponDiscount + $taxAmount);
 
         if ($request->isMethod('GET')) {
             $paymentGateways = PaymentGateway::where('is_enabled', true)->get();
@@ -159,7 +168,7 @@ class OrderController extends Controller
             return view('frontend.pages.checkout', compact(
                 'user', 'selectedSellerId', 'sub_total', 'discount', 'shipping_fee',
                 'payment_gateways', 'divisions', 'districts', 'billingAddresses', 'total',
-                'allCod', 'couponDiscount', 'appliedCoupon', 'grandTotal'
+                'allCod', 'couponDiscount', 'appliedCoupon', 'grandTotal', 'taxAmount'
             ));
         }
 

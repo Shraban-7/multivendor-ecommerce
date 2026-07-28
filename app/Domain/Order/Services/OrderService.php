@@ -14,6 +14,7 @@ use App\Domain\Payment\Models\Payment;
 use App\Domain\Payment\Repositories\Contracts\PaymentRepositoryInterface;
 use App\Domain\Review\Models\Review;
 use App\Domain\Review\Models\ReviewImage;
+use App\Domain\Tax\Services\TaxCalculatorService;
 use App\Domain\Vendor\Models\Seller;
 use App\Enums\PaymentType;
 use App\Services\AamarpayService;
@@ -28,6 +29,7 @@ class OrderService
         private readonly OrderRepositoryInterface $orderRepo,
         private readonly PaymentRepositoryInterface $paymentRepo,
         private readonly AffiliateService $affiliateService,
+        private readonly TaxCalculatorService $taxCalculator,
     ) {}
 
     public function placeOrder(array $orderData, array $items, array $billing): Order
@@ -164,7 +166,17 @@ class OrderService
         return DB::transaction(function () use ($user, $seller, $validated, $orderItemsData, $subTotal, $discount, $paymentMethod, $couponId) {
             $sellerData = $seller->calculateEarning($orderItemsData['total'] ?? 0);
             $shippingFee = (float) $seller->shipping_cost;
-            $payableAmount = ($orderItemsData['total'] ?? $subTotal) + $shippingFee;
+            $items = $orderItemsData['items'] ?? [];
+
+            $taxResult = $this->taxCalculator->calculateForOrder(
+                $seller,
+                collect($items),
+                $subTotal,
+                $discount,
+            );
+
+            $totalTax = $taxResult['total_tax'];
+            $payableAmount = ($orderItemsData['total'] ?? $subTotal) + $shippingFee + $totalTax;
             $invoiceId = Order::generateInvoiceID($seller->id);
 
             $order = $this->orderRepo->create([
@@ -175,6 +187,8 @@ class OrderService
                 'sub_total' => $subTotal,
                 'total' => $orderItemsData['total'] ?? $subTotal,
                 'discount' => $discount,
+                'tax_amount' => $totalTax,
+                'tax_breakdown' => $taxResult['breakdown'],
                 'shipping_fee' => $shippingFee,
                 'payable' => $payableAmount,
                 'paid' => 0,

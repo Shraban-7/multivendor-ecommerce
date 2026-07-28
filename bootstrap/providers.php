@@ -2,6 +2,7 @@
 
 use App\Domain\Affiliate\Providers\AffiliateServiceProvider;
 use App\Domain\Media\Providers\MediaServiceProvider;
+use App\Domain\Tax\Providers\TaxServiceProvider;
 use App\Domain\Order\Providers\OrderServiceProvider;
 use App\Domain\Payment\Providers\PaymentServiceProvider;
 use App\Domain\Product\Providers\ProductServiceProvider;
@@ -24,4 +25,5 @@ return [
     PaymentServiceProvider::class,
     MediaServiceProvider::class,
     AffiliateServiceProvider::class,
+    TaxServiceProvider::class,
 ];

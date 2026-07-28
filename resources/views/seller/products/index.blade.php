@@ -85,8 +85,15 @@
                     <span class="badge badge-soft-warning">Waiting for Approval</span>
                     @elseif ($product->status == $product::STATUS_INACTIVE)
                     <span class="badge badge-soft-secondary">Inactive</span>
+                    @elseif ($product->status == $product::STATUS_DRAFT)
+                    <span class="badge badge-soft-info">Draft</span>
                     @elseif ($product->status == $product::STATUS_DELETED)
                     <span class="badge badge-soft-danger">Deleted</span>
+                    @endif
+                    @if ($product->is_visible && $product->status == $product::STATUS_ACTIVE)
+                    <span class="badge badge-soft-success ms-1"><i data-feather="eye" class="icon-xs"></i></span>
+                    @elseif (!$product->is_visible && $product->status != $product::STATUS_DELETED)
+                    <span class="badge badge-soft-secondary ms-1"><i data-feather="eye-off" class="icon-xs"></i></span>
                     @endif
                 </td>
 
@@ -101,6 +108,28 @@
                             class="btn btn-light btn-sm border d-inline-flex align-items-center gap-1 mb-1" target="__blank">
                             <i data-feather="edit" class="icon-xs"></i> Edit
                         </a>
+                        @if ($product->status != $product::STATUS_DELETED)
+                        <form action="{{ route('seller.products.duplicate', $product) }}" method="POST" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-light btn-sm border d-inline-flex align-items-center gap-1 mb-1">
+                                <i data-feather="copy" class="icon-xs"></i> Clone
+                            </button>
+                        </form>
+                        <form action="{{ route('seller.products.toggleVisibility', $product) }}" method="POST" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-light btn-sm border d-inline-flex align-items-center gap-1 mb-1">
+                                @if ($product->is_visible)
+                                <i data-feather="eye-off" class="icon-xs"></i> Hide
+                                @else
+                                <i data-feather="eye" class="icon-xs"></i> Show
+                                @endif
+                            </button>
+                        </form>
+                        @endif
+                        <button type="button" class="btn btn-light btn-sm border d-inline-flex align-items-center gap-1 mb-1 text-danger"
+                            data-bs-toggle="modal" data-bs-target="#deleteModal-{{ $product->id }}">
+                            <i data-feather="trash-2" class="icon-xs"></i> Delete
+                        </button>
                     </div>
                 </td>
             </tr>
@@ -114,6 +143,30 @@
 </div>
 
 @foreach ($products as $product)
+<div class="modal fade" id="deleteModal-{{ $product->id }}" tabindex="-1"
+    aria-labelledby="deleteModalLabel-{{ $product->id }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel-{{ $product->id }}">Delete Product</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-1">Are you sure you want to delete <strong>{{ $product->name }}</strong>?</p>
+                <p class="text-danger small mb-0">This action cannot be undone. All variants, images, and stock history will be permanently removed.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form action="{{ route('seller.products.delete', $product) }}" method="POST" style="display:inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="variantsModal-{{ $product->id }}" tabindex="-1"
     aria-labelledby="variantsModalLabel-{{ $product->id }}" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">

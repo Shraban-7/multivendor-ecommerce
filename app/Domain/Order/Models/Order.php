@@ -30,6 +30,8 @@ class Order extends Model
         'created_at' => 'datetime',
         'delivery_status' => 'integer',
         'refund_amount' => 'float',
+        'tax_amount' => 'float',
+        'tax_breakdown' => 'array',
     ];
 
     public const ORDER_TYPE_CUSTOMER = 'C';

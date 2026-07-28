@@ -1,0 +1,43 @@
+<?php
+
+namespace App\Domain\Product\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class StoreProductRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    public function rules(): array
+    {
+        return [
+            'category_id' => 'required|integer|exists:categories,id',
+            'subcategory_id' => 'nullable|integer|exists:categories,id',
+            'brand' => 'nullable',
+            'name' => 'required|string|max:255',
+            'short_description' => 'nullable|string|max:500',
+            'description' => 'nullable|string',
+            'cost_price' => 'required|numeric|min:0',
+            'price' => 'required|numeric|min:0|gte:cost_price',
+            'compare_price' => 'nullable|numeric|min:0|lt:price',
+            'payment_type' => 'required|numeric',
+            'unit_id' => 'required|numeric',
+            'unit_value' => 'required|string',
+            'low_stock_quantity' => 'required|numeric',
+            'thumbnail' => 'nullable|image|max:10000',
+            'variants' => 'nullable|string',
+            'specifications' => 'nullable|string',
+            'country_of_origin' => 'nullable|string|max:100',
+            'manufacturer_name' => 'nullable|string|max:255',
+            'manufacturer_details' => 'nullable|string',
+            'tags' => 'nullable|string',
+            'weight' => 'nullable|numeric|min:0',
+            'height' => 'nullable|numeric|min:0',
+            'width' => 'nullable|numeric|min:0',
+            'length' => 'nullable|numeric|min:0',
+        ];
+    }
+}

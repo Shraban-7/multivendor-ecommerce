@@ -104,9 +104,57 @@
                             <label class="form-label">Compare Price <span class="text-muted small">(optional sale)</span></label>
                             <input name="compare_price" type="number" min="0" step="0.01" class="form-control form-control-sm" placeholder="Leave empty for no sale">
                         </div>
+
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Short Description</label>
+                            <textarea name="short_description" class="form-control form-control-sm" rows="2" placeholder="Brief summary for search results and listings"></textarea>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea name="description" class="form-control form-control-sm" rows="4" placeholder="Full product description with features and details"></textarea>
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Specifications <span class="text-muted small">(key:value pairs, one per line)</span></label>
+                            <textarea name="specifications" class="form-control form-control-sm" rows="3" placeholder="e.g. Material: Cotton&#10;Color: Red&#10;Warranty: 1 Year"></textarea>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Country of Origin</label>
+                            <input type="text" name="country_of_origin" class="form-control form-control-sm" placeholder="e.g. Bangladesh">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Manufacturer Name</label>
+                            <input type="text" name="manufacturer_name" class="form-control form-control-sm" placeholder="Manufacturer name">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Manufacturer Details</label>
+                            <input type="text" name="manufacturer_details" class="form-control form-control-sm" placeholder="Address / contact">
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Tags <span class="text-muted small">(comma separated)</span></label>
+                            <input type="text" name="tags" class="form-control form-control-sm" placeholder="e.g. cotton, summer, casual">
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Weight (kg)</label>
+                            <input type="number" step="0.01" name="weight" class="form-control form-control-sm" placeholder="0.00">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Height (cm)</label>
+                            <input type="number" step="0.01" name="height" class="form-control form-control-sm" placeholder="0.00">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Width (cm)</label>
+                            <input type="number" step="0.01" name="width" class="form-control form-control-sm" placeholder="0.00">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Length (cm)</label>
+                            <input type="number" step="0.01" name="length" class="form-control form-control-sm" placeholder="0.00">
+                        </div>
                     </div>
                 </div>
-
                 <div class="col-md-5 d-flex flex-column align-items-center justify-content-center">
                     <label class="form-label text-center">Product Thumbnail <span class="text-muted small">(1:1 Ratio)</span></label>
                     <div class="mb-3">

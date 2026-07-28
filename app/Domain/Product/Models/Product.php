@@ -11,12 +11,14 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $guarded = ['id'];
 
@@ -30,6 +32,8 @@ class Product extends Model
         'cost_price' => 'decimal:2',
         'price' => 'decimal:2',
         'compare_price' => 'decimal:2',
+        'specifications' => 'array',
+        'is_visible' => 'boolean',
     ];
 
     const STATUS_PENDING_APPROVAL = 0;
@@ -39,6 +43,7 @@ class Product extends Model
     const STATUS_INACTIVE = 2;
 
     const STATUS_DELETED = 3;
+    const STATUS_DRAFT = 4;
 
     /**
      * Allow /api/products/{product} to resolve by id or slug.
@@ -61,6 +66,7 @@ class Product extends Model
             self::STATUS_ACTIVE => 'Active',
             self::STATUS_INACTIVE => 'Inactive',
             self::STATUS_DELETED => 'Deleted',
+            self::STATUS_DRAFT => 'Draft',
             default => null,
         };
 
@@ -147,6 +153,11 @@ class Product extends Model
     public function seo(): HasOne
     {
         return $this->hasOne(ProductSeo::class);
+    }
+
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class, 'product_tag');
     }
 
     public function toDetailsArray()

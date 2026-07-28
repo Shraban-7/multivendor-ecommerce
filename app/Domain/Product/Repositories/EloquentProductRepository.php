@@ -38,6 +38,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
     {
         return Product::with(['category', 'variants.color', 'variants.size', 'unit'])
             ->where('seller_id', $sellerId)
+            ->where('status', '!=', Product::STATUS_DELETED)
             ->latest('id')
             ->paginate($perPage);
     }

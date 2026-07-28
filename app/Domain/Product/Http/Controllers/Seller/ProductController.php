@@ -8,6 +8,8 @@ use App\Domain\Product\Models\Color;
 use App\Domain\Product\Models\Product;
 use App\Domain\Product\Models\ProductImage;
 use App\Domain\Product\Models\ProductUnit;
+use App\Domain\Product\Http\Requests\StoreProductRequest;
+use App\Domain\Product\Http\Requests\UpdateProductRequest;
 use App\Domain\Product\Models\ProductVariant;
 use App\Domain\Product\Models\Size;
 use App\Domain\Product\Models\StockHistory;
@@ -52,25 +54,11 @@ class ProductController extends Controller
         return view('seller.products.create', compact('categories', 'colors', 'sizes', 'brands', 'units'));
     }
 
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
         $seller = $this->sellerRepo->findById(get_seller_id());
 
-        $validated = $request->validate([
-            'category_id' => 'required|integer|exists:categories,id',
-            'subcategory_id' => 'nullable|integer|exists:categories,id',
-            'brand' => 'nullable',
-            'name' => 'required|string|max:255',
-            'cost_price' => 'required|numeric|min:0',
-            'price' => 'required|numeric|min:0|gte:cost_price',
-            'compare_price' => 'nullable|numeric|min:0|lt:price',
-            'payment_type' => 'required|numeric',
-            'unit_id' => 'required|numeric',
-            'unit_value' => 'required|string',
-            'low_stock_quantity' => 'required|numeric',
-            'thumbnail' => 'nullable|image|max:10000',
-            'variants' => 'nullable|string',
-        ]);
+        $validated = $request->validated();
 
         $productData = $this->productService->buildProductData($validated, $seller);
         $productData['seller_id'] = $seller->id;
@@ -93,11 +81,26 @@ class ProductController extends Controller
             $this->productService->createVariants($product, $variants, $seller, $imageFolder);
         }
 
+        if (! empty($validated['tags'])) {
+            $tagNames = array_map('trim', explode(',', $validated['tags']));
+            $tagIds = [];
+            foreach ($tagNames as $name) {
+                if (empty($name)) continue;
+                $tag = \App\Domain\Product\Models\Tag::firstOrCreate(
+                    ['slug' => \Illuminate\Support\Str::slug($name)],
+                    ['name' => $name]
+                );
+                $tagIds[] = $tag->id;
+            }
+            $product->tags()->sync($tagIds);
+        }
+
         return successResponse('Product Added Successfully');
     }
 
     public function show(Product $product)
     {
+        abort_unless($product->seller_id === get_seller_id(), 403);
         $product->load('variants.color', 'variants.size', 'stock_history', 'seo');
 
         $costPrice = $product->cost_price ?? 0;
@@ -126,6 +129,7 @@ class ProductController extends Controller
         if (! $product) {
             abort(404);
         }
+        abort_unless($product->seller_id === get_seller_id(), 403);
 
         $product->loadCount('variants', 'images', 'seo');
 
@@ -136,35 +140,16 @@ class ProductController extends Controller
         return view('seller.products.edit', compact('product', 'categories', 'brands', 'units'));
     }
 
-    public function update($slug, Request $request)
+    public function update($slug, UpdateProductRequest $request)
     {
         $product = $this->productRepo->findBySlug($slug);
         if (! $product) {
             abort(404);
         }
+        abort_unless($product->seller_id === get_seller_id(), 403);
         $seller = $product->seller;
 
-        $validated = $request->validate([
-            'category_id' => 'required|integer|exists:categories,id',
-            'subcategory_id' => 'nullable',
-            'brand' => 'nullable',
-            'name' => 'required|string|max:255',
-            'short_description' => 'nullable|string',
-            'description' => 'nullable|string',
-            'sku' => 'nullable|string|max:255',
-            'cost_price' => 'required|numeric|min:0',
-            'price' => 'required|numeric|min:0|gte:cost_price',
-            'compare_price' => 'nullable|numeric|min:0|lt:price',
-            'payment_type' => 'required|numeric',
-            'unit_id' => 'required|numeric',
-            'unit_value' => 'required|string',
-            'best_selling' => 'nullable',
-            'is_featured' => 'nullable',
-            'thumbnail' => 'nullable|image|max:10000',
-            'video' => 'nullable|file',
-            'files' => 'nullable|array',
-            'files.*' => 'mimetypes:image/*',
-        ]);
+        $validated = $request->validated();
 
         $useMainPrices = $request->has('useMainPrices');
         $useMainDiscount = $request->has('useMainDiscount');
@@ -177,6 +162,12 @@ class ProductController extends Controller
 
         if ($request->has('is_featured')) {
             $productData['is_featured'] = $validated['is_featured'] ? 1 : 0;
+        }
+
+        if ($request->has('is_visible')) {
+            $productData['is_visible'] = true;
+        } else {
+            $productData['is_visible'] = false;
         }
 
         $imageFolder = "{$seller->username}/products";
@@ -201,6 +192,22 @@ class ProductController extends Controller
         }
 
         $this->productRepo->update($product, $productData);
+
+        if (! empty($validated['tags'])) {
+            $tagNames = array_map('trim', explode(',', $validated['tags']));
+            $tagIds = [];
+            foreach ($tagNames as $name) {
+                if (empty($name)) continue;
+                $tag = \App\Domain\Product\Models\Tag::firstOrCreate(
+                    ['slug' => \Illuminate\Support\Str::slug($name)],
+                    ['name' => $name]
+                );
+                $tagIds[] = $tag->id;
+            }
+            $product->tags()->sync($tagIds);
+        } else {
+            $product->tags()->detach();
+        }
 
         if ($useMainPrices) {
             $product->variants->each(function (ProductVariant $variant) use ($product) {
@@ -232,6 +239,7 @@ class ProductController extends Controller
 
     public function delete(Product $product)
     {
+        abort_unless($product->seller_id === get_seller_id(), 403);
         $this->productService->deleteProduct($product);
 
         return redirect()->route('seller.products.index')->with('success', 'Product Removed Successfully');
@@ -245,6 +253,7 @@ class ProductController extends Controller
         ]);
 
         $product = $this->productRepo->findOrFail($request->product_id);
+        abort_unless($product->seller_id === get_seller_id(), 403);
         $imageFolder = "{$product->seller->username}/products";
 
         $this->productService->attachImages($product, $request->file('images'), $imageFolder);
@@ -260,8 +269,20 @@ class ProductController extends Controller
         return redirect()->back()->with('success', 'Images deleted Successfully');
     }
 
+    public function deleteVariant(ProductVariant $variant)
+    {
+        if (! empty($variant->image)) {
+            delete_file($variant->image);
+        }
+
+        $variant->delete();
+
+        return redirect()->back()->with('success', 'Variant deleted Successfully');
+    }
+
     public function stockUpdate(Request $request, Product $product)
     {
+        abort_unless($product->seller_id === get_seller_id(), 403);
         $request->validate([
             'stock_quantity.*' => 'nullable|numeric|min:0',
             'stock_action.*' => 'nullable|numeric',
@@ -319,6 +340,7 @@ class ProductController extends Controller
         if (! $product) {
             abort(404);
         }
+        abort_unless($product->seller_id === get_seller_id(), 403);
         $seller = $product->seller;
 
         $validated = $request->validate([
@@ -433,5 +455,23 @@ class ProductController extends Controller
             ]);
 
         return view('seller.products.inventory', compact('products'));
+    }
+
+    public function duplicate(Product $product)
+    {
+        abort_unless($product->seller_id === get_seller_id(), 403);
+        $seller = $this->sellerRepo->findById(get_seller_id());
+
+        $this->productService->duplicate($product, $seller);
+
+        return redirect()->route('seller.products.index')->with('success', 'Product duplicated successfully');
+    }
+
+    public function toggleVisibility(Product $product)
+    {
+        abort_unless($product->seller_id === get_seller_id(), 403);
+        $product->update(['is_visible' => ! $product->is_visible]);
+
+        return redirect()->back()->with('success', 'Product visibility updated');
     }
 }

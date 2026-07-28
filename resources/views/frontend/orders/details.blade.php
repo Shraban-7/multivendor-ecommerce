@@ -243,6 +243,12 @@ use App\Domain\Order\Enums\OrderStatus;
                         <span class="text-gray-600">Shipping Fee</span>
                         <span>{{ money($order->shipping_fee) }}</span>
                     </div>
+                    @if ($order->tax_amount > 0)
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-600">Tax</span>
+                        <span>+{{ money($order->tax_amount) }}</span>
+                    </div>
+                    @endif
                     <div class="border-t border-gray-200 pt-2 flex items-center justify-between font-medium">
                         <span>Total</span>
                         <span>{{ $order->payable }}</span>

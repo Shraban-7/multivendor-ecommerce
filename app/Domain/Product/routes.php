@@ -87,6 +87,8 @@ Route::middleware(['web', 'seller'])->prefix('seller')->as('seller.')->group(fun
         Route::delete('/delete-variant/{variant}', [SellerProductController::class, 'deleteVariant'])->name('deleteVariant');
         Route::post('images/upload', [SellerProductController::class, 'uploadImages'])->name('uploadImages');
         Route::delete('images/{image}/delete', [SellerProductController::class, 'deleteImage'])->name('image.delete');
+        Route::post('/{product}/duplicate', [SellerProductController::class, 'duplicate'])->name('duplicate');
+        Route::post('/{product}/toggle-visibility', [SellerProductController::class, 'toggleVisibility'])->name('toggleVisibility');
         Route::delete('/{product}/delete', [SellerProductController::class, 'delete'])->name('delete');
         Route::get('/get-options/{attributeId}', [SellerProductController::class, 'getOptions']);
 
