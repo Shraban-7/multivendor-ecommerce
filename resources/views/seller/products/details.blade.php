@@ -18,7 +18,7 @@
 
 <div class="row">
     <div class="col-md-6">
-        <div class="card shadow-sm border-0 mb-4 px-3 pt-3 pb-2">
+        <div class="card shadow-sm border-0 mb-4 px-3 pt-3 pb-2" style="border-radius: 12px;">
             <div class="d-flex flex-wrap align-items-start gap-4">
                 <div style="width:180px; flex-shrink:0;">
                     <div class="border rounded position-relative overflow-hidden bg-light">
@@ -73,13 +73,13 @@
                             <div class="mb-1"><span class="text-muted">Payment Type:</span> {{ ucfirst($product->payment_type->title()) }}</div>
                             <div><span class="text-muted">Status:</span>
                                 @if ($product->status == $product::STATUS_ACTIVE)
-                                <span class="badge text-bg-success">Active</span>
+                                <span class="badge badge-soft-success">Active</span>
                                 @elseif ($product->status == $product::STATUS_PENDING_APPROVAL)
-                                <span class="badge text-bg-warning">Waiting for Approval</span>
+                                <span class="badge badge-soft-warning">Waiting for Approval</span>
                                 @elseif ($product->status == $product::STATUS_INACTIVE)
-                                <span class="badge text-bg-secondary">Inactive</span>
+                                <span class="badge badge-soft-secondary">Inactive</span>
                                 @elseif ($product->status == $product::STATUS_DELETED)
-                                <span class="badge text-bg-danger">Deleted</span>
+                                <span class="badge badge-soft-danger">Deleted</span>
                                 @endif
                             </div>
                         </div>
@@ -87,13 +87,13 @@
                 </div>
             </div>
             <div class="d-flex gap-2 mt-3 border-top pt-3">
-                <a href="{{ route('seller.products.edit', $product->slug) }}" class="btn btn-primary btn-sm d-flex align-items-center gap-1">
+                <a href="{{ route('seller.products.edit', $product->slug) }}" class="btn btn-primary btn-sm d-inline-flex align-items-center gap-1">
                     <i data-feather="edit" class="icon-xs"></i> Edit Product
                 </a>
 
                 <button
                     type="button"
-                    class="btn btn-outline-danger btn-sm d-flex align-items-center gap-1"
+                    class="btn btn-outline-danger btn-sm d-inline-flex align-items-center gap-1"
                     data-bs-toggle="modal"
                     data-bs-target="#deleteModal-{{ $product->id }}">
                     <i data-feather="trash-2" class="icon-xs"></i> Delete
@@ -102,13 +102,13 @@
         </div>
     </div>
     <div class="col-md-6">
-        <div class="mb-4 shadow-sm card">
+        <div class="mb-4 shadow-sm card border-0" style="border-radius: 12px;">
             <div class="bg-white card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0 card-title">Stock</h5>
+                <h5 class="mb-0 card-title fw-semibold">Stock</h5>
                 <div>
-                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                    <button type="button" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1" data-bs-toggle="modal"
                         data-bs-target="#stockUpdateModal">
-                        <i class="fas fa-plus-circle me-1"></i> Update
+                        <i class="fas fa-plus-circle"></i> Update
                     </button>
                 </div>
             </div>
@@ -117,12 +117,12 @@
                     <table class="table table-sm table-hover table-bordered align-middle">
                         <thead class="table-light text-center">
                             <tr>
-                                <th>Date</th>
+                                <th scope="col" class="small fw-semibold text-muted">Date</th>
                                 @if ($variantCount > 0)
-                                <th>Variant</th>
+                                <th scope="col" class="small fw-semibold text-muted">Variant</th>
                                 @endif
-                                <th>Quantity</th>
-                                <th>Action</th>
+                                <th scope="col" class="small fw-semibold text-muted">Quantity</th>
+                                <th scope="col" class="small fw-semibold text-muted">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -142,15 +142,15 @@
                                 <td class="text-center small">
                                     @switch($history->type)
                                     @case(\App\Domain\Product\Enums\StockType::ADD_STOCK)
-                                    <span class="badge bg-success">Added</span>
+                                    <span class="badge badge-soft-success">Added</span>
                                     @break
 
                                     @case(\App\Domain\Product\Enums\StockType::REMOVE_STOCK)
-                                    <span class="badge bg-danger">Removed</span>
+                                    <span class="badge badge-soft-danger">Removed</span>
                                     @break
 
                                     @case(\App\Domain\Product\Enums\StockType::SET_EXACT_STOCK)
-                                    <span class="badge bg-warning text-dark">Set Exact</span>
+                                    <span class="badge badge-soft-warning">Set Exact</span>
                                     @break
                                     @endswitch
                                 </td>
@@ -168,24 +168,24 @@
     </div>
 </div>
 
-<div class="card shadow-sm mb-4">
+<div class="card shadow-sm border-0 mb-4" style="border-radius: 12px;">
     <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
-        <h5 class="mb-0">@if($variantCount > 0) {{ $variantCount }} @endif Variants</h5>
-        <button class="btn btn-light btn-sm border" data-bs-toggle="modal" data-bs-target="#addVariantModal">+ Add Variants</button>
+        <h5 class="fw-semibold mb-0">@if($variantCount > 0) {{ $variantCount }} @endif Variants</h5>
+        <button class="btn btn-light btn-sm border d-inline-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#addVariantModal">+ Add Variants</button>
     </div>
     @if($variantCount > 0)
     <div class="table-responsive">
-        <table class="table align-middle mb-0">
+        <table class="table align-middle mb-0 table-hover">
             <thead class="table-light">
                 <tr>
-                    <th>Image</th>
-                    <th>SKU</th>
-                    <th>Options</th>
-                    <th>Cost Price</th>
-                    <th>Price</th>
-                    <th>Compare Price</th>
-                    <th>Stock</th>
-                    <th>Action</th>
+                    <th scope="col" class="small fw-semibold text-muted">Image</th>
+                    <th scope="col" class="small fw-semibold text-muted">SKU</th>
+                    <th scope="col" class="small fw-semibold text-muted">Options</th>
+                    <th scope="col" class="small fw-semibold text-muted">Cost Price</th>
+                    <th scope="col" class="small fw-semibold text-muted">Price</th>
+                    <th scope="col" class="small fw-semibold text-muted">Compare Price</th>
+                    <th scope="col" class="small fw-semibold text-muted">Stock</th>
+                    <th scope="col" class="small fw-semibold text-muted">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -197,20 +197,20 @@
                     <td class="text-monospace small">
                         {{ $variant->sku }}
                     </td>
-                    <td><span class="badge bg-light text-dark me-1">{{ $variant->label }}</span></td>
+                    <td><span class="badge badge-soft-secondary me-1">{{ $variant->label }}</span></td>
                     <td>{{ money($variant->cost_price) }}</td>
                     <td>{{ money($variant->price) }}</td>
                     <td>{{ $variant->compare_price !== null ? money($variant->compare_price) : '—' }}</td>
                     <td>{{ $variant->availableStock }}</td>
                     <td>
                         <div class="d-flex mt-2">
-                            <button class="btn btn-light border btn-sm me-1" data-bs-toggle="modal"
+                            <button class="btn btn-light border btn-sm me-1 d-inline-flex align-items-center" data-bs-toggle="modal"
                                 data-bs-target="#editVariantModal{{ $variant->id }}">
                                 <i data-feather="edit" class="icon-xs"></i>
                             </button>
 
                             @if ($variant->stock_out <= 0)
-                                <button class="btn btn-danger border btn-sm " data-bs-toggle="modal"
+                                <button class="btn btn-danger border btn-sm d-inline-flex align-items-center" data-bs-toggle="modal"
                                 data-bs-target="#deleteVariantModal{{ $variant->id }}">
                                 <i data-feather="trash" class="icon-xs"></i>
                                 </button>
@@ -220,7 +220,7 @@
                 </tr>
                 <div class="modal fade" id="editVariantModal{{ $variant->id }}" tabindex="-1" aria-labelledby="editVariantModalLabel{{ $variant->id }}" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
+                        <div class="modal-content border-0">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="editVariantModalLabel{{ $variant->id }}">
                                     Edit Variant ({{ $variant->label }})
@@ -265,7 +265,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Cancel</button>
-                                    <button type="submit" class="btn btn-success">Update</button>
+                                    <button type="submit" class="btn btn-success d-inline-flex align-items-center gap-1">Update</button>
                                 </div>
                             </form>
                         </div>
@@ -276,7 +276,7 @@
                 <div class="modal fade" id="deleteVariantModal{{ $variant->id }}" tabindex="-1"
                     aria-labelledby="deleteModalLabel-{{ $variant->id }}" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
+                        <div class="modal-content border-0">
                             <div class="modal-header">
                                 <h5 class="modal-title">Confirm Delete</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -299,7 +299,7 @@
                                 <form action="{{ route('seller.productVariants.delete', $variant->id) }}"
                                     method="POST">
                                     @csrf
-                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                    <button type="submit" class="btn btn-danger d-inline-flex align-items-center gap-1">Delete</button>
                                 </form>
                             </div>
                         </div>
@@ -322,7 +322,7 @@
 <div class="modal fade" id="deleteModal-{{ $product->id }}" tabindex="-1"
     aria-labelledby="deleteModalLabel-{{ $product->id }}" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+        <div class="modal-content border-0">
             <div class="modal-header">
                 <h5 class="modal-title" id="deleteModalLabel-{{ $product->id }}">Confirm
                     Delete</h5>
@@ -341,7 +341,7 @@
                 <form action="{{ route('seller.products.delete', $product->id) }}" method="POST">
                     @method('DELETE')
                     @csrf
-                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <button type="submit" class="btn btn-danger d-inline-flex align-items-center gap-1">Delete</button>
                 </form>
             </div>
         </div>
@@ -350,17 +350,17 @@
 
 <div class="modal fade" id="stockUpdateModal" tabindex="-1" aria-hidden="true" data-id="{{ $product->id }}">
     <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
+        <div class="modal-content border-0">
             <form action="{{ route('seller.products.stockUpdate', $product->id) }}" method="POST">
                 @csrf
                 <div class="modal-header">
-                    <h4 class="modal-title">Update Inventory</h4>
+                    <h4 class="modal-title fw-bold">Update Inventory</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
                 <div class="modal-body">
                     <div class="mb-3">
-                        <button class="btn btn-outline-info btn-sm" type="button" data-bs-toggle="collapse"
+                        <button class="btn btn-outline-info btn-sm d-inline-flex align-items-center gap-1" type="button" data-bs-toggle="collapse"
                             data-bs-target="#stockInstruction" aria-expanded="false"
                             aria-controls="stockInstruction">
                             ℹ️ স্টক আপডেট নির্দেশনা দেখুন
@@ -457,7 +457,7 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Update Stocks</button>
+                    <button type="submit" class="btn btn-primary d-inline-flex align-items-center gap-1">Update Stocks</button>
                 </div>
             </form>
         </div>
@@ -466,7 +466,7 @@
 
 <div class="modal fade" id="addVariantModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl">
-        <div class="modal-content">
+        <div class="modal-content border-0">
             <div class="modal-header">
                 <h5 class="modal-title">Add Variant</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -479,7 +479,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="saveVariantsBtn">Save Variants</button>
+                <button type="button" class="btn btn-primary d-inline-flex align-items-center gap-1" id="saveVariantsBtn">Save Variants</button>
             </div>
         </div>
     </div>

@@ -8,10 +8,10 @@
 
     <div class="mb-2">
         <div class="d-flex justify-content-between align-items-center">
-            <h4 class="mb-0">Order Details</h4>
+            <h4 class="fw-bold mb-0 text-dark">Order Details</h4>
             @if ($isPos)
                 <a href="{{ route('seller.pos.index', ['order_id' => $order->invoice_id]) }}"
-                    class="btn btn-primary border btn-sm me-1" title="Details">
+                    class="btn btn-primary border btn-sm d-inline-flex align-items-center gap-1 me-1" title="Details">
                     <i data-feather="edit" class="icon-xs"></i> Edit Order
                 </a>
             @endif
@@ -20,17 +20,17 @@
 
     <div class="row">
         <div class="col-lg-4 mb-4">
-            <div class="card border-0 shadow-sm mb-3">
+            <div class="card border-0 shadow-sm mb-3" style="border-radius: 12px;">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Summary</h5>
+                    <h5 class="fw-semibold mb-0">Summary</h5>
                     <div class="d-flex">
                         @if ($isPos)
-                            <button type="button" class="btn btn-light border btn-sm me-1"
+                            <button type="button" class="btn btn-light border btn-sm d-inline-flex align-items-center gap-1 me-1"
                                 onclick="printReceipt('{{ route('receipt', $order->invoice_id) }}')">
                                 <i data-feather="printer" class="icon-xs"></i> Receipt
                             </button>
                         @endif
-                        <button type="button" class="btn btn-light border btn-sm me-1"
+                        <button type="button" class="btn btn-light border btn-sm d-inline-flex align-items-center gap-1 me-1"
                             onclick="printReceipt('{{ route('invoice', $order->invoice_id) }}')">
                             <i data-feather="download" class="icon-xs"></i>Invoice
                         </button>
@@ -58,25 +58,25 @@
                             <span>Status:</span>
                             <div class="d-flex align-items-center gap-2">
                                 @if ($order->status->label() === 'pending')
-                                    <span class="badge bg-warning">Pending</span>
+                                    <span class="badge badge-soft-warning">Pending</span>
                                 @elseif ($order->status->label() === 'accepted')
-                                    <span class="badge bg-secondary">Accepted</span>
+                                    <span class="badge badge-soft-secondary">Accepted</span>
                                 @elseif ($order->status->label() === 'shipped')
-                                    <span class="badge bg-primary">Shipped</span>
+                                    <span class="badge badge-soft-primary">Shipped</span>
                                 @elseif ($order->status->label() === 'cancelled')
-                                    <span class="badge bg-danger">Cancelled</span>
+                                    <span class="badge badge-soft-danger">Cancelled</span>
                                 @elseif ($order->status->label() === 'delivered')
-                                    <span class="badge bg-success">Delivered</span>
+                                    <span class="badge badge-soft-success">Delivered</span>
                                 @elseif ($order->status->label() === 'returned')
-                                    <span class="badge bg-dark">Returned</span>
+                                    <span class="badge badge-soft-secondary">Returned</span>
                                 @elseif ($order->status->label() === 'refunded')
-                                    <span class="badge bg-info text-dark">Refunded</span>
+                                    <span class="badge badge-soft-info">Refunded</span>
                                 @elseif ($order->status->label() === 'completed')
-                                    <span class="badge bg-success">Completed</span>
+                                    <span class="badge badge-soft-success">Completed</span>
                                 @endif
 
                                 @if ($order->user_id != null)
-                                    <button class="btn btn-sm btn-light border d-flex align-items-center gap-1"
+                                    <button class="btn btn-sm btn-light border d-inline-flex align-items-center gap-1"
                                         data-bs-toggle="modal" data-bs-target="#changeStatusModal">
                                         <i class="bi bi-arrow-repeat text-secondary"></i>
                                         Update
@@ -92,11 +92,11 @@
                         <li class="list-group-item d-flex align-items-center justify-content-between px-0">
                             <span>Payment Status:</span>
                             @if ($order->due == $order->payable)
-                                <span class="badge bg-danger">Unpaid</span>
+                                <span class="badge badge-soft-danger">Unpaid</span>
                             @elseif ($order->due > 0)
-                                <span class="badge bg-warning">Partially Paid</span>
+                                <span class="badge badge-soft-warning">Partially Paid</span>
                             @else
-                                <span class="badge bg-success">Paid</span>
+                                <span class="badge badge-soft-success">Paid</span>
                             @endif
                         </li>
 
@@ -104,9 +104,9 @@
                 </div>
             </div>
 
-            <div class="card border-0 shadow-sm mb-3">
+            <div class="card border-0 shadow-sm mb-3" style="border-radius: 12px;">
                 <div class="card-header bg-white">
-                    <h5 class="mb-0">Customer Information</h5>
+                    <h5 class="fw-semibold mb-0">Customer Information</h5>
                 </div>
                 <div class="card-body">
 
@@ -139,9 +139,9 @@
             </div>
 
             @if (!$isPos)
-                <div class="card border-0 shadow-sm mb-3">
+                <div class="card border-0 shadow-sm mb-3" style="border-radius: 12px;">
                     <div class="card-header bg-white">
-                        <h5 class="mb-0">Shipping Details</h5>
+                        <h5 class="fw-semibold mb-0">Shipping Details</h5>
                     </div>
                     <div class="card-body">
                         <address class="mb-0">
@@ -159,7 +159,7 @@
 
             @if ($isPos)
                 <div class="card-body">
-                    <button class="btn btn-danger w-100 delete-cart-item-btn" data-id="{{ $order->id }}"
+                    <button class="btn btn-danger w-100 delete-cart-item-btn d-inline-flex align-items-center justify-content-center gap-1" data-id="{{ $order->id }}"
                         data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">
                         Delete This Order
                     </button>
@@ -167,7 +167,7 @@
 
                 <div class="modal fade" id="deleteConfirmModal" tabindex="-1">
                     <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
+                        <div class="modal-content border-0">
                             <div class="modal-header">
                                 <h5 class="modal-title">Confirm Delete</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -185,21 +185,20 @@
             @endif
         </div>
 
-        <!-- Customer and Order Details -->
         <div class="col-lg-8">
-            <div class="card border-0 shadow-sm">
+            <div class="card border-0 shadow-sm" style="border-radius: 12px;">
                 <div class="card-header bg-white">
-                    <h5 class="mb-0">Order Items</h5>
+                    <h5 class="fw-semibold mb-0">Order Items</h5>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table mb-0">
                             <thead class="table-white">
                                 <tr>
-                                    <th scope="col">Product</th>
-                                    <th scope="col" class="text-center">Price</th>
-                                    <th scope="col" class="text-center">Discount</th>
-                                    <th scope="col" class="text-end">Total</th>
+                                    <th scope="col" class="small fw-semibold text-muted">Product</th>
+                                    <th scope="col" class="small fw-semibold text-muted text-center">Price</th>
+                                    <th scope="col" class="small fw-semibold text-muted text-center">Discount</th>
+                                    <th scope="col" class="small fw-semibold text-muted text-end">Total</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -228,7 +227,7 @@
                                                 <div>
                                                     <div class="d-flex align-items-center mb-2">
                                                         <h6 class="mb-0 me-2">{{ $item->product->name }}</h6>
-                                                        <span class="badge bg-primary rounded-pill">x
+                                                        <span class="badge badge-soft-primary" style="border-radius: 50px;">x
                                                             {{ $item->quantity }}</span>
                                                     </div>
 
@@ -286,9 +285,9 @@
 
             @if (!$isPos)
                 @if ($order->review)
-                    <div class="card border-0 shadow-sm mt-4">
+                    <div class="card border-0 shadow-sm mt-4" style="border-radius: 12px;">
                         <div class="card-header bg-white">
-                            <h5 class="mb-0">Order Review</h5>
+                            <h5 class="fw-semibold mb-0">Order Review</h5>
                         </div>
                         <div class="card-body">
                             <div class="d-flex justify-content-between">
@@ -318,11 +317,10 @@
             @endif
         </div>
 
-        <!-- Change Status Modal -->
         <div class="modal fade" id="changeStatusModal" tabindex="-1" aria-labelledby="changeStatusModalLabel"
             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
+                <div class="modal-content border-0">
                     <form action="{{ route('seller.orders.updateStatus', $order->id) }}" method="POST">
                         @csrf
                         <div class="modal-header">
@@ -332,11 +330,9 @@
                         </div>
 
                         <div class="modal-body">
-                            <!-- Status Change -->
                             <div class="mb-3">
                                 <label class="form-label">Change Order Status</label>
                                 <div class="input-group">
-                                    <!-- Old Status -->
                                     <span class="input-group-text bg-light">
                                         {{ ucfirst($order->status->title()) }}
                                     </span>
@@ -352,7 +348,6 @@
                                 </div>
                             </div>
 
-                            <!-- Remarks -->
                             <div class="mb-3">
                                 <label class="form-label">Remarks (optional)</label>
                                 <textarea name="remarks" class="form-control" rows="3"></textarea>
@@ -363,7 +358,7 @@
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-primary">Update</button>
+                            <button type="submit" class="btn btn-primary d-inline-flex align-items-center gap-1">Update</button>
                         </div>
                     </form>
                 </div>

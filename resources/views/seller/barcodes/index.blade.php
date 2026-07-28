@@ -2,14 +2,14 @@
 @section('title', 'Print Barcode')
 @section('content')
 
-<h4>Print Barcode</h4>
+<h4 class="fw-bold mb-3 text-dark">Print Barcode</h4>
 <div class="row">
     <div class="col-md-6">
-        <div class="card">
+        <div class="card border-0 shadow-sm" style="border-radius: 12px;">
             <div class="card-body">
                 <form id="productForm">
                     <div class="mb-3">
-                        <label for="product" class="form-label fw-bold">Select Product</label>
+                        <label for="product" class="form-label fw-semibold">Select Product</label>
                         <select name="variant_id" class="select2 w-100" id="product" required>
                             <option value="" disabled selected>Select a product</option>
                             @foreach ($products as $product)
@@ -42,37 +42,34 @@
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">Name</label>
+                            <label class="form-label fw-semibold">Name</label>
                             <input type="text" id="name" class="form-control" readonly>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">Variant</label>
+                            <label class="form-label fw-semibold">Variant</label>
                             <input type="text" id="variant" class="form-control" readonly>
                         </div>
-
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">SKU</label>
+                            <label class="form-label fw-semibold">SKU</label>
                             <input type="text" id="sku" class="form-control" readonly>
                         </div>
-
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">Price</label>
+                            <label class="form-label fw-semibold">Price</label>
                             <input type="text" id="price" class="form-control" readonly>
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Number of Labels</label>
+                        <label class="form-label fw-semibold">Number of Labels</label>
                         <input type="number" class="form-control" name="quantity" id="qty" min="1" value="1" required>
                     </div>
 
-                    <div class="d-flex justify-content-between">
-                        <button type="button" id="generate" class="btn btn-primary">
-                            <i data-feather="eye" class="nav-icon icon-xs"></i> Preview Labels
+                    <div class="d-flex gap-2">
+                        <button type="button" id="generate" class="btn btn-primary d-inline-flex align-items-center gap-1">
+                            <i data-feather="eye" class="icon-xs"></i> Preview Labels
                         </button>
-                        <button type="button" id="printBtn" class="btn btn-dark disabled">
-                            <i data-feather="printer" class="nav-icon icon-xs"></i>
-                            Print
+                        <button type="button" id="printBtn" class="btn btn-dark d-inline-flex align-items-center gap-1 disabled">
+                            <i data-feather="printer" class="icon-xs"></i> Print
                         </button>
                     </div>
                 </form>
@@ -110,7 +107,6 @@
                 nameInput.value = opt.data('name');
                 variantInput.value = opt.data('variant');
                 skuInput.value = opt.data('sku');
-                //const price = opt.data('discountedprice') && opt.data('discountedprice') !== '0' ? opt.data('discountedprice') : opt.data('sellingprice');
                 const price = opt.data('sellingprice');
                 priceInput.value = price;
                 qtyInput.value = opt.data('stock');

@@ -2,22 +2,22 @@
 @section('title', 'Expenses')
 @section('content')
 
-    <div class="mb-2 rounded d-flex justify-content-between align-items-center">
-        <h4 class="mb-0">Expenses</h4>
-        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createExpenseModal">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold mb-0 text-dark">Expenses</h4>
+        <button class="btn btn-primary btn-sm d-inline-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#createExpenseModal">
             <i data-feather="plus" class="icon-xs"></i> Add Expense
         </button>
     </div>
 
     <div class="table-responsive">
-        <table class="table table-bordered bg-white mb-3 text-nowrap">
-            <thead>
+        <table class="table table-bordered table-hover bg-white mb-3 text-nowrap">
+            <thead class="table-light">
                 <tr>
-                    <th scope="col">Category</th>
-                    <th scope="col">Amount</th>
-                    <th scope="col">Description</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">Action</th>
+                    <th scope="col" class="small fw-semibold text-muted">Category</th>
+                    <th scope="col" class="small fw-semibold text-muted">Amount</th>
+                    <th scope="col" class="small fw-semibold text-muted">Description</th>
+                    <th scope="col" class="small fw-semibold text-muted">Date</th>
+                    <th scope="col" class="small fw-semibold text-muted">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -28,7 +28,7 @@
                         <td>{{ $expense->description ?? '' }}</td>
                         <td>{{ $expense->expense_date->format('d/m/Y') }}</td>
                         <td>
-                            <button class="btn btn-light border btn-sm me-1 edit-expense-btn" data-id="{{ $expense->id }}"
+                            <button class="btn btn-light border btn-sm d-inline-flex align-items-center gap-1 me-1 edit-expense-btn" data-id="{{ $expense->id }}"
                                 data-category="{{ $expense->seller_expense_category_id }}"
                                 data-category-name="{{ $expense->category->name ?? '' }}"
                                 data-amount="{{ $expense->amount }}" data-description="{{ $expense->description }}"
@@ -37,7 +37,7 @@
                                 <i data-feather="edit" class="icon-xs"></i> Edit
                             </button>
                             
-                            <button type="button" class="btn btn-danger border btn-sm delete-expense-btn"
+                            <button type="button" class="btn btn-danger border btn-sm d-inline-flex align-items-center gap-1 delete-expense-btn"
                                 data-id="{{ $expense->id }}" data-bs-toggle="modal" data-bs-target="#deleteExpenseModal">
                                 <i data-feather="trash" class="icon-xs"></i> Delete
                             </button>
@@ -61,7 +61,7 @@
     <div class="modal fade" id="createExpenseModal" tabindex="-1" aria-labelledby="createExpenseModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
+            <div class="modal-content border-0">
                 <form action="{{ route('seller.expenses.store') }}" method="POST">
                     @csrf
                     <div class="modal-header">
@@ -99,7 +99,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="submit" class="btn btn-primary d-inline-flex align-items-center gap-1">Save</button>
                     </div>
                 </form>
             </div>
@@ -109,7 +109,7 @@
     <!-- Edit Expense Modal -->
     <div class="modal fade" id="editExpenseModal" tabindex="-1" aria-labelledby="editExpenseModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
+            <div class="modal-content border-0">
                 <form id="editExpenseForm" method="POST">
                     @csrf
                     <div class="modal-header">
@@ -148,7 +148,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Update</button>
+                        <button type="submit" class="btn btn-primary d-inline-flex align-items-center gap-1">Update</button>
                     </div>
                 </form>
             </div>
@@ -159,7 +159,7 @@
     <div class="modal fade" id="deleteExpenseModal" tabindex="-1" aria-labelledby="deleteExpenseModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
+            <div class="modal-content border-0">
                 <form id="deleteExpenseForm" method="POST">
                     @csrf
                     <div class="modal-header">
@@ -171,7 +171,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                        <button type="submit" class="btn btn-danger d-inline-flex align-items-center gap-1">Yes, Delete</button>
                     </div>
                 </form>
             </div>

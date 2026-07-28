@@ -1,77 +1,79 @@
 <?php $notificationCount = notificationCount(); ?>
 
 <nav class="navbar-classic navbar navbar-expand-lg">
-    <a id="nav-toggle" href="#"><i data-feather="menu" class="nav-icon me-2 icon-xs"></i></a>
-    <div class="ms-lg-3 d-none d-md-none d-lg-block">
-        <!-- <form class="d-flex align-items-center">
-            <input type="search" class="form-control" placeholder="Search" />
-        </form> -->
-    </div>
-    <ul class="navbar-nav navbar-right-wrap ms-auto d-flex align-items-center gap-3 nav-top-wrap">
-        <div>
-            <a href="{{ route('seller.pos.index') }}" class="btn btn-primary btn-sm">
-                <i class="bi bi-cart me-1"></i>POS
-            </a>
-        </div>
+    <a id="nav-toggle" href="#">
+        <i data-feather="menu" class="nav-icon me-2" style="width: 20px; height: 20px;"></i>
+    </a>
 
-        <li class="dropdown stopevent position-relative">
-            <a class="indicator indicator-primary text-muted position-relative"
-                href="{{ route('seller.notifications.index') }}">
-                <i class="icon-xs" data-feather="bell"></i>
+    <ul class="navbar-nav navbar-right-wrap ms-auto d-flex align-items-center gap-2 nav-top-wrap">
+        <li class="nav-item">
+            <a href="{{ route('seller.pos.index') }}" class="btn btn-primary btn-sm d-flex align-items-center gap-1 px-3">
+                <i class="bi bi-cart"></i>
+                <span>POS</span>
+            </a>
+        </li>
+
+        <li class="nav-item position-relative">
+            <a class="d-flex align-items-center justify-content-center position-relative p-1"
+                href="{{ route('seller.notifications.index') }}" style="width: 40px; height: 40px;">
+                <i data-feather="bell" style="width: 20px; height: 20px; color: #637381;"></i>
                 @if ($notificationCount > 0)
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                        style="font-size: 10px;">
+                    <span class="position-absolute badge rounded-pill" style="top: 2px; right: 2px; font-size: 9px; padding: 2px 5px; min-width: 16px; background: #D93025; color: #fff;">
                         {{$notificationCount }}
                     </span>
                 @endif
             </a>
         </li>
 
-        <li class="dropdown">
-            <a class="rounded-circle d-flex align-items-center" href="#" role="button" id="dropdownUser"
+        <li class="nav-item dropdown ms-1">
+            <a class="rounded-circle d-flex align-items-center text-decoration-none" href="#" role="button" id="dropdownUser"
                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <div class="avatar avatar-md avatar-indicators avatar-online">
-                    <img alt="avatar" src="{{ storage_url(seller()->image ?? '') }}" class="rounded-circle" />
+                <div class="avatar avatar-md" style="width: 36px; height: 36px; border: 2px solid #E5E5E5; border-radius: 50%; overflow: hidden;">
+                    <img alt="avatar" src="{{ storage_url(seller()->image ?? '') }}" class="w-100 h-100 object-fit-cover" />
                 </div>
             </a>
-            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser">
-                <div class="px-4 pb-0 pt-2">
-                    <div class="lh-1">
-                        <h5 class="mb-1">{{ seller()->name ?? employee()->name }}</h5>
-                        @if (auth('seller')->check())
-                            <a href="{{ route('seller.profile')}}"
-                                class="text-inherit fs-6">Profile</a>
-                        @elseif (auth('employee')->check())
-                            <a href="{{ route('seller.employees.profile') }}" class="text-inherit fs-6">Profile</a>
-                        @endif
-
+            <div class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2" style="border-radius: 12px; min-width: 220px;" aria-labelledby="dropdownUser">
+                <div class="px-3 py-3 border-bottom">
+                    <div class="d-flex align-items-center gap-2">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; overflow: hidden; flex-shrink: 0;">
+                            <img alt="avatar" src="{{ storage_url(seller()->image ?? '') }}" class="w-100 h-100 object-fit-cover" />
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-semibold" style="font-size: 14px;">{{ seller()->name ?? employee()->name }}</h6>
+                            @if (auth('seller')->check())
+                                <a href="{{ route('seller.profile')}}" class="small text-muted text-decoration-none">View Profile</a>
+                            @elseif (auth('employee')->check())
+                                <a href="{{ route('seller.employees.profile') }}" class="small text-muted text-decoration-none">View Profile</a>
+                            @endif
+                        </div>
                     </div>
-                    <div class="dropdown-divider mt-3 mb-2"></div>
                 </div>
-                <ul class="list-unstyled">
-                    <li>
-                        @if (auth('seller')->check())
-                            <a class="dropdown-item" href="{{ route('seller.profile') }}">
-                                <i class="me-2 icon-xxs dropdown-item-icon" data-feather="settings"></i>
-                                Account Settings
-                            </a>
-                        @elseif (auth('employee')->check())
-                            <a class="dropdown-item" href="{{ route('seller.employees.profile') }}">
-                                <i class="me-2 icon-xxs dropdown-item-icon" data-feather="settings"></i>
-                                Account Settings
-                            </a>
-                        @endif
-
-                    </li>
-                    <li>
-                        <form action="{{ route('logout') }}" method="POST">
-                            @csrf
-                            <button class="dropdown-item" onclick="this.form.submit();">
-                                <i class="me-2 icon-xxs dropdown-item-icon" data-feather="power"></i>Sign Out
-                            </button>
-                        </form>
-                    </li>
-                </ul>
+                <div class="py-1">
+                    <ul class="list-unstyled mb-0">
+                        <li>
+                            @if (auth('seller')->check())
+                                <a class="dropdown-item py-2 d-flex align-items-center gap-2" href="{{ route('seller.profile') }}">
+                                    <i data-feather="settings" style="width: 16px; height: 16px;" class="text-muted"></i>
+                                    Account Settings
+                                </a>
+                            @elseif (auth('employee')->check())
+                                <a class="dropdown-item py-2 d-flex align-items-center gap-2" href="{{ route('seller.employees.profile') }}">
+                                    <i data-feather="settings" style="width: 16px; height: 16px;" class="text-muted"></i>
+                                    Account Settings
+                                </a>
+                            @endif
+                        </li>
+                        <li>
+                            <form action="{{ route('logout') }}" method="POST">
+                                @csrf
+                                <button class="dropdown-item py-2 d-flex align-items-center gap-2" onclick="this.form.submit();">
+                                    <i data-feather="power" style="width: 16px; height: 16px;" class="text-muted"></i>
+                                    Sign Out
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </li>
     </ul>

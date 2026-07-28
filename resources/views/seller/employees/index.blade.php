@@ -2,23 +2,23 @@
 @section('title', 'Employees')
 @section('content')
 
-    <div class="d-flex justify-content-between align-items-end mb-3 flex-wrap gap-2">
-        <h4 class="mb-0">Employees</h4>
-        <a href="{{ route('seller.employees.create') }}" class="btn btn-primary">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <h4 class="fw-bold mb-0 text-dark">Employees</h4>
+        <a href="{{ route('seller.employees.create') }}" class="btn btn-primary d-inline-flex align-items-center gap-1">
             <i class="bi bi-plus-lg"></i> Add Employee
         </a>
     </div>
 
     <div class="table-responsive">
-        <table id="employee-table" class="table table-bordered bg-white mb-3 align-middle">
+        <table id="employee-table" class="table table-bordered table-hover bg-white mb-3 align-middle">
             <thead class="table-light">
                 <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Phone</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Created At</th>
-                    <th scope="col">Actions</th>
+                    <th scope="col" class="small fw-semibold text-muted">Name</th>
+                    <th scope="col" class="small fw-semibold text-muted">Phone</th>
+                    <th scope="col" class="small fw-semibold text-muted">Email</th>
+                    <th scope="col" class="small fw-semibold text-muted">Status</th>
+                    <th scope="col" class="small fw-semibold text-muted">Created At</th>
+                    <th scope="col" class="small fw-semibold text-muted">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -29,19 +29,19 @@
                         <td>{{ $employee->email }}</td>
                         <td>
                             @if ($employee->is_active)
-                                <span class="badge text-bg-success">Active</span>
+                                <span class="badge badge-soft-success">Active</span>
                             @else
-                                <span class="badge text-bg-warning">Inactive</span>
+                                <span class="badge badge-soft-warning">Inactive</span>
                             @endif
                         </td>
                         <td>{{ $employee->created_at->format('d/m/Y h:i A') }}</td>
                         <td class="d-flex gap-2">
                             <a href="{{ route('seller.employees.edit', $employee->id) }}"
-                                class="btn btn-primary btn-sm w-lg-auto">
-                                <i data-feather="edit" class="icon-xs me-1"></i> Edit
+                                class="btn btn-primary btn-sm w-lg-auto d-inline-flex align-items-center gap-1">
+                                <i data-feather="edit" class="icon-xs"></i> Edit
                             </a>
 
-                            <button type="button" class="btn btn-warning btn-sm w-lg-auto" data-bs-toggle="modal"
+                            <button type="button" class="btn btn-warning btn-sm w-lg-auto d-inline-flex align-items-center gap-1" data-bs-toggle="modal"
                                 data-bs-target="#permissionModal{{ $employee->id }}">
                                 <i class="bi bi-shield-lock"></i> Permissions
                             </button>
@@ -53,7 +53,7 @@
                         <div class="modal-dialog modal-dialog-centered modal-lg">
                             <form method="POST" action="{{ route('seller.employees.set_permissions', $employee->id) }}">
                                 @csrf
-                                <div class="modal-content">
+                                <div class="modal-content border-0">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="permissionModalLabel{{ $employee->id }}">
                                             Manage Permissions - {{ $employee->name }}
@@ -82,7 +82,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                                        <button type="submit" class="btn btn-primary">Save Permissions</button>
+                                        <button type="submit" class="btn btn-primary d-inline-flex align-items-center gap-1">Save Permissions</button>
                                     </div>
                                 </div>
                             </form>

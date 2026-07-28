@@ -3,12 +3,12 @@
 @section('content')
 
     <div class="mb-4 d-flex justify-content-between align-items-center">
-        <h4 class="mb-0">Edit Product Attribute</h4>
+        <h4 class="fw-bold mb-0 text-dark">Edit Product Attribute</h4>
     </div>
 
     <div class="row">
         <div class="col-md-6">
-            <div class="rounded-lg shadow-sm card">
+            <div class="rounded-lg shadow-sm card border-0" style="border-radius: 12px;">
                 <div class="card-body">
                     <form id="editForm">
                         @CSRF
@@ -21,8 +21,8 @@
                         </div>
                         <div id="optionsContainer">
                             <div class="mb-3 d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0">Edit Options</h5>
-                                <button type="button" id="addOption" class="btn btn-primary btn-sm"><i
+                                <h5 class="fw-semibold mb-0">Edit Options</h5>
+                                <button type="button" id="addOption" class="btn btn-primary btn-sm d-inline-flex align-items-center gap-1"><i
                                         data-feather="plus"></i> Add Option</button>
                             </div>
                             @foreach ($productAttribute->options as $index => $option)
@@ -41,10 +41,10 @@
                         </div>
                         <div class="d-flex justify-content-between">
                             <a href="{{ route('seller.products.addAttributes', $productAttribute->product_id) }}"
-                                class="btn btn-secondary">
+                                class="btn btn-secondary d-inline-flex align-items-center gap-1">
                                 Back
                             </a>
-                            <button type="submit" class="btn btn-success">Update</button>
+                            <button type="submit" class="btn btn-success d-inline-flex align-items-center gap-1">Update</button>
                         </div>
                     </form>
                 </div>

@@ -6,9 +6,9 @@
         $activeTab = request()->get('tab', 'pos');
     @endphp
 
-    <div class="d-flex justify-content-between align-items-end mb-3 flex-wrap gap-2">
-        <h4 class="mb-0">Customers</h4>
-        <button class="btn btn-sm btn-primary" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas"
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <h4 class="fw-bold mb-0 text-dark">Customers</h4>
+        <button class="btn btn-sm btn-primary d-inline-flex align-items-center gap-1" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas"
             aria-controls="filterCanvas">
             <i data-feather="filter" class="icon-xs"></i> Filter
         </button>
@@ -33,13 +33,13 @@
     <div class="tab-content">
         <div class="tab-pane fade {{ $activeTab == 'pos' ? 'show active' : '' }}">
             <div class="table-responsive ">
-                <table class="table table-bordered bg-white mb-3 align-middle">
-                    <thead class="bg-white">
+                <table class="table table-bordered table-hover bg-white mb-3 align-middle">
+                    <thead class="table-light">
                         <tr>
-                            <th>Customer</th>
-                            <th>Phone</th>
-                            <th>Email</th>
-                            <th>Registration Date</th>
+                            <th scope="col" class="small fw-semibold text-muted">Customer</th>
+                            <th scope="col" class="small fw-semibold text-muted">Phone</th>
+                            <th scope="col" class="small fw-semibold text-muted">Email</th>
+                            <th scope="col" class="small fw-semibold text-muted">Registration Date</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -60,13 +60,13 @@
 
         <div class="tab-pane fade {{ $activeTab == 'website' ? 'show active' : '' }}">
             <div class="table-responsive">
-                <table class="table table-bordered bg-white mb-3 align-middle">
-                    <thead class="bg-white">
+                <table class="table table-bordered table-hover bg-white mb-3 align-middle">
+                    <thead class="table-light">
                         <tr>
-                            <th>Customer</th>
-                            <th>Phone</th>
-                            <th>Email</th>
-                            <th>Registration Date</th>
+                            <th scope="col" class="small fw-semibold text-muted">Customer</th>
+                            <th scope="col" class="small fw-semibold text-muted">Phone</th>
+                            <th scope="col" class="small fw-semibold text-muted">Email</th>
+                            <th scope="col" class="small fw-semibold text-muted">Registration Date</th>
                         </tr>
                     </thead>
                     <tbody>

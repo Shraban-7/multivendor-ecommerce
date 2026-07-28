@@ -3,7 +3,7 @@
 
 @section('content')
     <div class="container-fluid px-0">
-        <h3 class="header mb-2">Edit Profile</h3>
+        <h4 class="fw-bold mb-3 text-dark">Edit Profile</h4>
 
         <div class="row g-4 align-items-stretch">
             <div class="col-md-6 d-flex">
@@ -11,7 +11,7 @@
                     @csrf
                     <input type="hidden" name="section" value="personal">
 
-                    <div class="card shadow-sm border-0 mb-0 flex-fill d-flex flex-column">
+                    <div class="card shadow-sm border-0 mb-0 flex-fill d-flex flex-column" style="border-radius: 12px;">
                         <div class="card-header bg-white border-bottom">
                             <h5 class="fw-semibold text-dark mb-0">
                                 Edit Personal Information
@@ -67,7 +67,7 @@
                             </div>
                         </div>
                         <div class="text-end p-3 border-top bg-white">
-                            <button type="submit" class="btn btn-primary">Update Personal Info</button>
+                            <button type="submit" class="btn btn-primary d-inline-flex align-items-center gap-1">Update Personal Info</button>
                         </div>
                     </div>
                 </form>
@@ -78,7 +78,7 @@
                     @csrf
                     <input type="hidden" name="section" value="business">
 
-                    <div class="card shadow-sm border-0 mb-0 flex-fill d-flex flex-column">
+                    <div class="card shadow-sm border-0 mb-0 flex-fill d-flex flex-column" style="border-radius: 12px;">
                         <div class="card-header bg-white border-bottom">
                             <h5 class="fw-semibold text-dark mb-0">
                                 Edit Business Information
@@ -139,7 +139,7 @@
                             </div>
                         </div>
                         <div class="text-end p-3 border-top bg-white">
-                            <button type="submit" class="btn btn-primary">Update Business Info</button>
+                            <button type="submit" class="btn btn-primary d-inline-flex align-items-center gap-1">Update Business Info</button>
                         </div>
                     </div>
                 </form>
@@ -152,7 +152,7 @@
                     @csrf
                     <input type="hidden" name="section" value="documents">
 
-                    <div class="card shadow-sm border-0 mb-4">
+                    <div class="card shadow-sm border-0 mb-4" style="border-radius: 12px;">
                         <div class="card-header bg-white border-bottom">
                             <h5 class="fw-semibold text-dark mb-0">
                                 Edit Documents
@@ -176,7 +176,7 @@
                             </div>
                         </div>
                         <div class="text-end p-3 border-top bg-white">
-                            <button type="submit" class="btn btn-primary">Update Documents</button>
+                            <button type="submit" class="btn btn-primary d-inline-flex align-items-center gap-1">Update Documents</button>
                         </div>
                     </div>
                 </form>
@@ -186,7 +186,7 @@
                     @csrf
                     <input type="hidden" name="section" value="password">
 
-                    <div class="card shadow-sm border-0 mb-4">
+                    <div class="card shadow-sm border-0 mb-4" style="border-radius: 12px;">
                         <div class="card-header bg-white border-bottom">
                             <h5 class="fw-semibold text-dark mb-0">Update Password</h5>
                         </div>
@@ -213,7 +213,7 @@
                         </div>
 
                         <div class="text-end p-3 border-top bg-white">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-primary d-inline-flex align-items-center gap-1">
                                 Update Password
                             </button>
                         </div>

@@ -4,9 +4,9 @@
 @section('content')
     <div class="row justify-content-start">
         <div class="col-md-6">
-            <div class="card shadow-sm">
+            <div class="card shadow-sm border-0" style="border-radius: 12px;">
                 <div class="card-header bg-white border-bottom">
-                    <h4 class="mb-0 fw-bold">Notifications</h4>
+                    <h4 class="fw-bold mb-0 text-dark">Notifications</h4>
                 </div>
 
                 <div class="card-body">
@@ -21,7 +21,7 @@
                                             {{ $notification->title }}
                                         </h5>
                                         @if (!$notification->is_read)
-                                            <span class="badge bg-primary">New</span>
+                                            <span class="badge badge-soft-primary">New</span>
                                         @endif
                                     </div>
 

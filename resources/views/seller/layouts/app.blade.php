@@ -19,8 +19,6 @@
     <!-- Datatable -->
     <link rel="stylesheet" href="{{ asset('assets/dashboard/libs/data-table/datatables.min.css') }}">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-    <!-- <link href="assets/dashboard/libs/@mdi/font/css/materialdesignicons.min.css" rel="stylesheet" />
-        <link href="assets/dashboard/libs/prismjs/themes/okaidia.css" rel="stylesheet"> -->
     @stack('styles')
 
     <title>@yield('title')</title>
@@ -33,19 +31,19 @@
             <div id="page-content">
                 <div class="header">
                     @include('seller.layouts.navbar')
-                </div>                
+                </div>
 
-                @if(View::hasSection('container-fluid'))
-                <div class="my-3 container-fluid px-sm-4">
-                    {{-- <x-flash-message /> --}}
-                    @yield('container-fluid')
+                <div class="page-inner-content px-4 py-3">
+                    @if(View::hasSection('container-fluid'))
+                    <div class="container-fluid px-0">
+                        @yield('container-fluid')
+                    </div>
+                    @else
+                    <div class="container-fluid px-0">
+                        @yield('content')
+                    </div>
+                    @endif
                 </div>
-                @else
-                <div class="my-3 container px-sm-4">
-                    {{-- <x-flash-message /> --}}
-                    @yield('content')
-                </div>
-                @endif
             </div>
         </div>
     </div>
@@ -62,8 +60,6 @@
     <script src="{{ asset('assets/dashboard/libs/dropzone/dist/min/dropzone.min.js') }}"></script>
     <script src="{{ asset('assets/dashboard/libs/prismjs/plugins/toolbar/prism-toolbar.min.js') }}"></script>
 
-    <!-- <script src="./assets/libs/apexcharts/dist/apexcharts.min.js"></script>
-    <script src="./assets/libs/prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script> -->
     <!-- Theme JS -->
     <script src="{{ asset('assets/dashboard/js/theme.min.js') }}"></script>
     <script src="{{ asset('assets/dashboard/js/feather.js') }}"></script>

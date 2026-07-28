@@ -3,12 +3,12 @@
 @section('title', 'Profile')
 
 @section('content')
-    <div class="d-flex justify-content-between align-items-end mb-3">
-        <h4 class="mb-0">Edit Profile</h4>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold mb-0 text-dark">Edit Profile</h4>
     </div>
     <div class="row">
         <div class="col-8">
-            <div class="card card-body">
+            <div class="card border-0 shadow-sm card-body" style="border-radius: 12px;">
                 <form id="profileForm" action="{{ route('seller.profile', $seller->username) }}" method="POST"
                     enctype="multipart/form-data">
                     @csrf
@@ -54,8 +54,7 @@
                         </div>
                     </div>
 
-                    <!-- Submit Button -->
-                   <button type="submit" id="submitBtn" class="btn btn-theme">Update</button>
+                   <button type="submit" id="submitBtn" class="btn btn-theme d-inline-flex align-items-center gap-1">Update</button>
                 </form>
             </div>
         </div>

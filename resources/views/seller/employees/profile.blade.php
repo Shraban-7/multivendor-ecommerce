@@ -2,9 +2,9 @@
 @section('title', 'Edit Profile')
 @section('content')
 
-    <div class="card col-6 col-xl-4">
+    <div class="card border-0 shadow-sm col-6 col-xl-4" style="border-radius: 12px;">
         <div class="card-header bg-white">
-            <h5 class="mb-0">Edit Profile</h5>
+            <h5 class="fw-semibold mb-0">Edit Profile</h5>
         </div>
         <div class="card-body">
             <form action="{{ route('seller.employees.updateProfile') }}" method="POST">
@@ -33,7 +33,7 @@
 
                 <input type="hidden" name="is_active" value="1">
 
-                <button type="submit" class="btn btn-success">Update</button>
+                <button type="submit" class="btn btn-success d-inline-flex align-items-center gap-1">Update</button>
             </form>
         </div>
     </div>

@@ -3,17 +3,17 @@
 
 @section('content')
     <div class="mb-4 d-flex justify-content-between align-items-center">
-        <h4 class="mb-0">Product Attributes</h4>
+        <h4 class="fw-bold mb-0 text-dark">Product Attributes</h4>
     </div>
 
     <div class="table-responsive">
-        <table class="table mb-3 bg-white table-bordered">
-            <thead>
+        <table class="table mb-3 bg-white table-bordered table-hover">
+            <thead class="table-light">
                 <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Options</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">Action</th>
+                    <th scope="col" class="small fw-semibold text-muted">Name</th>
+                    <th scope="col" class="small fw-semibold text-muted">Options</th>
+                    <th scope="col" class="small fw-semibold text-muted">Date</th>
+                    <th scope="col" class="small fw-semibold text-muted">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -29,18 +29,17 @@
                                         <small class="fw-semibold">{{ $option->value }}</small>
                                     </div>
                                     <div>
-                                        <button type="button" class="btn btn-sm btn-danger" title="Delete"
+                                        <button type="button" class="btn btn-sm btn-danger d-inline-flex align-items-center gap-1" title="Delete"
                                                 data-bs-toggle="modal" data-bs-target="#deleteOptionModal-{{ $option->id }}">
                                             <i data-feather="trash" class="icon-xs"></i>
                                         </button>
                                     </div>
                                 </div>
 
-                                <!-- Delete Confirmation Modal -->
                                 <div class="modal fade" id="deleteOptionModal-{{ $option->id }}" tabindex="-1"
                                      aria-labelledby="deleteOptionModalLabel-{{ $option->id }}" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
+                                        <div class="modal-content border-0">
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="deleteOptionModalLabel-{{ $option->id }}">Confirm Delete</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -57,7 +56,7 @@
                                                         data-bs-dismiss="modal">Cancel</button>
                                                 <form action="{{ route('seller.productAttributes.option_delete', $option->id) }}" method="POST">
                                                     @csrf
-                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                    <button type="submit" class="btn btn-danger d-inline-flex align-items-center gap-1">Delete</button>
                                                 </form>
                                             </div>
                                         </div>
@@ -70,18 +69,17 @@
                         <td class="d-flex">
 
 
-                            <button type="submit" class="border btn btn-danger btn-sm" title="Delete"
+                            <button type="submit" class="border btn btn-danger btn-sm d-inline-flex align-items-center gap-1" title="Delete"
                                 data-bs-toggle="modal" data-bs-target="#deleteModal-{{ $productAttribute->id }}">
                                 <i data-feather="trash" class="icon-xs"></i> Delete
                             </button>
                         </td>
                     </tr>
 
-                    <!-- Delete Confirmation Modal -->
                     <div class="modal fade" id="deleteModal-{{ $productAttribute->id }}" tabindex="-1"
                         aria-labelledby="deleteModalLabel-{{ $productAttribute->id }}" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
+                            <div class="modal-content border-0">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="deleteModalLabel-{{ $productAttribute->id }}">Confirm
                                         Delete</h5>
@@ -102,7 +100,7 @@
                                     <form action="{{ route('seller.productAttributes.delete', $productAttribute->id) }}"
                                         method="POST">
                                         @csrf
-                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                        <button type="submit" class="btn btn-danger d-inline-flex align-items-center gap-1">Delete</button>
                                     </form>
                                 </div>
                             </div>
@@ -123,13 +121,11 @@
                         '[id^="deleted-options-container"]');
 
                     if (optionId) {
-                        // Append hidden input for deleted option
                         deletedContainer.append(
                             `<input type="hidden" name="deleted_option_ids[]" value="${optionId}">`
                         );
                     }
 
-                    // Remove the row from the DOM
                     row.remove();
                 });
             });

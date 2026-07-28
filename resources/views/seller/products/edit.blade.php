@@ -7,11 +7,11 @@
 
 @section('content')
 
-    <div class="d-flex align-items-end justify-content-between mb-3">
-        <h4 class="fw-semibold mb-0">Edit Product</h4>
-        <a href="{{ route('seller.products.show', $product->slug) }}" class="btn btn-secondary btn-sm">← Back to Details</a>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold mb-0 text-dark">Edit Product</h4>
+        <a href="{{ route('seller.products.show', $product->slug) }}" class="btn btn-secondary btn-sm d-inline-flex align-items-center gap-1">← Back to Details</a>
     </div>
-    <div class="card shadow-sm border-0 mb-3">
+    <div class="card shadow-sm border-0 mb-3" style="border-radius: 12px;">
         <div class="card-body p-4">
             <form id="productUpdateForm" enctype="multipart/form-data" method="POST">
                 @csrf
@@ -189,7 +189,7 @@
                     </div>
 
                     <div class="col-12">
-                        <button type="button" id="updateBtn" class="btn btn-primary">
+                        <button type="button" id="updateBtn" class="btn btn-primary d-inline-flex align-items-center gap-1">
                             Update
                         </button>
                     </div>
@@ -203,15 +203,15 @@
     @php
         $seo = $product->seo;
     @endphp
-    <div class="card">
+    <div class="card border-0 shadow-sm" style="border-radius: 12px;">
         <div class="card-header bg-white">
-            <h5 class="mb-0">SEO & Social Share Settings</h5>
+            <h5 class="fw-semibold mb-0">SEO & Social Share Settings</h5>
         </div>
 
         <div class="card-body">
             <form id="productSeoForm" method="POST" enctype="multipart/form-data">
                 @csrf
-                <h5 class="mb-3">Meta Information (Search Engines)</h5>
+                <h5 class="fw-semibold mb-3">Meta Information (Search Engines)</h5>
 
                 <div class="mb-3">
                     <label class="form-label">Meta Title
@@ -243,7 +243,7 @@
                 <hr class="my-4">
 
                 <!-- Open Graph Section -->
-                <h5 class="mb-3">Open Graph (Social Media Preview)</h5>
+                <h5 class="fw-semibold mb-3">Open Graph (Social Media Preview)</h5>
                 <p class="small text-muted">
                     These fields control how the product appears when shared on Facebook, WhatsApp,
                     LinkedIn, etc. If left blank, the Meta Title/Description will be used.
@@ -283,7 +283,7 @@
                     </small>
                 </div>
                 <div>
-                    <button type="button" id="seoUpdateBtn" class="btn btn-primary">
+                    <button type="button" id="seoUpdateBtn" class="btn btn-primary d-inline-flex align-items-center gap-1">
                         Save SEO Settings
                     </button>
                 </div>
@@ -296,7 +296,7 @@
     <!-- Image Cropper Modal -->
     <div class="modal fade" id="thumbnailCropperModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
+            <div class="modal-content border-0">
                 <div class="modal-header">
                     <h5 class="modal-title">Crop Thumbnail</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
@@ -307,7 +307,7 @@
                     <img id="thumbnailCropperImage" src="#" class="d-none img-fluid" style="max-height: 400px;">
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" id="cropThumbnailBtn">Crop & Insert</button>
+                    <button type="button" class="btn btn-success d-inline-flex align-items-center gap-1" id="cropThumbnailBtn">Crop & Insert</button>
                 </div>
             </div>
         </div>

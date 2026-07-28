@@ -2,19 +2,10 @@
 @php
     $variant = $item->variant ?? null;
     $product = $variant->product ?? $item->product ?? null;
-
     $productName = $product->name;
-
     $variantName = $variant->label ?? 'No Variant';
-
-    $sellingPrice = $item->price
-        ?? $variant->price
-        ?? $product->price;
-
-    $unitPrice = $item->unit_price
-        ?? ($variant->compare_price ?? null)
-        ?? ($item->price ?? null)
-        ?? $sellingPrice;
+    $sellingPrice = $item->price ?? $variant->price ?? $product->price;
+    $unitPrice = $item->unit_price ?? ($variant->compare_price ?? null) ?? ($item->price ?? null) ?? $sellingPrice;
 @endphp
 
 <tr class="order-item" id="order-item-{{ $item->id }}" data-id="{{ $item->id }}" data-variant-id="{{ $item->product_variant_id }}" data-product-id="{{ $item->product_id }}">
@@ -22,49 +13,27 @@
         <p class="fw-bold mb-0">{{ $productName }}</p>
         <small class="text-muted">{{ $variantName }}</small>
     </td>
-
     <td class="text-center align-middle">
         <div class="btn-group btn-group-sm">
-            <button class="btn btn-outline-secondary update-order-qty-btn"
-                    data-id="{{ $item->id }}" data-action="decrease">−</button>
-
-            <button class="btn btn-outline-secondary disabled quantity">
-                {{ $item->quantity }}
-            </button>
-
-            <button class="btn btn-outline-secondary update-order-qty-btn"
-                    data-id="{{ $item->id }}" data-action="increase">+</button>
+            <button class="btn btn-outline-secondary update-order-qty-btn" data-id="{{ $item->id }}" data-action="decrease">−</button>
+            <button class="btn btn-outline-secondary disabled quantity">{{ $item->quantity }}</button>
+            <button class="btn btn-outline-secondary update-order-qty-btn" data-id="{{ $item->id }}" data-action="increase">+</button>
         </div>
     </td>
-
     <td class="text-end align-middle">
         <div class="input-group input-group-sm justify-content-end" style="max-width: 130px; margin-left: auto;">
-            <span class="input-group-text">
-                <small class="text-muted">
-                    {{ removeZeroFromDecimal($sellingPrice) }}
-                </small>
-            </span>
-
-            <input type="number"
-                   class="form-control text-end price-input"
-                   data-price="{{ removeZeroFromDecimal($sellingPrice) }}"
-                   value="{{ removeZeroFromDecimal($unitPrice) }}"
-                   data-id="{{ $item->id }}"
-                   min="0" />
+            <span class="input-group-text"><small class="text-muted">{{ removeZeroFromDecimal($sellingPrice) }}</small></span>
+            <input type="number" class="form-control text-end price-input" data-price="{{ removeZeroFromDecimal($sellingPrice) }}" value="{{ removeZeroFromDecimal($unitPrice) }}" data-id="{{ $item->id }}" min="0" />
         </div>
     </td>
-
     <td class="text-end align-middle">
-        <button class="btn btn-sm btn-link text-danger p-0 delete-order-item-btn"
-                data-id="{{ $item->id }}"
-                data-bs-toggle="modal"
-                data-bs-target="#deleteOrderConfirmModal">
+        <button class="btn btn-sm btn-link text-danger p-0 delete-order-item-btn" data-id="{{ $item->id }}" data-bs-toggle="modal" data-bs-target="#deleteOrderConfirmModal">
             <i data-feather="trash-2"></i>
         </button>
     </td>
 </tr>
 @empty
 <tr>
-    <td colspan="4" class="text-center text-muted">No items in order</td>
+    <td colspan="4" class="text-center text-muted py-3">No items in order</td>
 </tr>
 @endforelse

@@ -1,6 +1,6 @@
 <div class="card shadow-sm border-0 mb-4 d-none" id="variantGenerator">
     <div class="card-header bg-white">
-        <h5 class="mb-0">Product Variant Generator</h5>
+        <h5 class="fw-semibold mb-0">Product Variant Generator</h5>
     </div>
     <div class="card-body">
         <div id="attributeRows" class="mb-3">
@@ -25,8 +25,8 @@
                 </div>
             </div>
 
-            <button type="button" class="btn btn-primary btn-sm" id="generateVariantsBtn">Generate Variants</button>
-            <button type="button" class="btn btn-secondary btn-sm ms-2" id="clearVariantsBtn">Clear Variants</button>
+            <button type="button" class="btn btn-primary btn-sm d-inline-flex align-items-center gap-1" id="generateVariantsBtn">Generate Variants</button>
+            <button type="button" class="btn btn-secondary btn-sm d-inline-flex align-items-center gap-1 ms-2" id="clearVariantsBtn">Clear Variants</button>
         </div>
 
         <div id="variantsTableContainer" class="table-responsive"></div>
@@ -83,17 +83,17 @@
 
             let tableHtml = `
                 <table class="table table-sm table-bordered mb-0">
-                <thead class="bg-light">
+                <thead class="table-light">
                     <tr>
-                    <th>#</th>
-                    <th>SKU</th>
-                    <th>Color</th>
-                    <th>Size</th>
-                    <th>Cost Price</th>
-                    <th>Price</th>
-                    <th>Compare Price</th>
-                    <th>Image</th>
-                    <th>Actions</th>
+                    <th scope="col" class="small fw-semibold text-muted">#</th>
+                    <th scope="col" class="small fw-semibold text-muted">SKU</th>
+                    <th scope="col" class="small fw-semibold text-muted">Color</th>
+                    <th scope="col" class="small fw-semibold text-muted">Size</th>
+                    <th scope="col" class="small fw-semibold text-muted">Cost Price</th>
+                    <th scope="col" class="small fw-semibold text-muted">Price</th>
+                    <th scope="col" class="small fw-semibold text-muted">Compare Price</th>
+                    <th scope="col" class="small fw-semibold text-muted">Image</th>
+                    <th scope="col" class="small fw-semibold text-muted">Actions</th>
                     </tr>
                 </thead>
             <tbody id="variantsTableBody">
@@ -127,7 +127,7 @@
                 <td><input type="number" class="form-control form-control-sm variant-compare-price" placeholder="Compare Price" step="0.01" min="0" /></td>
                 <td><input type="file" class="form-control form-control-sm" accept="image/*" /></td>
                 <td>
-                <button type="button" class="btn btn-outline-danger btn-sm remove-variant-row-btn">Remove</button>
+                <button type="button" class="btn btn-outline-danger btn-sm d-inline-flex align-items-center gap-1 remove-variant-row-btn">Remove</button>
                 </td>
                 </tr>`;
             });

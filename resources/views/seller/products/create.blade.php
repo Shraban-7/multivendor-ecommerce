@@ -16,9 +16,9 @@
 @section('content')
 <form id="productForm" autocomplete="off" method="POST" action="{{ route('seller.products.store') }}" enctype="multipart/form-data">
     @csrf
-    <div class="card mb-3">
+    <div class="card border-0 shadow-sm mb-3" style="border-radius: 12px;">
         <div class="card-header bg-white">
-            <h4 class="mb-0">Add Product</h4>
+            <h4 class="fw-bold mb-0 text-dark">Add Product</h4>
         </div>
 
         <div class="card-body">
@@ -120,7 +120,7 @@
         </div>
     </div>
     @include('seller.products.variant-generator')
-    <button type="button" id="submitBtn" class="btn btn-primary">Save Product</button>
+    <button type="button" id="submitBtn" class="btn btn-primary d-inline-flex align-items-center gap-1">Save Product</button>
 </form>
 @endsection
 

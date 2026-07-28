@@ -78,11 +78,11 @@ foreach ($categories as $cat) {
     <input type="hidden" id="draft_id" value="{{ request('draft_id') }}">
     <!-- Products/Search Section -->
     <div class="col-md-7">
-        <div class="card mb-4 ">
+        <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
             <div class="card-header bg-white py-3">
                 <div class="row align-items-center">
                     <div class="col-md-6">
-                        <h4 class="mb-0">Products</h4>
+                        <h4 class="mb-0 fw-bold">Products</h4>
                     </div>
                     <div class="col-md-6 d-flex justify-content-end gap-2">
                         <div class="input-group input-group-sm">
@@ -103,11 +103,11 @@ foreach ($categories as $cat) {
                 <div class="modal fade" id="draftCartsModal" tabindex="-1" aria-labelledby="draftCartsModalLabel"
                     aria-hidden="true">
                     <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
-                        <div class="modal-content">
+                        <div class="modal-content border-0">
 
                             <!-- Modal Header -->
                             <div class="modal-header text-dark">
-                                <h5 class="modal-title" id="draftCartsModalLabel">
+                                <h5 class="modal-title fw-semibold" id="draftCartsModalLabel">
                                     Draft Carts</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
@@ -120,10 +120,10 @@ foreach ($categories as $cat) {
                                 <table class="table table-sm table-bordered align-middle">
                                     <thead class="table-light">
                                         <tr>
-                                            <th>Created At</th>
-                                            <th>Items</th>
-                                            <th>Total Qty</th>
-                                            <th>Action</th>
+                                            <th scope="col" class="small fw-semibold text-muted">Created At</th>
+                                            <th scope="col" class="small fw-semibold text-muted">Items</th>
+                                            <th scope="col" class="small fw-semibold text-muted">Total Qty</th>
+                                            <th scope="col" class="small fw-semibold text-muted">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -183,9 +183,9 @@ foreach ($categories as $cat) {
                 <div class="modal fade" id="salesModal" tabindex="-1" aria-labelledby="salesModalLabel"
                     aria-hidden="true">
                     <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
-                        <div class="modal-content">
+                        <div class="modal-content border-0">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="salesModalLabel">Today's Sales</h5>
+                                <h5 class="modal-title fw-semibold" id="salesModalLabel">Today's Sales</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body" id="salesContent">
@@ -195,11 +195,11 @@ foreach ($categories as $cat) {
                                 <table class="table table-sm table-bordered">
                                     <thead class="table-light">
                                         <tr>
-                                            <th>Order Id</th>
-                                            <th>Customer</th>
-                                            <th>Total</th>
-                                            <th>Time</th>
-                                            <th>Action</th>
+                                            <th scope="col" class="small fw-semibold text-muted">Order Id</th>
+                                            <th scope="col" class="small fw-semibold text-muted">Customer</th>
+                                            <th scope="col" class="small fw-semibold text-muted">Total</th>
+                                            <th scope="col" class="small fw-semibold text-muted">Time</th>
+                                            <th scope="col" class="small fw-semibold text-muted">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -400,9 +400,9 @@ foreach ($categories as $cat) {
 
     <!-- Cart & Checkout Section -->
     <div class="col-md-5">
-        <div class="card sticky-top" style="top: 20px;">
-            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Order Summery @if (request()->has('order_id'))
+        <div class="card border-0 shadow-sm sticky-top" style="top: 20px; border-radius: 12px;">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center rounded-top" style="border-radius: 12px 12px 0 0;">
+                <h5 class="mb-0 fw-semibold">Order Summery @if (request()->has('order_id'))
                     ({{ request('order_id') }})
                     @endif
                 </h5>
@@ -433,12 +433,12 @@ foreach ($categories as $cat) {
                 <!-- Order Items -->
                 <div class="order-items" style="max-height: 450px; overflow-y: auto;">
                     <table class="table table-hover mb-0">
-                        <thead class="small">
+                        <thead class="table-light small">
                             <tr>
-                                <th>Item</th>
-                                <th class="text-center">Qty</th>
-                                <th class="text-end">Price</th>
-                                <th></th>
+                                <th scope="col" class="small fw-semibold text-muted">Item</th>
+                                <th scope="col" class="small fw-semibold text-muted text-center">Qty</th>
+                                <th scope="col" class="small fw-semibold text-muted text-end">Price</th>
+                                <th scope="col" class="small fw-semibold text-muted"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -586,17 +586,17 @@ foreach ($categories as $cat) {
 
 <div class="modal fade" id="deleteConfirmModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+        <div class="modal-content border-0">
             <div class="modal-header">
-                <h5 class="modal-title">Confirm Delete</h5>
+                <h5 class="modal-title fw-semibold">Confirm Delete</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 Are you sure you want to remove this item from the cart?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger d-inline-flex align-items-center gap-1" id="confirmDeleteBtn">Delete</button>
             </div>
         </div>
     </div>
@@ -604,17 +604,17 @@ foreach ($categories as $cat) {
 
 <div class="modal fade" id="deleteOrderConfirmModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+        <div class="modal-content border-0">
             <div class="modal-header">
-                <h5 class="modal-title">Confirm Delete</h5>
+                <h5 class="modal-title fw-semibold">Confirm Delete</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 Are you sure you want to remove this item from the order?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" id="confirmDeleteOrderBtn">Delete</button>
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger d-inline-flex align-items-center gap-1" id="confirmDeleteOrderBtn">Delete</button>
             </div>
         </div>
     </div>
@@ -623,17 +623,17 @@ foreach ($categories as $cat) {
 <div class="modal fade" id="clearCartModal" tabindex="-1" aria-labelledby="clearCartModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+        <div class="modal-content border-0">
             <div class="modal-header">
-                <h5 class="modal-title" id="clearCartModalLabel">Confirm Clear Cart</h5>
+                <h5 class="modal-title fw-semibold" id="clearCartModalLabel">Confirm Clear Cart</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 Are you sure you want to clear the entire cart? This action cannot be undone.
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" id="confirmClearCartBtn">Yes, Clear Cart</button>
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger d-inline-flex align-items-center gap-1" id="confirmClearCartBtn">Yes, Clear Cart</button>
             </div>
         </div>
     </div>

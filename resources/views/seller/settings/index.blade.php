@@ -3,13 +3,13 @@
 @section('title', 'Business Settings')
 
 @section('content')
-    <div class="d-flex justify-content-between align-items-end mb-3">
-        <h4 class="mb-0">Business Settings</h4>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold mb-0 text-dark">Business Settings</h4>
     </div>
 
     <div class="row">
         <div class="col-md-8 col-12">
-            <div class="card card-body">
+            <div class="card border-0 shadow-sm card-body" style="border-radius: 12px;">
                 <form id="businessSettingsForm" action="{{ route('seller.settings.update') }}" method="POST"
                     enctype="multipart/form-data">
                     @csrf
@@ -51,33 +51,7 @@
 
                     </div>
 
-                    {{-- <hr>
-
-                    <div class="row">
-                        <div class="col-12">
-                            <label class="form-label">Banner Images</label>
-                            <input type="file" id="files" class="form-control mb-3" name="banner" accept="image/*">
-                            <div class="row" id="banner-images">
-                                @foreach ($seller->banner_images as $banner)
-                                    <div class="col-md-3 mb-3 banner-item" id="banner-{{ $banner->id }}">
-                                        <div class="position-relative">
-                                            <img src="{{ storage_url($banner->image) }}" class="img-fluid rounded"
-                                                alt="Banner">
-                                            <button type="button"
-                                                class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2 delete-banner"
-                                                data-id="{{ $banner->id }}">
-                                                <i data-feather="trash"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-
-                            <div class="row mt-3" id="new-banners"></div>
-                        </div>
-                    </div> --}}
-
-                    <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
+                    <button type="submit" class="btn btn-primary mt-3 d-inline-flex align-items-center gap-1">Save Changes</button>
                 </form>
             </div>
         </div>

@@ -13,10 +13,13 @@
     <title>@yield('title')</title>
 </head>
 
-<body>
+<body class="bg-light">
     <main class="container d-flex flex-column">
         <div class="row align-items-center justify-content-center g-0 min-vh-100">
             <div class="col-12 col-md-8 col-lg-6 col-xxl-4 py-8 py-xl-0">
+                <div class="text-center mb-4">
+                    <img src="{{ asset('assets/frontend/images/logo.png') }}" alt="Logo" style="max-height: 48px;" onerror="this.style.display='none'">
+                </div>
                 @yield('content')
             </div>
         </div>

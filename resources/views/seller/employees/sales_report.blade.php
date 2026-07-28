@@ -2,9 +2,9 @@
 @section('title', 'Sales Report')
 @section('content')
 
-<h4>Employee Sales Report</h4>
+<h4 class="fw-bold mb-3 text-dark">Employee Sales Report</h4>
 
-<div class="card">
+<div class="card border-0 shadow-sm" style="border-radius: 12px;">
     <div class="card-body">
         <form method="GET" class="row g-3 mb-4">
             <div class="col-md-4">
@@ -20,23 +20,23 @@
             </div>
 
             <div class="col-md-4 d-flex align-items-end gap-2">
-                <button type="submit" class="btn btn-primary w-100">
+                <button type="submit" class="btn btn-primary w-100 d-inline-flex align-items-center justify-content-center gap-1">
                     Filter
                 </button>
 
-                <a href="{{ url()->current() }}" class="btn btn-outline-secondary w-100">
+                <a href="{{ url()->current() }}" class="btn btn-outline-secondary w-100 d-inline-flex align-items-center justify-content-center gap-1">
                     Clear
                 </a>
             </div>
         </form>
 
 
-        <table class="table table-bordered table-striped mb-0">
-            <thead>
+        <table class="table table-bordered table-striped table-hover mb-0">
+            <thead class="table-light">
                 <tr>
-                    <th>Employee</th>
-                    <th class="text-center">Orders</th>
-                    <th class="text-end">Amount</th>
+                    <th scope="col" class="small fw-semibold text-muted">Employee</th>
+                    <th scope="col" class="small fw-semibold text-muted text-center">Orders</th>
+                    <th scope="col" class="small fw-semibold text-muted text-end">Amount</th>
                 </tr>
             </thead>
             <tbody>

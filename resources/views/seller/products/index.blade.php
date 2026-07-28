@@ -2,24 +2,24 @@
 @section('title', 'My Products')
 @section('content')
 
-<div class="mb-3 d-flex justify-content-between align-items-end">
-    <h4 class="mb-0">My Products</h4>
-    <a href="{{ route('seller.products.create') }}" class="btn btn-primary btn-sm">
-        <i data-feather="plus" class="icon-xs me-1"></i> Add Product
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="fw-bold mb-0 text-dark">My Products</h4>
+    <a href="{{ route('seller.products.create') }}" class="btn btn-primary btn-sm d-inline-flex align-items-center gap-1">
+        <i data-feather="plus" class="icon-xs"></i> Add Product
     </a>
 </div>
 
 <div class="table-responsive">
     <table class="table table-bordered table-hover align-middle bg-white" id="product-table">
-        <thead>
+        <thead class="table-light">
             <tr>
-                <th>Product</th>
-                <th>SKU</th>
-                <th>Price Range</th>
-                <th>Stock</th>
-                <th>Status</th>
-                <th>Added</th>
-                <th>Action</th>
+                <th scope="col" class="small fw-semibold text-muted">Product</th>
+                <th scope="col" class="small fw-semibold text-muted">SKU</th>
+                <th scope="col" class="small fw-semibold text-muted">Price Range</th>
+                <th scope="col" class="small fw-semibold text-muted">Stock</th>
+                <th scope="col" class="small fw-semibold text-muted">Status</th>
+                <th scope="col" class="small fw-semibold text-muted">Added</th>
+                <th scope="col" class="small fw-semibold text-muted">Action</th>
             </tr>
         </thead>
         <tbody>
@@ -67,27 +67,26 @@
                     @endif
                 </td>
                 
-                <td class="text-center">    
-                    <span class="badge 
+                <td class="text-center">
+                    <span class="badge px-2 py-1 rounded-3
                         @if($totalStock <= $lowStockQty)
-                            bg-danger text-white
+                            badge-soft-danger
                         @else
-                            bg-light border text-dark
-                        @endif
-                        px-2 py-1 rounded-3">
+                            badge-soft-secondary
+                        @endif">
                         {{ $totalStock }} {{ $product->unit->short_name }}
                     </span>
                 </td>
 
                 <td>
                     @if ($product->status == $product::STATUS_ACTIVE)
-                    <span class="badge text-bg-success">Active</span>
+                    <span class="badge badge-soft-success">Active</span>
                     @elseif ($product->status == $product::STATUS_PENDING_APPROVAL)
-                    <span class="badge text-bg-warning">Waiting for Approval</span>
+                    <span class="badge badge-soft-warning">Waiting for Approval</span>
                     @elseif ($product->status == $product::STATUS_INACTIVE)
-                    <span class="badge text-bg-secondary">Inactive</span>
+                    <span class="badge badge-soft-secondary">Inactive</span>
                     @elseif ($product->status == $product::STATUS_DELETED)
-                    <span class="badge text-bg-danger">Deleted</span>
+                    <span class="badge badge-soft-danger">Deleted</span>
                     @endif
                 </td>
 
@@ -95,12 +94,12 @@
 
                 <td>
                     <div class="d-flex text-nowrap">
-                        <a href="{{ route('seller.products.show', $product->slug) }}" target="__blank" class="btn btn-light btn-sm border me-1 mb-1">
-                            <i data-feather="eye" class="icon-xs me-1"></i>Details
+                        <a href="{{ route('seller.products.show', $product->slug) }}" target="__blank" class="btn btn-light btn-sm border d-inline-flex align-items-center gap-1 me-1 mb-1">
+                            <i data-feather="eye" class="icon-xs"></i>Details
                         </a>
                         <a href="{{ route('seller.products.edit', $product->slug) }}"
-                            class="btn btn-light btn-sm border mb-1" target="__blank">
-                            <i data-feather="edit" class="icon-xs me-1"></i> Edit
+                            class="btn btn-light btn-sm border d-inline-flex align-items-center gap-1 mb-1" target="__blank">
+                            <i data-feather="edit" class="icon-xs"></i> Edit
                         </a>
                     </div>
                 </td>
@@ -118,7 +117,7 @@
 <div class="modal fade" id="variantsModal-{{ $product->id }}" tabindex="-1"
     aria-labelledby="variantsModalLabel-{{ $product->id }}" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
+        <div class="modal-content border-0">
             <div class="modal-header">
                 <h5 class="modal-title" id="variantsModalLabel-{{ $product->id }}">
                     Variants – {{ $product->name }}
@@ -131,10 +130,10 @@
                 <table class="table table-sm table-hover table-bordered mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th>SKU</th>
-                            <th>Name</th>
-                            <th class="text-center">Price</th>
-                            <th class="text-center">Stock</th>
+                            <th scope="col" class="small fw-semibold text-muted">SKU</th>
+                            <th scope="col" class="small fw-semibold text-muted">Name</th>
+                            <th scope="col" class="small fw-semibold text-muted text-center">Price</th>
+                            <th scope="col" class="small fw-semibold text-muted text-center">Stock</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -166,5 +165,3 @@
 @endforeach
 
 @endsection
-
-
