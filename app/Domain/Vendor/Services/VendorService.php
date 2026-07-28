@@ -84,27 +84,6 @@ class VendorService
                     $data[$field] = $seller->$field;
                 }
             }
-        } elseif ($section === 'business') {
-            foreach (['business_logo', 'shop_image'] as $field) {
-                if (isset($data[$field]) && $data[$field] !== null) {
-                    if ($seller->$field) {
-                        delete_file($seller->$field);
-                    }
-                    $folder = $field === 'business_logo' ? 'logo' : 'shop';
-                    $data[$field] = upload_file($data[$field], "images/{$usernameForPath}/{$folder}");
-                } else {
-                    $data[$field] = $seller->$field;
-                }
-            }
-        } elseif ($section === 'documents') {
-            if (isset($data['trade_license_image']) && $data['trade_license_image'] !== null) {
-                if ($seller->trade_license_image) {
-                    delete_file($seller->trade_license_image);
-                }
-                $data['trade_license_image'] = upload_file($data['trade_license_image'], "images/{$usernameForPath}/documents");
-            } else {
-                $data['trade_license_image'] = $seller->trade_license_image;
-            }
         } elseif ($section === 'password') {
             $data['password'] = Hash::make($data['password']);
             unset($data['current_password'], $data['password_confirmation']);

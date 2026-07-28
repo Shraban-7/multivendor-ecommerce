@@ -2,7 +2,6 @@
 
 namespace App\Domain\Vendor\Http\Controllers\Seller;
 
-use App\Domain\Shipping\Models\Division;
 use App\Domain\Vendor\Http\Requests\UpdateVendorProfileRequest;
 use App\Domain\Vendor\Repositories\SellerRepositoryInterface;
 use App\Domain\Vendor\Services\VendorService;
@@ -19,10 +18,9 @@ class SellerController extends Controller
     public function profile(UpdateVendorProfileRequest $request)
     {
         $seller = $this->sellerRepo->findById(get_seller_id());
-        $divisions = Division::all();
 
         if ($request->isMethod('GET')) {
-            return view('seller.profile-information', compact('seller', 'divisions'));
+            return view('seller.profile-information', compact('seller'));
         }
 
         $section = $request->input('section');
@@ -36,7 +34,7 @@ class SellerController extends Controller
                 }
             }
 
-            if (! in_array($section, ['personal', 'business', 'documents', 'password'])) {
+            if (! in_array($section, ['personal', 'password'])) {
                 return errorResponse('Invalid section provided.');
             }
 

@@ -45,7 +45,7 @@
                                 <i data-feather="phone" class="icon-xs me-1"></i>{{ $seller->phone }}
                             </p>
                             <p class="text-muted small mb-1">
-                                <i data-feather="map-pin" class="icon-xs me-1"></i>{{ $seller->address ?? '' }}
+                                <i data-feather="map-pin" class="icon-xs me-1"></i>{{ $seller->business_address ?? '' }}
                             </p>
                             <p class="text-muted small mb-1">
                                 <i data-feather="calendar" class="icon-xs me-1"></i>

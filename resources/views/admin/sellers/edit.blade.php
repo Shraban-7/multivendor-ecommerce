@@ -91,6 +91,18 @@
                         <div class="col-12"><label class="form-label">Business Address</label>
                             <textarea name="business_address" class="form-control" rows="2" required>{{ $seller->business_address }}</textarea>
                         </div>
+                        <div class="col-12">
+                            <label class="form-label">Shop Description</label>
+                            <textarea name="business_description" class="form-control" rows="3">{{ $seller->business_description }}</textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Shop Type</label>
+                            <select name="shop_type" class="form-select">
+                                <option value="individual" {{ $seller->shop_type == 'individual' ? 'selected' : '' }}>Individual</option>
+                                <option value="business" {{ $seller->shop_type == 'business' ? 'selected' : '' }}>Business</option>
+                                <option value="company" {{ $seller->shop_type == 'company' ? 'selected' : '' }}>Company</option>
+                            </select>
+                        </div>
                         <div class="col-md-6">
                             <label class="form-label">Division</label>
                             <select name="division_id" class="form-select" required>

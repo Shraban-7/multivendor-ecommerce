@@ -41,6 +41,7 @@ class Seller extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'profileCompleted' => 'boolean',
     ];
 
     const PENDING = 0;
@@ -232,9 +233,10 @@ class Seller extends Authenticatable
             'nid_no',
             'nid_front_image',
             'nid_back_image',
-            'trade_licenso_no',
-            'trade_licenso_image',
+            'trade_license_no',
+            'trade_license_image',
             'shop_image',
+            'cover_image',
             'email_verified_at',
         ];
 

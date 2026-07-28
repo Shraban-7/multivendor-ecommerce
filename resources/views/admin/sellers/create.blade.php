@@ -79,6 +79,15 @@
                     <div class="col-md-6"><label class="form-label">Business Name</label><input type="text" name="business_name" class="form-control" required></div>
                     <div class="col-md-6"><label class="form-label">Business Email</label><input type="email" name="business_email" class="form-control"></div>
                     <div class="col-12"><label class="form-label">Business Address</label><textarea name="business_address" class="form-control" rows="2" required></textarea></div>
+                    <div class="col-12"><label class="form-label">Shop Description</label><textarea name="business_description" class="form-control" rows="3"></textarea></div>
+                    <div class="col-md-6">
+                        <label class="form-label">Shop Type</label>
+                        <select name="shop_type" class="form-select">
+                            <option value="individual">Individual</option>
+                            <option value="business">Business</option>
+                            <option value="company">Company</option>
+                        </select>
+                    </div>
                     <div class="col-md-6">
                         <label class="form-label">Division</label>
                         <select name="division_id" class="form-select" required>

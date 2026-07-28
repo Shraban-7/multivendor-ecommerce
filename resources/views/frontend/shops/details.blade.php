@@ -202,7 +202,7 @@
             <div class="bg-white border border-[#E5E5E5] rounded-sm p-4 sm:p-5 mb-6">
                 <h2 class="text-sm font-semibold text-[#191919] mb-3">About {{ $seller->business_name }}</h2>
                     <p class="text-xs text-[#595959] border-l-[3px] border-[#F85606] pl-3 italic leading-relaxed">
-                    {{ $seller->business_description ?? 'This seller has not provided a business description yet.' }}
+                    {{ $seller->business_description ?: 'This seller has not provided a business description yet.' }}
                 </p>
                 <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-[#595959]">
                     <div class="flex items-center gap-2 p-2 bg-[#FAFAFA] rounded-sm">
@@ -216,6 +216,10 @@
                     <div class="flex items-center gap-2 p-2 bg-[#FAFAFA] rounded-sm">
                         <i class="fa-solid fa-box text-[#F85606]"></i>
                         <span><span class="font-medium text-[#191919]">{{ $totalItem }}</span> Products</span>
+                    </div>
+                    <div class="flex items-center gap-2 p-2 bg-[#FAFAFA] rounded-sm">
+                        <i class="fa-solid fa-store text-[#F85606]"></i>
+                        <span><span class="font-medium text-[#191919]">{{ ucfirst($seller->shop_type ?: 'individual') }}</span> Seller</span>
                     </div>
                 </div>
             </div>
