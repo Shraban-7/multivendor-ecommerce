@@ -119,6 +119,28 @@
         </div>
         @endif
 
+        <!-- ==================== 5. BUNDLES SECTION ==================== -->
+        @if(isset($bundles) && $bundles->count() > 0)
+        <div class="mt-12">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="px-6 py-4 flex items-center justify-between border-b border-gray-100">
+                    <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                        <i class="fas fa-gift text-primary-500"></i>
+                        <span>Bundle Deals</span>
+                    </h2>
+                    <a href="{{ route('bundles.index') }}" class="text-sm font-medium text-primary-600 hover:underline">View All</a>
+                </div>
+                <div class="p-4">
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                        @foreach($bundles as $bundle)
+                            <x-frontend.bundle-card :bundle="$bundle" />
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+
     </div>
 </div>
 

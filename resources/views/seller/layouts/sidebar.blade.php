@@ -124,6 +124,15 @@ $route = request()->route()->getName();
                                 </a>
                             </li>
                         @endif
+                        @if ($seller || $employee->hasPermission('seller.bundles.index'))
+                            <li class="nav-item">
+                                <a class="nav-link d-flex align-items-center {{ request()->routeIs('seller.bundles.*') ? 'active' : '' }}"
+                                    href="{{ route('seller.bundles.index') }}">
+                                    <i data-feather="layers" class="nav-icon me-2" style="width: 14px; height: 14px;"></i>
+                                    <span>Bundles</span>
+                                </a>
+                            </li>
+                        @endif
                         @if ($seller || $employee->hasPermission('seller.products.printBarcode'))
                             <li class="nav-item">
                                 <a class="nav-link d-flex align-items-center {{ request()->routeIs('seller.products.printBarcode*') ? 'active' : '' }}"

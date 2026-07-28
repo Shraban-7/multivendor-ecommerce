@@ -121,6 +121,29 @@
         @endforeach
     @endif
 
+    <!-- ==================== BUNDLES ==================== -->
+    @if($bundles && $bundles->count() > 0)
+    <section class="mb-4">
+        <div class="bg-white border border-[#E5E5E5] rounded-sm">
+            <div class="px-4 sm:px-5 py-3 flex items-center justify-between border-b border-[#E5E5E5]">
+                <h2 class="text-base sm:text-lg font-bold text-[#191919] flex items-center gap-2">
+                    <i class="fas fa-gift text-[#F85606]"></i>
+                    <span>Value Bundles</span>
+                </h2>
+                <a href="{{ route('bundles.index') }}"
+                    class="text-xs font-medium text-[#F85606] hover:underline flex-shrink-0">View All</a>
+            </div>
+            <div class="p-3 sm:p-4">
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 sm:gap-4">
+                    @foreach($bundles as $bundle)
+                        <x-frontend.bundle-card :bundle="$bundle" />
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </section>
+    @endif
+
     <!-- ==================== CATEGORY GRID ==================== -->
     <section class="mb-4">
         <div class="bg-white p-4 sm:p-5 border border-[#E5E5E5] rounded-sm">

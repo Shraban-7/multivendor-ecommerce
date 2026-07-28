@@ -2,6 +2,7 @@
 
 namespace App\Domain\Product\Http\Controllers\Frontend;
 
+use App\Domain\Bundle\Models\Bundle;
 use App\Domain\Product\Models\FlashSale;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -38,6 +39,13 @@ class FlashSaleController extends Controller
             return $html;
         }
 
-        return view('frontend.flash-sales.show', compact('flashSale', 'products'));
+        $bundles = Bundle::active()
+            ->where('is_visible', true)
+            ->with(['items.product'])
+            ->latest()
+            ->limit(8)
+            ->get();
+
+        return view('frontend.flash-sales.show', compact('flashSale', 'products', 'bundles'));
     }
 }

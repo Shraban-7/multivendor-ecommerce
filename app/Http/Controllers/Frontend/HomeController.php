@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Domain\Bundle\Models\Bundle;
 use App\Domain\Product\Models\Banner;
 use App\Domain\Product\Models\Category;
 use App\Domain\Product\Models\FlashSale;
@@ -47,6 +48,13 @@ class HomeController extends Controller
             ->withCount('approveProducts')
             ->having('approve_products_count', '>', 0)
             ->with('approveProducts.product')
+            ->get();
+
+        $data['bundles'] = Bundle::active()
+            ->where('is_visible', true)
+            ->with(['items.product'])
+            ->latest()
+            ->limit(12)
             ->get();
 
         return view('frontend.home', $data);
