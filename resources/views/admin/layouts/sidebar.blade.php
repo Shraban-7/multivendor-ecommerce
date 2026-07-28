@@ -27,7 +27,7 @@ $settings = settings();
             <li class="nav-item">
                 <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center" href="#!"
                     data-bs-toggle="collapse" data-bs-target="#navCatalogs"
-                    aria-expanded="{{ request()->routeIs('admin.brands.*') || request()->routeIs('admin.categories.*') || request()->routeIs('admin.options*') || request()->routeIs('admin.subcategories.*') ? 'true' : 'false' }}"
+                    aria-expanded="{{ request()->routeIs('admin.brands.*') || request()->routeIs('admin.categories.*') || request()->routeIs('admin.options*') || request()->routeIs('admin.subcategories.*') || request()->routeIs('admin.colors.*') || request()->routeIs('admin.sizes.*') ? 'true' : 'false' }}"
                     aria-controls="navCatalogs">
 
                     <div>
@@ -39,7 +39,7 @@ $settings = settings();
                 </a>
 
                 <div id="navCatalogs"
-                    class="collapse {{ request()->routeIs('admin.brands.*') || request()->routeIs('admin.categories.*') || request()->routeIs('admin.options*') || request()->routeIs('admin.subcategories.*') ? 'show' : '' }}"
+                    class="collapse {{ request()->routeIs('admin.brands.*') || request()->routeIs('admin.categories.*') || request()->routeIs('admin.options*') || request()->routeIs('admin.subcategories.*') || request()->routeIs('admin.colors.*') || request()->routeIs('admin.sizes.*') ? 'show' : '' }}"
                     data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
                         <x-dashboard.nav-item-link :route="'admin.brands.index'">
@@ -55,6 +55,12 @@ $settings = settings();
                         </x-dashboard.nav-item-link>
                         <x-dashboard.nav-item-link :route="'admin.options.index'">
                             Options
+                        </x-dashboard.nav-item-link>
+                        <x-dashboard.nav-item-link :route="'admin.colors.index'">
+                            Colors
+                        </x-dashboard.nav-item-link>
+                        <x-dashboard.nav-item-link :route="'admin.sizes.index'">
+                            Sizes
                         </x-dashboard.nav-item-link>
                     </ul>
                 </div>

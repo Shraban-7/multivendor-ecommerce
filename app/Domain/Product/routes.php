@@ -3,9 +3,11 @@
 use App\Domain\Product\Http\Controllers\Admin\BannerController;
 use App\Domain\Product\Http\Controllers\Admin\BrandController;
 use App\Domain\Product\Http\Controllers\Admin\CategoryController;
+use App\Domain\Product\Http\Controllers\Admin\ColorController;
 use App\Domain\Product\Http\Controllers\Admin\FlashSaleController;
 use App\Domain\Product\Http\Controllers\Admin\OptionController;
 use App\Domain\Product\Http\Controllers\Admin\ProductController;
+use App\Domain\Product\Http\Controllers\Admin\SizeController;
 use App\Domain\Product\Http\Controllers\Admin\SubcategoryController;
 use App\Domain\Product\Http\Controllers\Api\CategoryController as ApiCategoryController;
 use App\Domain\Product\Http\Controllers\Api\ProductController as ApiProductController;
@@ -32,6 +34,20 @@ Route::middleware(['web', 'admin'])->prefix('admin')->as('admin.')->group(functi
         Route::post('values/{id}/update', [OptionController::class, 'optionValueUpdate'])->name('option_value_update');
         Route::post('{option}/update', [OptionController::class, 'update'])->name('update');
         Route::post('{option}/delete', [OptionController::class, 'destroy'])->name('delete');
+    });
+
+    Route::prefix('colors')->as('colors.')->group(function () {
+        Route::get('/', [ColorController::class, 'index'])->name('index');
+        Route::post('/store', [ColorController::class, 'store'])->name('store');
+        Route::post('/{color}/update', [ColorController::class, 'update'])->name('update');
+        Route::post('/{color}/delete', [ColorController::class, 'destroy'])->name('delete');
+    });
+
+    Route::prefix('sizes')->as('sizes.')->group(function () {
+        Route::get('/', [SizeController::class, 'index'])->name('index');
+        Route::post('/store', [SizeController::class, 'store'])->name('store');
+        Route::post('/{size}/update', [SizeController::class, 'update'])->name('update');
+        Route::post('/{size}/delete', [SizeController::class, 'destroy'])->name('delete');
     });
 
     Route::prefix('brands')->as('brands.')->group(function () {
