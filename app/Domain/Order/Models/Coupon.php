@@ -55,7 +55,7 @@ class Coupon extends Model
 
     public function isValid(): bool
     {
-        if (!$this->status) {
+        if (! $this->status) {
             return false;
         }
 
@@ -90,9 +90,10 @@ class Coupon extends Model
 
     public function remainingUses(): ?int
     {
-        if (!$this->usage_limit) {
+        if (! $this->usage_limit) {
             return null;
         }
+
         return max(0, $this->usage_limit - $this->used_count);
     }
 }

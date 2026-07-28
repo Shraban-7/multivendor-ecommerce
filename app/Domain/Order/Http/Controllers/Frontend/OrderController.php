@@ -11,11 +11,11 @@ use App\Domain\Order\Repositories\Contracts\OrderRepositoryInterface;
 use App\Domain\Order\Services\CouponService;
 use App\Domain\Order\Services\OrderService;
 use App\Domain\Payment\Models\PaymentGateway;
-use App\Domain\Tax\Services\TaxCalculatorService;
 use App\Domain\Product\Models\Product;
 use App\Domain\Shipping\Models\District;
 use App\Domain\Shipping\Models\Division;
 use App\Domain\Support\Models\Notification;
+use App\Domain\Tax\Services\TaxCalculatorService;
 use App\Domain\Vendor\Models\Seller;
 use App\Enums\PaymentType;
 use App\Http\Controllers\Controller;
@@ -132,7 +132,7 @@ class OrderController extends Controller
 
         $couponDiscount = 0;
         $appliedCoupon = null;
-        $couponCode = $request->input('coupon_code', session('checkout.coupon_code.' . $selectedSellerId));
+        $couponCode = $request->input('coupon_code', session('checkout.coupon_code.'.$selectedSellerId));
 
         if ($couponCode) {
             $coupon = Coupon::where('code', $couponCode)->active()->first();
@@ -191,7 +191,7 @@ class OrderController extends Controller
 
             $order = $result['order'];
 
-            session()->forget('checkout.coupon_code.' . $selectedSellerId);
+            session()->forget('checkout.coupon_code.'.$selectedSellerId);
 
             notify_user(
                 $user->id,
@@ -255,7 +255,7 @@ class OrderController extends Controller
         $validation = $this->couponService->validateCoupon($request->code, $sellerId, $subTotalForCheck, $cart->cart_items);
 
         if ($validation['valid']) {
-            session()->put('checkout.coupon_code.' . $sellerId, $request->code);
+            session()->put('checkout.coupon_code.'.$sellerId, $request->code);
 
             return response()->json([
                 'valid' => true,
@@ -265,7 +265,7 @@ class OrderController extends Controller
             ]);
         }
 
-        session()->forget('checkout.coupon_code.' . $sellerId);
+        session()->forget('checkout.coupon_code.'.$sellerId);
 
         return response()->json([
             'valid' => false,
@@ -347,4 +347,3 @@ class OrderController extends Controller
         return redirect()->away($paymentGateway['payment_url']);
     }
 }
-

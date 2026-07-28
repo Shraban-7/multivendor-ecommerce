@@ -23,7 +23,7 @@ class OrderController extends Controller
         2 => [3, 5],       // SHIPPED → DELIVERED, CANCELLED
         3 => [4, 6],       // DELIVERED → COMPLETED, RETURN_REQUESTED
         5 => [],           // CANCELLED → terminal
-        6 => [7],          // RETURN_REQUESTED → RETURN_APPROVED
+        6 => [7, 3],       // RETURN_REQUESTED → RETURN_APPROVED, DELIVERED (reject)
         7 => [8],          // RETURN_APPROVED → RETURNED
         8 => [9],          // RETURNED → REFUNDED
         9 => [],           // REFUNDED → terminal
@@ -122,9 +122,25 @@ class OrderController extends Controller
         }
 
         if ($order->status->value == OrderStatus::RETURN_APPROVED->value) {
+            $request->validate(['remarks' => 'nullable|string']);
             ReturnRequest::where('order_id', $order->id)
                 ->where('status', 'pending')
                 ->update(['status' => 'approved', 'approved_at' => now()]);
+        }
+
+        if ($newStatusValue == OrderStatus::DELIVERED->value && $oldStatusValue == OrderStatus::RETURN_REQUESTED->value) {
+            $request->validate(['rejection_reason' => 'required|string|max:2000']);
+            ReturnRequest::where('order_id', $order->id)
+                ->where('status', 'pending')
+                ->update([
+                    'status' => 'rejected',
+                    'rejected_at' => now(),
+                    'rejection_reason' => $request->rejection_reason,
+                ]);
+        }
+
+        if ($newStatusValue == OrderStatus::RETURNED->value) {
+            $this->restoreOrderStock($order);
         }
 
         if (in_array($order->status->value, [OrderStatus::RETURNED->value, OrderStatus::REFUNDED->value])) {

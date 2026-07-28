@@ -2,6 +2,7 @@
 
 use App\Domain\Order\Http\Controllers\Admin\AdminCouponController;
 use App\Domain\Order\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Domain\Order\Http\Controllers\Admin\ReturnManageController as AdminReturnManageController;
 use App\Domain\Order\Http\Controllers\Api\BillingAddressController as ApiBillingAddressController;
 use App\Domain\Order\Http\Controllers\Api\CartController as ApiCartController;
 use App\Domain\Order\Http\Controllers\Api\OrderController as ApiOrderController;
@@ -12,13 +13,23 @@ use App\Domain\Order\Http\Controllers\Frontend\ReturnController;
 use App\Domain\Order\Http\Controllers\Frontend\WishlistController;
 use App\Domain\Order\Http\Controllers\InvoiceController;
 use App\Domain\Order\Http\Controllers\Seller\OrderController as SellerOrderController;
+use App\Domain\Order\Http\Controllers\Seller\ReturnController as SellerReturnController;
 use App\Domain\Order\Http\Controllers\Seller\SellerCouponController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['web', 'admin'])->prefix('admin')->as('admin.')->group(function () {
     Route::prefix('orders')->as('orders.')->group(function () {
         Route::get('/', [AdminOrderController::class, 'index'])->name('index');
-        // Route::get('/payments', [PaymentController::class, 'index'])->name('payments');
+    });
+
+    Route::prefix('returns')->as('returns.')->group(function () {
+        Route::get('/', [AdminReturnManageController::class, 'index'])->name('index');
+        Route::get('{return}', [AdminReturnManageController::class, 'show'])->name('show');
+        Route::post('{return}/approve', [AdminReturnManageController::class, 'approve'])->name('approve');
+        Route::post('{return}/reject', [AdminReturnManageController::class, 'reject'])->name('reject');
+        Route::post('{return}/cancel', [AdminReturnManageController::class, 'cancel'])->name('cancel');
+        Route::post('{return}/mark-received', [AdminReturnManageController::class, 'markReceived'])->name('markReceived');
+        Route::post('disputes/{dispute}/resolve', [AdminReturnManageController::class, 'resolveDispute'])->name('resolveDispute');
     });
 
     Route::prefix('coupons')->as('coupons.')->group(function () {
@@ -48,6 +59,16 @@ Route::middleware(['web', 'seller'])->prefix('seller')->as('seller.')->group(fun
         Route::post('/{order}/update-status', [SellerOrderController::class, 'updateStatus'])->name('updateStatus');
     });
 
+    Route::prefix('returns')->as('returns.')->group(function () {
+        Route::get('/', [SellerReturnController::class, 'index'])->name('index');
+        Route::get('{return}', [SellerReturnController::class, 'show'])->name('show');
+        Route::post('{return}/approve', [SellerReturnController::class, 'approve'])->name('approve');
+        Route::post('{return}/reject', [SellerReturnController::class, 'reject'])->name('reject');
+        Route::post('{return}/record-shipment', [SellerReturnController::class, 'recordShipment'])->name('recordShipment');
+        Route::post('{return}/mark-received', [SellerReturnController::class, 'markReceived'])->name('markReceived');
+        Route::post('disputes/{dispute}/respond', [SellerReturnController::class, 'disputeRespond'])->name('disputeRespond');
+    });
+
     Route::prefix('coupons')->as('coupons.')->group(function () {
         Route::get('/', [SellerCouponController::class, 'index'])->name('index');
         Route::get('/analytics', [SellerCouponController::class, 'analytics'])->name('analytics');
@@ -74,7 +95,6 @@ Route::middleware('web')->group(function () {
 
     Route::middleware('auth')->group(function () {
         Route::prefix('cart')->as('cart.')->group(function () {
-            // Route::post('/add', [CartController::class, 'add'])->name('add');
             Route::post('/update', [FrontendCartController::class, 'update'])->name('update');
             Route::post('/delete', [FrontendCartController::class, 'delete'])->name('delete');
             Route::get('/details', [FrontendCartController::class, 'details'])->name('details');
@@ -103,6 +123,9 @@ Route::middleware('web')->group(function () {
         Route::prefix('returns')->as('returns.')->group(function () {
             Route::get('/', [ReturnController::class, 'index'])->name('index');
             Route::post('/store', [ReturnController::class, 'store'])->name('store');
+            Route::post('{return}/cancel', [ReturnController::class, 'cancel'])->name('cancel');
+            Route::post('{return}/record-shipment', [ReturnController::class, 'recordShipment'])->name('recordShipment');
+            Route::post('{return}/dispute', [ReturnController::class, 'dispute'])->name('dispute');
         });
 
         Route::prefix('billing-addresses')->as('billing_addresses.')->group(function () {
@@ -132,7 +155,15 @@ Route::middleware('api')->prefix('api')->group(function () {
             Route::get('{order}', [ApiOrderController::class, 'show']);
             Route::get('{order}/invoice', [ApiOrderController::class, 'invoice']);
             Route::post('{order}/pay-now', [ApiOrderController::class, 'payNow']);
-            // Route::get('{invoice_id}/tracking',[OrderController::class,'tracking']);
+        });
+
+        Route::prefix('returns')->group(function () {
+            Route::get('/', [App\Domain\Order\Http\Controllers\Api\ReturnController::class, 'index']);
+            Route::post('/', [App\Domain\Order\Http\Controllers\Api\ReturnController::class, 'store']);
+            Route::get('{return}', [App\Domain\Order\Http\Controllers\Api\ReturnController::class, 'show']);
+            Route::post('{return}/cancel', [App\Domain\Order\Http\Controllers\Api\ReturnController::class, 'cancel']);
+            Route::post('{return}/record-shipment', [App\Domain\Order\Http\Controllers\Api\ReturnController::class, 'recordShipment']);
+            Route::post('{return}/dispute', [App\Domain\Order\Http\Controllers\Api\ReturnController::class, 'dispute']);
         });
 
         Route::prefix('reviews')->group(function () {

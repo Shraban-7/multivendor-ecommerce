@@ -3,8 +3,6 @@
 namespace App\Domain\Order\Services;
 
 use App\Domain\Order\Models\Coupon;
-use App\Domain\Order\Models\Cart;
-use App\Domain\Product\Models\Product;
 use Illuminate\Support\Collection;
 
 class CouponService
@@ -24,7 +22,7 @@ class CouponService
         if ($coupon->min_purchase && $subTotal < (float) $coupon->min_purchase) {
             return [
                 'valid' => false,
-                'message' => 'Minimum purchase amount of ' . money($coupon->min_purchase) . ' required.',
+                'message' => 'Minimum purchase amount of '.money($coupon->min_purchase).' required.',
             ];
         }
 

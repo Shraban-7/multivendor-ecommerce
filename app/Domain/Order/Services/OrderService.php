@@ -20,6 +20,7 @@ use App\Enums\PaymentType;
 use App\Services\AamarpayService;
 use App\Services\AffiliateService;
 use Exception;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class OrderService
@@ -75,7 +76,7 @@ class OrderService
         $orderItems = [];
         $itemsCollection = collect($requestItems);
 
-        if ($cartItems instanceof \Illuminate\Support\Collection) {
+        if ($cartItems instanceof Collection) {
             $cartItems->loadMissing(['product', 'variant.color', 'variant.size', 'variant.product']);
         }
 

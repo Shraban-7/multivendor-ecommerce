@@ -26,8 +26,8 @@ class AdminCouponController extends Controller
 
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
-                $q->where('code', 'like', '%' . $request->search . '%')
-                    ->orWhere('title', 'like', '%' . $request->search . '%');
+                $q->where('code', 'like', '%'.$request->search.'%')
+                    ->orWhere('title', 'like', '%'.$request->search.'%');
             });
         }
 
@@ -69,6 +69,7 @@ class AdminCouponController extends Controller
     public function edit(Coupon $coupon)
     {
         $coupon->load('seller');
+
         return view('admin.coupons.edit', compact('coupon'));
     }
 
@@ -76,7 +77,7 @@ class AdminCouponController extends Controller
     {
         $data = $request->validate([
             'title' => 'nullable|string|max:255',
-            'code' => 'required|string|max:50|unique:coupons,code,' . $coupon->id,
+            'code' => 'required|string|max:50|unique:coupons,code,'.$coupon->id,
             'discount_type' => 'required|in:flat,percentage',
             'discount_value' => 'required|numeric|min:0',
             'min_purchase' => 'nullable|numeric|min:0',
@@ -99,6 +100,7 @@ class AdminCouponController extends Controller
     public function destroy(Coupon $coupon)
     {
         $coupon->delete();
+
         return redirect()->route('admin.coupons.index')
             ->with('success', 'Coupon deleted.');
     }

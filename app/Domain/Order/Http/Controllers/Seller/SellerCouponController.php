@@ -7,7 +7,6 @@ use App\Domain\Order\Models\Order;
 use App\Domain\Product\Models\Product;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class SellerCouponController extends Controller
 {
@@ -49,7 +48,7 @@ class SellerCouponController extends Controller
             'usage_limit' => 'nullable|integer|min:1',
             'description' => 'nullable|string|max:1000',
             'product_ids' => 'nullable|array',
-            'product_ids.*' => 'integer|exists:products,id,seller_id,' . $seller->id,
+            'product_ids.*' => 'integer|exists:products,id,seller_id,'.$seller->id,
         ]);
 
         $data['seller_id'] = $seller->id;
@@ -61,7 +60,7 @@ class SellerCouponController extends Controller
 
         $coupon = Coupon::create($data);
 
-        if (!empty($products)) {
+        if (! empty($products)) {
             $coupon->products()->attach($products);
         }
 
@@ -95,7 +94,7 @@ class SellerCouponController extends Controller
 
         $data = $request->validate([
             'title' => 'nullable|string|max:255',
-            'code' => 'required|string|max:50|unique:coupons,code,' . $coupon->id,
+            'code' => 'required|string|max:50|unique:coupons,code,'.$coupon->id,
             'discount_type' => 'required|in:flat,percentage',
             'discount_value' => 'required|numeric|min:0',
             'min_purchase' => 'nullable|numeric|min:0',
@@ -106,7 +105,7 @@ class SellerCouponController extends Controller
             'description' => 'nullable|string|max:1000',
             'status' => 'nullable|boolean',
             'product_ids' => 'nullable|array',
-            'product_ids.*' => 'integer|exists:products,id,seller_id,' . $seller->id,
+            'product_ids.*' => 'integer|exists:products,id,seller_id,'.$seller->id,
         ]);
 
         $products = $data['product_ids'] ?? [];

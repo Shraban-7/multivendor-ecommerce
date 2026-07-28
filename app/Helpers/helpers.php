@@ -687,6 +687,23 @@ if (! function_exists('notify_seller')) {
     }
 }
 
+if (! function_exists('notify_admin')) {
+    function notify_admin($adminId, $title, $message, $targetType = null, $targetId = null, $sendPush = false)
+    {
+        return NotificationService::send('admin_id', $adminId, $title, $message, $targetType, $targetId, $sendPush);
+    }
+}
+
+if (! function_exists('notify_admins')) {
+    function notify_admins($title, $message, $targetType = null, $targetId = null, $sendPush = false)
+    {
+        $admins = \App\Domain\Auth\Models\Admin::query()->pluck('id');
+        foreach ($admins as $adminId) {
+            NotificationService::send('admin_id', $adminId, $title, $message, $targetType, $targetId, $sendPush);
+        }
+    }
+}
+
 if (! function_exists('notificationCount')) {
     function notificationCount()
     {

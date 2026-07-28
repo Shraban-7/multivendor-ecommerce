@@ -113,13 +113,13 @@ class EloquentOrderRepository implements OrderRepositoryInterface
         if (! empty($filters['customer_name'])) {
             $query->where(function ($q) use ($filters) {
                 $q->whereHas('user', fn ($q2) => $q2->where('name', 'like', '%'.$filters['customer_name'].'%'))
-                  ->orWhereHas('customer', fn ($q2) => $q2->where('name', 'like', '%'.$filters['customer_name'].'%'));
+                    ->orWhereHas('customer', fn ($q2) => $q2->where('name', 'like', '%'.$filters['customer_name'].'%'));
             });
         }
         if (! empty($filters['customer_phone'])) {
             $query->where(function ($q) use ($filters) {
                 $q->whereHas('user', fn ($q2) => $q2->where('phone', 'like', '%'.$filters['customer_phone'].'%'))
-                  ->orWhereHas('customer', fn ($q2) => $q2->where('phone', 'like', '%'.$filters['customer_phone'].'%'));
+                    ->orWhereHas('customer', fn ($q2) => $q2->where('phone', 'like', '%'.$filters['customer_phone'].'%'));
             });
         }
         if (! empty($filters['date_from'])) {

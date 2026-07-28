@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Domain\Order\Http\Controllers\Frontend;
+namespace App\Domain\Order\Http\Controllers\Api;
 
 use App\Domain\Order\Models\Order;
 use App\Domain\Order\Models\ReturnRequest;
 use App\Domain\Order\Services\DisputeService;
 use App\Domain\Order\Services\ReturnService;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class ReturnController extends Controller
 {
@@ -17,17 +17,28 @@ class ReturnController extends Controller
         private readonly DisputeService $disputeService,
     ) {}
 
-    public function index()
+    public function index(Request $request): JsonResponse
     {
-        $returns = ReturnRequest::where('user_id', Auth::id())
+        $returns = ReturnRequest::where('user_id', $request->user()->id)
             ->with(['order', 'items.orderItem', 'dispute', 'refundTransactions'])
             ->latest('id')
-            ->paginate(10);
+            ->paginate($request->integer('per_page', 15));
 
-        return view('frontend.returns.index', compact('returns'));
+        return response()->json($returns);
     }
 
-    public function store(Request $request)
+    public function show(Request $request, ReturnRequest $return): JsonResponse
+    {
+        if ($return->user_id !== $request->user()->id) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
+        $return->load(['order', 'items.orderItem.product', 'events', 'refundTransactions', 'shipments', 'dispute']);
+
+        return response()->json($return);
+    }
+
+    public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
             'order_id' => 'required|exists:orders,id',
@@ -40,50 +51,50 @@ class ReturnController extends Controller
         ]);
 
         $order = Order::where('id', $validated['order_id'])
-            ->where('user_id', Auth::id())
+            ->where('user_id', $request->user()->id)
             ->firstOrFail();
 
         try {
             $return = $this->returnService->createReturnRequest(
                 $order,
-                (int) Auth::id(),
+                (int) $request->user()->id,
                 $validated['type'],
                 $validated['reason'],
                 $validated['exchange_note'] ?? null,
                 $validated['items'] ?? [],
             );
         } catch (\Throwable $e) {
-            return back()->with('error', $e->getMessage())->withInput();
+            return response()->json(['message' => $e->getMessage()], 422);
         }
 
-        return redirect()
-            ->route('returns.index')
-            ->with('success', 'Return request submitted successfully. Your RMA: '.$return->rma_number);
+        $return->load(['items.orderItem', 'order']);
+
+        return response()->json([
+            'message' => 'Return submitted',
+            'rma' => $return->rma_number,
+            'return' => $return,
+        ], 201);
     }
 
-    public function cancel(Request $request, ReturnRequest $return)
+    public function cancel(Request $request, ReturnRequest $return): JsonResponse
     {
-        if ($return->user_id !== Auth::id()) {
-            abort(403);
+        if ($return->user_id !== $request->user()->id) {
+            return response()->json(['message' => 'Forbidden'], 403);
         }
-
-        $validated = $request->validate([
-            'reason' => 'nullable|string|max:2000',
-        ]);
 
         try {
-            $this->returnService->cancel($return, 'customer', (int) Auth::id(), $validated['reason'] ?? null);
+            $this->returnService->cancel($return, 'customer', (int) $request->user()->id);
         } catch (\Throwable $e) {
-            return back()->with('error', $e->getMessage());
+            return response()->json(['message' => $e->getMessage()], 422);
         }
 
-        return redirect()->route('returns.index')->with('success', 'Return request cancelled.');
+        return response()->json(['message' => 'Return cancelled']);
     }
 
-    public function recordShipment(Request $request, ReturnRequest $return)
+    public function recordShipment(Request $request, ReturnRequest $return): JsonResponse
     {
-        if ($return->user_id !== Auth::id()) {
-            abort(403);
+        if ($return->user_id !== $request->user()->id) {
+            return response()->json(['message' => 'Forbidden'], 403);
         }
 
         $validated = $request->validate([
@@ -97,17 +108,17 @@ class ReturnController extends Controller
             $validated['carrier'],
             $validated['tracking_number'] ?? null,
             'customer',
-            (int) Auth::id(),
+            (int) $request->user()->id,
             $validated['notes'] ?? null,
         );
 
-        return back()->with('success', 'Shipment recorded.');
+        return response()->json(['message' => 'Shipment recorded']);
     }
 
-    public function dispute(Request $request, ReturnRequest $return)
+    public function dispute(Request $request, ReturnRequest $return): JsonResponse
     {
-        if ($return->user_id !== Auth::id()) {
-            abort(403);
+        if ($return->user_id !== $request->user()->id) {
+            return response()->json(['message' => 'Forbidden'], 403);
         }
 
         $validated = $request->validate([
@@ -118,14 +129,14 @@ class ReturnController extends Controller
         try {
             $this->disputeService->openDispute(
                 $return,
-                (int) Auth::id(),
+                (int) $request->user()->id,
                 $validated['reason'],
                 $validated['description'] ?? null,
             );
         } catch (\Throwable $e) {
-            return back()->with('error', $e->getMessage());
+            return response()->json(['message' => $e->getMessage()], 422);
         }
 
-        return redirect()->route('returns.index')->with('success', 'Dispute raised. Admin will review shortly.');
+        return response()->json(['message' => 'Dispute submitted']);
     }
 }
