@@ -50,6 +50,8 @@ Route::middleware('auth:sanctum')->prefix('seller')->group(function () {
     Route::get('/products/print-barcode', [ProductController::class, 'printBarcode']);
     Route::get('/products/print-labels', [ProductController::class, 'printLabels']);
     Route::get('/stock/history', [ProductController::class, 'stockHistory']);
+    Route::get('/stock/products', [ProductController::class, 'stockProducts']);
+    Route::get('/stock/variants', [ProductController::class, 'stockVariants']);
     Route::post('/stock/update', [ProductController::class, 'bulkStockUpdate']);
 
     // Orders

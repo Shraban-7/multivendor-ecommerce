@@ -32,12 +32,26 @@ class ProductStockController extends Controller
         return view('seller.products.stock_history', compact('stockHistories'));
     }
 
-    public function products()
+    public function products(Request $request)
     {
-        $products = Product::select('id', 'name', 'sku', 'stock_in', 'stock_out')
-            ->with('variants:id,product_id,stock_in,stock_out')
+        $search = trim((string) $request->query('q', ''));
+
+        $query = Product::query()
+            ->select('id', 'name', 'sku')
             ->where('seller_id', get_seller_id())
-            ->get()
+            ->where('status', '!=', Product::STATUS_DELETED)
+            ->with(['variants:id,product_id,sku,stock_in,stock_out'])
+            ->orderBy('name');
+
+        if ($search !== '') {
+            $term = '%'.$search.'%';
+            $query->where(function ($q) use ($term) {
+                $q->where('name', 'like', $term)
+                  ->orWhere('sku', 'like', $term);
+            });
+        }
+
+        $products = $query->limit(50)->get()
             ->map(function ($product) {
                 return [
                     'id' => $product->id,
@@ -45,8 +59,10 @@ class ProductStockController extends Controller
                     'sku' => $product->sku,
                     'current_stock' => max((int) $product->totalStock, 0),
                     'has_variants' => $product->variants->isNotEmpty(),
+                    'variants_count' => $product->variants->count(),
                 ];
-            });
+            })
+            ->values();
 
         return response()->json(['products' => $products]);
     }

@@ -389,12 +389,123 @@ class ProductController extends Controller
         $seller = $this->sellerRepo->findById(get_seller_id());
         $productIds = Product::where('seller_id', $seller->id)->pluck('id');
 
-        $stockHistories = StockHistory::with(['product', 'variant'])
-            ->whereIn('product_id', $productIds)
-            ->latest()
-            ->paginate(45);
+        $query = StockHistory::with(['product', 'variant'])
+            ->whereIn('product_id', $productIds);
+
+        if (request()->filled('q')) {
+            $term = '%'.request()->q.'%';
+            $query->whereHas('product', fn ($q) => $q->where('name', 'like', $term)->orWhere('sku', 'like', $term))
+                ->orWhereHas('variant', fn ($q) => $q->where('sku', 'like', $term)->orWhere('label', 'like', $term));
+        }
+
+        if (request()->filled('type')) {
+            $query->where('type', (int) request()->type);
+        }
+
+        if (request()->filled('from')) {
+            $query->whereDate('created_at', '>=', request()->from);
+        }
+        if (request()->filled('to')) {
+            $query->whereDate('created_at', '<=', request()->to);
+        }
+
+        $stockHistories = $query->latest()->paginate(45)->withQueryString();
 
         return view('seller.products.stock_history', compact('stockHistories'));
+    }
+
+    public function stockProducts(Request $request)
+    {
+        $sellerId = get_seller_id();
+        $search = trim((string) $request->query('q', ''));
+
+        $query = Product::query()
+            ->where('seller_id', $sellerId)
+            ->where('status', '!=', Product::STATUS_DELETED)
+            ->withCount('variants')
+            ->orderBy('name');
+
+        if ($search !== '') {
+            $term = '%'.$search.'%';
+            $query->where(function ($q) use ($term) {
+                $q->where('name', 'like', $term)
+                  ->orWhere('sku', 'like', $term);
+            });
+        }
+
+        $products = $query->limit(50)->get()->map(function ($product) {
+            return [
+                'id' => $product->id,
+                'name' => $product->name,
+                'sku' => $product->sku,
+                'current_stock' => (int) $product->totalStock,
+                'variants_count' => (int) $product->variants_count,
+            ];
+        });
+
+        return response()->json([
+            'products' => $products->values(),
+        ]);
+    }
+
+    public function stockVariants(Request $request)
+    {
+        $request->validate([
+            'product_id' => 'required|integer|exists:products,id',
+        ]);
+
+        $product = Product::with('variants')->findOrFail($request->product_id);
+        abort_unless($product->seller_id === get_seller_id(), 403);
+
+        $variants = $product->variants->map(function ($variant) {
+            return [
+                'id' => $variant->id,
+                'sku' => $variant->sku,
+                'name' => $variant->label,
+                'current_stock' => (int) $variant->availableStock,
+            ];
+        })->values();
+
+        return response()->json([
+            'variants' => $variants,
+        ]);
+    }
+
+    public function bulkStockUpdate(Request $request)
+    {
+        $request->validate([
+            'product_id' => 'required|integer|exists:products,id',
+            'variant_id' => 'nullable|integer|exists:product_variants,id',
+            'quantity' => 'required|integer|min:1',
+            'stock_action' => 'required|integer',
+            'note' => 'nullable|string|max:255',
+        ]);
+
+        $product = Product::findOrFail($request->product_id);
+        abort_unless($product->seller_id === get_seller_id(), 403);
+
+        $type = StockType::from((int) $request->stock_action);
+        $variant = $request->filled('variant_id') ? ProductVariant::find($request->variant_id) : null;
+
+        try {
+            $this->stockManager->adjustStock(
+                $product,
+                $variant,
+                (int) $request->quantity,
+                $type,
+                (string) $request->note,
+            );
+        } catch (\RuntimeException $e) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => $e->getMessage()], 422);
+            }
+            return redirect()->back()->with('warning', $e->getMessage());
+        }
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Stock updated successfully.']);
+        }
+        return redirect()->back()->with('success', 'Stock updated successfully.');
     }
 
     public function printBarcode(Request $request)
