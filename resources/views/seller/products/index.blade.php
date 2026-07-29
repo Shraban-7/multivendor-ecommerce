@@ -6,7 +6,7 @@
     <h4 class="font-bold mb-0 text-ink">My Products</h4>
     <div class="flex gap-2">
         <input type="text" id="tableSearch" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="Search products..." style="width:200px;">
-        <a href="{{ route('seller.products.create') }}" class="inline-flex items-center justify-center gap-1 px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors">
+        <a href="{{ route('seller.products.create') }}" class="btn btn-primary btn-sm">
             <i data-feather="plus" class="icon-xs"></i> Add Product
         </a>
     </div>
@@ -88,7 +88,7 @@
                 <td class="text-sm whitespace-nowrap">{{ $product->created_at->format('d/m/y') }}<br><span class="text-ink-tertiary">{{ $product->created_at->format('h:ia') }}</span></td>
                 <td class="text-center">
                     <div class="dropdown">
-                        <button class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <button class="btn btn-light btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i data-feather="more-vertical" class="icon-xs"></i>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 py-1" style="min-width:150px;">
@@ -148,11 +148,11 @@
                 <p class="text-feedback-danger text-sm mb-0">This action cannot be undone. All variants, images, and stock history will be permanently removed.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
                 <form action="{{ route('seller.products.delete', $product) }}" method="POST" style="display:inline;">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-feedback-danger text-white text-sm font-medium rounded-xs hover:bg-red-700 focus:outline-none transition-colors">Delete</button>
+                    <button type="submit" class="btn btn-danger">Delete</button>
                 </form>
             </div>
         </div>
@@ -193,7 +193,7 @@
                 @endif
             </div>
             <div class="modal-footer">
-                <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

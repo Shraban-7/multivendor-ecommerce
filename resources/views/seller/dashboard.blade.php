@@ -12,7 +12,7 @@
                 <span class="text-ink-tertiary">Please complete your profile to ensure full access to all platform features.</span>
             </div>
         </div>
-        <a href="{{ route('seller.profile') }}" class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs mt-2 sm:mt-0" style="background: #B7791A; color: #fff; border: none; white-space: nowrap;">Complete Profile</a>
+        <a href="{{ route('seller.profile') }}" class="btn btn-light btn-sm mt-2 sm:mt-0" style="background: #B7791A; color: #fff; border: none; white-space: nowrap;">Complete Profile</a>
     </div>
 @endif
 
@@ -27,7 +27,7 @@
                 class="w-full px-2 py-1 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" style="width: auto; min-width: 130px;">
             <input type="date" name="end_date" value="{{ request('end_date') }}"
                 class="w-full px-2 py-1 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" style="width: auto; min-width: 130px;">
-            <button type="submit" class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">
+            <button type="submit" class="btn btn-primary btn-sm">
                 <i class="bi bi-funnel"></i> Filter
             </button>
         </div>
@@ -227,7 +227,7 @@
                             </li>
                         @endforeach
                     </ul>
-                    <a href="{{ route('seller.products.index') }}" class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs border border-brand text-brand hover:bg-brand hover:text-white transition-colors w-full mt-3">Manage Inventory</a>
+                    <a href="{{ route('seller.products.index') }}" class="btn btn-outline-primary btn-sm w-full mt-3">Manage Inventory</a>
                 @else
                     <div class="text-center py-4 text-ink-tertiary">
                         <i data-feather="check-circle" style="width: 36px; height: 36px;" class="mb-2 text-feedback-success"></i>
@@ -246,7 +246,7 @@
                 <i data-feather="clipboard" class="text-brand" style="width: 18px; height: 18px;"></i>
                 Latest Orders
             </h5>
-            <a href="{{ route('seller.orders.index') }}" class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs border border-brand text-brand hover:bg-brand hover:text-white transition-colors">View All Orders</a>
+            <a href="{{ route('seller.orders.index') }}" class="btn btn-outline-primary btn-sm">View All Orders</a>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-left text-sm text-ink border-collapse">
@@ -285,7 +285,7 @@
                             <td class="text-sm text-ink-tertiary">{{ optional($order->created_at)->format('Y-m-d H:i') ?? 'N/A' }}</td>
                             <td>
                                 <a href="{{ route('seller.orders.details', $order->invoice_id) }}"
-                                    class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs border border-brand text-brand hover:bg-brand hover:text-white transition-colors gap-1">
+                                    class="btn btn-outline-primary btn-sm">
                                     <i data-feather="eye" style="width: 14px; height: 14px;"></i> View
                                 </a>
                             </td>

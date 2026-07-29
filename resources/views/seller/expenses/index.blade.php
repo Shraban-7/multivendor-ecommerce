@@ -4,7 +4,7 @@
 
     <div class="flex justify-between items-center mb-3">
         <h4 class="font-bold mb-0 text-ink">Expenses</h4>
-        <button class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1" data-bs-toggle="modal" data-bs-target="#createExpenseModal">
+        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createExpenseModal">
             <i data-feather="plus" class="icon-xs"></i> Add Expense
         </button>
     </div>
@@ -28,7 +28,7 @@
                         <td>{{ $expense->description ?? '' }}</td>
                         <td>{{ $expense->expense_date->format('d/m/Y') }}</td>
                         <td>
-                            <button class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1 me-1 edit-expense-btn" data-id="{{ $expense->id }}"
+                            <button class="btn btn-light btn-sm me-1 edit-expense-btn" data-id="{{ $expense->id }}"
                                 data-category="{{ $expense->seller_expense_category_id }}"
                                 data-category-name="{{ $expense->category->name ?? '' }}"
                                 data-amount="{{ $expense->amount }}" data-description="{{ $expense->description }}"
@@ -37,7 +37,7 @@
                                 <i data-feather="edit" class="icon-xs"></i> Edit
                             </button>
                             
-                            <button type="button" class="inline-flex items-center justify-center px-3 py-1.5 bg-feedback-danger text-white text-sm font-medium rounded-xs hover:bg-red-700 focus:outline-none transition-colors gap-1 border delete-expense-btn"
+                            <button type="button" class="btn btn-danger btn-sm delete-expense-btn"
                                 data-id="{{ $expense->id }}" data-bs-toggle="modal" data-bs-target="#deleteExpenseModal">
                                 <i data-feather="trash" class="icon-xs"></i> Delete
                             </button>
@@ -99,7 +99,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">Save</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
                     </div>
                 </form>
             </div>
@@ -148,7 +148,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">Update</button>
+                        <button type="submit" class="btn btn-primary">Update</button>
                     </div>
                 </form>
             </div>
@@ -170,8 +170,8 @@
                         <p>Are you sure you want to delete this expense?</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-feedback-danger text-white text-sm font-medium rounded-xs hover:bg-red-700 focus:outline-none transition-colors gap-1">Yes, Delete</button>
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger">Yes, Delete</button>
                     </div>
                 </form>
             </div>

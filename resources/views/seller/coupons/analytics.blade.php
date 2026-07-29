@@ -5,7 +5,7 @@
 <div class="container-fluid px-0">
     <div class="flex flex-wrap justify-between items-center mb-3">
         <h4 class="font-bold mb-0 text-ink">Coupon Analytics</h4>
-        <a href="{{ route('seller.coupons.index') }}" class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-xs border border-brand text-brand hover:bg-brand hover:text-white transition-colors inline-flex items-center gap-1">
+        <a href="{{ route('seller.coupons.index') }}" class="btn btn-outline-primary">
             <i data-feather="arrow-left" style="width: 16px; height: 16px;"></i> Back to Coupons
         </a>
     </div>

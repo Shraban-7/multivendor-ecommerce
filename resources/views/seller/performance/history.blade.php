@@ -7,7 +7,7 @@
             <h4 class="font-bold mb-0">Performance History</h4>
             <small class="text-ink-tertiary">Last {{ (int) request('days', 90) }} days</small>
         </div>
-        <a href="{{ route('seller.performance.dashboard') }}" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors border">← Back</a>
+        <a href="{{ route('seller.performance.dashboard') }}" class="btn btn-light btn-sm">← Back</a>
     </div>
 
     <form method="GET" class="mb-3 flex gap-2">

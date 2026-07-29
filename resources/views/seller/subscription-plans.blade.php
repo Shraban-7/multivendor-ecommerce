@@ -42,11 +42,11 @@
 
                 @if ($active)
                 <div class="grid gap-2 mt-auto">
-                    <button class="inline-flex items-center justify-center px-4 py-2 bg-feedback-success text-white text-sm font-medium rounded-xs hover:bg-green-700 focus:outline-none transition-colors w-full" disabled>
+                    <button class="btn btn-success w-full" disabled>
                         {{ $isFreePlan ? 'Free Plan' : 'Current Plan' }}
                     </button>
                     @if (!$isFreePlan)
-                    <button type="button" class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-xs border border-feedback-danger text-feedback-danger hover:bg-feedback-danger hover:text-white transition-colors w-full" data-bs-toggle="modal" data-bs-target="#cancelModal">
+                    <button type="button" class="btn btn-outline-danger w-full" data-bs-toggle="modal" data-bs-target="#cancelModal">
                         Cancel Subscription
                     </button>
                     <div class="flex justify-between text-sm text-ink-tertiary mt-2">
@@ -57,7 +57,7 @@
                 </div>
                 @else
                 <div class="grid mt-auto">
-                    <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors w-full gap-1" data-bs-toggle="modal" data-bs-target="#upgradeModal{{ $plan->id }}">
+                    <button type="button" class="btn btn-primary w-full" data-bs-toggle="modal" data-bs-target="#upgradeModal{{ $plan->id }}">
                         Choose Plan
                     </button>
                 </div>
@@ -73,10 +73,10 @@
                                 Are you sure you want to subscribe to <strong>{{ $plan->name }}</strong> plan?
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
                                 <form action="{{ route('seller.plans.subscribe', $plan->id) }}" method="POST">
                                     @csrf
-                                    <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">Yes, Subscribe</button>
+                                    <button type="submit" class="btn btn-primary">Yes, Subscribe</button>
                                 </form>
                             </div>
                         </div>
@@ -101,10 +101,10 @@
                 Are you sure you want to cancel your subscription? You will be downgraded to the Free Plan.
             </div>
             <div class="modal-footer">
-                <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
                 <form action="{{ route('seller.plans.subscribe', $plan->id) }}" method="POST">
                     @csrf
-                    <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-feedback-danger text-white text-sm font-medium rounded-xs hover:bg-red-700 focus:outline-none transition-colors gap-1">Yes, Cancel</button>
+                    <button type="submit" class="btn btn-danger">Yes, Cancel</button>
                 </form>
             </div>
         </div>

@@ -6,10 +6,10 @@
     <div class="flex flex-wrap justify-between items-center mb-3">
         <h4 class="font-bold mb-0 text-ink">Payouts</h4>
         <div class="flex gap-2">
-            <a href="{{ route('seller.payouts.methods.index') }}" class="inline-flex items-center justify-center px-4 py-2 bg-transparent text-brand-deep text-sm font-medium border border-brand rounded-xs hover:bg-brand-tint focus:outline-none transition-colors gap-1">
+            <a href="{{ route('seller.payouts.methods.index') }}" class="btn btn-outline-primary">
                 <i data-feather="credit-card" style="width: 16px; height: 16px;"></i> Payment Methods
             </a>
-            <a href="{{ route('seller.payouts.create') }}" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">
+            <a href="{{ route('seller.payouts.create') }}" class="btn btn-primary">
                 <i data-feather="plus" style="width: 16px; height: 16px;"></i> Request Payout
             </a>
         </div>
@@ -128,7 +128,7 @@
                                 </td>
                                 <td class="text-ink-tertiary text-sm">{{ $payout->created_at->format('d M Y, h:i A') }}</td>
                                 <td class="text-right">
-                                    <a href="{{ route('seller.payouts.show', $payout) }}" class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">
+                                    <a href="{{ route('seller.payouts.show', $payout) }}" class="btn btn-primary btn-sm">
                                         <i data-feather="eye" class="icon-xs"></i>
                                     </a>
                                 </td>
@@ -138,7 +138,7 @@
                                 <td colspan="8" class="text-center py-5 text-ink-tertiary">
                                     <i data-feather="credit-card" style="width: 48px; height: 48px;" class="mb-3"></i>
                                     <p class="mb-0">No payout requests yet.</p>
-                                    <a href="{{ route('seller.payouts.create') }}" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1 mt-2">Request Your First Payout</a>
+                                    <a href="{{ route('seller.payouts.create') }}" class="btn btn-primary mt-2">Request Your First Payout</a>
                                 </td>
                             </tr>
                         @endforelse

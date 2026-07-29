@@ -25,8 +25,8 @@
                 </div>
             </div>
 
-            <button type="button" class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1" id="generateVariantsBtn">Generate Variants</button>
-            <button type="button" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1 ms-2" id="clearVariantsBtn">Clear Variants</button>
+            <button type="button" class="btn btn-primary btn-sm" id="generateVariantsBtn">Generate Variants</button>
+            <button type="button" class="btn btn-light btn-sm ms-2" id="clearVariantsBtn">Clear Variants</button>
         </div>
 
         <div id="variantsTableContainer" class="overflow-x-auto"></div>
@@ -133,7 +133,7 @@
                 <td><input type="number" name="weight" class="form-control form-control-sm" placeholder="Weight" step="0.01" min="0" /></td>
                 <td><input type="file" class="form-control form-control-sm" accept="image/*" /></td>
                 <td>
-                <button type="button" class="btn btn-outline-danger btn-sm d-inline-flex align-items-center gap-1 remove-variant-row-btn">Remove</button>
+                <button type="button" class="btn btn-outline-danger btn-sm remove-variant-row-btn">Remove</button>
                 </td>
                 </tr>`;
             });

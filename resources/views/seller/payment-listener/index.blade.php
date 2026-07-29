@@ -38,7 +38,7 @@ $hasAccess = $seller->hasFeature('payment_checker');
 <div class="flex justify-between items-end mb-3">
     <h4 class="font-bold mb-0 text-ink">Automatic Payment Checker</h4>
     @if($deviceCount > 0)
-    <button class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1" id="generateCodeTrigger">
+    <button class="btn btn-primary" id="generateCodeTrigger">
         <i class="bi bi-qr-code-scan"></i> Generate Device Code
     </button>
     @endif
@@ -51,7 +51,7 @@ $hasAccess = $seller->hasFeature('payment_checker');
             <div class="p-5">
                 <h5 class="font-semibold">Add New Device</h5>
                 <p class="text-sm text-ink-tertiary">Click **'Generate Device Code'**. Enter this code in the **Payment Listener App** on your device to connect.</p>
-                <button class="inline-flex items-center justify-center px-5 py-2.5 bg-brand-deep text-white text-base font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1" id="generateCodeTrigger">
+                <button class="btn btn-primary btn-lg" id="generateCodeTrigger">
                     <i class="bi bi-qr-code-scan"></i> Generate Device Code
                 </button>
             </div>
@@ -117,13 +117,13 @@ $hasAccess = $seller->hasFeature('payment_checker');
                 <div class="flex mt-3 gap-2">
                     <form action="{{ route('seller.paymentListener.devices.checkPayments', $device->id) }}" method="POST" class="flex-1">
                         @csrf
-                        <button class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors w-full gap-1">
+                        <button class="btn btn-primary btn-sm w-full">
                             <i class="bi bi-arrow-clockwise me-1"></i> Check
                         </button>
                     </form>
                     <form action="{{ route('seller.paymentListener.devices.delete', $device->id) }}" method="POST" class="flex-1">
                         @csrf @method('DELETE')
-                        <button class="inline-flex items-center justify-center px-3 py-1.5 bg-transparent text-feedback-danger text-sm font-medium border border-feedback-danger rounded-xs hover:bg-feedback-danger hover:text-white focus:outline-none transition-colors w-full" onclick="return confirm('Are you sure?')">Delete</button>
+                        <button class="btn btn-outline-danger btn-sm w-full" onclick="return confirm('Are you sure?')">Delete</button>
                     </form>
                 </div>
             </div>
@@ -150,7 +150,7 @@ $hasAccess = $seller->hasFeature('payment_checker');
                     <p class="text-ink-tertiary text-sm mb-2">Enter the code manually:</p>
                     <div class="code-input-group">
                         <div id="deviceCode"></div>
-                        <button class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors me-2" id="copyCodeButton" title="Copy code">
+                        <button class="btn btn-primary btn-icon me-2" id="copyCodeButton" title="Copy code">
                             <i class="bi bi-clipboard"></i>
                         </button>
                     </div>
@@ -158,7 +158,7 @@ $hasAccess = $seller->hasFeature('payment_checker');
                 </div>
             </div>
             <div class="modal-footer">
-                <a href="{{ route('seller.paymentListener.index') }}" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors w-full">Done</a>
+                <a href="{{ route('seller.paymentListener.index') }}" class="btn btn-light w-full">Done</a>
             </div>
         </div>
     </div>
@@ -176,7 +176,7 @@ $hasAccess = $seller->hasFeature('payment_checker');
                 <small class="text-ink-tertiary">Please try again. If the issue persists, contact support.</small>
             </div>
             <div class="modal-footer justify-center">
-                <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

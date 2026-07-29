@@ -4,7 +4,7 @@
 @section('content')
 <div class="w-full px-0">
     <div class="flex items-center gap-2 mb-3">
-        <a href="{{ route('seller.payouts.index') }}" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1">
+        <a href="{{ route('seller.payouts.index') }}" class="btn btn-light btn-sm">
             <i data-feather="arrow-left" style="width: 16px; height: 16px;"></i> Back
         </a>
         <h4 class="font-bold mb-0 text-ink">Request Payout</h4>
@@ -91,8 +91,8 @@
                         </div>
                     </div>
                     <div class="px-5 py-3 border-t border-border bg-white text-right">
-                        <a href="{{ route('seller.payouts.index') }}" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors me-2">Cancel</a>
-                        <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors" {{ $methods->isEmpty() ? 'disabled' : '' }}>
+                        <a href="{{ route('seller.payouts.index') }}" class="btn btn-light me-2">Cancel</a>
+                        <button type="submit" class="btn btn-primary" {{ $methods->isEmpty() ? 'disabled' : '' }}>
                             Submit Request
                         </button>
                     </div>

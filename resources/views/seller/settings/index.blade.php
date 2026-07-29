@@ -81,7 +81,7 @@
                         </div>
                     </div>
                     <div class="mt-4 text-right">
-                        <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">
+                        <button type="submit" class="btn btn-primary">
                             <i data-feather="save" style="width: 16px; height: 16px;"></i> Save Changes
                         </button>
                     </div>
@@ -119,7 +119,7 @@
                         </div>
                     </div>
                     <div class="mt-4 text-right">
-                        <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">
+                        <button type="submit" class="btn btn-primary">
                             <i data-feather="save" style="width: 16px; height: 16px;"></i> Save Changes
                         </button>
                     </div>
@@ -158,7 +158,7 @@
                         </div>
                     </div>
                     <div class="mt-4 text-right">
-                        <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">
+                        <button type="submit" class="btn btn-primary">
                             <i data-feather="save" style="width: 16px; height: 16px;"></i> Save Changes
                         </button>
                     </div>
@@ -181,7 +181,7 @@
                         </div>
                     </div>
                     <div class="mt-4 text-right">
-                        <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">
+                        <button type="submit" class="btn btn-primary">
                             <i data-feather="save" style="width: 16px; height: 16px;"></i> Save Changes
                         </button>
                     </div>

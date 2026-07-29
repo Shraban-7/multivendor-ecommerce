@@ -14,10 +14,10 @@
             <small class="text-ink-tertiary">Manage your product visuals</small>
         </div>
         <div class="flex gap-2">
-            <a href="{{ route('seller.products.media.index', $product) }}" class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-xs border border-brand text-brand hover:bg-brand hover:text-white transition-colors gap-1">
+            <a href="{{ route('seller.products.media.index', $product) }}" class="btn btn-outline-primary">
                 <i data-feather="grid" style="width:14px;height:14px;"></i> Full Gallery
             </a>
-            <button type="button" class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1" data-bs-toggle="modal" data-bs-target="#uploadModal">
+            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#uploadModal">
                 <i data-feather="upload-cloud" style="width:14px;height:14px;"></i> Upload
             </button>
         </div>
@@ -37,7 +37,7 @@
                     <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-ink bg-opacity-50 opacity-0 transition-all hover-opacity-100" style="z-index:1;">
                         <form action="{{ route('seller.products.image.delete', $image->id) }}" method="POST">
                             @csrf @method('DELETE')
-                            <button type="submit" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-full shadow-sm hover:bg-border/30 focus:outline-none transition-colors" title="Delete Image" onclick="return confirm('Permanently delete this image?')">
+                            <button type="submit" class="btn btn-light btn-sm btn-round" title="Delete Image" onclick="return confirm('Permanently delete this image?')">
                                 <i data-feather="trash-2" style="width:14px;height:14px;color:#dc3545;"></i>
                             </button>
                         </form>
@@ -80,8 +80,8 @@
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-2" id="previewContainer"></div>
                 </div>
                 <div class="modal-footer border-t-0 pt-0">
-                    <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1" id="uploadBtn" disabled>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="uploadBtn" disabled>
                         <i data-feather="upload" style="width:16px;height:16px;"></i> Upload Selected
                     </button>
                 </div>

@@ -8,7 +8,7 @@
 
     <div class="flex justify-between items-center mb-3 flex-wrap gap-2">
         <h4 class="font-bold mb-0 text-ink">Customers</h4>
-        <button class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas"
+        <button class="btn btn-primary btn-sm" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas"
             aria-controls="filterCanvas">
             <i data-feather="filter" class="icon-xs"></i> Filter
         </button>
@@ -107,8 +107,8 @@
                 </div>
 
                 <div class="flex gap-2">
-                    <a href="{{ route('seller.customers', ['tab' => $activeTab]) }}" class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-xs border border-border text-ink-tertiary hover:bg-surface-muted hover:text-ink transition-colors w-full">Reset</a>
-                    <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors w-full">Apply Filter</button>
+                    <a href="{{ route('seller.customers', ['tab' => $activeTab]) }}" class="btn btn-light w-full">Reset</a>
+                    <button type="submit" class="btn btn-primary w-full">Apply Filter</button>
                 </div>
             </form>
         </div>

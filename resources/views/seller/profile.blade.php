@@ -54,7 +54,7 @@
                         </div>
                     </div>
 
-                   <button type="submit" id="submitBtn" class="btn-theme inline-flex items-center gap-1">Update</button>
+                   <button type="submit" id="submitBtn" class="btn btn-primary">Update</button>
                 </form>
             </div>
         </div>

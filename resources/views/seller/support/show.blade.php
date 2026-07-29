@@ -7,7 +7,7 @@
             <h4 class="font-bold mb-0">{{ $ticket->subject }}</h4>
             <small class="text-ink-tertiary">{{ $ticket->ticket_number }} · created {{ $ticket->created_at->diffForHumans() }}</small>
         </div>
-        <a href="{{ route('seller.support.index') }}" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1">← Back</a>
+        <a href="{{ route('seller.support.index') }}" class="btn btn-light btn-sm">← Back</a>
     </div>
 
     @if (session('success'))
@@ -59,7 +59,7 @@
                         <small class="text-ink-tertiary text-sm">Max 10MB per file.</small>
                     </div>
                     <div class="mt-3">
-                        <button class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">Send Reply</button>
+                        <button class="btn btn-primary btn-sm">Send Reply</button>
                     </div>
                 </form>
             </div>
@@ -108,14 +108,14 @@
     @if ($ticket->isOpen() && config('marketplace.support.allow_self_resolve', true))
         <form method="POST" action="{{ route('seller.support.resolve', $ticket) }}" class="inline">
             @csrf
-            <button class="inline-flex items-center justify-center px-3 py-1.5 bg-feedback-success text-white text-sm font-medium rounded-xs hover:bg-feedback-success/90 focus:outline-none focus:ring-2 focus:ring-feedback-success/30 disabled:opacity-50 transition-colors gap-1">Mark as resolved</button>
+            <button class="btn btn-success btn-sm">Mark as resolved</button>
         </form>
     @endif
 
     @if ($ticket->isClosed())
         <form method="POST" action="{{ route('seller.support.reopen', $ticket) }}" class="inline">
             @csrf
-            <button class="inline-flex items-center justify-center px-3 py-1.5 bg-feedback-warning text-white text-sm font-medium rounded-xs hover:bg-feedback-warning/90 focus:outline-none focus:ring-2 focus:ring-feedback-warning/30 disabled:opacity-50 transition-colors gap-1">Reopen ticket</button>
+            <button class="btn btn-warning btn-sm">Reopen ticket</button>
         </form>
     @endif
 @endsection

@@ -4,7 +4,7 @@
 
     <div class="flex justify-between items-center mb-3">
         <h4 class="font-bold mb-0 text-ink">{{ $type ? ucfirst($type) : 'All' }} Orders </h4>
-        <button class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors inline-flex items-center gap-1" data-bs-toggle="offcanvas" data-bs-target="#filterOffcanvas">
+        <button class="btn btn-primary btn-sm" data-bs-toggle="offcanvas" data-bs-target="#filterOffcanvas">
             <i data-feather="filter" class="icon-xs"></i> Filter
         </button>
     </div>
@@ -85,11 +85,11 @@
                         </td>
                         <td>
                             <a href="{{ route('seller.orders.details', $order->invoice_id) }}" title="Details"
-                                class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors border btn-sm inline-flex items-center gap-1 me-1">
+                                class="btn btn-light btn-sm me-1">
                                 <i data-feather="clipboard" class="icon-xs"></i> Details
                             </a>
                             <a href="{{ route('invoice', $order->invoice_id) }}" title="Invoice" target="__blank"
-                                class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors border btn-sm inline-flex items-center gap-1 me-1">
+                                class="btn btn-light btn-sm me-1">
                                 <i data-feather="download" class="icon-xs"></i> Invoice
                             </a>
                         </td>
@@ -142,8 +142,8 @@
 
                 <div class="flex gap-2">
                     <a href="{{ $type ? route('seller.orders.' . $type) : route('seller.orders.index') }}"
-                        class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-xs border border-border text-ink-secondary hover:bg-surface-muted transition-colors w-full">Reset</a>
-                    <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors w-full">Apply Filter</button>
+                        class="btn btn-light w-full">Reset</a>
+                    <button type="submit" class="btn btn-primary w-full">Apply Filter</button>
                 </div>
             </form>
         </div>

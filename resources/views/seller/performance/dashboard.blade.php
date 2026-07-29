@@ -17,7 +17,7 @@
             </form>
             <form method="POST" action="{{ route('seller.performance.recompute') }}">
                 @csrf
-                <button class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors border">
+                <button class="btn btn-light btn-sm">
                     <i data-feather="refresh-cw" class="icon-xs"></i> Refresh
                 </button>
             </form>

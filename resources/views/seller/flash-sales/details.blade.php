@@ -13,10 +13,10 @@
                 </div>
 
                 <div class="flex gap-2">
-                    <button class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors border inline-flex items-center gap-1" data-bs-toggle="modal" data-bs-target="#guidelineModal">
+                    <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#guidelineModal">
                         <i data-feather="info" class="icon-xs"></i> See Guidelines
                     </button>
-                    <button class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors inline-flex items-center gap-1" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
                         <i data-feather="plus" class="icon-xs"></i> Add Product
                     </button>
                 </div>
@@ -74,8 +74,8 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Cancel</button>
-                    <button class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors inline-flex items-center gap-1">Submit Product</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button class="btn btn-primary">Submit Product</button>
                 </div>
             </form>
         </div>
@@ -92,7 +92,7 @@
                     {!! $flashSale->description !!}
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>

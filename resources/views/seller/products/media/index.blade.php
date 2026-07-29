@@ -31,7 +31,7 @@
 <div class="flex flex-wrap justify-between items-start gap-2 mb-3">
     <div class="flex items-start gap-2">
         <a href="{{ route('seller.products.edit', $product->slug) }}"
-            class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1 mt-1">
+            class="btn btn-light btn-sm mt-1">
             <i data-feather="arrow-left" style="width:16px;height:16px;"></i>
         </a>
         <div>
@@ -70,7 +70,7 @@
                     </div>
                     <div class="grid grid-cols-1 gap-2 mb-3" id="previewContainer"></div>
                     <div class="flex justify-end">
-                        <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1"
+                        <button type="submit" class="btn btn-primary"
                             id="uploadBtn" disabled>
                             <i data-feather="upload" style="width:16px;height:16px;"></i> Upload Selected
                         </button>
@@ -101,16 +101,16 @@
                                 </div>
                                 <div class="overlay">
                                     @if (!$image->is_primary)
-                                        <button type="button" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors rounded-full shadow-sm action-btn"
+                                        <button type="button" class="btn btn-light btn-sm btn-round action-btn"
                                             data-action="primary" data-id="{{ $image->id }}" title="Set as Primary">
                                             <i data-feather="star" style="width:16px;height:16px;color:#198754;"></i>
                                         </button>
                                     @endif
-                                    <button type="button" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors rounded-full shadow-sm action-btn"
+                                    <button type="button" class="btn btn-light btn-sm btn-round action-btn"
                                         data-action="replace" data-id="{{ $image->id }}" title="Replace">
                                         <i data-feather="refresh-cw" style="width:16px;height:16px;color:#0d6efd;"></i>
                                     </button>
-                                    <button type="button" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors rounded-full shadow-sm action-btn"
+                                    <button type="button" class="btn btn-light btn-sm btn-round action-btn"
                                         data-action="delete" data-id="{{ $image->id }}" title="Delete">
                                         <i data-feather="trash-2" style="width:16px;height:16px;color:#dc3545;"></i>
                                     </button>

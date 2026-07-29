@@ -5,10 +5,10 @@
 <div class="flex justify-between items-center mb-3">
     <h4 class="font-bold mb-0 text-ink">{{ $bundle->name }}</h4>
     <div class="flex gap-2">
-        <a href="{{ route('seller.bundles.edit', $bundle) }}" class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors">
+        <a href="{{ route('seller.bundles.edit', $bundle) }}" class="btn btn-primary btn-sm">
             <i data-feather="edit" class="icon-xs me-1"></i> Edit
         </a>
-        <a href="{{ route('seller.bundles.index') }}" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors border">
+        <a href="{{ route('seller.bundles.index') }}" class="btn btn-light btn-sm">
             <i data-feather="arrow-left" class="icon-xs me-1"></i> Back
         </a>
     </div>
@@ -198,14 +198,14 @@
                 <div class="grid gap-2">
                     <form action="{{ route('seller.bundles.duplicate', $bundle) }}" method="POST">
                         @csrf
-                        <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors border w-full btn-sm">
+                        <button type="submit" class="btn btn-light w-full btn-sm">
                             <i data-feather="copy" class="icon-xs me-1"></i> Duplicate Bundle
                         </button>
                     </form>
                     <form action="{{ route('seller.bundles.destroy', $bundle) }}" method="POST"
                         onsubmit="return confirm('Delete this bundle permanently?')">
                         @csrf @method('DELETE')
-                        <button type="submit" class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-xs border border-feedback-danger text-feedback-danger hover:bg-feedback-danger hover:text-white transition-colors w-full btn-sm">
+                        <button type="submit" class="btn btn-outline-danger w-full btn-sm">
                             <i data-feather="trash-2" class="icon-xs me-1"></i> Delete Bundle
                         </button>
                     </form>
@@ -233,7 +233,7 @@
                     </select>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors">Update</button>
+                    <button type="submit" class="btn btn-primary btn-sm">Update</button>
                 </div>
             </div>
         </form>

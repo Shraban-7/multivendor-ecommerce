@@ -14,7 +14,7 @@
                     @endforeach
                 </select>
                 <input type="text" name="tracking_number" class="w-full px-2.5 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" style="width:160px;" placeholder="Tracking #" value="{{ request('tracking_number') }}">
-                <button class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1"><i data-feather="search" style="width:14px;height:14px;"></i></button>
+                <button class="btn btn-primary btn-sm"><i data-feather="search" style="width:14px;height:14px;"></i></button>
             </form>
         </div>
     </div>
@@ -68,7 +68,7 @@
                                 <td>{{ $shipment->created_at->format('d/m/Y') }}</td>
                                 <td>
                                     <a href="{{ route('seller.shipping.shipments.show', $shipment->id) }}"
-                                       class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1">
+                                       class="btn btn-light btn-sm">
                                         <i data-feather="eye" style="width:14px;height:14px;"></i>
                                     </a>
                                 </td>

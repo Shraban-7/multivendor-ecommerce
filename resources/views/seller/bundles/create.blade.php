@@ -4,7 +4,7 @@
 
 <div class="flex justify-between items-center mb-3">
     <h4 class="font-bold mb-0 text-ink">Create Bundle</h4>
-    <a href="{{ route('seller.bundles.index') }}" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors border">
+    <a href="{{ route('seller.bundles.index') }}" class="btn btn-light btn-sm">
         <i data-feather="arrow-left" class="icon-xs me-1"></i> Back
     </a>
 </div>
@@ -59,7 +59,7 @@
                 <div class="p-5 p-4">
                     <div class="flex justify-between items-center mb-3">
                         <h5 class="text-lg font-semibold mb-0">Bundle Items</h5>
-                        <button type="button" class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs border border-brand text-brand hover:bg-brand hover:text-white transition-colors" id="addItemBtn">
+                        <button type="button" class="btn btn-outline-primary btn-sm" id="addItemBtn">
                             <i data-feather="plus" class="icon-xs"></i> Add Product
                         </button>
                     </div>
@@ -163,8 +163,8 @@
     </div>
 
     <div class="flex justify-end gap-2 mt-4">
-        <a href="{{ route('seller.bundles.index') }}" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors border px-4">Cancel</a>
-        <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors px-4">
+        <a href="{{ route('seller.bundles.index') }}" class="btn btn-light">Cancel</a>
+        <button type="submit" class="btn btn-primary">
             <i data-feather="check" class="icon-xs me-1"></i> Create Bundle
         </button>
     </div>

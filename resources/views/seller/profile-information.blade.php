@@ -46,7 +46,7 @@
                             </div>
                         </div>
                         <div class="text-right p-3 border-t bg-white">
-                            <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">Update Personal Info</button>
+                            <button type="submit" class="btn btn-primary">Update Personal Info</button>
                         </div>
                     </div>
                 </form>
@@ -82,7 +82,7 @@
                         </div>
 
                         <div class="text-right p-3 border-t bg-white">
-                            <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">
+                            <button type="submit" class="btn btn-primary">
                                 Update Password
                             </button>
                         </div>

@@ -4,7 +4,7 @@
 @section('content')
 <div class="w-full px-0">
     <div class="flex items-center gap-2 mb-3">
-        <a href="{{ route('seller.payouts.index') }}" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1">
+        <a href="{{ route('seller.payouts.index') }}" class="btn btn-light btn-sm">
             <i data-feather="arrow-left" style="width: 16px; height: 16px;"></i> Back
         </a>
         <h4 class="font-bold mb-0 text-ink">Payout #{{ $payout->id }}</h4>

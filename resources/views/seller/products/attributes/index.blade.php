@@ -29,7 +29,7 @@
                                         <small class="font-semibold">{{ $option->value }}</small>
                                     </div>
                                     <div>
-                                        <button type="button" class="inline-flex items-center justify-center px-3 py-1.5 bg-feedback-danger text-white text-sm font-medium rounded-xs hover:bg-red-700 focus:outline-none transition-colors gap-1" title="Delete"
+                                        <button type="button" class="btn btn-danger btn-sm" title="Delete"
                                                 data-bs-toggle="modal" data-bs-target="#deleteOptionModal-{{ $option->id }}">
                                             <i data-feather="trash" class="icon-xs"></i>
                                         </button>
@@ -52,11 +52,11 @@
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors"
+                                                <button type="button" class="btn btn-light"
                                                         data-bs-dismiss="modal">Cancel</button>
                                                 <form action="{{ route('seller.productAttributes.option_delete', $option->id) }}" method="POST">
                                                     @csrf
-                                                    <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-feedback-danger text-white text-sm font-medium rounded-xs hover:bg-red-700 focus:outline-none transition-colors gap-1">Delete</button>
+                                                    <button type="submit" class="btn btn-danger">Delete</button>
                                                 </form>
                                             </div>
                                         </div>
@@ -69,7 +69,7 @@
                         <td class="flex">
 
 
-                            <button type="submit" class="border inline-flex items-center justify-center px-3 py-1.5 bg-feedback-danger text-white text-sm font-medium rounded-xs hover:bg-red-700 focus:outline-none transition-colors gap-1" title="Delete"
+                            <button type="submit" class="btn btn-danger btn-sm" title="Delete"
                                 data-bs-toggle="modal" data-bs-target="#deleteModal-{{ $productAttribute->id }}">
                                 <i data-feather="trash" class="icon-xs"></i> Delete
                             </button>
@@ -96,11 +96,11 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
                                     <form action="{{ route('seller.productAttributes.delete', $productAttribute->id) }}"
                                         method="POST">
                                         @csrf
-                                        <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-feedback-danger text-white text-sm font-medium rounded-xs hover:bg-red-700 focus:outline-none transition-colors gap-1">Delete</button>
+                                        <button type="submit" class="btn btn-danger">Delete</button>
                                     </form>
                                 </div>
                             </div>

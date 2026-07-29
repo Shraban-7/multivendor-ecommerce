@@ -33,7 +33,7 @@
 
                 <input type="hidden" name="is_active" value="1">
 
-                <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-feedback-success text-white text-sm font-medium rounded-xs hover:bg-green-700 focus:outline-none transition-colors gap-1">Update</button>
+                <button type="submit" class="btn btn-success">Update</button>
             </form>
         </div>
     </div>

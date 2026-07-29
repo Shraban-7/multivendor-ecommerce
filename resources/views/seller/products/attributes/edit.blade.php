@@ -22,7 +22,7 @@
                         <div id="optionsContainer">
                             <div class="mb-3 flex justify-between items-center">
                                 <h5 class="font-semibold mb-0">Edit Options</h5>
-                                <button type="button" id="addOption" class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1"><i
+                                <button type="button" id="addOption" class="btn btn-primary btn-sm"><i
                                         data-feather="plus"></i> Add Option</button>
                             </div>
                             @foreach ($productAttribute->options as $index => $option)
@@ -33,18 +33,18 @@
                                     <input name="options[{{ $index }}][additional_price]" type="number"
                                         step="0.01" value="{{ $option->additional_price }}"
                                         placeholder="Additional Price" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" required>
-                                    <button type="button" class="mt-2 inline-flex items-center justify-center px-3 py-1.5 bg-feedback-danger text-white text-sm font-medium rounded-xs hover:bg-red-700 focus:outline-none transition-colors removeOption">Remove</button>
-                                    <button type="button" class="mt-2 inline-flex items-center justify-center px-3 py-1.5 bg-feedback-warning text-white text-sm font-medium rounded-xs hover:bg-yellow-700 focus:outline-none transition-colors deleteOption"
+                                    <button type="button" class="btn btn-danger btn-sm mt-2 removeOption">Remove</button>
+                                    <button type="button" class="btn btn-warning btn-sm mt-2 deleteOption"
                                         data-option-id="{{ $option->id }}">Delete</button>
                                 </div>
                             @endforeach
                         </div>
                         <div class="flex justify-between">
                             <a href="{{ route('seller.products.addAttributes', $productAttribute->product_id) }}"
-                                class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1">
+                                class="btn btn-light">
                                 Back
                             </a>
-                            <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-feedback-success text-white text-sm font-medium rounded-xs hover:bg-green-700 focus:outline-none transition-colors gap-1">Update</button>
+                            <button type="submit" class="btn btn-success">Update</button>
                         </div>
                     </form>
                 </div>
@@ -63,7 +63,7 @@
                 optionRow.innerHTML = `
             <input name="options[${optionIndex}][value]" type="text" placeholder="Option Value" class="mb-2 w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
             <input name="options[${optionIndex}][additional_price]" type="number" step="0.01" placeholder="Additional Price" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" required>
-            <button type="button" class="mt-2 inline-flex items-center justify-center px-3 py-1.5 bg-feedback-danger text-white text-sm font-medium rounded-xs hover:bg-red-700 focus:outline-none transition-colors removeOption">Remove</button>
+            <button type="button" class="btn btn-danger btn-sm mt-2 removeOption">Remove</button>
         `;
                 optionsContainer.appendChild(optionRow);
 

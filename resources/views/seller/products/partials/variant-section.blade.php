@@ -10,7 +10,7 @@
             @endif
         </h5>
         @if($isEdit)
-            <button type="button" class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1"
+            <button type="button" class="btn btn-primary btn-sm"
                 data-bs-toggle="modal" data-bs-target="#addVariantModal">
                 <i class="fas fa-plus"></i> Add Variants
             </button>
@@ -57,19 +57,19 @@
                             </td>
                             <td>
                                 <div class="flex gap-1">
-                                    <button class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors"
+                                    <button class="btn btn-light btn-sm"
                                         data-bs-toggle="modal" data-bs-target="#editVariantModal{{ $variant->id }}">
                                         <i data-feather="edit" class="icon-xs"></i>
                                     </button>
                                     <form action="{{ route('seller.productVariants.toggleStatus', $variant->id) }}" method="POST" class="inline">
                                         @csrf
-                                        <button type="submit" class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs border border-feedback-warning text-feedback-warning hover:bg-feedback-warning hover:text-white transition-colors"
+                                        <button type="submit" class="btn btn-outline-warning btn-sm"
                                             title="{{ $variant->status ? 'Disable' : 'Enable' }}">
                                             <i data-feather="{{ $variant->status ? 'eye-off' : 'eye' }}" class="icon-xs"></i>
                                         </button>
                                     </form>
                                     @if($variant->stock_out <= 0)
-                                    <button class="inline-flex items-center justify-center px-3 py-1.5 bg-feedback-danger text-white text-sm font-medium rounded-xs hover:bg-red-700 focus:outline-none transition-colors border"
+                                    <button class="btn btn-danger btn-sm"
                                         data-bs-toggle="modal" data-bs-target="#deleteVariantModal{{ $variant->id }}">
                                         <i data-feather="trash" class="icon-xs"></i>
                                     </button>
@@ -136,8 +136,8 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Cancel</button>
-                                <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-feedback-success text-white text-sm font-medium rounded-xs hover:bg-green-700 focus:outline-none transition-colors gap-1">Update</button>
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-success">Update</button>
                             </div>
                         </form>
                     </div>
@@ -158,10 +158,10 @@
                             </div>
                         </div>
                         <div class="modal-footer justify-center">
-                            <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
                             <form action="{{ route('seller.productVariants.delete', $variant->id) }}" method="POST">
                                 @csrf
-                                <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-feedback-danger text-white text-sm font-medium rounded-xs hover:bg-red-700 focus:outline-none transition-colors gap-1">Delete</button>
+                                <button type="submit" class="btn btn-danger">Delete</button>
                             </form>
                         </div>
                     </div>
@@ -195,8 +195,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1" id="saveVariantsBtn">Save Variants</button>
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveVariantsBtn">Save Variants</button>
             </div>
         </div>
     </div>

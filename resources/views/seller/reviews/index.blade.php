@@ -92,12 +92,12 @@
         <div class="p-5">
             <div class="flex flex-wrap gap-2 mb-3">
                 <a href="{{ route('seller.reviews.index') }}"
-                    class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs focus:outline-none transition-colors gap-1 {{ !request('status') && !request('rating') ? 'bg-ink text-white hover:bg-ink/90' : 'bg-surface-muted text-ink border border-border hover:bg-border/30' }}">
+                    class="btn btn-sm {{ !request('status') && !request('rating') ? 'btn-dark' : 'btn-light' }}">
                     All
                 </a>
                 @foreach ([5, 4, 3, 2, 1] as $star)
                     <a href="{{ route('seller.reviews.index', ['rating' => $star, 'status' => request('status')]) }}"
-                        class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs focus:outline-none transition-colors gap-1 {{ request('rating') == $star ? 'bg-feedback-warning text-white hover:bg-feedback-warning/90' : 'bg-surface-muted text-ink border border-border hover:bg-border/30' }}">
+                        class="btn btn-sm {{ request('rating') == $star ? 'btn-warning' : 'btn-light' }}">
                         {{ $star }} <i class="fas fa-star"></i>
                         @if (($ratingDistribution[$star]['percent'] ?? 0) > 0)
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-surface-muted text-ink ms-1">{{ $ratingDistribution[$star]['percent'] }}%</span>
@@ -109,13 +109,13 @@
             <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
                 <div class="flex flex-wrap gap-1">
                     <a href="{{ route('seller.reviews.index', ['status' => 'approved', 'rating' => request('rating')]) }}"
-                        class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs focus:outline-none transition-colors gap-1 {{ request('status') === 'approved' ? 'bg-feedback-success text-white hover:bg-feedback-success/90' : 'bg-surface-muted text-ink border border-border hover:bg-border/30' }}">Approved</a>
+                        class="btn btn-sm {{ request('status') === 'approved' ? 'btn-success' : 'btn-light' }}">Approved</a>
                     <a href="{{ route('seller.reviews.index', ['status' => 'pending', 'rating' => request('rating')]) }}"
-                        class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs focus:outline-none transition-colors gap-1 {{ request('status') === 'pending' ? 'bg-feedback-danger text-white hover:bg-feedback-danger/90' : 'bg-surface-muted text-ink border border-border hover:bg-border/30' }}">Pending</a>
+                        class="btn btn-sm {{ request('status') === 'pending' ? 'btn-danger' : 'btn-light' }}">Pending</a>
                     <a href="{{ route('seller.reviews.index', ['status' => 'replied', 'rating' => request('rating')]) }}"
-                        class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs focus:outline-none transition-colors gap-1 {{ request('status') === 'replied' ? 'bg-feedback-info text-white hover:bg-feedback-info/90' : 'bg-surface-muted text-ink border border-border hover:bg-border/30' }}">Replied</a>
+                        class="btn btn-sm {{ request('status') === 'replied' ? 'btn-info' : 'btn-light' }}">Replied</a>
                     <a href="{{ route('seller.reviews.index', ['status' => 'unreplied', 'rating' => request('rating')]) }}"
-                        class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs focus:outline-none transition-colors gap-1 {{ request('status') === 'unreplied' ? 'bg-feedback-warning text-white hover:bg-feedback-warning/90' : 'bg-surface-muted text-ink border border-border hover:bg-border/30' }}">Unreplied</a>
+                        class="btn btn-sm {{ request('status') === 'unreplied' ? 'btn-warning' : 'btn-light' }}">Unreplied</a>
                 </div>
 
                 <form method="GET" class="flex gap-2">
@@ -128,7 +128,7 @@
                     <div class="flex" style="max-width: 250px;">
                         <input type="text" name="search" class="w-full px-2.5 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="Search reviews..."
                             value="{{ request('search') }}">
-                        <button class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1" type="submit"><i class="fas fa-search"></i></button>
+                        <button class="btn btn-primary btn-sm btn-icon" type="submit"><i class="fas fa-search"></i></button>
                     </div>
                 </form>
             </div>
@@ -196,7 +196,7 @@
                                 <td class="text-sm whitespace-nowrap">{{ $review->created_at->format('d/m/Y') }}</td>
                                 <td>
                                     <div class="dropdown">
-                                        <button class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1" type="button" data-bs-toggle="dropdown">
+                                        <button class="btn btn-light btn-sm" type="button" data-bs-toggle="dropdown">
                                             <i data-feather="more-horizontal" class="icon-xs"></i>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end">
@@ -303,7 +303,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -327,8 +327,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">Submit Reply</button>
+                        <button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary btn-sm">Submit Reply</button>
                     </div>
                 </form>
             </div>

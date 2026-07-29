@@ -5,7 +5,7 @@
 <div class="container-fluid px-0">
     <div class="flex flex-wrap justify-between items-center mb-3">
         <h4 class="font-bold mb-0 text-ink">Coupons</h4>
-        <a href="{{ route('seller.coupons.create') }}" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors inline-flex items-center gap-1">
+        <a href="{{ route('seller.coupons.create') }}" class="btn btn-primary">
             <i data-feather="plus" style="width: 16px; height: 16px;"></i> Create Coupon
         </a>
     </div>
@@ -63,14 +63,14 @@
                                     @endif
                                 </td>
                                 <td class="text-right">
-                                    <a href="{{ route('seller.coupons.edit', $coupon) }}" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors border">
+                                    <a href="{{ route('seller.coupons.edit', $coupon) }}" class="btn btn-light btn-sm">
                                         <i data-feather="edit" style="width: 14px; height: 14px;"></i>
                                     </a>
                                     <form method="POST" action="{{ route('seller.coupons.destroy', $coupon) }}" class="inline"
                                           onsubmit="return confirm('Delete this coupon?')">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors border text-feedback-danger">
+                                        <button type="submit" class="btn btn-light btn-sm btn-danger-text">
                                             <i data-feather="trash-2" style="width: 14px; height: 14px;"></i>
                                         </button>
                                     </form>
@@ -81,7 +81,7 @@
                                 <td colspan="7" class="text-center py-5 text-ink-tertiary">
                                     <i data-feather="tag" style="width: 48px; height: 48px;" class="mb-3"></i>
                                     <p class="mb-0">No coupons yet.</p>
-                                    <a href="{{ route('seller.coupons.create') }}" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors mt-2">Create Your First Coupon</a>
+                                    <a href="{{ route('seller.coupons.create') }}" class="btn btn-primary mt-2">Create Your First Coupon</a>
                                 </td>
                             </tr>
                         @endforelse

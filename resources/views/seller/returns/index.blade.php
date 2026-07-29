@@ -38,17 +38,17 @@
     <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0">
         <div class="p-5">
             <div class="flex flex-wrap gap-2 mb-3 items-center">
-                <a href="{{ route('seller.returns.index') }}" class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs focus:outline-none transition-colors gap-1 {{ !request('status') && !request('disputed') ? 'bg-ink text-white hover:bg-ink/90' : 'bg-surface-muted text-ink border border-border hover:bg-border/30' }}">ALL</a>
+                <a href="{{ route('seller.returns.index') }}" class="btn btn-sm {{ !request('status') && !request('disputed') ? 'btn-dark' : 'btn-light' }}">ALL</a>
                 @foreach (['pending' => 'Pending', 'awaiting_shipment' => 'Awaiting', 'approved' => 'Approved', 'item_received' => 'Received', 'refunded' => 'Refunded', 'rejected' => 'Rejected'] as $key => $label)
                     <a href="{{ route('seller.returns.index', ['status' => $key]) }}"
-                       class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs focus:outline-none transition-colors gap-1 {{ request('status') === $key ? 'bg-brand-deep text-white hover:bg-brand' : 'bg-surface-muted text-ink border border-border hover:bg-border/30' }}">{{ $label }}</a>
+                       class="btn btn-sm {{ request('status') === $key ? 'btn-primary' : 'btn-light' }}">{{ $label }}</a>
                 @endforeach
                 <a href="{{ route('seller.returns.index', ['disputed' => 1]) }}"
-                   class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs focus:outline-none transition-colors gap-1 {{ request('disputed') ? 'bg-feedback-danger text-white hover:bg-feedback-danger/90' : 'bg-surface-muted text-ink border border-border hover:bg-border/30' }}">Disputed</a>
+                   class="btn btn-sm {{ request('disputed') ? 'btn-danger' : 'btn-light' }}">Disputed</a>
 
                 <form method="GET" class="ms-auto flex gap-2">
                     <input type="text" name="search" class="w-full px-2.5 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="Search RMA / Order / Customer" value="{{ request('search') }}">
-                    <button class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">Search</button>
+                    <button class="btn btn-primary btn-sm">Search</button>
                 </form>
             </div>
 
@@ -90,7 +90,7 @@
                                 </td>
                                 <td class="text-sm">{{ $return->created_at->format('d/m/Y') }}</td>
                                 <td class="text-right">
-                                    <a href="{{ route('seller.returns.show', $return) }}" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1">
+                                    <a href="{{ route('seller.returns.show', $return) }}" class="btn btn-light btn-sm">
                                         <i data-feather="eye" class="icon-xs"></i> View
                                     </a>
                                 </td>

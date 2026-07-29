@@ -33,7 +33,7 @@
                             </div>
                         </div>
                         <div class="md:col-span-1 sm:col-span-full flex items-end">
-                            <button class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors w-full inline-flex items-center justify-center gap-1">Filter</button>
+                            <button class="btn btn-primary btn-sm w-full">Filter</button>
                         </div>
                     </form>
                 </div>

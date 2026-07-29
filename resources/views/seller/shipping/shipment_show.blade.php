@@ -4,7 +4,7 @@
 @section('content')
 <div class="w-full px-0">
     <div class="flex items-center gap-2 mb-3">
-        <a href="{{ route('seller.shipping.shipments') }}" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1">
+        <a href="{{ route('seller.shipping.shipments') }}" class="btn btn-light btn-sm">
             <i data-feather="arrow-left" style="width: 16px; height: 16px;"></i> Back
         </a>
         <h4 class="font-bold mb-0 text-ink">Shipment #{{ $shipment->id }}</h4>
@@ -103,7 +103,7 @@
                         <div class="mb-2">
                             <textarea name="description" class="w-full px-2.5 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" rows="2" placeholder="Description (optional)"></textarea>
                         </div>
-                        <button type="submit" class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1 w-full">Update</button>
+                        <button type="submit" class="btn btn-primary btn-sm w-full">Update</button>
                     </form>
                 </div>
             </div>

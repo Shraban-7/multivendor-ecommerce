@@ -4,7 +4,7 @@
 
     <div class="flex justify-between items-center mb-3">
         <h4 class="font-bold mb-0">Open a new support ticket</h4>
-        <a href="{{ route('seller.support.index') }}" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1">← Back</a>
+        <a href="{{ route('seller.support.index') }}" class="btn btn-light btn-sm">← Back</a>
     </div>
 
     <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0">
@@ -46,8 +46,8 @@
                     </div>
 
                     <div class="col-span-full">
-                        <button class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">Submit Ticket</button>
-                        <a href="{{ route('seller.support.index') }}" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1">Cancel</a>
+                        <button class="btn btn-primary">Submit Ticket</button>
+                        <a href="{{ route('seller.support.index') }}" class="btn btn-light">Cancel</a>
                     </div>
                 </div>
             </form>

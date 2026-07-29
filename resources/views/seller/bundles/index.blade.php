@@ -4,7 +4,7 @@
 
 <div class="flex justify-between items-center mb-3">
     <h4 class="font-bold mb-0 text-ink">Product Bundles</h4>
-    <a href="{{ route('seller.bundles.create') }}" class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors inline-flex items-center gap-1">
+    <a href="{{ route('seller.bundles.create') }}" class="btn btn-primary btn-sm">
         <i data-feather="plus" class="icon-xs"></i> Create Bundle
     </a>
 </div>
@@ -74,22 +74,22 @@
                 <td>
                     <div class="flex whitespace-nowrap">
                         <a href="{{ route('seller.bundles.show', $bundle) }}"
-                            class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors border me-1" title="View">
+                            class="btn btn-light btn-sm me-1" title="View">
                             <i data-feather="eye" class="icon-xs"></i>
                         </a>
                         <a href="{{ route('seller.bundles.edit', $bundle) }}"
-                            class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors border me-1" title="Edit">
+                            class="btn btn-light btn-sm me-1" title="Edit">
                             <i data-feather="edit" class="icon-xs"></i>
                         </a>
                         <form action="{{ route('seller.bundles.duplicate', $bundle) }}" method="POST" class="inline me-1">
                             @csrf
-                            <button type="submit" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors border" title="Duplicate">
+                            <button type="submit" class="btn btn-light btn-sm" title="Duplicate">
                                 <i data-feather="copy" class="icon-xs"></i>
                             </button>
                         </form>
                         <form action="{{ route('seller.bundles.destroy', $bundle) }}" method="POST" class="inline">
                             @csrf @method('DELETE')
-                            <button type="submit" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors border text-feedback-danger"
+                            <button type="submit" class="btn btn-light btn-sm btn-danger-text"
                                 onclick="return confirm('Delete this bundle?')" title="Delete">
                                 <i data-feather="trash-2" class="icon-xs"></i>
                             </button>

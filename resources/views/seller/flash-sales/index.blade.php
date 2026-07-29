@@ -18,7 +18,7 @@
                             {{ $sale->end_time->format('d M Y, h:i A') }}
                         </p>
 
-                        <a href="{{ route('seller.flash-sales.details', $sale->id) }}" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors w-full inline-flex items-center justify-center gap-1">
+                        <a href="{{ route('seller.flash-sales.details', $sale->id) }}" class="btn btn-primary w-full">
                             View Details
                         </a>
                     </div>
@@ -37,7 +37,7 @@
                         <p>{!! $sale->description !!}</p>
 
                         <a href="{{ route('seller.flash-sales.details', $sale->id) }}"
-                            class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-xs border border-border text-ink-secondary hover:bg-surface-muted transition-colors w-full inline-flex items-center justify-center gap-1">
+                            class="btn btn-light w-full">
                             View My Submissions
                         </a>
                     </div>

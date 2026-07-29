@@ -14,7 +14,7 @@
                 <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between bg-white flex justify-between items-center">
                     <h5 class="font-semibold mb-0">Summary</h5>
                     <div class="flex">
-                        <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors border btn-sm inline-flex items-center gap-1 me-1"
+                        <button type="button" class="btn btn-light btn-sm me-1"
                             onclick="printReceipt('{{ route('invoice', $order->invoice_id) }}')">
                             <i data-feather="download" class="icon-xs"></i>Invoice
                         </button>
@@ -66,7 +66,7 @@
                                     <span class="badge badge-soft-secondary">{{ $order->status->title() }}</span>
                                 @endif
 
-                                <button class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors border inline-flex items-center gap-1"
+                                <button class="btn btn-light btn-sm"
                                     data-bs-toggle="modal" data-bs-target="#changeStatusModal">
                                     <i class="bi bi-arrow-repeat text-ink-secondary"></i>
                                     Update
@@ -132,11 +132,11 @@
                     <h5 class="font-semibold mb-0">Shipping Details</h5>
                     <div class="flex gap-2">
                         <a href="{{ route('seller.shipping.shipments.create', $order) }}"
-                           class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs border border-brand text-brand hover:bg-brand hover:text-white transition-colors inline-flex items-center gap-1">
+                           class="btn btn-outline-primary btn-sm">
                             <i data-feather="package" style="width: 14px; height: 14px;"></i> Create Shipment
                         </a>
                         <a href="{{ route('seller.orders.tracking', $order) }}"
-                           class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs border border-border text-ink-secondary hover:bg-surface-muted transition-colors inline-flex items-center gap-1">
+                           class="btn btn-light btn-sm">
                             <i data-feather="truck" style="width: 14px; height: 14px;"></i> Add Tracking
                         </a>
                     </div>
@@ -341,8 +341,8 @@
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors inline-flex items-center gap-1">Update</button>
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Update</button>
                         </div>
                     </form>
                 </div>

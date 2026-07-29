@@ -33,8 +33,8 @@
                 <input type="password" name="password_confirmation" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
             </div>
 
-            <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-feedback-success text-white text-sm font-medium rounded-xs hover:bg-green-700 focus:outline-none transition-colors gap-1">Save</button>
-            <a href="{{ route('seller.employees.index') }}" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1">Cancel</a>
+            <button type="submit" class="btn btn-success">Save</button>
+            <a href="{{ route('seller.employees.index') }}" class="btn btn-light">Cancel</a>
         </form>
     </div>
 </div>

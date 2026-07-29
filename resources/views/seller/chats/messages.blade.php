@@ -4,7 +4,7 @@
 
     <div class="mb-3 flex justify-between items-end">
         <h4 class="font-bold mb-0 text-ink">Chat with User</h4>
-        <a href="{{ route('seller.chat.index') }}" class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium border border-border text-ink-secondary rounded-xs hover:bg-surface-muted focus:outline-none transition-colors gap-1">
+        <a href="{{ route('seller.chat.index') }}" class="btn btn-light btn-sm">
             <i data-feather="arrow-left" class="icon-xs"></i> Back
         </a>
     </div>
@@ -31,7 +31,7 @@
                         <input type="hidden" name="user_id" value="{{ request('user_id') }}">
                         <div class="flex">
                             <input type="text" name="message" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="Type your message..." required>
-                            <button class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1" type="submit">
+                            <button class="btn btn-primary" type="submit">
                                 <i data-feather="send" class="icon-xs"></i> Send
                             </button>
                         </div>

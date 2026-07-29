@@ -5,12 +5,12 @@
 <div class="w-full px-0">
     <div class="flex flex-wrap justify-between items-center mb-3">
         <div class="flex items-center gap-2">
-            <a href="{{ route('seller.payouts.index') }}" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1">
+            <a href="{{ route('seller.payouts.index') }}" class="btn btn-light btn-sm">
                 <i data-feather="arrow-left" style="width: 16px; height: 16px;"></i> Back
             </a>
             <h4 class="font-bold mb-0 text-ink">Payout Methods</h4>
         </div>
-        <button class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1" data-bs-toggle="modal" data-bs-target="#addMethodModal">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMethodModal">
             <i data-feather="plus" style="width: 16px; height: 16px;"></i> Add Method
         </button>
     </div>
@@ -44,7 +44,7 @@
                                     </div>
                                 </div>
                                 <div class="dropdown">
-                                    <button class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-toggle="dropdown">
+                                    <button class="btn btn-light btn-sm" data-bs-toggle="dropdown">
                                         <i data-feather="more-vertical" style="width: 16px; height: 16px;"></i>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end">
@@ -118,8 +118,8 @@
                                     @include('seller.payouts._method_form', ['method' => $method])
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Cancel</button>
-                                    <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors">Update</button>
+                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">Update</button>
                                 </div>
                             </form>
                         </div>
@@ -133,7 +133,7 @@
                 <i data-feather="credit-card" style="width: 64px; height: 64px;" class="text-ink-tertiary mb-3"></i>
                 <h5 class="font-semibold mb-2">No Payout Methods</h5>
                 <p class="text-ink-tertiary mb-3">Add a payout method to start withdrawing your earnings.</p>
-                <button class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors" data-bs-toggle="modal" data-bs-target="#addMethodModal">
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMethodModal">
                     <i data-feather="plus" class="me-1" style="width: 16px; height: 16px;"></i> Add Payout Method
                 </button>
             </div>
@@ -155,8 +155,8 @@
                     @include('seller.payouts._method_form', ['method' => null])
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors">Save Method</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Method</button>
                 </div>
             </form>
         </div>

@@ -4,7 +4,7 @@
 
     <div class="flex justify-between items-center mb-3">
         <h4 class="font-bold mb-0">Support</h4>
-        <a href="{{ route('seller.support.create') }}" class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">
+        <a href="{{ route('seller.support.create') }}" class="btn btn-primary btn-sm">
             <i data-feather="plus" class="icon-xs"></i> New Ticket
         </a>
     </div>
@@ -49,7 +49,7 @@
                         <option value="{{ $p->value }}" @selected(request('priority') === $p->value)>{{ $p->label() }}</option>
                     @endforeach
                 </select>
-                <button class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">Filter</button>
+                <button class="btn btn-primary btn-sm">Filter</button>
             </form>
 
             <div class="overflow-x-auto">
@@ -84,7 +84,7 @@
                                 <td>{{ $ticket->admin?->name ?? '—' }}</td>
                                 <td class="text-sm">{{ optional($ticket->last_message_at)->diffForHumans() ?? '—' }}</td>
                                 <td class="text-right">
-                                    <a href="{{ route('seller.support.show', $ticket) }}" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1">
+                                    <a href="{{ route('seller.support.show', $ticket) }}" class="btn btn-light btn-sm">
                                         <i data-feather="eye" class="icon-xs"></i> Open
                                     </a>
                                 </td>

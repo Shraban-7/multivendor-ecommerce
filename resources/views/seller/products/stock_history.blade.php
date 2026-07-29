@@ -5,7 +5,7 @@
     <div class="flex justify-between items-end mb-3">
         <h4 class="font-bold mb-0 text-ink">Stock History</h4>
         <div>
-            <button type="button" class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1" data-bs-toggle="modal" data-bs-target="#stockUpdateModal">
+            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#stockUpdateModal">
                 <i data-feather="package" style="width:16px;height:16px;"></i> Update Stock
             </button>
         </div>
@@ -118,8 +118,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">Update Stock</button>
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Update Stock</button>
                     </div>
                 </form>
             </div>

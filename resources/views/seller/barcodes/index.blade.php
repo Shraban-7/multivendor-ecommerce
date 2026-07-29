@@ -65,10 +65,10 @@
                     </div>
 
                     <div class="flex gap-2">
-                        <button type="button" id="generate" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">
+                        <button type="button" id="generate" class="btn btn-primary">
                             <i data-feather="eye" class="icon-xs"></i> Preview Labels
                         </button>
-                        <button type="button" id="printBtn" class="inline-flex items-center justify-center px-4 py-2 bg-ink text-white text-sm font-medium rounded-xs hover:bg-ink/80 focus:outline-none transition-colors gap-1 disabled">
+                        <button type="button" id="printBtn" class="btn btn-dark disabled">
                             <i data-feather="printer" class="icon-xs"></i> Print
                         </button>
                     </div>

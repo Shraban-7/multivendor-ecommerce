@@ -4,7 +4,7 @@
 
     <div class="flex justify-between items-center mb-3 flex-wrap gap-2">
         <h4 class="font-bold mb-0 text-ink">Employees</h4>
-        <a href="{{ route('seller.employees.create') }}" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">
+        <a href="{{ route('seller.employees.create') }}" class="btn btn-primary">
             <i class="bi bi-plus-lg"></i> Add Employee
         </a>
     </div>
@@ -37,11 +37,11 @@
                         <td>{{ $employee->created_at->format('d/m/Y h:i A') }}</td>
                         <td class="flex gap-2">
                             <a href="{{ route('seller.employees.edit', $employee->id) }}"
-                                class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors w-lg-auto gap-1">
+                                class="btn btn-primary btn-sm">
                                 <i data-feather="edit" class="icon-xs"></i> Edit
                             </a>
 
-                            <button type="button" class="inline-flex items-center justify-center px-3 py-1.5 bg-feedback-warning text-white text-sm font-medium rounded-xs hover:bg-amber-800 focus:outline-none transition-colors w-lg-auto gap-1" data-bs-toggle="modal"
+                            <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
                                 data-bs-target="#permissionModal{{ $employee->id }}">
                                 <i class="bi bi-shield-lock"></i> Permissions
                             </button>
@@ -81,8 +81,8 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Cancel</button>
-                                        <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">Save Permissions</button>
+                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                                        <button type="submit" class="btn btn-primary">Save Permissions</button>
                                     </div>
                                 </div>
                             </form>

@@ -43,7 +43,7 @@
                 </div>
                 @error('file')<div class="text-feedback-danger text-sm mt-1">{{ $message }}</div>@enderror
             </div>
-            <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors">
+            <button type="submit" class="btn btn-primary">
                 <i data-feather="upload" class="icon-xs me-1"></i> Upload & Preview
             </button>
         </form>
@@ -104,7 +104,7 @@ Example Product,Electronics,Mobile Phones,Samsung,25000,20000,30000,100,SP-001,a
                         </td>
                         <td class="text-sm">{{ $import->created_at->format('d/m/Y h:ia') }}</td>
                         <td>
-                            <a href="{{ route('seller.bulk-upload.show', $import) }}" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors">
+                            <a href="{{ route('seller.bulk-upload.show', $import) }}" class="btn btn-light btn-sm">
                                 <i data-feather="eye" class="icon-xs"></i>
                             </a>
                         </td>

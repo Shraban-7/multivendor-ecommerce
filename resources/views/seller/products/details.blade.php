@@ -52,13 +52,13 @@
         </div>
     </div>
     <div class="flex gap-2 flex-wrap">
-        <a href="{{ route('seller.products.edit', $product->slug) }}" class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">
+        <a href="{{ route('seller.products.edit', $product->slug) }}" class="btn btn-primary btn-sm">
             <i data-feather="edit" class="icon-xs"></i> Edit Product
         </a>
-        <a href="{{ route('seller.products.edit', $product->slug) }}#variantSection" class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs border border-brand text-brand hover:bg-brand hover:text-white transition-colors gap-1">
+        <a href="{{ route('seller.products.edit', $product->slug) }}#variantSection" class="btn btn-outline-primary btn-sm">
             <i data-feather="layers" class="icon-xs"></i> Manage Variants
         </a>
-        <button type="button" class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs border border-feedback-danger text-feedback-danger hover:bg-feedback-danger hover:text-white transition-colors gap-1"
+        <button type="button" class="btn btn-outline-danger btn-sm"
             data-bs-toggle="modal" data-bs-target="#deleteModal-{{ $product->id }}">
             <i data-feather="trash-2" class="icon-xs"></i> Delete
         </button>
@@ -236,7 +236,7 @@
         <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
             <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
                 <h5><i class="fas fa-layer-group me-2 text-brand"></i>All Variants</h5>
-                <a href="{{ route('seller.products.edit', $product->slug) }}#variantSection" class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">
+                <a href="{{ route('seller.products.edit', $product->slug) }}#variantSection" class="btn btn-primary btn-sm">
                     <i class="fas fa-plus"></i> Add Variant
                 </a>
             </div>
@@ -289,7 +289,7 @@
                 @else
                 <div class="text-center text-ink-tertiary py-4">
                     <p class="mb-1">No variants configured for this product.</p>
-                    <a href="{{ route('seller.products.edit', $product->slug) }}#variantSection" class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors">
+                    <a href="{{ route('seller.products.edit', $product->slug) }}#variantSection" class="btn btn-primary btn-sm">
                         <i class="fas fa-plus"></i> Add Variants
                     </a>
                 </div>
@@ -303,7 +303,7 @@
         <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
             <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
                 <h5><i class="fas fa-boxes me-2 text-brand"></i>Stock History</h5>
-                <button type="button" class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs border border-brand text-brand hover:bg-brand hover:text-white transition-colors gap-1"
+                <button type="button" class="btn btn-outline-primary btn-sm"
                     data-bs-toggle="modal" data-bs-target="#stockUpdateModal">
                     <i class="fas fa-plus-circle"></i> Update Stock
                 </button>
@@ -489,11 +489,11 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
                 <form action="{{ route('seller.products.delete', $product->id) }}" method="POST">
                     @method('DELETE')
                     @csrf
-                    <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-feedback-danger text-white text-sm font-medium rounded-xs hover:bg-red-700 focus:outline-none transition-colors gap-1">Delete</button>
+                    <button type="submit" class="btn btn-danger">Delete</button>
                 </form>
             </div>
         </div>
@@ -512,7 +512,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <button class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs border border-feedback-info text-feedback-info hover:bg-feedback-info hover:text-white transition-colors gap-1" type="button" data-bs-toggle="collapse"
+                        <button class="btn btn-outline-info btn-sm" type="button" data-bs-toggle="collapse"
                             data-bs-target="#stockInstruction" aria-expanded="false" aria-controls="stockInstruction">
                             ℹ️ Stock update instructions
                         </button>
@@ -578,8 +578,8 @@
                     @endif
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">Update Stocks</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Stocks</button>
                 </div>
             </form>
         </div>

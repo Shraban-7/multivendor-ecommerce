@@ -37,7 +37,7 @@
                 </div>
 
                 <button type="submit"
-                    class="bg-brand-deep text-white px-5 py-2 border border-transparent rounded active:ring-1 active:ring-brand active:border-brand-deep text-xs md:text-sm uppercase font-bold hover:bg-brand eq w-full">
+                    class="btn btn-primary btn-lg w-full">
                     Login
                 </button>
 

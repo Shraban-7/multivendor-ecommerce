@@ -44,8 +44,8 @@
                     </select>
                 </div>
 
-                <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-feedback-success text-white text-sm font-medium rounded-xs hover:bg-green-700 focus:outline-none transition-colors gap-1">Update</button>
-                <a href="{{ route('seller.employees.index') }}" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1">Cancel</a>
+                <button type="submit" class="btn btn-success">Update</button>
+                <a href="{{ route('seller.employees.index') }}" class="btn btn-light">Cancel</a>
             </form>
         </div>
     </div>

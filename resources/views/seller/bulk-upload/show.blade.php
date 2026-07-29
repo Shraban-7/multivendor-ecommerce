@@ -4,7 +4,7 @@
 
 <div class="flex justify-between items-center mb-3">
     <h4 class="font-bold mb-0 text-ink">Import Details</h4>
-    <a href="{{ route('seller.bulk-upload.index') }}" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1">
+    <a href="{{ route('seller.bulk-upload.index') }}" class="btn btn-light btn-sm">
         <i data-feather="arrow-left" class="icon-xs me-1"></i> Back to Imports
     </a>
 </div>
@@ -85,7 +85,7 @@
         @if($bulkUpload->fail_count > 0)
         <div class="flex justify-between items-center mb-3">
             <h6 class="font-semibold mb-0">Failed Rows ({{ $bulkUpload->fail_count }})</h6>
-            <a href="{{ route('seller.bulk-upload.downloadErrors', $bulkUpload) }}" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1">
+            <a href="{{ route('seller.bulk-upload.downloadErrors', $bulkUpload) }}" class="btn btn-light btn-sm">
                 <i data-feather="download" class="icon-xs me-1"></i> Download Error Report
             </a>
         </div>
@@ -121,7 +121,7 @@
 
         @if($bulkUpload->success_count > 0)
         <div class="mt-3">
-            <a href="{{ route('seller.products.index') }}" class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">
+            <a href="{{ route('seller.products.index') }}" class="btn btn-primary btn-sm">
                 <i data-feather="eye" class="icon-xs me-1"></i> View Products
             </a>
         </div>

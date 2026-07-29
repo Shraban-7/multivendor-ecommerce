@@ -22,7 +22,7 @@
 @section('content')
 <div class="flex flex-wrap justify-between items-start gap-2 mb-3">
     <div class="flex items-start gap-2">
-        <a href="{{ route('seller.products.show', $product->slug) }}" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1 mt-1" title="Back to Details">
+        <a href="{{ route('seller.products.show', $product->slug) }}" class="btn btn-light btn-sm mt-1" title="Back to Details">
             <i data-feather="arrow-left" style="width:16px;height:16px;"></i>
         </a>
         <div>
@@ -44,7 +44,7 @@
             </div>
         </div>
     </div>
-    <button type="submit" form="productUpdateForm" id="updateBtn" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">
+    <button type="submit" form="productUpdateForm" id="updateBtn" class="btn btn-primary">
         <i data-feather="save" style="width:16px;height:16px;"></i> Update Product
     </button>
 </div>
@@ -281,7 +281,7 @@
                                 <textarea name="og_description" maxlength="160" rows="2" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="Appears below the title when shared.">{{ $seo?->og_description }}</textarea>
                             </div>
                             <div class="col-span-full">
-                                <button type="button" id="seoUpdateBtn" class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs border border-brand text-brand hover:bg-brand hover:text-white transition-colors gap-1"><i class="fas fa-save"></i> Save SEO</button>
+                                <button type="button" id="seoUpdateBtn" class="btn btn-outline-primary btn-sm"><i class="fas fa-save"></i> Save SEO</button>
                             </div>
                         </div>
                     </div>
@@ -335,7 +335,7 @@
                             <span>Created: {{ $product->created_at->format('d M, Y') }}</span><br>
                             <span>Updated: {{ $product->updated_at->format('d M, Y h:ia') }}</span>
                         </div>
-                        <a href="{{ route('seller.products.show', $product->slug) }}" class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs border border-border text-ink-secondary hover:bg-surface-muted transition-colors w-full gap-1" target="__blank">
+                        <a href="{{ route('seller.products.show', $product->slug) }}" class="btn btn-light btn-sm w-full" target="__blank">
                             <i data-feather="external-link" class="icon-xs"></i> View Details
                         </a>
                     </div>
@@ -353,7 +353,7 @@
                 <input type="file" id="thumbnailUploadInput" accept="image/*" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors mb-3">
                 <img id="thumbnailCropperImage" src="#" class="d-none img-fluid" style="max-height:400px;">
             </div>
-            <div class="modal-footer"><button type="button" class="inline-flex items-center justify-center px-3 py-1.5 bg-feedback-success text-white text-sm font-medium rounded-xs hover:bg-green-700 focus:outline-none transition-colors" id="cropThumbnailBtn"><i class="fas fa-check me-1"></i>Crop &amp; Insert</button></div>
+            <div class="modal-footer"><button type="button" class="btn btn-success btn-sm" id="cropThumbnailBtn"><i class="fas fa-check me-1"></i>Crop &amp; Insert</button></div>
         </div>
     </div>
 </div>

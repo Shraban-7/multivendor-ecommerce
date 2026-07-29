@@ -7,7 +7,7 @@
             <h4 class="font-bold mb-0">Return #{{ $return->rma_number }}</h4>
             <small class="text-ink-tertiary">Order #{{ $return->order->invoice_id }}</small>
         </div>
-        <a href="{{ route('seller.returns.index') }}" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1">← Back</a>
+        <a href="{{ route('seller.returns.index') }}" class="btn btn-light btn-sm">← Back</a>
     </div>
 
     @if (session('success'))
@@ -124,7 +124,7 @@
                                 @csrf
                                 <label class="block text-sm font-medium text-ink-secondary mb-1">Submit / update your response</label>
                                 <textarea name="response" class="w-full px-2.5 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" rows="3" required>{{ old('response', $return->dispute->seller_response) }}</textarea>
-                                <button class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1 mt-2">Send Response</button>
+                                <button class="btn btn-primary btn-sm mt-2">Send Response</button>
                             </form>
                         @endif
 
@@ -146,12 +146,12 @@
                     @if ($return->isPending())
                         <form method="POST" action="{{ route('seller.returns.approve', $return) }}" class="mb-2">
                             @csrf
-                            <button class="inline-flex items-center justify-center px-4 py-2 bg-feedback-success text-white text-sm font-medium rounded-xs hover:bg-feedback-success/90 focus:outline-none focus:ring-2 focus:ring-feedback-success/30 disabled:opacity-50 transition-colors gap-1 w-full">Approve Return</button>
+                            <button class="btn btn-success w-full">Approve Return</button>
                         </form>
                         <form method="POST" action="{{ route('seller.returns.reject', $return) }}">
                             @csrf
                             <div class="mb-2"><textarea name="rejection_reason" rows="2" class="w-full px-2.5 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="Reason for rejection" required></textarea></div>
-                            <button class="inline-flex items-center justify-center px-4 py-2 bg-feedback-danger text-white text-sm font-medium rounded-xs hover:bg-feedback-danger/90 focus:outline-none focus:ring-2 focus:ring-feedback-danger/30 disabled:opacity-50 transition-colors gap-1 w-full">Reject Return</button>
+                            <button class="btn btn-danger w-full">Reject Return</button>
                         </form>
                     @elseif ($return->status === \App\Domain\Order\Enums\ReturnStatus::APPROVED)
                         <form method="POST" action="{{ route('seller.returns.recordShipment', $return) }}" class="mb-2">
@@ -168,13 +168,13 @@
                                 <label class="text-sm text-ink-tertiary">Notes</label>
                                 <textarea name="notes" rows="2" class="w-full px-2.5 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors"></textarea>
                             </div>
-                            <button class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1 w-full">Mark Awaiting Shipment</button>
+                            <button class="btn btn-primary btn-sm w-full">Mark Awaiting Shipment</button>
                         </form>
                     @elseif ($return->status === \App\Domain\Order\Enums\ReturnStatus::AWAITING_SHIPMENT)
                         <form method="POST" action="{{ route('seller.returns.markReceived', $return) }}" class="mb-2">
                             @csrf
                             <div class="mb-2"><textarea name="note" rows="2" class="w-full px-2.5 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="Inspection notes"></textarea></div>
-                            <button class="inline-flex items-center justify-center px-4 py-2 bg-feedback-success text-white text-sm font-medium rounded-xs hover:bg-feedback-success/90 focus:outline-none focus:ring-2 focus:ring-feedback-success/30 disabled:opacity-50 transition-colors gap-1 w-full">Confirm Item Received</button>
+                            <button class="btn btn-success w-full">Confirm Item Received</button>
                         </form>
                         @if ($return->status === \App\Domain\Order\Enums\ReturnStatus::AWAITING_SHIPMENT)
                             <small class="text-ink-tertiary block mt-2">Stock will be restored and refund initiated automatically.</small>
