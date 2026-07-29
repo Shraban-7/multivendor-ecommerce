@@ -62,15 +62,19 @@
     </div>
     <div class="col-span-full">
         <label class="block text-xs font-medium text-ink-secondary mb-1">Applicable Products</label>
-        <select name="product_ids[]" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" multiple style="min-height: 120px;">
+        <select id="applicableProducts" name="product_ids[]" class="w-full" multiple="multiple" data-placeholder="Search & pick products (leave empty to apply to all)">
+            @php
+                $selectedIds = old('product_ids', $c ? $c->products->pluck('id')->toArray() : []);
+                $selectedIds = array_map('strval', (array) $selectedIds);
+            @endphp
             @foreach ($products as $product)
                 <option value="{{ $product->id }}"
-                    {{ $c && $c->products->contains($product->id) ? 'selected' : '' }}>
-                    {{ $product->name }}
+                    {{ in_array((string) $product->id, $selectedIds, true) ? 'selected' : '' }}>
+                    {{ $product->name }}@if($product->sku) <small class="text-ink-tertiary">[{{ $product->sku }}]</small>@endif
                 </option>
             @endforeach
         </select>
-        <small class="text-ink-tertiary">Leave empty to apply to all products.</small>
+        <small class="text-ink-tertiary">Each selected product shows as a removable tag. Leave empty to apply to all products.</small>
     </div>
     <div class="col-span-full">
         <label class="block text-xs font-medium text-ink-secondary mb-1">Description</label>
@@ -88,5 +92,29 @@ function generateCode() {
     }
     document.querySelector('input[name="code"]').value = code;
 }
+
+function formatProductOption(state) {
+    if (!state.id) return state.text;
+    const safe = $('<div>').text(state.text).html();
+    return $('<span>').html(safe);
+}
+
+$(function() {
+    const $select = $('#applicableProducts');
+    if ($select.length === 0) return;
+
+    $select.select2({
+        theme: 'bootstrap-5',
+        width: '100%',
+        placeholder: $select.data('placeholder') || 'Search & pick products',
+        allowClear: true,
+        closeOnSelect: false,
+        templateResult: formatProductOption,
+        language: {
+            noResults: function() { return 'No products found. Try another search term.'; }
+        }
+    });
+});
 </script>
 @endpush
+

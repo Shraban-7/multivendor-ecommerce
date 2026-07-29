@@ -10,15 +10,41 @@ use Illuminate\Http\Request;
 
 class SellerCouponController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $seller = seller();
-        $coupons = Coupon::with('products')
-            ->where('seller_id', $seller->id)
-            ->orderBy('created_at', 'desc')
-            ->paginate(20);
 
-        return view('seller.coupons.index', compact('coupons'));
+        $query = Coupon::with('products')
+            ->where('seller_id', $seller->id)
+            ->orderBy('created_at', 'desc');
+
+        if ($request->filled('q')) {
+            $term = '%'.$request->q.'%';
+            $query->where(function ($q) use ($term) {
+                $q->where('code', 'like', $term)->orWhere('title', 'like', $term);
+            });
+        }
+
+        if ($request->filled('status')) {
+            if ($request->status === 'active') {
+                $query->where('status', true);
+            } elseif ($request->status === 'inactive') {
+                $query->where('status', false);
+            } elseif ($request->status === 'expired') {
+                $query->whereDate('valid_until', '<', now());
+            }
+        }
+
+        $coupons = $query->paginate(20)->withQueryString();
+
+        $summary = [
+            'total' => Coupon::where('seller_id', $seller->id)->count(),
+            'active' => Coupon::where('seller_id', $seller->id)->where('status', true)->count(),
+            'expired' => Coupon::where('seller_id', $seller->id)->whereDate('valid_until', '<', now())->count(),
+            'total_used' => (int) Coupon::where('seller_id', $seller->id)->sum('used_count'),
+        ];
+
+        return view('seller.coupons.index', compact('coupons', 'summary'));
     }
 
     public function create()

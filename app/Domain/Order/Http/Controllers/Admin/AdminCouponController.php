@@ -21,7 +21,13 @@ class AdminCouponController extends Controller
         }
 
         if ($request->filled('status')) {
-            $query->where('status', $request->boolean('status'));
+            if ($request->status === 'active') {
+                $query->where('status', true);
+            } elseif ($request->status === 'inactive') {
+                $query->where('status', false);
+            } elseif ($request->status === 'expired') {
+                $query->whereDate('valid_until', '<', now());
+            }
         }
 
         if ($request->filled('search')) {
@@ -31,9 +37,17 @@ class AdminCouponController extends Controller
             });
         }
 
-        $coupons = $query->orderBy('created_at', 'desc')->paginate(30);
+        $coupons = $query->orderBy('created_at', 'desc')->paginate(30)->withQueryString();
 
-        return view('admin.coupons.index', compact('coupons'));
+        $summary = [
+            'total' => Coupon::count(),
+            'global' => Coupon::whereNull('seller_id')->count(),
+            'seller' => Coupon::whereNotNull('seller_id')->count(),
+            'active' => Coupon::where('status', true)->count(),
+            'expired' => Coupon::whereDate('valid_until', '<', now())->count(),
+        ];
+
+        return view('admin.coupons.index', compact('coupons', 'summary'));
     }
 
     public function create()
