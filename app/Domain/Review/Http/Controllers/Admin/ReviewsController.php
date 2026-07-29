@@ -5,6 +5,7 @@ namespace App\Domain\Review\Http\Controllers\Admin;
 use App\Domain\Review\Models\Review;
 use App\Domain\Review\Repositories\Contracts\ReviewRepositoryInterface;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 class ReviewsController extends Controller
 {
@@ -12,9 +13,12 @@ class ReviewsController extends Controller
         private readonly ReviewRepositoryInterface $reviewRepo,
     ) {}
 
-    public function index()
+    public function index(Request $request)
     {
-        $reviews = $this->reviewRepo->getReportedReviews();
+        $reviews = Review::with(['product.seller', 'images', 'reports.user', 'reports.seller'])
+            ->whereHas('reports')
+            ->latest()
+            ->paginate(25);
 
         return view('admin.reviews.index', compact('reviews'));
     }
@@ -23,6 +27,6 @@ class ReviewsController extends Controller
     {
         $this->reviewRepo->delete($review);
 
-        return redirect()->route('admin.reviews.index')->with('Review deleted successfully');
+        return redirect()->route('admin.reviews.index')->with('success', 'Review deleted successfully');
     }
 }

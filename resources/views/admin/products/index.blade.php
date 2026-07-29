@@ -9,8 +9,39 @@
         </div>
     </div>
 
+    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden mb-4">
+        <div class="px-4 py-3 border-b border-border bg-surface-muted flex items-center justify-between">
+            <h6 class="text-xs font-semibold text-ink uppercase tracking-wider">Search & Filter</h6>
+        </div>
+        <div class="p-4">
+            <form method="GET" action="{{ route('admin.products.index') }}">
+                <div class="flex items-center gap-3">
+                    <div class="flex-1">
+                        <input type="text" name="search" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors"
+                            placeholder="Search by product name..." value="{{ request('search') }}">
+                    </div>
+                    <div class="w-48">
+                        <select name="status" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors">
+                            <option value="">All Status</option>
+                            <option value="pending_approval" {{ request('status') == 'pending_approval' ? 'selected' : '' }}>Pending Approval</option>
+                            <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
+                            <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                            <option value="deleted" {{ request('status') == 'deleted' ? 'selected' : '' }}>Deleted</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <i data-lucide="search" class="icon-xs"></i> Search
+                    </button>
+                    @if(request('search') || request('status'))
+                        <a href="{{ route('admin.products.index') }}" class="btn btn-light btn-sm">Clear</a>
+                    @endif
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="overflow-x-auto">
-        <table id="product-table" class="w-full text-left text-sm text-ink border-collapse">
+        <table class="w-full text-left text-sm text-ink border-collapse">
             <thead>
                 <tr>
                     <th scope="col">Product</th>
@@ -23,7 +54,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($products as $product)
+                @forelse ($products as $product)
                     @php
                         $totalStockIn = $product->variants->sum('stock_in');
                         $totalStockOut = $product->variants->sum('stock_out');
@@ -70,65 +101,57 @@
                                 <i data-lucide="edit" class="icon-xs"></i>
                                 <span>Edit</span>
                             </button>
-
-                            <div class="modal fade" id="statusModal-{{ $product->id }}" tabindex="-1"
-                                aria-labelledby="statusModalLabel-{{ $product->id }}" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <form action="{{ route('admin.products.updateStatus', $product->id) }}"
-                                            method="POST">
-                                            @csrf
-                                            <div class="modal-header border-b border-border">
-                                                <h5 class="modal-title text-sm font-semibold text-ink" id="statusModalLabel-{{ $product->id }}">
-                                                    Update Product Status
-                                                </h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="mb-3">
-                                                    <label for="status-{{ $product->id }}" class="block text-xs font-medium text-ink-secondary mb-1">Select Status</label>
-                                                    <select class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" id="status-{{ $product->id }}"
-                                                        name="status">
-                                                        <option value="{{ \App\Domain\Product\Models\Product::STATUS_PENDING_APPROVAL }}"
-                                                            {{ $product->status == \App\Domain\Product\Models\Product::STATUS_PENDING_APPROVAL ? 'selected' : '' }}>
-                                                            Pending Approval
-                                                        </option>
-                                                        <option value="{{ \App\Domain\Product\Models\Product::STATUS_ACTIVE }}"
-                                                            {{ $product->status == \App\Domain\Product\Models\Product::STATUS_ACTIVE ? 'selected' : '' }}>
-                                                            Active
-                                                        </option>
-                                                        <option value="{{ \App\Domain\Product\Models\Product::STATUS_INACTIVE }}"
-                                                            {{ $product->status == \App\Domain\Product\Models\Product::STATUS_INACTIVE ? 'selected' : '' }}>
-                                                            Inactive
-                                                        </option>
-                                                        <option value="{{ \App\Domain\Product\Models\Product::STATUS_DELETED }}"
-                                                            {{ $product->status == \App\Domain\Product\Models\Product::STATUS_DELETED ? 'selected' : '' }}>
-                                                            Deleted
-                                                        </option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer border-t border-border">
-                                                <button type="button" class="btn btn-light"
-                                                    data-bs-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary">Update</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="7" class="text-center py-8 text-ink-tertiary">No products found</td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
 
-    @push('scripts')
-        <script>
-            new DataTable('#product-table');
-        </script>
-    @endpush
+    <div class="flex justify-end mt-4">
+        {{ $products->links() }}
+    </div>
+
+    @foreach ($products as $product)
+    <div class="modal fade" id="statusModal-{{ $product->id }}" tabindex="-1"
+        aria-labelledby="statusModalLabel-{{ $product->id }}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form action="{{ route('admin.products.updateStatus', $product->id) }}" method="POST">
+                    @csrf
+                    <div class="modal-header border-b border-border">
+                        <h5 class="modal-title text-sm font-semibold text-ink" id="statusModalLabel-{{ $product->id }}">
+                            Update Product Status
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="status-{{ $product->id }}" class="block text-xs font-medium text-ink-secondary mb-1">Select Status</label>
+                            <select class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" id="status-{{ $product->id }}" name="status">
+                                <option value="{{ \App\Domain\Product\Models\Product::STATUS_PENDING_APPROVAL }}"
+                                    {{ $product->status == \App\Domain\Product\Models\Product::STATUS_PENDING_APPROVAL ? 'selected' : '' }}>Pending Approval</option>
+                                <option value="{{ \App\Domain\Product\Models\Product::STATUS_ACTIVE }}"
+                                    {{ $product->status == \App\Domain\Product\Models\Product::STATUS_ACTIVE ? 'selected' : '' }}>Active</option>
+                                <option value="{{ \App\Domain\Product\Models\Product::STATUS_INACTIVE }}"
+                                    {{ $product->status == \App\Domain\Product\Models\Product::STATUS_INACTIVE ? 'selected' : '' }}>Inactive</option>
+                                <option value="{{ \App\Domain\Product\Models\Product::STATUS_DELETED }}"
+                                    {{ $product->status == \App\Domain\Product\Models\Product::STATUS_DELETED ? 'selected' : '' }}>Deleted</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-t border-border">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    @endforeach
 
 @endsection

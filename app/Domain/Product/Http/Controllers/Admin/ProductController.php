@@ -17,11 +17,28 @@ class ProductController extends Controller
         private readonly BrandRepositoryInterface $brandRepo,
     ) {}
 
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with(['seller', 'unit', 'category', 'subcategory', 'brand', 'variants'])
-            ->latest('id')
-            ->paginate(25);
+        $query = Product::with(['seller', 'unit', 'category', 'subcategory', 'brand', 'variants']);
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where('name', 'like', "%{$search}%");
+        }
+
+        if ($request->filled('status')) {
+            $statusMap = [
+                'pending_approval' => Product::STATUS_PENDING_APPROVAL,
+                'active' => Product::STATUS_ACTIVE,
+                'inactive' => Product::STATUS_INACTIVE,
+                'deleted' => Product::STATUS_DELETED,
+            ];
+            if (isset($statusMap[$request->status])) {
+                $query->where('status', $statusMap[$request->status]);
+            }
+        }
+
+        $products = $query->latest('id')->paginate(25);
         $categories = $this->categoryRepo->getAllWithSubcategories();
         $brands = $this->brandRepo->getAll();
 

@@ -2,48 +2,75 @@
 @section('title', 'Orders')
 @section('content')
 
-    <h4 class="mb-3">Orders </h4>
+    <div class="flex justify-between items-start mb-4">
+        <div>
+            <h1 class="text-xl font-semibold text-ink">Orders</h1>
+            <p class="text-sm text-ink-secondary mt-1">View all marketplace orders</p>
+        </div>
+    </div>
+
+    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden mb-4">
+        <div class="px-4 py-3 border-b border-border bg-surface-muted flex items-center justify-between">
+            <h6 class="text-xs font-semibold text-ink uppercase tracking-wider">Search & Filter</h6>
+        </div>
+        <div class="p-4">
+            <form method="GET" action="{{ route('admin.orders.index') }}">
+                <div class="flex items-center gap-3">
+                    <div class="flex-1">
+                        <input type="text" name="search" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors"
+                            placeholder="Search by invoice ID..." value="{{ request('search') }}">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <i data-lucide="search" class="icon-xs"></i> Search
+                    </button>
+                    @if(request('search'))
+                        <a href="{{ route('admin.orders.index') }}" class="btn btn-light btn-sm">Clear</a>
+                    @endif
+                </div>
+            </form>
+        </div>
+    </div>
 
     <div class="overflow-x-auto">
-        <table id="order-table" class="w-full text-left text-sm text-ink border-collapse">
+        <table class="w-full text-left text-sm text-ink border-collapse">
             <thead>
                 <tr>
-                    <th scope="col">InvoiceId</th>
+                    <th scope="col">Invoice ID</th>
                     <th scope="col">Seller</th>
                     <th scope="col">Sale Amount</th>
-                    <th scope="col">Commission </th>
+                    <th scope="col">Commission</th>
                     <th scope="col">Date</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($orders as $order)
+                @forelse ($orders as $order)
                     <tr>
-                        <td> {{ $order->invoice_id }}</td>
-                        <td> <x-seller :seller="$order->seller" /></td>
-                        <td> {{ money($order->payable) }} </td>
+                        <td class="font-medium text-ink">{{ $order->invoice_id }}</td>
+                        <td><x-seller :seller="$order->seller" /></td>
+                        <td>{{ money($order->payable) }}</td>
                         <td>
                             @if ($order->total_commission != null)
-                                {{  money( $order->total_commission ) }}
+                                {{ money($order->total_commission) }}
                                 @if($order->commission_type == \App\Enums\CommissionType::PERCENTAGE->value)
                                     ({{ $order->commission_amount }} %)
                                 @endif
+                            @else
+                                <span class="text-ink-tertiary">—</span>
                             @endif
                         </td>
-                        <td>{{ \Carbon\Carbon::parse($order->created_at)->format('d-m-Y h:i A') }}</td>
+                        <td class="text-ink-tertiary text-xs">{{ \Carbon\Carbon::parse($order->created_at)->format('d-m-Y h:i A') }}</td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="5" class="text-center py-8 text-ink-tertiary">No orders found</td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
 
-    @push('scripts')
-        <script>
-            new DataTable('#order-table', {
-                order: [
-                    [0, 'desc']
-                ]
-            });
-        </script>
-    @endpush
+    <div class="flex justify-end mt-4">
+        {{ $orders->links() }}
+    </div>
 
 @endsection
