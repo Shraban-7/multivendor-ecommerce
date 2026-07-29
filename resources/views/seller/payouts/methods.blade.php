@@ -2,27 +2,27 @@
 @section('title', 'Payout Methods')
 
 @section('content')
-<div class="container-fluid px-0">
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
-        <div class="d-flex align-items-center gap-2">
-            <a href="{{ route('seller.payouts.index') }}" class="btn btn-light border btn-sm d-inline-flex align-items-center gap-1">
+<div class="w-full px-0">
+    <div class="flex flex-wrap justify-between items-center mb-3">
+        <div class="flex items-center gap-2">
+            <a href="{{ route('seller.payouts.index') }}" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1">
                 <i data-feather="arrow-left" style="width: 16px; height: 16px;"></i> Back
             </a>
-            <h4 class="fw-bold mb-0 text-dark">Payout Methods</h4>
+            <h4 class="font-bold mb-0 text-ink">Payout Methods</h4>
         </div>
-        <button class="btn btn-primary d-inline-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#addMethodModal">
+        <button class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1" data-bs-toggle="modal" data-bs-target="#addMethodModal">
             <i data-feather="plus" style="width: 16px; height: 16px;"></i> Add Method
         </button>
     </div>
 
     @if ($methods->count() > 0)
-        <div class="row g-3">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             @foreach ($methods as $method)
-                <div class="col-md-6 col-lg-4">
-                    <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                <div class="d-flex align-items-center gap-2">
+                <div class="md:col-span-1 lg:col-span-1">
+                    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden h-full" style="border-radius: 12px;">
+                        <div class="p-5">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="flex items-center gap-2">
                                     @if ($method->method_type === 'bank')
                                         <div class="icon-bg-primary">
                                             <i data-feather="building" style="width: 20px; height: 20px;"></i>
@@ -37,14 +37,14 @@
                                         </div>
                                     @endif
                                     <div>
-                                        <h6 class="fw-semibold mb-0">{{ $method->methodLabel() }}</h6>
+                                        <h6 class="font-semibold mb-0">{{ $method->methodLabel() }}</h6>
                                         @if ($method->is_default)
                                             <span class="badge-soft-success" style="font-size: 0.7rem;">Default</span>
                                         @endif
                                     </div>
                                 </div>
                                 <div class="dropdown">
-                                    <button class="btn btn-light border btn-sm" data-bs-toggle="dropdown">
+                                    <button class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-toggle="dropdown">
                                         <i data-feather="more-vertical" style="width: 16px; height: 16px;"></i>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end">
@@ -69,7 +69,7 @@
                                                   onsubmit="return confirm('Delete this payout method?')">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button class="dropdown-item text-danger" type="submit">
+                                                <button class="dropdown-item text-feedback-danger" type="submit">
                                                     <i data-feather="trash-2" style="width: 14px; height: 14px;" class="me-2"></i> Delete
                                                 </button>
                                             </form>
@@ -78,25 +78,25 @@
                                 </div>
                             </div>
 
-                            <div class="small">
-                                <div class="d-flex justify-content-between mb-1">
-                                    <span class="text-muted">Account Name:</span>
-                                    <span class="fw-medium">{{ $method->account_name }}</span>
+                            <div class="text-sm">
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-ink-tertiary">Account Name:</span>
+                                    <span class="font-medium">{{ $method->account_name }}</span>
                                 </div>
-                                <div class="d-flex justify-content-between mb-1">
-                                    <span class="text-muted">Account Number:</span>
-                                    <span class="fw-medium">{{ $method->maskedAccountNumber() }}</span>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-ink-tertiary">Account Number:</span>
+                                    <span class="font-medium">{{ $method->maskedAccountNumber() }}</span>
                                 </div>
                                 @if ($method->bank_name)
-                                    <div class="d-flex justify-content-between mb-1">
-                                        <span class="text-muted">Bank:</span>
-                                        <span class="fw-medium">{{ $method->bank_name }}</span>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-ink-tertiary">Bank:</span>
+                                        <span class="font-medium">{{ $method->bank_name }}</span>
                                     </div>
                                 @endif
                                 @if ($method->mobile_provider)
-                                    <div class="d-flex justify-content-between mb-1">
-                                        <span class="text-muted">Provider:</span>
-                                        <span class="fw-medium">{{ ucfirst($method->mobile_provider) }}</span>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-ink-tertiary">Provider:</span>
+                                        <span class="font-medium">{{ ucfirst($method->mobile_provider) }}</span>
                                     </div>
                                 @endif
                             </div>
@@ -118,8 +118,8 @@
                                     @include('seller.payouts._method_form', ['method' => $method])
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                    <button type="submit" class="btn btn-primary">Update</button>
+                                    <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors">Update</button>
                                 </div>
                             </form>
                         </div>
@@ -128,12 +128,12 @@
             @endforeach
         </div>
     @else
-        <div class="card border-0 shadow-sm" style="border-radius: 12px;">
-            <div class="card-body text-center py-5">
-                <i data-feather="credit-card" style="width: 64px; height: 64px;" class="text-muted mb-3"></i>
-                <h5 class="fw-semibold mb-2">No Payout Methods</h5>
-                <p class="text-muted mb-3">Add a payout method to start withdrawing your earnings.</p>
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMethodModal">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden" style="border-radius: 12px;">
+            <div class="p-5 text-center py-5">
+                <i data-feather="credit-card" style="width: 64px; height: 64px;" class="text-ink-tertiary mb-3"></i>
+                <h5 class="font-semibold mb-2">No Payout Methods</h5>
+                <p class="text-ink-tertiary mb-3">Add a payout method to start withdrawing your earnings.</p>
+                <button class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors" data-bs-toggle="modal" data-bs-target="#addMethodModal">
                     <i data-feather="plus" class="me-1" style="width: 16px; height: 16px;"></i> Add Payout Method
                 </button>
             </div>
@@ -155,8 +155,8 @@
                     @include('seller.payouts._method_form', ['method' => null])
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Method</button>
+                    <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors">Save Method</button>
                 </div>
             </form>
         </div>

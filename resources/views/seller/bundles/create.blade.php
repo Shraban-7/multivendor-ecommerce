@@ -2,90 +2,90 @@
 @section('title', 'Create Bundle')
 @section('content')
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="fw-bold mb-0 text-dark">Create Bundle</h4>
-    <a href="{{ route('seller.bundles.index') }}" class="btn btn-light btn-sm border">
+<div class="flex justify-between items-center mb-3">
+    <h4 class="font-bold mb-0 text-ink">Create Bundle</h4>
+    <a href="{{ route('seller.bundles.index') }}" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors border">
         <i data-feather="arrow-left" class="icon-xs me-1"></i> Back
     </a>
 </div>
 
 <form action="{{ route('seller.bundles.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
-    <div class="row g-4">
-        <div class="col-lg-8">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body p-4">
-                    <h5 class="card-title mb-3">Bundle Details</h5>
+    <div class="grid grid-cols-1 gap-4">
+        <div class="lg:col-span-2">
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm">
+                <div class="p-5 p-4">
+                    <h5 class="text-lg font-semibold mb-3">Bundle Details</h5>
 
                     <div class="mb-3">
-                        <label class="form-label small fw-semibold">Bundle Name *</label>
-                        <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
+                        <label class="block text-xs font-medium text-ink-secondary mb-1 text-sm font-semibold">Bundle Name *</label>
+                        <input type="text" name="name" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors @error('name') is-invalid @enderror"
                             value="{{ old('name') }}" required maxlength="255">
                         @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label class="form-label small fw-semibold">SKU</label>
-                            <input type="text" name="sku" class="form-control @error('sku') is-invalid @enderror"
+                    <div class="grid grid-cols-1 mb-3">
+                        <div class="md:col-span-1">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1 text-sm font-semibold">SKU</label>
+                            <input type="text" name="sku" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors @error('sku') is-invalid @enderror"
                                 value="{{ old('sku') }}" placeholder="Auto-generated if empty">
                             @error('sku')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label small fw-semibold">Barcode</label>
-                            <input type="text" name="barcode" class="form-control @error('barcode') is-invalid @enderror"
+                        <div class="md:col-span-1">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1 text-sm font-semibold">Barcode</label>
+                            <input type="text" name="barcode" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors @error('barcode') is-invalid @enderror"
                                 value="{{ old('barcode') }}">
                             @error('barcode')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label small fw-semibold">Short Description</label>
-                        <textarea name="short_description" class="form-control @error('short_description') is-invalid @enderror"
+                        <label class="block text-xs font-medium text-ink-secondary mb-1 text-sm font-semibold">Short Description</label>
+                        <textarea name="short_description" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors @error('short_description') is-invalid @enderror"
                             rows="2" maxlength="500">{{ old('short_description') }}</textarea>
                         @error('short_description')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label small fw-semibold">Description</label>
-                        <textarea name="description" class="form-control @error('description') is-invalid @enderror"
+                        <label class="block text-xs font-medium text-ink-secondary mb-1 text-sm font-semibold">Description</label>
+                        <textarea name="description" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors @error('description') is-invalid @enderror"
                             rows="4">{{ old('description') }}</textarea>
                         @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                 </div>
             </div>
 
-            <div class="card border-0 shadow-sm mt-4">
-                <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="card-title mb-0">Bundle Items</h5>
-                        <button type="button" class="btn btn-outline-primary btn-sm" id="addItemBtn">
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm mt-4">
+                <div class="p-5 p-4">
+                    <div class="flex justify-between items-center mb-3">
+                        <h5 class="text-lg font-semibold mb-0">Bundle Items</h5>
+                        <button type="button" class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs border border-brand text-brand hover:bg-brand hover:text-white transition-colors" id="addItemBtn">
                             <i data-feather="plus" class="icon-xs"></i> Add Product
                         </button>
                     </div>
-                    @error('items')<div class="alert alert-danger py-2 small">{!! $message !!}</div>@enderror
+                    @error('items')<div class="p-4 rounded-sm bg-red-50 border border-red-200 text-feedback-danger text-sm flex items-start gap-3 py-2 text-sm">{!! $message !!}</div>@enderror
 
                     <div id="itemsContainer">
                     </div>
 
-                    <div id="noItemsMsg" class="text-center text-muted py-4 border rounded">
+                    <div id="noItemsMsg" class="text-center text-ink-tertiary py-4 border rounded">
                         <i data-feather="package" style="width:32px;height:32px;"></i>
                         <p class="mt-2 mb-0">Click "Add Product" to add items to this bundle</p>
-                        <p class="small mb-0">A bundle must contain at least 2 products</p>
+                        <p class="text-sm mb-0">A bundle must contain at least 2 products</p>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label small fw-semibold">Bundle Type</label>
-                        <div class="d-flex gap-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="type" value="fixed"
+                        <label class="block text-xs font-medium text-ink-secondary mb-1 text-sm font-semibold">Bundle Type</label>
+                        <div class="flex gap-3">
+                            <div class="flex items-center gap-2">
+                                <input class="h-4 w-4 rounded border-border text-brand focus:ring-brand" type="radio" name="type" value="fixed"
                                     id="typeFixed" checked>
-                                <label class="form-check-label" for="typeFixed">Fixed Bundle</label>
+                                <label class="text-sm text-ink" for="typeFixed">Fixed Bundle</label>
                             </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="type" value="mix_match"
+                            <div class="flex items-center gap-2">
+                                <input class="h-4 w-4 rounded border-border text-brand focus:ring-brand" type="radio" name="type" value="mix_match"
                                     id="typeMixMatch">
-                                <label class="form-check-label" for="typeMixMatch">Mix & Match</label>
+                                <label class="text-sm text-ink" for="typeMixMatch">Mix & Match</label>
                             </div>
                         </div>
                     </div>
@@ -93,65 +93,65 @@
             </div>
         </div>
 
-        <div class="col-lg-4">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body p-4">
-                    <h5 class="card-title mb-3">Pricing</h5>
+        <div class="lg:col-span-1">
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm">
+                <div class="p-5 p-4">
+                    <h5 class="text-lg font-semibold mb-3">Pricing</h5>
 
                     <div class="mb-3">
-                        <label class="form-label small fw-semibold">Price Type</label>
-                        <select name="price_type" class="form-select" id="priceType">
+                        <label class="block text-xs font-medium text-ink-secondary mb-1 text-sm font-semibold">Price Type</label>
+                        <select name="price_type" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" id="priceType">
                             <option value="auto">Auto Calculate</option>
                             <option value="manual">Manual Price</option>
                         </select>
                     </div>
 
                     <div class="mb-3" id="manualPriceGroup" style="display:none;">
-                        <label class="form-label small fw-semibold">Bundle Price</label>
+                        <label class="block text-xs font-medium text-ink-secondary mb-1 text-sm font-semibold">Bundle Price</label>
                         <input type="number" step="0.01" min="0" name="price"
-                            class="form-control @error('price') is-invalid @enderror" value="{{ old('price') }}">
+                            class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors @error('price') is-invalid @enderror" value="{{ old('price') }}">
                         @error('price')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label small fw-semibold">Compare Price</label>
+                        <label class="block text-xs font-medium text-ink-secondary mb-1 text-sm font-semibold">Compare Price</label>
                         <input type="number" step="0.01" min="0" name="compare_price"
-                            class="form-control @error('compare_price') is-invalid @enderror"
+                            class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors @error('compare_price') is-invalid @enderror"
                             value="{{ old('compare_price') }}" placeholder="Show savings">
                         @error('compare_price')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label small fw-semibold">Bundle Discount</label>
-                        <div class="row g-2">
-                            <div class="col-5">
-                                <select name="discount_type" class="form-select">
+                        <label class="block text-xs font-medium text-ink-secondary mb-1 text-sm font-semibold">Bundle Discount</label>
+                        <div class="grid grid-cols-1 gap-2">
+                            <div class="col-span-5">
+                                <select name="discount_type" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors">
                                     <option value="">No Discount</option>
                                     <option value="percentage">Percentage %</option>
                                     <option value="fixed">Fixed</option>
                                 </select>
                             </div>
-                            <div class="col-7">
+                            <div class="col-span-7">
                                 <input type="number" step="0.01" min="0" name="discount_value"
-                                    class="form-control" value="{{ old('discount_value') }}"
+                                    class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ old('discount_value') }}"
                                     placeholder="Value">
                             </div>
                         </div>
                     </div>
 
-                    <div class="alert alert-info small py-2 mb-0" id="autoPricePreview">
+                    <div class="p-4 rounded-sm bg-blue-50 border border-blue-200 text-feedback-info text-sm flex items-start gap-3 text-sm py-2 mb-0" id="autoPricePreview">
                         Price will be calculated automatically based on items
                     </div>
                 </div>
             </div>
 
-            <div class="card border-0 shadow-sm mt-4">
-                <div class="card-body p-4">
-                    <h5 class="card-title mb-3">Thumbnail</h5>
-                    <div class="upload-zone border border-2 border-dashed rounded-3 p-4 text-center"
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm mt-4">
+                <div class="p-5 p-4">
+                    <h5 class="text-lg font-semibold mb-3">Thumbnail</h5>
+                    <div class="upload-zone border border-2 border-dashed rounded-md p-4 text-center"
                         style="cursor:pointer;background:#f8f9fa;" id="thumbZone">
                         <i data-feather="image" style="width:32px;height:32px;color:var(--bs-primary)"></i>
-                        <p class="mt-2 mb-0 small">Click to upload thumbnail</p>
+                        <p class="mt-2 mb-0 text-sm">Click to upload thumbnail</p>
                         <input type="file" name="thumbnail" id="thumbInput" class="d-none" accept="image/*">
                     </div>
                     <div id="thumbPreview" class="d-none mt-2">
@@ -162,9 +162,9 @@
         </div>
     </div>
 
-    <div class="d-flex justify-content-end gap-2 mt-4">
-        <a href="{{ route('seller.bundles.index') }}" class="btn btn-light border px-4">Cancel</a>
-        <button type="submit" class="btn btn-primary px-4">
+    <div class="flex justify-end gap-2 mt-4">
+        <a href="{{ route('seller.bundles.index') }}" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors border px-4">Cancel</a>
+        <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors px-4">
             <i data-feather="check" class="icon-xs me-1"></i> Create Bundle
         </button>
     </div>
@@ -189,7 +189,7 @@
         const isOptional = data?.is_optional ?? false;
 
         const div = document.createElement('div');
-        div.className = 'item-row border rounded p-3 mb-2 position-relative';
+        div.className = 'item-row border rounded p-3 mb-2 relative';
         div.dataset.index = index;
 
         let options = '<option value="">Select Product</option>';
@@ -202,30 +202,30 @@
         });
 
         div.innerHTML = `
-            <button type="button" class="btn-close position-absolute top-0 end-0 mt-2 me-2 remove-item"></button>
-            <div class="row g-2 align-items-end">
-                <div class="col-md-6">
-                    <label class="small fw-semibold">Product *</label>
-                    <select name="items[${index}][product_id]" class="form-select form-select-sm product-select" required>
+            <button type="button" class="btn-close absolute top-0 right-0 mt-2 me-2 remove-item"></button>
+            <div class="grid grid-cols-1 gap-2 items-end">
+                <div class="md:col-span-1">
+                    <label class="text-sm font-semibold">Product *</label>
+                    <select name="items[${index}][product_id]" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors-sm product-select" required>
                         ${options}
                     </select>
                 </div>
-                <div class="col-md-2">
-                    <label class="small fw-semibold">Qty</label>
-                    <input type="number" name="items[${index}][quantity]" class="form-control form-control-sm"
+                <div class="md:col-span-1">
+                    <label class="text-sm font-semibold">Qty</label>
+                    <input type="number" name="items[${index}][quantity]" class="w-full px-2 py-1 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors"
                         value="${quantity}" min="1" max="999" required>
                 </div>
-                <div class="col-md-2">
-                    <div class="form-check mt-3">
-                        <input type="checkbox" name="items[${index}][is_optional]" class="form-check-input"
+                <div class="md:col-span-1">
+                    <div class="flex items-center gap-2 mt-3">
+                        <input type="checkbox" name="items[${index}][is_optional]" class="h-4 w-4 rounded border-border text-brand focus:ring-brand"
                             value="1" id="opt${index}" ${isOptional ? 'checked' : ''}>
-                        <label class="form-check-label small" for="opt${index}">Optional</label>
+                        <label class="text-sm text-ink text-sm" for="opt${index}">Optional</label>
                     </div>
                 </div>
-                <div class="col-md-2">
-                    <div class="small text-muted pt-2">
+                <div class="md:col-span-1">
+                    <div class="text-sm text-ink-tertiary pt-2">
                         <span class="item-price">৳0</span>
-                        <br><span class="item-stock small"></span>
+                        <br><span class="item-stock text-sm"></span>
                     </div>
                 </div>
             </div>

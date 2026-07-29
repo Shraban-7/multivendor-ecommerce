@@ -16,39 +16,39 @@
 @section('content')
 <form id="productForm" autocomplete="off" method="POST" action="{{ route('seller.products.store') }}" enctype="multipart/form-data">
     @csrf
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="fw-bold mb-0 text-dark">Add Product</h4>
-        <button type="button" id="submitBtn" class="btn btn-primary d-inline-flex align-items-center gap-1">
+    <div class="flex justify-between items-center mb-3">
+        <h4 class="font-bold mb-0 text-ink">Add Product</h4>
+        <button type="button" id="submitBtn" class="inline-flex items-center justify-center gap-1 px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors">
             <i class="fas fa-save"></i> Save Product
         </button>
     </div>
 
-    <div class="row">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {{-- LEFT COLUMN: Main form fields --}}
-        <div class="col-lg-8">
+        <div class="lg:col-span-2">
             {{-- Basic Information --}}
-            <div class="card section-card">
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
                 <div class="card-header">
-                    <h5><i class="fas fa-info-circle me-2 text-primary"></i>Basic Information</h5>
+                    <h5><i class="fas fa-info-circle me-2 text-brand"></i>Basic Information</h5>
                 </div>
                 <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-12">
-                            <label class="form-label">Product Name</label>
-                            <input name="name" type="text" class="form-control" required>
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+                        <div class="md:col-span-12">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Product Name</label>
+                            <input name="name" type="text" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Category</label>
-                            <select id="categorySelect" name="category_id" class="form-select" required>
+                        <div class="md:col-span-4">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Category</label>
+                            <select id="categorySelect" name="category_id" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" required>
                                 <option disabled selected>-- Select Category --</option>
                                 @foreach ($categories as $category)
                                 <option value="{{ $category->id }}">{{ $category->name }}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Subcategory</label>
-                            <select id="subcategorySelect" name="subcategory_id" class="form-select" disabled>
+                        <div class="md:col-span-4">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Subcategory</label>
+                            <select id="subcategorySelect" name="subcategory_id" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" disabled>
                                 <option disabled selected>-- Select Subcategory --</option>
                                 @foreach ($categories as $category)
                                 @foreach ($category->subcategories as $subcategory)
@@ -57,62 +57,62 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Brand</label>
-                            <select name="brand" class="form-select brand-select">
+                        <div class="md:col-span-4">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Brand</label>
+                            <select name="brand" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors brand-select">
                                 <option disabled selected>-- Select Brand --</option>
                                 @foreach ($brands as $brand)
                                 <option value="{{ $brand->id }}">{{ $brand->name }}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Unit Value</label>
-                            <input type="number" name="unit_value" class="form-control" placeholder="Enter value" required>
+                        <div class="md:col-span-6">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Unit Value</label>
+                            <input type="number" name="unit_value" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="Enter value" required>
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Unit</label>
-                            <select name="unit_id" class="form-select" required>
+                        <div class="md:col-span-6">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Unit</label>
+                            <select name="unit_id" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" required>
                                 <option disabled selected>--</option>
                                 @foreach ($units as $unit)
                                 <option value="{{ $unit->id }}">{{ $unit->short_name }}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-12">
-                            <label class="form-label">Tags <span class="text-muted small">(comma separated)</span></label>
-                            <input type="text" name="tags" class="form-control" placeholder="e.g. cotton, summer, casual">
+                        <div class="md:col-span-12">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Tags <span class="text-ink-tertiary text-sm">(comma separated)</span></label>
+                            <input type="text" name="tags" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="e.g. cotton, summer, casual">
                         </div>
                     </div>
                 </div>
             </div>
 
             {{-- Pricing & Inventory --}}
-            <div class="card section-card">
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
                 <div class="card-header">
-                    <h5><i class="fas fa-tags me-2 text-primary"></i>Pricing & Inventory</h5>
+                    <h5><i class="fas fa-tags me-2 text-brand"></i>Pricing & Inventory</h5>
                 </div>
                 <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-md-4">
-                            <label class="form-label">Cost Price</label>
-                            <input name="cost_price" type="number" min="0" step="0.01" class="form-control" required>
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+                        <div class="md:col-span-4">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Cost Price</label>
+                            <input name="cost_price" type="number" min="0" step="0.01" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Price</label>
-                            <input name="price" type="number" min="0" step="0.01" class="form-control" required>
+                        <div class="md:col-span-4">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Price</label>
+                            <input name="price" type="number" min="0" step="0.01" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Compare Price <span class="text-muted small">(optional sale)</span></label>
-                            <input name="compare_price" type="number" min="0" step="0.01" class="form-control" placeholder="Leave empty for no sale">
+                        <div class="md:col-span-4">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Compare Price <span class="text-ink-tertiary text-sm">(optional sale)</span></label>
+                            <input name="compare_price" type="number" min="0" step="0.01" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="Leave empty for no sale">
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Low Stock Quantity</label>
-                            <input name="low_stock_quantity" type="number" min="0" class="form-control" required>
+                        <div class="md:col-span-6">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Low Stock Quantity</label>
+                            <input name="low_stock_quantity" type="number" min="0" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Payment Type</label>
-                            <select name="payment_type" class="form-select" required>
+                        <div class="md:col-span-6">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Payment Type</label>
+                            <select name="payment_type" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" required>
                                 @foreach (App\Enums\PaymentType::cases() as $paymentType)
                                 <option value="{{ $paymentType->value }}">{{ $paymentType->title() }}</option>
                                 @endforeach
@@ -123,62 +123,62 @@
             </div>
 
             {{-- Description & Specifications --}}
-            <div class="card section-card">
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
                 <div class="card-header">
-                    <h5><i class="fas fa-align-left me-2 text-primary"></i>Description & Specifications</h5>
+                    <h5><i class="fas fa-align-left me-2 text-brand"></i>Description & Specifications</h5>
                 </div>
                 <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-12">
-                            <label class="form-label">Short Description</label>
-                            <textarea name="short_description" class="form-control" rows="2" placeholder="Brief summary for search results"></textarea>
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+                        <div class="md:col-span-12">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Short Description</label>
+                            <textarea name="short_description" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" rows="2" placeholder="Brief summary for search results"></textarea>
                         </div>
-                        <div class="col-12">
-                            <label class="form-label">Description</label>
-                            <textarea name="description" class="form-control" rows="4" placeholder="Full product description"></textarea>
+                        <div class="md:col-span-12">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Description</label>
+                            <textarea name="description" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" rows="4" placeholder="Full product description"></textarea>
                         </div>
-                        <div class="col-12">
-                            <label class="form-label">Specifications <span class="text-muted small">(key:value pairs, one per line)</span></label>
-                            <textarea name="specifications" class="form-control" rows="3" placeholder="e.g. Material: Cotton&#10;Color: Red&#10;Warranty: 1 Year"></textarea>
+                        <div class="md:col-span-12">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Specifications <span class="text-ink-tertiary text-sm">(key:value pairs, one per line)</span></label>
+                            <textarea name="specifications" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" rows="3" placeholder="e.g. Material: Cotton&#10;Color: Red&#10;Warranty: 1 Year"></textarea>
                         </div>
                     </div>
                 </div>
             </div>
 
             {{-- Shipping & Manufacturer --}}
-            <div class="card section-card">
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
                 <div class="card-header">
-                    <h5><i class="fas fa-truck me-2 text-primary"></i>Shipping & Manufacturer</h5>
+                    <h5><i class="fas fa-truck me-2 text-brand"></i>Shipping & Manufacturer</h5>
                 </div>
                 <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-md-3">
-                            <label class="form-label">Weight (kg)</label>
-                            <input type="number" step="0.01" name="weight" class="form-control" placeholder="0.00">
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+                        <div class="md:col-span-3">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Weight (kg)</label>
+                            <input type="number" step="0.01" name="weight" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="0.00">
                         </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Height (cm)</label>
-                            <input type="number" step="0.01" name="height" class="form-control" placeholder="0.00">
+                        <div class="md:col-span-3">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Height (cm)</label>
+                            <input type="number" step="0.01" name="height" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="0.00">
                         </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Width (cm)</label>
-                            <input type="number" step="0.01" name="width" class="form-control" placeholder="0.00">
+                        <div class="md:col-span-3">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Width (cm)</label>
+                            <input type="number" step="0.01" name="width" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="0.00">
                         </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Length (cm)</label>
-                            <input type="number" step="0.01" name="length" class="form-control" placeholder="0.00">
+                        <div class="md:col-span-3">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Length (cm)</label>
+                            <input type="number" step="0.01" name="length" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="0.00">
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Country of Origin</label>
-                            <input type="text" name="country_of_origin" class="form-control" placeholder="e.g. Bangladesh">
+                        <div class="md:col-span-4">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Country of Origin</label>
+                            <input type="text" name="country_of_origin" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="e.g. Bangladesh">
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Manufacturer Name</label>
-                            <input type="text" name="manufacturer_name" class="form-control" placeholder="Manufacturer name">
+                        <div class="md:col-span-4">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Manufacturer Name</label>
+                            <input type="text" name="manufacturer_name" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="Manufacturer name">
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Manufacturer Details</label>
-                            <input type="text" name="manufacturer_details" class="form-control" placeholder="Address / contact">
+                        <div class="md:col-span-4">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Manufacturer Details</label>
+                            <input type="text" name="manufacturer_details" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="Address / contact">
                         </div>
                     </div>
                 </div>
@@ -186,16 +186,16 @@
         </div>
 
         {{-- RIGHT COLUMN: Thumbnail + Variants --}}
-        <div class="col-lg-4">
+        <div class="lg:col-span-1">
             <div class="sticky-sidebar">
                 {{-- Product Thumbnail --}}
-                <div class="card section-card">
+                <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
                     <div class="card-header">
-                        <h5><i class="fas fa-camera me-2 text-primary"></i>Thumbnail</h5>
+                        <h5><i class="fas fa-camera me-2 text-brand"></i>Thumbnail</h5>
                     </div>
                     <div class="card-body text-center">
                         <x-image-input name="thumbnail" />
-                        <span class="text-muted small mt-2 d-block">JPG/PNG/WEBP, max 10MB</span>
+                        <span class="text-ink-tertiary text-sm mt-2 block">JPG/PNG/WEBP, max 10MB</span>
                     </div>
                 </div>
 

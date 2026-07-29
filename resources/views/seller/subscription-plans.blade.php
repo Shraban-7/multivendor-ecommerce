@@ -2,35 +2,35 @@
 @section('title', 'Subscription Plans')
 @section('content')
 
-<div class="d-flex justify-content-between align-items-end mb-4">
-    <h4 class="fw-bold mb-0 text-dark">Subscription Plans</h4>
+<div class="flex justify-between items-end mb-4">
+    <h4 class="font-bold mb-0 text-ink">Subscription Plans</h4>
 </div>
 
 <?php $currentPlanId = $current_subscription->plan_id ?? 0; ?>
 
-<div class="row g-4">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
     @foreach ($plans as $plan)
-    <div class="col-12 col-sm-6 col-lg-3">
-        <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
-            <div class="card-body d-flex flex-column">
-                <h5 class="card-title text-center fw-bold mb-3 text-primary">
+    <div class="col-span-full sm:col-span-1 lg:col-span-1">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden h-full" style="border-radius: 12px;">
+            <div class="p-5 flex flex-col">
+                <h5 class="text-center font-bold mb-3 text-brand">
                     {{ $plan->name }}
                 </h5>
-                <h2 class="text-center mb-1 fw-bold text-dark">
+                <h2 class="text-center mb-1 font-bold text-ink">
                     {{ money($plan->price) }}
                 </h2>
-                <p class="text-center text-muted mb-4">
+                <p class="text-center text-ink-tertiary mb-4">
                     {{ ucfirst($plan->duration_type) }}
                 </p>
-                <ul class="list-unstyled small flex-grow-1">
-                    <li class="mb-1"><span class="fw-semibold">{{ $plan->product_limit == 0 ? 'Unlimited' : $plan->product_limit }}</span> Products</li>
-                    <li class="mb-1"><span class="fw-semibold">{{ $plan->commission_rate }}%</span> Commission</li>
-                    <li class="mb-1 {{ $plan->pos_access ? 'text-success' : 'text-muted' }}">{{ $plan->pos_access ? '✅' : '❌' }} POS Access</li>
-                    <li class="mb-1 {{ $plan->analytics_access ? 'text-success' : 'text-muted' }}">{{ $plan->analytics_access ? '✅' : '❌' }} Analytics Access</li>
-                    <li class="mb-1 {{ $plan->priority_support ? 'text-success' : 'text-muted' }}">{{ $plan->priority_support ? '✅' : '❌' }} Priority Support</li>
-                    <li class="mb-1 {{ $plan->custom_domain ? 'text-success' : 'text-muted' }}">{{ $plan->custom_domain ? '✅' : '❌' }} Custom Domain</li>
-                    <li class="mb-1 {{ $plan->payment_checker ? 'text-success' : 'text-muted' }}">{{ $plan->payment_checker ? '✅' : '❌' }} Payment Checker</li>
-                    <li><span class="fw-semibold">{{ $plan->staff_account_limit }}</span> Staff Accounts</li>
+                <ul class="list-none text-sm grow">
+                    <li class="mb-1"><span class="font-semibold">{{ $plan->product_limit == 0 ? 'Unlimited' : $plan->product_limit }}</span> Products</li>
+                    <li class="mb-1"><span class="font-semibold">{{ $plan->commission_rate }}%</span> Commission</li>
+                    <li class="mb-1 {{ $plan->pos_access ? 'text-feedback-success' : 'text-ink-tertiary' }}">{{ $plan->pos_access ? '✅' : '❌' }} POS Access</li>
+                    <li class="mb-1 {{ $plan->analytics_access ? 'text-feedback-success' : 'text-ink-tertiary' }}">{{ $plan->analytics_access ? '✅' : '❌' }} Analytics Access</li>
+                    <li class="mb-1 {{ $plan->priority_support ? 'text-feedback-success' : 'text-ink-tertiary' }}">{{ $plan->priority_support ? '✅' : '❌' }} Priority Support</li>
+                    <li class="mb-1 {{ $plan->custom_domain ? 'text-feedback-success' : 'text-ink-tertiary' }}">{{ $plan->custom_domain ? '✅' : '❌' }} Custom Domain</li>
+                    <li class="mb-1 {{ $plan->payment_checker ? 'text-feedback-success' : 'text-ink-tertiary' }}">{{ $plan->payment_checker ? '✅' : '❌' }} Payment Checker</li>
+                    <li><span class="font-semibold">{{ $plan->staff_account_limit }}</span> Staff Accounts</li>
                 </ul>
 
                 <?php
@@ -41,23 +41,23 @@
                 ?>
 
                 @if ($active)
-                <div class="d-grid gap-2 mt-auto">
-                    <button class="btn btn-success w-100" disabled>
+                <div class="grid gap-2 mt-auto">
+                    <button class="inline-flex items-center justify-center px-4 py-2 bg-feedback-success text-white text-sm font-medium rounded-xs hover:bg-green-700 focus:outline-none transition-colors w-full" disabled>
                         {{ $isFreePlan ? 'Free Plan' : 'Current Plan' }}
                     </button>
                     @if (!$isFreePlan)
-                    <button type="button" class="btn btn-outline-danger w-100" data-bs-toggle="modal" data-bs-target="#cancelModal">
+                    <button type="button" class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-xs border border-feedback-danger text-feedback-danger hover:bg-feedback-danger hover:text-white transition-colors w-full" data-bs-toggle="modal" data-bs-target="#cancelModal">
                         Cancel Subscription
                     </button>
-                    <div class="d-flex justify-content-between small text-muted mt-2">
+                    <div class="flex justify-between text-sm text-ink-tertiary mt-2">
                         <span>Start: {{ $startDate }}</span>
-                        <span class="text-danger">End: {{ $endDate }}</span>
+                        <span class="text-feedback-danger">End: {{ $endDate }}</span>
                     </div>
                     @endif
                 </div>
                 @else
-                <div class="d-grid mt-auto">
-                    <button type="button" class="btn btn-primary w-100 d-inline-flex align-items-center justify-content-center gap-1" data-bs-toggle="modal" data-bs-target="#upgradeModal{{ $plan->id }}">
+                <div class="grid mt-auto">
+                    <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors w-full gap-1" data-bs-toggle="modal" data-bs-target="#upgradeModal{{ $plan->id }}">
                         Choose Plan
                     </button>
                 </div>
@@ -66,17 +66,17 @@
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content border-0">
                             <div class="modal-header">
-                                <h5 class="modal-title fw-semibold">Confirm Subscription</h5>
+                                <h5 class="modal-title font-semibold">Confirm Subscription</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                                 Are you sure you want to subscribe to <strong>{{ $plan->name }}</strong> plan?
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                                <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Cancel</button>
                                 <form action="{{ route('seller.plans.subscribe', $plan->id) }}" method="POST">
                                     @csrf
-                                    <button type="submit" class="btn btn-primary d-inline-flex align-items-center gap-1">Yes, Subscribe</button>
+                                    <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">Yes, Subscribe</button>
                                 </form>
                             </div>
                         </div>
@@ -94,17 +94,17 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0">
             <div class="modal-header">
-                <h5 class="modal-title fw-semibold">Cancel Subscription</h5>
+                <h5 class="modal-title font-semibold">Cancel Subscription</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 Are you sure you want to cancel your subscription? You will be downgraded to the Free Plan.
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Close</button>
                 <form action="{{ route('seller.plans.subscribe', $plan->id) }}" method="POST">
                     @csrf
-                    <button type="submit" class="btn btn-danger d-inline-flex align-items-center gap-1">Yes, Cancel</button>
+                    <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-feedback-danger text-white text-sm font-medium rounded-xs hover:bg-red-700 focus:outline-none transition-colors gap-1">Yes, Cancel</button>
                 </form>
             </div>
         </div>

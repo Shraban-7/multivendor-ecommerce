@@ -2,34 +2,34 @@
 @section('title', 'Product Attributes')
 
 @section('content')
-    <div class="mb-4 d-flex justify-content-between align-items-center">
-        <h4 class="fw-bold mb-0 text-dark">Product Attributes</h4>
+    <div class="mb-4 flex justify-between items-center">
+        <h4 class="font-bold mb-0 text-ink">Product Attributes</h4>
     </div>
 
-    <div class="table-responsive">
-        <table class="table mb-3 bg-white table-bordered table-hover">
-            <thead class="table-light">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm text-ink border-collapse mb-3 bg-white table-bordered table-hover">
+            <thead class="bg-surface-muted">
                 <tr>
-                    <th scope="col" class="small fw-semibold text-muted">Name</th>
-                    <th scope="col" class="small fw-semibold text-muted">Options</th>
-                    <th scope="col" class="small fw-semibold text-muted">Date</th>
-                    <th scope="col" class="small fw-semibold text-muted">Action</th>
+                    <th scope="col" class="text-sm font-semibold text-ink-tertiary">Name</th>
+                    <th scope="col" class="text-sm font-semibold text-ink-tertiary">Options</th>
+                    <th scope="col" class="text-sm font-semibold text-ink-tertiary">Date</th>
+                    <th scope="col" class="text-sm font-semibold text-ink-tertiary">Action</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($productAttributes as $productAttribute)
                     <tr>
                         <td>
-                            <div class="fw-semibold">{{ $productAttribute->name }}</div>
+                            <div class="font-semibold">{{ $productAttribute->name }}</div>
                         </td>
                         <td>
                             @foreach ($productAttribute->options as $option)
-                                <div class="d-flex align-items-center justify-content-between mb-2 border rounded p-2">
+                                <div class="flex items-center justify-between mb-2 border rounded-xs p-2">
                                     <div>
-                                        <small class="fw-semibold">{{ $option->value }}</small>
+                                        <small class="font-semibold">{{ $option->value }}</small>
                                     </div>
                                     <div>
-                                        <button type="button" class="btn btn-sm btn-danger d-inline-flex align-items-center gap-1" title="Delete"
+                                        <button type="button" class="inline-flex items-center justify-center px-3 py-1.5 bg-feedback-danger text-white text-sm font-medium rounded-xs hover:bg-red-700 focus:outline-none transition-colors gap-1" title="Delete"
                                                 data-bs-toggle="modal" data-bs-target="#deleteOptionModal-{{ $option->id }}">
                                             <i data-feather="trash" class="icon-xs"></i>
                                         </button>
@@ -46,17 +46,17 @@
                                                         aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body text-center">
-                                                <div class="alert alert-warning d-flex align-items-center" role="alert">
-                                                    <i class="bi bi-exclamation-circle-fill me-2 text-danger" style="font-size: 1.5rem;"></i>
+                                                <div class="p-4 rounded-sm bg-amber-50 border border-amber-200 text-feedback-warning text-sm flex items-center gap-3" role="alert">
+                                                    <i class="bi bi-exclamation-circle-fill me-2 text-feedback-danger" style="font-size: 1.5rem;"></i>
                                                     <span>Are you sure you want to delete this option?</span>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
+                                                <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors"
                                                         data-bs-dismiss="modal">Cancel</button>
                                                 <form action="{{ route('seller.productAttributes.option_delete', $option->id) }}" method="POST">
                                                     @csrf
-                                                    <button type="submit" class="btn btn-danger d-inline-flex align-items-center gap-1">Delete</button>
+                                                    <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-feedback-danger text-white text-sm font-medium rounded-xs hover:bg-red-700 focus:outline-none transition-colors gap-1">Delete</button>
                                                 </form>
                                             </div>
                                         </div>
@@ -66,10 +66,10 @@
                         </td>
 
                         <td>{{ $productAttribute->created_at->format('d-m-y h:i A') }}</td>
-                        <td class="d-flex">
+                        <td class="flex">
 
 
-                            <button type="submit" class="border btn btn-danger btn-sm d-inline-flex align-items-center gap-1" title="Delete"
+                            <button type="submit" class="border inline-flex items-center justify-center px-3 py-1.5 bg-feedback-danger text-white text-sm font-medium rounded-xs hover:bg-red-700 focus:outline-none transition-colors gap-1" title="Delete"
                                 data-bs-toggle="modal" data-bs-target="#deleteModal-{{ $productAttribute->id }}">
                                 <i data-feather="trash" class="icon-xs"></i> Delete
                             </button>
@@ -87,20 +87,20 @@
                                         aria-label="Close"></button>
                                 </div>
                                 <div class="text-center modal-body">
-                                    <div class="alert alert-warning d-flex" role="alert">
-                                        <i class="bi bi-exclamation-circle-fill me-2 text-danger"
+                                    <div class="p-4 rounded-sm bg-amber-50 border border-amber-200 text-feedback-warning text-sm flex items-start gap-3" role="alert">
+                                        <i class="bi bi-exclamation-circle-fill me-2 text-feedback-danger"
                                             style="font-size: 1.5rem;"></i>
-                                        <p class="mt-1 text-secondary">
+                                        <p class="mt-1 text-ink-secondary">
                                             Are you sure you want to delete this Product Attribute?
                                         </p>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Cancel</button>
                                     <form action="{{ route('seller.productAttributes.delete', $productAttribute->id) }}"
                                         method="POST">
                                         @csrf
-                                        <button type="submit" class="btn btn-danger d-inline-flex align-items-center gap-1">Delete</button>
+                                        <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-feedback-danger text-white text-sm font-medium rounded-xs hover:bg-red-700 focus:outline-none transition-colors gap-1">Delete</button>
                                     </form>
                                 </div>
                             </div>

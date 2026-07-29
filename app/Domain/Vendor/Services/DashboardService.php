@@ -15,7 +15,7 @@ class DashboardService
 {
     public function dashboard(int $sellerId, string $startDate, string $endDate): array
     {
-        $cacheKey = "dashboard:{$sellerId}:{$startDate}:{$endDate}";
+        $cacheKey = "dashboard:v2:{$sellerId}:{$startDate}:{$endDate}";
 
         return Cache::remember($cacheKey, 300, function () use ($sellerId, $startDate, $endDate) {
             $start = $startDate.' 00:00:00';
@@ -39,9 +39,9 @@ class DashboardService
             ->whereBetween('created_at', [$start, $end])
             ->selectRaw('
                 COUNT(*) as total_orders,
-                SUM(payable) as gross_sales,
-                SUM(total_commission) as total_commission,
-                SUM(seller_earnings) as total_earnings,
+                COALESCE(SUM(payable), 0) as total_sales,
+                COALESCE(SUM(total_commission), 0) as total_commission,
+                COALESCE(SUM(seller_earnings), 0) as total_earnings,
                 COUNT(DISTINCT user_id) as total_customers,
                 SUM(CASE WHEN status = 0 THEN 1 ELSE 0 END) as pending_orders,
                 SUM(CASE WHEN status = 2 THEN 1 ELSE 0 END) as shipped_orders,
@@ -56,7 +56,9 @@ class DashboardService
             ->whereBetween('created_at', [$start, $end])
             ->pluck('id');
 
-        $costPriceSum = OrderItem::whereIn('order_id', $orderIds)->sum('cost_price');
+        $costPriceSum = $orderIds->isEmpty()
+            ? 0
+            : (float) OrderItem::whereIn('order_id', $orderIds)->sum('cost_price');
 
         $totalExpense = SellerExpense::where('seller_id', $sellerId)
             ->whereBetween('expense_date', [$start, $end])
@@ -70,14 +72,16 @@ class DashboardService
             ->selectRaw('COALESCE(SUM(GREATEST(COALESCE(product_variants.stock_in, 0) - COALESCE(product_variants.stock_out, 0), 0) * product_variants.price), 0) as total')
             ->value('total');
 
-        $profit = $aggregates->total_sales - $costPriceSum;
+        $totalSales = (float) $aggregates->total_sales;
+        $profit = $totalSales - $costPriceSum;
         $averageOrderValue = $aggregates->total_orders > 0
-            ? round($aggregates->total_sales / $aggregates->total_orders, 2)
+            ? round($totalSales / $aggregates->total_orders, 2)
             : 0;
 
         return [
             'total_orders' => (int) $aggregates->total_orders,
-            'gross_sales' => (float) $aggregates->gross_sales,
+            'total_sales' => $totalSales,
+            'gross_sales' => $totalSales,
             'total_earnings' => (float) $aggregates->total_earnings,
             'total_commission' => (float) $aggregates->total_commission,
             'total_customers' => (int) $aggregates->total_customers,
@@ -189,6 +193,7 @@ class DashboardService
     {
         $today = now()->toDateString();
         $monthStart = now()->startOfMonth()->toDateString();
+        Cache::forget("dashboard:v2:{$sellerId}:{$monthStart}:{$today}");
         Cache::forget("dashboard:{$sellerId}:{$monthStart}:{$today}");
     }
 }

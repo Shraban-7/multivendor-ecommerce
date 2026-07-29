@@ -262,6 +262,23 @@ if (! function_exists('storage_url')) {
     }
 }
 
+if (! function_exists('asset_versioned')) {
+    /**
+     * Append the file's last-modified time as a query string so browsers pick up
+     * edits to unbundled public assets without a manual cache clear.
+     */
+    function asset_versioned(string $path): string
+    {
+        $absolute = public_path($path);
+
+        if (! is_file($absolute)) {
+            return asset($path);
+        }
+
+        return asset($path).'?v='.filemtime($absolute);
+    }
+}
+
 if (! function_exists('delete_file')) {
     function delete_file($file)
     {

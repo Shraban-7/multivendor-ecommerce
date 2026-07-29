@@ -4,21 +4,21 @@
 @section('content')
     <div>
         <header>
-            <div class="row align-items-center mb-4">
-                <div class="col-md-6 mb-3 mb-md-0">
-                    <h2 class="fw-bold mb-1 text-dark">Business Overview</h2>
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb mb-0 small">
-                            <li class="breadcrumb-item text-muted">Reports</li>
-                            <li class="breadcrumb-item active fw-semibold" aria-current="page">Business Overview</li>
+            <div class="grid grid-cols-1 items-center mb-4">
+                <div class="md:col-span-1 mb-3 mb-md-0">
+                    <h2 class="font-bold mb-1 text-ink">Business Overview</h2>
+                    <nav aria-label="flex items-center gap-2 text-sm">
+                        <ol class="flex items-center gap-2 text-sm mb-0 text-sm">
+                            <li class="text-ink-tertiary text-ink-tertiary">Reports</li>
+                            <li class="text-ink-tertiary active font-semibold" aria-current="page">Business Overview</li>
                         </ol>
                     </nav>
                 </div>
 
-                <div class="col-md-6">
-                    <form method="GET" class="row g-2 justify-content-end">
-                        <div class="col-md-4 col-sm-6">
-                            <select name="range" class="form-select form-select-sm"
+                <div class="md:col-span-1">
+                    <form method="GET" class="grid grid-cols-1 gap-2 justify-end">
+                        <div class="md:col-span-1 sm:col-span-1">
+                            <select name="range" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors-sm"
                                 onchange="toggleCustomDates(this.value)">
                                 <option disabled selected>--select--</option>
                                 <option value="daily" {{ request('range') == 'daily' ? 'selected' : '' }}>Daily</option>
@@ -29,145 +29,145 @@
                             </select>
                         </div>
 
-                        <div class="col-md-6 col-sm-6" id="customDateRange"
+                        <div class="md:col-span-1 sm:col-span-1" id="customDateRange"
                             style="{{ request('range') == 'custom' ? '' : 'display:none;' }}">
-                            <div class="input-group input-group-sm">
-                                <input type="date" name="date_from" value="{{ request('date_from') }}" class="form-control">
-                                <input type="date" name="date_to" value="{{ request('date_to') }}" class="form-control">
+                            <div class="flex flex">
+                                <input type="date" name="date_from" value="{{ request('date_from') }}" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
+                                <input type="date" name="date_to" value="{{ request('date_to') }}" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
                             </div>
                         </div>
 
-                        <div class="col-md-2 col-sm-12 d-flex align-items-end">
-                            <button class="btn btn-primary btn-sm w-100 d-inline-flex align-items-center justify-content-center gap-1">Filter</button>
+                        <div class="md:col-span-1 sm:col-span-full flex items-end">
+                            <button class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors w-full inline-flex items-center justify-center gap-1">Filter</button>
                         </div>
                     </form>
                 </div>
             </div>
         </header>
 
-        <div class="row mb-5 g-3">
-            <div class="col-xl-2 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 shadow-sm p-3 h-100" style="border-radius: 12px;">
-                    <div class="d-flex justify-content-between align-items-start">
+        <div class="grid grid-cols-1 mb-5 g-3">
+            <div class="xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-1">
+                <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3 h-full" style="border-radius: 12px;">
+                    <div class="flex justify-between items-start">
                         <div>
-                            <p class="text-muted text-uppercase mb-1 small fw-semibold">Total Sales</p>
-                            <span class="fw-bold fs-4 text-primary">{{ money($calculateMetrics['total_sales']) }}</span>
+                            <p class="text-ink-tertiary uppercase mb-1 text-sm font-semibold">Total Sales</p>
+                            <span class="font-bold text-xl text-brand">{{ money($calculateMetrics['total_sales']) }}</span>
                         </div>
-                        <i class="fas fa-shopping-bag opacity-25 fs-4"></i>
+                        <i class="fas fa-shopping-bag opacity-25 text-xl"></i>
                     </div>
                     <div class="mt-2">
-                        <div class="progress mb-1" style="height: 3px;">
-                            <div class="progress-bar bg-success" style="width: {{ $calculateMetrics['sales_growth'] }}%"></div>
+                        <div class="w-full h-2 bg-surface-muted rounded-full overflow-hidden mb-1" style="height: 3px;">
+                            <div class="h-full bg-brand-deep rounded-full transition-all bg-feedback-success" style="width: {{ $calculateMetrics['sales_growth'] }}%"></div>
                         </div>
-                        <small class="text-success fw-semibold"><i class="fas fa-arrow-up me-1"></i>{{ $calculateMetrics['sales_growth'] }}%</small>
-                        <small class="text-muted small">vs last {{ request('range') }}</small>
+                        <small class="text-feedback-success font-semibold"><i class="fas fa-arrow-up me-1"></i>{{ $calculateMetrics['sales_growth'] }}%</small>
+                        <small class="text-ink-tertiary text-sm">vs last {{ request('range') }}</small>
                     </div>
                 </div>
             </div>
 
-            <div class="col-xl-2 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 shadow-sm p-3 h-100" style="border-radius: 12px;">
-                    <div class="d-flex justify-content-between align-items-start">
+            <div class="xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-1">
+                <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3 h-full" style="border-radius: 12px;">
+                    <div class="flex justify-between items-start">
                         <div>
-                            <p class="text-muted text-uppercase mb-1 small fw-semibold">Orders</p>
-                            <span class="fw-bold fs-4 text-info">{{ $calculateMetrics['total_orders'] }}</span>
+                            <p class="text-ink-tertiary uppercase mb-1 text-sm font-semibold">Orders</p>
+                            <span class="font-bold text-xl text-feedback-info">{{ $calculateMetrics['total_orders'] }}</span>
                         </div>
-                        <i class="fas fa-clipboard-list opacity-25 fs-4"></i>
+                        <i class="fas fa-clipboard-list opacity-25 text-xl"></i>
                     </div>
                     <div class="mt-2">
-                        <div class="progress mb-1" style="height: 3px;">
-                            <div class="progress-bar bg-success" style="width: {{ $calculateMetrics['orders_growth'] }}%"></div>
+                        <div class="w-full h-2 bg-surface-muted rounded-full overflow-hidden mb-1" style="height: 3px;">
+                            <div class="h-full bg-brand-deep rounded-full transition-all bg-feedback-success" style="width: {{ $calculateMetrics['orders_growth'] }}%"></div>
                         </div>
-                        <small class="text-success fw-semibold"><i class="fas fa-arrow-up me-1"></i>{{ $calculateMetrics['orders_growth'] }}%</small>
-                        <small class="text-muted small">vs last {{ request('range') }}</small>
+                        <small class="text-feedback-success font-semibold"><i class="fas fa-arrow-up me-1"></i>{{ $calculateMetrics['orders_growth'] }}%</small>
+                        <small class="text-ink-tertiary text-sm">vs last {{ request('range') }}</small>
                     </div>
                 </div>
             </div>
 
-            <div class="col-xl-2 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 shadow-sm p-3 h-100" style="border-radius: 12px;">
-                    <div class="d-flex justify-content-between align-items-start">
+            <div class="xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-1">
+                <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3 h-full" style="border-radius: 12px;">
+                    <div class="flex justify-between items-start">
                         <div>
-                            <p class="text-muted text-uppercase mb-1 small fw-semibold">Net Profit</p>
-                            <span class="fw-bold fs-4 text-success">{{ money($calculateMetrics['net_profit']) }}</span>
+                            <p class="text-ink-tertiary uppercase mb-1 text-sm font-semibold">Net Profit</p>
+                            <span class="font-bold text-xl text-feedback-success">{{ money($calculateMetrics['net_profit']) }}</span>
                         </div>
-                        <i class="fas fa-dollar-sign opacity-25 fs-4"></i>
+                        <i class="fas fa-dollar-sign opacity-25 text-xl"></i>
                     </div>
                     <div class="mt-2">
-                        <div class="progress mb-1" style="height: 3px;">
-                            <div class="progress-bar bg-success" style="width: {{ $calculateMetrics['profit_growth'] }}%"></div>
+                        <div class="w-full h-2 bg-surface-muted rounded-full overflow-hidden mb-1" style="height: 3px;">
+                            <div class="h-full bg-brand-deep rounded-full transition-all bg-feedback-success" style="width: {{ $calculateMetrics['profit_growth'] }}%"></div>
                         </div>
-                        <small class="text-success fw-semibold"><i class="fas fa-arrow-up me-1"></i>{{ $calculateMetrics['profit_growth'] }}%</small>
-                        <small class="text-muted small">vs last {{ request('range') }}</small>
+                        <small class="text-feedback-success font-semibold"><i class="fas fa-arrow-up me-1"></i>{{ $calculateMetrics['profit_growth'] }}%</small>
+                        <small class="text-ink-tertiary text-sm">vs last {{ request('range') }}</small>
                     </div>
                 </div>
             </div>
 
-            <div class="col-xl-2 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 shadow-sm p-3 h-100" style="border-radius: 12px;">
-                    <div class="d-flex justify-content-between align-items-start">
+            <div class="xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-1">
+                <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3 h-full" style="border-radius: 12px;">
+                    <div class="flex justify-between items-start">
                         <div>
-                            <p class="text-muted text-uppercase mb-1 small fw-semibold">Ret. Customers</p>
-                            <span class="fw-bold fs-4 text-warning">{{ number_format($quickFacts['returning_customers_percent'], 2)}}%</span>
+                            <p class="text-ink-tertiary uppercase mb-1 text-sm font-semibold">Ret. Customers</p>
+                            <span class="font-bold text-xl text-feedback-warning">{{ number_format($quickFacts['returning_customers_percent'], 2)}}%</span>
                         </div>
-                        <i class="fas fa-users-viewfinder opacity-25 fs-4"></i>
+                        <i class="fas fa-users-viewfinder opacity-25 text-xl"></i>
                     </div>
                 </div>
             </div>
 
-            <div class="col-xl-2 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 shadow-sm p-3 h-100" style="border-radius: 12px;">
-                    <div class="d-flex justify-content-between align-items-start">
+            <div class="xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-1">
+                <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3 h-full" style="border-radius: 12px;">
+                    <div class="flex justify-between items-start">
                         <div>
-                            <p class="text-muted text-uppercase mb-1 small fw-semibold">AOV</p>
-                            <span class="fw-bold fs-4 text-secondary">{{ money($calculateMetrics['aov']) }}</span>
+                            <p class="text-ink-tertiary uppercase mb-1 text-sm font-semibold">AOV</p>
+                            <span class="font-bold text-xl text-ink-secondary">{{ money($calculateMetrics['aov']) }}</span>
                         </div>
-                        <i class="fas fa-basket-shopping opacity-25 fs-4"></i>
+                        <i class="fas fa-basket-shopping opacity-25 text-xl"></i>
                     </div>
                     <div class="mt-2">
-                        <div class="progress mb-1" style="height: 3px;">
-                            <div class="progress-bar bg-success" style="width: {{ $calculateMetrics['aov_growth'] }}%"></div>
+                        <div class="w-full h-2 bg-surface-muted rounded-full overflow-hidden mb-1" style="height: 3px;">
+                            <div class="h-full bg-brand-deep rounded-full transition-all bg-feedback-success" style="width: {{ $calculateMetrics['aov_growth'] }}%"></div>
                         </div>
-                        <small class="text-success fw-semibold"><i class="fas fa-arrow-up me-1"></i>{{ $calculateMetrics['aov_growth'] }}%</small>
-                        <small class="text-muted small">vs last {{ request('range') }}</small>
+                        <small class="text-feedback-success font-semibold"><i class="fas fa-arrow-up me-1"></i>{{ $calculateMetrics['aov_growth'] }}%</small>
+                        <small class="text-ink-tertiary text-sm">vs last {{ request('range') }}</small>
                     </div>
                 </div>
             </div>
 
-            <div class="col-xl-2 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 shadow-sm p-3 h-100" style="border-radius: 12px;">
-                    <div class="d-flex justify-content-between align-items-start">
+            <div class="xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-1">
+                <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3 h-full" style="border-radius: 12px;">
+                    <div class="flex justify-between items-start">
                         <div>
-                            <p class="text-muted text-uppercase mb-1 small fw-semibold">Total Stock</p>
-                            <span class="fw-bold fs-4 text-dark">{{ $calculateMetrics['total_stock'] }}</span>
+                            <p class="text-ink-tertiary uppercase mb-1 text-sm font-semibold">Total Stock</p>
+                            <span class="font-bold text-xl text-ink">{{ $calculateMetrics['total_stock'] }}</span>
                         </div>
-                        <i class="fas fa-boxes-stacked opacity-25 fs-4"></i>
+                        <i class="fas fa-boxes-stacked opacity-25 text-xl"></i>
                     </div>
                     <div class="mt-2">
-                        <div class="progress mb-1" style="height: 3px;">
-                            <div class="progress-bar bg-info" style="width: {{ $calculateMetrics['stock_growth'] }}%"></div>
+                        <div class="w-full h-2 bg-surface-muted rounded-full overflow-hidden mb-1" style="height: 3px;">
+                            <div class="h-full bg-brand-deep rounded-full transition-all bg-feedback-info" style="width: {{ $calculateMetrics['stock_growth'] }}%"></div>
                         </div>
-                        <small class="text-info fw-semibold">Stable</small>
-                        <small class="text-muted small">inventory level</small>
+                        <small class="text-feedback-info font-semibold">Stable</small>
+                        <small class="text-ink-tertiary text-sm">inventory level</small>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="row mb-5 g-4">
-            <div class="col-lg-8">
-                <div class="card border-0 shadow-sm p-4 h-100" style="border-radius: 12px;">
-                    <h5 class="fw-bold mb-3">Revenue & Order Trends</h5>
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <p class="fw-semibold text-muted mb-1">{{ request('range') }} Revenue Trend</p>
-                            <div class="bg-light rounded-3 border d-flex align-items-center justify-content-center" style="min-height: 250px;">
+        <div class="grid grid-cols-1 mb-5 g-4">
+            <div class="lg:col-span-2">
+                <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-4 h-full" style="border-radius: 12px;">
+                    <h5 class="font-bold mb-3">Revenue & Order Trends</h5>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div class="md:col-span-1">
+                            <p class="font-semibold text-ink-tertiary mb-1">{{ request('range') }} Revenue Trend</p>
+                            <div class="bg-surface-muted rounded-md border flex items-center justify-center" style="min-height: 250px;">
                                 <canvas id="revenueTrend"></canvas>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <p class="fw-semibold text-muted mb-1">Orders vs. Returns</p>
-                            <div class="bg-light rounded-3 border d-flex align-items-center justify-content-center" style="min-height: 250px;">
+                        <div class="md:col-span-1">
+                            <p class="font-semibold text-ink-tertiary mb-1">Orders vs. Returns</p>
+                            <div class="bg-surface-muted rounded-md border flex items-center justify-center" style="min-height: 250px;">
                                 <canvas id="ordersReturns"></canvas>
                             </div>
                         </div>
@@ -175,76 +175,76 @@
                 </div>
             </div>
 
-            <div class="col-lg-4">
-                <div class="card border-0 shadow-sm p-4 h-100" style="border-radius: 12px;">
-                    <h5 class="fw-bold mb-3">Quick Facts</h5>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+            <div class="lg:col-span-1">
+                <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-4 h-full" style="border-radius: 12px;">
+                    <h5 class="font-bold mb-3">Quick Facts</h5>
+                    <ul class="flex flex-col ">
+                        <li class="flex items-center px-0 py-2 border-b border-border flex justify-between items-center px-0">
                             Total Orders:
-                            <span class="fw-bold text-primary">{{ $quickFacts['total_orders'] }}</span>
+                            <span class="font-bold text-brand">{{ $quickFacts['total_orders'] }}</span>
                         </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <li class="flex items-center px-0 py-2 border-b border-border flex justify-between items-center px-0">
                             Refund Rate:
-                            <span class="fw-bold text-danger">{{ $quickFacts['refund_rate'] }}%</span>
+                            <span class="font-bold text-feedback-danger">{{ $quickFacts['refund_rate'] }}%</span>
                         </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <li class="flex items-center px-0 py-2 border-b border-border flex justify-between items-center px-0">
                             Best Sales Day:
-                            <span class="fw-bold text-success">{{ $quickFacts['best_sales_day'] ?? '-' }}</span>
+                            <span class="font-bold text-feedback-success">{{ $quickFacts['best_sales_day'] ?? '-' }}</span>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
 
-        <div class="row g-4">
-            <div class="col-lg-6">
-                <div class="card border-0 shadow-sm p-4 h-100" style="border-radius: 12px;">
-                    <h5 class="fw-bold mb-3">Smart Highlights</h5>
-                    <div class="list-group list-group-flush">
+        <div class="grid grid-cols-1 gap-4">
+            <div class="lg:col-span-1">
+                <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-4 h-full" style="border-radius: 12px;">
+                    <h5 class="font-bold mb-3">Smart Highlights</h5>
+                    <div class="flex flex-col ">
                         <a href="#"
-                            class="list-group-item list-group-item-action border-0 py-2 d-flex align-items-center">
-                            <span class="badge bg-success-subtle text-success me-3 p-2"><i class="fas fa-chart-line"></i></span>
-                            <span class="fw-semibold">Revenue grew <span class="text-success">8%</span> last week.</span>
+                            class="flex items-center px-0 py-2 border-b border-border flex flex-col-item-action border-0 py-2 flex items-center">
+                            <span class="badge bg-emerald-50 text-feedback-success me-3 p-2"><i class="fas fa-chart-line"></i></span>
+                            <span class="font-semibold">Revenue grew <span class="text-feedback-success">8%</span> last week.</span>
                         </a>
                         <a href="#"
-                            class="list-group-item list-group-item-action border-0 py-2 d-flex align-items-center">
-                            <span class="badge bg-primary-subtle text-primary me-3 p-2"><i class="fas fa-shirt"></i></span>
-                            <span class="fw-semibold">Apparel category contributed <span class="text-primary">32%</span> of total sales.</span>
+                            class="flex items-center px-0 py-2 border-b border-border flex flex-col-item-action border-0 py-2 flex items-center">
+                            <span class="badge bg-brand-tint text-brand me-3 p-2"><i class="fas fa-shirt"></i></span>
+                            <span class="font-semibold">Apparel category contributed <span class="text-brand">32%</span> of total sales.</span>
                         </a>
                         <a href="#"
-                            class="list-group-item list-group-item-action border-0 py-2 d-flex align-items-center">
-                            <span class="badge bg-warning-subtle text-warning me-3 p-2"><i class="fas fa-repeat"></i></span>
-                            <span class="fw-semibold">Returning customers spent <span class="text-warning">18%</span> more.</span>
+                            class="flex items-center px-0 py-2 border-b border-border flex flex-col-item-action border-0 py-2 flex items-center">
+                            <span class="badge bg-amber-50 text-feedback-warning me-3 p-2"><i class="fas fa-repeat"></i></span>
+                            <span class="font-semibold">Returning customers spent <span class="text-feedback-warning">18%</span> more.</span>
                         </a>
                         <a href="#"
-                            class="list-group-item list-group-item-action border-0 py-2 d-flex align-items-center">
-                            <span class="badge bg-danger-subtle text-danger me-3 p-2"><i class="fas fa-boxes-packing"></i></span>
-                            <span class="fw-semibold">High stock alert in Electronics. Review turnover.</span>
+                            class="flex items-center px-0 py-2 border-b border-border flex flex-col-item-action border-0 py-2 flex items-center">
+                            <span class="badge bg-red-50 text-feedback-danger me-3 p-2"><i class="fas fa-boxes-packing"></i></span>
+                            <span class="font-semibold">High stock alert in Electronics. Review turnover.</span>
                         </a>
                     </div>
                 </div>
             </div>
 
-            <div class="col-lg-6">
-                <div class="card border-0 shadow-sm p-4 h-100" style="border-radius: 12px;">
-                    <h5 class="fw-bold mb-3">Top Product Snapshot</h5>
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
+            <div class="lg:col-span-1">
+                <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-4 h-full" style="border-radius: 12px;">
+                    <h5 class="font-bold mb-3">Top Product Snapshot</h5>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm text-ink border-collapse table-hover mb-0">
+                            <thead class="bg-surface-muted">
                                 <tr>
-                                    <th scope="col" class="small fw-semibold text-muted">Product</th>
-                                    <th scope="col" class="small fw-semibold text-muted text-end">Units Sold</th>
-                                    <th scope="col" class="small fw-semibold text-muted text-end">Sales</th>
-                                    <th scope="col" class="small fw-semibold text-muted text-end">Stock</th>
+                                    <th scope="col" class="text-sm font-semibold text-ink-tertiary">Product</th>
+                                    <th scope="col" class="text-sm font-semibold text-ink-tertiary text-right">Units Sold</th>
+                                    <th scope="col" class="text-sm font-semibold text-ink-tertiary text-right">Sales</th>
+                                    <th scope="col" class="text-sm font-semibold text-ink-tertiary text-right">Stock</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($topProducts as $product)
                                     <tr>
-                                        <td class="fw-semibold">{{ $product['name'] }}</td>
-                                        <td class="text-end">{{ $product['units_sold'] }}</td>
-                                        <td class="text-end text-success fw-semibold">{{ money($product['sales']) }}</td>
-                                        <td class="text-end">{{ $product['stock'] }}</td>
+                                        <td class="font-semibold">{{ $product['name'] }}</td>
+                                        <td class="text-right">{{ $product['units_sold'] }}</td>
+                                        <td class="text-right text-feedback-success font-semibold">{{ money($product['sales']) }}</td>
+                                        <td class="text-right">{{ $product['stock'] }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -254,32 +254,32 @@
             </div>
         </div>
 
-        <div class="row mt-4 g-4">
-            <div class="col-12">
-                <h5 class="fw-bold mb-3">Recent Reports & Exports</h5>
-                <div class="d-flex flex-wrap gap-3">
-                    <div class="card border-0 shadow-sm p-3" style="border-radius: 12px; width: 18rem;">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <p class="mb-0 fw-semibold">Weekly Performance Summary</p>
-                            <a href="#" class="text-primary" title="Download"><i class="fas fa-download"></i></a>
+        <div class="grid grid-cols-1 mt-4 g-4">
+            <div class="col-span-full">
+                <h5 class="font-bold mb-3">Recent Reports & Exports</h5>
+                <div class="flex flex-wrap gap-3">
+                    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3" style="border-radius: 12px; width: 18rem;">
+                        <div class="flex justify-between items-center">
+                            <p class="mb-0 font-semibold">Weekly Performance Summary</p>
+                            <a href="#" class="text-brand" title="Download"><i class="fas fa-download"></i></a>
                         </div>
-                        <small class="text-muted">Generated Nov 15, 2025</small>
+                        <small class="text-ink-tertiary">Generated Nov 15, 2025</small>
                     </div>
 
-                    <div class="card border-0 shadow-sm p-3" style="border-radius: 12px; width: 18rem;">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <p class="mb-0 fw-semibold">Sales vs Target - October</p>
-                            <a href="#" class="text-primary" title="Export"><i class="fas fa-file-export"></i></a>
+                    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3" style="border-radius: 12px; width: 18rem;">
+                        <div class="flex justify-between items-center">
+                            <p class="mb-0 font-semibold">Sales vs Target - October</p>
+                            <a href="#" class="text-brand" title="Export"><i class="fas fa-file-export"></i></a>
                         </div>
-                        <small class="text-muted">Generated Nov 1, 2025</small>
+                        <small class="text-ink-tertiary">Generated Nov 1, 2025</small>
                     </div>
 
-                    <div class="card border-0 shadow-sm p-3" style="border-radius: 12px; width: 18rem;">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <p class="mb-0 fw-semibold">Customer Segment Analysis</p>
-                            <a href="#" class="text-primary" title="Export"><i class="fas fa-file-export"></i></a>
+                    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3" style="border-radius: 12px; width: 18rem;">
+                        <div class="flex justify-between items-center">
+                            <p class="mb-0 font-semibold">Customer Segment Analysis</p>
+                            <a href="#" class="text-brand" title="Export"><i class="fas fa-file-export"></i></a>
                         </div>
-                        <small class="text-muted">Generated Nov 18, 2025</small>
+                        <small class="text-ink-tertiary">Generated Nov 18, 2025</small>
                     </div>
                 </div>
             </div>

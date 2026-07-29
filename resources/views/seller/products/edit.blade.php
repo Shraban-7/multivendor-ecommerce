@@ -20,70 +20,70 @@
 @endpush
 
 @section('content')
-<div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
-    <div class="d-flex align-items-start gap-2">
-        <a href="{{ route('seller.products.show', $product->slug) }}" class="btn btn-light border btn-sm d-inline-flex align-items-center gap-1 mt-1" title="Back to Details">
+<div class="flex flex-wrap justify-between items-start gap-2 mb-3">
+    <div class="flex items-start gap-2">
+        <a href="{{ route('seller.products.show', $product->slug) }}" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1 mt-1" title="Back to Details">
             <i data-feather="arrow-left" style="width:16px;height:16px;"></i>
         </a>
         <div>
-            <div class="d-flex align-items-center gap-2 mb-1">
-                <h4 class="fw-bold mb-0 text-dark">Edit Product</h4>
+            <div class="flex items-center gap-2 mb-1">
+                <h4 class="font-bold mb-0 text-ink">Edit Product</h4>
                 @if ($product->status == $product::STATUS_ACTIVE)
-                <span class="badge bg-success">Active</span>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-feedback-success border border-emerald-200">Active</span>
                 @elseif ($product->status == $product::STATUS_PENDING_APPROVAL)
-                <span class="badge bg-warning text-dark">Pending</span>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-feedback-warning border border-amber-200 text-ink">Pending</span>
                 @elseif ($product->status == $product::STATUS_INACTIVE)
-                <span class="badge bg-secondary">Inactive</span>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-surface-muted text-ink-secondary border border-border">Inactive</span>
                 @elseif ($product->status == $product::STATUS_DRAFT)
-                <span class="badge bg-info text-dark">Draft</span>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-feedback-info border border-blue-200 text-ink">Draft</span>
                 @endif
             </div>
-            <div class="small text-muted d-flex align-items-center gap-3">
+            <div class="text-sm text-ink-tertiary flex items-center gap-3">
                 <span>SKU: <strong>{{ $product->sku }}</strong></span>
                 <span>Added: {{ $product->created_at->format('d M, Y') }}</span>
             </div>
         </div>
     </div>
-    <button type="submit" form="productUpdateForm" id="updateBtn" class="btn btn-primary d-inline-flex align-items-center gap-1">
+    <button type="submit" form="productUpdateForm" id="updateBtn" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">
         <i data-feather="save" style="width:16px;height:16px;"></i> Update Product
     </button>
 </div>
 
 <form id="productUpdateForm" enctype="multipart/form-data" method="POST">
     @csrf
-    <div class="row">
-        <div class="col-lg-8">
-            <div class="card section-card">
-                <div class="card-header">
-                    <h5><i class="fas fa-info-circle me-2 text-primary"></i>Basic Information</h5>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div class="lg:col-span-2">
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
+                <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
+                    <h5><i class="fas fa-info-circle me-2 text-brand"></i>Basic Information</h5>
                 </div>
-                <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-12">
+                <div class="p-5">
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+                        <div class="col-span-full">
                             <label class="form-label-sm">Product Name</label>
-                            <input type="text" class="form-control form-control-sm" value="{{ $product->name }}" name="name" required>
+                            <input type="text" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->name }}" name="name" required>
                         </div>
-                        <div class="col-md-4">
+                        <div class="md:col-span-4">
                             <label class="form-label-sm">Brand</label>
-                            <select name="brand" class="form-select form-select-sm brand-select">
+                            <select name="brand" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors brand-select">
                                 <option value="">—</option>
                                 @foreach ($brands as $brand)
                                 <option value="{{ $brand->id }}" {{ $product->brand_id == $brand->id ? 'selected' : '' }}>{{ $brand->name }}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-4">
+                        <div class="md:col-span-4">
                             <label class="form-label-sm">Category</label>
-                            <select name="category_id" class="form-select form-select-sm" id="categorySelect" required>
+                            <select name="category_id" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" id="categorySelect" required>
                                 <option value="" disabled>—</option>
                                 @foreach ($categories as $category)
                                 <option value="{{ $category->id }}" @selected($category->id == $product->category_id)>{{ $category->name }}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-4">
+                        <div class="md:col-span-4">
                             <label class="form-label-sm">Subcategory</label>
-                            <select name="subcategory_id" class="form-select form-select-sm" id="subcategorySelect" {{ $product->subcategory_id ? '' : 'disabled' }}>
+                            <select name="subcategory_id" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" id="subcategorySelect" {{ $product->subcategory_id ? '' : 'disabled' }}>
                                 <option value="" disabled>—</option>
                                 @foreach ($categories as $category)
                                 @foreach ($category->subcategories as $subcategory)
@@ -92,11 +92,11 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-6">
+                        <div class="md:col-span-6">
                             <label class="form-label-sm">Unit</label>
-                            <div class="input-group input-group-sm">
-                                <input type="number" step="0.01" name="unit_value" value="{{ $product->unit_value }}" class="form-control" placeholder="Value" required>
-                                <select name="unit_id" class="form-select" required>
+                            <div class="flex">
+                                <input type="number" step="0.01" name="unit_value" value="{{ $product->unit_value }}" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="Value" required>
+                                <select name="unit_id" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" required>
                                     <option value="" disabled {{ $product->unit_id === null ? 'selected' : '' }}>—</option>
                                     @foreach ($units as $unit)
                                     <option value="{{ $unit->id }}" {{ $product->unit_id == $unit->id ? 'selected' : '' }}>{{ $unit->short_name }}</option>
@@ -104,39 +104,39 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label-sm">Tags <span class="text-muted">(comma sep.)</span></label>
-                            <input type="text" name="tags" class="form-control form-control-sm" value="{{ $product->tags->pluck('name')->implode(', ') }}" placeholder="e.g. cotton, summer">
+                        <div class="md:col-span-6">
+                            <label class="form-label-sm">Tags <span class="text-ink-tertiary">(comma sep.)</span></label>
+                            <input type="text" name="tags" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->tags->pluck('name')->implode(', ') }}" placeholder="e.g. cotton, summer">
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="card section-card">
-                <div class="card-header">
-                    <h5><i class="fas fa-tags me-2 text-primary"></i>Pricing & Inventory</h5>
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
+                <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
+                    <h5><i class="fas fa-tags me-2 text-brand"></i>Pricing & Inventory</h5>
                 </div>
-                <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-md-3">
+                <div class="p-5">
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+                        <div class="md:col-span-3">
                             <label class="form-label-sm">Cost Price</label>
-                            <input type="number" name="cost_price" step="0.01" min="0" class="form-control form-control-sm" value="{{ $product->cost_price }}" required>
+                            <input type="number" name="cost_price" step="0.01" min="0" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->cost_price }}" required>
                         </div>
-                        <div class="col-md-3">
+                        <div class="md:col-span-3">
                             <label class="form-label-sm">Selling Price</label>
-                            <input type="number" name="price" step="0.01" min="0" class="form-control form-control-sm" value="{{ $product->price }}" required>
+                            <input type="number" name="price" step="0.01" min="0" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->price }}" required>
                         </div>
-                        <div class="col-md-3">
-                            <label class="form-label-sm">Compare Price <span class="text-muted">(sale)</span></label>
-                            <input name="compare_price" type="number" step="0.01" min="0" class="form-control form-control-sm" value="{{ $product->compare_price }}" placeholder="Optional">
+                        <div class="md:col-span-3">
+                            <label class="form-label-sm">Compare Price <span class="text-ink-tertiary">(sale)</span></label>
+                            <input name="compare_price" type="number" step="0.01" min="0" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->compare_price }}" placeholder="Optional">
                         </div>
-                        <div class="col-md-3">
+                        <div class="md:col-span-3">
                             <label class="form-label-sm">Low Stock Qty</label>
-                            <input name="low_stock_quantity" type="number" min="0" class="form-control form-control-sm" value="{{ $product->low_stock_quantity }}" required>
+                            <input name="low_stock_quantity" type="number" min="0" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->low_stock_quantity }}" required>
                         </div>
-                        <div class="col-md-4">
+                        <div class="md:col-span-4">
                             <label class="form-label-sm">Payment Type</label>
-                            <select name="payment_type" class="form-select form-select-sm">
+                            <select name="payment_type" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors">
                                 @foreach (App\Enums\PaymentType::cases() as $paymentType)
                                 <option value="{{ $paymentType->value }}" @selected($paymentType->value == $product->payment_type->value)>{{ $paymentType->title() }}</option>
                                 @endforeach
@@ -147,141 +147,141 @@
                 </div>
             </div>
 
-            <div class="card section-card">
-                <div class="card-header">
-                    <h5><i class="fas fa-align-left me-2 text-primary"></i>Description &amp; Specifications</h5>
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
+                <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
+                    <h5><i class="fas fa-align-left me-2 text-brand"></i>Description &amp; Specifications</h5>
                 </div>
-                <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-12">
+                <div class="p-5">
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+                        <div class="col-span-full">
                             <label class="form-label-sm">Short Description</label>
-                            <textarea name="short_description" class="form-control form-control-sm" rows="2">{{ $product->short_description }}</textarea>
+                            <textarea name="short_description" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" rows="2">{{ $product->short_description }}</textarea>
                         </div>
-                        <div class="col-12">
+                        <div class="col-span-full">
                             <label class="form-label-sm">Full Description</label>
-                            <textarea name="description" class="form-control form-control-sm" rows="5">{{ $product->description }}</textarea>
+                            <textarea name="description" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" rows="5">{{ $product->description }}</textarea>
                         </div>
-                        <div class="col-12">
-                            <label class="form-label-sm">Specifications <span class="text-muted">(key:value per line)</span></label>
-                            <textarea name="specifications" class="form-control form-control-sm" rows="3">@if($product->specifications)@foreach($product->specifications as $key => $value){{ $key }}: {{ $value }}
+                        <div class="col-span-full">
+                            <label class="form-label-sm">Specifications <span class="text-ink-tertiary">(key:value per line)</span></label>
+                            <textarea name="specifications" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" rows="3">@if($product->specifications)@foreach($product->specifications as $key => $value){{ $key }}: {{ $value }}
 @endforeach @endif</textarea>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="card section-card">
-                <div class="card-header">
-                    <h5><i class="fas fa-image me-2 text-primary"></i>Gallery Images</h5>
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
+                <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
+                    <h5><i class="fas fa-image me-2 text-brand"></i>Gallery Images</h5>
                 </div>
-                <div class="card-body">
+                <div class="p-5">
                     @include('seller.products.partials.upload-images')
                 </div>
             </div>
 
-            <div class="card section-card">
-                <div class="card-header">
-                    <h5><i class="fas fa-truck me-2 text-primary"></i>Shipping &amp; Manufacturer</h5>
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
+                <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
+                    <h5><i class="fas fa-truck me-2 text-brand"></i>Shipping &amp; Manufacturer</h5>
                 </div>
-                <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-md-3">
+                <div class="p-5">
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+                        <div class="md:col-span-3">
                             <label class="form-label-sm">Weight (kg)</label>
-                            <input type="number" step="0.01" name="weight" class="form-control form-control-sm" value="{{ $product->weight }}" placeholder="0.00">
+                            <input type="number" step="0.01" name="weight" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->weight }}" placeholder="0.00">
                         </div>
-                        <div class="col-md-3">
+                        <div class="md:col-span-3">
                             <label class="form-label-sm">Height (cm)</label>
-                            <input type="number" step="0.01" name="height" class="form-control form-control-sm" value="{{ $product->height }}" placeholder="0.00">
+                            <input type="number" step="0.01" name="height" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->height }}" placeholder="0.00">
                         </div>
-                        <div class="col-md-3">
+                        <div class="md:col-span-3">
                             <label class="form-label-sm">Width (cm)</label>
-                            <input type="number" step="0.01" name="width" class="form-control form-control-sm" value="{{ $product->width }}" placeholder="0.00">
+                            <input type="number" step="0.01" name="width" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->width }}" placeholder="0.00">
                         </div>
-                        <div class="col-md-3">
+                        <div class="md:col-span-3">
                             <label class="form-label-sm">Length (cm)</label>
-                            <input type="number" step="0.01" name="length" class="form-control form-control-sm" value="{{ $product->length }}" placeholder="0.00">
+                            <input type="number" step="0.01" name="length" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->length }}" placeholder="0.00">
                         </div>
-                        <div class="col-md-4">
+                        <div class="md:col-span-4">
                             <label class="form-label-sm">Country of Origin</label>
-                            <input type="text" name="country_of_origin" class="form-control form-control-sm" value="{{ $product->country_of_origin }}" placeholder="e.g. Bangladesh">
+                            <input type="text" name="country_of_origin" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->country_of_origin }}" placeholder="e.g. Bangladesh">
                         </div>
-                        <div class="col-md-4">
+                        <div class="md:col-span-4">
                             <label class="form-label-sm">Manufacturer</label>
-                            <input type="text" name="manufacturer_name" class="form-control form-control-sm" value="{{ $product->manufacturer_name }}" placeholder="Name">
+                            <input type="text" name="manufacturer_name" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->manufacturer_name }}" placeholder="Name">
                         </div>
-                        <div class="col-md-4">
+                        <div class="md:col-span-4">
                             <label class="form-label-sm">Manufacturer Details</label>
-                            <input type="text" name="manufacturer_details" class="form-control form-control-sm" value="{{ $product->manufacturer_details }}" placeholder="Address / contact">
+                            <input type="text" name="manufacturer_details" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->manufacturer_details }}" placeholder="Address / contact">
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="card section-card">
-                <div class="card-header">
-                    <h5><i class="fas fa-eye me-2 text-primary"></i>Visibility</h5>
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
+                <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
+                    <h5><i class="fas fa-eye me-2 text-brand"></i>Visibility</h5>
                 </div>
-                <div class="card-body">
-                    <div class="d-flex gap-3">
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" name="is_featured" {{ $product->is_featured ? 'checked' : '' }}>
-                            <label class="form-check-label small">Featured</label>
+                <div class="p-5">
+                    <div class="flex gap-3">
+                        <div class="flex items-center gap-2 form-switch">
+                            <input class="h-4 w-4 rounded border-border text-brand focus:ring-brand" type="checkbox" name="is_featured" {{ $product->is_featured ? 'checked' : '' }}>
+                            <label class="text-sm text-ink">Featured</label>
                         </div>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" name="best_selling" {{ $product->best_selling ? 'checked' : '' }}>
-                            <label class="form-check-label small">Best Selling</label>
+                        <div class="flex items-center gap-2 form-switch">
+                            <input class="h-4 w-4 rounded border-border text-brand focus:ring-brand" type="checkbox" name="best_selling" {{ $product->best_selling ? 'checked' : '' }}>
+                            <label class="text-sm text-ink">Best Selling</label>
                         </div>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" name="is_visible" {{ $product->is_visible ? 'checked' : '' }}>
-                            <label class="form-check-label small">Visible on Storefront</label>
+                        <div class="flex items-center gap-2 form-switch">
+                            <input class="h-4 w-4 rounded border-border text-brand focus:ring-brand" type="checkbox" name="is_visible" {{ $product->is_visible ? 'checked' : '' }}>
+                            <label class="text-sm text-ink">Visible on Storefront</label>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="card section-card">
-                <div class="card-header collapsible-header collapsed" data-bs-toggle="collapse" data-bs-target="#seoCollapse" aria-expanded="false" role="button">
-                    <h5 class="d-flex align-items-center">
-                        <i data-feather="chevron-down" class="collapse-icon-closed me-2 text-muted" style="width:14px;height:14px;"></i>
-                        <i data-feather="chevron-up" class="collapse-icon-open me-2 text-muted" style="width:14px;height:14px;"></i>
-                        <i data-feather="search" class="me-2 text-primary" style="width:16px;height:16px;"></i>SEO &amp; Social Share
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
+                <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between collapsible-header collapsed" data-bs-toggle="collapse" data-bs-target="#seoCollapse" aria-expanded="false" role="button">
+                    <h5 class="flex items-center">
+                        <i data-feather="chevron-down" class="collapse-icon-closed me-2 text-ink-tertiary" style="width:14px;height:14px;"></i>
+                        <i data-feather="chevron-up" class="collapse-icon-open me-2 text-ink-tertiary" style="width:14px;height:14px;"></i>
+                        <i data-feather="search" class="me-2 text-brand" style="width:16px;height:16px;"></i>SEO &amp; Social Share
                     </h5>
                 </div>
                 <div class="collapse" id="seoCollapse">
                     @php $seo = $product->seo; @endphp
-                    <div class="card-body">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label-sm">Meta Title <span class="text-muted">(max 70)</span></label>
-                                <input type="text" name="meta_title" maxlength="70" class="form-control form-control-sm" value="{{ $seo?->meta_title }}" placeholder="e.g. Red Cotton T-Shirt – Buy Online">
+                    <div class="p-5">
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+                            <div class="md:col-span-6">
+                                <label class="form-label-sm">Meta Title <span class="text-ink-tertiary">(max 70)</span></label>
+                                <input type="text" name="meta_title" maxlength="70" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $seo?->meta_title }}" placeholder="e.g. Red Cotton T-Shirt – Buy Online">
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label-sm">Meta Keywords <span class="text-muted">(comma sep.)</span></label>
-                                <input type="text" name="meta_keywords" maxlength="255" class="form-control form-control-sm" value="{{ $seo?->meta_keywords }}" placeholder="e.g. t-shirt, cotton">
+                            <div class="md:col-span-6">
+                                <label class="form-label-sm">Meta Keywords <span class="text-ink-tertiary">(comma sep.)</span></label>
+                                <input type="text" name="meta_keywords" maxlength="255" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $seo?->meta_keywords }}" placeholder="e.g. t-shirt, cotton">
                             </div>
-                            <div class="col-12">
-                                <label class="form-label-sm">Meta Description <span class="text-muted">(max 160)</span></label>
-                                <textarea name="meta_description" maxlength="160" rows="2" class="form-control form-control-sm" placeholder="Shown in search results.">{{ $seo?->meta_description }}</textarea>
+                            <div class="col-span-full">
+                                <label class="form-label-sm">Meta Description <span class="text-ink-tertiary">(max 160)</span></label>
+                                <textarea name="meta_description" maxlength="160" rows="2" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="Shown in search results.">{{ $seo?->meta_description }}</textarea>
                             </div>
                             <hr class="my-1">
-                            <h6 class="small fw-semibold">Open Graph</h6>
-                            <div class="col-md-6">
+                            <h6 class="text-sm font-semibold">Open Graph</h6>
+                            <div class="md:col-span-6">
                                 <label class="form-label-sm">OG Title</label>
-                                <input type="text" name="og_title" maxlength="70" class="form-control form-control-sm" value="{{ $seo?->og_title }}" placeholder="Social sharing title">
+                                <input type="text" name="og_title" maxlength="70" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $seo?->og_title }}" placeholder="Social sharing title">
                             </div>
-                            <div class="col-md-6">
+                            <div class="md:col-span-6">
                                 <label class="form-label-sm">OG Image</label>
-                                <input type="file" name="og_image" class="form-control form-control-sm">
+                                <input type="file" name="og_image" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
                                 @if (!empty($seo->og_image))
                                 <div class="mt-1"><img src="{{ storage_url($seo->og_image) }}" alt="OG" class="img-thumbnail" style="max-width:100px;"></div>
                                 @endif
                             </div>
-                            <div class="col-12">
+                            <div class="col-span-full">
                                 <label class="form-label-sm">OG Description</label>
-                                <textarea name="og_description" maxlength="160" rows="2" class="form-control form-control-sm" placeholder="Appears below the title when shared.">{{ $seo?->og_description }}</textarea>
+                                <textarea name="og_description" maxlength="160" rows="2" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="Appears below the title when shared.">{{ $seo?->og_description }}</textarea>
                             </div>
-                            <div class="col-12">
-                                <button type="button" id="seoUpdateBtn" class="btn btn-outline-primary btn-sm d-inline-flex align-items-center gap-1"><i class="fas fa-save"></i> Save SEO</button>
+                            <div class="col-span-full">
+                                <button type="button" id="seoUpdateBtn" class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs border border-brand text-brand hover:bg-brand hover:text-white transition-colors gap-1"><i class="fas fa-save"></i> Save SEO</button>
                             </div>
                         </div>
                     </div>
@@ -291,51 +291,51 @@
             <div id="alertBox"></div>
         </div>
 
-        <div class="col-lg-4">
+        <div class="lg:col-span-1">
             <div class="sticky-sidebar">
-                <div class="card section-card">
-                    <div class="card-header">
-                        <h5><i class="fas fa-camera me-2 text-primary"></i>Thumbnail</h5>
+                <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
+                    <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
+                        <h5><i class="fas fa-camera me-2 text-brand"></i>Thumbnail</h5>
                     </div>
-                    <div class="card-body text-center">
+                    <div class="p-5 text-center">
                         <div class="cropper-preview" id="thumbnailPreview" data-bs-toggle="modal" data-bs-target="#thumbnailCropperModal">
                             <img src="{{ $product->imageUrl }}" alt="Thumbnail" class="img-fluid" style="max-width:100%;max-height:100%;object-fit:cover;">
                         </div>
-                        <span class="text-muted small mt-2 d-block">Click to crop &amp; change. 3:4 ratio</span>
-                        <input type="file" name="thumbnail" class="d-none" accept="image/*">
+                        <span class="text-ink-tertiary text-sm mt-2 block">Click to crop &amp; change. 3:4 ratio</span>
+                        <input type="file" name="thumbnail" class="hidden" accept="image/*">
                     </div>
                 </div>
 
-                <div class="card section-card">
-                    <div class="card-header">
-                        <h5><i class="fas fa-layer-group me-2 text-primary"></i>Product Stats</h5>
+                <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
+                    <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
+                        <h5><i class="fas fa-layer-group me-2 text-brand"></i>Product Stats</h5>
                     </div>
-                    <div class="card-body">
+                    <div class="p-5">
                         @php
                             $vc = $product->variants->count();
                             $totalStock = $product->totalStock;
                             $margin = $product->price - $product->cost_price;
                             $marginPct = $product->cost_price > 0 ? round(($margin / $product->cost_price) * 100, 1) : 0;
                         @endphp
-                        <div class="d-flex justify-content-around text-center mb-3">
+                        <div class="flex justify-around text-center mb-3">
                             <div>
-                                <div class="fs-5 fw-bold text-primary">{{ $vc }}</div>
-                                <div class="small text-muted">Variants</div>
+                                <div class="text-base font-bold text-brand">{{ $vc }}</div>
+                                <div class="text-sm text-ink-tertiary">Variants</div>
                             </div>
                             <div>
-                                <div class="fs-5 fw-bold {{ $totalStock <= $product->low_stock_quantity ? 'text-danger' : 'text-success' }}">{{ $totalStock }}</div>
-                                <div class="small text-muted">Stock</div>
+                                <div class="text-base font-bold {{ $totalStock <= $product->low_stock_quantity ? 'text-feedback-danger' : 'text-feedback-success' }}">{{ $totalStock }}</div>
+                                <div class="text-sm text-ink-tertiary">Stock</div>
                             </div>
                             <div>
-                                <div class="fs-5 fw-bold {{ $margin > 0 ? 'text-success' : 'text-danger' }}">{{ $marginPct }}%</div>
-                                <div class="small text-muted">Margin</div>
+                                <div class="text-base font-bold {{ $margin > 0 ? 'text-feedback-success' : 'text-feedback-danger' }}">{{ $marginPct }}%</div>
+                                <div class="text-sm text-ink-tertiary">Margin</div>
                             </div>
                         </div>
-                        <div class="small text-muted mb-2">
+                        <div class="text-sm text-ink-tertiary mb-2">
                             <span>Created: {{ $product->created_at->format('d M, Y') }}</span><br>
                             <span>Updated: {{ $product->updated_at->format('d M, Y h:ia') }}</span>
                         </div>
-                        <a href="{{ route('seller.products.show', $product->slug) }}" class="btn btn-outline-secondary btn-sm w-100 d-inline-flex align-items-center justify-content-center gap-1" target="__blank">
+                        <a href="{{ route('seller.products.show', $product->slug) }}" class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs border border-border text-ink-secondary hover:bg-surface-muted transition-colors w-full gap-1" target="__blank">
                             <i data-feather="external-link" class="icon-xs"></i> View Details
                         </a>
                     </div>
@@ -350,10 +350,10 @@
         <div class="modal-content border-0">
             <div class="modal-header"><h5 class="modal-title">Crop Thumbnail</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeCropperModalBtn"></button></div>
             <div class="modal-body text-center">
-                <input type="file" id="thumbnailUploadInput" accept="image/*" class="form-control form-control-sm mb-3">
+                <input type="file" id="thumbnailUploadInput" accept="image/*" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors mb-3">
                 <img id="thumbnailCropperImage" src="#" class="d-none img-fluid" style="max-height:400px;">
             </div>
-            <div class="modal-footer"><button type="button" class="btn btn-success btn-sm" id="cropThumbnailBtn"><i class="fas fa-check me-1"></i>Crop &amp; Insert</button></div>
+            <div class="modal-footer"><button type="button" class="inline-flex items-center justify-center px-3 py-1.5 bg-feedback-success text-white text-sm font-medium rounded-xs hover:bg-green-700 focus:outline-none transition-colors" id="cropThumbnailBtn"><i class="fas fa-check me-1"></i>Crop &amp; Insert</button></div>
         </div>
     </div>
 </div>

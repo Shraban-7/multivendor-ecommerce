@@ -2,35 +2,35 @@
 @section('title', 'Stock History')
 
 @section('content')
-    <div class="d-flex justify-content-between align-items-end mb-3">
-        <h4 class="fw-bold mb-0 text-dark">Stock History</h4>
+    <div class="flex justify-between items-end mb-3">
+        <h4 class="font-bold mb-0 text-ink">Stock History</h4>
         <div>
-            <button type="button" class="btn btn-primary btn-sm d-inline-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#stockUpdateModal">
+            <button type="button" class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1" data-bs-toggle="modal" data-bs-target="#stockUpdateModal">
                 <i data-feather="package" style="width:16px;height:16px;"></i> Update Stock
             </button>
         </div>
     </div>
 
-    <div class="table-responsive">
-        <table class="table table-bordered table-hover align-middle bg-white" id="stock-history-table">
-            <thead class="table-light">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm text-ink border-collapse table-bordered table-hover align-middle bg-white" id="stock-history-table">
+            <thead class="bg-surface-muted">
                 <tr>
-                    <th scope="col" class="small fw-semibold text-muted">Product</th>
-                    <th scope="col" class="small fw-semibold text-muted">SKU</th>
-                    <th scope="col" class="small fw-semibold text-muted">Type</th>
-                    <th scope="col" class="small fw-semibold text-muted">Quantity</th>
-                    <th scope="col" class="small fw-semibold text-muted">Note</th>
-                    <th scope="col" class="small fw-semibold text-muted">Date</th>
+                    <th scope="col" class="text-sm font-semibold text-ink-tertiary">Product</th>
+                    <th scope="col" class="text-sm font-semibold text-ink-tertiary">SKU</th>
+                    <th scope="col" class="text-sm font-semibold text-ink-tertiary">Type</th>
+                    <th scope="col" class="text-sm font-semibold text-ink-tertiary">Quantity</th>
+                    <th scope="col" class="text-sm font-semibold text-ink-tertiary">Note</th>
+                    <th scope="col" class="text-sm font-semibold text-ink-tertiary">Date</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($stockHistories as $history)
                     <tr>
                         <td>
-                            <p class="fw-bold mb-0">{{ $history->product?->name ?? '—' }}</p>
-                            <span class="small text-muted">{{ $history->variant?->label ?: 'Simple product' }}</span>
+                            <p class="font-bold mb-0">{{ $history->product?->name ?? '—' }}</p>
+                            <span class="text-sm text-ink-tertiary">{{ $history->variant?->label ?: 'Simple product' }}</span>
                         </td>
-                        <td><span class="small">{{ $history->variant?->sku ?? $history->product?->sku ?? '—' }}</span></td>
+                        <td><span class="text-sm">{{ $history->variant?->sku ?? $history->product?->sku ?? '—' }}</span></td>
                         <td>
                             @switch($history->type)
                                 @case(\App\Domain\Product\Enums\StockType::ADD_STOCK)
@@ -47,13 +47,13 @@
                         <td>
                             @switch($history->type)
                                 @case(\App\Domain\Product\Enums\StockType::ADD_STOCK)
-                                    <span class="text-success fw-semibold">+{{ $history->quantity }}</span>
+                                    <span class="text-feedback-success font-semibold">+{{ $history->quantity }}</span>
                                 @break
                                 @case(\App\Domain\Product\Enums\StockType::REMOVE_STOCK)
-                                    <span class="text-danger fw-semibold">-{{ $history->quantity }}</span>
+                                    <span class="text-feedback-danger font-semibold">-{{ $history->quantity }}</span>
                                 @break
                                 @case(\App\Domain\Product\Enums\StockType::SET_EXACT_STOCK)
-                                    <span class="fw-semibold">{{ $history->quantity }}</span>
+                                    <span class="font-semibold">{{ $history->quantity }}</span>
                                 @break
                             @endswitch
                         </td>
@@ -73,53 +73,53 @@
                 <form id="stockForm" action="{{ route('seller.stock.update') }}" method="POST">
                     @csrf
                     <div class="modal-header">
-                        <h4 class="modal-title fw-semibold">Update Product Stock</h4>
+                        <h4 class="modal-title font-semibold">Update Product Stock</h4>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="productSelect" class="form-label">Select Product</label>
-                            <select id="productSelect" name="product_id" class="form-select">
+                            <label for="productSelect" class="block text-xs font-medium text-ink-secondary mb-1">Select Product</label>
+                            <select id="productSelect" name="product_id" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors">
                                 <option value="">-- Select Product --</option>
                             </select>
                         </div>
                         <div class="mb-3 d-none" id="variantContainer">
-                            <label for="variantSelect" class="form-label">Select Variant</label>
-                            <select id="variantSelect" name="variant_id" class="form-select">
+                            <label for="variantSelect" class="block text-xs font-medium text-ink-secondary mb-1">Select Variant</label>
+                            <select id="variantSelect" name="variant_id" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors">
                                 <option value="">-- Select Variant --</option>
                             </select>
                         </div>
-                        <div class="row">
-                            <div class="mb-3 col-4">
-                                <label for="stockQuantity" class="form-label">Quantity</label>
-                                <input type="number" id="stockQuantity" name="quantity" class="form-control" min="1" required />
+                        <div class="grid grid-cols-3">
+                            <div class="mb-3 col-span-1">
+                                <label for="stockQuantity" class="block text-xs font-medium text-ink-secondary mb-1">Quantity</label>
+                                <input type="number" id="stockQuantity" name="quantity" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" min="1" required />
                             </div>
-                            <div class="mb-3 col-8">
-                                <label class="form-label d-block">Stock Action</label>
-                                <div class="d-flex gap-3 flex-wrap">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="stock_action" id="addStock" value="{{ \App\Domain\Product\Enums\StockType::ADD_STOCK->value }}" checked>
-                                        <label class="form-check-label" for="addStock">{{ \App\Domain\Product\Enums\StockType::ADD_STOCK->label() }}</label>
+                            <div class="mb-3 col-span-2">
+                                <label class="block text-xs font-medium text-ink-secondary mb-1">Stock Action</label>
+                                <div class="flex gap-3 flex-wrap">
+                                    <div class="flex items-center gap-2">
+                                        <input class="h-4 w-4 rounded border-border text-brand focus:ring-brand" type="radio" name="stock_action" id="addStock" value="{{ \App\Domain\Product\Enums\StockType::ADD_STOCK->value }}" checked>
+                                        <label class="text-sm text-ink" for="addStock">{{ \App\Domain\Product\Enums\StockType::ADD_STOCK->label() }}</label>
                                     </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="stock_action" id="removeStock" value="{{ \App\Domain\Product\Enums\StockType::REMOVE_STOCK->value }}">
-                                        <label class="form-check-label" for="removeStock">{{ \App\Domain\Product\Enums\StockType::REMOVE_STOCK->label() }}</label>
+                                    <div class="flex items-center gap-2">
+                                        <input class="h-4 w-4 rounded border-border text-brand focus:ring-brand" type="radio" name="stock_action" id="removeStock" value="{{ \App\Domain\Product\Enums\StockType::REMOVE_STOCK->value }}">
+                                        <label class="text-sm text-ink" for="removeStock">{{ \App\Domain\Product\Enums\StockType::REMOVE_STOCK->label() }}</label>
                                     </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="stock_action" id="setStock" value="{{ \App\Domain\Product\Enums\StockType::SET_EXACT_STOCK->value }}">
-                                        <label class="form-check-label" for="setStock">{{ \App\Domain\Product\Enums\StockType::SET_EXACT_STOCK->label() }}</label>
+                                    <div class="flex items-center gap-2">
+                                        <input class="h-4 w-4 rounded border-border text-brand focus:ring-brand" type="radio" name="stock_action" id="setStock" value="{{ \App\Domain\Product\Enums\StockType::SET_EXACT_STOCK->value }}">
+                                        <label class="text-sm text-ink" for="setStock">{{ \App\Domain\Product\Enums\StockType::SET_EXACT_STOCK->label() }}</label>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label for="stockNote" class="form-label">Note (Optional)</label>
-                            <input type="text" id="stockNote" name="note" class="form-control" placeholder="Add any note..." />
+                            <label for="stockNote" class="block text-xs font-medium text-ink-secondary mb-1">Note (Optional)</label>
+                            <input type="text" id="stockNote" name="note" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="Add any note..." />
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary d-inline-flex align-items-center gap-1">Update Stock</button>
+                        <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">Update Stock</button>
                     </div>
                 </form>
             </div>

@@ -4,168 +4,168 @@
 @section('content')
 
 @if (!$seller->profile_completed)
-    <div class="alert alert-warning d-flex flex-column flex-sm-row align-items-start justify-content-between border-0 shadow-sm rounded-3 mb-4" role="alert">
-        <div class="d-flex align-items-center gap-2">
-            <i class="bi bi-exclamation-triangle-fill text-warning fs-5"></i>
+    <div class="p-4 rounded-sm bg-amber-50 border border-amber-200 text-feedback-warning text-sm flex flex-col sm:flex-row items-start justify-between mb-4" role="alert">
+        <div class="flex items-center gap-2">
+            <i class="bi bi-exclamation-triangle-fill text-feedback-warning text-xl"></i>
             <div>
-                <strong class="text-dark">Your profile is incomplete.</strong>
-                <span class="text-muted">Please complete your profile to ensure full access to all platform features.</span>
+                <strong class="text-ink">Your profile is incomplete.</strong>
+                <span class="text-ink-tertiary">Please complete your profile to ensure full access to all platform features.</span>
             </div>
         </div>
-        <a href="{{ route('seller.profile') }}" class="btn btn-sm mt-2 mt-sm-0" style="background: #B7791A; color: #fff; border: none; white-space: nowrap;">Complete Profile</a>
+        <a href="{{ route('seller.profile') }}" class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs mt-2 sm:mt-0" style="background: #B7791A; color: #fff; border: none; white-space: nowrap;">Complete Profile</a>
     </div>
 @endif
 
-<div class="d-flex flex-column flex-md-row align-items-start align-items-md-end justify-content-between gap-3 mb-4">
+<div class="flex flex-col md:flex-row items-start md:items-end justify-between gap-3 mb-4">
     <div>
-        <h4 class="mb-0 fw-bold fs-3 text-dark">{{ $seller->business_name }}</h4>
-        <p class="text-muted mb-0 small">Welcome back! Here's your business overview.</p>
+        <h4 class="mb-0 font-bold text-2xl text-ink">{{ $seller->business_name }}</h4>
+        <p class="text-ink-tertiary mb-0 text-sm">Welcome back! Here's your business overview.</p>
     </div>
-    <form id="dateRangeForm" method="GET" action="{{ route('seller.dashboard') }}" class="flex-shrink-0">
-        <div class="d-flex align-items-center gap-2">
+    <form id="dateRangeForm" method="GET" action="{{ route('seller.dashboard') }}" class="shrink-0">
+        <div class="flex items-center gap-2">
             <input type="date" name="start_date" value="{{ request('start_date') }}"
-                class="form-control form-control-sm" style="width: auto; min-width: 130px;">
+                class="w-full px-2 py-1 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" style="width: auto; min-width: 130px;">
             <input type="date" name="end_date" value="{{ request('end_date') }}"
-                class="form-control form-control-sm" style="width: auto; min-width: 130px;">
-            <button type="submit" class="btn btn-primary btn-sm d-flex align-items-center gap-1">
+                class="w-full px-2 py-1 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" style="width: auto; min-width: 130px;">
+            <button type="submit" class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">
                 <i class="bi bi-funnel"></i> Filter
             </button>
         </div>
     </form>
 </div>
 
-<div class="row g-3 mb-4">
-    <div class="col-6 col-lg-3">
-        <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
-            <div class="card-body p-3">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span class="small fw-semibold text-muted">Total Orders</span>
-                    <div class="icon-bg-success d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; border-radius: 10px;">
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+    <div class="w-full">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden h-full" style="border-radius: 12px;">
+            <div class="p-3">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-semibold text-ink-tertiary">Total Orders</span>
+                    <div class="icon-bg-success flex items-center justify-center" style="width: 36px; height: 36px; border-radius: 10px;">
                         <i data-feather="shopping-cart" style="width: 18px; height: 18px;"></i>
                     </div>
                 </div>
-                <h3 class="fw-bold mb-0 text-dark">{{ $total_orders }}</h3>
-                <small class="text-muted">Orders received</small>
+                <h3 class="font-bold mb-0 text-ink">{{ $total_orders }}</h3>
+                <small class="text-ink-tertiary">Orders received</small>
             </div>
         </div>
     </div>
-    <div class="col-6 col-lg-3">
-        <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
-            <div class="card-body p-3">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span class="small fw-semibold text-muted">Total Sales</span>
-                    <div class="icon-bg-primary d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; border-radius: 10px;">
+    <div class="w-full">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden h-full" style="border-radius: 12px;">
+            <div class="p-3">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-semibold text-ink-tertiary">Total Sales</span>
+                    <div class="icon-bg-primary flex items-center justify-center" style="width: 36px; height: 36px; border-radius: 10px;">
                         <i data-feather="trending-up" style="width: 18px; height: 18px;"></i>
                     </div>
                 </div>
-                <h3 class="fw-bold mb-0 text-dark">{{ money($total_sales) }}</h3>
-                <small class="text-muted">Revenue earned</small>
+                <h3 class="font-bold mb-0 text-ink">{{ money($total_sales) }}</h3>
+                <small class="text-ink-tertiary">Revenue earned</small>
             </div>
         </div>
     </div>
-    <div class="col-6 col-lg-3">
-        <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
-            <div class="card-body p-3">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span class="small fw-semibold text-muted">Avg Order Value</span>
-                    <div class="icon-bg-info d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; border-radius: 10px;">
+    <div class="w-full">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden h-full" style="border-radius: 12px;">
+            <div class="p-3">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-semibold text-ink-tertiary">Avg Order Value</span>
+                    <div class="icon-bg-info flex items-center justify-center" style="width: 36px; height: 36px; border-radius: 10px;">
                         <i data-feather="bar-chart" style="width: 18px; height: 18px;"></i>
                     </div>
                 </div>
-                <h3 class="fw-bold mb-0 text-dark">{{ money($average_order_value) }}</h3>
-                <small class="text-muted">Per order average</small>
+                <h3 class="font-bold mb-0 text-ink">{{ money($average_order_value) }}</h3>
+                <small class="text-ink-tertiary">Per order average</small>
             </div>
         </div>
     </div>
-    <div class="col-6 col-lg-3">
-        <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
-            <div class="card-body p-3">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span class="small fw-semibold text-muted">Total Profit</span>
-                    <div class="icon-bg-success d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; border-radius: 10px;">
+    <div class="w-full">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden h-full" style="border-radius: 12px;">
+            <div class="p-3">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-semibold text-ink-tertiary">Total Profit</span>
+                    <div class="icon-bg-success flex items-center justify-center" style="width: 36px; height: 36px; border-radius: 10px;">
                         <i data-feather="dollar-sign" style="width: 18px; height: 18px;"></i>
                     </div>
                 </div>
-                <h3 class="fw-bold mb-0 text-dark">{{ money($profit) }}</h3>
-                <small class="text-muted">Revenue minus cost</small>
+                <h3 class="font-bold mb-0 text-ink">{{ money($profit) }}</h3>
+                <small class="text-ink-tertiary">Revenue minus cost</small>
             </div>
         </div>
     </div>
-    <div class="col-6 col-lg-3">
-        <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
-            <div class="card-body p-3">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span class="small fw-semibold text-muted">Delivered</span>
-                    <div class="icon-bg-success d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; border-radius: 10px;">
+    <div class="w-full">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden h-full" style="border-radius: 12px;">
+            <div class="p-3">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-semibold text-ink-tertiary">Delivered</span>
+                    <div class="icon-bg-success flex items-center justify-center" style="width: 36px; height: 36px; border-radius: 10px;">
                         <i data-feather="check-circle" style="width: 18px; height: 18px;"></i>
                     </div>
                 </div>
-                <h3 class="fw-bold mb-0 text-dark">{{ $delivered_orders }}</h3>
-                <a href="{{ route('seller.orders.delivered') }}" class="small text-decoration-none">View All</a>
+                <h3 class="font-bold mb-0 text-ink">{{ $delivered_orders }}</h3>
+                <a href="{{ route('seller.orders.delivered') }}" class="text-sm no-underline">View All</a>
             </div>
         </div>
     </div>
-    <div class="col-6 col-lg-3">
-        <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
-            <div class="card-body p-3">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span class="small fw-semibold text-muted">Pending</span>
-                    <div class="icon-bg-warning d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; border-radius: 10px;">
+    <div class="w-full">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden h-full" style="border-radius: 12px;">
+            <div class="p-3">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-semibold text-ink-tertiary">Pending</span>
+                    <div class="icon-bg-warning flex items-center justify-center" style="width: 36px; height: 36px; border-radius: 10px;">
                         <i data-feather="clock" style="width: 18px; height: 18px;"></i>
                     </div>
                 </div>
-                <h3 class="fw-bold mb-0 text-dark">{{ $pending_orders }}</h3>
-                <a href="{{ route('seller.orders.pending') }}" class="small text-decoration-none">View All</a>
+                <h3 class="font-bold mb-0 text-ink">{{ $pending_orders }}</h3>
+                <a href="{{ route('seller.orders.pending') }}" class="text-sm no-underline">View All</a>
             </div>
         </div>
     </div>
-    <div class="col-6 col-lg-3">
-        <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
-            <div class="card-body p-3">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span class="small fw-semibold text-muted">Pending Payout</span>
-                    <div class="icon-bg-warning d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; border-radius: 10px;">
+    <div class="w-full">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden h-full" style="border-radius: 12px;">
+            <div class="p-3">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-semibold text-ink-tertiary">Pending Payout</span>
+                    <div class="icon-bg-warning flex items-center justify-center" style="width: 36px; height: 36px; border-radius: 10px;">
                         <i data-feather="credit-card" style="width: 18px; height: 18px;"></i>
                     </div>
                 </div>
-                <h3 class="fw-bold mb-0 text-dark">{{ money($pendingPayout) }}</h3>
-                <a href="{{ route('seller.payouts.index') }}" class="small text-decoration-none">View Payouts</a>
+                <h3 class="font-bold mb-0 text-ink">{{ money($pendingPayout) }}</h3>
+                <a href="{{ route('seller.payouts.index') }}" class="text-sm no-underline">View Payouts</a>
             </div>
         </div>
     </div>
-    <div class="col-6 col-lg-3">
-        <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
-            <div class="card-body p-3">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span class="small fw-semibold text-muted">Products</span>
-                    <div class="icon-bg-info d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; border-radius: 10px;">
+    <div class="w-full">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden h-full" style="border-radius: 12px;">
+            <div class="p-3">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-semibold text-ink-tertiary">Products</span>
+                    <div class="icon-bg-info flex items-center justify-center" style="width: 36px; height: 36px; border-radius: 10px;">
                         <i data-feather="package" style="width: 18px; height: 18px;"></i>
                     </div>
                 </div>
-                <h3 class="fw-bold mb-0 text-dark">{{ $total_products }}</h3>
-                <small class="text-muted">Stock value: {{ money($total_stock_value) }}</small>
+                <h3 class="font-bold mb-0 text-ink">{{ $total_products }}</h3>
+                <small class="text-ink-tertiary">Stock value: {{ money($total_stock_value) }}</small>
             </div>
         </div>
     </div>
 </div>
 
-<div class="row g-3 mb-4">
-    <div class="col-lg-8 d-flex flex-column">
-        <div class="card border-0 shadow-sm flex-fill" style="border-radius: 12px;">
-            <div class="card-body p-4">
-                <h5 class="fw-semibold mb-3 d-flex align-items-center gap-2">
-                    <i data-feather="bar-chart-2" class="text-primary" style="width: 18px; height: 18px;"></i>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-4">
+    <div class="lg:col-span-2 flex flex-col">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden flex-1" style="border-radius: 12px;">
+            <div class="p-4">
+                <h5 class="font-semibold mb-3 flex items-center gap-2">
+                    <i data-feather="bar-chart-2" class="text-brand" style="width: 18px; height: 18px;"></i>
                     Sales & Order Analytics
                 </h5>
                 <canvas id="salesOrderChart" height="150"></canvas>
             </div>
         </div>
     </div>
-    <div class="col-lg-4 d-flex flex-column">
-        <div class="card border-0 shadow-sm flex-fill" style="border-radius: 12px;">
-            <div class="card-body p-4">
-                <h5 class="fw-semibold mb-3 d-flex align-items-center gap-2">
-                    <i data-feather="pie-chart" class="text-primary" style="width: 18px; height: 18px;"></i>
+    <div class="flex flex-col">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden flex-1" style="border-radius: 12px;">
+            <div class="p-4">
+                <h5 class="font-semibold mb-3 flex items-center gap-2">
+                    <i data-feather="pie-chart" class="text-brand" style="width: 18px; height: 18px;"></i>
                     Order Status
                 </h5>
                 <canvas id="statusDonutChart" height="180"></canvas>
@@ -174,64 +174,64 @@
     </div>
 </div>
 
-<div class="row g-3 mb-4">
-    <div class="col-lg-8 d-flex flex-column">
-        <div class="card border-0 shadow-sm flex-fill" style="border-radius: 12px;">
-            <div class="card-body p-4">
-                <h5 class="fw-semibold mb-3 d-flex align-items-center gap-2">
-                    <i data-feather="award" class="text-primary" style="width: 18px; height: 18px;"></i>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-4">
+    <div class="lg:col-span-2 flex flex-col">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden flex-1" style="border-radius: 12px;">
+            <div class="p-4">
+                <h5 class="font-semibold mb-3 flex items-center gap-2">
+                    <i data-feather="award" class="text-brand" style="width: 18px; height: 18px;"></i>
                     Top Selling Products
                 </h5>
                 @if ($top_selling_products->count() > 0)
-                    <ul class="list-group list-group-flush">
+                    <ul class="flex flex-col mb-0">
                         @foreach ($top_selling_products as $product)
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2 border-bottom-0">
-                                <div class="d-flex align-items-center gap-2">
+                            <li class="flex justify-between items-center px-0 py-2 border-b-0">
+                                <div class="flex items-center gap-2">
                                     <img src="{{ storage_url($product->thumbnail) }}" alt="{{ $product->name }}"
-                                        width="36" height="36" class="rounded border border-subtle" style="object-fit: cover;" />
+                                        width="36" height="36" class="rounded border border-border" style="object-fit: cover;" />
                                     <div>
-                                        <span class="small fw-medium text-dark">{{ $product->name }}</span>
+                                        <span class="text-sm font-medium text-ink">{{ $product->name }}</span>
                                     </div>
                                 </div>
-                                <span class="badge rounded-pill px-3 badge-soft-primary">{{ $product->sales_count }} Sold</span>
+                                <span class="inline-flex items-center px-3 py-0.5 rounded-full text-xs font-semibold badge-soft-primary">{{ $product->sales_count }} Sold</span>
                             </li>
                         @endforeach
                     </ul>
                 @else
-                    <p class="text-muted text-center py-3 mb-0">No sales data in this period.</p>
+                    <p class="text-ink-tertiary text-center py-3 mb-0">No sales data in this period.</p>
                 @endif
             </div>
         </div>
     </div>
-    <div class="col-lg-4 d-flex flex-column">
-        <div class="card border-0 shadow-sm flex-fill" style="border-radius: 12px;">
-            <div class="card-body p-4">
-                <h5 class="fw-semibold mb-3 d-flex align-items-center gap-2">
-                    <i data-feather="alert-triangle" class="text-warning" style="width: 18px; height: 18px;"></i>
+    <div class="flex flex-col">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden flex-1" style="border-radius: 12px;">
+            <div class="p-4">
+                <h5 class="font-semibold mb-3 flex items-center gap-2">
+                    <i data-feather="alert-triangle" class="text-feedback-warning" style="width: 18px; height: 18px;"></i>
                     Low Stock Alerts
                 </h5>
                 @if ($lowStockProducts->count() > 0)
-                    <ul class="list-group list-group-flush">
+                    <ul class="flex flex-col mb-0">
                         @foreach ($lowStockProducts as $product)
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2 border-bottom-0">
-                                <div class="d-flex align-items-center gap-2">
+                            <li class="flex justify-between items-center px-0 py-2 border-b-0">
+                                <div class="flex items-center gap-2">
                                     <img src="{{ storage_url($product->thumbnail) }}" alt="{{ $product->name }}"
-                                        width="32" height="32" class="rounded border border-subtle" style="object-fit: cover;" />
+                                        width="32" height="32" class="rounded border border-border" style="object-fit: cover;" />
                                     <div>
-                                        <span class="small fw-medium text-dark">{{ Str::limit($product->name, 30) }}</span>
+                                        <span class="text-sm font-medium text-ink">{{ Str::limit($product->name, 30) }}</span>
                                     </div>
                                 </div>
-                                <span class="badge rounded-pill px-3 {{ $product->available_stock <= $product->low_stock_quantity / 2 ? 'badge-soft-danger' : 'badge-soft-warning' }}">
+                                <span class="inline-flex items-center px-3 py-0.5 rounded-full text-xs font-semibold {{ $product->available_stock <= $product->low_stock_quantity / 2 ? 'badge-soft-danger' : 'badge-soft-warning' }}">
                                     {{ $product->available_stock }} left
                                 </span>
                             </li>
                         @endforeach
                     </ul>
-                    <a href="{{ route('seller.products.index') }}" class="btn btn-sm btn-outline-primary w-100 mt-3">Manage Inventory</a>
+                    <a href="{{ route('seller.products.index') }}" class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs border border-brand text-brand hover:bg-brand hover:text-white transition-colors w-full mt-3">Manage Inventory</a>
                 @else
-                    <div class="text-center py-4 text-muted">
-                        <i data-feather="check-circle" style="width: 36px; height: 36px;" class="mb-2 text-success"></i>
-                        <p class="mb-0 small">All products are well stocked.</p>
+                    <div class="text-center py-4 text-ink-tertiary">
+                        <i data-feather="check-circle" style="width: 36px; height: 36px;" class="mb-2 text-feedback-success"></i>
+                        <p class="mb-0 text-sm">All products are well stocked.</p>
                     </div>
                 @endif
             </div>
@@ -239,60 +239,60 @@
     </div>
 </div>
 
-<div class="card border-0 shadow-sm" style="border-radius: 12px;">
-    <div class="card-body p-4">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="fw-semibold mb-0 d-flex align-items-center gap-2">
-                <i data-feather="clipboard" class="text-primary" style="width: 18px; height: 18px;"></i>
+<div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden" style="border-radius: 12px;">
+    <div class="p-4">
+        <div class="flex justify-between items-center mb-3">
+            <h5 class="font-semibold mb-0 flex items-center gap-2">
+                <i data-feather="clipboard" class="text-brand" style="width: 18px; height: 18px;"></i>
                 Latest Orders
             </h5>
-            <a href="{{ route('seller.orders.index') }}" class="btn btn-sm btn-outline-primary">View All Orders</a>
+            <a href="{{ route('seller.orders.index') }}" class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs border border-brand text-brand hover:bg-brand hover:text-white transition-colors">View All Orders</a>
         </div>
-        <div class="table-responsive">
-            <table class="table table-hover mb-0">
-                <thead class="table-light">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm text-ink border-collapse">
+                <thead class="bg-surface-muted border-b border-border text-xs font-semibold text-ink-tertiary uppercase tracking-wider">
                     <tr>
-                        <th scope="col" class="small fw-semibold text-muted">Order ID</th>
-                        <th scope="col" class="small fw-semibold text-muted">Customer</th>
-                        <th scope="col" class="small fw-semibold text-muted">Total</th>
-                        <th scope="col" class="small fw-semibold text-muted">Status</th>
-                        <th scope="col" class="small fw-semibold text-muted">Date</th>
-                        <th scope="col" class="small fw-semibold text-muted">Action</th>
+                        <th scope="col" class="text-sm font-semibold text-ink-tertiary">Order ID</th>
+                        <th scope="col" class="text-sm font-semibold text-ink-tertiary">Customer</th>
+                        <th scope="col" class="text-sm font-semibold text-ink-tertiary">Total</th>
+                        <th scope="col" class="text-sm font-semibold text-ink-tertiary">Status</th>
+                        <th scope="col" class="text-sm font-semibold text-ink-tertiary">Date</th>
+                        <th scope="col" class="text-sm font-semibold text-ink-tertiary">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse ($latest_orders as $order)
                         <tr>
-                            <td class="fw-medium">{{ $order->invoice_id }}</td>
-                            <td>{{ $order->user->name ?? 'N/A' }}</td>
-                            <td class="fw-medium">{{ money($order->total) }}</td>
+                            <td class="font-medium">{{ $order->invoice_id }}</td>
+                            <td class="px-4 py-3 border-b border-border text-sm align-middle">{{ $order->user->name ?? 'N/A' }}</td>
+                            <td class="font-medium">{{ money($order->total) }}</td>
                             <td>
                                 @php $label = $order->status->label(); @endphp
                                 @if ($label === 'pending')
-                                    <span class="badge rounded-pill px-3 badge-soft-warning">Pending</span>
+                                    <span class="inline-flex items-center px-3 py-0.5 rounded-full text-xs font-semibold badge-soft-warning">Pending</span>
                                 @elseif ($label === 'shipped')
-                                    <span class="badge rounded-pill px-3 badge-soft-primary">Shipped</span>
+                                    <span class="inline-flex items-center px-3 py-0.5 rounded-full text-xs font-semibold badge-soft-primary">Shipped</span>
                                 @elseif ($label === 'cancelled')
-                                    <span class="badge rounded-pill px-3 badge-soft-danger">Cancelled</span>
+                                    <span class="inline-flex items-center px-3 py-0.5 rounded-full text-xs font-semibold badge-soft-danger">Cancelled</span>
                                 @elseif ($label === 'delivered' || $label === 'completed')
-                                    <span class="badge rounded-pill px-3 badge-soft-success">{{ ucfirst($label) }}</span>
+                                    <span class="inline-flex items-center px-3 py-0.5 rounded-full text-xs font-semibold badge-soft-success">{{ ucfirst($label) }}</span>
                                 @elseif ($label === 'refunded')
-                                    <span class="badge rounded-pill px-3 badge-soft-info">Refunded</span>
+                                    <span class="inline-flex items-center px-3 py-0.5 rounded-full text-xs font-semibold badge-soft-info">Refunded</span>
                                 @else
-                                    <span class="badge rounded-pill px-3 badge-soft-secondary">{{ ucfirst($label) }}</span>
+                                    <span class="inline-flex items-center px-3 py-0.5 rounded-full text-xs font-semibold badge-soft-secondary">{{ ucfirst($label) }}</span>
                                 @endif
                             </td>
-                            <td class="small text-muted">{{ optional($order->created_at)->format('Y-m-d H:i') ?? 'N/A' }}</td>
+                            <td class="text-sm text-ink-tertiary">{{ optional($order->created_at)->format('Y-m-d H:i') ?? 'N/A' }}</td>
                             <td>
                                 <a href="{{ route('seller.orders.details', $order->invoice_id) }}"
-                                    class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1">
+                                    class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs border border-brand text-brand hover:bg-brand hover:text-white transition-colors gap-1">
                                     <i data-feather="eye" style="width: 14px; height: 14px;"></i> View
                                 </a>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center py-4 text-muted">No orders in this period.</td>
+                            <td colspan="6" class="text-center py-4 text-ink-tertiary">No orders in this period.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -301,46 +301,46 @@
     </div>
 </div>
 
-<div class="row g-3 mt-3 mb-4">
-    <div class="col-md-4">
-        <div class="card border-0 shadow-sm" style="border-radius: 12px;">
-            <div class="card-body p-3 text-center">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span class="small fw-semibold text-muted">Commission Paid</span>
-                    <div class="icon-bg-primary d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; border-radius: 10px;">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3 mb-4">
+    <div class="w-full">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden" style="border-radius: 12px;">
+            <div class="p-3 text-center">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-semibold text-ink-tertiary">Commission Paid</span>
+                    <div class="icon-bg-primary flex items-center justify-center" style="width: 36px; height: 36px; border-radius: 10px;">
                         <i data-feather="percent" style="width: 18px; height: 18px;"></i>
                     </div>
                 </div>
-                <h4 class="fw-bold mb-0 text-dark">{{ money($total_commission) }}</h4>
-                <small class="text-muted">Platform commission</small>
+                <h4 class="font-bold mb-0 text-ink">{{ money($total_commission) }}</h4>
+                <small class="text-ink-tertiary">Platform commission</small>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card border-0 shadow-sm" style="border-radius: 12px;">
-            <div class="card-body p-3 text-center">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span class="small fw-semibold text-muted">Expenses</span>
-                    <div class="icon-bg-secondary d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; border-radius: 10px;">
+    <div class="w-full">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden" style="border-radius: 12px;">
+            <div class="p-3 text-center">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-semibold text-ink-tertiary">Expenses</span>
+                    <div class="icon-bg-secondary flex items-center justify-center" style="width: 36px; height: 36px; border-radius: 10px;">
                         <i data-feather="dollar-sign" style="width: 18px; height: 18px;"></i>
                     </div>
                 </div>
-                <h4 class="fw-bold mb-0 text-dark">{{ money($total_expense) }}</h4>
-                <a href="{{ route('seller.expenses.index') }}" class="small text-decoration-none">View Details</a>
+                <h4 class="font-bold mb-0 text-ink">{{ money($total_expense) }}</h4>
+                <a href="{{ route('seller.expenses.index') }}" class="text-sm no-underline">View Details</a>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card border-0 shadow-sm" style="border-radius: 12px;">
-            <div class="card-body p-3 text-center">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span class="small fw-semibold text-muted">Customers</span>
-                    <div class="icon-bg-success d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; border-radius: 10px;">
+    <div class="w-full">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden" style="border-radius: 12px;">
+            <div class="p-3 text-center">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-semibold text-ink-tertiary">Customers</span>
+                    <div class="icon-bg-success flex items-center justify-center" style="width: 36px; height: 36px; border-radius: 10px;">
                         <i data-feather="users" style="width: 18px; height: 18px;"></i>
                     </div>
                 </div>
-                <h4 class="fw-bold mb-0 text-dark">{{ $total_customers }}</h4>
-                <a href="{{ route('seller.customers') }}" class="small text-decoration-none">View Customers</a>
+                <h4 class="font-bold mb-0 text-ink">{{ $total_customers }}</h4>
+                <a href="{{ route('seller.customers') }}" class="text-sm no-underline">View Customers</a>
             </div>
         </div>
     </div>

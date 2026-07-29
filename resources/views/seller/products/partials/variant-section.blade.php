@@ -1,75 +1,75 @@
 @php $isEdit = isset($product) && $product->id; @endphp
 @php $variantCount = $isEdit ? $product->variants->count() : 0; @endphp
 
-<div id="variantSection" class="card shadow-sm border-0 mb-4" style="border-radius: 12px;">
-    <div class="card-header bg-white d-flex justify-content-between align-items-center">
-        <h5 class="fw-semibold mb-0">
-            <i class="fas fa-layer-group me-2 text-primary"></i>Variants
+<div id="variantSection" class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 mb-4" style="border-radius: 12px;">
+    <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
+        <h5 class="font-semibold mb-0">
+            <i class="fas fa-layer-group me-2 text-brand"></i>Variants
             @if($isEdit && $variantCount > 0)
-                <span class="badge bg-secondary ms-2">{{ $variantCount }} existing</span>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-surface-muted ms-2">{{ $variantCount }} existing</span>
             @endif
         </h5>
         @if($isEdit)
-            <button type="button" class="btn btn-primary btn-sm d-inline-flex align-items-center gap-1"
+            <button type="button" class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1"
                 data-bs-toggle="modal" data-bs-target="#addVariantModal">
                 <i class="fas fa-plus"></i> Add Variants
             </button>
         @endif
     </div>
-    <div class="card-body">
+    <div class="p-5">
         @if($isEdit && $variantCount > 0)
             {{-- Existing variants table --}}
-            <div class="table-responsive mb-4">
-                <table class="table table-sm table-bordered align-middle mb-0">
-                    <thead class="table-light">
+            <div class="overflow-x-auto mb-4">
+                <table class="w-full text-left text-sm text-ink border-collapse table-bordered align-middle mb-0">
+                    <thead class="bg-surface-muted">
                         <tr>
-                            <th class="small fw-semibold text-muted">Image</th>
-                            <th class="small fw-semibold text-muted">SKU</th>
-                            <th class="small fw-semibold text-muted">Barcode</th>
-                            <th class="small fw-semibold text-muted">Options</th>
-                            <th class="small fw-semibold text-muted">Cost</th>
-                            <th class="small fw-semibold text-muted">Price</th>
-                            <th class="small fw-semibold text-muted">Compare</th>
-                            <th class="small fw-semibold text-muted">Weight</th>
-                            <th class="small fw-semibold text-muted">Stock</th>
-                            <th class="small fw-semibold text-muted">Status</th>
-                            <th class="small fw-semibold text-muted">Actions</th>
+                            <th class="text-sm font-semibold text-ink-tertiary">Image</th>
+                            <th class="text-sm font-semibold text-ink-tertiary">SKU</th>
+                            <th class="text-sm font-semibold text-ink-tertiary">Barcode</th>
+                            <th class="text-sm font-semibold text-ink-tertiary">Options</th>
+                            <th class="text-sm font-semibold text-ink-tertiary">Cost</th>
+                            <th class="text-sm font-semibold text-ink-tertiary">Price</th>
+                            <th class="text-sm font-semibold text-ink-tertiary">Compare</th>
+                            <th class="text-sm font-semibold text-ink-tertiary">Weight</th>
+                            <th class="text-sm font-semibold text-ink-tertiary">Stock</th>
+                            <th class="text-sm font-semibold text-ink-tertiary">Status</th>
+                            <th class="text-sm font-semibold text-ink-tertiary">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($product->variants as $variant)
                         <tr>
-                            <td><img src="{{ $variant->imageUrl }}" class="img-thumbnail" style="width:40px;height:40px;object-fit:cover;"></td>
-                            <td class="text-monospace small">{{ $variant->sku }}</td>
-                            <td class="small">{{ $variant->barcode ?? '—' }}</td>
-                            <td><span class="badge badge-soft-secondary">{{ $variant->label }}</span></td>
-                            <td class="small">{{ money($variant->cost_price) }}</td>
-                            <td class="small">{{ money($variant->price) }}</td>
-                            <td class="small">{{ $variant->compare_price ? money($variant->compare_price) : '—' }}</td>
-                            <td class="small">{{ $variant->weight ? $variant->weight.' kg' : '—' }}</td>
-                            <td class="small">{{ $variant->availableStock }}</td>
+                            <td><img src="{{ $variant->imageUrl }}" class="border border-border rounded-xs p-1" style="width:40px;height:40px;object-fit:cover;"></td>
+                            <td class="font-mono text-sm">{{ $variant->sku }}</td>
+                            <td class="text-sm">{{ $variant->barcode ?? '—' }}</td>
+                            <td><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold badge-soft-secondary">{{ $variant->label }}</span></td>
+                            <td class="text-sm">{{ money($variant->cost_price) }}</td>
+                            <td class="text-sm">{{ money($variant->price) }}</td>
+                            <td class="text-sm">{{ $variant->compare_price ? money($variant->compare_price) : '—' }}</td>
+                            <td class="text-sm">{{ $variant->weight ? $variant->weight.' kg' : '—' }}</td>
+                            <td class="text-sm">{{ $variant->availableStock }}</td>
                             <td>
                                 @if($variant->status)
-                                    <span class="badge badge-soft-success">Active</span>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold badge-soft-success">Active</span>
                                 @else
-                                    <span class="badge badge-soft-secondary">Disabled</span>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold badge-soft-secondary">Disabled</span>
                                 @endif
                             </td>
                             <td>
-                                <div class="d-flex gap-1">
-                                    <button class="btn btn-light border btn-sm d-inline-flex align-items-center"
+                                <div class="flex gap-1">
+                                    <button class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors"
                                         data-bs-toggle="modal" data-bs-target="#editVariantModal{{ $variant->id }}">
                                         <i data-feather="edit" class="icon-xs"></i>
                                     </button>
-                                    <form action="{{ route('seller.productVariants.toggleStatus', $variant->id) }}" method="POST" class="d-inline">
+                                    <form action="{{ route('seller.productVariants.toggleStatus', $variant->id) }}" method="POST" class="inline">
                                         @csrf
-                                        <button type="submit" class="btn btn-outline-warning border btn-sm d-inline-flex align-items-center"
+                                        <button type="submit" class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs border border-feedback-warning text-feedback-warning hover:bg-feedback-warning hover:text-white transition-colors"
                                             title="{{ $variant->status ? 'Disable' : 'Enable' }}">
                                             <i data-feather="{{ $variant->status ? 'eye-off' : 'eye' }}" class="icon-xs"></i>
                                         </button>
                                     </form>
                                     @if($variant->stock_out <= 0)
-                                    <button class="btn btn-danger border btn-sm d-inline-flex align-items-center"
+                                    <button class="inline-flex items-center justify-center px-3 py-1.5 bg-feedback-danger text-white text-sm font-medium rounded-xs hover:bg-red-700 focus:outline-none transition-colors border"
                                         data-bs-toggle="modal" data-bs-target="#deleteVariantModal{{ $variant->id }}">
                                         <i data-feather="trash" class="icon-xs"></i>
                                     </button>
@@ -94,50 +94,50 @@
                         <form action="{{ route('seller.productVariants.update', $variant->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="modal-body">
-                                <div class="row">
-                                    <div class="mb-3 col-6">
-                                        <label class="form-label">SKU</label>
-                                        <input type="text" class="form-control" value="{{ $variant->sku }}" disabled>
+                                <div class="grid grid-cols-2">
+                                    <div class="mb-3">
+                                        <label class="block text-xs font-medium text-ink-secondary mb-1">SKU</label>
+                                        <input type="text" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $variant->sku }}" disabled>
                                     </div>
-                                    <div class="mb-3 col-6">
-                                        <label class="form-label">Barcode</label>
-                                        <input type="text" class="form-control" name="barcode" value="{{ $variant->barcode }}" placeholder="Optional barcode">
+                                    <div class="mb-3">
+                                        <label class="block text-xs font-medium text-ink-secondary mb-1">Barcode</label>
+                                        <input type="text" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" name="barcode" value="{{ $variant->barcode }}" placeholder="Optional barcode">
                                     </div>
-                                    <div class="mb-3 col-6">
-                                        <label class="form-label">Cost Price</label>
-                                        <input type="number" class="form-control" name="cost_price" step="0.01" value="{{ $variant->cost_price }}" required>
+                                    <div class="mb-3">
+                                        <label class="block text-xs font-medium text-ink-secondary mb-1">Cost Price</label>
+                                        <input type="number" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" name="cost_price" step="0.01" value="{{ $variant->cost_price }}" required>
                                     </div>
-                                    <div class="mb-3 col-6">
-                                        <label class="form-label">Price</label>
-                                        <input type="number" class="form-control" name="price" step="0.01" value="{{ $variant->price }}" required>
+                                    <div class="mb-3">
+                                        <label class="block text-xs font-medium text-ink-secondary mb-1">Price</label>
+                                        <input type="number" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" name="price" step="0.01" value="{{ $variant->price }}" required>
                                     </div>
-                                    <div class="mb-3 col-6">
-                                        <label class="form-label">Compare Price</label>
-                                        <input name="compare_price" type="number" step="0.01" min="0" value="{{ $variant->compare_price }}" class="form-control" placeholder="Optional sale price">
+                                    <div class="mb-3">
+                                        <label class="block text-xs font-medium text-ink-secondary mb-1">Compare Price</label>
+                                        <input name="compare_price" type="number" step="0.01" min="0" value="{{ $variant->compare_price }}" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="Optional sale price">
                                     </div>
-                                    <div class="mb-3 col-6">
-                                        <label class="form-label">Weight (kg)</label>
-                                        <input name="weight" type="number" step="0.01" min="0" value="{{ $variant->weight }}" class="form-control" placeholder="0.00">
+                                    <div class="mb-3">
+                                        <label class="block text-xs font-medium text-ink-secondary mb-1">Weight (kg)</label>
+                                        <input name="weight" type="number" step="0.01" min="0" value="{{ $variant->weight }}" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="0.00">
                                     </div>
-                                    <div class="mb-3 col-6">
-                                        <label class="form-label">Low Stock Quantity</label>
-                                        <input name="low_stock_quantity" type="number" value="{{ $variant->low_stock_quantity }}" class="form-control">
+                                    <div class="mb-3">
+                                        <label class="block text-xs font-medium text-ink-secondary mb-1">Low Stock Quantity</label>
+                                        <input name="low_stock_quantity" type="number" value="{{ $variant->low_stock_quantity }}" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
                                     </div>
-                                    <div class="mb-3 col-6">
-                                        <label class="form-label d-block">Status</label>
-                                        <div class="form-check form-switch mt-2">
-                                            <input class="form-check-input" type="checkbox" name="status" role="switch" value="1" {{ $variant->status ? 'checked' : '' }}>
-                                            <label class="form-check-label">{{ $variant->status ? 'Active' : 'Disabled' }}</label>
+                                    <div class="mb-3">
+                                        <label class="block text-xs font-medium text-ink-secondary mb-1">Status</label>
+                                        <div class="flex items-center gap-2 form-switch mt-2">
+                                            <input class="h-4 w-4 rounded border-border text-brand focus:ring-brand" type="checkbox" name="status" role="switch" value="1" {{ $variant->status ? 'checked' : '' }}>
+                                            <label class="text-sm text-ink">{{ $variant->status ? 'Active' : 'Disabled' }}</label>
                                         </div>
                                     </div>
-                                    <div class="col-12 mb-3">
+                                    <div class="col-span-full mb-3">
                                         <x-image-input name="image" :image="$variant->imageUrl" />
                                     </div>
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-success d-inline-flex align-items-center gap-1">Update</button>
+                                <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-feedback-success text-white text-sm font-medium rounded-xs hover:bg-green-700 focus:outline-none transition-colors gap-1">Update</button>
                             </div>
                         </form>
                     </div>
@@ -152,16 +152,16 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="text-center modal-body">
-                            <div class="alert alert-warning d-flex align-items-center justify-content-center" role="alert">
-                                <i class="bi bi-exclamation-circle-fill me-2 text-danger" style="font-size: 1.5rem;"></i>
-                                <p class="mb-0 text-secondary">Are you sure you want to delete variant <strong>{{ $variant->sku }}</strong>?</p>
+                            <div class="alert p-4 rounded-sm bg-amber-50 border border-amber-200 text-feedback-warning text-sm flex items-center justify-center gap-3" role="alert">
+                                <i class="bi bi-exclamation-circle-fill me-2 text-feedback-danger" style="font-size: 1.5rem;"></i>
+                                <p class="mb-0 text-ink-secondary">Are you sure you want to delete variant <strong>{{ $variant->sku }}</strong>?</p>
                             </div>
                         </div>
-                        <div class="modal-footer justify-content-center">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <div class="modal-footer justify-center">
+                            <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Cancel</button>
                             <form action="{{ route('seller.productVariants.delete', $variant->id) }}" method="POST">
                                 @csrf
-                                <button type="submit" class="btn btn-danger d-inline-flex align-items-center gap-1">Delete</button>
+                                <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-feedback-danger text-white text-sm font-medium rounded-xs hover:bg-red-700 focus:outline-none transition-colors gap-1">Delete</button>
                             </form>
                         </div>
                     </div>
@@ -169,7 +169,7 @@
             </div>
             @endforeach
         @elseif($isEdit)
-            <p class="text-muted mb-0">No variants yet. Click "Add Variants" to create some.</p>
+            <p class="text-ink-tertiary mb-0">No variants yet. Click "Add Variants" to create some.</p>
         @endif
 
         {{-- Variant Generator --}}
@@ -195,8 +195,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary d-inline-flex align-items-center gap-1" id="saveVariantsBtn">Save Variants</button>
+                <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1" id="saveVariantsBtn">Save Variants</button>
             </div>
         </div>
     </div>

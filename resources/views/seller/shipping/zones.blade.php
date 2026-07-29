@@ -2,75 +2,75 @@
 @section('title', 'Shipping Zones')
 
 @section('content')
-<div class="container-fluid px-0">
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
-        <h4 class="fw-bold mb-0 text-dark">Shipping Zones</h4>
-        <button class="btn btn-primary d-inline-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#addZoneModal">
+<div class="w-full px-0">
+    <div class="flex flex-wrap justify-between items-center mb-3">
+        <h4 class="font-bold mb-0 text-ink">Shipping Zones</h4>
+        <button class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1" data-bs-toggle="modal" data-bs-target="#addZoneModal">
             <i data-feather="plus" style="width: 16px; height: 16px;"></i> Add Zone
         </button>
     </div>
 
     @if ($zones->count() > 0)
-        <div class="row g-3">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             @foreach ($zones as $zone)
-                <div class="col-md-6 col-lg-4">
-                    <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h6 class="fw-semibold mb-0">{{ $zone->name }}</h6>
-                                <div class="d-flex gap-1">
-                                    <span class="badge {{ $zone->is_active ? 'badge-soft-success' : 'badge-soft-secondary' }}">
+                <div>
+                    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 h-full" style="border-radius: 12px;">
+                        <div class="p-5">
+                            <div class="flex justify-between items-start mb-2">
+                                <h6 class="font-semibold mb-0">{{ $zone->name }}</h6>
+                                <div class="flex gap-1">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $zone->is_active ? 'badge-soft-success' : 'badge-soft-secondary' }}">
                                         {{ $zone->is_active ? 'Active' : 'Inactive' }}
                                     </span>
                                 </div>
                             </div>
-                            <div class="small">
-                                <div class="d-flex justify-content-between mb-1">
-                                    <span class="text-muted">Type:</span>
-                                    <span class="fw-medium">{{ \App\Domain\Shipping\Models\SellerShippingZone::types()[$zone->type] ?? $zone->type }}</span>
+                            <div class="text-sm">
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-ink-tertiary">Type:</span>
+                                    <span class="font-medium">{{ \App\Domain\Shipping\Models\SellerShippingZone::types()[$zone->type] ?? $zone->type }}</span>
                                 </div>
-                                <div class="d-flex justify-content-between mb-1">
-                                    <span class="text-muted">Rate:</span>
-                                    <span class="fw-medium">{{ money($zone->rate) }}</span>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-ink-tertiary">Rate:</span>
+                                    <span class="font-medium">{{ money($zone->rate) }}</span>
                                 </div>
                                 @if ($zone->free_above)
-                                    <div class="d-flex justify-content-between mb-1">
-                                        <span class="text-muted">Free above:</span>
-                                        <span class="fw-medium">{{ money($zone->free_above) }}</span>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-ink-tertiary">Free above:</span>
+                                        <span class="font-medium">{{ money($zone->free_above) }}</span>
                                     </div>
                                 @endif
                                 @if ($zone->carrier)
-                                    <div class="d-flex justify-content-between mb-1">
-                                        <span class="text-muted">Carrier:</span>
-                                        <span class="fw-medium">{{ $zone->carrier->name }}</span>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-ink-tertiary">Carrier:</span>
+                                        <span class="font-medium">{{ $zone->carrier->name }}</span>
                                     </div>
                                 @endif
                                 @if ($zone->estimated_days_min)
-                                    <div class="d-flex justify-content-between mb-1">
-                                        <span class="text-muted">Delivery:</span>
-                                        <span class="fw-medium">{{ $zone->estimated_days_min }}-{{ $zone->estimated_days_max }} days</span>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-ink-tertiary">Delivery:</span>
+                                        <span class="font-medium">{{ $zone->estimated_days_min }}-{{ $zone->estimated_days_max }} days</span>
                                     </div>
                                 @endif
-                                <div class="d-flex justify-content-between mb-1">
-                                    <span class="text-muted">COD:</span>
-                                    <span class="fw-medium">{{ $zone->is_cod_available ? 'Available' : 'Unavailable' }}</span>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-ink-tertiary">COD:</span>
+                                    <span class="font-medium">{{ $zone->is_cod_available ? 'Available' : 'Unavailable' }}</span>
                                 </div>
                                 @if ($zone->districts)
                                     <div class="mt-2">
-                                        <span class="text-muted small">Coverage:</span>
-                                        <span class="fw-medium small">{{ count($zone->districts) }} district(s)</span>
+                                        <span class="text-ink-tertiary text-sm">Coverage:</span>
+                                        <span class="font-medium text-sm">{{ count($zone->districts) }} district(s)</span>
                                     </div>
                                 @endif
                             </div>
-                            <div class="mt-3 d-flex gap-2">
-                                <button class="btn btn-sm btn-light border" data-bs-toggle="modal" data-bs-target="#editZoneModal-{{ $zone->id }}">
+                            <div class="mt-3 flex gap-2">
+                                <button class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1" data-bs-toggle="modal" data-bs-target="#editZoneModal-{{ $zone->id }}">
                                     <i data-feather="edit" style="width: 14px; height: 14px;"></i> Edit
                                 </button>
                                 <form method="POST" action="{{ route('seller.shipping.zones.destroy', $zone) }}"
                                       onsubmit="return confirm('Delete this shipping zone?')">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-light border text-danger">
+                                    <button type="submit" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1 text-feedback-danger">
                                         <i data-feather="trash-2" style="width: 14px; height: 14px;"></i>
                                     </button>
                                 </form>
@@ -93,8 +93,8 @@
                                     @include('seller.shipping._zone_form', ['zone' => $zone])
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                    <button type="submit" class="btn btn-primary">Update Zone</button>
+                                    <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">Update Zone</button>
                                 </div>
                             </form>
                         </div>
@@ -104,15 +104,15 @@
         </div>
 
         @if ($zones->hasPages())
-            <div class="mt-3 d-flex justify-content-end">{{ $zones->links() }}</div>
+            <div class="mt-3 flex justify-end">{{ $zones->links() }}</div>
         @endif
     @else
-        <div class="card border-0 shadow-sm" style="border-radius: 12px;">
-            <div class="card-body text-center py-5">
-                <i data-feather="truck" style="width: 64px; height: 64px;" class="text-muted mb-3"></i>
-                <h5 class="fw-semibold mb-2">No Shipping Zones</h5>
-                <p class="text-muted mb-3">Create shipping zones to set delivery rates for different regions.</p>
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addZoneModal">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0" style="border-radius: 12px;">
+            <div class="p-5 text-center py-5">
+                <i data-feather="truck" style="width: 64px; height: 64px;" class="text-ink-tertiary mb-3"></i>
+                <h5 class="font-semibold mb-2">No Shipping Zones</h5>
+                <p class="text-ink-tertiary mb-3">Create shipping zones to set delivery rates for different regions.</p>
+                <button class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1" data-bs-toggle="modal" data-bs-target="#addZoneModal">
                     <i data-feather="plus" class="me-1" style="width: 16px; height: 16px;"></i> Add Shipping Zone
                 </button>
             </div>
@@ -134,8 +134,8 @@
                     @include('seller.shipping._zone_form', ['zone' => null])
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Create Zone</button>
+                    <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">Create Zone</button>
                 </div>
             </form>
         </div>

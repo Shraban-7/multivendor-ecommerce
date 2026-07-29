@@ -1,13 +1,13 @@
-<div class="card shadow-sm border-0 mb-4 d-none" id="variantGenerator">
-    <div class="card-header bg-white">
-        <h5 class="fw-semibold mb-0">Product Variant Generator</h5>
+<div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 mb-4 hidden" id="variantGenerator">
+    <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
+        <h5 class="font-semibold mb-0">Product Variant Generator</h5>
     </div>
-    <div class="card-body">
+    <div class="p-5">
         <div id="attributeRows" class="mb-3">
-            <div class="row">
-                <div class="col-md-6 mb-3">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="md:col-span-1 mb-3">
                     <label class="mb-1">Color(s)</label>
-                    <select name="color_ids" class="color-select w-100" multiple>
+                    <select name="color_ids" class="color-select w-full" multiple>
                         @foreach ($colors as $color)
                         <option value="{{ $color->id }}" data-hex="{{ $color->hex_code }}">
                             {{ $color->name }}
@@ -15,9 +15,9 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-md-6 mb-3">
+                <div class="md:col-span-1 mb-3">
                     <label class="mb-1">Size(s)</label>
-                    <select name="size_ids" class="size-select w-100" multiple>
+                    <select name="size_ids" class="size-select w-full" multiple>
                         @foreach ($sizes as $size)
                         <option value="{{ $size->id }}">{{ $size->name }}</option>
                         @endforeach
@@ -25,11 +25,11 @@
                 </div>
             </div>
 
-            <button type="button" class="btn btn-primary btn-sm d-inline-flex align-items-center gap-1" id="generateVariantsBtn">Generate Variants</button>
-            <button type="button" class="btn btn-secondary btn-sm d-inline-flex align-items-center gap-1 ms-2" id="clearVariantsBtn">Clear Variants</button>
+            <button type="button" class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1" id="generateVariantsBtn">Generate Variants</button>
+            <button type="button" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1 ms-2" id="clearVariantsBtn">Clear Variants</button>
         </div>
 
-        <div id="variantsTableContainer" class="table-responsive"></div>
+        <div id="variantsTableContainer" class="overflow-x-auto"></div>
     </div>
 </div>
 

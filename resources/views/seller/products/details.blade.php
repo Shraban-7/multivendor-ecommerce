@@ -25,14 +25,14 @@
 ?>
 
 {{-- Header --}}
-<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+<div class="flex justify-between items-center mb-3 flex-wrap gap-2">
     <div>
-        <h4 class="fw-bold mb-1 text-dark">{{ $product->name }}</h4>
-        <div class="d-flex align-items-center gap-2 small text-muted">
+        <h4 class="font-bold mb-1 text-ink">{{ $product->name }}</h4>
+        <div class="flex items-center gap-2 text-sm text-ink-tertiary">
             <span>SKU: <strong>{{ $product->sku }}</strong></span>
-            <span class="text-muted">|</span>
+            <span class="text-ink-tertiary">|</span>
             <span>Added: {{ $product->created_at->format('d M, Y h:i A') }}</span>
-            <span class="text-muted">|</span>
+            <span class="text-ink-tertiary">|</span>
             <span>
                 @if ($product->status == $product::STATUS_ACTIVE)
                 <span class="badge badge-soft-success">Active</span>
@@ -51,29 +51,29 @@
             </span>
         </div>
     </div>
-    <div class="d-flex gap-2 flex-wrap">
-        <a href="{{ route('seller.products.edit', $product->slug) }}" class="btn btn-primary btn-sm d-inline-flex align-items-center gap-1">
+    <div class="flex gap-2 flex-wrap">
+        <a href="{{ route('seller.products.edit', $product->slug) }}" class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">
             <i data-feather="edit" class="icon-xs"></i> Edit Product
         </a>
-        <a href="{{ route('seller.products.edit', $product->slug) }}#variantSection" class="btn btn-outline-primary btn-sm d-inline-flex align-items-center gap-1">
+        <a href="{{ route('seller.products.edit', $product->slug) }}#variantSection" class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs border border-brand text-brand hover:bg-brand hover:text-white transition-colors gap-1">
             <i data-feather="layers" class="icon-xs"></i> Manage Variants
         </a>
-        <button type="button" class="btn btn-outline-danger btn-sm d-inline-flex align-items-center gap-1"
+        <button type="button" class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs border border-feedback-danger text-feedback-danger hover:bg-feedback-danger hover:text-white transition-colors gap-1"
             data-bs-toggle="modal" data-bs-target="#deleteModal-{{ $product->id }}">
             <i data-feather="trash-2" class="icon-xs"></i> Delete
         </button>
     </div>
 </div>
 
-<div class="row">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
     {{-- LEFT COLUMN: Image gallery + info --}}
-    <div class="col-lg-7">
-        <div class="card section-card">
-            <div class="card-body">
-                <div class="row g-4">
+    <div class="lg:col-span-7">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
+            <div class="p-5">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
                     {{-- Main image --}}
-                    <div class="col-md-5 text-center">
-                        <div class="border rounded bg-light d-flex align-items-center justify-content-center overflow-hidden"
+                    <div class="md:col-span-5 text-center">
+                        <div class="border rounded-xs bg-surface-muted flex items-center justify-center overflow-hidden"
                             style="height:300px;">
                             <img id="mainProductImage"
                                 src="{{ $product->imageUrl }}"
@@ -82,7 +82,7 @@
                                 style="max-height:100%; object-fit:contain;" />
                         </div>
                         @if($product->images->count() > 0)
-                        <div class="d-flex flex-wrap gap-1 mt-2 justify-content-center">
+                        <div class="flex flex-wrap gap-1 mt-2 justify-center">
                             <img src="{{ $product->imageUrl }}"
                                 class="thumbnail-gallery-img active"
                                 onclick="switchImage(this, '{{ $product->imageUrl }}')"
@@ -98,8 +98,8 @@
                     </div>
 
                     {{-- Product details --}}
-                    <div class="col-md-7">
-                        <table class="table table-sm table-borderless mb-0">
+                    <div class="md:col-span-7">
+                        <table class="w-full text-left text-sm text-ink border-collapse border-0 mb-0">
                             <tr>
                                 <td class="detail-label" style="width:110px;">Category</td>
                                 <td class="detail-value">{{ $product->category->name ?? '—' }}
@@ -122,23 +122,23 @@
                                 <td class="detail-label">Tags</td>
                                 <td class="detail-value">
                                     @forelse($product->tags as $tag)
-                                    <span class="badge bg-light text-dark me-1">{{ $tag->name }}</span>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-surface-muted text-ink border border-border me-1">{{ $tag->name }}</span>
                                     @empty
-                                    <span class="text-muted">—</span>
+                                    <span class="text-ink-tertiary">—</span>
                                     @endforelse
                                 </td>
                             </tr>
                             <tr>
                                 <td class="detail-label">Variants</td>
                                 <td class="detail-value">
-                                    <span class="badge bg-primary">{{ $variantCount }}</span>
-                                    <a href="{{ route('seller.products.edit', $product->slug) }}#variantSection" class="small ms-2">Manage</a>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-brand-tint text-brand border border-brand/20">{{ $variantCount }}</span>
+                                    <a href="{{ route('seller.products.edit', $product->slug) }}#variantSection" class="text-sm ms-2">Manage</a>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="detail-label">Total Stock</td>
                                 <td class="detail-value">
-                                    <span class="fw-semibold {{ $totalStock <= $product->low_stock_quantity ? 'text-danger' : '' }}">
+                                    <span class="font-semibold {{ $totalStock <= $product->low_stock_quantity ? 'text-feedback-danger' : '' }}">
                                         {{ $totalStock }} {{ $product->unit->short_name ?? 'pcs' }}
                                     </span>
                                     @if($totalStock <= $product->low_stock_quantity)
@@ -154,45 +154,45 @@
     </div>
 
     {{-- RIGHT COLUMN: Pricing + profit summary --}}
-    <div class="col-lg-5">
-        <div class="card section-card h-100">
-            <div class="card-header">
-                <h5><i class="fas fa-chart-bar me-2 text-primary"></i>Pricing Summary</h5>
+    <div class="lg:col-span-5">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card h-full">
+            <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
+                <h5><i class="fas fa-chart-bar me-2 text-brand"></i>Pricing Summary</h5>
             </div>
-            <div class="card-body d-flex flex-column justify-content-center">
-                <div class="row g-3 text-center">
-                    <div class="col-4">
-                        <div class="p-3 rounded-3 bg-light">
+            <div class="p-5 flex flex-col justify-center">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-3 text-center">
+                    <div class="md:col-span-4">
+                        <div class="p-3 rounded-md bg-surface-muted">
                             <div class="detail-label mb-1">Cost Price</div>
-                            <div class="fs-5 fw-bold text-secondary">{{ money($product->cost_price) }}</div>
+                            <div class="text-base font-bold text-ink-secondary">{{ money($product->cost_price) }}</div>
                         </div>
                     </div>
-                    <div class="col-4">
-                        <div class="p-3 rounded-3 bg-light">
+                    <div class="md:col-span-4">
+                        <div class="p-3 rounded-md bg-surface-muted">
                             <div class="detail-label mb-1">Selling Price</div>
-                            <div class="fs-5 fw-bold text-primary">{{ money($product->price) }}</div>
+                            <div class="text-base font-bold text-brand">{{ money($product->price) }}</div>
                         </div>
                     </div>
-                    <div class="col-4">
-                        <div class="p-3 rounded-3 bg-light">
+                    <div class="md:col-span-4">
+                        <div class="p-3 rounded-md bg-surface-muted">
                             <div class="detail-label mb-1">Compare Price</div>
-                            <div class="fs-5 fw-bold {{ $product->compare_price ? 'text-success' : 'text-muted' }}">
+                            <div class="text-base font-bold {{ $product->compare_price ? 'text-feedback-success' : 'text-ink-tertiary' }}">
                                 {{ $product->compare_price ? money($product->compare_price) : '—' }}
                             </div>
                         </div>
                     </div>
-                    <div class="col-6 mt-3">
-                        <div class="p-3 rounded-3 border">
+                    <div class="md:col-span-6 mt-3">
+                        <div class="p-3 rounded-md border">
                             <div class="detail-label mb-1">Profit Margin</div>
-                            <div class="fs-5 fw-bold {{ $margin > 0 ? 'text-success' : 'text-danger' }}">
+                            <div class="text-base font-bold {{ $margin > 0 ? 'text-feedback-success' : 'text-feedback-danger' }}">
                                 {{ money($margin) }} ({{ $marginPercent }}%)
                             </div>
                         </div>
                     </div>
-                    <div class="col-6 mt-3">
-                        <div class="p-3 rounded-3 border">
+                    <div class="md:col-span-6 mt-3">
+                        <div class="p-3 rounded-md border">
                             <div class="detail-label mb-1">Low Stock Threshold</div>
-                            <div class="fs-5 fw-bold">{{ $product->low_stock_quantity }}</div>
+                            <div class="text-base font-bold">{{ $product->low_stock_quantity }}</div>
                         </div>
                     </div>
                 </div>
@@ -233,44 +233,44 @@
 <div class="tab-content" id="productTabsContent">
     {{-- TAB: Variants --}}
     <div class="tab-pane fade show active" id="variants" role="tabpanel">
-        <div class="card section-card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5><i class="fas fa-layer-group me-2 text-primary"></i>All Variants</h5>
-                <a href="{{ route('seller.products.edit', $product->slug) }}#variantSection" class="btn btn-primary btn-sm d-inline-flex align-items-center gap-1">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
+            <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
+                <h5><i class="fas fa-layer-group me-2 text-brand"></i>All Variants</h5>
+                <a href="{{ route('seller.products.edit', $product->slug) }}#variantSection" class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">
                     <i class="fas fa-plus"></i> Add Variant
                 </a>
             </div>
-            <div class="card-body p-0">
+            <div class="p-0">
                 @if($variantCount > 0)
-                <div class="table-responsive">
-                    <table class="table table-sm table-hover align-middle mb-0">
-                        <thead class="table-light">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm text-ink border-collapse table-hover align-middle mb-0">
+                        <thead class="bg-surface-muted">
                             <tr>
-                                <th class="small fw-semibold text-muted">Image</th>
-                                <th class="small fw-semibold text-muted">SKU</th>
-                                <th class="small fw-semibold text-muted">Barcode</th>
-                                <th class="small fw-semibold text-muted">Options</th>
-                                <th class="small fw-semibold text-muted text-end">Cost</th>
-                                <th class="small fw-semibold text-muted text-end">Price</th>
-                                <th class="small fw-semibold text-muted text-end">Compare</th>
-                                <th class="small fw-semibold text-muted text-end">Weight</th>
-                                <th class="small fw-semibold text-muted text-center">Stock</th>
-                                <th class="small fw-semibold text-muted text-center">Status</th>
+                                <th class="text-sm font-semibold text-ink-tertiary">Image</th>
+                                <th class="text-sm font-semibold text-ink-tertiary">SKU</th>
+                                <th class="text-sm font-semibold text-ink-tertiary">Barcode</th>
+                                <th class="text-sm font-semibold text-ink-tertiary">Options</th>
+                                <th class="text-sm font-semibold text-ink-tertiary text-right">Cost</th>
+                                <th class="text-sm font-semibold text-ink-tertiary text-right">Price</th>
+                                <th class="text-sm font-semibold text-ink-tertiary text-right">Compare</th>
+                                <th class="text-sm font-semibold text-ink-tertiary text-right">Weight</th>
+                                <th class="text-sm font-semibold text-ink-tertiary text-center">Stock</th>
+                                <th class="text-sm font-semibold text-ink-tertiary text-center">Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($product->variants as $variant)
                             <tr>
-                                <td><img src="{{ $variant->imageUrl }}" class="rounded" style="width:36px;height:36px;object-fit:cover;"></td>
-                                <td class="text-monospace small">{{ $variant->sku }}</td>
-                                <td class="small text-muted">{{ $variant->barcode ?? '—' }}</td>
+                                <td><img src="{{ $variant->imageUrl }}" class="rounded-xs" style="width:36px;height:36px;object-fit:cover;"></td>
+                                <td class="font-mono text-sm">{{ $variant->sku }}</td>
+                                <td class="text-sm text-ink-tertiary">{{ $variant->barcode ?? '—' }}</td>
                                 <td><span class="badge badge-soft-secondary">{{ $variant->label }}</span></td>
-                                <td class="small text-end">{{ money($variant->cost_price) }}</td>
-                                <td class="text-end">{{ money($variant->price) }}</td>
-                                <td class="text-end">{{ $variant->compare_price ? money($variant->compare_price) : '—' }}</td>
-                                <td class="small text-end">{{ $variant->weight ? $variant->weight.' kg' : '—' }}</td>
+                                <td class="text-sm text-right">{{ money($variant->cost_price) }}</td>
+                                <td class="text-right">{{ money($variant->price) }}</td>
+                                <td class="text-right">{{ $variant->compare_price ? money($variant->compare_price) : '—' }}</td>
+                                <td class="text-sm text-right">{{ $variant->weight ? $variant->weight.' kg' : '—' }}</td>
                                 <td class="text-center">
-                                    <span class="badge {{ $variant->availableStock > 0 ? 'bg-primary' : 'bg-secondary' }}">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $variant->availableStock > 0 ? 'bg-brand-tint text-brand border border-brand/20' : 'bg-surface-muted text-ink-secondary border border-border' }}">
                                         {{ $variant->availableStock }}
                                     </span>
                                 </td>
@@ -287,9 +287,9 @@
                     </table>
                 </div>
                 @else
-                <div class="text-center text-muted py-4">
+                <div class="text-center text-ink-tertiary py-4">
                     <p class="mb-1">No variants configured for this product.</p>
-                    <a href="{{ route('seller.products.edit', $product->slug) }}#variantSection" class="btn btn-primary btn-sm">
+                    <a href="{{ route('seller.products.edit', $product->slug) }}#variantSection" class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors">
                         <i class="fas fa-plus"></i> Add Variants
                     </a>
                 </div>
@@ -300,36 +300,36 @@
 
     {{-- TAB: Stock History --}}
     <div class="tab-pane fade" id="stock" role="tabpanel">
-        <div class="card section-card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5><i class="fas fa-boxes me-2 text-primary"></i>Stock History</h5>
-                <button type="button" class="btn btn-outline-primary btn-sm d-inline-flex align-items-center gap-1"
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
+            <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
+                <h5><i class="fas fa-boxes me-2 text-brand"></i>Stock History</h5>
+                <button type="button" class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs border border-brand text-brand hover:bg-brand hover:text-white transition-colors gap-1"
                     data-bs-toggle="modal" data-bs-target="#stockUpdateModal">
                     <i class="fas fa-plus-circle"></i> Update Stock
                 </button>
             </div>
-            <div class="card-body p-0">
-                <div class="table-responsive" style="max-height:400px; overflow-y:auto;">
-                    <table class="table table-sm table-hover align-middle mb-0">
-                        <thead class="table-light">
+            <div class="p-0">
+                <div class="overflow-x-auto" style="max-height:400px; overflow-y:auto;">
+                    <table class="w-full text-left text-sm text-ink border-collapse table-hover align-middle mb-0">
+                        <thead class="bg-surface-muted">
                             <tr>
-                                <th class="small fw-semibold text-muted">Date</th>
+                                <th class="text-sm font-semibold text-ink-tertiary">Date</th>
                                 @if($variantCount > 0)
-                                <th class="small fw-semibold text-muted">Variant</th>
+                                <th class="text-sm font-semibold text-ink-tertiary">Variant</th>
                                 @endif
-                                <th class="small fw-semibold text-muted text-center">Qty</th>
-                                <th class="small fw-semibold text-muted text-center">Action</th>
+                                <th class="text-sm font-semibold text-ink-tertiary text-center">Qty</th>
+                                <th class="text-sm font-semibold text-ink-tertiary text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($product->stock_history as $history)
                             <tr>
-                                <td class="text-nowrap small">{{ $history->created_at->format('d/m/y h:i A') }}</td>
+                                <td class="whitespace-nowrap text-sm">{{ $history->created_at->format('d/m/y h:i A') }}</td>
                                 @if($variantCount > 0)
-                                <td class="text-nowrap small">{{ $history->variant?->label ?? 'Default' }}</td>
+                                <td class="whitespace-nowrap text-sm">{{ $history->variant?->label ?? 'Default' }}</td>
                                 @endif
-                                <td class="text-center small">{{ abs($history->quantity ?? 0) }}</td>
-                                <td class="text-center small">
+                                <td class="text-center text-sm">{{ abs($history->quantity ?? 0) }}</td>
+                                <td class="text-center text-sm">
                                     @switch($history->type)
                                     @case(\App\Domain\Product\Enums\StockType::ADD_STOCK)
                                     <span class="badge badge-soft-success">Added</span>
@@ -345,7 +345,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="{{ $variantCount > 0 ? 4 : 3 }}" class="text-center text-muted py-4">No stock history</td>
+                                <td colspan="{{ $variantCount > 0 ? 4 : 3 }}" class="text-center text-ink-tertiary py-4">No stock history</td>
                             </tr>
                             @endforelse
                         </tbody>
@@ -357,23 +357,23 @@
 
     {{-- TAB: Description --}}
     <div class="tab-pane fade" id="description" role="tabpanel">
-        <div class="card section-card">
-            <div class="card-header">
-                <h5><i class="fas fa-align-left me-2 text-primary"></i>Description & Specifications</h5>
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
+            <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
+                <h5><i class="fas fa-align-left me-2 text-brand"></i>Description & Specifications</h5>
             </div>
-            <div class="card-body">
-                <h6 class="fw-semibold text-muted small text-uppercase">Short Description</h6>
+            <div class="p-5">
+                <h6 class="font-semibold text-ink-tertiary text-sm uppercase">Short Description</h6>
                 <p class="mb-4">{{ $product->short_description ?? '—' }}</p>
 
-                <h6 class="fw-semibold text-muted small text-uppercase">Full Description</h6>
+                <h6 class="font-semibold text-ink-tertiary text-sm uppercase">Full Description</h6>
                 <div class="mb-4">{!! nl2br(e($product->description ?? '—')) !!}</div>
 
                 @if($product->specifications)
-                <h6 class="fw-semibold text-muted small text-uppercase">Specifications</h6>
-                <table class="table table-sm table-borderless" style="max-width:400px;">
+                <h6 class="font-semibold text-ink-tertiary text-sm uppercase">Specifications</h6>
+                <table class="w-full text-left text-sm text-ink border-collapse border-0" style="max-width:400px;">
                     @foreach($product->specifications as $key => $value)
                     <tr>
-                        <td class="fw-semibold text-muted" style="width:140px;">{{ $key }}</td>
+                        <td class="font-semibold text-ink-tertiary" style="width:140px;">{{ $key }}</td>
                         <td>{{ $value }}</td>
                     </tr>
                     @endforeach
@@ -385,14 +385,14 @@
 
     {{-- TAB: Shipping --}}
     <div class="tab-pane fade" id="shipping" role="tabpanel">
-        <div class="card section-card">
-            <div class="card-header">
-                <h5><i class="fas fa-truck me-2 text-primary"></i>Shipping & Manufacturer</h5>
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
+            <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
+                <h5><i class="fas fa-truck me-2 text-brand"></i>Shipping & Manufacturer</h5>
             </div>
-            <div class="card-body">
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <table class="table table-sm table-borderless mb-0">
+            <div class="p-5">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+                    <div class="md:col-span-6">
+                        <table class="w-full text-left text-sm text-ink border-collapse border-0 mb-0">
                             <tr>
                                 <td class="detail-label" style="width:140px;">Weight</td>
                                 <td class="detail-value">{{ $product->weight ? $product->weight.' kg' : '—' }}</td>
@@ -409,8 +409,8 @@
                             </tr>
                         </table>
                     </div>
-                    <div class="col-md-6">
-                        <table class="table table-sm table-borderless mb-0">
+                    <div class="md:col-span-6">
+                        <table class="w-full text-left text-sm text-ink border-collapse border-0 mb-0">
                             <tr>
                                 <td class="detail-label" style="width:140px;">Manufacturer</td>
                                 <td class="detail-value">{{ $product->manufacturer_name ?? '—' }}</td>
@@ -428,46 +428,46 @@
 
     {{-- TAB: SEO --}}
     <div class="tab-pane fade" id="seo" role="tabpanel">
-        <div class="card section-card">
-            <div class="card-header">
-                <h5><i class="fas fa-search me-2 text-primary"></i>SEO & Social Share</h5>
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
+            <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
+                <h5><i class="fas fa-search me-2 text-brand"></i>SEO & Social Share</h5>
             </div>
-            <div class="card-body">
+            <div class="p-5">
                 @if($seo)
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <h6 class="fw-semibold text-muted small text-uppercase">Meta Title</h6>
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+                    <div class="md:col-span-6">
+                        <h6 class="font-semibold text-ink-tertiary text-sm uppercase">Meta Title</h6>
                         <p>{{ $seo->meta_title ?? '—' }}</p>
                     </div>
-                    <div class="col-md-6">
-                        <h6 class="fw-semibold text-muted small text-uppercase">Meta Keywords</h6>
+                    <div class="md:col-span-6">
+                        <h6 class="font-semibold text-ink-tertiary text-sm uppercase">Meta Keywords</h6>
                         <p>{{ $seo->meta_keywords ?? '—' }}</p>
                     </div>
-                    <div class="col-12">
-                        <h6 class="fw-semibold text-muted small text-uppercase">Meta Description</h6>
+                    <div class="col-span-full">
+                        <h6 class="font-semibold text-ink-tertiary text-sm uppercase">Meta Description</h6>
                         <p>{{ $seo->meta_description ?? '—' }}</p>
                     </div>
                     <hr>
-                    <h6 class="fw-semibold">Open Graph</h6>
-                    <div class="col-md-6">
-                        <h6 class="fw-semibold text-muted small text-uppercase">OG Title</h6>
+                    <h6 class="font-semibold">Open Graph</h6>
+                    <div class="md:col-span-6">
+                        <h6 class="font-semibold text-ink-tertiary text-sm uppercase">OG Title</h6>
                         <p>{{ $seo->og_title ?? '—' }}</p>
                     </div>
-                    <div class="col-md-6">
-                        <h6 class="fw-semibold text-muted small text-uppercase">OG Image</h6>
+                    <div class="md:col-span-6">
+                        <h6 class="font-semibold text-ink-tertiary text-sm uppercase">OG Image</h6>
                         @if(!empty($seo->og_image))
                         <img src="{{ storage_url($seo->og_image) }}" class="img-thumbnail" style="max-width:150px;">
                         @else
-                        <p class="text-muted">—</p>
+                        <p class="text-ink-tertiary">—</p>
                         @endif
                     </div>
-                    <div class="col-12">
-                        <h6 class="fw-semibold text-muted small text-uppercase">OG Description</h6>
+                    <div class="col-span-full">
+                        <h6 class="font-semibold text-ink-tertiary text-sm uppercase">OG Description</h6>
                         <p>{{ $seo->og_description ?? '—' }}</p>
                     </div>
                 </div>
                 @else
-                <p class="text-muted mb-0">No SEO data configured.</p>
+                <p class="text-ink-tertiary mb-0">No SEO data configured.</p>
                 @endif
             </div>
         </div>
@@ -483,17 +483,17 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="text-center modal-body">
-                <div class="alert alert-warning d-flex" role="alert">
-                    <i class="bi bi-exclamation-circle-fill me-2 text-danger" style="font-size: 1.5rem;"></i>
-                    <p class="mt-1 text-secondary">Are you sure you want to delete this Product?</p>
+                <div class="p-4 rounded-sm bg-amber-50 border border-amber-200 text-feedback-warning text-sm flex items-start gap-3" role="alert">
+                    <i class="bi bi-exclamation-circle-fill me-2 text-feedback-danger" style="font-size: 1.5rem;"></i>
+                    <p class="mt-1 text-ink-secondary">Are you sure you want to delete this Product?</p>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Cancel</button>
                 <form action="{{ route('seller.products.delete', $product->id) }}" method="POST">
                     @method('DELETE')
                     @csrf
-                    <button type="submit" class="btn btn-danger d-inline-flex align-items-center gap-1">Delete</button>
+                    <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-feedback-danger text-white text-sm font-medium rounded-xs hover:bg-red-700 focus:outline-none transition-colors gap-1">Delete</button>
                 </form>
             </div>
         </div>
@@ -507,18 +507,18 @@
             <form action="{{ route('seller.products.stockUpdate', $product->id) }}" method="POST">
                 @csrf
                 <div class="modal-header">
-                    <h4 class="modal-title fw-bold">Update Inventory</h4>
+                    <h4 class="modal-title font-bold">Update Inventory</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <button class="btn btn-outline-info btn-sm d-inline-flex align-items-center gap-1" type="button" data-bs-toggle="collapse"
+                        <button class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs border border-feedback-info text-feedback-info hover:bg-feedback-info hover:text-white transition-colors gap-1" type="button" data-bs-toggle="collapse"
                             data-bs-target="#stockInstruction" aria-expanded="false" aria-controls="stockInstruction">
                             ℹ️ Stock update instructions
                         </button>
                         <div class="collapse mt-2" id="stockInstruction">
-                            <div class="alert alert-info mb-0">
-                                <ul class="mb-0 small">
+                            <div class="p-4 rounded-sm bg-blue-50 border border-blue-200 text-feedback-info text-sm flex items-start gap-3 mb-0">
+                                <ul class="mb-0 text-sm">
                                     <li><strong>Add Stock</strong> – Increase stock quantity.</li>
                                     <li><strong>Remove Stock</strong> – Decrease stock.</li>
                                     <li><strong>Set Exact Stock</strong> – Set to a precise number.</li>
@@ -529,57 +529,57 @@
 
                     @if($variantCount > 0)
                     @foreach($product->variants as $variant)
-                    <h6 class="fw-semibold">{{ $variant->label ?? 'Default' }}</h6>
-                    <div class="row mb-3">
-                        <div class="col-md-4 mb-2">
-                            <select class="form-select form-select-sm" name="stock_action[{{ $variant->id }}]">
+                    <h6 class="font-semibold">{{ $variant->label ?? 'Default' }}</h6>
+                    <div class="grid grid-cols-1 md:grid-cols-12 mb-3 gap-2">
+                        <div class="md:col-span-4 mb-2">
+                            <select class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" name="stock_action[{{ $variant->id }}]">
                                 <option value="{{ \App\Domain\Product\Enums\StockType::ADD_STOCK->value }}">{{ \App\Domain\Product\Enums\StockType::ADD_STOCK->label() }}</option>
                                 <option value="{{ \App\Domain\Product\Enums\StockType::REMOVE_STOCK->value }}">{{ \App\Domain\Product\Enums\StockType::REMOVE_STOCK->label() }}</option>
                                 <option value="{{ \App\Domain\Product\Enums\StockType::SET_EXACT_STOCK->value }}">{{ \App\Domain\Product\Enums\StockType::SET_EXACT_STOCK->label() }}</option>
                             </select>
                         </div>
-                        <div class="col-md-4 mb-2">
-                            <div class="input-group input-group-sm">
-                                <span class="input-group-text">Qty ({{ $variant->availableStock }})</span>
-                                <input type="number" class="form-control" name="stock_quantity[{{ $variant->id }}]" min="1">
+                        <div class="md:col-span-4 mb-2">
+                            <div class="flex">
+                                <span class="inline-flex items-center px-3 py-2 text-sm text-ink-tertiary bg-surface-muted border border-border">Qty ({{ $variant->availableStock }})</span>
+                                <input type="number" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" name="stock_quantity[{{ $variant->id }}]" min="1">
                             </div>
                         </div>
-                        <div class="col-md-4 mb-2">
-                            <div class="input-group input-group-sm">
-                                <span class="input-group-text">Note</span>
-                                <input type="text" class="form-control" name="stock_note[{{ $variant->id }}]">
+                        <div class="md:col-span-4 mb-2">
+                            <div class="flex">
+                                <span class="inline-flex items-center px-3 py-2 text-sm text-ink-tertiary bg-surface-muted border border-border">Note</span>
+                                <input type="text" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" name="stock_note[{{ $variant->id }}]">
                             </div>
                         </div>
                     </div>
                     @if(!$loop->last)<hr>@endif
                     @endforeach
                     @else
-                    <div class="row">
-                        <div class="col-md-4 mb-2">
-                            <select class="form-select form-select-sm" name="stock_action_product">
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-2">
+                        <div class="md:col-span-4 mb-2">
+                            <select class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" name="stock_action_product">
                                 <option value="{{ \App\Domain\Product\Enums\StockType::ADD_STOCK->value }}">{{ \App\Domain\Product\Enums\StockType::ADD_STOCK->label() }}</option>
                                 <option value="{{ \App\Domain\Product\Enums\StockType::REMOVE_STOCK->value }}">{{ \App\Domain\Product\Enums\StockType::REMOVE_STOCK->label() }}</option>
                                 <option value="{{ \App\Domain\Product\Enums\StockType::SET_EXACT_STOCK->value }}">{{ \App\Domain\Product\Enums\StockType::SET_EXACT_STOCK->label() }}</option>
                             </select>
                         </div>
-                        <div class="col-md-4 mb-2">
-                            <div class="input-group input-group-sm">
-                                <span class="input-group-text">Qty ({{ $product->stock_in - $product->stock_out }})</span>
-                                <input type="number" class="form-control" name="stock_quantity_product" min="1">
+                        <div class="md:col-span-4 mb-2">
+                            <div class="flex">
+                                <span class="inline-flex items-center px-3 py-2 text-sm text-ink-tertiary bg-surface-muted border border-border">Qty ({{ $product->stock_in - $product->stock_out }})</span>
+                                <input type="number" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" name="stock_quantity_product" min="1">
                             </div>
                         </div>
-                        <div class="col-md-4 mb-2">
-                            <div class="input-group input-group-sm">
-                                <span class="input-group-text">Note</span>
-                                <input type="text" class="form-control" name="stock_note_product">
+                        <div class="md:col-span-4 mb-2">
+                            <div class="flex">
+                                <span class="inline-flex items-center px-3 py-2 text-sm text-ink-tertiary bg-surface-muted border border-border">Note</span>
+                                <input type="text" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" name="stock_note_product">
                             </div>
                         </div>
                     </div>
                     @endif
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary d-inline-flex align-items-center gap-1">Update Stocks</button>
+                    <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">Update Stocks</button>
                 </div>
             </form>
         </div>

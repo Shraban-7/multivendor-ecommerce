@@ -5,18 +5,69 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/frontend/images/favicon.ico') }}">
+
+    {{-- Tailwind CSS CDN — Phase 2 setup (Bootstrap CSS retained until Phase 4) --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            corePlugins: { preflight: false },
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans"', '-apple-system', 'BlinkMacSystemFont', 'Roboto', '"Helvetica Neue"', 'Arial', 'sans-serif']
+                    },
+                    colors: {
+                        brand: {
+                            DEFAULT: '#F85606',
+                            deep: '#C43D00',
+                            tint: '#FFF1EA'
+                        },
+                        ink: {
+                            DEFAULT: '#191919',
+                            secondary: '#595959',
+                            tertiary: '#767676'
+                        },
+                        surface: {
+                            muted: '#F5F5F5',
+                            strong: '#191919'
+                        },
+                        border: {
+                            DEFAULT: '#E5E5E5',
+                            strong: '#C7C7C7'
+                        },
+                        feedback: {
+                            success: '#1D8A45',
+                            danger: '#D93025',
+                            warning: '#B7791A',
+                            info: '#0F6FC5'
+                        }
+                    },
+                    borderRadius: {
+                        xs: '4px',
+                        sm: '8px',
+                        md: '12px'
+                    }
+                }
+            }
+        }
+    </script>
+    {{-- End Tailwind setup --}}
+
     <link rel="stylesheet" href="{{asset('assets/dashboard/css/theme.css')}}">
-    <link rel="stylesheet" href="{{asset('assets/dashboard/css/custom.css')}}">
+    <link rel="stylesheet" href="{{ asset_versioned('assets/dashboard/css/custom.css') }}">
     <link rel="stylesheet" href="{{asset('assets/dashboard/libs/bootstrap-icons/font/bootstrap-icons.css')}}">
     <link rel="stylesheet" href="{{asset('assets/dashboard/libs/dropzone/dist/dropzone.css')}}">
 
     <title>@yield('title')</title>
 </head>
 
-<body class="bg-light">
-    <main class="container d-flex flex-column">
-        <div class="row align-items-center justify-content-center g-0 min-vh-100">
-            <div class="col-12 col-md-8 col-lg-6 col-xxl-4 py-8 py-xl-0">
+<body class="bg-surface-muted">
+    <main class="w-full flex flex-col">
+        <div class="flex flex-wrap items-center justify-center min-h-screen">
+            <div class="w-full md:w-2/3 lg:w-1/2 2xl:w-1/3 py-8 xl:py-0">
                 <div class="text-center mb-4">
                     <img src="{{ asset('assets/frontend/images/logo.png') }}" alt="Logo" style="max-height: 48px;" onerror="this.style.display='none'">
                 </div>

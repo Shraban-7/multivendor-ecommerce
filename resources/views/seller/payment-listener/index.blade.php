@@ -35,33 +35,33 @@ $hasAccess = $seller->hasFeature('payment_checker');
 <x-seller.subscription-modal />
 @endif
 
-<div class="d-flex justify-content-between align-items-end mb-3">
-    <h4 class="fw-bold mb-0 text-dark">Automatic Payment Checker</h4>
+<div class="flex justify-between items-end mb-3">
+    <h4 class="font-bold mb-0 text-ink">Automatic Payment Checker</h4>
     @if($deviceCount > 0)
-    <button class="btn btn-primary d-inline-flex align-items-center gap-1" id="generateCodeTrigger">
+    <button class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1" id="generateCodeTrigger">
         <i class="bi bi-qr-code-scan"></i> Generate Device Code
     </button>
     @endif
 </div>
 
 @if($deviceCount == 0)
-<div class="row">
-    <div class="col-md-6 mb-3">
-        <div class="card border-0 shadow-sm" style="border-radius: 12px;">
-            <div class="card-body">
-                <h5 class="fw-semibold">Add New Device</h5>
-                <p class="small text-muted">Click **'Generate Device Code'**. Enter this code in the **Payment Listener App** on your device to connect.</p>
-                <button class="btn btn-primary btn-lg d-inline-flex align-items-center gap-1" id="generateCodeTrigger">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+    <div class="md:col-span-1">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden" style="border-radius: 12px;">
+            <div class="p-5">
+                <h5 class="font-semibold">Add New Device</h5>
+                <p class="text-sm text-ink-tertiary">Click **'Generate Device Code'**. Enter this code in the **Payment Listener App** on your device to connect.</p>
+                <button class="inline-flex items-center justify-center px-5 py-2.5 bg-brand-deep text-white text-base font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1" id="generateCodeTrigger">
                     <i class="bi bi-qr-code-scan"></i> Generate Device Code
                 </button>
             </div>
         </div>
     </div>
-    <div class="col-md-6 mb-3">
-        <div class="card border-0 shadow-sm" style="border-radius: 12px;">
-            <div class="card-body">
-                <h6 class="fw-semibold">Instructions</h6>
-                <div class="alert bg-light border mb-1" role="alert">
+    <div class="md:col-span-1">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden" style="border-radius: 12px;">
+            <div class="p-5">
+                <h6 class="font-semibold">Instructions</h6>
+                <div class="block p-4 rounded-xs bg-surface-muted border border-border text-ink text-sm mb-1" role="alert">
                     <ol class="mb-0">
                         <li>Click <strong>"Generate Device Code"</strong>.</li>
                         <li>Enter the generated code in the Payment Listener App.</li>
@@ -76,17 +76,17 @@ $hasAccess = $seller->hasFeature('payment_checker');
 @endif
 
 @if($payments->count())
-<div class="card border-0 shadow-sm p-3 mb-3" style="border-radius: 12px; max-height: 500px; overflow-y:scroll;">
-    <h6 class="fw-semibold mb-3">Recent Payments</h6>
-    <ul class="list-group list-group-flush">
+<div class="bg-white border border-border rounded-sm shadow-sm p-3 mb-3" style="border-radius: 12px; max-height: 500px; overflow-y:scroll;">
+    <h6 class="font-semibold mb-3">Recent Payments</h6>
+    <ul class="flex flex-col">
         @foreach ($payments as $payment)
-        <li class="list-group-item">
-            <div class="d-flex justify-content-between align-items-center">
+        <li class="flex items-center px-0 py-2 border-b border-border">
+            <div class="flex justify-between items-center">
                 <div class="me-3">
-                    <div><span class="fw-bold">{{ $payment->sender }}</span> <span class="text-muted">({{ $payment->device->device_name }})</span></div>
-                    <div class="small">{{ $payment->full_sms }}</div>
+                    <div><span class="font-bold">{{ $payment->sender }}</span> <span class="text-ink-tertiary">({{ $payment->device->device_name }})</span></div>
+                    <div class="text-sm">{{ $payment->full_sms }}</div>
                 </div>
-                <div class="small text-muted text-nowrap">{{ $payment->received_at?->format('Y-m-d h:i A') }}</div>
+                <div class="text-sm text-ink-tertiary whitespace-nowrap">{{ $payment->received_at?->format('Y-m-d h:i A') }}</div>
             </div>
         </li>
         @endforeach
@@ -95,35 +95,35 @@ $hasAccess = $seller->hasFeature('payment_checker');
 @endif
 
 @if($deviceCount)
-<h4 class="fw-bold mb-3 text-dark">Linked Devices</h4>
-<div class="row g-3">
+<h4 class="font-bold mb-3 text-ink">Linked Devices</h4>
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
     @foreach ($devices as $device)
-    <div class="col-md-4 col-sm-6">
-        <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
-            <div class="card-body d-flex flex-column justify-content-between">
+    <div class="sm:col-span-1 md:col-span-1">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden h-full" style="border-radius: 12px;">
+            <div class="p-5 flex flex-col justify-between">
                 <div>
-                    <div class="d-flex justify-content-between align-items-start">
-                        <strong class="fs-5">{{ $device->device_name ?? 'Pending Device' }}</strong>
-                        <span class="badge {{ $device->status === 1 ? 'bg-success' : ($device->status === 0 ? 'bg-warning text-dark' : 'bg-secondary') }}">
+                    <div class="flex justify-between items-start">
+                        <strong class="text-xl">{{ $device->device_name ?? 'Pending Device' }}</strong>
+                        <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-xs {{ $device->status === 1 ? 'bg-feedback-success text-white' : ($device->status === 0 ? 'bg-feedback-warning text-ink' : 'bg-ink-tertiary text-white') }}">
                             {{ $device->statusName }}
                         </span>
                     </div>
-                    <div class="mt-2 small text-muted">
-                        <span class="text-dark fw-semibold">Code:</span>
+                    <div class="mt-2 text-sm text-ink-tertiary">
+                        <span class="text-ink font-semibold">Code:</span>
                         <span class="device-code">{{ $device->device_code }}</span>
                     </div>
-                    <small class="text-muted d-block mt-2">Last sync: {{ $device->last_sync_at?->format('Y-m-d h:i A') }}</small>
+                    <small class="text-ink-tertiary block mt-2">Last sync: {{ $device->last_sync_at?->format('Y-m-d h:i A') }}</small>
                 </div>
-                <div class="d-flex mt-3 gap-2">
-                    <form action="{{ route('seller.paymentListener.devices.checkPayments', $device->id) }}" method="POST" class="flex-fill">
+                <div class="flex mt-3 gap-2">
+                    <form action="{{ route('seller.paymentListener.devices.checkPayments', $device->id) }}" method="POST" class="flex-1">
                         @csrf
-                        <button class="btn btn-sm btn-primary w-100 d-inline-flex align-items-center justify-content-center gap-1">
+                        <button class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors w-full gap-1">
                             <i class="bi bi-arrow-clockwise me-1"></i> Check
                         </button>
                     </form>
-                    <form action="{{ route('seller.paymentListener.devices.delete', $device->id) }}" method="POST" class="flex-fill">
+                    <form action="{{ route('seller.paymentListener.devices.delete', $device->id) }}" method="POST" class="flex-1">
                         @csrf @method('DELETE')
-                        <button class="btn btn-sm btn-outline-danger w-100" onclick="return confirm('Are you sure?')">Delete</button>
+                        <button class="inline-flex items-center justify-center px-3 py-1.5 bg-transparent text-feedback-danger text-sm font-medium border border-feedback-danger rounded-xs hover:bg-feedback-danger hover:text-white focus:outline-none transition-colors w-full" onclick="return confirm('Are you sure?')">Delete</button>
                     </form>
                 </div>
             </div>
@@ -141,16 +141,16 @@ $hasAccess = $seller->hasFeature('payment_checker');
             </div>
             <div class="modal-body">
                 <p class="instruction-text">Use one of the two methods below to link your new device.</p>
-                <div class="d-flex flex-column align-items-center mb-4">
+                <div class="flex flex-col items-center mb-4">
                     <div id="qrCodeContainer"></div>
-                    <p class="text-muted small mt-2 mb-0">Scan to auto-pair</p>
+                    <p class="text-ink-tertiary text-sm mt-2 mb-0">Scan to auto-pair</p>
                 </div>
                 <div class="or-separator">OR</div>
                 <div class="device-code-wrapper">
-                    <p class="text-muted small mb-2">Enter the code manually:</p>
+                    <p class="text-ink-tertiary text-sm mb-2">Enter the code manually:</p>
                     <div class="code-input-group">
                         <div id="deviceCode"></div>
-                        <button class="btn btn-primary me-2" id="copyCodeButton" title="Copy code">
+                        <button class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors me-2" id="copyCodeButton" title="Copy code">
                             <i class="bi bi-clipboard"></i>
                         </button>
                     </div>
@@ -158,7 +158,7 @@ $hasAccess = $seller->hasFeature('payment_checker');
                 </div>
             </div>
             <div class="modal-footer">
-                <a href="{{ route('seller.paymentListener.index') }}" class="btn btn-light w-100">Done</a>
+                <a href="{{ route('seller.paymentListener.index') }}" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors w-full">Done</a>
             </div>
         </div>
     </div>
@@ -167,16 +167,16 @@ $hasAccess = $seller->hasFeature('payment_checker');
 <div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0">
-            <div class="modal-header bg-danger text-white">
+            <div class="modal-header bg-feedback-danger text-white">
                 <h5 class="modal-title">Connection Error</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body text-center">
-                <p id="errorMessageContent" class="mb-0 text-danger fw-bold">An unexpected error occurred while generating the code.</p>
-                <small class="text-muted">Please try again. If the issue persists, contact support.</small>
+                <p id="errorMessageContent" class="mb-0 text-feedback-danger font-bold">An unexpected error occurred while generating the code.</p>
+                <small class="text-ink-tertiary">Please try again. If the issue persists, contact support.</small>
             </div>
-            <div class="modal-footer justify-content-center">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <div class="modal-footer justify-center">
+                <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -198,7 +198,7 @@ $hasAccess = $seller->hasFeature('payment_checker');
 
     generateButton.addEventListener('click', async () => {
         generateButton.disabled = true;
-        generateButton.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Generating...`;
+        generateButton.innerHTML = `<span class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent me-2" role="status" aria-hidden="true"></span> Generating...`;
         try {
             const response = await fetch(ROUTE_URL, {
                 method: 'POST',

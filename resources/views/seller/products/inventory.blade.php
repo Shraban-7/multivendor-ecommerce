@@ -30,17 +30,17 @@
 @endpush
 
 @section('content')
-<div class="d-flex justify-content-between align-items-end mb-3">
-    <h4 class="fw-bold mb-0 text-dark">Product Inventory</h4>
+<div class="flex justify-between items-end mb-3">
+    <h4 class="font-bold mb-0 text-ink">Product Inventory</h4>
 </div>
 
 <div class="inventory-page">
-    <div class="row">
-        <div class="col-lg-12" id="resizeable">
+    <div class="grid grid-cols-1">
+        <div class="lg:col-span-full" id="resizeable">
             <div class="header-controls">
-                <input type="text" class="form-control form-control-sm search-box" placeholder="Search products / SKU / variant…" id="searchInput">
+                <input type="text" class="w-full px-2 py-1 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors search-box" placeholder="Search products / SKU / variant…" id="searchInput">
 
-                <div class="toggle-group d-flex gap-2">
+                <div class="toggle-group flex gap-2">
                     <span class="toggle-btn" id="toggleImages" data-active="false" style="display: none;">
                         <i data-feather="image" style="width:16px;height:16px;"></i>
                         Show Images
@@ -51,12 +51,12 @@
                             <i data-feather="columns" style="width:14px;height:14px;"></i> Columns <i data-feather="chevron-down" style="width:14px;height:14px;"></i>
                         </span>
                         <div class="dropdown-menu p-2" aria-labelledby="toggleContextMenu" style="min-width:200px;">
-                            <div class="row gx-2 gy-1">
-                                <div class="col-6"><label class="d-flex align-items-center gap-1 small py-1 px-1 rounded cursor-pointer user-select-none" style="cursor:pointer;"><input type="checkbox" id="toggleId" class="column-toggle form-check-input m-0" data-column="id" style="cursor:pointer;"> ID</label></div>
-                                <div class="col-6"><label class="d-flex align-items-center gap-1 small py-1 px-1 rounded cursor-pointer user-select-none" style="cursor:pointer;"><input type="checkbox" id="toggleVariant" checked class="column-toggle form-check-input m-0" data-column="variant" style="cursor:pointer;"> Variant</label></div>
-                                <div class="col-6"><label class="d-flex align-items-center gap-1 small py-1 px-1 rounded cursor-pointer user-select-none" style="cursor:pointer;"><input type="checkbox" id="toggleQuantity" checked class="column-toggle form-check-input m-0" data-column="quantity" style="cursor:pointer;"> Stock</label></div>
-                                <div class="col-6"><label class="d-flex align-items-center gap-1 small py-1 px-1 rounded cursor-pointer user-select-none" style="cursor:pointer;"><input type="checkbox" id="togglePrice" checked class="column-toggle form-check-input m-0" data-column="price" style="cursor:pointer;"> Price</label></div>
-                                <div class="col-6"><label class="d-flex align-items-center gap-1 small py-1 px-1 rounded cursor-pointer user-select-none" style="cursor:pointer;"><input type="checkbox" id="toggleImageColumn" class="column-toggle form-check-input m-0" data-column="image" style="cursor:pointer;"> Image</label></div>
+                            <div class="grid grid-cols-2 gap-x-2 gap-y-1">
+                                <div class="col-span-1"><label class="flex items-center gap-1 text-sm py-1 px-1 rounded-xs cursor-pointer user-select-none" style="cursor:pointer;"><input type="checkbox" id="toggleId" class="column-toggle h-4 w-4 rounded border-border text-brand focus:ring-brand m-0" data-column="id" style="cursor:pointer;"> ID</label></div>
+                                <div class="col-span-1"><label class="flex items-center gap-1 text-sm py-1 px-1 rounded-xs cursor-pointer user-select-none" style="cursor:pointer;"><input type="checkbox" id="toggleVariant" checked class="column-toggle h-4 w-4 rounded border-border text-brand focus:ring-brand m-0" data-column="variant" style="cursor:pointer;"> Variant</label></div>
+                                <div class="col-span-1"><label class="flex items-center gap-1 text-sm py-1 px-1 rounded-xs cursor-pointer user-select-none" style="cursor:pointer;"><input type="checkbox" id="toggleQuantity" checked class="column-toggle h-4 w-4 rounded border-border text-brand focus:ring-brand m-0" data-column="quantity" style="cursor:pointer;"> Stock</label></div>
+                                <div class="col-span-1"><label class="flex items-center gap-1 text-sm py-1 px-1 rounded-xs cursor-pointer user-select-none" style="cursor:pointer;"><input type="checkbox" id="togglePrice" checked class="column-toggle h-4 w-4 rounded border-border text-brand focus:ring-brand m-0" data-column="price" style="cursor:pointer;"> Price</label></div>
+                                <div class="col-span-1"><label class="flex items-center gap-1 text-sm py-1 px-1 rounded-xs cursor-pointer user-select-none" style="cursor:pointer;"><input type="checkbox" id="toggleImageColumn" class="column-toggle h-4 w-4 rounded border-border text-brand focus:ring-brand m-0" data-column="image" style="cursor:pointer;"> Image</label></div>
                             </div>
                         </div>
                     </div>
@@ -69,10 +69,10 @@
                         <tr>
                             <th class="col-id hidden-column">ID</th>
                             <th class="sortable" data-sort="name">Product</th>
-                            <th class="sortable qty-cell col-quantity text-end" data-sort="quantity">Stock</th>
-                            <th class="sortable price-cell col-price text-end" data-sort="price">Price</th>
-                            <th class="sortable price-cell col-compare_price text-start" data-sort="compare_price">Compare Price</th>
-                            <th class="text-end">SKU</th>
+                            <th class="sortable qty-cell col-quantity text-right" data-sort="quantity">Stock</th>
+                            <th class="sortable price-cell col-price text-right" data-sort="price">Price</th>
+                            <th class="sortable price-cell col-compare_price text-left" data-sort="compare_price">Compare Price</th>
+                            <th class="text-right">SKU</th>
                             <th class="col-image hidden-column">Img</th>
                         </tr>
                     </thead>
@@ -138,10 +138,10 @@ function renderProducts() {
         row.innerHTML = `
             <td class="col-id hidden-column">${variant.id}</td>
             <td><b>${variant.name}</b> <br> <i>${variant.label}</i></td>
-            <td class="qty-cell col-quantity text-end">${variant.quantity}</td>
-            <td class="price-cell col-price text-end">${variant.price}</td>
-            <td class="price-cell col-compare_price text-start">${variant.compare_price}</td>
-            <td class="text-end">${variant.sku}</td>
+            <td class="qty-cell col-quantity text-right">${variant.quantity}</td>
+            <td class="price-cell col-price text-right">${variant.price}</td>
+            <td class="price-cell col-compare_price text-left">${variant.compare_price}</td>
+            <td class="text-right">${variant.sku}</td>
             <td class="col-image hidden-column">
                 <img src="${variant.image}" class="thumbnail" alt="${variant.name}" onerror="this.outerHTML='<div class=\\'thumbnail\\'>Missing</div>'">
             </td>

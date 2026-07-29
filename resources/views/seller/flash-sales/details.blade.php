@@ -3,20 +3,20 @@
 
 @section('content')
 
-    <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
-        <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm mb-4" style="border-radius: 12px;">
+        <div class="p-5">
+            <div class="flex justify-between items-center flex-wrap gap-2">
                 <div>
-                    <h4 class="fw-bold mb-1">{{ $flashSale->title }}</h4>
-                    <p class="text-muted mb-0 small">{{ $flashSale->start_time->format('d M Y, h:i A') }} to
+                    <h4 class="font-bold mb-1">{{ $flashSale->title }}</h4>
+                    <p class="text-ink-tertiary mb-0 text-sm">{{ $flashSale->start_time->format('d M Y, h:i A') }} to
                         {{ $flashSale->end_time->format('d M Y, h:i A') }}</p>
                 </div>
 
-                <div class="d-flex gap-2">
-                    <button class="btn btn-light border d-inline-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#guidelineModal">
+                <div class="flex gap-2">
+                    <button class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors border inline-flex items-center gap-1" data-bs-toggle="modal" data-bs-target="#guidelineModal">
                         <i data-feather="info" class="icon-xs"></i> See Guidelines
                     </button>
-                    <button class="btn btn-primary d-inline-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                    <button class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors inline-flex items-center gap-1" data-bs-toggle="modal" data-bs-target="#addProductModal">
                         <i data-feather="plus" class="icon-xs"></i> Add Product
                     </button>
                 </div>
@@ -24,14 +24,14 @@
         </div>
     </div>
 
-    <h4 class="fw-semibold mb-3">My Products</h4>
+    <h4 class="font-semibold mb-3">My Products</h4>
 
-    <div class="table-responsive">
-        <table class="table table-bordered table-hover bg-white align-middle">
-            <thead class="table-light">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm text-ink border-collapse table-bordered table-hover bg-white align-middle">
+            <thead class="bg-surface-muted">
                 <tr>
-                    <th scope="col" class="small fw-semibold text-muted">Product</th>
-                    <th scope="col" class="small fw-semibold text-muted">Status</th>
+                    <th scope="col" class="text-sm font-semibold text-ink-tertiary">Product</th>
+                    <th scope="col" class="text-sm font-semibold text-ink-tertiary">Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -64,8 +64,8 @@
 
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">Select Product</label>
-                        <select name="product_id" class="form-select product-select">
+                        <label class="block text-xs font-medium text-ink-secondary mb-1">Select Product</label>
+                        <select name="product_id" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors product-select">
                             @foreach ($myProducts as $p)
                                 <option value="{{ $p->id }}">{{ $p->name }} (Stock: {{ $p->totalStock }})</option>
                             @endforeach
@@ -74,8 +74,8 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                    <button class="btn btn-primary d-inline-flex align-items-center gap-1">Submit Product</button>
+                    <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Cancel</button>
+                    <button class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors inline-flex items-center gap-1">Submit Product</button>
                 </div>
             </form>
         </div>
@@ -92,7 +92,7 @@
                     {!! $flashSale->description !!}
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>

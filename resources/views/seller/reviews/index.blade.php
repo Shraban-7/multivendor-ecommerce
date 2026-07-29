@@ -2,85 +2,85 @@
 @section('title', 'Product Reviews')
 @section('content')
 
-    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-        <h4 class="fw-bold mb-0 text-dark">Product Reviews</h4>
-        <div class="d-flex gap-2">
+    <div class="flex justify-between items-center mb-3 flex-wrap gap-2">
+        <h4 class="font-bold mb-0 text-ink">Product Reviews</h4>
+        <div class="flex gap-2">
             <a href="{{ route('seller.reviews.index', ['status' => 'unreplied']) }}"
-                class="btn btn-sm {{ request('status') === 'unreplied' ? 'btn-warning' : 'btn-light border' }} d-inline-flex align-items-center gap-1">
+                class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs focus:outline-none transition-colors gap-1 {{ request('status') === 'unreplied' ? 'bg-feedback-warning text-white hover:bg-feedback-warning/90' : 'bg-surface-muted text-ink border border-border hover:bg-border/30' }}">
                 <i data-feather="message-square" class="icon-xs"></i> Needs Reply
             </a>
         </div>
     </div>
 
     @if (session('success'))
-        <div class="alert alert-success alert-dismissible fade show py-2" role="alert">
+        <div class="px-4 py-2 rounded-sm bg-feedback-success/10 border border-feedback-success/20 text-feedback-success text-sm alert-dismissible fade show" role="alert">
             {{ session('success') }}
             <button type="button" class="btn-close py-2" data-bs-dismiss="alert"></button>
         </div>
     @endif
 
-    <div class="row g-3 mb-4">
-        <div class="col-xl-2 col-lg-3 col-md-6">
-            <div class="card border-0 shadow-sm p-3 h-100" style="border-radius: 10px; border-left: 4px solid #F85606;">
-                <div class="d-flex justify-content-between align-items-center">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-3 mb-4">
+        <div>
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 p-3 h-full" style="border-radius: 10px; border-left: 4px solid #F85606;">
+                <div class="flex justify-between items-center">
                     <div>
-                        <span class="text-muted text-uppercase small">Total</span>
-                        <h5 class="fw-bold mb-0 text-dark">{{ $stats['total'] }}</h5>
+                        <span class="text-ink-tertiary uppercase text-sm">Total</span>
+                        <h5 class="font-bold mb-0 text-ink">{{ $stats['total'] }}</h5>
                     </div>
                     <i class="fas fa-star fa-2x opacity-25"></i>
                 </div>
             </div>
         </div>
-        <div class="col-xl-2 col-lg-3 col-md-6">
-            <div class="card border-0 shadow-sm p-3 h-100" style="border-radius: 10px; border-left: 4px solid #1D8A45;">
-                <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 p-3 h-full" style="border-radius: 10px; border-left: 4px solid #1D8A45;">
+                <div class="flex justify-between items-center">
                     <div>
-                        <span class="text-muted text-uppercase small">Approved</span>
-                        <h5 class="fw-bold mb-0 text-success">{{ $stats['approved'] }}</h5>
+                        <span class="text-ink-tertiary uppercase text-sm">Approved</span>
+                        <h5 class="font-bold mb-0 text-feedback-success">{{ $stats['approved'] }}</h5>
                     </div>
                     <i class="fas fa-check-circle fa-2x opacity-25"></i>
                 </div>
             </div>
         </div>
-        <div class="col-xl-2 col-lg-3 col-md-6">
-            <div class="card border-0 shadow-sm p-3 h-100" style="border-radius: 10px; border-left: 4px solid #D93025;">
-                <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 p-3 h-full" style="border-radius: 10px; border-left: 4px solid #D93025;">
+                <div class="flex justify-between items-center">
                     <div>
-                        <span class="text-muted text-uppercase small">Pending</span>
-                        <h5 class="fw-bold mb-0 text-danger">{{ $stats['pending'] }}</h5>
+                        <span class="text-ink-tertiary uppercase text-sm">Pending</span>
+                        <h5 class="font-bold mb-0 text-feedback-danger">{{ $stats['pending'] }}</h5>
                     </div>
                     <i class="fas fa-clock fa-2x opacity-25"></i>
                 </div>
             </div>
         </div>
-        <div class="col-xl-2 col-lg-3 col-md-6">
-            <div class="card border-0 shadow-sm p-3 h-100" style="border-radius: 10px; border-left: 4px solid #0ea5e9;">
-                <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 p-3 h-full" style="border-radius: 10px; border-left: 4px solid #0ea5e9;">
+                <div class="flex justify-between items-center">
                     <div>
-                        <span class="text-muted text-uppercase small">Replied</span>
-                        <h5 class="fw-bold mb-0 text-info">{{ $stats['replied'] }}</h5>
+                        <span class="text-ink-tertiary uppercase text-sm">Replied</span>
+                        <h5 class="font-bold mb-0 text-feedback-info">{{ $stats['replied'] }}</h5>
                     </div>
                     <i class="fas fa-reply fa-2x opacity-25"></i>
                 </div>
             </div>
         </div>
-        <div class="col-xl-2 col-lg-3 col-md-6">
-            <div class="card border-0 shadow-sm p-3 h-100" style="border-radius: 10px; border-left: 4px solid #B7791A;">
-                <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 p-3 h-full" style="border-radius: 10px; border-left: 4px solid #B7791A;">
+                <div class="flex justify-between items-center">
                     <div>
-                        <span class="text-muted text-uppercase small">Avg Rating</span>
-                        <h5 class="fw-bold mb-0 text-warning">{{ $stats['avg_rating'] }}</h5>
+                        <span class="text-ink-tertiary uppercase text-sm">Avg Rating</span>
+                        <h5 class="font-bold mb-0 text-feedback-warning">{{ $stats['avg_rating'] }}</h5>
                     </div>
                     <i class="fas fa-chart-line fa-2x opacity-25"></i>
                 </div>
             </div>
         </div>
-        <div class="col-xl-2 col-lg-3 col-md-6">
-            <div class="card border-0 shadow-sm p-3 h-100" style="border-radius: 10px; border-left: 4px solid #637381;">
-                <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 p-3 h-full" style="border-radius: 10px; border-left: 4px solid #637381;">
+                <div class="flex justify-between items-center">
                     <div>
-                        <span class="text-muted text-uppercase small">Unreplied</span>
-                        <h5 class="fw-bold mb-0 text-secondary">{{ $stats['unreplied'] }}</h5>
+                        <span class="text-ink-tertiary uppercase text-sm">Unreplied</span>
+                        <h5 class="font-bold mb-0 text-ink-secondary">{{ $stats['unreplied'] }}</h5>
                     </div>
                     <i class="fas fa-message fa-2x opacity-25"></i>
                 </div>
@@ -88,64 +88,64 @@
         </div>
     </div>
 
-    <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
-        <div class="card-body">
-            <div class="d-flex flex-wrap gap-2 mb-3">
+    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 mb-4" style="border-radius: 12px;">
+        <div class="p-5">
+            <div class="flex flex-wrap gap-2 mb-3">
                 <a href="{{ route('seller.reviews.index') }}"
-                    class="btn btn-sm {{ !request('status') && !request('rating') ? 'btn-dark' : 'btn-light border' }}">
+                    class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs focus:outline-none transition-colors gap-1 {{ !request('status') && !request('rating') ? 'bg-ink text-white hover:bg-ink/90' : 'bg-surface-muted text-ink border border-border hover:bg-border/30' }}">
                     All
                 </a>
                 @foreach ([5, 4, 3, 2, 1] as $star)
                     <a href="{{ route('seller.reviews.index', ['rating' => $star, 'status' => request('status')]) }}"
-                        class="btn btn-sm {{ request('rating') == $star ? 'btn-warning' : 'btn-light border' }}">
+                        class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs focus:outline-none transition-colors gap-1 {{ request('rating') == $star ? 'bg-feedback-warning text-white hover:bg-feedback-warning/90' : 'bg-surface-muted text-ink border border-border hover:bg-border/30' }}">
                         {{ $star }} <i class="fas fa-star"></i>
                         @if (($ratingDistribution[$star]['percent'] ?? 0) > 0)
-                            <span class="badge bg-secondary ms-1">{{ $ratingDistribution[$star]['percent'] }}%</span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-surface-muted text-ink ms-1">{{ $ratingDistribution[$star]['percent'] }}%</span>
                         @endif
                     </a>
                 @endforeach
             </div>
 
-            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
-                <div class="d-flex flex-wrap gap-1">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                <div class="flex flex-wrap gap-1">
                     <a href="{{ route('seller.reviews.index', ['status' => 'approved', 'rating' => request('rating')]) }}"
-                        class="btn btn-sm {{ request('status') === 'approved' ? 'btn-success' : 'btn-light border' }}">Approved</a>
+                        class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs focus:outline-none transition-colors gap-1 {{ request('status') === 'approved' ? 'bg-feedback-success text-white hover:bg-feedback-success/90' : 'bg-surface-muted text-ink border border-border hover:bg-border/30' }}">Approved</a>
                     <a href="{{ route('seller.reviews.index', ['status' => 'pending', 'rating' => request('rating')]) }}"
-                        class="btn btn-sm {{ request('status') === 'pending' ? 'btn-danger' : 'btn-light border' }}">Pending</a>
+                        class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs focus:outline-none transition-colors gap-1 {{ request('status') === 'pending' ? 'bg-feedback-danger text-white hover:bg-feedback-danger/90' : 'bg-surface-muted text-ink border border-border hover:bg-border/30' }}">Pending</a>
                     <a href="{{ route('seller.reviews.index', ['status' => 'replied', 'rating' => request('rating')]) }}"
-                        class="btn btn-sm {{ request('status') === 'replied' ? 'btn-info' : 'btn-light border' }}">Replied</a>
+                        class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs focus:outline-none transition-colors gap-1 {{ request('status') === 'replied' ? 'bg-feedback-info text-white hover:bg-feedback-info/90' : 'bg-surface-muted text-ink border border-border hover:bg-border/30' }}">Replied</a>
                     <a href="{{ route('seller.reviews.index', ['status' => 'unreplied', 'rating' => request('rating')]) }}"
-                        class="btn btn-sm {{ request('status') === 'unreplied' ? 'btn-warning' : 'btn-light border' }}">Unreplied</a>
+                        class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs focus:outline-none transition-colors gap-1 {{ request('status') === 'unreplied' ? 'bg-feedback-warning text-white hover:bg-feedback-warning/90' : 'bg-surface-muted text-ink border border-border hover:bg-border/30' }}">Unreplied</a>
                 </div>
 
-                <form method="GET" class="d-flex gap-2">
+                <form method="GET" class="flex gap-2">
                     @if (request('status'))
                         <input type="hidden" name="status" value="{{ request('status') }}">
                     @endif
                     @if (request('rating'))
                         <input type="hidden" name="rating" value="{{ request('rating') }}">
                     @endif
-                    <div class="input-group input-group-sm" style="max-width: 250px;">
-                        <input type="text" name="search" class="form-control" placeholder="Search reviews..."
+                    <div class="flex" style="max-width: 250px;">
+                        <input type="text" name="search" class="w-full px-2.5 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="Search reviews..."
                             value="{{ request('search') }}">
-                        <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
+                        <button class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1" type="submit"><i class="fas fa-search"></i></button>
                     </div>
                 </form>
             </div>
 
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover bg-white mb-0 align-middle">
-                    <thead class="table-light">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-ink border-collapse table-bordered table-hover bg-white mb-0 align-middle">
+                    <thead class="bg-surface-muted">
                         <tr>
-                            <th scope="col" class="small fw-semibold text-muted" style="width: 50px;">#</th>
-                            <th scope="col" class="small fw-semibold text-muted">Product</th>
-                            <th scope="col" class="small fw-semibold text-muted">Customer</th>
-                            <th scope="col" class="small fw-semibold text-muted">Rating</th>
-                            <th scope="col" class="small fw-semibold text-muted">Review</th>
-                            <th scope="col" class="small fw-semibold text-muted">Status</th>
-                            <th scope="col" class="small fw-semibold text-muted">Reply</th>
-                            <th scope="col" class="small fw-semibold text-muted">Date</th>
-                            <th scope="col" class="small fw-semibold text-muted">Action</th>
+                            <th scope="col" class="text-sm font-semibold text-ink-tertiary" style="width: 50px;">#</th>
+                            <th scope="col" class="text-sm font-semibold text-ink-tertiary">Product</th>
+                            <th scope="col" class="text-sm font-semibold text-ink-tertiary">Customer</th>
+                            <th scope="col" class="text-sm font-semibold text-ink-tertiary">Rating</th>
+                            <th scope="col" class="text-sm font-semibold text-ink-tertiary">Review</th>
+                            <th scope="col" class="text-sm font-semibold text-ink-tertiary">Status</th>
+                            <th scope="col" class="text-sm font-semibold text-ink-tertiary">Reply</th>
+                            <th scope="col" class="text-sm font-semibold text-ink-tertiary">Date</th>
+                            <th scope="col" class="text-sm font-semibold text-ink-tertiary">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -153,55 +153,55 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>
-                                    <div class="d-flex align-items-center gap-2">
+                                    <div class="flex items-center gap-2">
                                         @if ($review->product && $review->product->thumbnail)
                                             <img src="{{ asset($review->product->thumbnail) }}" alt=""
                                                 style="width: 36px; height: 36px; object-fit: cover; border-radius: 6px;">
                                         @endif
-                                        <span class="fw-semibold small">{{ $review->product?->name ?? 'Deleted Product' }}</span>
+                                        <span class="font-semibold text-sm">{{ $review->product?->name ?? 'Deleted Product' }}</span>
                                     </div>
                                 </td>
                                 <td>
-                                    <div class="small fw-semibold">{{ $review->user?->name ?? 'Guest' }}</div>
-                                    <div class="small text-muted">{{ $review->user?->phone ?? '' }}</div>
+                                    <div class="text-sm font-semibold">{{ $review->user?->name ?? 'Guest' }}</div>
+                                    <div class="text-sm text-ink-tertiary">{{ $review->user?->phone ?? '' }}</div>
                                 </td>
                                 <td>
-                                    <div class="text-nowrap">
+                                    <div class="whitespace-nowrap">
                                         @for ($i = 1; $i <= 5; $i++)
-                                            <i class="fas fa-star {{ $i <= $review->rating ? 'text-warning' : 'text-muted opacity-25' }}"
+                                            <i class="fas fa-star {{ $i <= $review->rating ? 'text-feedback-warning' : 'text-ink-tertiary opacity-25' }}"
                                                 style="font-size: 12px;"></i>
                                         @endfor
                                     </div>
                                 </td>
                                 <td style="max-width: 220px;">
-                                    <div class="small text-truncate">{{ $review->description }}</div>
+                                    <div class="text-sm truncate">{{ $review->description }}</div>
                                     @if ($review->images->count() > 0)
-                                        <span class="small text-muted"><i class="far fa-image me-1"></i>{{ $review->images->count() }} photo(s)</span>
+                                        <span class="text-sm text-ink-tertiary"><i class="far fa-image me-1"></i>{{ $review->images->count() }} photo(s)</span>
                                     @endif
                                 </td>
                                 <td>
                                     @if ($review->is_approved)
-                                        <span class="badge bg-success-subtle text-success">Approved</span>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-feedback-success/10 text-feedback-success">Approved</span>
                                     @else
-                                        <span class="badge bg-danger-subtle text-danger">Pending</span>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-feedback-danger/10 text-feedback-danger">Pending</span>
                                     @endif
                                 </td>
                                 <td>
                                     @if ($review->hasReply())
-                                        <span class="badge bg-info-subtle text-info"><i class="fas fa-check me-1"></i>Replied</span>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-feedback-info/10 text-feedback-info"><i class="fas fa-check me-1"></i>Replied</span>
                                     @else
-                                        <span class="badge bg-secondary-subtle text-secondary">No Reply</span>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-surface-muted text-ink-secondary">No Reply</span>
                                     @endif
                                 </td>
-                                <td class="small text-nowrap">{{ $review->created_at->format('d/m/Y') }}</td>
+                                <td class="text-sm whitespace-nowrap">{{ $review->created_at->format('d/m/Y') }}</td>
                                 <td>
                                     <div class="dropdown">
-                                        <button class="btn btn-light border btn-sm" type="button" data-bs-toggle="dropdown">
+                                        <button class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1" type="button" data-bs-toggle="dropdown">
                                             <i data-feather="more-horizontal" class="icon-xs"></i>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end">
                                             <li>
-                                                <button class="dropdown-item small" data-bs-toggle="modal"
+                                                <button class="dropdown-item text-sm" data-bs-toggle="modal"
                                                     data-bs-target="#viewReviewModal"
                                                     data-review-id="{{ $review->id }}"
                                                     data-product="{{ $review->product?->name ?? 'N/A' }}"
@@ -216,7 +216,7 @@
                                                 </button>
                                             </li>
                                             <li>
-                                                <button class="dropdown-item small" data-bs-toggle="modal"
+                                                <button class="dropdown-item text-sm" data-bs-toggle="modal"
                                                     data-bs-target="#replyModal"
                                                     data-review-id="{{ $review->id }}"
                                                     data-customer="{{ $review->user?->name ?? 'Guest' }}"
@@ -228,7 +228,7 @@
                                             <li>
                                                 <form action="{{ route('seller.reviews.toggleApproval', $review) }}" method="POST">
                                                     @csrf
-                                                    <button type="submit" class="dropdown-item small">
+                                                    <button type="submit" class="dropdown-item text-sm">
                                                         <i class="fas {{ $review->is_approved ? 'fa-eye-slash' : 'fa-eye' }} me-2"></i>
                                                         {{ $review->is_approved ? 'Hide Review' : 'Approve Review' }}
                                                     </button>
@@ -238,7 +238,7 @@
                                                 <li>
                                                     <form action="{{ route('seller.reviews.deleteReply', $review) }}" method="POST">
                                                         @csrf
-                                                        <button type="submit" class="dropdown-item small text-danger"
+                                                        <button type="submit" class="dropdown-item text-sm text-feedback-danger"
                                                             onclick="return confirm('Delete your reply?')">
                                                             <i class="fas fa-trash-alt me-2"></i>Delete Reply
                                                         </button>
@@ -251,14 +251,14 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="9" class="text-center py-4 text-muted">No reviews found.</td>
+                                <td colspan="9" class="text-center py-4 text-ink-tertiary">No reviews found.</td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
 
-            <div class="d-flex justify-content-end mt-3">
+            <div class="flex justify-end mt-3">
                 {{ $reviews->links() }}
             </div>
         </div>
@@ -269,41 +269,41 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title fw-bold">Review Details</h5>
+                    <h5 class="modal-title font-bold">Review Details</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="small text-muted fw-semibold">Product</label>
-                        <p class="fw-semibold mb-0" id="viewProduct"></p>
+                        <label class="text-sm text-ink-tertiary font-semibold">Product</label>
+                        <p class="font-semibold mb-0" id="viewProduct"></p>
                     </div>
                     <div class="mb-3">
-                        <label class="small text-muted fw-semibold">Customer</label>
+                        <label class="text-sm text-ink-tertiary font-semibold">Customer</label>
                         <p class="mb-0" id="viewCustomer"></p>
                     </div>
                     <div class="mb-3">
-                        <label class="small text-muted fw-semibold">Rating</label>
+                        <label class="text-sm text-ink-tertiary font-semibold">Rating</label>
                         <p class="mb-0" id="viewRating"></p>
                     </div>
                     <div class="mb-3">
-                        <label class="small text-muted fw-semibold">Review</label>
+                        <label class="text-sm text-ink-tertiary font-semibold">Review</label>
                         <p class="mb-0" id="viewDescription"></p>
                     </div>
                     <div class="mb-3">
-                        <label class="small text-muted fw-semibold">Your Reply</label>
-                        <p class="mb-0 text-info" id="viewReply"><em>No reply yet</em></p>
+                        <label class="text-sm text-ink-tertiary font-semibold">Your Reply</label>
+                        <p class="mb-0 text-feedback-info" id="viewReply"><em>No reply yet</em></p>
                     </div>
                     <div class="mb-3">
-                        <label class="small text-muted fw-semibold">Status</label>
+                        <label class="text-sm text-ink-tertiary font-semibold">Status</label>
                         <p class="mb-0" id="viewApproved"></p>
                     </div>
                     <div class="mb-0">
-                        <label class="small text-muted fw-semibold">Helpful Count</label>
+                        <label class="text-sm text-ink-tertiary font-semibold">Helpful Count</label>
                         <p class="mb-0" id="viewHelpful"></p>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light border btn-sm" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -316,19 +316,19 @@
                 <form method="POST" id="replyForm">
                     @csrf
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">Reply to Review</h5>
+                        <h5 class="modal-title font-bold">Reply to Review</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <p class="small text-muted mb-3">Replying to review from: <span class="fw-semibold" id="replyCustomer"></span></p>
+                        <p class="text-sm text-ink-tertiary mb-3">Replying to review from: <span class="font-semibold" id="replyCustomer"></span></p>
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Your Reply</label>
-                            <textarea name="reply" class="form-control" rows="4" placeholder="Write your response to this review..." id="replyTextarea"></textarea>
+                            <label class="block text-xs font-medium text-ink-secondary mb-1 font-semibold">Your Reply</label>
+                            <textarea name="reply" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" rows="4" placeholder="Write your response to this review..." id="replyTextarea"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light border btn-sm" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary btn-sm">Submit Reply</button>
+                        <button type="button" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">Submit Reply</button>
                     </div>
                 </form>
             </div>
@@ -345,8 +345,8 @@
                 document.getElementById('viewRating').innerHTML = renderStars(parseInt(this.dataset.rating));
                 document.getElementById('viewDescription').textContent = this.dataset.description;
                 document.getElementById('viewReply').innerHTML = this.dataset.reply
-                    ? '<span class="text-success fw-semibold">' + this.dataset.reply + '</span>'
-                    : '<em class="text-muted">No reply yet</em>';
+                    ? '<span class="text-feedback-success font-semibold">' + this.dataset.reply + '</span>'
+                    : '<em class="text-ink-tertiary">No reply yet</em>';
                 document.getElementById('viewApproved').textContent = this.dataset.approved;
                 document.getElementById('viewHelpful').textContent = this.dataset.helpful;
             });
@@ -364,7 +364,7 @@
         function renderStars(rating) {
             let html = '';
             for (let i = 1; i <= 5; i++) {
-                html += '<i class="fas fa-star ' + (i <= rating ? 'text-warning' : 'text-muted opacity-25') + '"></i> ';
+                html += '<i class="fas fa-star ' + (i <= rating ? 'text-feedback-warning' : 'text-ink-tertiary opacity-25') + '"></i> ';
             }
             return html;
         }

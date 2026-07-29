@@ -90,19 +90,58 @@ body {
 }
 
 /* ──────────────────────────
-   SIDEBAR (navbar-vertical) — Compact Dark Orange
+   SIDEBAR (navbar-vertical) — Compact Light
    Uses !important to override theme.css specificity
    ────────────────────────── */
 
 .navbar-vertical,
 #sellerSidebar.navbar-vertical {
-  background-color: #1a1a2e !important;
-  border-right: 1px solid rgba(255, 255, 255, 0.06) !important;
+  background-color: #FFFFFF !important;
+  border-right: 1px solid #E5E5E5 !important;
+  /* Column layout so the brand stays pinned and only the nav list scrolls.
+     align-items/justify-content reset Bootstrap's .navbar defaults, which would
+     otherwise centre and space out the children once this becomes a flex column. */
+  display: flex !important;
+  flex-direction: column !important;
+  flex-wrap: nowrap !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  overflow: hidden !important;
+}
+
+/* ── Scroll region: nav list only, brand stays fixed above it ── */
+.navbar-vertical .sidebar-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #D4D4D4 transparent;
+  padding-bottom: 1rem;
+}
+
+/* ID-prefixed to outrank the panel-wide "#db-wrapper ::-webkit-scrollbar" rule */
+#sellerSidebar .sidebar-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+#sellerSidebar .sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#sellerSidebar .sidebar-scroll::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 999px;
+}
+
+#sellerSidebar:hover .sidebar-scroll::-webkit-scrollbar-thumb {
+  background-color: #D4D4D4;
 }
 
 /* ── Top-level nav items ── */
 .navbar-vertical .navbar-nav .nav-item .nav-link {
-  color: rgba(255, 255, 255, 0.75) !important;
+  color: #595959 !important;
   border-radius: 0.375rem !important;
   margin: 0.08rem 0.625rem !important;
   padding: 0.4rem 0.7rem !important;
@@ -114,12 +153,12 @@ body {
 }
 
 .navbar-vertical .navbar-nav .nav-item .nav-link:hover {
-  background-color: rgba(248, 86, 6, 0.12) !important;
-  color: #ffffff !important;
+  background-color: #F5F5F5 !important;
+  color: #191919 !important;
 }
 
 .navbar-vertical .navbar-nav .nav-item .nav-link.active {
-  background-color: rgba(248, 86, 6, 0.18) !important;
+  background-color: #FFF1EA !important;
   color: #F85606 !important;
   font-weight: 600 !important;
 }
@@ -137,12 +176,14 @@ body {
 }
 
 .navbar-vertical .navbar-nav .nav-link .nav-icon {
-  color: rgba(255, 255, 255, 0.45) !important;
+  color: #767676 !important;
+  /* theme.css dims icons to 0.6, which is too faint on a white surface */
+  opacity: 1 !important;
   transition: color 0.15s ease !important;
 }
 
 .navbar-vertical .navbar-nav .nav-link:hover .nav-icon {
-  color: #ffffff !important;
+  color: #191919 !important;
 }
 
 .navbar-vertical .navbar-nav .nav-link.active .nav-icon {
@@ -159,14 +200,14 @@ body {
   font-size: 0.75rem !important;
   margin: 0.04rem 0.625rem !important;
   border-radius: 0.25rem !important;
-  color: rgba(255, 255, 255, 0.6) !important;
+  color: #767676 !important;
   font-weight: 400 !important;
 }
 
 .navbar-vertical .navbar-nav .nav .nav-item .nav-link:hover,
 .navbar-vertical .navbar-nav .nav .nav-link:hover {
-  background-color: rgba(248, 86, 6, 0.1) !important;
-  color: #ffffff !important;
+  background-color: #F5F5F5 !important;
+  color: #191919 !important;
 }
 
 .navbar-vertical .navbar-nav .nav .nav-item .nav-link.active,
@@ -188,7 +229,7 @@ body {
 
 /* ── Section headings ── */
 .sidebar-heading {
-  color: rgba(255, 255, 255, 0.35) !important;
+  color: #9A9A9A !important;
   font-size: 10px !important;
   letter-spacing: 0.1em !important;
   padding: 0.65rem 1rem 0.2rem !important;
@@ -197,7 +238,7 @@ body {
 
 /* ── Chevron ── */
 .navbar-vertical .navbar-nav .nav-item .nav-link .chevron-icon {
-  color: rgba(255, 255, 255, 0.35) !important;
+  color: #A8A8A8 !important;
   transition: transform 0.25s ease !important;
   width: 14px !important;
   height: 14px !important;
@@ -212,14 +253,16 @@ body {
   display: none !important;
 }
 
-/* ── Brand ── */
+/* ── Brand (pinned above the scroll region) ── */
 .navbar-vertical .navbar-brand {
-  background-color: transparent !important;
+  background-color: #FFFFFF !important;
   padding: 0.7rem 1.15rem !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-bottom: 1px solid #E5E5E5 !important;
   margin-right: 0 !important;
   margin-bottom: 0 !important;
-  display: block !important;
+  display: flex !important;
+  align-items: center !important;
+  flex: 0 0 auto !important;
 }
 
 .navbar-vertical .navbar-brand img {
@@ -236,124 +279,316 @@ body {
   padding: 0.75rem 1.5rem;
 }
 
-/* ──────────────────────────
-   BUTTONS
-   ────────────────────────── */
+/* ══════════════════════════════════════════════════════════
+   BUTTONS — single source of truth for the seller panel
+
+   Self-contained on purpose: these rules define every visual
+   property they need rather than inheriting Bootstrap's
+   --bs-btn-* variables, so the panel survives the removal of
+   theme.css in migration Phase 4. Keeps the familiar
+   .btn + .btn-{variant} + .btn-sm/.btn-lg API.
+
+   Variants: primary secondary light white outline-primary
+             danger outline-danger success warning info
+             outline-* dark ghost link
+   Sizes:    .btn-sm (28px) · default (36px) · .btn-lg (44px)
+   Modifiers: .btn-icon (square) · .btn-block (full width)
+   ══════════════════════════════════════════════════════════ */
 
 .btn {
-  font-weight: 600;
+  --btn-bg: transparent;
+  --btn-fg: #191919;
+  --btn-border: transparent;
+  --btn-bg-hover: transparent;
+  --btn-fg-hover: #191919;
+  --btn-border-hover: transparent;
+  --btn-bg-active: transparent;
+  --btn-ring: rgba(25, 25, 25, 0.15);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  min-height: 2.25rem;
+  padding: 0.4375rem 0.875rem;
+  border: 1px solid var(--btn-border);
   border-radius: 0.375rem;
-  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  background-color: var(--btn-bg);
+  color: var(--btn-fg);
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
 }
 
+.btn:hover {
+  background-color: var(--btn-bg-hover);
+  border-color: var(--btn-border-hover);
+  color: var(--btn-fg-hover);
+  text-decoration: none;
+}
+
+.btn:active {
+  background-color: var(--btn-bg-active);
+  border-color: var(--btn-bg-active);
+}
+
+/* Always-visible ring for keyboard users, on every variant */
+.btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--btn-ring);
+}
+
+.btn:disabled,
+.btn.disabled,
+.btn[aria-disabled="true"] {
+  opacity: 0.5;
+  pointer-events: none;
+  box-shadow: none;
+}
+
+/* Icons inherit the label colour and never stretch */
+.btn > svg,
+.btn > i {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  stroke-width: 2;
+}
+
+/* ── Sizes ── */
+.btn-sm {
+  min-height: 1.75rem;
+  padding: 0.1875rem 0.625rem;
+  font-size: 0.75rem;
+  gap: 0.25rem;
+}
+
+.btn-sm > svg,
+.btn-sm > i {
+  width: 12px;
+  height: 12px;
+}
+
+.btn-lg {
+  min-height: 2.75rem;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  gap: 0.5rem;
+}
+
+.btn-lg > svg,
+.btn-lg > i {
+  width: 16px;
+  height: 16px;
+}
+
+/* ── Modifiers ── */
+.btn-icon {
+  padding: 0;
+  width: 2.25rem;
+  min-width: 2.25rem;
+}
+
+.btn-icon.btn-sm {
+  width: 1.75rem;
+  min-width: 1.75rem;
+}
+
+.btn-icon.btn-lg {
+  width: 2.75rem;
+  min-width: 2.75rem;
+}
+
+.btn-block {
+  display: flex;
+  width: 100%;
+}
+
+/* ── Solid: primary (brand orange) ── */
 .btn-primary {
-  background-color: #F85606 !important;
-  border-color: #F85606 !important;
-  color: #fff !important;
+  --btn-bg: #F85606;
+  --btn-fg: #ffffff;
+  --btn-border: #F85606;
+  --btn-bg-hover: #C43D00;
+  --btn-fg-hover: #ffffff;
+  --btn-border-hover: #C43D00;
+  --btn-bg-active: #9E3100;
+  --btn-ring: rgba(248, 86, 6, 0.35);
 }
 
-.btn-primary:hover {
-  background-color: #C43D00 !important;
-  border-color: #C43D00 !important;
-}
-
-.btn-primary:active,
-.btn-primary:focus {
-  background-color: #9E3100 !important;
-  border-color: #9E3100 !important;
-  box-shadow: 0 0 0 0.2rem rgba(248, 86, 6, 0.3) !important;
-}
-
-.btn-outline-primary {
-  color: #F85606 !important;
-  border-color: #F85606 !important;
-}
-
-.btn-outline-primary:hover {
-  background-color: #F85606 !important;
-  border-color: #F85606 !important;
-  color: #fff !important;
-}
-
-.btn-secondary {
-  background-color: #fff !important;
-  color: #C43D00 !important;
-  border-color: #F85606 !important;
-}
-
-.btn-secondary:hover {
-  background-color: #FFF1EA !important;
-}
-
-.btn-white {
-  background-color: #fff;
-  border-color: #E5E5E5;
-  color: #454f5b;
-}
-
-.btn-white:hover {
-  background-color: #F5F5F5;
-}
-
-.btn-light {
-  background-color: #fff;
-  border-color: #E5E5E5;
-  color: #454f5b;
-}
-
-.btn-light:hover {
-  background-color: #F5F5F5;
+/* ── Solid: danger / success / warning / info / dark ── */
+.btn-danger {
+  --btn-bg: #D93025;
+  --btn-fg: #ffffff;
+  --btn-border: #D93025;
+  --btn-bg-hover: #B71C1C;
+  --btn-fg-hover: #ffffff;
+  --btn-border-hover: #B71C1C;
+  --btn-bg-active: #9E1414;
+  --btn-ring: rgba(217, 48, 37, 0.35);
 }
 
 .btn-success {
-  background-color: #1D8A45 !important;
-  border-color: #1D8A45 !important;
+  --btn-bg: #1D8A45;
+  --btn-fg: #ffffff;
+  --btn-border: #1D8A45;
+  --btn-bg-hover: #156F36;
+  --btn-fg-hover: #ffffff;
+  --btn-border-hover: #156F36;
+  --btn-bg-active: #10592B;
+  --btn-ring: rgba(29, 138, 69, 0.35);
 }
 
-.btn-success:hover {
-  background-color: #156F36 !important;
+.btn-warning {
+  --btn-bg: #B7791A;
+  --btn-fg: #ffffff;
+  --btn-border: #B7791A;
+  --btn-bg-hover: #8C5E14;
+  --btn-fg-hover: #ffffff;
+  --btn-border-hover: #8C5E14;
+  --btn-bg-active: #714C10;
+  --btn-ring: rgba(183, 121, 26, 0.35);
 }
 
-.btn-danger {
-  background-color: #D93025 !important;
-  border-color: #D93025 !important;
+.btn-info {
+  --btn-bg: #0F6FC5;
+  --btn-fg: #ffffff;
+  --btn-border: #0F6FC5;
+  --btn-bg-hover: #0C5AA0;
+  --btn-fg-hover: #ffffff;
+  --btn-border-hover: #0C5AA0;
+  --btn-bg-active: #094880;
+  --btn-ring: rgba(15, 111, 197, 0.35);
 }
 
-.btn-danger:hover {
-  background-color: #B71C1C !important;
+.btn-dark {
+  --btn-bg: #191919;
+  --btn-fg: #ffffff;
+  --btn-border: #191919;
+  --btn-bg-hover: #3D3D3D;
+  --btn-fg-hover: #ffffff;
+  --btn-border-hover: #3D3D3D;
+  --btn-bg-active: #000000;
+  --btn-ring: rgba(25, 25, 25, 0.3);
+}
+
+/* ── Neutral: the default "secondary action" button ── */
+.btn-light,
+.btn-white,
+.btn-secondary {
+  --btn-bg: #ffffff;
+  --btn-fg: #454f5b;
+  --btn-border: #E5E5E5;
+  --btn-bg-hover: #F5F5F5;
+  --btn-fg-hover: #191919;
+  --btn-border-hover: #C7C7C7;
+  --btn-bg-active: #EBEBEB;
+  --btn-ring: rgba(25, 25, 25, 0.15);
+}
+
+/* ── Outline variants ── */
+.btn-outline-primary {
+  --btn-bg: transparent;
+  --btn-fg: #C43D00;
+  --btn-border: #F85606;
+  --btn-bg-hover: #F85606;
+  --btn-fg-hover: #ffffff;
+  --btn-border-hover: #F85606;
+  --btn-bg-active: #C43D00;
+  --btn-ring: rgba(248, 86, 6, 0.35);
 }
 
 .btn-outline-danger {
-  color: #D93025 !important;
-  border-color: #D93025 !important;
+  --btn-bg: transparent;
+  --btn-fg: #D93025;
+  --btn-border: #D93025;
+  --btn-bg-hover: #D93025;
+  --btn-fg-hover: #ffffff;
+  --btn-border-hover: #D93025;
+  --btn-bg-active: #B71C1C;
+  --btn-ring: rgba(217, 48, 37, 0.35);
 }
 
-.btn-outline-danger:hover {
-  background-color: #D93025 !important;
-  border-color: #D93025 !important;
-  color: #fff !important;
+.btn-outline-success {
+  --btn-bg: transparent;
+  --btn-fg: #1D8A45;
+  --btn-border: #1D8A45;
+  --btn-bg-hover: #1D8A45;
+  --btn-fg-hover: #ffffff;
+  --btn-border-hover: #1D8A45;
+  --btn-bg-active: #156F36;
+  --btn-ring: rgba(29, 138, 69, 0.35);
 }
 
-.btn-outline-secondary {
-  color: #637381 !important;
-  border-color: #637381 !important;
-}
-
-.btn-outline-secondary:hover {
-  background-color: #637381 !important;
-  border-color: #637381 !important;
-  color: #fff !important;
+.btn-outline-warning {
+  --btn-bg: transparent;
+  --btn-fg: #B7791A;
+  --btn-border: #B7791A;
+  --btn-bg-hover: #B7791A;
+  --btn-fg-hover: #ffffff;
+  --btn-border-hover: #B7791A;
+  --btn-bg-active: #8C5E14;
+  --btn-ring: rgba(183, 121, 26, 0.35);
 }
 
 .btn-outline-info {
-  color: #0ea5e9 !important;
-  border-color: #0ea5e9 !important;
+  --btn-bg: transparent;
+  --btn-fg: #0F6FC5;
+  --btn-border: #0F6FC5;
+  --btn-bg-hover: #0F6FC5;
+  --btn-fg-hover: #ffffff;
+  --btn-border-hover: #0F6FC5;
+  --btn-bg-active: #0C5AA0;
+  --btn-ring: rgba(15, 111, 197, 0.35);
 }
 
-.btn-outline-info:hover {
-  background-color: #0ea5e9 !important;
-  border-color: #0ea5e9 !important;
-  color: #fff !important;
+.btn-outline-secondary {
+  --btn-bg: transparent;
+  --btn-fg: #595959;
+  --btn-border: #C7C7C7;
+  --btn-bg-hover: #F5F5F5;
+  --btn-fg-hover: #191919;
+  --btn-border-hover: #767676;
+  --btn-bg-active: #EBEBEB;
+  --btn-ring: rgba(25, 25, 25, 0.15);
+}
+
+/* ── Low-emphasis: ghost & link ── */
+.btn-ghost {
+  --btn-bg: transparent;
+  --btn-fg: #595959;
+  --btn-border: transparent;
+  --btn-bg-hover: #F5F5F5;
+  --btn-fg-hover: #191919;
+  --btn-border-hover: transparent;
+  --btn-bg-active: #EBEBEB;
+  --btn-ring: rgba(25, 25, 25, 0.15);
+}
+
+.btn-link {
+  --btn-bg: transparent;
+  --btn-fg: #F85606;
+  --btn-border: transparent;
+  --btn-bg-hover: transparent;
+  --btn-fg-hover: #C43D00;
+  --btn-border-hover: transparent;
+  --btn-bg-active: transparent;
+  --btn-ring: rgba(248, 86, 6, 0.35);
+  min-height: 0;
+  padding: 0;
+  text-decoration: none;
+}
+
+.btn-link:hover {
+  text-decoration: underline;
 }
 
 /* ──────────────────────────
@@ -779,13 +1014,13 @@ label:has(+ textarea[required])::after {
 /* ── Border utilities ── */
 .border-subtle { border-color: var(--bs-border-subtle) !important; }
 
-/* ── Sidebar Adaptation: Dark theme adjustments ── */
+/* ── Sidebar Adaptation: Light theme adjustments ── */
 .sidebar-logo {
   max-height: 36px;
 }
 .sidebar-heading {
-  color: rgba(255, 255, 255, 0.35) !important;
+  color: #9A9A9A !important;
 }
 .navbar-vertical .sidebar-heading[style] {
-  color: rgba(255, 255, 255, 0.35) !important;
+  color: #9A9A9A !important;
 }

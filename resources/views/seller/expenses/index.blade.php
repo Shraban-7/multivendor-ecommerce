@@ -2,33 +2,33 @@
 @section('title', 'Expenses')
 @section('content')
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="fw-bold mb-0 text-dark">Expenses</h4>
-        <button class="btn btn-primary btn-sm d-inline-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#createExpenseModal">
+    <div class="flex justify-between items-center mb-3">
+        <h4 class="font-bold mb-0 text-ink">Expenses</h4>
+        <button class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1" data-bs-toggle="modal" data-bs-target="#createExpenseModal">
             <i data-feather="plus" class="icon-xs"></i> Add Expense
         </button>
     </div>
 
-    <div class="table-responsive">
-        <table class="table table-bordered table-hover bg-white mb-3 text-nowrap">
-            <thead class="table-light">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm text-ink border-collapse table-bordered table-hover bg-white mb-3 whitespace-nowrap">
+            <thead class="bg-surface-muted">
                 <tr>
-                    <th scope="col" class="small fw-semibold text-muted">Category</th>
-                    <th scope="col" class="small fw-semibold text-muted">Amount</th>
-                    <th scope="col" class="small fw-semibold text-muted">Description</th>
-                    <th scope="col" class="small fw-semibold text-muted">Date</th>
-                    <th scope="col" class="small fw-semibold text-muted">Action</th>
+                    <th scope="col" class="text-sm font-semibold text-ink-tertiary">Category</th>
+                    <th scope="col" class="text-sm font-semibold text-ink-tertiary">Amount</th>
+                    <th scope="col" class="text-sm font-semibold text-ink-tertiary">Description</th>
+                    <th scope="col" class="text-sm font-semibold text-ink-tertiary">Date</th>
+                    <th scope="col" class="text-sm font-semibold text-ink-tertiary">Action</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse ($expenses as $expense)
                     <tr>
                         <td>{{ $expense->category->name ?? '' }}</td>
-                        <td><span class="text-dark">{{ money($expense->amount) }}</span></td>
+                        <td><span class="text-ink">{{ money($expense->amount) }}</span></td>
                         <td>{{ $expense->description ?? '' }}</td>
                         <td>{{ $expense->expense_date->format('d/m/Y') }}</td>
                         <td>
-                            <button class="btn btn-light border btn-sm d-inline-flex align-items-center gap-1 me-1 edit-expense-btn" data-id="{{ $expense->id }}"
+                            <button class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1 me-1 edit-expense-btn" data-id="{{ $expense->id }}"
                                 data-category="{{ $expense->seller_expense_category_id }}"
                                 data-category-name="{{ $expense->category->name ?? '' }}"
                                 data-amount="{{ $expense->amount }}" data-description="{{ $expense->description }}"
@@ -37,7 +37,7 @@
                                 <i data-feather="edit" class="icon-xs"></i> Edit
                             </button>
                             
-                            <button type="button" class="btn btn-danger border btn-sm d-inline-flex align-items-center gap-1 delete-expense-btn"
+                            <button type="button" class="inline-flex items-center justify-center px-3 py-1.5 bg-feedback-danger text-white text-sm font-medium rounded-xs hover:bg-red-700 focus:outline-none transition-colors gap-1 border delete-expense-btn"
                                 data-id="{{ $expense->id }}" data-bs-toggle="modal" data-bs-target="#deleteExpenseModal">
                                 <i data-feather="trash" class="icon-xs"></i> Delete
                             </button>
@@ -52,7 +52,7 @@
             </tbody>
         </table>
 
-        <div class="d-flex justify-content-end">
+        <div class="flex justify-end">
             {{ $expenses->links() }}
         </div>
     </div>
@@ -70,9 +70,9 @@
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label class="form-label">Category</label>
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Category</label>
                             <select name="seller_expense_category_id" id="create-category"
-                                class="form-select w-100 brand-select" required>
+                                class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors w-full brand-select" required>
                                 <option value="" selected disabled>--Choose--</option>
                                 @foreach ($categories as $category)
                                     <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -80,12 +80,12 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Amount</label>
-                            <input type="number" step="0.01" name="amount" class="form-control" required>
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Amount</label>
+                            <input type="number" step="0.01" name="amount" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Description</label>
-                            <select name="description" id="create-description" class="form-select w-100 description-select">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Description</label>
+                            <select name="description" id="create-description" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors w-full description-select">
                                 <option value="" selected disabled>--Choose--</option>
                                 @foreach ($descriptions as $desc)
                                     <option value="{{ $desc }}">{{ $desc }}</option>
@@ -93,13 +93,13 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Date</label>
-                            <input type="date" name="expense_date" class="form-control"
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Date</label>
+                            <input type="date" name="expense_date" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors"
                                 value="{{ old('expense_date', date('Y-m-d')) }}" required>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary d-inline-flex align-items-center gap-1">Save</button>
+                        <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">Save</button>
                     </div>
                 </form>
             </div>
@@ -118,9 +118,9 @@
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label class="form-label">Category</label>
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Category</label>
                             <select name="seller_expense_category_id" id="edit-category"
-                                class="form-control select2-category" required>
+                                class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors select2-category" required>
                                 <option value="" selected disabled>Select or Create Category</option>
                                 @foreach ($categories as $category)
                                     <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -128,27 +128,27 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Amount</label>
-                            <input type="number" step="0.01" name="amount" id="edit-amount" class="form-control"
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Amount</label>
+                            <input type="number" step="0.01" name="amount" id="edit-amount" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors"
                                 required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Description</label>
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Description</label>
                             <option value="" selected disabled>Select or Create Description</option>
                             <select name="description" id="edit-description"
-                                class="form-select w-100 description-select">
+                                class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors w-full description-select">
                                 @foreach ($descriptions as $desc)
                                     <option value="{{ $desc }}">{{ $desc }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Date</label>
-                            <input type="date" name="expense_date" id="edit-date" class="form-control" required>
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Date</label>
+                            <input type="date" name="expense_date" id="edit-date" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary d-inline-flex align-items-center gap-1">Update</button>
+                        <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">Update</button>
                     </div>
                 </form>
             </div>
@@ -170,8 +170,8 @@
                         <p>Are you sure you want to delete this expense?</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-danger d-inline-flex align-items-center gap-1">Yes, Delete</button>
+                        <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-feedback-danger text-white text-sm font-medium rounded-xs hover:bg-red-700 focus:outline-none transition-colors gap-1">Yes, Delete</button>
                     </div>
                 </form>
             </div>

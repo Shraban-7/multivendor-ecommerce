@@ -2,87 +2,87 @@
 @section('title', 'Edit Profile')
 
 @section('content')
-    <div class="container-fluid px-0">
-        <h4 class="fw-bold mb-3 text-dark">Edit Profile</h4>
+    <div class="w-full px-0">
+        <h4 class="font-bold mb-3 text-ink">Edit Profile</h4>
 
-        <div class="row g-4 align-items-stretch">
-            <div class="col-md-6 d-flex">
-                <form id="personalForm" class="flex-fill d-flex flex-column">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
+            <div class="md:col-span-1 flex">
+                <form id="personalForm" class="flex-1 flex flex-col">
                     @csrf
                     <input type="hidden" name="section" value="personal">
 
-                    <div class="card shadow-sm border-0 flex-fill d-flex flex-column" style="border-radius: 12px;">
-                        <div class="card-header bg-white border-bottom">
-                            <h5 class="fw-semibold text-dark mb-0">
+                    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden flex-1 flex flex-col" style="border-radius: 12px;">
+                        <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
+                            <h5 class="font-semibold text-ink mb-0">
                                 Personal Information
                             </h5>
                         </div>
-                        <div class="card-body flex-grow-1">
-                            <div class="row g-3">
-                                <div class="col-md-12">
-                                    <label class="form-label">Full Name</label>
+                        <div class="p-5 grow">
+                            <div class="grid grid-cols-1 gap-3">
+                                <div class="md:col-span-full">
+                                    <label class="block text-xs font-medium text-ink-secondary mb-1">Full Name</label>
                                     <input type="text" name="name" value="{{ auth('seller')->user()->name }}"
-                                        class="form-control" required>
+                                        class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
                                 </div>
 
-                                <div class="col-md-12">
-                                    <label class="form-label">Email</label>
+                                <div class="md:col-span-full">
+                                    <label class="block text-xs font-medium text-ink-secondary mb-1">Email</label>
                                     <input type="email" name="email" value="{{ auth('seller')->user()->email }}"
-                                        class="form-control" required>
+                                        class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
                                 </div>
 
-                                <div class="col-md-12">
-                                    <label class="form-label">Phone</label>
+                                <div class="md:col-span-full">
+                                    <label class="block text-xs font-medium text-ink-secondary mb-1">Phone</label>
                                     <input type="text" name="phone" value="{{ auth('seller')->user()->phone }}"
-                                        class="form-control" required>
+                                        class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
                                 </div>
 
-                                <div class="col-12">
-                                    <label class="form-label">Profile Picture</label>
+                                <div class="col-span-full">
+                                    <label class="block text-xs font-medium text-ink-secondary mb-1">Profile Picture</label>
                                     <x-image-input name="image" :image="auth('seller')->user()->image
                                         ? storage_url(auth('seller')->user()->image)
                                         : asset('assets/frontend/images/default.png')" />
                                 </div>
                             </div>
                         </div>
-                        <div class="text-end p-3 border-top bg-white">
-                            <button type="submit" class="btn btn-primary d-inline-flex align-items-center gap-1">Update Personal Info</button>
+                        <div class="text-right p-3 border-t bg-white">
+                            <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">Update Personal Info</button>
                         </div>
                     </div>
                 </form>
             </div>
 
-            <div class="col-md-6 d-flex">
-                <form id="passwordForm" class="flex-fill d-flex flex-column">
+            <div class="md:col-span-1 flex">
+                <form id="passwordForm" class="flex-1 flex flex-col">
                     @csrf
                     <input type="hidden" name="section" value="password">
 
-                    <div class="card shadow-sm border-0 flex-fill d-flex flex-column" style="border-radius: 12px;">
-                        <div class="card-header bg-white border-bottom">
-                            <h5 class="fw-semibold text-dark mb-0">Update Password</h5>
+                    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden flex-1 flex flex-col" style="border-radius: 12px;">
+                        <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
+                            <h5 class="font-semibold text-ink mb-0">Update Password</h5>
                         </div>
 
-                        <div class="card-body flex-grow-1">
-                            <div class="row g-3">
-                                <div class="col-md-12">
-                                    <label class="form-label">Current Password</label>
-                                    <input type="password" name="current_password" class="form-control">
+                        <div class="p-5 grow">
+                            <div class="grid grid-cols-1 gap-3">
+                                <div class="md:col-span-full">
+                                    <label class="block text-xs font-medium text-ink-secondary mb-1">Current Password</label>
+                                    <input type="password" name="current_password" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
                                 </div>
 
-                                <div class="col-md-12">
-                                    <label class="form-label">New Password</label>
-                                    <input type="password" name="password" class="form-control">
+                                <div class="md:col-span-full">
+                                    <label class="block text-xs font-medium text-ink-secondary mb-1">New Password</label>
+                                    <input type="password" name="password" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
                                 </div>
 
-                                <div class="col-md-12">
-                                    <label class="form-label">Confirm Password</label>
-                                    <input type="password" name="password_confirmation" class="form-control">
+                                <div class="md:col-span-full">
+                                    <label class="block text-xs font-medium text-ink-secondary mb-1">Confirm Password</label>
+                                    <input type="password" name="password_confirmation" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
                                 </div>
                             </div>
                         </div>
 
-                        <div class="text-end p-3 border-top bg-white">
-                            <button type="submit" class="btn btn-primary d-inline-flex align-items-center gap-1">
+                        <div class="text-right p-3 border-t bg-white">
+                            <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">
                                 Update Password
                             </button>
                         </div>

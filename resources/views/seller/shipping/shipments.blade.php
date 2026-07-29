@@ -2,36 +2,36 @@
 @section('title', 'Shipments')
 
 @section('content')
-<div class="container-fluid px-0">
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
-        <h4 class="fw-bold mb-0 text-dark">Shipments</h4>
-        <div class="d-flex gap-2">
-            <form method="GET" class="d-flex gap-2 align-items-center">
-                <select name="status" class="form-select form-select-sm" style="width:auto;" onchange="this.form.submit()">
+<div class="w-full px-0">
+    <div class="flex flex-wrap justify-between items-center mb-3">
+        <h4 class="font-bold mb-0 text-ink">Shipments</h4>
+        <div class="flex gap-2">
+            <form method="GET" class="flex gap-2 items-center">
+                <select name="status" class="w-full px-2.5 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" style="width:auto;" onchange="this.form.submit()">
                     <option value="">All Statuses</option>
                     @foreach (\App\Domain\Shipping\Models\Shipment::statuses() as $value => $label)
                         <option value="{{ $value }}" {{ request('status') === $value ? 'selected' : '' }}>{{ $label }}</option>
                     @endforeach
                 </select>
-                <input type="text" name="tracking_number" class="form-control form-control-sm" style="width:160px;" placeholder="Tracking #" value="{{ request('tracking_number') }}">
-                <button class="btn btn-sm btn-primary d-inline-flex align-items-center gap-1"><i data-feather="search" style="width:14px;height:14px;"></i></button>
+                <input type="text" name="tracking_number" class="w-full px-2.5 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" style="width:160px;" placeholder="Tracking #" value="{{ request('tracking_number') }}">
+                <button class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1"><i data-feather="search" style="width:14px;height:14px;"></i></button>
             </form>
         </div>
     </div>
 
     @if ($shipments->count() > 0)
-        <div class="card border-0 shadow-sm" style="border-radius: 12px;">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0" style="border-radius: 12px;">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-ink border-collapse table-hover mb-0">
+                    <thead class="bg-surface-muted">
                         <tr>
-                            <th class="small fw-semibold text-muted">#</th>
-                            <th class="small fw-semibold text-muted">Order</th>
-                            <th class="small fw-semibold text-muted">Carrier</th>
-                            <th class="small fw-semibold text-muted">Tracking</th>
-                            <th class="small fw-semibold text-muted">Status</th>
-                            <th class="small fw-semibold text-muted">Date</th>
-                            <th class="small fw-semibold text-muted">Action</th>
+                            <th class="text-sm font-semibold text-ink-tertiary">#</th>
+                            <th class="text-sm font-semibold text-ink-tertiary">Order</th>
+                            <th class="text-sm font-semibold text-ink-tertiary">Carrier</th>
+                            <th class="text-sm font-semibold text-ink-tertiary">Tracking</th>
+                            <th class="text-sm font-semibold text-ink-tertiary">Status</th>
+                            <th class="text-sm font-semibold text-ink-tertiary">Date</th>
+                            <th class="text-sm font-semibold text-ink-tertiary">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -39,7 +39,7 @@
                             <tr>
                                 <td>{{ $shipment->id }}</td>
                                 <td>
-                                    <a href="{{ route('seller.orders.details', $shipment->order?->invoice_id) }}" class="text-decoration-none">
+                                    <a href="{{ route('seller.orders.details', $shipment->order?->invoice_id) }}" class="no-underline">
                                         #{{ $shipment->order?->invoice_id ?? 'N/A' }}
                                     </a>
                                 </td>
@@ -48,27 +48,27 @@
                                 <td>
                                     @php $label = $shipment->status; @endphp
                                     @if ($label === 'pending')
-                                        <span class="badge badge-soft-warning">Pending</span>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold badge-soft-warning">Pending</span>
                                     @elseif ($label === 'picked_up')
-                                        <span class="badge badge-soft-info">Picked Up</span>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold badge-soft-info">Picked Up</span>
                                     @elseif ($label === 'in_transit')
-                                        <span class="badge badge-soft-primary">In Transit</span>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold badge-soft-primary">In Transit</span>
                                     @elseif ($label === 'out_for_delivery')
-                                        <span class="badge badge-soft-warning">Out for Delivery</span>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold badge-soft-warning">Out for Delivery</span>
                                     @elseif ($label === 'delivered')
-                                        <span class="badge badge-soft-success">Delivered</span>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold badge-soft-success">Delivered</span>
                                     @elseif ($label === 'failed')
-                                        <span class="badge badge-soft-danger">Failed</span>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold badge-soft-danger">Failed</span>
                                     @elseif ($label === 'returned')
-                                        <span class="badge badge-soft-secondary">Returned</span>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold badge-soft-secondary">Returned</span>
                                     @else
-                                        <span class="badge badge-soft-secondary">{{ $label }}</span>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold badge-soft-secondary">{{ $label }}</span>
                                     @endif
                                 </td>
                                 <td>{{ $shipment->created_at->format('d/m/Y') }}</td>
                                 <td>
                                     <a href="{{ route('seller.shipping.shipments.show', $shipment->id) }}"
-                                       class="btn btn-sm btn-light border d-inline-flex align-items-center gap-1">
+                                       class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1">
                                         <i data-feather="eye" style="width:14px;height:14px;"></i>
                                     </a>
                                 </td>
@@ -79,14 +79,14 @@
             </div>
         </div>
         @if ($shipments->hasPages())
-            <div class="mt-3 d-flex justify-content-end">{{ $shipments->links() }}</div>
+            <div class="mt-3 flex justify-end">{{ $shipments->links() }}</div>
         @endif
     @else
-        <div class="card border-0 shadow-sm" style="border-radius: 12px;">
-            <div class="card-body text-center py-5">
-                <i data-feather="package" style="width: 64px; height: 64px;" class="text-muted mb-3"></i>
-                <h5 class="fw-semibold mb-2">No Shipments</h5>
-                <p class="text-muted mb-0">Shipments will appear here after you create them from order details.</p>
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0" style="border-radius: 12px;">
+            <div class="p-5 text-center py-5">
+                <i data-feather="package" style="width: 64px; height: 64px;" class="text-ink-tertiary mb-3"></i>
+                <h5 class="font-semibold mb-2">No Shipments</h5>
+                <p class="text-ink-tertiary mb-0">Shipments will appear here after you create them from order details.</p>
             </div>
         </div>
     @endif

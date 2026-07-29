@@ -15,12 +15,12 @@
 @endpush
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="fw-bold mb-0 text-dark">Shop Settings</h4>
+<div class="flex justify-between items-center mb-3">
+    <h4 class="font-bold mb-0 text-ink">Shop Settings</h4>
 </div>
 
-<div class="card border-0 shadow-sm" style="border-radius: 12px;">
-    <div class="card-header bg-white px-0 pt-0 border-0">
+<div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden" style="border-radius: 12px;">
+    <div class="bg-white px-0 pt-0 border-0">
         <ul class="nav settings-tabs px-3" id="settingsTab" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab">
@@ -45,7 +45,7 @@
         </ul>
     </div>
 
-    <div class="card-body p-4">
+    <div class="p-4">
         <form id="businessSettingsForm" action="{{ route('seller.settings.update') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
@@ -53,35 +53,35 @@
 
                 {{-- TAB 1: Shop Info --}}
                 <div class="tab-pane fade show active" id="info" role="tabpanel">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label for="business_name" class="form-label">Business Name</label>
-                            <input type="text" class="form-control" id="business_name" name="business_name"
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="md:col-span-1">
+                            <label for="business_name" class="block text-xs font-medium text-ink-secondary mb-1">Business Name</label>
+                            <input type="text" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" id="business_name" name="business_name"
                                 value="{{ old('business_name', $seller->business_name) }}" required>
                         </div>
-                        <div class="col-md-6">
-                            <label for="business_email" class="form-label">Business Email</label>
-                            <input type="email" class="form-control" id="business_email" name="business_email"
+                        <div class="md:col-span-1">
+                            <label for="business_email" class="block text-xs font-medium text-ink-secondary mb-1">Business Email</label>
+                            <input type="email" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" id="business_email" name="business_email"
                                 value="{{ old('business_email', $seller->business_email) }}" required>
                         </div>
-                        <div class="col-md-6">
-                            <label for="shop_type" class="form-label">Shop Type</label>
-                            <select name="shop_type" id="shop_type" class="form-select">
+                        <div class="md:col-span-1">
+                            <label for="shop_type" class="block text-xs font-medium text-ink-secondary mb-1">Shop Type</label>
+                            <select name="shop_type" id="shop_type" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors">
                                 <option value="individual" {{ old('shop_type', $seller->shop_type) == 'individual' ? 'selected' : '' }}>Individual</option>
                                 <option value="business" {{ old('shop_type', $seller->shop_type) == 'business' ? 'selected' : '' }}>Business</option>
                                 <option value="company" {{ old('shop_type', $seller->shop_type) == 'company' ? 'selected' : '' }}>Company</option>
                             </select>
                         </div>
                     </div>
-                    <div class="row g-3 mt-2">
-                        <div class="col-12">
-                            <label for="business_description" class="form-label">Shop Description</label>
-                            <textarea name="business_description" id="business_description" class="form-control" rows="4" maxlength="5000">{{ old('business_description', $seller->business_description) }}</textarea>
-                            <small class="text-muted">Tell customers about your shop (max 5000 characters).</small>
+                    <div class="grid grid-cols-1 gap-3 mt-2">
+                        <div class="col-span-full">
+                            <label for="business_description" class="block text-xs font-medium text-ink-secondary mb-1">Shop Description</label>
+                            <textarea name="business_description" id="business_description" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" rows="4" maxlength="5000">{{ old('business_description', $seller->business_description) }}</textarea>
+                            <small class="text-ink-tertiary">Tell customers about your shop (max 5000 characters).</small>
                         </div>
                     </div>
-                    <div class="mt-4 text-end">
-                        <button type="submit" class="btn btn-primary d-inline-flex align-items-center gap-1">
+                    <div class="mt-4 text-right">
+                        <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">
                             <i data-feather="save" style="width: 16px; height: 16px;"></i> Save Changes
                         </button>
                     </div>
@@ -89,14 +89,14 @@
 
                 {{-- TAB 2: Address & Shipping --}}
                 <div class="tab-pane fade" id="address" role="tabpanel">
-                    <div class="row g-3">
-                        <div class="col-12">
-                            <label for="business_address" class="form-label">Business Address</label>
-                            <textarea name="business_address" id="business_address" class="form-control" rows="2">{{ old('business_address', $seller->business_address) }}</textarea>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="col-span-full">
+                            <label for="business_address" class="block text-xs font-medium text-ink-secondary mb-1">Business Address</label>
+                            <textarea name="business_address" id="business_address" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" rows="2">{{ old('business_address', $seller->business_address) }}</textarea>
                         </div>
-                        <div class="col-md-6">
-                            <label for="divisionSelect" class="form-label">Division</label>
-                            <select name="division_id" id="divisionSelect" class="form-select">
+                        <div class="md:col-span-1">
+                            <label for="divisionSelect" class="block text-xs font-medium text-ink-secondary mb-1">Division</label>
+                            <select name="division_id" id="divisionSelect" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors">
                                 <option value="">Select Division</option>
                                 @foreach ($divisions as $division)
                                     <option value="{{ $division->id }}" {{ $seller->division_id == $division->id ? 'selected' : '' }}>
@@ -105,21 +105,21 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-6">
-                            <label for="districtSelect" class="form-label">District</label>
-                            <select name="district_id" id="districtSelect" class="form-select">
+                        <div class="md:col-span-1">
+                            <label for="districtSelect" class="block text-xs font-medium text-ink-secondary mb-1">District</label>
+                            <select name="district_id" id="districtSelect" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors">
                                 <option value="">Select District</option>
                             </select>
                         </div>
-                        <div class="col-md-6">
-                            <label for="shipping_cost" class="form-label">Shipping Cost</label>
-                            <input type="number" class="form-control" id="shipping_cost" name="shipping_cost"
+                        <div class="md:col-span-1">
+                            <label for="shipping_cost" class="block text-xs font-medium text-ink-secondary mb-1">Shipping Cost</label>
+                            <input type="number" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" id="shipping_cost" name="shipping_cost"
                                 value="{{ old('shipping_cost', $seller->shipping_cost) }}" step="0.01">
-                            <small class="text-muted">Default shipping cost for your products.</small>
+                            <small class="text-ink-tertiary">Default shipping cost for your products.</small>
                         </div>
                     </div>
-                    <div class="mt-4 text-end">
-                        <button type="submit" class="btn btn-primary d-inline-flex align-items-center gap-1">
+                    <div class="mt-4 text-right">
+                        <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">
                             <i data-feather="save" style="width: 16px; height: 16px;"></i> Save Changes
                         </button>
                     </div>
@@ -127,38 +127,38 @@
 
                 {{-- TAB 3: Identity & Documents --}}
                 <div class="tab-pane fade" id="identity" role="tabpanel">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label">NID Number</label>
-                            <input type="text" name="nid_no" class="form-control" value="{{ old('nid_no', $seller->nid_no) }}">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="md:col-span-1">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">NID Number</label>
+                            <input type="text" name="nid_no" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ old('nid_no', $seller->nid_no) }}">
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Trade License No</label>
-                            <input type="text" name="trade_license_no" class="form-control" value="{{ old('trade_license_no', $seller->trade_license_no) }}">
+                        <div class="md:col-span-1">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Trade License No</label>
+                            <input type="text" name="trade_license_no" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ old('trade_license_no', $seller->trade_license_no) }}">
                         </div>
                     </div>
-                    <div class="row g-4 mt-2">
-                        <div class="col-md-4">
-                            <label class="form-label">NID Front</label>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+                        <div class="md:col-span-1">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">NID Front</label>
                             <x-image-input name="nid_front_image" :image="auth('seller')->user()->nid_front_image
                                 ? storage_url(auth('seller')->user()->nid_front_image)
                                 : asset('assets/frontend/images/default.png')" />
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label">NID Back</label>
+                        <div class="md:col-span-1">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">NID Back</label>
                             <x-image-input name="nid_back_image" :image="auth('seller')->user()->nid_back_image
                                 ? storage_url(auth('seller')->user()->nid_back_image)
                                 : asset('assets/frontend/images/default.png')" />
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Trade License</label>
+                        <div class="md:col-span-1">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Trade License</label>
                             <x-image-input name="trade_license_image" :image="auth('seller')->user()->trade_license_image
                                 ? storage_url(auth('seller')->user()->trade_license_image)
                                 : asset('assets/frontend/images/default.png')" />
                         </div>
                     </div>
-                    <div class="mt-4 text-end">
-                        <button type="submit" class="btn btn-primary d-inline-flex align-items-center gap-1">
+                    <div class="mt-4 text-right">
+                        <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">
                             <i data-feather="save" style="width: 16px; height: 16px;"></i> Save Changes
                         </button>
                     </div>
@@ -166,22 +166,22 @@
 
                 {{-- TAB 4: Media --}}
                 <div class="tab-pane fade" id="media" role="tabpanel">
-                    <div class="row g-4">
-                        <div class="col-md-4">
-                            <label class="form-label">Business Logo</label>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="md:col-span-1">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Business Logo</label>
                             <x-image-input name="business_logo" :image="storage_url($seller->business_logo)" />
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Cover Photo</label>
+                        <div class="md:col-span-1">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Cover Photo</label>
                             <x-image-input name="cover_image" :image="storage_url($seller->cover_image)" />
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Shop Image</label>
+                        <div class="md:col-span-1">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Shop Image</label>
                             <x-image-input name="shop_image" :image="storage_url($seller->shop_image)" />
                         </div>
                     </div>
-                    <div class="mt-4 text-end">
-                        <button type="submit" class="btn btn-primary d-inline-flex align-items-center gap-1">
+                    <div class="mt-4 text-right">
+                        <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">
                             <i data-feather="save" style="width: 16px; height: 16px;"></i> Save Changes
                         </button>
                     </div>

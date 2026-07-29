@@ -6,9 +6,9 @@
         $activeTab = request()->get('tab', 'pos');
     @endphp
 
-    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-        <h4 class="fw-bold mb-0 text-dark">Customers</h4>
-        <button class="btn btn-sm btn-primary d-inline-flex align-items-center gap-1" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas"
+    <div class="flex justify-between items-center mb-3 flex-wrap gap-2">
+        <h4 class="font-bold mb-0 text-ink">Customers</h4>
+        <button class="inline-flex items-center justify-center px-3 py-1.5 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas"
             aria-controls="filterCanvas">
             <i data-feather="filter" class="icon-xs"></i> Filter
         </button>
@@ -32,14 +32,14 @@
 
     <div class="tab-content">
         <div class="tab-pane fade {{ $activeTab == 'pos' ? 'show active' : '' }}">
-            <div class="table-responsive ">
-                <table class="table table-bordered table-hover bg-white mb-3 align-middle">
-                    <thead class="table-light">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-ink border-collapse table-bordered table-hover bg-white mb-3 align-middle">
+                    <thead class="bg-surface-muted">
                         <tr>
-                            <th scope="col" class="small fw-semibold text-muted">Customer</th>
-                            <th scope="col" class="small fw-semibold text-muted">Phone</th>
-                            <th scope="col" class="small fw-semibold text-muted">Email</th>
-                            <th scope="col" class="small fw-semibold text-muted">Registration Date</th>
+                            <th scope="col" class="text-sm font-semibold text-ink-tertiary">Customer</th>
+                            <th scope="col" class="text-sm font-semibold text-ink-tertiary">Phone</th>
+                            <th scope="col" class="text-sm font-semibold text-ink-tertiary">Email</th>
+                            <th scope="col" class="text-sm font-semibold text-ink-tertiary">Registration Date</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -59,14 +59,14 @@
         </div>
 
         <div class="tab-pane fade {{ $activeTab == 'website' ? 'show active' : '' }}">
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover bg-white mb-3 align-middle">
-                    <thead class="table-light">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-ink border-collapse table-bordered table-hover bg-white mb-3 align-middle">
+                    <thead class="bg-surface-muted">
                         <tr>
-                            <th scope="col" class="small fw-semibold text-muted">Customer</th>
-                            <th scope="col" class="small fw-semibold text-muted">Phone</th>
-                            <th scope="col" class="small fw-semibold text-muted">Email</th>
-                            <th scope="col" class="small fw-semibold text-muted">Registration Date</th>
+                            <th scope="col" class="text-sm font-semibold text-ink-tertiary">Customer</th>
+                            <th scope="col" class="text-sm font-semibold text-ink-tertiary">Phone</th>
+                            <th scope="col" class="text-sm font-semibold text-ink-tertiary">Email</th>
+                            <th scope="col" class="text-sm font-semibold text-ink-tertiary">Registration Date</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -88,7 +88,7 @@
     <div class="offcanvas offcanvas-end" tabindex="-1" id="filterCanvas" aria-labelledby="filterCanvasLabel">
         <div class="offcanvas-header">
             <h5 class="offcanvas-title" id="filterCanvasLabel">Filter</h5>
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
 
         <div class="offcanvas-body">
@@ -96,19 +96,19 @@
                 <input type="hidden" name="tab" value="{{ $activeTab }}">
 
                 <div class="mb-3">
-                    <label for="customer_name" class="form-label">Customer Name</label>
-                    <input type="text" class="form-control" id="customer_name" name="customer_name"
+                    <label for="customer_name" class="block text-xs font-medium text-ink-secondary mb-1">Customer Name</label>
+                    <input type="text" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" id="customer_name" name="customer_name"
                         value="{{ request('customer_name') }}">
                 </div>
                 <div class="mb-3">
-                    <label for="customer_phone" class="form-label">Customer Phone</label>
-                    <input type="text" class="form-control" id="customer_phone" name="customer_phone"
+                    <label for="customer_phone" class="block text-xs font-medium text-ink-secondary mb-1">Customer Phone</label>
+                    <input type="text" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" id="customer_phone" name="customer_phone"
                         value="{{ request('customer_phone') }}">
                 </div>
 
-                <div class="d-flex gap-2">
-                    <a href="{{ route('seller.customers', ['tab' => $activeTab]) }}" class="btn btn-outline-secondary w-100">Reset</a>
-                    <button type="submit" class="btn btn-primary w-100">Apply Filter</button>
+                <div class="flex gap-2">
+                    <a href="{{ route('seller.customers', ['tab' => $activeTab]) }}" class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-xs border border-border text-ink-tertiary hover:bg-surface-muted hover:text-ink transition-colors w-full">Reset</a>
+                    <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors w-full">Apply Filter</button>
                 </div>
             </form>
         </div>

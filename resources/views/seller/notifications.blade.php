@@ -2,49 +2,49 @@
 @section('title', 'Notifications')
 
 @section('content')
-    <div class="row justify-content-start">
-        <div class="col-md-6">
-            <div class="card shadow-sm border-0" style="border-radius: 12px;">
-                <div class="card-header bg-white border-bottom">
-                    <h4 class="fw-bold mb-0 text-dark">Notifications</h4>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 justify-start">
+        <div class="md:col-span-1">
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden" style="border-radius: 12px;">
+                <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
+                    <h4 class="font-bold mb-0 text-ink">Notifications</h4>
                 </div>
 
-                <div class="card-body">
+                <div class="p-5">
                     @if ($notifications->count())
-                        <ul class="list-unstyled mb-0">
+                        <ul class="list-none mb-0">
                             @foreach ($notifications as $notification)
                                 <li
-                                    class="border rounded mb-3 p-3
-                                           @if (!$notification->is_read) bg-light border-primary @else bg-white @endif">
-                                    <div class="d-flex justify-content-between align-items-start">
-                                        <h5 class="mb-1 text-dark">
+                                    class="border rounded-xs mb-3 p-3
+                                           @if (!$notification->is_read) bg-surface-muted border-brand @else bg-white @endif">
+                                    <div class="flex justify-between items-start">
+                                        <h5 class="mb-1 text-ink">
                                             {{ $notification->title }}
                                         </h5>
                                         @if (!$notification->is_read)
-                                            <span class="badge badge-soft-primary">New</span>
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold badge-soft-primary">New</span>
                                         @endif
                                     </div>
 
-                                    <p class="mb-2 text-muted">
+                                    <p class="mb-2 text-ink-tertiary">
                                         {{ $notification->message }}
                                     </p>
 
                                     {{-- Uncomment if linking to a target --}}
                                     {{-- @if ($notification->target_type && $notification->target_id)
                                         <a href="{{ route('target.route', [$notification->target_type, $notification->target_id]) }}"
-                                           class="text-decoration-none text-primary small">
+                                           class="no-underline text-brand text-sm">
                                            View Details
                                         </a>
                                     @endif --}}
 
-                                    <div class="text-muted small mt-2">
+                                    <div class="text-ink-tertiary text-sm mt-2">
                                         {{ $notification->created_at->diffForHumans() }}
                                     </div>
                                 </li>
                             @endforeach
                         </ul>
                     @else
-                        <div class="text-center text-muted py-5">
+                        <div class="text-center text-ink-tertiary py-5">
                             <i class="fas fa-bell-slash fa-3x mb-3"></i>
                             <p class="mb-0">No notifications found.</p>
                         </div>

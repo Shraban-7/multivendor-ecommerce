@@ -28,49 +28,49 @@
 @endpush
 
 @section('content')
-<div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
-    <div class="d-flex align-items-start gap-2">
+<div class="flex flex-wrap justify-between items-start gap-2 mb-3">
+    <div class="flex items-start gap-2">
         <a href="{{ route('seller.products.edit', $product->slug) }}"
-            class="btn btn-light border btn-sm d-inline-flex align-items-center gap-1 mt-1">
+            class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1 mt-1">
             <i data-feather="arrow-left" style="width:16px;height:16px;"></i>
         </a>
         <div>
-            <div class="d-flex align-items-center gap-2 mb-1">
-                <h4 class="fw-bold mb-0 text-dark">Product Media</h4>
+            <div class="flex items-center gap-2 mb-1">
+                <h4 class="font-bold mb-0 text-ink">Product Media</h4>
             </div>
-            <div class="small text-muted d-flex align-items-center gap-3">
+            <div class="text-sm text-ink-tertiary flex items-center gap-3">
                 <span>{{ $product->name }}</span>
-                <span class="text-muted">|</span>
+                <span class="text-ink-tertiary">|</span>
                 <span>SKU: <strong>{{ $product->sku }}</strong></span>
             </div>
         </div>
     </div>
 </div>
 
-<div class="row g-4">
-    <div class="col-12">
+<div class="grid grid-cols-1 gap-4">
+    <div class="col-span-full">
         <div class="section-card">
-            <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
                 <h5><i data-feather="upload-cloud" class="icon-xs me-1"></i> Upload Images</h5>
             </div>
-            <div class="card-body">
+            <div class="p-5">
                 <form id="mediaUploadForm" enctype="multipart/form-data" method="POST"
                     action="{{ route('seller.products.media.upload', $product) }}">
                     @csrf
-                    <div class="upload-zone text-center p-5 position-relative mb-3" id="dropZone">
+                    <div class="upload-zone text-center p-5 relative mb-3" id="dropZone">
                         <input type="file" name="images[]" id="imageInput"
-                            class="position-absolute top-0 start-0 w-100 h-100 opacity-0 cursor-pointer" multiple
+                            class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer" multiple
                             accept="image/png, image/jpeg, image/jpg, image/webp">
                         <div class="pointer-events-none">
                             <i data-feather="image" class="mb-2" style="width:48px;height:48px;color:#0d6efd;"></i>
-                            <h6 class="fw-bold mb-1">Click or Drag images here</h6>
-                            <p class="text-muted small mb-0">Max 4MB per file &bull; JPG, PNG, WEBP &bull;
+                            <h6 class="font-bold mb-1">Click or Drag images here</h6>
+                            <p class="text-ink-tertiary text-sm mb-0">Max 4MB per file &bull; JPG, PNG, WEBP &bull;
                                 Auto-converted to WebP</p>
                         </div>
                     </div>
-                    <div class="row g-2 mb-3" id="previewContainer"></div>
-                    <div class="d-flex justify-content-end">
-                        <button type="submit" class="btn btn-primary d-inline-flex align-items-center gap-1 px-4"
+                    <div class="grid grid-cols-1 gap-2 mb-3" id="previewContainer"></div>
+                    <div class="flex justify-end">
+                        <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1"
                             id="uploadBtn" disabled>
                             <i data-feather="upload" style="width:16px;height:16px;"></i> Upload Selected
                         </button>
@@ -80,37 +80,37 @@
         </div>
     </div>
 
-    <div class="col-12">
+    <div class="col-span-full">
         <div class="section-card">
-            <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
                 <h5><i data-feather="grid" class="icon-xs me-1"></i> Gallery ({{ $product->images->count() }})</h5>
-                <span class="small text-muted">Drag to reorder</span>
+                <span class="text-sm text-ink-tertiary">Drag to reorder</span>
             </div>
-            <div class="card-body">
+            <div class="p-5">
                 @if ($product->images->count())
                     <div class="media-grid" id="mediaGrid">
                         @foreach ($product->images->sortBy('position') as $image)
                             <div class="media-item {{ $image->is_primary ? 'primary' : '' }}" data-id="{{ $image->id }}"
                                 data-position="{{ $image->position }}">
                                 @if ($image->is_primary)
-                                    <span class="badge bg-success badge-primary">Primary</span>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-feedback-success badge-primary">Primary</span>
                                 @endif
                                 <div class="ratio ratio-1x1">
-                                    <img src="{{ $image->image_url }}" alt="Product Image" class="w-100 h-100 object-fit-cover"
+                                    <img src="{{ $image->image_url }}" alt="Product Image" class="w-full h-full object-fit-cover"
                                         loading="lazy">
                                 </div>
                                 <div class="overlay">
                                     @if (!$image->is_primary)
-                                        <button type="button" class="btn btn-light btn-sm rounded-circle shadow-sm action-btn"
+                                        <button type="button" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors rounded-full shadow-sm action-btn"
                                             data-action="primary" data-id="{{ $image->id }}" title="Set as Primary">
                                             <i data-feather="star" style="width:16px;height:16px;color:#198754;"></i>
                                         </button>
                                     @endif
-                                    <button type="button" class="btn btn-light btn-sm rounded-circle shadow-sm action-btn"
+                                    <button type="button" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors rounded-full shadow-sm action-btn"
                                         data-action="replace" data-id="{{ $image->id }}" title="Replace">
                                         <i data-feather="refresh-cw" style="width:16px;height:16px;color:#0d6efd;"></i>
                                     </button>
-                                    <button type="button" class="btn btn-light btn-sm rounded-circle shadow-sm action-btn"
+                                    <button type="button" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors rounded-full shadow-sm action-btn"
                                         data-action="delete" data-id="{{ $image->id }}" title="Delete">
                                         <i data-feather="trash-2" style="width:16px;height:16px;color:#dc3545;"></i>
                                     </button>
@@ -121,7 +121,7 @@
                 @else
                     <div class="text-center py-5">
                         <i data-feather="image" style="width:48px;height:48px;color:#adb5bd;"></i>
-                        <p class="text-muted mt-2 mb-0">No images in the gallery yet.</p>
+                        <p class="text-ink-tertiary mt-2 mb-0">No images in the gallery yet.</p>
                     </div>
                 @endif
             </div>
@@ -129,7 +129,7 @@
     </div>
 </div>
 
-<input type="file" id="replaceFileInput" class="d-none" accept="image/png, image/jpeg, image/jpg, image/webp">
+<input type="file" id="replaceFileInput" class="hidden" accept="image/png, image/jpeg, image/jpg, image/webp">
 
 @endsection
 

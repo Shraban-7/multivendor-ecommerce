@@ -2,59 +2,59 @@
 @section('title', 'Create Shipment')
 
 @section('content')
-<div class="container-fluid px-0">
-    <div class="d-flex align-items-center gap-2 mb-3">
-        <a href="{{ route('seller.orders.details', $order->invoice_id) }}" class="btn btn-light border btn-sm d-inline-flex align-items-center gap-1">
+<div class="w-full px-0">
+    <div class="flex items-center gap-2 mb-3">
+        <a href="{{ route('seller.orders.details', $order->invoice_id) }}" class="inline-flex items-center justify-center px-3 py-1.5 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors gap-1">
             <i data-feather="arrow-left" style="width: 16px; height: 16px;"></i> Back
         </a>
-        <h4 class="fw-bold mb-0 text-dark">Create Shipment</h4>
-        <span class="badge badge-soft-primary">#{{ $order->invoice_id }}</span>
+        <h4 class="font-bold mb-0 text-ink">Create Shipment</h4>
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold badge-soft-primary">#{{ $order->invoice_id }}</span>
     </div>
 
-    <div class="row">
-        <div class="col-lg-8">
-            <div class="card border-0 shadow-sm" style="border-radius: 12px;">
-                <div class="card-header bg-white border-bottom">
-                    <h5 class="fw-semibold mb-0">Shipment Information</h5>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div class="lg:col-span-2">
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0" style="border-radius: 12px;">
+                <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
+                    <h5 class="font-semibold mb-0">Shipment Information</h5>
                 </div>
                 <form method="POST" action="{{ route('seller.shipping.shipments.store') }}">
                     @csrf
                     <input type="hidden" name="order_id" value="{{ $order->id }}">
-                    <div class="card-body">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Carrier <span class="text-danger">*</span></label>
-                                <select name="shipping_carrier_id" class="form-select" required>
+                    <div class="p-5">
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+                            <div class="md:col-span-6">
+                                <label class="block text-xs font-medium text-ink-secondary mb-1">Carrier <span class="text-feedback-danger">*</span></label>
+                                <select name="shipping_carrier_id" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
                                     <option value="">Select carrier...</option>
                                     @foreach ($carriers as $carrier)
                                         <option value="{{ $carrier->id }}">{{ $carrier->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Tracking Number <span class="text-danger">*</span></label>
-                                <input type="text" name="tracking_number" class="form-control" placeholder="e.g., STF123456789" required>
+                            <div class="md:col-span-6">
+                                <label class="block text-xs font-medium text-ink-secondary mb-1">Tracking Number <span class="text-feedback-danger">*</span></label>
+                                <input type="text" name="tracking_number" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="e.g., STF123456789" required>
                             </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Weight (kg)</label>
-                                <input type="number" step="0.01" min="0" name="weight" class="form-control">
+                            <div class="md:col-span-4">
+                                <label class="block text-xs font-medium text-ink-secondary mb-1">Weight (kg)</label>
+                                <input type="number" step="0.01" min="0" name="weight" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
                             </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Shipping Cost (৳)</label>
-                                <input type="number" step="0.01" min="0" name="shipping_cost" class="form-control">
+                            <div class="md:col-span-4">
+                                <label class="block text-xs font-medium text-ink-secondary mb-1">Shipping Cost (৳)</label>
+                                <input type="number" step="0.01" min="0" name="shipping_cost" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
                             </div>
-                            <div class="col-md-4">
-                                <label class="form-label">COD Amount (৳)</label>
-                                <input type="number" step="0.01" min="0" name="cod_amount" class="form-control">
+                            <div class="md:col-span-4">
+                                <label class="block text-xs font-medium text-ink-secondary mb-1">COD Amount (৳)</label>
+                                <input type="number" step="0.01" min="0" name="cod_amount" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
                             </div>
-                            <div class="col-12">
-                                <label class="form-label">Notes</label>
-                                <textarea name="notes" class="form-control" rows="3" placeholder="Additional notes..."></textarea>
+                            <div class="col-span-full">
+                                <label class="block text-xs font-medium text-ink-secondary mb-1">Notes</label>
+                                <textarea name="notes" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" rows="3" placeholder="Additional notes..."></textarea>
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer bg-white border-top text-end">
-                        <button type="submit" class="btn btn-primary d-inline-flex align-items-center gap-1">
+                    <div class="px-5 py-3 border-t border-border bg-white text-right">
+                        <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">
                             <i data-feather="package" style="width: 16px; height: 16px;"></i> Create Shipment
                         </button>
                     </div>

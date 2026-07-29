@@ -2,15 +2,15 @@
 @section('title', 'Print Barcode')
 @section('content')
 
-<h4 class="fw-bold mb-3 text-dark">Print Barcode</h4>
-<div class="row">
-    <div class="col-md-6">
-        <div class="card border-0 shadow-sm" style="border-radius: 12px;">
-            <div class="card-body">
+<h4 class="font-bold mb-3 text-ink">Print Barcode</h4>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+    <div class="md:col-span-1">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden" style="border-radius: 12px;">
+            <div class="p-5">
                 <form id="productForm">
                     <div class="mb-3">
-                        <label for="product" class="form-label fw-semibold">Select Product</label>
-                        <select name="variant_id" class="select2 w-100" id="product" required>
+                        <label for="product" class="block text-xs font-semibold text-ink-secondary mb-1">Select Product</label>
+                        <select name="variant_id" class="select2 w-full" id="product" required>
                             <option value="" disabled selected>Select a product</option>
                             @foreach ($products as $product)
                                 @if($product->variants->count() == 0)
@@ -40,35 +40,35 @@
                         </select>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-semibold">Name</label>
-                            <input type="text" id="name" class="form-control" readonly>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="md:col-span-1">
+                            <label class="block text-xs font-semibold text-ink-secondary mb-1">Name</label>
+                            <input type="text" id="name" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" readonly>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-semibold">Variant</label>
-                            <input type="text" id="variant" class="form-control" readonly>
+                        <div class="md:col-span-1">
+                            <label class="block text-xs font-semibold text-ink-secondary mb-1">Variant</label>
+                            <input type="text" id="variant" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" readonly>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-semibold">SKU</label>
-                            <input type="text" id="sku" class="form-control" readonly>
+                        <div class="md:col-span-1">
+                            <label class="block text-xs font-semibold text-ink-secondary mb-1">SKU</label>
+                            <input type="text" id="sku" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" readonly>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-semibold">Price</label>
-                            <input type="text" id="price" class="form-control" readonly>
+                        <div class="md:col-span-1">
+                            <label class="block text-xs font-semibold text-ink-secondary mb-1">Price</label>
+                            <input type="text" id="price" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" readonly>
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Number of Labels</label>
-                        <input type="number" class="form-control" name="quantity" id="qty" min="1" value="1" required>
+                        <label class="block text-xs font-semibold text-ink-secondary mb-1">Number of Labels</label>
+                        <input type="number" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" name="quantity" id="qty" min="1" value="1" required>
                     </div>
 
-                    <div class="d-flex gap-2">
-                        <button type="button" id="generate" class="btn btn-primary d-inline-flex align-items-center gap-1">
+                    <div class="flex gap-2">
+                        <button type="button" id="generate" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors gap-1">
                             <i data-feather="eye" class="icon-xs"></i> Preview Labels
                         </button>
-                        <button type="button" id="printBtn" class="btn btn-dark d-inline-flex align-items-center gap-1 disabled">
+                        <button type="button" id="printBtn" class="inline-flex items-center justify-center px-4 py-2 bg-ink text-white text-sm font-medium rounded-xs hover:bg-ink/80 focus:outline-none transition-colors gap-1 disabled">
                             <i data-feather="printer" class="icon-xs"></i> Print
                         </button>
                     </div>
@@ -76,8 +76,8 @@
             </div>
         </div>
     </div>
-    <div class="col-md-6">
-        <div id="labelsContainer" class="d-flex flex-column" style="max-height: calc(100vh - 150px); overflow-y:scroll;"></div>
+    <div class="md:col-span-1">
+        <div id="labelsContainer" class="flex flex-col" style="max-height: calc(100vh - 150px); overflow-y:scroll;"></div>
     </div>
 </div>
 
@@ -125,10 +125,10 @@
 
             for (let i = 0; i < qty; i++) {
                 const wrap = document.createElement('div');
-                wrap.className = 'label-preview p-2 border text-center m-1 bg-white text-dark';
+                wrap.className = 'label-preview p-2 border text-center m-1 bg-white text-ink';
                 wrap.style.width = '200px';
                 wrap.innerHTML = `
-                    <div class="small fw-bold">${sellerName}</div>
+                    <div class="text-sm font-bold">${sellerName}</div>
                     <div style="font-size:7pt;">${name}</div>
                     <div style="font-size:6pt;">${variant}</div>
                     <svg class="barcode"
@@ -138,7 +138,7 @@
                         jsbarcode-fontSize="10"
                         jsbarcode-margin="0">
                     </svg>
-                    <div class="small mt-1">Price: ${price}</div>
+                    <div class="text-sm mt-1">Price: ${price}</div>
                 `;
                 labelsDiv.appendChild(wrap);
             }

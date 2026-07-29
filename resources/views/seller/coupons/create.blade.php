@@ -3,49 +3,49 @@
 
 @section('content')
 <div class="container-fluid px-0">
-    <div class="d-flex align-items-center gap-2 mb-3">
-        <a href="{{ route('seller.coupons.index') }}" class="btn btn-light border btn-sm d-inline-flex align-items-center gap-1">
+    <div class="flex items-center gap-2 mb-3">
+        <a href="{{ route('seller.coupons.index') }}" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors border btn-sm inline-flex items-center gap-1">
             <i data-feather="arrow-left" style="width: 16px; height: 16px;"></i> Back
         </a>
-        <h4 class="fw-bold mb-0 text-dark">Create Coupon</h4>
+        <h4 class="font-bold mb-0 text-ink">Create Coupon</h4>
     </div>
 
-    <div class="row">
-        <div class="col-lg-8">
-            <div class="card border-0 shadow-sm" style="border-radius: 12px;">
+    <div class="grid grid-cols-1">
+        <div class="lg:col-span-2">
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm" style="border-radius: 12px;">
                 <form method="POST" action="{{ route('seller.coupons.store') }}">
                     @csrf
-                    <div class="card-body">
+                    <div class="p-5">
                         @include('seller.coupons._form')
                     </div>
-                    <div class="card-footer bg-white border-top text-end">
-                        <a href="{{ route('seller.coupons.index') }}" class="btn btn-light border me-2">Cancel</a>
-                        <button type="submit" class="btn btn-primary">Create Coupon</button>
+                    <div class="px-5 py-3 border-t border-border bg-surface-muted bg-white border-t text-right">
+                        <a href="{{ route('seller.coupons.index') }}" class="inline-flex items-center justify-center px-4 py-2 bg-surface-muted text-ink text-sm font-medium border border-border rounded-xs hover:bg-border/30 focus:outline-none transition-colors border me-2">Cancel</a>
+                        <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-brand-deep text-white text-sm font-medium rounded-xs hover:bg-brand focus:outline-none focus:ring-2 focus:ring-brand-tint disabled:opacity-50 transition-colors">Create Coupon</button>
                     </div>
                 </form>
             </div>
         </div>
-        <div class="col-lg-4">
-            <div class="card border-0 shadow-sm" style="border-radius: 12px;">
-                <div class="card-header bg-white border-bottom">
-                    <h6 class="fw-semibold mb-0">Tips</h6>
+        <div class="lg:col-span-1">
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm" style="border-radius: 12px;">
+                <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between bg-white border-b">
+                    <h6 class="font-semibold mb-0">Tips</h6>
                 </div>
-                <div class="card-body small">
+                <div class="p-5 text-sm">
                     <ul class="list-unstyled mb-0">
-                        <li class="mb-2 d-flex gap-2">
-                            <i data-feather="info" style="width: 16px; height: 16px;" class="text-primary flex-shrink-0 mt-1"></i>
+                        <li class="mb-2 flex gap-2">
+                            <i data-feather="info" style="width: 16px; height: 16px;" class="text-brand shrink-0 mt-1"></i>
                             <span>Use a unique, memorable coupon code.</span>
                         </li>
-                        <li class="mb-2 d-flex gap-2">
-                            <i data-feather="info" style="width: 16px; height: 16px;" class="text-primary flex-shrink-0 mt-1"></i>
+                        <li class="mb-2 flex gap-2">
+                            <i data-feather="info" style="width: 16px; height: 16px;" class="text-brand shrink-0 mt-1"></i>
                             <span>Set a usage limit to control redemptions.</span>
                         </li>
-                        <li class="mb-2 d-flex gap-2">
-                            <i data-feather="info" style="width: 16px; height: 16px;" class="text-primary flex-shrink-0 mt-1"></i>
+                        <li class="mb-2 flex gap-2">
+                            <i data-feather="info" style="width: 16px; height: 16px;" class="text-brand shrink-0 mt-1"></i>
                             <span>Limit to specific products for targeted promotions.</span>
                         </li>
-                        <li class="d-flex gap-2">
-                            <i data-feather="info" style="width: 16px; height: 16px;" class="text-primary flex-shrink-0 mt-1"></i>
+                        <li class="flex gap-2">
+                            <i data-feather="info" style="width: 16px; height: 16px;" class="text-brand shrink-0 mt-1"></i>
                             <span>Set a minimum purchase amount to increase average order value.</span>
                         </li>
                     </ul>
