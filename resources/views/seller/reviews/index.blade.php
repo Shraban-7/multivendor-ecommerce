@@ -134,7 +134,7 @@
             </div>
 
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm text-ink border-collapse table-bordered table-hover bg-white mb-0 align-middle">
+                <table class="w-full text-left text-sm text-ink border-collapse">
                     <thead class="bg-surface-muted">
                         <tr>
                             <th scope="col" class="text-sm font-semibold text-ink-tertiary" style="width: 50px;">#</th>

@@ -47,7 +47,7 @@
 
         <h6 class="font-semibold mb-2">Preview (first {{ count($previewRows) }} rows)</h6>
         <div class="overflow-x-auto" style="max-height:400px;overflow-y:auto;">
-            <table class="w-full text-left text-sm text-ink border-collapse table-bordered align-middle bg-white">
+            <table class="w-full text-left text-sm text-ink border-collapse">
                 <thead class="bg-surface-muted sticky top-0">
                     <tr>
                         <th class="text-sm font-semibold">#</th>

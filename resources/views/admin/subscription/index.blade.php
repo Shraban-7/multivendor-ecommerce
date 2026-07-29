@@ -25,7 +25,7 @@
                             </div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-check-circle fa-2x text-brand"></i>
+                            <i data-lucide="circle-check" class="icon-md text-brand"></i>
                         </div>
                     </div>
                 </div>
@@ -43,7 +43,7 @@
                             </div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-gift fa-2x text-feedback-warning"></i>
+                            <i data-lucide="gift" class="icon-md text-feedback-warning"></i>
                         </div>
                     </div>
                 </div>
@@ -61,7 +61,7 @@
                             </div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-times-circle fa-2x text-feedback-danger"></i>
+                            <i data-lucide="circle-x" class="icon-md text-feedback-danger"></i>
                         </div>
                     </div>
                 </div>
@@ -79,7 +79,7 @@
                             </div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-users fa-2x text-feedback-info"></i>
+                            <i data-lucide="users" class="icon-md text-feedback-info"></i>
                         </div>
                     </div>
                 </div>
@@ -134,7 +134,7 @@
                             <label>&nbsp;</label>
                             <div>
                                 <button type="submit" class="btn btn-primary btn-block">
-                                    <i class="fas fa-filter"></i> Filter
+                                    <i data-lucide="funnel"></i> Filter
                                 </button>
                             </div>
                         </div>
@@ -151,7 +151,7 @@
         </div>
         <div class="p-5">
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm text-ink border-collapse table-bordered table-hover" id="dataTable">
+                <table class="w-full text-left text-sm text-ink border-collapse" id="dataTable">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -210,11 +210,11 @@
                                 <div class="btn-group" role="group">
                                     <a href="{{ route('admin.subscriptions.show', $subscription) }}"
                                         class="btn btn-info btn-sm hover:bg-blue-700" title="View Details">
-                                        <i class="fas fa-eye"></i>
+                                        <i data-lucide="eye"></i>
                                     </a>
                                     <a href=""
                                         class="btn btn-primary btn-sm" title="Edit">
-                                        <i class="fas fa-edit"></i>
+                                        <i data-lucide="pencil"></i>
                                     </a>
 
                                     @if($subscription->status === 'active' || $subscription->status === 'trial')
@@ -222,7 +222,7 @@
                                         data-toggle="modal"
                                         data-target="#suspendModal{{ $subscription->id }}"
                                         title="Suspend">
-                                        <i class="fas fa-pause"></i>
+                                        <i data-lucide="pause"></i>
                                     </button>
                                     @endif
 
@@ -233,7 +233,7 @@
                                         <button type="submit" class="btn btn-success btn-sm"
                                             onclick="return confirm('Activate this subscription?')"
                                             title="Activate">
-                                            <i class="fas fa-play"></i>
+                                            <i data-lucide="play"></i>
                                         </button>
                                     </form>
                                     @endif

@@ -7,7 +7,7 @@
     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#categoryModal">+ Add Category</button>
 </div>
 
-<table class="w-full text-left text-sm text-ink border-collapse table-bordered align-middle bg-white">
+<table class="w-full text-left text-sm text-ink border-collapse">
     <thead>
         <tr>
             <th>Image</th>

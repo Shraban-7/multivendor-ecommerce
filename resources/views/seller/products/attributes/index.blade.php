@@ -7,7 +7,7 @@
     </div>
 
     <div class="overflow-x-auto">
-        <table class="w-full text-left text-sm text-ink border-collapse mb-3 bg-white table-bordered table-hover">
+        <table class="w-full text-left text-sm text-ink border-collapse">
             <thead class="bg-surface-muted">
                 <tr>
                     <th scope="col" class="text-sm font-semibold text-ink-tertiary">Name</th>

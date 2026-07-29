@@ -22,7 +22,7 @@
     @if ($shipments->count() > 0)
         <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0" style="border-radius: 12px;">
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm text-ink border-collapse table-hover mb-0">
+                <table class="w-full text-left text-sm text-ink border-collapse">
                     <thead class="bg-surface-muted">
                         <tr>
                             <th class="text-sm font-semibold text-ink-tertiary">#</th>

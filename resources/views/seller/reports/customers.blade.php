@@ -97,7 +97,7 @@
                 <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-4 h-full" style="border-radius: 12px;">
                     <h5 class="font-bold mb-3 text-feedback-success">Top High-Value Customers</h5>
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm text-ink border-collapse text-sm border-0 mb-0">
+                        <table class="w-full text-left text-sm text-ink border-collapse">
                             <thead class="bg-surface-muted">
                                 <tr>
                                     <th scope="col" class="text-sm font-semibold text-ink-tertiary">Customer Name</th>
@@ -148,7 +148,7 @@
                     </div>
                     <h6 class="font-semibold mt-3 text-ink-secondary">RFM (Recency, Frequency, Monetary) Summary</h6>
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm text-ink border-collapse table-hover text-sm mb-0">
+                        <table class="w-full text-left text-sm text-ink border-collapse">
                             <thead class="bg-surface-muted">
                                 <tr>
                                     <th scope="col" class="text-sm font-semibold text-ink-tertiary">Segment</th>

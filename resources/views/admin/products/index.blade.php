@@ -7,7 +7,7 @@
     </div>
 
     <div class="overflow-x-auto">
-        <table id="product-table" class="w-full text-left text-sm text-ink border-collapse mb-3 bg-white table-bordered">
+        <table id="product-table" class="w-full text-left text-sm text-ink border-collapse">
             <thead>
                 <tr>
                     <th scope="col">Product</th>
@@ -69,7 +69,7 @@
                         <td>
                             <button class="btn btn-primary btn-sm"
                                 data-bs-toggle="modal" data-bs-target="#statusModal-{{ $product->id }}">
-                                <i data-feather="edit" class="icon-xs"></i>
+                                <i data-lucide="edit" class="icon-xs"></i>
                                 <span>Edit</span>
                             </button>
 

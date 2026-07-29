@@ -7,7 +7,7 @@
         <div class="flex justify-between items-center mb-2">
             <h4 class="mb-0">User Profile</h4>
             <a href="{{ route('admin.customers.index') }}" class="btn btn-light btn-sm">
-                <i data-feather="arrow-left" class="icon-xs me-1"></i> Back to Customers
+                <i data-lucide="arrow-left" class="icon-xs me-1"></i> Back to Customers
             </a>
         </div>
 
@@ -27,31 +27,31 @@
                         <div class="grid grid-cols-1">
                             <div class="col-span-full sm:col-span-1 mb-3">
                                 <label class="text-ink-tertiary text-sm">
-                                    <i data-feather="mail" class="me-1"></i>
+                                    <i data-lucide="mail" class="me-1"></i>
                                 </label>
                                 <span class="font-semibold">{{ $customer->email }}</span>
                             </div>
                             <div class="col-span-full sm:col-span-1 mb-3">
                                 <label class="text-ink-tertiary text-sm">
-                                    <i data-feather="phone" class="me-1"></i>
+                                    <i data-lucide="phone" class="me-1"></i>
                                 </label>
                                 <span class="font-semibold">{{ $customer->phone }}</span>
                             </div>
                             <div class="col-span-full sm:col-span-1 mb-3">
                                 <label class="text-ink-tertiary text-sm">
-                                    <i data-feather="globe" class="me-1"></i>
+                                    <i data-lucide="globe" class="me-1"></i>
                                 </label>
                                 <span class="font-semibold">{{ $customer->country->name ?? '' }}</span>
                             </div>
                             <div class="col-span-full sm:col-span-1 mb-3">
                                 <label class="text-ink-tertiary text-sm">
-                                    <i data-feather="map-pin" class="me-1"></i>
+                                    <i data-lucide="map-pin" class="me-1"></i>
                                 </label>
                                 <span class="font-semibold">{{ $customer->address ?? '' }}</span>
                             </div>
                             <div class="col-span-full mb-2">
                                 <label class="text-ink-tertiary text-sm">
-                                    <i data-feather="calendar" class="me-1"></i>
+                                    <i data-lucide="calendar" class="me-1"></i>
                                 </label>
                                 <span class="font-semibold">{{ optional($customer->created_at)->format('d M Y h:i A') }}</span>
                             </div>
@@ -70,7 +70,7 @@
                     <div class="p-5">
                         <div class="flex justify-between items-center">
                             <span class="font-semibold">Total Spent</span>
-                            <i data-feather="dollar-sign" class="text-feedback-success"></i>
+                            <i data-lucide="dollar-sign" class="text-feedback-success"></i>
                         </div>
                         <h4 class="font-bold mt-3 mb-1">{{ money($total_spent) }}</h4>
                         <small class="text-ink-tertiary">Lifetime value</small>
@@ -82,7 +82,7 @@
                     <div class="p-5">
                         <div class="flex justify-between items-center">
                             <span class="font-semibold">Total Orders</span>
-                            <i data-feather="shopping-cart" class="text-brand"></i>
+                            <i data-lucide="shopping-cart" class="text-brand"></i>
                         </div>
                         <h4 class="font-bold mt-3 mb-1">{{ $total_orders }}</h4>
                         <small class="text-ink-tertiary">All orders placed</small>
@@ -94,7 +94,7 @@
                     <div class="p-5">
                         <div class="flex justify-between">
                             <span class="font-semibold">Pending</span>
-                            <i data-feather="clock" class="text-feedback-warning"></i>
+                            <i data-lucide="clock" class="text-feedback-warning"></i>
                         </div>
                         <h4 class="font-bold my-2">{{ $pending_orders }}</h4>
                         <small>Pending Orders</small>
@@ -106,7 +106,7 @@
                     <div class="p-5">
                         <div class="flex justify-between">
                             <span class="font-semibold">Delivered</span>
-                            <i data-feather="check-circle" class="text-feedback-success"></i>
+                            <i data-lucide="check-circle" class="text-feedback-success"></i>
                         </div>
                         <h4 class="font-bold my-2">{{ $delivered_orders }}</h4>
                         <small>Delivered Orders</small>
@@ -118,7 +118,7 @@
                     <div class="p-5">
                         <div class="flex justify-between">
                             <span class="font-semibold">Shipped</span>
-                            <i data-feather="truck" class="text-brand"></i>
+                            <i data-lucide="truck" class="text-brand"></i>
                         </div>
                         <h4 class="font-bold my-2">{{ $shipped_orders }}</h4>
                         <small>Shipped Orders</small>
@@ -130,7 +130,7 @@
                     <div class="p-5">
                         <div class="flex justify-between">
                             <span class="font-semibold">Cancelled</span>
-                            <i data-feather="x-circle" class="text-feedback-danger"></i>
+                            <i data-lucide="x-circle" class="text-feedback-danger"></i>
                         </div>
                         <h4 class="font-bold my-2">{{ $cancelled_orders }}</h4>
                         <small>Cancelled Orders</small>
@@ -142,7 +142,7 @@
 
     @push('scripts')
         <script>
-            feather.replace();
+            window.renderIcons && window.renderIcons();
         </script>
     @endpush
 

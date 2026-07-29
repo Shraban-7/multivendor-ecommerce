@@ -6,7 +6,7 @@
         <div class="flex justify-between items-center mb-4">
             <h4 class="mb-0">Manual Payment Methods</h4>
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEditModal" onclick="openAddModal()">
-                <i class="bi bi-plus-circle me-1"></i> Add New
+                <i data-lucide="circle-plus" class="me-1"></i> Add New
             </button>
         </div>
 
@@ -14,7 +14,7 @@
         <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden shadow-sm">
             <div class="p-5 p-0">
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm text-ink border-collapse table-hover align-middle mb-0">
+                    <table class="w-full text-left text-sm text-ink border-collapse">
                         <thead class="bg-surface-muted">
                             <tr>
                                 <th>#</th>
@@ -55,11 +55,11 @@
                                     <td>
                                         <button class="btn btn-outline-primary btn-sm me-2" data-bs-toggle="modal"
                                             data-bs-target="#addEditModal" onclick="openEditModal({{ $method }})">
-                                            <i class="bi bi-pencil"></i>
+                                            <i data-lucide="pencil"></i>
                                         </button>
                                         <button type="button" class="btn btn-outline-danger btn-sm"
                                             onclick="confirmDelete('{{ route('admin.manualGateways.delete', $method->id) }}')">
-                                            <i class="bi bi-trash"></i>
+                                            <i data-lucide="trash-2"></i>
                                         </button>
 
                                     </td>

@@ -21,7 +21,7 @@
 
                             <div class="flex">
                                 <span class="inline-flex items-center px-3 py-2 text-sm text-ink-tertiary bg-surface-muted border border-border">
-                                    <i id="iconPreview" class="fa fa-question-circle"></i>
+                                    <i  id="iconPreview" data-lucide="circle-help"></i>
                                 </span>
 
                                 <input type="text" name="icon" id="iconInput" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors"
@@ -29,7 +29,7 @@
 
                                 <!-- FontAwesome Link Button -->
                                 <a href="https://fontawesome.com/icons" target="_blank" class="btn btn-light">
-                                    <i class="fa fa-external-link-alt"></i>
+                                    <i data-lucide="square-arrow-out-up-right"></i>
                                 </a>
                             </div>
 

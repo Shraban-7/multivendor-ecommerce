@@ -5,12 +5,12 @@
     <div class="mb-3 flex justify-between items-center">
         <h4 class="mb-0">Subcategories</h4>
         <a href="{{ route('admin.subcategories.create') }}" class="btn btn-primary">
-            <i data-feather="plus" class="icon-xs"></i> Add Subcategory
+            <i data-lucide="plus" class="icon-xs"></i> Add Subcategory
         </a>
     </div>
 
     <div class="overflow-x-auto ">
-        <table class="w-full text-left text-sm text-ink border-collapse mb-3 bg-white table-bordered">
+        <table class="w-full text-left text-sm text-ink border-collapse">
             <thead>
                 <tr>
                     <th>#</th>
@@ -51,7 +51,7 @@
 
                             @if (hasPermission('admin.subcategories.toggleStatus'))
                                 <button type="button"
-                                    class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs {{ $subcategory->status ? 'btn-danger' : 'btn-success' }}"
+                                    class="btn btn-sm {{ $subcategory->status ? 'btn-danger' : 'btn-success' }}"
                                     data-bs-toggle="modal" data-bs-target="#toggleStatusModal{{ $subcategory->id }}">
                                     {{ $subcategory->status ? 'Inactive' : 'Active' }}
                                 </button>
@@ -90,7 +90,7 @@
                             @if (hasPermission('admin.subcategories.edit'))
                                 <a href="{{ route('admin.subcategories.edit', $subcategory->id) }}"
                                     class="btn btn-light btn-sm">
-                                    <i data-feather="edit" class="icon-xs"></i> Edit
+                                    <i data-lucide="edit" class="icon-xs"></i> Edit
                                 </a>
                             @endif
                         </td>

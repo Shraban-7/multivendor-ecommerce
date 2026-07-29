@@ -52,7 +52,7 @@
                     </div>
 
                     <button type="submit" class="btn btn-success mt-3">
-                        <i class="fas fa-save me-1"></i> {{ isset($page) ? 'Update Page' : 'Save Page' }}
+                        <i data-lucide="save" class="me-1"></i> {{ isset($page) ? 'Update Page' : 'Save Page' }}
                     </button>
                     <a href="{{ route('admin.staticPages.index') }}" class="btn btn-light mt-3 ms-2">Cancel</a>
                     </form>

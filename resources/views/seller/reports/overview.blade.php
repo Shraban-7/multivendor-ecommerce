@@ -229,7 +229,7 @@
                 <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-4 h-full" style="border-radius: 12px;">
                     <h5 class="font-bold mb-3">Top Product Snapshot</h5>
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm text-ink border-collapse table-hover mb-0">
+                        <table class="w-full text-left text-sm text-ink border-collapse">
                             <thead class="bg-surface-muted">
                                 <tr>
                                     <th scope="col" class="text-sm font-semibold text-ink-tertiary">Product</th>

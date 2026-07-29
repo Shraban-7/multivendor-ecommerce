@@ -68,7 +68,7 @@ Example Product,Electronics,Mobile Phones,Samsung,25000,20000,30000,100,SP-001,a
             <p class="text-ink-tertiary mb-0">No imports yet.</p>
         @else
         <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm text-ink border-collapse table-bordered table-hover align-middle bg-white">
+            <table class="w-full text-left text-sm text-ink border-collapse">
                 <thead class="bg-surface-muted">
                     <tr>
                         <th class="text-sm font-semibold text-ink-tertiary">File</th>

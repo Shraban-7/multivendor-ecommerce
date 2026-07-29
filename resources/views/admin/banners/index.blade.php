@@ -8,11 +8,11 @@
         <h3>Banners</h3>
         <!-- Add New Banner Button -->
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addBannerModal">
-            <i class="bi bi-plus-circle"></i> Add Banner
+            <i data-lucide="circle-plus"></i> Add Banner
         </button>
     </div>
 
-    <table class="w-full text-left text-sm text-ink border-collapse bg-white table-bordered align-middle">
+    <table class="w-full text-left text-sm text-ink border-collapse">
         <thead class="bg-white">
             <tr>
                 <th>#</th>

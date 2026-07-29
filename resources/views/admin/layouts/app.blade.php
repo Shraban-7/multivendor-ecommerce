@@ -61,7 +61,7 @@
     <link rel="stylesheet" href="{{ asset('assets/dashboard/css/theme.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/dashboard/libs/bootstrap-icons/font/bootstrap-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/dashboard/libs/dropzone/dist/dropzone.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/dashboard/css/custom.css') }}">
+    <link rel="stylesheet" href="{{ asset_versioned('assets/dashboard/css/custom.css') }}">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
     <link rel="stylesheet"

@@ -427,11 +427,11 @@ svg[class*="icon-"] {
 }
 
 /* ══════════════════════════════════════════════════════════
-   BUTTONS — single source of truth for the seller panel
+   BUTTONS — single source of truth for seller + admin panels
 
    Self-contained on purpose: these rules define every visual
    property they need rather than inheriting Bootstrap's
-   --bs-btn-* variables, so the panel survives the removal of
+   --bs-btn-* variables, so the panels survive the removal of
    theme.css in migration Phase 4. Keeps the familiar
    .btn + .btn-{variant} + .btn-sm/.btn-lg API.
 
@@ -1238,4 +1238,64 @@ label:has(+ textarea[required])::after {
 }
 .navbar-vertical .sidebar-heading[style] {
   color: #9A9A9A !important;
+}
+
+/* ═══════════════════════════════════════════
+   Modern Data Table Design
+   Applies to all data tables across both
+   seller and admin panels via the shared
+   class pattern: w-full text-left text-sm
+   text-ink border-collapse
+   ═══════════════════════════════════════════ */
+
+/* ── Table wrapper (border + subtle shadow) ── */
+table.w-full.text-left.text-sm.text-ink.border-collapse {
+  border: 1px solid #E5E5E5 !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+}
+
+/* ── Header cells ── */
+table.w-full.text-left.text-sm.text-ink.border-collapse thead th {
+  padding: 0.75rem 1rem !important;
+  font-size: 0.625rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  color: #C43D00 !important;
+  background-color: #FFF1EA !important;
+  border-bottom: 2px solid #FFD5B8 !important;
+  white-space: nowrap !important;
+}
+
+/* ── Body cells ── */
+table.w-full.text-left.text-sm.text-ink.border-collapse td {
+  padding: 0.75rem 1rem !important;
+  border-bottom: 1px solid #F0F0F0 !important;
+  vertical-align: middle !important;
+  background-color: #FFFFFF !important;
+}
+
+/* ── Alternating row colors ── */
+table.w-full.text-left.text-sm.text-ink.border-collapse tbody tr:nth-child(even) td {
+  background-color: #FAFAFA !important;
+}
+
+/* ── Row hover ── */
+table.w-full.text-left.text-sm.text-ink.border-collapse tbody tr {
+  transition: background-color 0.15s ease !important;
+}
+
+table.w-full.text-left.text-sm.text-ink.border-collapse tbody tr:hover td {
+  background-color: #FFF5EE !important;
+}
+
+/* ── Remove double border on last row, add bottom border closure ── */
+table.w-full.text-left.text-sm.text-ink.border-collapse tbody tr:last-child td {
+  border-bottom: 1px solid #E5E5E5 !important;
+}
+
+/* ── Nested sub-tables inside data tables ── */
+table.w-full.text-left.text-sm.text-ink.border-collapse table td {
+  border-bottom: none !important;
+  padding: 0.25rem 0.5rem !important;
 }

@@ -54,7 +54,7 @@
 
                             <div class="px-5 py-3 border-t border-border bg-surface-muted text-center">
                                 <a href="{{ asset('storage/' . $image) }}" download class="btn btn-light btn-sm btn-block">
-                                    <i data-feather="download" class="nav-icon icon-xs me-2"></i> Download</a>
+                                    <i data-lucide="download" class="nav-icon icon-xs me-2"></i> Download</a>
                             </div>
                         </div>
                     </div>
@@ -106,7 +106,7 @@
 
                             <div class="px-5 py-3 border-t border-border bg-surface-muted text-center">
                                 <a href="{{ asset('storage/' . $image) }}" download class="btn btn-light btn-sm btn-block">
-                                    <i data-feather="download" class="nav-icon icon-xs me-2"></i> Download</a>
+                                    <i data-lucide="download" class="nav-icon icon-xs me-2"></i> Download</a>
                             </div>
                         </div>
                     </div>

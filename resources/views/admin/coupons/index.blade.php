@@ -5,7 +5,7 @@
 <div class="flex flex-wrap justify-between items-center mb-3">
     <h3 class="font-bold mb-0">Coupons</h3>
     <a href="{{ route('admin.coupons.create') }}" class="btn btn-primary">
-        <i data-feather="plus" style="width: 16px; height: 16px;"></i> Create Coupon
+        <i data-lucide="plus" style="width: 16px; height: 16px;"></i> Create Coupon
     </a>
 </div>
 
@@ -37,7 +37,7 @@
     </div>
     <div class="p-5 p-0">
         <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm text-ink border-collapse table-hover align-middle mb-0">
+            <table class="w-full text-left text-sm text-ink border-collapse">
                 <thead class="bg-surface-muted">
                     <tr>
                         <th class="py-3 px-4">Code</th>
@@ -95,14 +95,14 @@
                             </td>
                             <td class="text-right">
                                 <a href="{{ route('admin.coupons.edit', $coupon) }}" class="btn btn-light btn-sm">
-                                    <i data-feather="edit" class="icon-xs"></i>
+                                    <i data-lucide="edit" class="icon-xs"></i>
                                 </a>
                                 <form method="POST" action="{{ route('admin.coupons.destroy', $coupon) }}" class="inline"
                                       onsubmit="return confirm('Delete this coupon?')">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-outline-danger btn-sm">
-                                        <i data-feather="trash-2" class="icon-xs"></i>
+                                        <i data-lucide="trash-2" class="icon-xs"></i>
                                     </button>
                                 </form>
                             </td>
@@ -110,7 +110,7 @@
                     @empty
                         <tr>
                             <td colspan="8" class="text-center py-5 text-ink-tertiary">
-                                <i data-feather="tag" style="width: 48px; height: 48px;" class="mb-3"></i>
+                                <i data-lucide="tag" style="width: 48px; height: 48px;" class="mb-3"></i>
                                 <p class="mb-0">No coupons found.</p>
                             </td>
                         </tr>

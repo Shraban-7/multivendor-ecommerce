@@ -5,12 +5,12 @@
     <div class="mb-3 flex justify-between items-center">
         <h4 class="mb-0">Product Options</h4>
         <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addOptionModal">
-            <i data-feather="plus" class="icon-xs"></i> Add Option
+            <i data-lucide="plus" class="icon-xs"></i> Add Option
         </button>
     </div>
 
     <div class="overflow-x-auto">
-        <table id="product-attribute-table" class="w-full text-left text-sm text-ink border-collapse mb-3 bg-white table-bordered">
+        <table id="product-attribute-table" class="w-full text-left text-sm text-ink border-collapse">
             <thead>
                 <tr>
                     <th scope="col">Name</th>
@@ -41,7 +41,7 @@
                                         data-bs-toggle="modal" data-bs-target="#editOptionValueModal"
                                         data-id="{{ $optionValue->id }}" data-value="{{ $optionValue->value }}">
                                         {{ $optionValue->value }}
-                                        <i data-feather="edit" class="icon-xs"></i>
+                                        <i data-lucide="edit" class="icon-xs"></i>
                                     </button>
                                 @endforeach
                             </div>
@@ -53,7 +53,7 @@
                             @if (hasPermission('admin.options.delete'))
                                 <button type="button" class="btn btn-light btn-sm"
                                     data-bs-toggle="modal" data-bs-target="#editOptionModal-{{ $productOption->id }}">
-                                    <i data-feather="edit" class="icon-xs"></i>
+                                    <i data-lucide="edit" class="icon-xs"></i>
                                     <span>Edit</span>
                                 </button>
                             @endif
@@ -61,7 +61,7 @@
                             @if (hasPermission('admin.options.delete'))
                                 <button type="button" class="btn btn-danger btn-sm"
                                     data-bs-toggle="modal" data-bs-target="#deleteModal-{{ $productOption->id }}">
-                                    <i data-feather="trash" class="icon-xs"></i>
+                                    <i data-lucide="trash" class="icon-xs"></i>
                                     <span>Delete</span>
                                 </button>
                             @endif
@@ -144,7 +144,7 @@
                                 </div>
                                 <div class="text-center modal-body">
                                     <div class="p-4 rounded-sm bg-amber-50 border border-amber-200 text-feedback-warning text-sm flex items-start gap-3 flex" role="alert">
-                                        <i class="bi bi-exclamation-circle-fill me-2 text-feedback-danger"
+                                        <i data-lucide="circle-alert" class="me-2 text-feedback-danger"
                                             style="font-size: 1.5rem;"></i>
                                         <p class="mt-1 text-ink-secondary">
                                             Are you sure you want to delete {{ $productOption->name }} Option?

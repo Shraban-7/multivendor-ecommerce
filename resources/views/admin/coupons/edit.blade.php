@@ -4,7 +4,7 @@
 @section('content')
 <div class="flex items-center gap-2 mb-3">
     <a href="{{ route('admin.coupons.index') }}" class="btn btn-light btn-sm">
-        <i data-feather="arrow-left" style="width: 16px; height: 16px;"></i> Back
+        <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i> Back
     </a>
     <h3 class="font-bold mb-0">Edit Coupon: {{ $coupon->code }}</h3>
 </div>

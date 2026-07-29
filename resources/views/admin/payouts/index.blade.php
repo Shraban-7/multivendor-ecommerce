@@ -12,7 +12,7 @@
             <div class="p-5">
                 <div class="flex items-center">
                     <div class="icon-bg-feedback-warning me-3">
-                        <i data-feather="clock" style="width: 24px; height: 24px;"></i>
+                        <i data-lucide="clock" style="width: 24px; height: 24px;"></i>
                     </div>
                     <div>
                         <p class="text-ink-tertiary mb-0 text-sm">Pending</p>
@@ -28,7 +28,7 @@
             <div class="p-5">
                 <div class="flex items-center">
                     <div class="icon-bg-feedback-info me-3">
-                        <i data-feather="loader" style="width: 24px; height: 24px;"></i>
+                        <i data-lucide="loader" style="width: 24px; height: 24px;"></i>
                     </div>
                     <div>
                         <p class="text-ink-tertiary mb-0 text-sm">Processing</p>
@@ -43,7 +43,7 @@
             <div class="p-5">
                 <div class="flex items-center">
                     <div class="icon-bg-feedback-success me-3">
-                        <i data-feather="check-circle" style="width: 24px; height: 24px;"></i>
+                        <i data-lucide="check-circle" style="width: 24px; height: 24px;"></i>
                     </div>
                     <div>
                         <p class="text-ink-tertiary mb-0 text-sm">Completed</p>
@@ -58,7 +58,7 @@
             <div class="p-5">
                 <div class="flex items-center">
                     <div class="icon-bg-brand-deep me-3">
-                        <i data-feather="dollar-sign" style="width: 24px; height: 24px;"></i>
+                        <i data-lucide="dollar-sign" style="width: 24px; height: 24px;"></i>
                     </div>
                     <div>
                         <p class="text-ink-tertiary mb-0 text-sm">Total Paid Out</p>
@@ -100,7 +100,7 @@
     </div>
     <div class="p-5 p-0">
         <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm text-ink border-collapse table-hover align-middle mb-0">
+            <table class="w-full text-left text-sm text-ink border-collapse">
                 <thead class="bg-surface-muted">
                     <tr>
                         <th class="py-3 px-4">#</th>
@@ -143,14 +143,14 @@
                             <td class="text-sm text-ink-tertiary">{{ $payout->created_at->format('d M Y') }}</td>
                             <td class="text-right">
                                 <a href="{{ route('admin.payouts.show', $payout) }}" class="btn btn-primary btn-sm">
-                                    <i data-feather="eye" class="icon-xs"></i>
+                                    <i data-lucide="eye" class="icon-xs"></i>
                                 </a>
                             </td>
                         </tr>
                     @empty
                         <tr>
                             <td colspan="9" class="text-center py-5 text-ink-tertiary">
-                                <i data-feather="credit-bg-white border border-border rounded-sm shadow-sm overflow-hidden" style="width: 48px; height: 48px;" class="mb-3"></i>
+                                <i data-lucide="credit-card" style="width: 48px; height: 48px;" class="mb-3"></i>
                                 <p class="mb-0">No payouts found.</p>
                             </td>
                         </tr>

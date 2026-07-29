@@ -176,7 +176,7 @@
                 </div>
                 <div class="p-5 p-0">
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm text-ink border-collapse mb-0">
+                        <table class="w-full text-left text-sm text-ink border-collapse">
                             <thead class="bg-white">
                                 <tr>
                                     <th scope="col" class="text-sm font-semibold text-ink-tertiary">Product</th>

@@ -7,7 +7,7 @@
 </div>
 
 <div class="overflow-x-auto ">
-    <table id="review-table" class="w-full text-left text-sm text-ink border-collapse mb-3 bg-white table-bordered">
+    <table id="review-table" class="w-full text-left text-sm text-ink border-collapse">
         <thead>
             <tr>
                 <th>#</th>
@@ -68,7 +68,7 @@
                     <!-- Delete Button -->
                     <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
                         data-bs-target="#deleteModal{{ $review->id }}">
-                        <i data-feather="trash" class="icon-xs"></i> Delete
+                        <i data-lucide="trash" class="icon-xs"></i> Delete
                     </button>
 
                     <!-- Delete Confirmation Modal -->

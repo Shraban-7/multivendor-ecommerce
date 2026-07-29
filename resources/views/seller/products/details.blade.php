@@ -99,7 +99,7 @@
 
                     {{-- Product details --}}
                     <div class="md:col-span-7">
-                        <table class="w-full text-left text-sm text-ink border-collapse border-0 mb-0">
+                        <table class="w-full text-left text-sm text-ink border-collapse">
                             <tr>
                                 <td class="detail-label" style="width:110px;">Category</td>
                                 <td class="detail-value">{{ $product->category->name ?? '—' }}
@@ -243,7 +243,7 @@
             <div class="p-0">
                 @if($variantCount > 0)
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm text-ink border-collapse table-hover align-middle mb-0">
+                    <table class="w-full text-left text-sm text-ink border-collapse">
                         <thead class="bg-surface-muted">
                             <tr>
                                 <th class="text-sm font-semibold text-ink-tertiary">Image</th>
@@ -310,7 +310,7 @@
             </div>
             <div class="p-0">
                 <div class="overflow-x-auto" style="max-height:400px; overflow-y:auto;">
-                    <table class="w-full text-left text-sm text-ink border-collapse table-hover align-middle mb-0">
+                    <table class="w-full text-left text-sm text-ink border-collapse">
                         <thead class="bg-surface-muted">
                             <tr>
                                 <th class="text-sm font-semibold text-ink-tertiary">Date</th>
@@ -370,7 +370,7 @@
 
                 @if($product->specifications)
                 <h6 class="font-semibold text-ink-tertiary text-sm uppercase">Specifications</h6>
-                <table class="w-full text-left text-sm text-ink border-collapse border-0" style="max-width:400px;">
+                <table class="w-full text-left text-sm text-ink border-collapse" style="max-width:400px;">
                     @foreach($product->specifications as $key => $value)
                     <tr>
                         <td class="font-semibold text-ink-tertiary" style="width:140px;">{{ $key }}</td>
@@ -392,7 +392,7 @@
             <div class="p-5">
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
                     <div class="md:col-span-6">
-                        <table class="w-full text-left text-sm text-ink border-collapse border-0 mb-0">
+                        <table class="w-full text-left text-sm text-ink border-collapse">
                             <tr>
                                 <td class="detail-label" style="width:140px;">Weight</td>
                                 <td class="detail-value">{{ $product->weight ? $product->weight.' kg' : '—' }}</td>
@@ -410,7 +410,7 @@
                         </table>
                     </div>
                     <div class="md:col-span-6">
-                        <table class="w-full text-left text-sm text-ink border-collapse border-0 mb-0">
+                        <table class="w-full text-left text-sm text-ink border-collapse">
                             <tr>
                                 <td class="detail-label" style="width:140px;">Manufacturer</td>
                                 <td class="detail-value">{{ $product->manufacturer_name ?? '—' }}</td>

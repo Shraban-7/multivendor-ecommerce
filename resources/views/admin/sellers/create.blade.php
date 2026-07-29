@@ -36,10 +36,10 @@
         <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between bg-white py-3 border-b">
             <div class="flex justify-between items-end">
                 <h4 class="font-semibold mb-0 text-center">
-                    <i data-feather="user-check" class="me-2 text-brand"></i> Seller Registration Form
+                    <i data-lucide="user-check" class="me-2 text-brand"></i> Seller Registration Form
                 </h4>
                 <a href="{{ route('admin.sellers.index') }}" class="btn btn-light btn-sm">
-                    <i data-feather="arrow-left" class="icon-xs"></i> Back to Sellers
+                    <i data-lucide="arrow-left" class="icon-xs"></i> Back to Sellers
                 </a>
             </div>
         </div>
@@ -74,7 +74,7 @@
 
             <!-- STEP 2 -->
             <div class="form-step" id="step2">
-                <h5 class="font-semibold mb-3 text-brand"><i data-feather="briefcase" class="me-2"></i> Business Information</h5>
+                <h5 class="font-semibold mb-3 text-brand"><i data-lucide="briefcase" class="me-2"></i> Business Information</h5>
                 <div class="grid grid-cols-1 gap-3">
                     <div class="md:col-span-1"><label class="block text-xs font-medium text-ink-secondary mb-1">Business Name</label><input type="text" name="business_name" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required></div>
                     <div class="md:col-span-1"><label class="block text-xs font-medium text-ink-secondary mb-1">Business Email</label><input type="email" name="business_email" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors"></div>
@@ -113,7 +113,7 @@
 
             <!-- STEP 3 -->
             <div class="form-step" id="step3">
-                <h5 class="font-semibold mb-3 text-brand"><i data-feather="file-text" class="me-2"></i> Documents Upload</h5>
+                <h5 class="font-semibold mb-3 text-brand"><i data-lucide="file-text" class="me-2"></i> Documents Upload</h5>
                 <div class="grid grid-cols-1 gap-3">
                     <div class="md:col-span-1"><label class="block text-xs font-medium text-ink-secondary mb-1">Trade License No</label><input type="text" name="trade_license_no" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors"></div>
                     <div class="md:col-span-1"><label class="block text-xs font-medium text-ink-secondary mb-1">NID Number</label><input type="text" name="nid_no" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors"></div>
@@ -127,7 +127,7 @@
                 <div class="mt-4 flex justify-between">
                     <button type="button" class="btn btn-light prevBtn">← Back</button>
                     <button type="button" id="submitButton" class="btn btn-success">
-                        <i data-feather="save" class="me-2"></i>Register Seller
+                        <i data-lucide="save" class="me-2"></i>Register Seller
                     </button>
                 </div>
             </div>
@@ -173,7 +173,7 @@
 </script>
 
 <script>
-    feather.replace();
+    window.renderIcons && window.renderIcons();
 
     $(document).ready(function() {
 
@@ -207,11 +207,12 @@
                 processData: false,
                 contentType: false,
                 beforeSend: function() {
-                    $('#submitButton').attr('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Saving...');
+                    $('#submitButton').attr('disabled', true).html('<i data-lucide="loader-circle" class="animate-spin"></i> Saving...');
+                    window.renderIcons && window.renderIcons();
                 },
                 success: function(response) {
-                    $('#submitButton').attr('disabled', false).html('<i data-feather="save" class="me-2"></i>Register Seller');
-                    feather.replace();
+                    $('#submitButton').attr('disabled', false).html('<i data-lucide="save" class="me-2"></i>Register Seller');
+                    window.renderIcons && window.renderIcons();
                     if (response.status) {
                         showSuccessToast('Seller registered successfully!');
                         setTimeout(() => {
@@ -222,8 +223,8 @@
                     }
                 },
                 error: function(xhr) {
-                    $('#submitButton').attr('disabled', false).html('<i data-feather="save" class="me-2"></i>Register Seller');
-                    feather.replace();
+                    $('#submitButton').attr('disabled', false).html('<i data-lucide="save" class="me-2"></i>Register Seller');
+                    window.renderIcons && window.renderIcons();
 
                     if (xhr.status === 422) {
                         let errors = xhr.responseJSON.errors;

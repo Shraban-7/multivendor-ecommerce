@@ -82,20 +82,20 @@
             }
 
             let tableHtml = `
-                <table class="table table-sm table-bordered mb-0">
-                <thead class="table-light">
+                <table class="w-full text-left text-sm text-ink border-collapse">
+                <thead class="bg-surface-muted">
                     <tr>
-                    <th scope="col" class="small fw-semibold text-muted">#</th>
-                    <th scope="col" class="small fw-semibold text-muted">SKU</th>
-                    <th scope="col" class="small fw-semibold text-muted">Barcode</th>
-                    <th scope="col" class="small fw-semibold text-muted">Color</th>
-                    <th scope="col" class="small fw-semibold text-muted">Size</th>
-                    <th scope="col" class="small fw-semibold text-muted">Cost Price</th>
-                    <th scope="col" class="small fw-semibold text-muted">Price</th>
-                    <th scope="col" class="small fw-semibold text-muted">Compare Price</th>
-                    <th scope="col" class="small fw-semibold text-muted">Weight (kg)</th>
-                    <th scope="col" class="small fw-semibold text-muted">Image</th>
-                    <th scope="col" class="small fw-semibold text-muted">Actions</th>
+                    <th scope="col" class="text-xs font-semibold uppercase tracking-wider text-ink-secondary">#</th>
+                    <th scope="col" class="text-xs font-semibold uppercase tracking-wider text-ink-secondary">SKU</th>
+                    <th scope="col" class="text-xs font-semibold uppercase tracking-wider text-ink-secondary">Barcode</th>
+                    <th scope="col" class="text-xs font-semibold uppercase tracking-wider text-ink-secondary">Color</th>
+                    <th scope="col" class="text-xs font-semibold uppercase tracking-wider text-ink-secondary">Size</th>
+                    <th scope="col" class="text-xs font-semibold uppercase tracking-wider text-ink-secondary">Cost Price</th>
+                    <th scope="col" class="text-xs font-semibold uppercase tracking-wider text-ink-secondary">Price</th>
+                    <th scope="col" class="text-xs font-semibold uppercase tracking-wider text-ink-secondary">Compare Price</th>
+                    <th scope="col" class="text-xs font-semibold uppercase tracking-wider text-ink-secondary">Weight (kg)</th>
+                    <th scope="col" class="text-xs font-semibold uppercase tracking-wider text-ink-secondary">Image</th>
+                    <th scope="col" class="text-xs font-semibold uppercase tracking-wider text-ink-secondary">Actions</th>
                     </tr>
                 </thead>
             <tbody id="variantsTableBody">

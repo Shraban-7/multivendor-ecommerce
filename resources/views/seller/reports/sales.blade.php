@@ -189,7 +189,7 @@
                         <div class="md:col-span-7">
                             <p class="font-semibold text-ink-tertiary text-sm mt-3 mt-md-0">Revenue & Order Breakdown:</p>
                             <div class="overflow-x-auto">
-                                <table class="w-full text-left text-sm text-ink border-collapse text-sm border-0 mb-0">
+                                <table class="w-full text-left text-sm text-ink border-collapse">
                                     <thead class="bg-surface-muted">
                                         <tr>
                                             <th scope="col" class="text-sm font-semibold text-ink-tertiary">Category</th>
@@ -221,7 +221,7 @@
                 <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-4 h-full" style="border-radius: 12px;">
                     <h5 class="font-bold mb-3">Sales Channel Contribution</h5>
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm text-ink border-collapse table-hover mb-0">
+                        <table class="w-full text-left text-sm text-ink border-collapse">
                             <thead class="bg-surface-muted">
                                 <tr>
                                     <th scope="col" class="text-sm font-semibold text-ink-tertiary">Channel</th>
@@ -268,7 +268,7 @@
                 <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-4 h-full" style="border-radius: 12px;">
                     <h5 class="font-bold mb-3">Top-Selling Products by Revenue</h5>
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm text-ink border-collapse table-hover mb-0">
+                        <table class="w-full text-left text-sm text-ink border-collapse">
                             <thead class="bg-surface-muted">
                                 <tr>
                                     <th scope="col" class="text-sm font-semibold text-ink-tertiary">Product</th>

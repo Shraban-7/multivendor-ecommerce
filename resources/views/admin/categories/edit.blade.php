@@ -30,7 +30,7 @@
 
                                 <!-- FontAwesome icon list link -->
                                 <a href="https://fontawesome.com/icons" target="_blank" class="btn btn-light">
-                                    <i class="fa fa-external-link-alt"></i>
+                                    <i data-lucide="square-arrow-out-up-right"></i>
                                 </a>
                             </div>
 

@@ -10,7 +10,7 @@
     </div>
 
     <div class="overflow-x-auto">
-        <table class="w-full text-left text-sm text-ink border-collapse table-bordered table-hover bg-white mb-3 whitespace-nowrap">
+        <table class="w-full text-left text-sm text-ink border-collapse">
             <thead class="bg-surface-muted">
                 <tr>
                     <th scope="col" class="text-sm font-semibold text-ink-tertiary">Category</th>

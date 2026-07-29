@@ -18,7 +18,7 @@
             <form method="POST" action="{{ route('admin.seller-performance.recompute', $seller) }}">
                 @csrf
                 <button class="btn btn-light btn-sm">
-                    <i data-feather="refresh-cw" class="icon-xs"></i> Recompute
+                    <i data-lucide="refresh-cw" class="icon-xs"></i> Recompute
                 </button>
             </form>
             <a href="{{ route('admin.seller-performance.index') }}" class="btn btn-light btn-sm">← Back</a>
@@ -70,7 +70,7 @@
             <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm">
                 <div class="p-5">
                     <h5 class="font-bold mb-3">By period</h5>
-                    <table class="w-full text-left text-sm text-ink border-collapse text-sm mb-0">
+                    <table class="w-full text-left text-sm text-ink border-collapse">
                         <thead class="bg-surface-muted">
                             <tr><th>Window</th><th class="text-right">Score</th><th class="text-right">Tier</th></tr>
                         </thead>

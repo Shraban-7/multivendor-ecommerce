@@ -7,13 +7,13 @@
 
         @if (hasPermission('admin.settings.socialLinks.store'))
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
-                <i data-feather="plus" class="icon-xs"></i> Add Social Link
+                <i data-lucide="plus" class="icon-xs"></i> Add Social Link
             </button>
         @endif
     </div>
 
     <div class="overflow-x-auto ">
-        <table class="w-full text-left text-sm text-ink border-collapse mb-3 bg-white table-bordered">
+        <table class="w-full text-left text-sm text-ink border-collapse">
             <thead>
                 <tr>
                     <th>#</th>
@@ -42,7 +42,7 @@
                             @if (hasPermission('admin.settings.socialLinks.update'))
                                 <button class="btn btn-light btn-sm" data-bs-toggle="modal"
                                     data-bs-target="#editModal-{{ $socialLink->id }}">
-                                    <i data-feather="edit" class="icon-xs"></i> Edit
+                                    <i data-lucide="edit" class="icon-xs"></i> Edit
                                 </button>
                             @endif
                         </td>

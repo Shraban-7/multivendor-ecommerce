@@ -60,7 +60,7 @@
                             <div class="d-flex gap-2 align-items-center">
                                 {{ $seller->commission_amount }}
                                 <button class="btn btn-light border  btn-sm mb-1" data-bs-toggle="modal"
-                                    data-bs-target="#editModal-{{ $seller->id }}"><i data-feather="edit"
+                                    data-bs-target="#editModal-{{ $seller->id }}"><i data-lucide="edit"
                                         class="icon-xs"></i>
                                     Edit
                                 </button>
@@ -91,7 +91,7 @@
                                 <button type="button"
                                     class="btn btn-{{ $isBlocked ? 'success' : 'danger' }} border btn-sm me-1 mb-1"
                                     data-bs-toggle="modal" data-bs-target="#{{ $modalId }}">
-                                    <i data-feather="{{ $isBlocked ? 'check-circle' : 'x-circle' }}" class="icon-xs"></i>
+                                    <i data-lucide="{{ $isBlocked ? 'check-circle' : 'x-circle' }}" class="icon-xs"></i>
                                     {{ $isBlocked ? 'Unblock' : 'Block' }}
                                 </button>
                             </div>

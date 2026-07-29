@@ -4,7 +4,7 @@
 @section('content')
 <div class="flex items-center gap-2 mb-3">
     <a href="{{ route('admin.payouts.index') }}" class="btn btn-light btn-sm">
-        <i data-feather="arrow-left" style="width: 16px; height: 16px;"></i> Back
+        <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i> Back
     </a>
     <h3 class="font-bold mb-0">Payout #{{ $payout->id }}</h3>
     <span class="badge {{ $payout->statusBadge() }} ms-2">{{ $payout->statusLabel() }}</span>
@@ -20,21 +20,21 @@
                         <form method="POST" action="{{ route('admin.payouts.approve', $payout) }}" class="inline">
                             @csrf
                             <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('Approve this payout?')">
-                                <i data-feather="check" class="icon-xs me-1"></i> Approve
+                                <i data-lucide="check" class="icon-xs me-1"></i> Approve
                             </button>
                         </form>
                         <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#cancelModal">
-                            <i data-feather="x" class="icon-xs me-1"></i> Cancel
+                            <i data-lucide="x" class="icon-xs me-1"></i> Cancel
                         </button>
                     @elseif ($payout->isProcessing())
                         <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#completeModal">
-                            <i data-feather="check-circle" class="icon-xs me-1"></i> Mark Complete
+                            <i data-lucide="check-circle" class="icon-xs me-1"></i> Mark Complete
                         </button>
                         <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#failModal">
-                            <i data-feather="alert-circle" class="icon-xs me-1"></i> Mark Failed
+                            <i data-lucide="alert-circle" class="icon-xs me-1"></i> Mark Failed
                         </button>
                         <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#cancelModal">
-                            <i data-feather="x" class="icon-xs me-1"></i> Cancel
+                            <i data-lucide="x" class="icon-xs me-1"></i> Cancel
                         </button>
                     @endif
                 </div>
@@ -148,7 +148,7 @@
                     </div>
                 </div>
                 <a href="{{ route('admin.sellers.profile', $payout->seller->username) }}" class="btn btn-outline-primary btn-sm mt-3">
-                    <i data-feather="external-link" class="icon-xs me-1"></i> View Seller Profile
+                    <i data-lucide="external-link" class="icon-xs me-1"></i> View Seller Profile
                 </a>
             </div>
         </div>

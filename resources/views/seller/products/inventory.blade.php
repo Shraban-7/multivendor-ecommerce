@@ -64,7 +64,7 @@
             </div>
 
             <div class="table-container" style="overflow: auto; max-height: calc(100vh - 220px);">
-                <table class="compact-table">
+                <table class="w-full text-left text-sm text-ink border-collapse">
                     <thead>
                         <tr>
                             <th class="col-id hidden-column">ID</th>

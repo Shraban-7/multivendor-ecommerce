@@ -12,7 +12,7 @@
     </div>
 
     <div class="overflow-x-auto">
-        <table class="w-full text-left text-sm text-ink border-collapse table-bordered table-hover align-middle bg-white" id="stock-history-table">
+        <table class="w-full text-left text-sm text-ink border-collapse" id="stock-history-table">
             <thead class="bg-surface-muted">
                 <tr>
                     <th scope="col" class="text-sm font-semibold text-ink-tertiary">Product</th>

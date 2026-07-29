@@ -8,13 +8,13 @@
         <h4 class="mb-0">Permissions</h4>
         @if ($isSuperAdmin)
             <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addModal">
-                <i data-feather="plus" class="icon-xs"></i> Add Role
+                <i data-lucide="plus" class="icon-xs"></i> Add Role
             </button>
         @endif
     </div>
 
     <div class="overflow-x-auto whitespace-nowrap">
-        <table class="w-full text-left text-sm text-ink border-collapse table-bordered bg-white">
+        <table class="w-full text-left text-sm text-ink border-collapse">
             <thead>
                 <tr>
                     <th>Role Name</th>

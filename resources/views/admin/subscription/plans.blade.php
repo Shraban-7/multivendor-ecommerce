@@ -6,7 +6,7 @@
     <div class="flex justify-between items-center mb-3">
         <h4 class="text-ink mb-0">Subscription Plans</h4>
         <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#planModal" id="addPlanBtn">
-            <i class="bi bi-plus-lg me-1"></i> Add Plan
+            <i data-lucide="plus" class="me-1"></i> Add Plan
         </button>
     </div>
 
@@ -70,13 +70,13 @@
                             <!-- Edit Button -->
                             <button class="btn btn-primary btn-sm btn-block editPlanBtn"
                                 data-plan='@json($plan)' title="Edit Plan">
-                                <i class="bi bi-pencil-fill"></i> Edit
+                                <i data-lucide="pencil"></i> Edit
                             </button>
 
                             <!-- Delete Button -->
                             <button class="btn btn-danger btn-sm btn-block deletePlanBtn" data-id="{{ $plan->id }}"
                                 data-name="{{ $plan->name }}" title="Delete Plan">
-                                <i class="bi bi-trash-fill"></i> Delete
+                                <i data-lucide="trash-2"></i> Delete
                             </button>
                         </div>
                     </div>

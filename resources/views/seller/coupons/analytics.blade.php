@@ -53,7 +53,7 @@
                 </div>
                 <div class="p-5 p-0">
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm text-ink border-collapse table-hover align-middle mb-0">
+                        <table class="w-full text-left text-sm text-ink border-collapse">
                             <thead class="bg-surface-muted">
                                 <tr>
                                     <th class="py-3 px-4">Code</th>
@@ -94,7 +94,7 @@
                 <div class="p-5">
                     @if ($monthlyUsage->isNotEmpty())
                         <div class="overflow-x-auto">
-                            <table class="w-full text-left text-sm text-ink border-collapse table-hover align-middle mb-0">
+                            <table class="w-full text-left text-sm text-ink border-collapse">
                                 <thead class="bg-surface-muted">
                                     <tr>
                                         <th class="py-3">Month</th>

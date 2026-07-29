@@ -5,14 +5,14 @@
 <div class="flex flex-wrap justify-between items-center mb-3">
     <h3 class="font-bold mb-0">Shipping Carriers</h3>
     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCarrierModal">
-        <i data-feather="plus" style="width: 16px; height: 16px;"></i> Add Carrier
+        <i data-lucide="plus" style="width: 16px; height: 16px;"></i> Add Carrier
     </button>
 </div>
 
 <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm" style="border-radius: 12px;">
     <div class="p-5 p-0">
         <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm text-ink border-collapse table-hover align-middle mb-0">
+            <table class="w-full text-left text-sm text-ink border-collapse">
                 <thead class="bg-surface-muted">
                     <tr>
                         <th class="py-3 px-4">#</th>
@@ -37,14 +37,14 @@
                             </td>
                             <td class="text-right">
                                 <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#editCarrierModal-{{ $carrier->id }}">
-                                    <i data-feather="edit" class="icon-xs"></i>
+                                    <i data-lucide="edit" class="icon-xs"></i>
                                 </button>
                                 <form method="POST" action="{{ route('admin.shipping.carriers.destroy', $carrier) }}" class="inline"
                                       onsubmit="return confirm('Delete this carrier?')">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-outline-danger btn-sm">
-                                        <i data-feather="trash-2" class="icon-xs"></i>
+                                        <i data-lucide="trash-2" class="icon-xs"></i>
                                     </button>
                                 </form>
                             </td>
@@ -74,7 +74,7 @@
                     @empty
                         <tr>
                             <td colspan="6" class="text-center py-5 text-ink-tertiary">
-                                <i data-feather="truck" style="width: 48px; height: 48px;" class="mb-3"></i>
+                                <i data-lucide="truck" style="width: 48px; height: 48px;" class="mb-3"></i>
                                 <p class="mb-0">No carriers configured.</p>
                             </td>
                         </tr>

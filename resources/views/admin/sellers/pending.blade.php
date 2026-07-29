@@ -16,7 +16,7 @@
         <div class="flex flex-wrap justify-between items-center gap-3">
             <div class="flex w-auto grow" style="max-width: 350px;">
                 <span class="inline-flex items-center px-3 py-2 text-sm text-ink-tertiary bg-surface-muted border border-border">
-                    <i class="bi bi-search"></i>
+                    <i data-lucide="search"></i>
                 </span>
                 <input type="text" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="Search sellers..." />
             </div>
@@ -24,7 +24,7 @@
     </div>
     <div class="p-5 p-0">
         <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm text-ink border-collapse table-hover align-middle mb-0">
+            <table class="w-full text-left text-sm text-ink border-collapse">
                 <thead class="bg-surface-muted">
                     <tr>
                         <th scope="col" class="py-3 px-4">Seller</th>
@@ -72,10 +72,10 @@
                         </td>
                         <td class="text-right">
                             <a class="btn btn-primary btn-sm btn-icon me-1 mb-1" href="{{ route('admin.sellers.profile', $seller->username) }}">
-                                <i class="bi bi-eye"></i>
+                                <i data-lucide="eye"></i>
                             </a>
                             <button class="btn btn-light btn-sm mb-1" data-bs-toggle="modal"
-                                data-bs-target="#editModal-{{ $seller->id }}"><i data-feather="edit" class="icon-xs"></i>
+                                data-bs-target="#editModal-{{ $seller->id }}"><i data-lucide="edit" class="icon-xs"></i>
                             </button>
                         </td>
                     </tr>

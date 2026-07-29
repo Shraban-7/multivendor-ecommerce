@@ -10,10 +10,10 @@
             <h4 class="mb-0">Seller Profile</h4>
             <div>
                 <a href="{{ route('admin.sellers.index') }}" class="btn btn-light btn-sm">
-                    <i data-feather="arrow-left" class="icon-xs me-1"></i> Back to Sellers
+                    <i data-lucide="arrow-left" class="icon-xs me-1"></i> Back to Sellers
                 </a>
                 <a href="{{ route('admin.sellers.edit', $seller->username) }}" class="btn btn-light btn-sm">
-                    <i data-feather="edit" class="icon-xs me-1"></i> Edit
+                    <i data-lucide="edit" class="icon-xs me-1"></i> Edit
                 </a>
             </div>
         </div>
@@ -39,16 +39,16 @@
                             </div>
 
                             <p class="text-ink-tertiary text-sm mb-1">
-                                <i data-feather="mail" class="icon-xs me-1"></i>{{ $seller->email }}
+                                <i data-lucide="mail" class="icon-xs me-1"></i>{{ $seller->email }}
                             </p>
                             <p class="text-ink-tertiary text-sm mb-1">
-                                <i data-feather="phone" class="icon-xs me-1"></i>{{ $seller->phone }}
+                                <i data-lucide="phone" class="icon-xs me-1"></i>{{ $seller->phone }}
                             </p>
                             <p class="text-ink-tertiary text-sm mb-1">
-                                <i data-feather="map-pin" class="icon-xs me-1"></i>{{ $seller->business_address ?? '' }}
+                                <i data-lucide="map-pin" class="icon-xs me-1"></i>{{ $seller->business_address ?? '' }}
                             </p>
                             <p class="text-ink-tertiary text-sm mb-1">
-                                <i data-feather="calendar" class="icon-xs me-1"></i>
+                                <i data-lucide="calendar" class="icon-xs me-1"></i>
                                 {{ optional($seller->created_at)->format('d M Y') }}
                             </p>
                         </div>
@@ -64,7 +64,7 @@
                             <!-- Permanently Delete Button -->
                             <button type="button" class="btn btn-danger btn-sm"
                                 data-bs-toggle="modal" data-bs-target="#permanentDeleteModal{{ $seller->id }}">
-                                <i class="bi bi-exclamation-triangle-fill"></i>
+                                <i data-lucide="triangle-alert"></i>
                                 Delete Permanently
                             </button>
                         </div>
@@ -105,16 +105,16 @@
                             style="width: 100px; height: 100px; object-fit: cover; border-radius: .5rem;">
                         <div>
                             <h6 class="font-semibold mb-1">
-                                <i data-feather="briefcase" class="icon-xs me-1"></i>{{ $seller->business_name }}
+                                <i data-lucide="briefcase" class="icon-xs me-1"></i>{{ $seller->business_name }}
                             </h6>
                             <p class="text-ink-tertiary text-sm mb-1">
-                                <i data-feather="mail" class="icon-xs me-1"></i>{{ $seller->business_email }}
+                                <i data-lucide="mail" class="icon-xs me-1"></i>{{ $seller->business_email }}
                             </p>
                             <p class="text-ink-tertiary text-sm mb-1">
-                                <i data-feather="map-pin" class="icon-xs me-1"></i>{{ $seller->business_address }}
+                                <i data-lucide="map-pin" class="icon-xs me-1"></i>{{ $seller->business_address }}
                             </p>
                             <p class="text-ink-tertiary text-sm">
-                                <i data-feather="file-text" class="icon-xs me-1"></i>
+                                <i data-lucide="file-text" class="icon-xs me-1"></i>
                                 Trade License: {{ $seller->trade_license_no ?? '' }}
                             </p>
                         </div>
@@ -124,7 +124,7 @@
                     @if ($seller->status != $deleted)
                         <button type="button" class="btn btn-danger" data-bs-toggle="modal"
                             data-bs-target="#blockSellerModal{{ $seller->id }}">
-                            <i data-feather="trash" class="icon-xs me-1"></i> Delete
+                            <i data-lucide="trash" class="icon-xs me-1"></i> Delete
                         </button>
                     @endif
 
@@ -165,7 +165,7 @@
                             <div class="p-5">
                                 <div class="flex justify-between">
                                     <span class="font-semibold">Pending</span>
-                                    <i data-feather="clock" class="text-feedback-warning"></i>
+                                    <i data-lucide="clock" class="text-feedback-warning"></i>
                                 </div>
                                 <h4 class="font-bold my-2">{{ $pending_orders }}</h4>
                                 <small>Pending Orders</small>
@@ -177,7 +177,7 @@
                             <div class="p-5">
                                 <div class="flex justify-between">
                                     <span class="font-semibold">Delivered</span>
-                                    <i data-feather="check-circle" class="text-feedback-success"></i>
+                                    <i data-lucide="check-circle" class="text-feedback-success"></i>
                                 </div>
                                 <h4 class="font-bold my-2">{{ $delivered_orders }}</h4>
                                 <small>Delivered Orders</small>
@@ -190,7 +190,7 @@
                             <div class="p-5">
                                 <div class="flex justify-between">
                                     <span class="font-semibold">Cancelled</span>
-                                    <i data-feather="x-circle" class="text-feedback-danger"></i>
+                                    <i data-lucide="x-circle" class="text-feedback-danger"></i>
                                 </div>
                                 <h4 class="font-bold my-2">{{ $cancelled_orders }}</h4>
                                 <small>Cancelled Orders</small>
@@ -202,7 +202,7 @@
                             <div class="p-5">
                                 <div class="flex justify-between">
                                     <span class="font-semibold">Products</span>
-                                    <i data-feather="box" class="text-feedback-info"></i>
+                                    <i data-lucide="box" class="text-feedback-info"></i>
                                 </div>
                                 <h4 class="font-bold my-2">{{ $total_products }}</h4>
                                 <small>Total Products</small>
@@ -214,7 +214,7 @@
                             <div class="p-5">
                                 <div class="flex justify-between">
                                     <span class="font-semibold">Orders</span>
-                                    <i data-feather="shopping-cart" class="text-feedback-success"></i>
+                                    <i data-lucide="shopping-cart" class="text-feedback-success"></i>
                                 </div>
                                 <h4 class="font-bold my-2">{{ $total_orders }}</h4>
                                 <small>Total Orders</small>
@@ -250,7 +250,7 @@
                             <div class="p-5">
                                 <div class="flex justify-between">
                                     <span class="font-semibold">Customers</span>
-                                    <i data-feather="users" class="text-brand"></i>
+                                    <i data-lucide="users" class="text-brand"></i>
                                 </div>
                                 <h4 class="font-bold my-2">{{ $total_customers }}</h4>
                                 <small>Total Customers</small>
@@ -294,7 +294,7 @@
 
     @push('scripts')
         <script>
-            feather.replace();
+            window.renderIcons && window.renderIcons();
 
             function restoreItem(sellerId) {
                 if (!sellerId) return;

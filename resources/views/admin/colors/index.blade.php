@@ -5,12 +5,12 @@
     <div class="mb-3 flex justify-between items-center">
         <h4 class="mb-0">Colors</h4>
         <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addColorModal">
-            <i data-feather="plus" class="icon-xs"></i> Add Color
+            <i data-lucide="plus" class="icon-xs"></i> Add Color
         </button>
     </div>
 
     <div class="overflow-x-auto">
-        <table class="w-full text-left text-sm text-ink border-collapse mb-3 bg-white table-bordered">
+        <table class="w-full text-left text-sm text-ink border-collapse">
             <thead>
                 <tr>
                     <th scope="col">#</th>
@@ -44,12 +44,12 @@
                         <td class="flex gap-2">
                             <button type="button" class="btn btn-light btn-sm"
                                 data-bs-toggle="modal" data-bs-target="#editColorModal-{{ $color->id }}">
-                                <i data-feather="edit" class="icon-xs"></i>
+                                <i data-lucide="edit" class="icon-xs"></i>
                                 <span>Edit</span>
                             </button>
                             <button type="button" class="btn btn-danger btn-sm"
                                 data-bs-toggle="modal" data-bs-target="#deleteColorModal-{{ $color->id }}">
-                                <i data-feather="trash" class="icon-xs"></i>
+                                <i data-lucide="trash" class="icon-xs"></i>
                                 <span>Delete</span>
                             </button>
                         </td>
@@ -104,7 +104,7 @@
                                 </div>
                                 <div class="text-center modal-body">
                                     <div class="p-4 rounded-sm bg-amber-50 border border-amber-200 text-feedback-warning text-sm flex items-start gap-3 flex" role="alert">
-                                        <i class="bi bi-exclamation-circle-fill me-2 text-feedback-danger" style="font-size: 1.5rem;"></i>
+                                        <i data-lucide="circle-alert" class="me-2 text-feedback-danger" style="font-size: 1.5rem;"></i>
                                         <p class="mt-1 text-ink-secondary mb-0">
                                             Are you sure you want to delete <strong>{{ $color->name }}</strong>?
                                             Variants using this color will not be affected (color will be set to null).

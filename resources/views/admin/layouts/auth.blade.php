@@ -58,7 +58,7 @@
     {{-- End Tailwind setup --}}
 
     <link rel="stylesheet" href="{{asset('assets/dashboard/css/theme.css')}}">
-    <link rel="stylesheet" href="{{asset('assets/dashboard/css/custom.css')}}">
+    <link rel="stylesheet" href="{{asset_versioned('assets/dashboard/css/custom.css')}}">
     <link rel="stylesheet" href="{{asset('assets/dashboard/libs/bootstrap-icons/font/bootstrap-icons.css')}}">
     <link rel="stylesheet" href="{{asset('assets/dashboard/libs/dropzone/dist/dropzone.css')}}">
 
@@ -78,7 +78,22 @@
     <script src="{{ asset('assets/dashboard/libs/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('assets/dashboard/libs/jquery-slimscroll/jquery.slimscroll.min.js') }}"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    {{-- Lucide icons. theme.min.js still calls feather.replace(); the shim below absorbs it. --}}
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script>
+        (function () {
+            function renderIcons() {
+                if (window.lucide) {
+                    window.lucide.createIcons();
+                }
+            }
+
+            window.renderIcons = renderIcons;
+            window.feather = { replace: renderIcons };
+
+            document.addEventListener('DOMContentLoaded', renderIcons);
+        })();
+    </script>
 
     <script src="{{ asset('assets/dashboard/libs/prismjs/prism.js') }}"></script>
     <script src="{{ asset('assets/dashboard/libs/dropzone/dist/min/dropzone.min.js') }}"></script>
@@ -86,7 +101,6 @@
     
     <!-- Theme JS -->
     <script src="{{ asset('assets/dashboard/js/theme.min.js') }}"></script>
-    <script src="{{ asset('assets/dashboard/js/feather.js') }}"></script>
     @stack('footer')
 </body>
 

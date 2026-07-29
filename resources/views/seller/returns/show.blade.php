@@ -22,7 +22,7 @@
             <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 mb-4">
                 <div class="p-5">
                     <h5 class="font-bold mb-3">Return Details</h5>
-                    <table class="w-full text-left text-sm text-ink border-collapse border-0 mb-0">
+                    <table class="w-full text-left text-sm text-ink border-collapse">
                         <tr><td class="font-semibold" style="width: 160px;">RMA</td><td>{{ $return->rma_number }}</td></tr>
                         <tr><td class="font-semibold">Status</td><td><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-{{ $return->statusColor() }}">{{ $return->label() }}</span></td></tr>
                         <tr><td class="font-semibold">Type</td><td>{{ $return->typeLabel() }}</td></tr>
@@ -57,7 +57,7 @@
                 <div class="p-5">
                     <h5 class="font-bold mb-3">Items</h5>
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm text-ink border-collapse mb-0">
+                        <table class="w-full text-left text-sm text-ink border-collapse">
                             <thead class="bg-surface-muted">
                                 <tr>
                                     <th>Product</th>
@@ -188,7 +188,7 @@
             <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 mb-4">
                 <div class="p-5">
                     <h5 class="font-bold mb-3">Order Summary</h5>
-                    <table class="w-full text-left text-sm text-ink border-collapse border-0 mb-0">
+                    <table class="w-full text-left text-sm text-ink border-collapse">
                         <tr><td>Invoice</td><td class="font-semibold">#{{ $return->order->invoice_id }}</td></tr>
                         <tr><td>Subtotal</td><td>{{ number_format($return->order->sub_total ?? $return->order->total, 2) }}</td></tr>
                         <tr><td>Payable</td><td>{{ number_format($return->order->payable, 2) }}</td></tr>

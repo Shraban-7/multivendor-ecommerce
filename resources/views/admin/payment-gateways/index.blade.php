@@ -7,13 +7,13 @@
 
         {{-- @if (hasPermission('admin.settings.payment_gateways.store')) --}}
         <a href="{{ route('admin.paymentGateways.create') }}" class="btn btn-primary">
-            <i data-feather="plus" class="icon-xs"></i> Add Gateway
+            <i data-lucide="plus" class="icon-xs"></i> Add Gateway
         </a>
         {{-- @endif --}}
     </div>
 
     <div class="overflow-x-auto">
-        <table class="w-full text-left text-sm text-ink border-collapse mb-3 bg-white table-bordered">
+        <table class="w-full text-left text-sm text-ink border-collapse">
             <thead>
                 <tr>
                     <th>#</th>

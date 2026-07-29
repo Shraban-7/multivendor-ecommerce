@@ -28,7 +28,7 @@
             <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm">
                 <div class="p-5">
                     <h6 class="font-bold mb-2">Ticket info</h6>
-                    <table class="w-full text-left text-sm text-ink border-collapse border-0 text-sm mb-0">
+                    <table class="w-full text-left text-sm text-ink border-collapse">
                         <tr><td class="text-ink-tertiary">Status</td><td><span class="badge bg-{{ $ticket->statusColor() }}">{{ $ticket->statusLabel() }}</span></td></tr>
                         <tr><td class="text-ink-tertiary">Priority</td><td><span class="badge bg-{{ $ticket->priorityColor() }}">{{ ucfirst($ticket->priority) }}</span></td></tr>
                         <tr><td class="text-ink-tertiary">Category</td><td>{{ ucwords(str_replace('_', ' ', $ticket->category)) }}</td></tr>
@@ -110,7 +110,7 @@
                         @forelse ($ticket->messages as $message)
                             @if ($message->is_internal_note && ! $message->is_status_change)
                                 <li class="mb-2 text-sm text-ink-tertiary fst-italic border-l border-2 ps-2">
-                                    <i class="bi bi-lock"></i> Internal note (#{{ $message->id }}): {{ Str::limit($message->body, 100) }}
+                                    <i data-lucide="lock"></i> Internal note (#{{ $message->id }}): {{ Str::limit($message->body, 100) }}
                                 </li>
                                 @continue
                             @endif
@@ -118,14 +118,14 @@
                                 <div class="flex justify-between items-center">
                                     <span class="font-semibold">
                                         @if ($message->isFromSeller())
-                                            <i data-feather="user" class="icon-xs"></i> {{ $ticket->seller->business_name ?? 'Seller' }}
+                                            <i data-lucide="user" class="icon-xs"></i> {{ $ticket->seller->business_name ?? 'Seller' }}
                                         @elseif ($message->isFromAdmin())
-                                            <i data-feather="shield" class="icon-xs"></i> {{ $message->adminSender()?->name ?? 'Admin' }}
+                                            <i data-lucide="shield" class="icon-xs"></i> {{ $message->adminSender()?->name ?? 'Admin' }}
                                             @if ($message->sender_id === auth()->id())
                                                 <span class="badge bg-brand-deep ms-1 text-sm">You</span>
                                             @endif
                                         @else
-                                            <i data-feather="settings" class="icon-xs"></i> System
+                                            <i data-lucide="settings" class="icon-xs"></i> System
                                         @endif
                                         @if ($message->is_status_change)
                                             <span class="badge bg-surface-muted ms-1 text-sm">status change</span>
@@ -141,7 +141,7 @@
                                     <div class="mt-2">
                                         @foreach ($message->attachments as $att)
                                             <a href="{{ $att->url() }}" target="_blank" class="badge bg-surface-muted text-ink border me-1">
-                                                <i data-feather="paperclip" class="icon-xs"></i> {{ $att->original_name }}
+                                                <i data-lucide="paperclip" class="icon-xs"></i> {{ $att->original_name }}
                                             </a>
                                         @endforeach
                                     </div>

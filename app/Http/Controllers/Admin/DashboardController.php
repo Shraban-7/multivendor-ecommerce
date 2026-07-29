@@ -60,8 +60,23 @@ class DashboardController extends Controller
                 ->take(5)
                 ->get();
 
-            $top_vendors = Seller::withCount('orders')
-                ->orderBy('orders_count', 'desc')
+            $top_vendors = Seller::select('sellers.*')
+                ->selectSub(function ($query) {
+                    $query->from('orders')
+                        ->whereColumn('orders.seller_id', 'sellers.id')
+                        ->whereIn('orders.status', [
+                            OrderStatus::COMPLETED->value,
+                            OrderStatus::DELIVERED->value,
+                        ])
+                        ->select(DB::raw('COALESCE(SUM(orders.payable), 0)'));
+                }, 'total_sales')
+                ->withCount(['orders' => function ($q) {
+                    $q->whereIn('status', [
+                        OrderStatus::COMPLETED->value,
+                        OrderStatus::DELIVERED->value,
+                    ]);
+                }])
+                ->orderBy('total_sales', 'desc')
                 ->take(5)
                 ->get();
 
@@ -75,10 +90,49 @@ class DashboardController extends Controller
                 ->orderBy('month')
                 ->get();
 
+            // Previous month revenue for growth comparison
+            $last_month_revenue = Order::where('status', $completed)
+                ->where('created_at', '>=', now()->subMonths(2)->startOfMonth())
+                ->where('created_at', '<', now()->subMonth()->startOfMonth())
+                ->sum('payable');
+            $this_month_revenue = Order::where('status', $completed)
+                ->where('created_at', '>=', now()->startOfMonth())
+                ->sum('payable');
+            $revenue_growth = $last_month_revenue > 0
+                ? round(($this_month_revenue - $last_month_revenue) / $last_month_revenue * 100, 1)
+                : ($this_month_revenue > 0 ? 100 : 0);
+
             $pending_sellers = Seller::where('status', Seller::PENDING)->get();
             $pending_sellers_count = $pending_sellers->count();
 
-            return compact('stats', 'recent_orders', 'top_vendors', 'monthly_revenue', 'pending_sellers', 'pending_sellers_count', 'data');
+            // Order statuses with display metadata
+            $order_status_distribution = [
+                'pending' => ['count' => $counts->pending_orders_count, 'label' => 'Pending', 'icon' => 'clock', 'color' => 'text-feedback-warning', 'bg' => 'bg-amber-50'],
+                'shipped' => ['count' => $counts->shipped_orders_count, 'label' => 'Shipped', 'icon' => 'truck', 'color' => 'text-feedback-info', 'bg' => 'bg-blue-50'],
+                'delivered' => ['count' => $counts->delivered_orders_count, 'label' => 'Delivered', 'icon' => 'check-circle', 'color' => 'text-feedback-success', 'bg' => 'bg-emerald-50'],
+                'cancelled' => ['count' => $counts->cancelled_orders_count, 'label' => 'Cancelled', 'icon' => 'x-circle', 'color' => 'text-rose-500', 'bg' => 'bg-rose-50'],
+            ];
+
+            // Complete status style map for badge rendering (all possible statuses)
+            $status_styles = collect(OrderStatus::cases())->mapWithKeys(function ($status) {
+                $label = $status->label();
+                $style = match ($label) {
+                    'completed' => ['bg' => 'bg-emerald-50', 'text' => 'text-feedback-success'],
+                    'delivered' => ['bg' => 'bg-emerald-50', 'text' => 'text-feedback-success'],
+                    'shipped' => ['bg' => 'bg-blue-50', 'text' => 'text-feedback-info'],
+                    'accepted' => ['bg' => 'bg-blue-50', 'text' => 'text-feedback-info'],
+                    'pending' => ['bg' => 'bg-amber-50', 'text' => 'text-feedback-warning'],
+                    'cancelled' => ['bg' => 'bg-rose-50', 'text' => 'text-rose-500'],
+                    'returned' => ['bg' => 'bg-orange-50', 'text' => 'text-orange-600'],
+                    'return_requested' => ['bg' => 'bg-orange-50', 'text' => 'text-orange-600'],
+                    'return_approved' => ['bg' => 'bg-orange-50', 'text' => 'text-orange-600'],
+                    'refunded' => ['bg' => 'bg-purple-50', 'text' => 'text-purple-600'],
+                    default => ['bg' => 'bg-surface-muted', 'text' => 'text-ink-tertiary'],
+                };
+                return [$label => $style];
+            });
+
+            return compact('stats', 'recent_orders', 'top_vendors', 'monthly_revenue', 'pending_sellers', 'pending_sellers_count', 'data', 'revenue_growth', 'order_status_distribution', 'status_styles');
         });
 
         return view('admin.dashboard', $data);

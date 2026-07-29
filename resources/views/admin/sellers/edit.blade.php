@@ -39,10 +39,10 @@
             <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between bg-white py-3 border-b">
                 <div class="flex justify-between items-end">
                     <h4 class="font-semibold mb-0 text-center">
-                        <i data-feather="user-check" class="me-2 text-brand"></i> Edit Seller Information
+                        <i data-lucide="user-check" class="me-2 text-brand"></i> Edit Seller Information
                     </h4>
                     <a href="{{ route('admin.sellers.index') }}" class="btn btn-light btn-sm">
-                        <i data-feather="arrow-left" class="icon-xs"></i> Back to Sellers
+                        <i data-lucide="arrow-left" class="icon-xs"></i> Back to Sellers
                     </a>
                 </div>
             </div>
@@ -55,7 +55,7 @@
             <div class="p-5 p-4">
                 <!-- STEP 1 -->
                 <div class="form-step form-step-active" id="step1">
-                    <h5 class="font-semibold mb-3 text-brand"><i data-feather="user" class="me-2"></i> Personal
+                    <h5 class="font-semibold mb-3 text-brand"><i data-lucide="user" class="me-2"></i> Personal
                         Information</h5>
                     <div class="grid grid-cols-1 gap-3">
                         <div class="md:col-span-1"><label class="block text-xs font-medium text-ink-secondary mb-1">Full Name</label><input type="text"
@@ -80,7 +80,7 @@
 
                 <!-- STEP 2 -->
                 <div class="form-step" id="step2">
-                    <h5 class="font-semibold mb-3 text-brand"><i data-feather="briefcase" class="me-2"></i> Business
+                    <h5 class="font-semibold mb-3 text-brand"><i data-lucide="briefcase" class="me-2"></i> Business
                         Information</h5>
                     <div class="grid grid-cols-1 gap-3">
                         <div class="md:col-span-1"><label class="block text-xs font-medium text-ink-secondary mb-1">Business Name</label><input type="text"
@@ -138,7 +138,7 @@
 
                 <!-- STEP 3 -->
                 <div class="form-step" id="step3">
-                    <h5 class="font-semibold mb-3 text-brand"><i data-feather="file-text" class="me-2"></i> Documents
+                    <h5 class="font-semibold mb-3 text-brand"><i data-lucide="file-text" class="me-2"></i> Documents
                         Upload</h5>
                     <div class="grid grid-cols-1 gap-3">
                         <div class="md:col-span-1"><label class="block text-xs font-medium text-ink-secondary mb-1">Trade License No</label><input type="text"
@@ -175,7 +175,7 @@
                     <div class="mt-4 flex justify-between">
                         <button type="button" class="btn btn-light prevBtn">← Back</button>
                         <button type="button" id="updateButton" class="btn btn-success">
-                            <i data-feather="save" class="me-2"></i>Update Seller
+                            <i data-lucide="save" class="me-2"></i>Update Seller
                         </button>
                     </div>
                 </div>
@@ -221,7 +221,7 @@
     </script>
 
     <script>
-        feather.replace();
+        window.renderIcons && window.renderIcons();
 
         $(document).ready(function() {
             let sellerDivision = "{{ $seller->division_id }}";
@@ -266,12 +266,13 @@
                     contentType: false,
                     beforeSend: function() {
                         $('#updateButton').attr('disabled', true).html(
-                            '<i class="fa fa-spinner fa-spin"></i> Updating...');
+                            '<i data-lucide="loader-circle" class="animate-spin"></i> Updating...');
+                        window.renderIcons && window.renderIcons();
                     },
                     success: function(response) {
                         $('#updateButton').attr('disabled', false).html(
-                            '<i data-feather="save" class="me-2"></i>Update Seller');
-                        feather.replace();
+                            '<i data-lucide="save" class="me-2"></i>Update Seller');
+                        window.renderIcons && window.renderIcons();
                         if (response.status) {
                             showSuccessToast('Seller updated successfully!');
                             setTimeout(() => {
@@ -283,8 +284,8 @@
                     },
                     error: function(xhr) {
                         $('#updateButton').attr('disabled', false).html(
-                            '<i data-feather="save" class="me-2"></i>Update Seller');
-                        feather.replace();
+                            '<i data-lucide="save" class="me-2"></i>Update Seller');
+                        window.renderIcons && window.renderIcons();
 
                         if (xhr.status === 422) {
                             let errors = xhr.responseJSON.errors;

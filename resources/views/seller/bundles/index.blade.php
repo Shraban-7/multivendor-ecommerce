@@ -14,7 +14,7 @@
 @endif
 
 <div class="overflow-x-auto">
-    <table class="w-full text-left text-sm text-ink border-collapse table-bordered table-hover align-middle bg-white">
+    <table class="w-full text-left text-sm text-ink border-collapse">
         <thead class="bg-surface-muted">
             <tr>
                 <th class="text-sm font-semibold text-ink-tertiary">Bundle</th>

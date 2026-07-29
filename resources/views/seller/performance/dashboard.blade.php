@@ -84,7 +84,7 @@
             <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm">
                 <div class="p-5">
                     <h5 class="font-bold mb-3">Period comparison</h5>
-                    <table class="w-full text-left text-sm text-ink border-collapse text-sm align-middle mb-0">
+                    <table class="w-full text-left text-sm text-ink border-collapse">
                         <thead class="bg-surface-muted">
                             <tr>
                                 <th>Window</th>

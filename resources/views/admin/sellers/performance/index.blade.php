@@ -69,7 +69,7 @@
     <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm">
         <div class="p-5">
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm text-ink border-collapse table-bordered align-middle mb-0">
+                <table class="w-full text-left text-sm text-ink border-collapse">
                     <thead class="bg-surface-muted">
                         <tr>
                             <th>Ranking</th>
@@ -106,7 +106,7 @@
                                 <td><span class="badge bg-{{ $row->tierColor() }}">{{ $row->tierLabel() }}</span></td>
                                 <td class="text-right">
                                     <a href="{{ route('admin.seller-performance.show', $row->seller_id) }}" class="btn btn-light btn-sm">
-                                        <i data-feather="eye" class="icon-xs"></i> View
+                                        <i data-lucide="eye" class="icon-xs"></i> View
                                     </a>
                                 </td>
                             </tr>

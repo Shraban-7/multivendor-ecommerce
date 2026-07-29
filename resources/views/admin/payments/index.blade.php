@@ -6,7 +6,7 @@
     <div class="flex justify-between items-end mb-3">
         <h4 class="mb-4">Payments</h4>
         <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#userFilterCanvas">
-            <i class="bi bi-funnel"></i> Filter
+            <i data-lucide="funnel"></i> Filter
         </button>
     </div>
 
@@ -38,7 +38,7 @@
     </div>
 
     <div class="overflow-x-auto">
-        <table id="payment-table" class="w-full text-left text-sm text-ink border-collapse table-hover table-bordered align-middle whitespace-nowrap bg-white">
+        <table id="payment-table" class="w-full text-left text-sm text-ink border-collapse">
             <thead class="bg-white">
                 <tr>
                     <th scope="col">Transaction ID</th>

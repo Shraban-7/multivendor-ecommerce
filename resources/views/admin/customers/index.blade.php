@@ -7,7 +7,7 @@
 </div>
 
 <div class="overflow-x-auto">
-    <table id="customer-table" class="w-full text-left text-sm text-ink border-collapse table-bordered bg-white mb-3">
+    <table id="customer-table" class="w-full text-left text-sm text-ink border-collapse">
         <thead>
             <tr>
                 <th scope="col">Customer</th>

@@ -20,7 +20,7 @@
         @if($isEdit && $variantCount > 0)
             {{-- Existing variants table --}}
             <div class="overflow-x-auto mb-4">
-                <table class="w-full text-left text-sm text-ink border-collapse table-bordered align-middle mb-0">
+                <table class="w-full text-left text-sm text-ink border-collapse">
                     <thead class="bg-surface-muted">
                         <tr>
                             <th class="text-sm font-semibold text-ink-tertiary">Image</th>

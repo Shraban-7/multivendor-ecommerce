@@ -53,7 +53,7 @@
             </form>
 
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm text-ink border-collapse table-bordered align-middle mb-0">
+                <table class="w-full text-left text-sm text-ink border-collapse">
                     <thead class="bg-surface-muted">
                         <tr>
                             <th>Ticket</th>

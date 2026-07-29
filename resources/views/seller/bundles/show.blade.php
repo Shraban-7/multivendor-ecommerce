@@ -47,7 +47,7 @@
             <div class="p-5 p-4">
                 <h5 class="text-lg font-semibold mb-3">Bundle Items ({{ $bundle->items->count() }})</h5>
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm text-ink border-collapse table-bordered align-middle bg-white mb-0">
+                    <table class="w-full text-left text-sm text-ink border-collapse">
                         <thead class="bg-surface-muted">
                             <tr>
                                 <th class="text-sm font-semibold text-ink-tertiary">Product</th>
@@ -128,7 +128,7 @@
         <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm">
             <div class="p-5 p-4">
                 <h5 class="text-lg font-semibold mb-3">Summary</h5>
-                <table class="w-full text-left text-sm text-ink border-collapse text-sm border-0 mb-0">
+                <table class="w-full text-left text-sm text-ink border-collapse">
                     <tr>
                         <td class="text-sm text-ink-tertiary">Status</td>
                         <td>

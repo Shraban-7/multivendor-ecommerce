@@ -4,12 +4,12 @@
     <div class="mb-3 flex justify-between items-end">
         <h4 class="mb-0">Brands</h4>
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
-            <i data-feather="plus" class="icon-xs"></i> Add Brand
+            <i data-lucide="plus" class="icon-xs"></i> Add Brand
         </button>
     </div>
 
     <div class="overflow-x-auto">
-        <table class="w-full text-left text-sm text-ink border-collapse mb-3 bg-white table-bordered">
+        <table class="w-full text-left text-sm text-ink border-collapse">
             <thead class="bg-white">
                 <tr>
                     <th>#</th>
@@ -30,7 +30,7 @@
 
                         <td class="flex items-center gap-2">
                             @if (hasPermission('admin.brands.toggleStatus'))
-                            <button type="button" class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs {{ $brand->status ? 'btn-danger' : 'btn-success' }}"
+                            <button type="button" class="btn btn-sm {{ $brand->status ? 'btn-danger' : 'btn-success' }}"
                                 data-bs-toggle="modal" data-bs-target="#toggleStatusModal{{ $brand->id }}">
                                 {{ $brand->status ? 'Inactive' : 'Active' }}
                             </button>
@@ -67,7 +67,7 @@
                             @if (hasPermission('admin.brands.update'))
                                 <button class="btn btn-light btn-sm" data-bs-toggle="modal"
                                     data-bs-target="#editModal-{{ $brand->id }}">
-                                    <i data-feather="edit" class="icon-xs"></i> Edit
+                                    <i data-lucide="edit" class="icon-xs"></i> Edit
                                 </button>
                             @endif
                         </td>

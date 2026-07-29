@@ -1,7 +1,7 @@
 <?php
 $settings = settings();
 
-$catalogsOpen = request()->routeIs('admin.brands.*') || request()->routeIs('admin.categories.*') || request()->routeIs('admin.options*') || request()->routeIs('admin.subcategories.*') || request()->routeIs('admin.colors.*') || request()->routeIs('admin.sizes.*');
+$catalogsOpen = request()->routeIs('admin.brands.*') || request()->routeIs('admin.categories.*') || request()->routeIs('admin.subcategories.*') || request()->routeIs('admin.colors.*') || request()->routeIs('admin.sizes.*');
 $sellersOpen = request()->routeIs('admin.sellers.*') || request()->routeIs('admin.seller.requests') || request()->routeIs('admin.seller.payments');
 $ordersOpen = request()->routeIs('admin.orders.*') || request()->routeIs('admin.payments.*') || request()->routeIs('admin.payouts.*') || request()->routeIs('admin.reviews.*') || request()->routeIs('admin.returns.*');
 $membersOpen = request()->routeIs('admin.admins.*');
@@ -62,13 +62,6 @@ $subscriptionsOpen = request()->routeIs('admin.subscription-plans.*') || request
                                 href="{{ route('admin.subcategories.index') }}">
                                 <i data-lucide="folder-open" class="nav-icon"></i>
                                 <span>Subcategories</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('admin.options.index') ? 'active' : '' }}"
-                                href="{{ route('admin.options.index') }}">
-                                <i data-lucide="sliders-horizontal" class="nav-icon"></i>
-                                <span>Options</span>
                             </a>
                         </li>
                         <li class="nav-item">

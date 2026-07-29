@@ -6,12 +6,12 @@
 <div class="flex justify-between items-end mb-3">
     <h4 class="mb-0">Static Pages</h4>
     <a href="{{ route('admin.staticPages.create') }}" class="btn btn-primary">
-        <i class="fas fa-plus me-1"></i> Add New Page
+        <i data-lucide="plus" class="me-1"></i> Add New Page
     </a>
 </div>
 
 <div class="overflow-x-auto p-0">
-    <table class="w-full text-left text-sm text-ink border-collapse bg-white items-center mb-0">
+    <table class="w-full text-left text-sm text-ink border-collapse">
         <thead>
             <tr>
                 <th class="uppercase text-ink-secondary text-xxs font-weight-bolder opacity-7">Title</th>
@@ -38,7 +38,7 @@
                 </td>
                 <td class="align-middle">
                     <a href="{{ route('admin.staticPages.edit', $page->slug) }}" class="btn btn-info btn-sm hover:bg-blue-700 me-2" data-toggle="tooltip" title="Edit Page">
-                        <i class="fas fa-edit"></i> Edit
+                        <i data-lucide="pencil"></i> Edit
                     </a>
                     {{-- Add Delete button here if needed --}}
                 </td>

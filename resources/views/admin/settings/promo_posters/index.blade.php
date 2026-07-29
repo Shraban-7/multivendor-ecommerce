@@ -6,7 +6,7 @@
         @if (hasPermission('admin.settings.posters.store'))
             @if (count($posters) < 4)
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
-                    <i data-feather="plus" class="icon-xs"></i> Add Promo Poster
+                    <i data-lucide="plus" class="icon-xs"></i> Add Promo Poster
                 </button>
             @endif
         @endif
@@ -27,7 +27,7 @@
                         @if (hasPermission('admin.settings.posters.update'))
                             <button class="btn btn-primary" data-bs-toggle="modal"
                                 data-bs-target="#editModal-{{ $poster->id }}">
-                                <i data-feather="edit" class="icon-xs"></i> Edit
+                                <i data-lucide="edit" class="icon-xs"></i> Edit
                             </button>
                         @endif
                     </div>

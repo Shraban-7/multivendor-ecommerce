@@ -27,7 +27,7 @@
     <h4 class="font-semibold mb-3">My Products</h4>
 
     <div class="overflow-x-auto">
-        <table class="w-full text-left text-sm text-ink border-collapse table-bordered table-hover bg-white align-middle">
+        <table class="w-full text-left text-sm text-ink border-collapse">
             <thead class="bg-surface-muted">
                 <tr>
                     <th scope="col" class="text-sm font-semibold text-ink-tertiary">Product</th>

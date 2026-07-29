@@ -34,7 +34,7 @@
             <h6>Flash Sale Products</h6>
         </div>
         <div class="p-5 p-0">
-            <table class="w-full text-left text-sm text-ink border-collapse mb-0">
+            <table class="w-full text-left text-sm text-ink border-collapse">
                 <thead>
                     <tr>
                         <th>Vendor</th>

@@ -5,13 +5,13 @@
     <div class="flex justify-between items-center mb-3">
         <h4>Flash Sales</h4>
         <a href="{{ route('admin.flash-sales.create') }}" class="btn btn-primary">
-            <i class="bi bi-plus"></i> Add Flash Sale
+            <i data-lucide="plus"></i> Add Flash Sale
         </a>
     </div>
 
     <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden">
         <div class="p-5 p-0">
-            <table class="w-full text-left text-sm text-ink border-collapse bg-white table-hover mb-0">
+            <table class="w-full text-left text-sm text-ink border-collapse">
                 <thead>
                     <tr>
                         <th>ID</th>

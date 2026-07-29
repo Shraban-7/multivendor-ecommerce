@@ -35,12 +35,12 @@
     <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm">
         <div class="p-5">
             <div class="flex flex-wrap gap-2 mb-3">
-                <a href="{{ route('admin.returns.index') }}" class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs {{ !request('status') && !request('disputed') ? 'btn-dark' : 'btn-light border' }}">All</a>
-                <a href="{{ route('admin.returns.index', ['status' => 'pending']) }}" class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs {{ request('status') === 'pending' ? 'btn-warning' : 'btn-light border' }}">Pending</a>
-                <a href="{{ route('admin.returns.index', ['status' => 'approved']) }}" class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs {{ request('status') === 'approved' ? 'btn-success' : 'btn-light border' }}">Approved</a>
-                <a href="{{ route('admin.returns.index', ['status' => 'rejected']) }}" class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs {{ request('status') === 'rejected' ? 'btn-danger' : 'btn-light border' }}">Rejected</a>
-                <a href="{{ route('admin.returns.index', ['status' => 'refunded']) }}" class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs {{ request('status') === 'refunded' ? 'btn-info' : 'btn-light border' }}">Refunded</a>
-                <a href="{{ route('admin.returns.index', ['disputed' => 1]) }}" class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs {{ request('disputed') ? 'btn-danger' : 'btn-light border' }}">Disputed</a>
+                <a href="{{ route('admin.returns.index') }}" class="btn btn-sm {{ ! request('status') && ! request('disputed') ? 'btn-dark' : 'btn-light' }}">All</a>
+                <a href="{{ route('admin.returns.index', ['status' => 'pending']) }}" class="btn btn-sm {{ request('status') === 'pending' ? 'btn-warning' : 'btn-light' }}">Pending</a>
+                <a href="{{ route('admin.returns.index', ['status' => 'approved']) }}" class="btn btn-sm {{ request('status') === 'approved' ? 'btn-success' : 'btn-light' }}">Approved</a>
+                <a href="{{ route('admin.returns.index', ['status' => 'rejected']) }}" class="btn btn-sm {{ request('status') === 'rejected' ? 'btn-danger' : 'btn-light' }}">Rejected</a>
+                <a href="{{ route('admin.returns.index', ['status' => 'refunded']) }}" class="btn btn-sm {{ request('status') === 'refunded' ? 'btn-info' : 'btn-light' }}">Refunded</a>
+                <a href="{{ route('admin.returns.index', ['disputed' => 1]) }}" class="btn btn-sm {{ request('disputed') ? 'btn-danger' : 'btn-light' }}">Disputed</a>
 
                 <form method="GET" class="ms-auto flex gap-2">
                     <input type="text" name="search" class="w-full px-2 py-1 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" placeholder="Search RMA, order, customer..." value="{{ request('search') }}">
@@ -49,7 +49,7 @@
             </div>
 
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm text-ink border-collapse table-bordered table-hover mb-0 align-middle">
+                <table class="w-full text-left text-sm text-ink border-collapse">
                     <thead class="bg-surface-muted">
                         <tr>
                             <th>RMA</th>
@@ -88,7 +88,7 @@
                                 <td class="small">{{ $return->created_at->format('d/m/Y') }}</td>
                                 <td>
                                     <a href="{{ route('admin.returns.show', $return) }}" class="btn btn-light btn-sm">
-                                        <i class="fas fa-eye"></i> View
+                                        <i data-lucide="eye"></i> View
                                     </a>
                                 </td>
                             </tr>

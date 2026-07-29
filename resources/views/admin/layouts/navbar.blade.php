@@ -1,6 +1,6 @@
 <nav class="navbar-classic navbar navbar-expand-lg">
     <a id="nav-toggle" href="#"><i
-            data-feather="menu"
+            data-lucide="menu"
             class="nav-icon me-2 icon-xs"></i></a>
     <div class="ms-lg-3 d-none d-md-none d-lg-block">
         <form class="flex items-center">
@@ -12,7 +12,7 @@
             <a class="btn btn-light btn-icon btn-round indicator indicator-primary" href="#" role="button"
                 id="dropdownNotification" data-bs-toggle="dropdown" aria-haspopup="true"
                 aria-expanded="false">
-                <i class="icon-xs" data-feather="bell"></i>
+                <i class="icon-xs" data-lucide="bell"></i>
             </a>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end"
                 aria-labelledby="dropdownNotification">
@@ -22,7 +22,7 @@
                         <p class="mb-0 text-ink font-medium text-xl">Notifications</p>
                         <a href="#" class="text-ink-tertiary">
                             <span>
-                                <i class="me-1 icon-xxs" data-feather="settings"></i>
+                                <i class="me-1 icon-xxs" data-lucide="settings"></i>
                             </span>
                         </a>
                     </div>
@@ -89,7 +89,7 @@
                     <li>
                         <a class="dropdown-item" href="{{ route('admin.profile') }}">
                             <i class="me-2 icon-xxs dropdown-item-icon"
-                                data-feather="settings"></i>Account Settings
+                                data-lucide="settings"></i>Account Settings
                         </a>
                     </li>
                     <li>
@@ -97,7 +97,7 @@
                             @CSRF
                             <button class="dropdown-item" href="javascript:void(0)" onclick="this.form.submit();">
                                 <i class="me-2 icon-xxs dropdown-item-icon"
-                                    data-feather="power"></i>Sign Out
+                                    data-lucide="power"></i>Sign Out
                             </button>
                         </form>
                     </li>

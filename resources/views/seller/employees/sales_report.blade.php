@@ -31,7 +31,7 @@
         </form>
 
 
-        <table class="w-full text-left text-sm text-ink border-collapse table-bordered table-striped table-hover mb-0">
+        <table class="w-full text-left text-sm text-ink border-collapse">
             <thead class="bg-surface-muted">
                 <tr>
                     <th scope="col" class="text-sm font-semibold text-ink-tertiary">Employee</th>

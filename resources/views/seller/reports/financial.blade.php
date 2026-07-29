@@ -177,7 +177,7 @@
                         <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-4 h-full" style="border-radius: 12px;">
                             <h5 class="font-bold">P&L Summary</h5>
                             <div class="overflow-x-auto">
-                                <table class="w-full text-left text-sm text-ink border-collapse text-sm mb-0 border-0">
+                                <table class="w-full text-left text-sm text-ink border-collapse">
                                     <thead class="bg-surface-muted">
                                         <tr>
                                             <th scope="col" class="text-sm font-semibold text-ink-tertiary">Category</th>
@@ -234,7 +234,7 @@
                         <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-4 h-full" style="border-radius: 12px;">
                             <h5 class="font-bold">Income Data Table</h5>
                             <div class="overflow-x-auto">
-                                <table class="w-full text-left text-sm text-ink border-collapse table-hover mb-0">
+                                <table class="w-full text-left text-sm text-ink border-collapse">
                                     <thead class="bg-surface-muted">
                                         <tr>
                                             <th scope="col" class="text-sm font-semibold text-ink-tertiary">Source</th>
@@ -295,7 +295,7 @@
                         <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-4 h-full" style="border-radius: 12px;">
                             <h5 class="font-bold">Expense Breakdown Table</h5>
                             <div class="overflow-x-auto">
-                                <table class="w-full text-left text-sm text-ink border-collapse table-hover mb-0">
+                                <table class="w-full text-left text-sm text-ink border-collapse">
                                     <thead class="bg-surface-muted">
                                         <tr>
                                             <th scope="col" class="text-sm font-semibold text-ink-tertiary">Category</th>
@@ -356,7 +356,7 @@
                         <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-4 h-full" style="border-radius: 12px;">
                             <h5 class="font-bold">Inventory Details</h5>
                             <div class="overflow-x-auto">
-                                <table class="w-full text-left text-sm text-ink border-collapse table-hover mb-0">
+                                <table class="w-full text-left text-sm text-ink border-collapse">
                                     <thead class="bg-surface-muted">
                                         <tr>
                                             <th scope="col" class="text-sm font-semibold text-ink-tertiary">Category</th>
