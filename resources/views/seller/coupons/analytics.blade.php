@@ -6,7 +6,7 @@
     <div class="flex flex-wrap justify-between items-center mb-3">
         <h4 class="font-bold mb-0 text-ink">Coupon Analytics</h4>
         <a href="{{ route('seller.coupons.index') }}" class="btn btn-outline-primary">
-            <i data-feather="arrow-left" style="width: 16px; height: 16px;"></i> Back to Coupons
+            <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i> Back to Coupons
         </a>
     </div>
 

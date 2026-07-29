@@ -42,11 +42,11 @@
         <div class="grid grid-cols-1 mb-5 g-4">
             @php
                 $kpis = [
-                    ['label' => 'Total Customers', 'value' => $allTimeTotalCustomers, 'change' => 0, 'icon' => 'fa-users', 'color' => 'primary', 'note' => 'all time'],
-                    ['label' => 'New Customers', 'value' => $newCustomersCurrent, 'change' => $newCustomersChange, 'icon' => 'fa-user-plus', 'color' => 'info', 'note' => 'this period'],
-                    ['label' => 'Returning %', 'value' => $returningPercentage . '%', 'change' => null, 'icon' => 'fa-redo-alt', 'color' => 'success', 'note' => 'vs previous'],
-                    ['label' => 'Avg CLV', 'value' => money($avgClvCurrent), 'change' => $avgClvChange, 'icon' => 'fa-hand-holding-usd', 'color' => 'warning', 'note' => 'last period'],
-                    ['label' => 'Avg Orders/Cust', 'value' => $avgOrdersPerCustomerCurrent, 'change' => $avgOrdersPerCustomerChange, 'icon' => 'fa-cart-shopping', 'color' => 'secondary', 'note' => 'vs last period'],
+                    ['label' => 'Total Customers', 'value' => $allTimeTotalCustomers, 'change' => 0, 'icon' => 'users', 'color' => 'primary', 'note' => 'all time'],
+                    ['label' => 'New Customers', 'value' => $newCustomersCurrent, 'change' => $newCustomersChange, 'icon' => 'user-plus', 'color' => 'info', 'note' => 'this period'],
+                    ['label' => 'Returning %', 'value' => $returningPercentage . '%', 'change' => null, 'icon' => 'refresh-cw', 'color' => 'success', 'note' => 'vs previous'],
+                    ['label' => 'Avg CLV', 'value' => money($avgClvCurrent), 'change' => $avgClvChange, 'icon' => 'hand-coins', 'color' => 'warning', 'note' => 'last period'],
+                    ['label' => 'Avg Orders/Cust', 'value' => $avgOrdersPerCustomerCurrent, 'change' => $avgOrdersPerCustomerChange, 'icon' => 'shopping-cart', 'color' => 'secondary', 'note' => 'vs last period'],
                 ];
             @endphp
             @foreach ($kpis as $index => $kpi)
@@ -57,11 +57,11 @@
                                 <span class="text-ink-tertiary uppercase text-sm">{{ $kpi['label'] }}</span>
                                 <h5 class="font-bold text-{{ $kpi['color'] }} mb-0">{{ $kpi['value'] }}</h5>
                             </div>
-                            <i class="fas {{ $kpi['icon'] }} opacity-50 text-xl"></i>
+                            <i data-lucide="{{ $kpi['icon'] }}" class="opacity-50 icon-sm"></i>
                         </div>
                         @if (!is_null($kpi['change']))
                             <small class="{{ $kpi['change'] >= 0 ? 'text-feedback-success' : 'text-feedback-danger' }} font-semibold mt-2">
-                                <i class="fas fa-arrow-{{ $kpi['change'] >= 0 ? 'up' : 'down' }} me-1"></i>{{ abs($kpi['change']) }}%
+                                <i data-lucide="{{ $kpi['change'] >= 0 ? 'arrow-up' : 'arrow-down' }}" class="me-1"></i>{{ abs($kpi['change']) }}%
                             </small>
                         @endif
                         <small class="text-ink-tertiary text-sm">{{ $kpi['note'] }}</small>
@@ -106,7 +106,7 @@
                             <tbody>
                                 @forelse ($topCustomers as $index => $cust)
                                     <tr class="{{ $index === 0 ? 'font-semibold' : '' }}">
-                                        <td>@if ($index === 0)<i class="fas fa-trophy me-1 text-feedback-warning"></i>@endif{{ $cust['name'] }}</td>
+                                        <td>@if ($index === 0)<i data-lucide="trophy" class="me-1 text-feedback-warning"></i>@endif{{ $cust['name'] }}</td>
                                         <td class="text-right">{{ $cust['orders'] }}</td>
                                         <td class="text-right text-feedback-success font-semibold">{{ money($cust['spent']) }}</td>
                                     </tr>
@@ -157,7 +157,7 @@
                             </thead>
                             <tbody>
                                 <tr class="font-semibold bg-emerald-50">
-                                    <td>Loyal <i class="fas fa-star text-feedback-warning"></i></td>
+                                    <td>Loyal <i data-lucide="star" class="text-feedback-warning"></i></td>
                                     <td class="text-right">220</td>
                                     <td class="text-right text-feedback-success">45%</td>
                                     <td>High CLV, frequent buyers</td>
@@ -188,7 +188,7 @@
                     <div class="md:col-span-1">
                         <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3 h-full" style="border-radius: 12px; border-left: 4px solid #1D8A45;">
                             <div class="flex items-center">
-                                <i class="fas fa-smile me-3 text-feedback-success fa-2x"></i>
+                                <i data-lucide="smile" class="me-3 text-feedback-success icon-md"></i>
                                 <p class="mb-0 font-semibold">Loyal customers up <span class="text-feedback-success">9%</span> this month. Maintain personalized offers.</p>
                             </div>
                         </div>
@@ -196,7 +196,7 @@
                     <div class="md:col-span-1">
                         <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3 h-full" style="border-radius: 12px; border-left: 4px solid #F85606;">
                             <div class="flex items-center">
-                                <i class="fas fa-arrow-up-right-dots me-3 text-brand fa-2x"></i>
+                                <i data-lucide="trending-up" class="me-3 text-brand icon-md"></i>
                                 <p class="mb-0 font-semibold">Returning customers spend <span class="text-brand">30%</span> more per transaction.</p>
                             </div>
                         </div>
@@ -204,7 +204,7 @@
                     <div class="md:col-span-1">
                         <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3 h-full" style="border-radius: 12px; border-left: 4px solid #D93025;">
                             <div class="flex items-center">
-                                <i class="fas fa-chart-simple me-3 text-feedback-danger fa-2x"></i>
+                                <i data-lucide="chart-column" class="me-3 text-feedback-danger icon-md"></i>
                                 <p class="mb-0 font-semibold">At-Risk segment grew 5%. Launch a re-engagement campaign.</p>
                             </div>
                         </div>

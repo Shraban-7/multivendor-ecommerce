@@ -23,7 +23,7 @@
 <div class="flex flex-wrap justify-between items-start gap-2 mb-3">
     <div class="flex items-start gap-2">
         <a href="{{ route('seller.products.show', $product->slug) }}" class="btn btn-light btn-sm mt-1" title="Back to Details">
-            <i data-feather="arrow-left" style="width:16px;height:16px;"></i>
+            <i data-lucide="arrow-left" style="width:16px;height:16px;"></i>
         </a>
         <div>
             <div class="flex items-center gap-2 mb-1">
@@ -45,7 +45,7 @@
         </div>
     </div>
     <button type="submit" form="productUpdateForm" id="updateBtn" class="btn btn-primary">
-        <i data-feather="save" style="width:16px;height:16px;"></i> Update Product
+        <i data-lucide="save" style="width:16px;height:16px;"></i> Update Product
     </button>
 </div>
 
@@ -55,7 +55,7 @@
         <div class="lg:col-span-2">
             <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
                 <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
-                    <h5><i class="fas fa-info-circle me-2 text-brand"></i>Basic Information</h5>
+                    <h5><i data-lucide="circle-info" class="me-2 text-brand"></i>Basic Information</h5>
                 </div>
                 <div class="p-5">
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
@@ -114,7 +114,7 @@
 
             <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
                 <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
-                    <h5><i class="fas fa-tags me-2 text-brand"></i>Pricing & Inventory</h5>
+                    <h5><i data-lucide="tags" class="me-2 text-brand"></i>Pricing & Inventory</h5>
                 </div>
                 <div class="p-5">
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
@@ -149,7 +149,7 @@
 
             <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
                 <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
-                    <h5><i class="fas fa-align-left me-2 text-brand"></i>Description &amp; Specifications</h5>
+                    <h5><i data-lucide="align-left" class="me-2 text-brand"></i>Description &amp; Specifications</h5>
                 </div>
                 <div class="p-5">
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
@@ -172,7 +172,7 @@
 
             <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
                 <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
-                    <h5><i class="fas fa-image me-2 text-brand"></i>Gallery Images</h5>
+                    <h5><i data-lucide="image" class="me-2 text-brand"></i>Gallery Images</h5>
                 </div>
                 <div class="p-5">
                     @include('seller.products.partials.upload-images')
@@ -181,7 +181,7 @@
 
             <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
                 <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
-                    <h5><i class="fas fa-truck me-2 text-brand"></i>Shipping &amp; Manufacturer</h5>
+                    <h5><i data-lucide="truck" class="me-2 text-brand"></i>Shipping &amp; Manufacturer</h5>
                 </div>
                 <div class="p-5">
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
@@ -219,7 +219,7 @@
 
             <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
                 <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
-                    <h5><i class="fas fa-eye me-2 text-brand"></i>Visibility</h5>
+                    <h5><i data-lucide="eye" class="me-2 text-brand"></i>Visibility</h5>
                 </div>
                 <div class="p-5">
                     <div class="flex gap-3">
@@ -242,9 +242,9 @@
             <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
                 <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between collapsible-header collapsed" data-bs-toggle="collapse" data-bs-target="#seoCollapse" aria-expanded="false" role="button">
                     <h5 class="flex items-center">
-                        <i data-feather="chevron-down" class="collapse-icon-closed me-2 text-ink-tertiary" style="width:14px;height:14px;"></i>
-                        <i data-feather="chevron-up" class="collapse-icon-open me-2 text-ink-tertiary" style="width:14px;height:14px;"></i>
-                        <i data-feather="search" class="me-2 text-brand" style="width:16px;height:16px;"></i>SEO &amp; Social Share
+                        <i data-lucide="chevron-down" class="collapse-icon-closed me-2 text-ink-tertiary" style="width:14px;height:14px;"></i>
+                        <i data-lucide="chevron-up" class="collapse-icon-open me-2 text-ink-tertiary" style="width:14px;height:14px;"></i>
+                        <i data-lucide="search" class="me-2 text-brand" style="width:16px;height:16px;"></i>SEO &amp; Social Share
                     </h5>
                 </div>
                 <div class="collapse" id="seoCollapse">
@@ -281,7 +281,7 @@
                                 <textarea name="og_description" maxlength="160" rows="2" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="Appears below the title when shared.">{{ $seo?->og_description }}</textarea>
                             </div>
                             <div class="col-span-full">
-                                <button type="button" id="seoUpdateBtn" class="btn btn-outline-primary btn-sm"><i class="fas fa-save"></i> Save SEO</button>
+                                <button type="button" id="seoUpdateBtn" class="btn btn-outline-primary btn-sm"><i data-lucide="save"></i> Save SEO</button>
                             </div>
                         </div>
                     </div>
@@ -295,7 +295,7 @@
             <div class="sticky-sidebar">
                 <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
                     <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
-                        <h5><i class="fas fa-camera me-2 text-brand"></i>Thumbnail</h5>
+                        <h5><i data-lucide="camera" class="me-2 text-brand"></i>Thumbnail</h5>
                     </div>
                     <div class="p-5 text-center">
                         <div class="cropper-preview" id="thumbnailPreview" data-bs-toggle="modal" data-bs-target="#thumbnailCropperModal">
@@ -308,7 +308,7 @@
 
                 <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
                     <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
-                        <h5><i class="fas fa-layer-group me-2 text-brand"></i>Product Stats</h5>
+                        <h5><i data-lucide="layers" class="me-2 text-brand"></i>Product Stats</h5>
                     </div>
                     <div class="p-5">
                         @php
@@ -336,7 +336,7 @@
                             <span>Updated: {{ $product->updated_at->format('d M, Y h:ia') }}</span>
                         </div>
                         <a href="{{ route('seller.products.show', $product->slug) }}" class="btn btn-light btn-sm w-full" target="__blank">
-                            <i data-feather="external-link" class="icon-xs"></i> View Details
+                            <i data-lucide="external-link" class="icon-xs"></i> View Details
                         </a>
                     </div>
                 </div>
@@ -353,7 +353,7 @@
                 <input type="file" id="thumbnailUploadInput" accept="image/*" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors mb-3">
                 <img id="thumbnailCropperImage" src="#" class="d-none img-fluid" style="max-height:400px;">
             </div>
-            <div class="modal-footer"><button type="button" class="btn btn-success btn-sm" id="cropThumbnailBtn"><i class="fas fa-check me-1"></i>Crop &amp; Insert</button></div>
+            <div class="modal-footer"><button type="button" class="btn btn-success btn-sm" id="cropThumbnailBtn"><i data-lucide="check" class="me-1"></i>Crop &amp; Insert</button></div>
         </div>
     </div>
 </div>
@@ -363,7 +363,7 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.js"></script>
 <script>
-    feather.replace();
+    window.renderIcons && window.renderIcons();
 
     $(".brand-select").select2({ tags: true, theme: "bootstrap-5" });
 
@@ -386,7 +386,7 @@
             beforeSend: () => { $('#updateBtn').attr('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span> Updating...'); },
             success: (res) => { showSuccessToast('Product updated!'); setTimeout(() => window.location.href = res.redirect, 1500); },
             error: (xhr) => {
-                $('#updateBtn').attr('disabled', false).html('<i class="fas fa-save me-1"></i> Update Product');
+                $('#updateBtn').attr('disabled', false).html('<i data-lucide="save" class="me-1"></i> Update Product');
                 if (xhr.status === 422) showErrorToast(Object.values(xhr.responseJSON.errors).map(i => i[0]).join('<br>'));
                 else showErrorToast(xhr.responseJSON?.message || 'Something went wrong.');
             }
@@ -401,8 +401,8 @@
             url: "{{ route('seller.products.updateSeo', $product->slug) }}",
             type: 'POST', data: formData, processData: false, contentType: false,
             beforeSend: () => btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span> Saving...'),
-            success: (res) => { showSuccessToast(res.message); btn.prop('disabled', false).html('<i class="fas fa-save me-1"></i> Save SEO'); },
-            error: (xhr) => { btn.prop('disabled', false).html('<i class="fas fa-save me-1"></i> Save SEO'); showErrorToast(xhr.responseJSON?.message || 'Error saving SEO.'); }
+            success: (res) => { showSuccessToast(res.message); btn.prop('disabled', false).html('<i data-lucide="save" class="me-1"></i> Save SEO'); },
+            error: (xhr) => { btn.prop('disabled', false).html('<i data-lucide="save" class="me-1"></i> Save SEO'); showErrorToast(xhr.responseJSON?.message || 'Error saving SEO.'); }
         });
     });
 

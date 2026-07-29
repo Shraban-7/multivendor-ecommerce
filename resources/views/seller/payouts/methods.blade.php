@@ -6,12 +6,12 @@
     <div class="flex flex-wrap justify-between items-center mb-3">
         <div class="flex items-center gap-2">
             <a href="{{ route('seller.payouts.index') }}" class="btn btn-light btn-sm">
-                <i data-feather="arrow-left" style="width: 16px; height: 16px;"></i> Back
+                <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i> Back
             </a>
             <h4 class="font-bold mb-0 text-ink">Payout Methods</h4>
         </div>
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMethodModal">
-            <i data-feather="plus" style="width: 16px; height: 16px;"></i> Add Method
+            <i data-lucide="plus" style="width: 16px; height: 16px;"></i> Add Method
         </button>
     </div>
 
@@ -25,15 +25,15 @@
                                 <div class="flex items-center gap-2">
                                     @if ($method->method_type === 'bank')
                                         <div class="icon-bg-primary">
-                                            <i data-feather="building" style="width: 20px; height: 20px;"></i>
+                                            <i data-lucide="building" style="width: 20px; height: 20px;"></i>
                                         </div>
                                     @elseif ($method->method_type === 'mobile_banking')
                                         <div class="icon-bg-success">
-                                            <i data-feather="smartphone" style="width: 20px; height: 20px;"></i>
+                                            <i data-lucide="smartphone" style="width: 20px; height: 20px;"></i>
                                         </div>
                                     @else
                                         <div class="icon-bg-warning">
-                                            <i data-feather="dollar-sign" style="width: 20px; height: 20px;"></i>
+                                            <i data-lucide="dollar-sign" style="width: 20px; height: 20px;"></i>
                                         </div>
                                     @endif
                                     <div>
@@ -45,12 +45,12 @@
                                 </div>
                                 <div class="dropdown">
                                     <button class="btn btn-light btn-sm" data-bs-toggle="dropdown">
-                                        <i data-feather="more-vertical" style="width: 16px; height: 16px;"></i>
+                                        <i data-lucide="more-vertical" style="width: 16px; height: 16px;"></i>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end">
                                         <li>
                                             <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editMethodModal-{{ $method->id }}">
-                                                <i data-feather="edit" style="width: 14px; height: 14px;" class="me-2"></i> Edit
+                                                <i data-lucide="edit" style="width: 14px; height: 14px;" class="me-2"></i> Edit
                                             </button>
                                         </li>
                                         @if (!$method->is_default)
@@ -58,7 +58,7 @@
                                                 <form method="POST" action="{{ route('seller.payouts.methods.default', $method) }}">
                                                     @csrf
                                                     <button class="dropdown-item" type="submit">
-                                                        <i data-feather="star" style="width: 14px; height: 14px;" class="me-2"></i> Set as Default
+                                                        <i data-lucide="star" style="width: 14px; height: 14px;" class="me-2"></i> Set as Default
                                                     </button>
                                                 </form>
                                             </li>
@@ -70,7 +70,7 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button class="dropdown-item text-feedback-danger" type="submit">
-                                                    <i data-feather="trash-2" style="width: 14px; height: 14px;" class="me-2"></i> Delete
+                                                    <i data-lucide="trash-2" style="width: 14px; height: 14px;" class="me-2"></i> Delete
                                                 </button>
                                             </form>
                                         </li>
@@ -130,11 +130,11 @@
     @else
         <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden" style="border-radius: 12px;">
             <div class="p-5 text-center py-5">
-                <i data-feather="credit-card" style="width: 64px; height: 64px;" class="text-ink-tertiary mb-3"></i>
+                <i data-lucide="credit-card" style="width: 64px; height: 64px;" class="text-ink-tertiary mb-3"></i>
                 <h5 class="font-semibold mb-2">No Payout Methods</h5>
                 <p class="text-ink-tertiary mb-3">Add a payout method to start withdrawing your earnings.</p>
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMethodModal">
-                    <i data-feather="plus" class="me-1" style="width: 16px; height: 16px;"></i> Add Payout Method
+                    <i data-lucide="plus" class="me-1" style="width: 16px; height: 16px;"></i> Add Payout Method
                 </button>
             </div>
         </div>

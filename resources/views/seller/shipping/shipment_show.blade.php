@@ -5,7 +5,7 @@
 <div class="w-full px-0">
     <div class="flex items-center gap-2 mb-3">
         <a href="{{ route('seller.shipping.shipments') }}" class="btn btn-light btn-sm">
-            <i data-feather="arrow-left" style="width: 16px; height: 16px;"></i> Back
+            <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i> Back
         </a>
         <h4 class="font-bold mb-0 text-ink">Shipment #{{ $shipment->id }}</h4>
         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold badge-soft-primary">#{{ $shipment->order?->invoice_id ?? 'N/A' }}</span>

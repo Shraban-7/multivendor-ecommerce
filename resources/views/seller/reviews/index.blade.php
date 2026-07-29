@@ -7,7 +7,7 @@
         <div class="flex gap-2">
             <a href="{{ route('seller.reviews.index', ['status' => 'unreplied']) }}"
                 class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs focus:outline-none transition-colors gap-1 {{ request('status') === 'unreplied' ? 'bg-feedback-warning text-white hover:bg-feedback-warning/90' : 'bg-surface-muted text-ink border border-border hover:bg-border/30' }}">
-                <i data-feather="message-square" class="icon-xs"></i> Needs Reply
+                <i data-lucide="message-square" class="icon-xs"></i> Needs Reply
             </a>
         </div>
     </div>
@@ -27,7 +27,7 @@
                         <span class="text-ink-tertiary uppercase text-sm">Total</span>
                         <h5 class="font-bold mb-0 text-ink">{{ $stats['total'] }}</h5>
                     </div>
-                    <i class="fas fa-star fa-2x opacity-25"></i>
+                    <i data-lucide="star" class="icon-md opacity-25"></i>
                 </div>
             </div>
         </div>
@@ -38,7 +38,7 @@
                         <span class="text-ink-tertiary uppercase text-sm">Approved</span>
                         <h5 class="font-bold mb-0 text-feedback-success">{{ $stats['approved'] }}</h5>
                     </div>
-                    <i class="fas fa-check-circle fa-2x opacity-25"></i>
+                    <i data-lucide="circle-check" class="icon-md opacity-25"></i>
                 </div>
             </div>
         </div>
@@ -49,7 +49,7 @@
                         <span class="text-ink-tertiary uppercase text-sm">Pending</span>
                         <h5 class="font-bold mb-0 text-feedback-danger">{{ $stats['pending'] }}</h5>
                     </div>
-                    <i class="fas fa-clock fa-2x opacity-25"></i>
+                    <i data-lucide="clock" class="icon-md opacity-25"></i>
                 </div>
             </div>
         </div>
@@ -60,7 +60,7 @@
                         <span class="text-ink-tertiary uppercase text-sm">Replied</span>
                         <h5 class="font-bold mb-0 text-feedback-info">{{ $stats['replied'] }}</h5>
                     </div>
-                    <i class="fas fa-reply fa-2x opacity-25"></i>
+                    <i data-lucide="reply" class="icon-md opacity-25"></i>
                 </div>
             </div>
         </div>
@@ -71,7 +71,7 @@
                         <span class="text-ink-tertiary uppercase text-sm">Avg Rating</span>
                         <h5 class="font-bold mb-0 text-feedback-warning">{{ $stats['avg_rating'] }}</h5>
                     </div>
-                    <i class="fas fa-chart-line fa-2x opacity-25"></i>
+                    <i data-lucide="chart-line" class="icon-md opacity-25"></i>
                 </div>
             </div>
         </div>
@@ -82,7 +82,7 @@
                         <span class="text-ink-tertiary uppercase text-sm">Unreplied</span>
                         <h5 class="font-bold mb-0 text-ink-secondary">{{ $stats['unreplied'] }}</h5>
                     </div>
-                    <i class="fas fa-message fa-2x opacity-25"></i>
+                    <i data-lucide="message-square" class="icon-md opacity-25"></i>
                 </div>
             </div>
         </div>
@@ -98,7 +98,7 @@
                 @foreach ([5, 4, 3, 2, 1] as $star)
                     <a href="{{ route('seller.reviews.index', ['rating' => $star, 'status' => request('status')]) }}"
                         class="btn btn-sm {{ request('rating') == $star ? 'btn-warning' : 'btn-light' }}">
-                        {{ $star }} <i class="fas fa-star"></i>
+                        {{ $star }} <i data-lucide="star"></i>
                         @if (($ratingDistribution[$star]['percent'] ?? 0) > 0)
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-surface-muted text-ink ms-1">{{ $ratingDistribution[$star]['percent'] }}%</span>
                         @endif
@@ -128,7 +128,7 @@
                     <div class="flex" style="max-width: 250px;">
                         <input type="text" name="search" class="w-full px-2.5 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="Search reviews..."
                             value="{{ request('search') }}">
-                        <button class="btn btn-primary btn-sm btn-icon" type="submit"><i class="fas fa-search"></i></button>
+                        <button class="btn btn-primary btn-sm btn-icon" type="submit"><i data-lucide="search"></i></button>
                     </div>
                 </form>
             </div>
@@ -168,15 +168,16 @@
                                 <td>
                                     <div class="whitespace-nowrap">
                                         @for ($i = 1; $i <= 5; $i++)
-                                            <i class="fas fa-star {{ $i <= $review->rating ? 'text-feedback-warning' : 'text-ink-tertiary opacity-25' }}"
-                                                style="font-size: 12px;"></i>
+                                            <i data-lucide="star"
+                                                class="{{ $i <= $review->rating ? 'text-feedback-warning' : 'text-ink-tertiary opacity-25' }}"
+                                                style="width: 12px; height: 12px;"></i>
                                         @endfor
                                     </div>
                                 </td>
                                 <td style="max-width: 220px;">
                                     <div class="text-sm truncate">{{ $review->description }}</div>
                                     @if ($review->images->count() > 0)
-                                        <span class="text-sm text-ink-tertiary"><i class="far fa-image me-1"></i>{{ $review->images->count() }} photo(s)</span>
+                                        <span class="text-sm text-ink-tertiary"><i data-lucide="image" class="me-1"></i>{{ $review->images->count() }} photo(s)</span>
                                     @endif
                                 </td>
                                 <td>
@@ -188,7 +189,7 @@
                                 </td>
                                 <td>
                                     @if ($review->hasReply())
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-feedback-info/10 text-feedback-info"><i class="fas fa-check me-1"></i>Replied</span>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-feedback-info/10 text-feedback-info"><i data-lucide="check" class="me-1"></i>Replied</span>
                                     @else
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-surface-muted text-ink-secondary">No Reply</span>
                                     @endif
@@ -197,7 +198,7 @@
                                 <td>
                                     <div class="dropdown">
                                         <button class="btn btn-light btn-sm" type="button" data-bs-toggle="dropdown">
-                                            <i data-feather="more-horizontal" class="icon-xs"></i>
+                                            <i data-lucide="more-horizontal" class="icon-xs"></i>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end">
                                             <li>
@@ -212,7 +213,7 @@
                                                     data-date="{{ $review->created_at->format('d/m/Y h:i A') }}"
                                                     data-approved="{{ $review->is_approved ? 'Yes' : 'No' }}"
                                                     data-helpful="{{ $review->helpful_count }}">
-                                                    <i class="fas fa-eye me-2"></i>View Details
+                                                    <i data-lucide="eye" class="me-2"></i>View Details
                                                 </button>
                                             </li>
                                             <li>
@@ -221,7 +222,7 @@
                                                     data-review-id="{{ $review->id }}"
                                                     data-customer="{{ $review->user?->name ?? 'Guest' }}"
                                                     data-current-reply="{{ $review->seller_reply }}">
-                                                    <i class="fas fa-reply me-2"></i>
+                                                    <i data-lucide="reply" class="me-2"></i>
                                                     {{ $review->hasReply() ? 'Edit Reply' : 'Reply' }}
                                                 </button>
                                             </li>
@@ -229,7 +230,7 @@
                                                 <form action="{{ route('seller.reviews.toggleApproval', $review) }}" method="POST">
                                                     @csrf
                                                     <button type="submit" class="dropdown-item text-sm">
-                                                        <i class="fas {{ $review->is_approved ? 'fa-eye-slash' : 'fa-eye' }} me-2"></i>
+                                                        <i data-lucide="{{ $review->is_approved ? 'eye-off' : 'eye' }}" class="me-2"></i>
                                                         {{ $review->is_approved ? 'Hide Review' : 'Approve Review' }}
                                                     </button>
                                                 </form>
@@ -240,7 +241,7 @@
                                                         @csrf
                                                         <button type="submit" class="dropdown-item text-sm text-feedback-danger"
                                                             onclick="return confirm('Delete your reply?')">
-                                                            <i class="fas fa-trash-alt me-2"></i>Delete Reply
+                                                            <i data-lucide="trash-2" class="me-2"></i>Delete Reply
                                                         </button>
                                                     </form>
                                                 </li>
@@ -343,6 +344,9 @@
                 document.getElementById('viewProduct').textContent = this.dataset.product;
                 document.getElementById('viewCustomer').textContent = this.dataset.customer;
                 document.getElementById('viewRating').innerHTML = renderStars(parseInt(this.dataset.rating));
+                if (window.renderIcons) {
+                    window.renderIcons(document.getElementById('viewRating'));
+                }
                 document.getElementById('viewDescription').textContent = this.dataset.description;
                 document.getElementById('viewReply').innerHTML = this.dataset.reply
                     ? '<span class="text-feedback-success font-semibold">' + this.dataset.reply + '</span>'
@@ -364,7 +368,7 @@
         function renderStars(rating) {
             let html = '';
             for (let i = 1; i <= 5; i++) {
-                html += '<i class="fas fa-star ' + (i <= rating ? 'text-feedback-warning' : 'text-ink-tertiary opacity-25') + '"></i> ';
+                html += '<i data-lucide="star" class="' + (i <= rating ? 'text-feedback-warning' : 'text-ink-tertiary opacity-25') + '"></i> ';
             }
             return html;
         }

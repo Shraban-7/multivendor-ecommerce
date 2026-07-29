@@ -5,7 +5,7 @@
     <div class="flex justify-between items-center mb-3 flex-wrap gap-2">
         <h4 class="font-bold mb-0 text-ink">Employees</h4>
         <a href="{{ route('seller.employees.create') }}" class="btn btn-primary">
-            <i class="bi bi-plus-lg"></i> Add Employee
+            <i data-lucide="plus"></i> Add Employee
         </a>
     </div>
 
@@ -38,12 +38,12 @@
                         <td class="flex gap-2">
                             <a href="{{ route('seller.employees.edit', $employee->id) }}"
                                 class="btn btn-primary btn-sm">
-                                <i data-feather="edit" class="icon-xs"></i> Edit
+                                <i data-lucide="edit" class="icon-xs"></i> Edit
                             </a>
 
                             <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
                                 data-bs-target="#permissionModal{{ $employee->id }}">
-                                <i class="bi bi-shield-lock"></i> Permissions
+                                <i data-lucide="shield"></i> Permissions
                             </button>
                         </td>
                     </tr>

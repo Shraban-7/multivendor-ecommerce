@@ -6,7 +6,7 @@
     <div class="flex flex-wrap justify-between items-center mb-3">
         <h4 class="font-bold mb-0 text-ink">Coupons</h4>
         <a href="{{ route('seller.coupons.create') }}" class="btn btn-primary">
-            <i data-feather="plus" style="width: 16px; height: 16px;"></i> Create Coupon
+            <i data-lucide="plus" style="width: 16px; height: 16px;"></i> Create Coupon
         </a>
     </div>
 
@@ -64,14 +64,14 @@
                                 </td>
                                 <td class="text-right">
                                     <a href="{{ route('seller.coupons.edit', $coupon) }}" class="btn btn-light btn-sm">
-                                        <i data-feather="edit" style="width: 14px; height: 14px;"></i>
+                                        <i data-lucide="edit" style="width: 14px; height: 14px;"></i>
                                     </a>
                                     <form method="POST" action="{{ route('seller.coupons.destroy', $coupon) }}" class="inline"
                                           onsubmit="return confirm('Delete this coupon?')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-light btn-sm btn-danger-text">
-                                            <i data-feather="trash-2" style="width: 14px; height: 14px;"></i>
+                                            <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
                                         </button>
                                     </form>
                                 </td>
@@ -79,7 +79,7 @@
                         @empty
                             <tr>
                                 <td colspan="7" class="text-center py-5 text-ink-tertiary">
-                                    <i data-feather="tag" style="width: 48px; height: 48px;" class="mb-3"></i>
+                                    <i data-lucide="tag" style="width: 48px; height: 48px;" class="mb-3"></i>
                                     <p class="mb-0">No coupons yet.</p>
                                     <a href="{{ route('seller.coupons.create') }}" class="btn btn-primary mt-2">Create Your First Coupon</a>
                                 </td>

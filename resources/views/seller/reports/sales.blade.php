@@ -48,10 +48,10 @@
                             <span class="text-ink-tertiary uppercase text-sm">Total Revenue</span>
                             <h5 class="font-bold mb-0 text-brand">{{ money($total_revenue) }}</h5>
                         </div>
-                        <i class="fas fa-dollar-sign fa-2x opacity-25"></i>
+                        <i data-lucide="dollar-sign" class="icon-md opacity-25"></i>
                     </div>
                     <small class="{{ $revenue_growth >= 0 ? 'text-feedback-success' : 'text-feedback-danger' }}">
-                        <i class="fas {{ $revenue_growth >= 0 ? 'fa-arrow-up' : 'fa-arrow-down' }}"></i> {{ $revenue_growth }}%
+                        <i data-lucide="{{ $revenue_growth >= 0 ? 'arrow-up' : 'arrow-down' }}"></i> {{ $revenue_growth }}%
                     </small>
                 </div>
             </div>
@@ -63,10 +63,10 @@
                             <span class="text-ink-tertiary uppercase text-sm">Orders</span>
                             <h5 class="font-bold mb-0 text-feedback-info">{{ $total_order }}</h5>
                         </div>
-                        <i class="fas fa-box fa-2x opacity-25"></i>
+                        <i data-lucide="box" class="icon-md opacity-25"></i>
                     </div>
                     <small class="{{ $order_growth >= 0 ? 'text-feedback-success' : 'text-feedback-danger' }}">
-                        <i class="fas {{ $order_growth >= 0 ? 'fa-arrow-up' : 'fa-arrow-down' }}"></i> {{ $order_growth }}%
+                        <i data-lucide="{{ $order_growth >= 0 ? 'arrow-up' : 'arrow-down' }}"></i> {{ $order_growth }}%
                     </small>
                 </div>
             </div>
@@ -78,10 +78,10 @@
                             <span class="text-ink-tertiary uppercase text-sm">Avg Order Value</span>
                             <h5 class="font-bold mb-0 text-feedback-warning">{{ money($avg_order) }}</h5>
                         </div>
-                        <i class="fas fa-receipt fa-2x opacity-25"></i>
+                        <i data-lucide="receipt" class="icon-md opacity-25"></i>
                     </div>
                     <small class="{{ $avg_order_growth >= 0 ? 'text-feedback-success' : 'text-feedback-danger' }}">
-                        <i class="fas {{ $avg_order_growth >= 0 ? 'fa-arrow-up' : 'fa-arrow-down' }}"></i> {{ $avg_order_growth }}%
+                        <i data-lucide="{{ $avg_order_growth >= 0 ? 'arrow-up' : 'arrow-down' }}"></i> {{ $avg_order_growth }}%
                     </small>
                 </div>
             </div>
@@ -103,7 +103,7 @@
                             <h6 class="font-bold mb-0 text-feedback-success">{{ $productName }}</h6>
                             <p class="mb-0 text-sm text-ink-tertiary">{{ $unitsSold }} units</p>
                         </div>
-                        <i class="fas fa-award fa-2x opacity-25"></i>
+                        <i data-lucide="award" class="icon-md opacity-25"></i>
                     </div>
                     <small class="text-ink-tertiary mt-2">Highest revenue driver</small>
                 </div>
@@ -116,7 +116,7 @@
                             <span class="text-ink-tertiary uppercase text-sm">Growth %</span>
                             <h5 class="font-bold mb-0 text-ink-secondary">{{ $avg_order_growth > 0 ? '+' : '' }}{{ $avg_order_growth }}%</h5>
                         </div>
-                        <i class="fas fa-chart-line fa-2x opacity-25"></i>
+                        <i data-lucide="chart-line" class="icon-md opacity-25"></i>
                     </div>
                     <small class="text-feedback-success font-semibold mt-2">vs previous {{ request('range') }}</small>
                 </div>
@@ -129,10 +129,10 @@
                             <span class="text-ink-tertiary uppercase text-sm">Refund Rate</span>
                             <h5 class="font-bold mb-0 text-feedback-danger">{{ $refund_rate }}%</h5>
                         </div>
-                        <i class="fas fa-undo fa-2x opacity-25"></i>
+                        <i data-lucide="undo-2" class="icon-md opacity-25"></i>
                     </div>
                     <small class="font-semibold mt-2 {{ $refundRateChange >= 0 ? 'text-feedback-success' : 'text-feedback-danger' }}">
-                        <i class="fas fa-arrow-{{ $refundRateChange >= 0 ? 'up' : 'down' }} me-1"></i> {{ $refundRateChange }} pts
+                        <i data-lucide="{{ $refundRateChange >= 0 ? 'arrow-up' : 'arrow-down' }}" class="me-1"></i> {{ $refundRateChange }} pts
                     </small>
                 </div>
             </div>
@@ -167,7 +167,7 @@
                     <canvas id="revenueTrendChart" height="100"></canvas>
 
                     <p class="p-4 rounded-sm bg-surface-muted border border-border text-ink text-sm flex items-start gap-3 p-2 mt-3 mb-0 text-center font-semibold">
-                        <i class="fas fa-check-circle me-1"></i>
+                        <i data-lucide="circle-check" class="me-1"></i>
                         Sales are {{ $revenue_growth >= 0 ? 'up' : 'down' }}
                         <span class="{{ $revenue_growth >= 0 ? 'text-feedback-success' : 'text-feedback-danger' }}">{{ abs($revenue_growth) }}%</span>
                         vs. previous period.

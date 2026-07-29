@@ -5,7 +5,7 @@
 <div class="container-fluid px-0">
     <div class="flex items-center gap-2 mb-3">
         <a href="{{ route('seller.coupons.index') }}" class="btn btn-light btn-sm">
-            <i data-feather="arrow-left" style="width: 16px; height: 16px;"></i> Back
+            <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i> Back
         </a>
         <h4 class="font-bold mb-0 text-ink">Edit Coupon: {{ $coupon->code }}</h4>
     </div>

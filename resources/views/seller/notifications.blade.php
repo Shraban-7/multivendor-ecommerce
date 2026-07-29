@@ -45,7 +45,7 @@
                         </ul>
                     @else
                         <div class="text-center text-ink-tertiary py-5">
-                            <i class="fas fa-bell-slash fa-3x mb-3"></i>
+                            <i data-lucide="bell-off" class="icon-lg mb-3"></i>
                             <p class="mb-0">No notifications found.</p>
                         </div>
                     @endif

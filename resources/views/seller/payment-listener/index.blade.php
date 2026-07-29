@@ -39,7 +39,7 @@ $hasAccess = $seller->hasFeature('payment_checker');
     <h4 class="font-bold mb-0 text-ink">Automatic Payment Checker</h4>
     @if($deviceCount > 0)
     <button class="btn btn-primary" id="generateCodeTrigger">
-        <i class="bi bi-qr-code-scan"></i> Generate Device Code
+        <i data-lucide="qr-code"></i> Generate Device Code
     </button>
     @endif
 </div>
@@ -52,7 +52,7 @@ $hasAccess = $seller->hasFeature('payment_checker');
                 <h5 class="font-semibold">Add New Device</h5>
                 <p class="text-sm text-ink-tertiary">Click **'Generate Device Code'**. Enter this code in the **Payment Listener App** on your device to connect.</p>
                 <button class="btn btn-primary btn-lg" id="generateCodeTrigger">
-                    <i class="bi bi-qr-code-scan"></i> Generate Device Code
+                    <i data-lucide="qr-code"></i> Generate Device Code
                 </button>
             </div>
         </div>
@@ -118,7 +118,7 @@ $hasAccess = $seller->hasFeature('payment_checker');
                     <form action="{{ route('seller.paymentListener.devices.checkPayments', $device->id) }}" method="POST" class="flex-1">
                         @csrf
                         <button class="btn btn-primary btn-sm w-full">
-                            <i class="bi bi-arrow-clockwise me-1"></i> Check
+                            <i data-lucide="refresh-cw" class="me-1"></i> Check
                         </button>
                     </form>
                     <form action="{{ route('seller.paymentListener.devices.delete', $device->id) }}" method="POST" class="flex-1">
@@ -151,7 +151,7 @@ $hasAccess = $seller->hasFeature('payment_checker');
                     <div class="code-input-group">
                         <div id="deviceCode"></div>
                         <button class="btn btn-primary btn-icon me-2" id="copyCodeButton" title="Copy code">
-                            <i class="bi bi-clipboard"></i>
+                            <i data-lucide="clipboard"></i>
                         </button>
                     </div>
                     <div id="copyFeedback" class="mb-3">Code copied successfully!</div>
@@ -219,7 +219,7 @@ $hasAccess = $seller->hasFeature('payment_checker');
             errorModal.show();
         } finally {
             generateButton.disabled = false;
-            generateButton.innerHTML = `<i class="bi bi-qr-code-scan me-2"></i> Generate Device Code`;
+            generateButton.innerHTML = `<i data-lucide="qr-code" class="me-2"></i> Generate Device Code`;
         }
     });
 
@@ -241,8 +241,8 @@ $hasAccess = $seller->hasFeature('payment_checker');
                 feedback.classList.add("show");
                 copyCodeBtn.classList.remove('btn-primary');
                 copyCodeBtn.classList.add('btn-success');
-                copyCodeBtn.innerHTML = '<i class="bi bi-check-lg"></i>';
-                setTimeout(() => { feedback.classList.remove("show"); copyCodeBtn.classList.remove('btn-success'); copyCodeBtn.classList.add('btn-primary'); copyCodeBtn.innerHTML = '<i class="bi bi-clipboard"></i>'; }, 2000);
+                copyCodeBtn.innerHTML = '<i data-lucide="check"></i>';
+                setTimeout(() => { feedback.classList.remove("show"); copyCodeBtn.classList.remove('btn-success'); copyCodeBtn.classList.add('btn-primary'); copyCodeBtn.innerHTML = '<i data-lucide="clipboard"></i>'; }, 2000);
             } else { throw new Error("Copy failed via execCommand."); }
         } catch (err) {
             console.error("Copy failed:", err);

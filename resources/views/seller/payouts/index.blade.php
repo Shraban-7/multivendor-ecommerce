@@ -7,10 +7,10 @@
         <h4 class="font-bold mb-0 text-ink">Payouts</h4>
         <div class="flex gap-2">
             <a href="{{ route('seller.payouts.methods.index') }}" class="btn btn-outline-primary">
-                <i data-feather="credit-card" style="width: 16px; height: 16px;"></i> Payment Methods
+                <i data-lucide="credit-card" style="width: 16px; height: 16px;"></i> Payment Methods
             </a>
             <a href="{{ route('seller.payouts.create') }}" class="btn btn-primary">
-                <i data-feather="plus" style="width: 16px; height: 16px;"></i> Request Payout
+                <i data-lucide="plus" style="width: 16px; height: 16px;"></i> Request Payout
             </a>
         </div>
     </div>
@@ -21,7 +21,7 @@
                 <div class="p-5">
                     <div class="flex items-center">
                         <div class="icon-bg-success me-3">
-                            <i data-feather="dollar-sign" style="width: 24px; height: 24px;"></i>
+                            <i data-lucide="dollar-sign" style="width: 24px; height: 24px;"></i>
                         </div>
                         <div>
                             <p class="text-ink-tertiary mb-0 text-sm">Available Balance</p>
@@ -36,7 +36,7 @@
                 <div class="p-5">
                     <div class="flex items-center">
                         <div class="icon-bg-info me-3">
-                            <i data-feather="trending-up" style="width: 24px; height: 24px;"></i>
+                            <i data-lucide="trending-up" style="width: 24px; height: 24px;"></i>
                         </div>
                         <div>
                             <p class="text-ink-tertiary mb-0 text-sm">Pending Earnings</p>
@@ -51,7 +51,7 @@
                 <div class="p-5">
                     <div class="flex items-center">
                         <div class="icon-bg-warning me-3">
-                            <i data-feather="clock" style="width: 24px; height: 24px;"></i>
+                            <i data-lucide="clock" style="width: 24px; height: 24px;"></i>
                         </div>
                         <div>
                             <p class="text-ink-tertiary mb-0 text-sm">Pending Clearance</p>
@@ -66,7 +66,7 @@
                 <div class="p-5">
                     <div class="flex items-center">
                         <div class="icon-bg-primary me-3">
-                            <i data-feather="check-circle" style="width: 24px; height: 24px;"></i>
+                            <i data-lucide="check-circle" style="width: 24px; height: 24px;"></i>
                         </div>
                         <div>
                             <p class="text-ink-tertiary mb-0 text-sm">Total Withdrawn</p>
@@ -129,14 +129,14 @@
                                 <td class="text-ink-tertiary text-sm">{{ $payout->created_at->format('d M Y, h:i A') }}</td>
                                 <td class="text-right">
                                     <a href="{{ route('seller.payouts.show', $payout) }}" class="btn btn-primary btn-sm">
-                                        <i data-feather="eye" class="icon-xs"></i>
+                                        <i data-lucide="eye" class="icon-xs"></i>
                                     </a>
                                 </td>
                             </tr>
                         @empty
                             <tr>
                                 <td colspan="8" class="text-center py-5 text-ink-tertiary">
-                                    <i data-feather="credit-card" style="width: 48px; height: 48px;" class="mb-3"></i>
+                                    <i data-lucide="credit-card" style="width: 48px; height: 48px;" class="mb-3"></i>
                                     <p class="mb-0">No payout requests yet.</p>
                                     <a href="{{ route('seller.payouts.create') }}" class="btn btn-primary mt-2">Request Your First Payout</a>
                                 </td>

@@ -24,22 +24,22 @@
         <ul class="nav settings-tabs px-3" id="settingsTab" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab">
-                    <i data-feather="info"></i> Shop Info
+                    <i data-lucide="info"></i> Shop Info
                 </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="address-tab" data-bs-toggle="tab" data-bs-target="#address" type="button" role="tab">
-                    <i data-feather="map-pin"></i> Address & Shipping
+                    <i data-lucide="map-pin"></i> Address & Shipping
                 </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="identity-tab" data-bs-toggle="tab" data-bs-target="#identity" type="button" role="tab">
-                    <i data-feather="file-text"></i> Identity & Documents
+                    <i data-lucide="file-text"></i> Identity & Documents
                 </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="media-tab" data-bs-toggle="tab" data-bs-target="#media" type="button" role="tab">
-                    <i data-feather="image"></i> Media
+                    <i data-lucide="image"></i> Media
                 </button>
             </li>
         </ul>
@@ -82,7 +82,7 @@
                     </div>
                     <div class="mt-4 text-right">
                         <button type="submit" class="btn btn-primary">
-                            <i data-feather="save" style="width: 16px; height: 16px;"></i> Save Changes
+                            <i data-lucide="save" style="width: 16px; height: 16px;"></i> Save Changes
                         </button>
                     </div>
                 </div>
@@ -120,7 +120,7 @@
                     </div>
                     <div class="mt-4 text-right">
                         <button type="submit" class="btn btn-primary">
-                            <i data-feather="save" style="width: 16px; height: 16px;"></i> Save Changes
+                            <i data-lucide="save" style="width: 16px; height: 16px;"></i> Save Changes
                         </button>
                     </div>
                 </div>
@@ -159,7 +159,7 @@
                     </div>
                     <div class="mt-4 text-right">
                         <button type="submit" class="btn btn-primary">
-                            <i data-feather="save" style="width: 16px; height: 16px;"></i> Save Changes
+                            <i data-lucide="save" style="width: 16px; height: 16px;"></i> Save Changes
                         </button>
                     </div>
                 </div>
@@ -182,7 +182,7 @@
                     </div>
                     <div class="mt-4 text-right">
                         <button type="submit" class="btn btn-primary">
-                            <i data-feather="save" style="width: 16px; height: 16px;"></i> Save Changes
+                            <i data-lucide="save" style="width: 16px; height: 16px;"></i> Save Changes
                         </button>
                     </div>
                 </div>
@@ -231,7 +231,8 @@
 
         $form.on("submit", function(e) {
             e.preventDefault();
-            $submitBtn.prop("disabled", true).html('<i class="fa fa-spinner fa-spin"></i> Saving...');
+            $submitBtn.prop("disabled", true).html('<i data-lucide="loader-circle" class="animate-spin"></i> Saving...');
+            if (window.renderIcons) { window.renderIcons(); }
             const fd = new FormData(this);
 
             $.ajax({
@@ -242,12 +243,12 @@
                 contentType: false,
                 success: function(res) {
                     showSuccessToast(res.message || "Settings updated successfully!");
-                    $submitBtn.prop("disabled", false).html('<i data-feather="save" style="width: 16px; height: 16px;"></i> Save Changes');
-                    feather.replace();
+                    $submitBtn.prop("disabled", false).html('<i data-lucide="save" style="width: 16px; height: 16px;"></i> Save Changes');
+                    window.renderIcons && window.renderIcons();
                 },
                 error: function(xhr) {
-                    $submitBtn.prop("disabled", false).html('<i data-feather="save" style="width: 16px; height: 16px;"></i> Save Changes');
-                    feather.replace();
+                    $submitBtn.prop("disabled", false).html('<i data-lucide="save" style="width: 16px; height: 16px;"></i> Save Changes');
+                    window.renderIcons && window.renderIcons();
                     if (xhr.status === 422) {
                         const errors = xhr.responseJSON.errors || {};
                         let msg = [];

@@ -6,10 +6,10 @@
     <h4 class="font-bold mb-0 text-ink">Edit Bundle: {{ $bundle->name }}</h4>
     <div class="flex gap-2">
         <a href="{{ route('seller.bundles.show', $bundle) }}" class="btn btn-light btn-sm">
-            <i data-feather="eye" class="icon-xs me-1"></i> View
+            <i data-lucide="eye" class="icon-xs me-1"></i> View
         </a>
         <a href="{{ route('seller.bundles.index') }}" class="btn btn-light btn-sm">
-            <i data-feather="arrow-left" class="icon-xs me-1"></i> Back
+            <i data-lucide="arrow-left" class="icon-xs me-1"></i> Back
         </a>
     </div>
 </div>
@@ -73,7 +73,7 @@
                     <div class="flex justify-between items-center mb-3">
                         <h5 class="text-lg font-semibold mb-0">Bundle Items</h5>
                         <button type="button" class="btn btn-outline-primary btn-sm" id="addItemBtn">
-                            <i data-feather="plus" class="icon-xs"></i> Add Product
+                            <i data-lucide="plus" class="icon-xs"></i> Add Product
                         </button>
                     </div>
                     @error('items')<div class="p-4 rounded-sm bg-red-50 border border-red-200 text-feedback-danger text-sm flex items-start gap-3 py-2 text-sm">{!! $message !!}</div>@enderror
@@ -124,7 +124,7 @@
 
                     <div id="noItemsMsg" class="text-center text-ink-tertiary py-4 border rounded"
                         style="display:{{ $bundle->items->isEmpty() ? 'block' : 'none' }}">
-                        <i data-feather="package" style="width:32px;height:32px;"></i>
+                        <i data-lucide="package" style="width:32px;height:32px;"></i>
                         <p class="mt-2 mb-0">Click "Add Product" to add items</p>
                     </div>
 
@@ -211,7 +211,7 @@
                             <img src="{{ $bundle->thumbnail_url }}" class="img-fluid rounded mb-2" style="max-height:120px;">
                             <p class="text-sm mb-0">Click to replace</p>
                         @else
-                            <i data-feather="image" style="width:32px;height:32px;color:var(--bs-primary)"></i>
+                            <i data-lucide="image" style="width:32px;height:32px;color:var(--bs-primary)"></i>
                             <p class="mt-2 mb-0 text-sm">Click to upload thumbnail</p>
                         @endif
                         <input type="file" name="thumbnail" id="thumbInput" class="d-none" accept="image/*">
@@ -227,7 +227,7 @@
     <div class="flex justify-end gap-2 mt-4">
         <a href="{{ route('seller.bundles.index') }}" class="btn btn-light">Cancel</a>
         <button type="submit" class="btn btn-primary">
-            <i data-feather="save" class="icon-xs me-1"></i> Update Bundle
+            <i data-lucide="save" class="icon-xs me-1"></i> Update Bundle
         </button>
     </div>
 </form>

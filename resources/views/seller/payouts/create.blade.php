@@ -5,7 +5,7 @@
 <div class="w-full px-0">
     <div class="flex items-center gap-2 mb-3">
         <a href="{{ route('seller.payouts.index') }}" class="btn btn-light btn-sm">
-            <i data-feather="arrow-left" style="width: 16px; height: 16px;"></i> Back
+            <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i> Back
         </a>
         <h4 class="font-bold mb-0 text-ink">Request Payout</h4>
     </div>
@@ -108,19 +108,19 @@
                 <div class="p-5">
                     <ul class="list-none mb-0 text-sm">
                         <li class="mb-2 flex gap-2">
-                            <i data-feather="info" style="width: 16px; height: 16px;" class="text-brand shrink-0 mt-1"></i>
+                            <i data-lucide="info" style="width: 16px; height: 16px;" class="text-brand shrink-0 mt-1"></i>
                             <span>Minimum withdrawal amount is ৳1.00</span>
                         </li>
                         <li class="mb-2 flex gap-2">
-                            <i data-feather="info" style="width: 16px; height: 16px;" class="text-brand shrink-0 mt-1"></i>
+                            <i data-lucide="info" style="width: 16px; height: 16px;" class="text-brand shrink-0 mt-1"></i>
                             <span>Processing fee: 1% for amounts up to ৳49,999, 0.5% for ৳50,000+</span>
                         </li>
                         <li class="mb-2 flex gap-2">
-                            <i data-feather="info" style="width: 16px; height: 16px;" class="text-brand shrink-0 mt-1"></i>
+                            <i data-lucide="info" style="width: 16px; height: 16px;" class="text-brand shrink-0 mt-1"></i>
                             <span>Payouts are processed within 3-5 business days</span>
                         </li>
                         <li class="mb-2 flex gap-2">
-                            <i data-feather="info" style="width: 16px; height: 16px;" class="text-brand shrink-0 mt-1"></i>
+                            <i data-lucide="info" style="width: 16px; height: 16px;" class="text-brand shrink-0 mt-1"></i>
                             <span>Funds will be sent to your selected payout method</span>
                         </li>
                     </ul>

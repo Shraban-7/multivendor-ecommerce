@@ -31,7 +31,7 @@
                                     <div>
                                         <button type="button" class="btn btn-danger btn-sm" title="Delete"
                                                 data-bs-toggle="modal" data-bs-target="#deleteOptionModal-{{ $option->id }}">
-                                            <i data-feather="trash" class="icon-xs"></i>
+                                            <i data-lucide="trash" class="icon-xs"></i>
                                         </button>
                                     </div>
                                 </div>
@@ -47,7 +47,7 @@
                                             </div>
                                             <div class="modal-body text-center">
                                                 <div class="p-4 rounded-sm bg-amber-50 border border-amber-200 text-feedback-warning text-sm flex items-center gap-3" role="alert">
-                                                    <i class="bi bi-exclamation-circle-fill me-2 text-feedback-danger" style="font-size: 1.5rem;"></i>
+                                                    <i data-lucide="circle-alert" class="me-2 text-feedback-danger" style="font-size: 1.5rem;"></i>
                                                     <span>Are you sure you want to delete this option?</span>
                                                 </div>
                                             </div>
@@ -71,7 +71,7 @@
 
                             <button type="submit" class="btn btn-danger btn-sm" title="Delete"
                                 data-bs-toggle="modal" data-bs-target="#deleteModal-{{ $productAttribute->id }}">
-                                <i data-feather="trash" class="icon-xs"></i> Delete
+                                <i data-lucide="trash" class="icon-xs"></i> Delete
                             </button>
                         </td>
                     </tr>
@@ -88,7 +88,7 @@
                                 </div>
                                 <div class="text-center modal-body">
                                     <div class="p-4 rounded-sm bg-amber-50 border border-amber-200 text-feedback-warning text-sm flex items-start gap-3" role="alert">
-                                        <i class="bi bi-exclamation-circle-fill me-2 text-feedback-danger"
+                                        <i data-lucide="circle-alert" class="me-2 text-feedback-danger"
                                             style="font-size: 1.5rem;"></i>
                                         <p class="mt-1 text-ink-secondary">
                                             Are you sure you want to delete this Product Attribute?

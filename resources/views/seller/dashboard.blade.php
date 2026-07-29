@@ -6,7 +6,7 @@
 @if (!$seller->profile_completed)
     <div class="p-4 rounded-sm bg-amber-50 border border-amber-200 text-feedback-warning text-sm flex flex-col sm:flex-row items-start justify-between mb-4" role="alert">
         <div class="flex items-center gap-2">
-            <i class="bi bi-exclamation-triangle-fill text-feedback-warning text-xl"></i>
+            <i data-lucide="triangle-alert" class="text-feedback-warning text-xl"></i>
             <div>
                 <strong class="text-ink">Your profile is incomplete.</strong>
                 <span class="text-ink-tertiary">Please complete your profile to ensure full access to all platform features.</span>
@@ -28,7 +28,7 @@
             <input type="date" name="end_date" value="{{ request('end_date') }}"
                 class="w-full px-2 py-1 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" style="width: auto; min-width: 130px;">
             <button type="submit" class="btn btn-primary btn-sm">
-                <i class="bi bi-funnel"></i> Filter
+                <i data-lucide="funnel"></i> Filter
             </button>
         </div>
     </form>
@@ -41,7 +41,7 @@
                 <div class="flex justify-between items-center mb-2">
                     <span class="text-sm font-semibold text-ink-tertiary">Total Orders</span>
                     <div class="icon-bg-success flex items-center justify-center" style="width: 36px; height: 36px; border-radius: 10px;">
-                        <i data-feather="shopping-cart" style="width: 18px; height: 18px;"></i>
+                        <i data-lucide="shopping-cart" style="width: 18px; height: 18px;"></i>
                     </div>
                 </div>
                 <h3 class="font-bold mb-0 text-ink">{{ $total_orders }}</h3>
@@ -55,7 +55,7 @@
                 <div class="flex justify-between items-center mb-2">
                     <span class="text-sm font-semibold text-ink-tertiary">Total Sales</span>
                     <div class="icon-bg-primary flex items-center justify-center" style="width: 36px; height: 36px; border-radius: 10px;">
-                        <i data-feather="trending-up" style="width: 18px; height: 18px;"></i>
+                        <i data-lucide="trending-up" style="width: 18px; height: 18px;"></i>
                     </div>
                 </div>
                 <h3 class="font-bold mb-0 text-ink">{{ money($total_sales) }}</h3>
@@ -69,7 +69,7 @@
                 <div class="flex justify-between items-center mb-2">
                     <span class="text-sm font-semibold text-ink-tertiary">Avg Order Value</span>
                     <div class="icon-bg-info flex items-center justify-center" style="width: 36px; height: 36px; border-radius: 10px;">
-                        <i data-feather="bar-chart" style="width: 18px; height: 18px;"></i>
+                        <i data-lucide="bar-chart" style="width: 18px; height: 18px;"></i>
                     </div>
                 </div>
                 <h3 class="font-bold mb-0 text-ink">{{ money($average_order_value) }}</h3>
@@ -83,7 +83,7 @@
                 <div class="flex justify-between items-center mb-2">
                     <span class="text-sm font-semibold text-ink-tertiary">Total Profit</span>
                     <div class="icon-bg-success flex items-center justify-center" style="width: 36px; height: 36px; border-radius: 10px;">
-                        <i data-feather="dollar-sign" style="width: 18px; height: 18px;"></i>
+                        <i data-lucide="dollar-sign" style="width: 18px; height: 18px;"></i>
                     </div>
                 </div>
                 <h3 class="font-bold mb-0 text-ink">{{ money($profit) }}</h3>
@@ -97,7 +97,7 @@
                 <div class="flex justify-between items-center mb-2">
                     <span class="text-sm font-semibold text-ink-tertiary">Delivered</span>
                     <div class="icon-bg-success flex items-center justify-center" style="width: 36px; height: 36px; border-radius: 10px;">
-                        <i data-feather="check-circle" style="width: 18px; height: 18px;"></i>
+                        <i data-lucide="check-circle" style="width: 18px; height: 18px;"></i>
                     </div>
                 </div>
                 <h3 class="font-bold mb-0 text-ink">{{ $delivered_orders }}</h3>
@@ -111,7 +111,7 @@
                 <div class="flex justify-between items-center mb-2">
                     <span class="text-sm font-semibold text-ink-tertiary">Pending</span>
                     <div class="icon-bg-warning flex items-center justify-center" style="width: 36px; height: 36px; border-radius: 10px;">
-                        <i data-feather="clock" style="width: 18px; height: 18px;"></i>
+                        <i data-lucide="clock" style="width: 18px; height: 18px;"></i>
                     </div>
                 </div>
                 <h3 class="font-bold mb-0 text-ink">{{ $pending_orders }}</h3>
@@ -125,7 +125,7 @@
                 <div class="flex justify-between items-center mb-2">
                     <span class="text-sm font-semibold text-ink-tertiary">Pending Payout</span>
                     <div class="icon-bg-warning flex items-center justify-center" style="width: 36px; height: 36px; border-radius: 10px;">
-                        <i data-feather="credit-card" style="width: 18px; height: 18px;"></i>
+                        <i data-lucide="credit-card" style="width: 18px; height: 18px;"></i>
                     </div>
                 </div>
                 <h3 class="font-bold mb-0 text-ink">{{ money($pendingPayout) }}</h3>
@@ -139,7 +139,7 @@
                 <div class="flex justify-between items-center mb-2">
                     <span class="text-sm font-semibold text-ink-tertiary">Products</span>
                     <div class="icon-bg-info flex items-center justify-center" style="width: 36px; height: 36px; border-radius: 10px;">
-                        <i data-feather="package" style="width: 18px; height: 18px;"></i>
+                        <i data-lucide="package" style="width: 18px; height: 18px;"></i>
                     </div>
                 </div>
                 <h3 class="font-bold mb-0 text-ink">{{ $total_products }}</h3>
@@ -154,7 +154,7 @@
         <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden flex-1" style="border-radius: 12px;">
             <div class="p-4">
                 <h5 class="font-semibold mb-3 flex items-center gap-2">
-                    <i data-feather="bar-chart-2" class="text-brand" style="width: 18px; height: 18px;"></i>
+                    <i data-lucide="bar-chart-2" class="text-brand" style="width: 18px; height: 18px;"></i>
                     Sales & Order Analytics
                 </h5>
                 <canvas id="salesOrderChart" height="150"></canvas>
@@ -165,7 +165,7 @@
         <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden flex-1" style="border-radius: 12px;">
             <div class="p-4">
                 <h5 class="font-semibold mb-3 flex items-center gap-2">
-                    <i data-feather="pie-chart" class="text-brand" style="width: 18px; height: 18px;"></i>
+                    <i data-lucide="pie-chart" class="text-brand" style="width: 18px; height: 18px;"></i>
                     Order Status
                 </h5>
                 <canvas id="statusDonutChart" height="180"></canvas>
@@ -179,7 +179,7 @@
         <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden flex-1" style="border-radius: 12px;">
             <div class="p-4">
                 <h5 class="font-semibold mb-3 flex items-center gap-2">
-                    <i data-feather="award" class="text-brand" style="width: 18px; height: 18px;"></i>
+                    <i data-lucide="award" class="text-brand" style="width: 18px; height: 18px;"></i>
                     Top Selling Products
                 </h5>
                 @if ($top_selling_products->count() > 0)
@@ -207,7 +207,7 @@
         <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden flex-1" style="border-radius: 12px;">
             <div class="p-4">
                 <h5 class="font-semibold mb-3 flex items-center gap-2">
-                    <i data-feather="alert-triangle" class="text-feedback-warning" style="width: 18px; height: 18px;"></i>
+                    <i data-lucide="alert-triangle" class="text-feedback-warning" style="width: 18px; height: 18px;"></i>
                     Low Stock Alerts
                 </h5>
                 @if ($lowStockProducts->count() > 0)
@@ -230,7 +230,7 @@
                     <a href="{{ route('seller.products.index') }}" class="btn btn-outline-primary btn-sm w-full mt-3">Manage Inventory</a>
                 @else
                     <div class="text-center py-4 text-ink-tertiary">
-                        <i data-feather="check-circle" style="width: 36px; height: 36px;" class="mb-2 text-feedback-success"></i>
+                        <i data-lucide="check-circle" style="width: 36px; height: 36px;" class="mb-2 text-feedback-success"></i>
                         <p class="mb-0 text-sm">All products are well stocked.</p>
                     </div>
                 @endif
@@ -243,7 +243,7 @@
     <div class="p-4">
         <div class="flex justify-between items-center mb-3">
             <h5 class="font-semibold mb-0 flex items-center gap-2">
-                <i data-feather="clipboard" class="text-brand" style="width: 18px; height: 18px;"></i>
+                <i data-lucide="clipboard" class="text-brand" style="width: 18px; height: 18px;"></i>
                 Latest Orders
             </h5>
             <a href="{{ route('seller.orders.index') }}" class="btn btn-outline-primary btn-sm">View All Orders</a>
@@ -286,7 +286,7 @@
                             <td>
                                 <a href="{{ route('seller.orders.details', $order->invoice_id) }}"
                                     class="btn btn-outline-primary btn-sm">
-                                    <i data-feather="eye" style="width: 14px; height: 14px;"></i> View
+                                    <i data-lucide="eye" style="width: 14px; height: 14px;"></i> View
                                 </a>
                             </td>
                         </tr>
@@ -308,7 +308,7 @@
                 <div class="flex justify-between items-center mb-2">
                     <span class="text-sm font-semibold text-ink-tertiary">Commission Paid</span>
                     <div class="icon-bg-primary flex items-center justify-center" style="width: 36px; height: 36px; border-radius: 10px;">
-                        <i data-feather="percent" style="width: 18px; height: 18px;"></i>
+                        <i data-lucide="percent" style="width: 18px; height: 18px;"></i>
                     </div>
                 </div>
                 <h4 class="font-bold mb-0 text-ink">{{ money($total_commission) }}</h4>
@@ -322,7 +322,7 @@
                 <div class="flex justify-between items-center mb-2">
                     <span class="text-sm font-semibold text-ink-tertiary">Expenses</span>
                     <div class="icon-bg-secondary flex items-center justify-center" style="width: 36px; height: 36px; border-radius: 10px;">
-                        <i data-feather="dollar-sign" style="width: 18px; height: 18px;"></i>
+                        <i data-lucide="dollar-sign" style="width: 18px; height: 18px;"></i>
                     </div>
                 </div>
                 <h4 class="font-bold mb-0 text-ink">{{ money($total_expense) }}</h4>
@@ -336,7 +336,7 @@
                 <div class="flex justify-between items-center mb-2">
                     <span class="text-sm font-semibold text-ink-tertiary">Customers</span>
                     <div class="icon-bg-success flex items-center justify-center" style="width: 36px; height: 36px; border-radius: 10px;">
-                        <i data-feather="users" style="width: 18px; height: 18px;"></i>
+                        <i data-lucide="users" style="width: 18px; height: 18px;"></i>
                     </div>
                 </div>
                 <h4 class="font-bold mb-0 text-ink">{{ $total_customers }}</h4>

@@ -14,10 +14,10 @@
 
                 <div class="flex gap-2">
                     <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#guidelineModal">
-                        <i data-feather="info" class="icon-xs"></i> See Guidelines
+                        <i data-lucide="info" class="icon-xs"></i> See Guidelines
                     </button>
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
-                        <i data-feather="plus" class="icon-xs"></i> Add Product
+                        <i data-lucide="plus" class="icon-xs"></i> Add Product
                     </button>
                 </div>
             </div>

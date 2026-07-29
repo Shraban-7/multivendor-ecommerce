@@ -53,13 +53,13 @@
                             <p class="text-ink-tertiary uppercase mb-1 text-sm font-semibold">Total Sales</p>
                             <span class="font-bold text-xl text-brand">{{ money($calculateMetrics['total_sales']) }}</span>
                         </div>
-                        <i class="fas fa-shopping-bag opacity-25 text-xl"></i>
+                        <i data-lucide="shopping-bag" class="opacity-25 text-xl"></i>
                     </div>
                     <div class="mt-2">
                         <div class="w-full h-2 bg-surface-muted rounded-full overflow-hidden mb-1" style="height: 3px;">
                             <div class="h-full bg-brand-deep rounded-full transition-all bg-feedback-success" style="width: {{ $calculateMetrics['sales_growth'] }}%"></div>
                         </div>
-                        <small class="text-feedback-success font-semibold"><i class="fas fa-arrow-up me-1"></i>{{ $calculateMetrics['sales_growth'] }}%</small>
+                        <small class="text-feedback-success font-semibold"><i data-lucide="arrow-up" class="me-1"></i>{{ $calculateMetrics['sales_growth'] }}%</small>
                         <small class="text-ink-tertiary text-sm">vs last {{ request('range') }}</small>
                     </div>
                 </div>
@@ -72,13 +72,13 @@
                             <p class="text-ink-tertiary uppercase mb-1 text-sm font-semibold">Orders</p>
                             <span class="font-bold text-xl text-feedback-info">{{ $calculateMetrics['total_orders'] }}</span>
                         </div>
-                        <i class="fas fa-clipboard-list opacity-25 text-xl"></i>
+                        <i data-lucide="clipboard-list" class="opacity-25 text-xl"></i>
                     </div>
                     <div class="mt-2">
                         <div class="w-full h-2 bg-surface-muted rounded-full overflow-hidden mb-1" style="height: 3px;">
                             <div class="h-full bg-brand-deep rounded-full transition-all bg-feedback-success" style="width: {{ $calculateMetrics['orders_growth'] }}%"></div>
                         </div>
-                        <small class="text-feedback-success font-semibold"><i class="fas fa-arrow-up me-1"></i>{{ $calculateMetrics['orders_growth'] }}%</small>
+                        <small class="text-feedback-success font-semibold"><i data-lucide="arrow-up" class="me-1"></i>{{ $calculateMetrics['orders_growth'] }}%</small>
                         <small class="text-ink-tertiary text-sm">vs last {{ request('range') }}</small>
                     </div>
                 </div>
@@ -91,13 +91,13 @@
                             <p class="text-ink-tertiary uppercase mb-1 text-sm font-semibold">Net Profit</p>
                             <span class="font-bold text-xl text-feedback-success">{{ money($calculateMetrics['net_profit']) }}</span>
                         </div>
-                        <i class="fas fa-dollar-sign opacity-25 text-xl"></i>
+                        <i data-lucide="dollar-sign" class="opacity-25 text-xl"></i>
                     </div>
                     <div class="mt-2">
                         <div class="w-full h-2 bg-surface-muted rounded-full overflow-hidden mb-1" style="height: 3px;">
                             <div class="h-full bg-brand-deep rounded-full transition-all bg-feedback-success" style="width: {{ $calculateMetrics['profit_growth'] }}%"></div>
                         </div>
-                        <small class="text-feedback-success font-semibold"><i class="fas fa-arrow-up me-1"></i>{{ $calculateMetrics['profit_growth'] }}%</small>
+                        <small class="text-feedback-success font-semibold"><i data-lucide="arrow-up" class="me-1"></i>{{ $calculateMetrics['profit_growth'] }}%</small>
                         <small class="text-ink-tertiary text-sm">vs last {{ request('range') }}</small>
                     </div>
                 </div>
@@ -110,7 +110,7 @@
                             <p class="text-ink-tertiary uppercase mb-1 text-sm font-semibold">Ret. Customers</p>
                             <span class="font-bold text-xl text-feedback-warning">{{ number_format($quickFacts['returning_customers_percent'], 2)}}%</span>
                         </div>
-                        <i class="fas fa-users-viewfinder opacity-25 text-xl"></i>
+                        <i data-lucide="users" class="opacity-25 text-xl"></i>
                     </div>
                 </div>
             </div>
@@ -122,13 +122,13 @@
                             <p class="text-ink-tertiary uppercase mb-1 text-sm font-semibold">AOV</p>
                             <span class="font-bold text-xl text-ink-secondary">{{ money($calculateMetrics['aov']) }}</span>
                         </div>
-                        <i class="fas fa-basket-shopping opacity-25 text-xl"></i>
+                        <i data-lucide="shopping-basket" class="opacity-25 text-xl"></i>
                     </div>
                     <div class="mt-2">
                         <div class="w-full h-2 bg-surface-muted rounded-full overflow-hidden mb-1" style="height: 3px;">
                             <div class="h-full bg-brand-deep rounded-full transition-all bg-feedback-success" style="width: {{ $calculateMetrics['aov_growth'] }}%"></div>
                         </div>
-                        <small class="text-feedback-success font-semibold"><i class="fas fa-arrow-up me-1"></i>{{ $calculateMetrics['aov_growth'] }}%</small>
+                        <small class="text-feedback-success font-semibold"><i data-lucide="arrow-up" class="me-1"></i>{{ $calculateMetrics['aov_growth'] }}%</small>
                         <small class="text-ink-tertiary text-sm">vs last {{ request('range') }}</small>
                     </div>
                 </div>
@@ -141,7 +141,7 @@
                             <p class="text-ink-tertiary uppercase mb-1 text-sm font-semibold">Total Stock</p>
                             <span class="font-bold text-xl text-ink">{{ $calculateMetrics['total_stock'] }}</span>
                         </div>
-                        <i class="fas fa-boxes-stacked opacity-25 text-xl"></i>
+                        <i data-lucide="boxes" class="opacity-25 text-xl"></i>
                     </div>
                     <div class="mt-2">
                         <div class="w-full h-2 bg-surface-muted rounded-full overflow-hidden mb-1" style="height: 3px;">
@@ -203,22 +203,22 @@
                     <div class="flex flex-col ">
                         <a href="#"
                             class="flex items-center px-0 py-2 border-b border-border flex flex-col-item-action border-0 py-2 flex items-center">
-                            <span class="badge bg-emerald-50 text-feedback-success me-3 p-2"><i class="fas fa-chart-line"></i></span>
+                            <span class="badge bg-emerald-50 text-feedback-success me-3 p-2"><i data-lucide="chart-line"></i></span>
                             <span class="font-semibold">Revenue grew <span class="text-feedback-success">8%</span> last week.</span>
                         </a>
                         <a href="#"
                             class="flex items-center px-0 py-2 border-b border-border flex flex-col-item-action border-0 py-2 flex items-center">
-                            <span class="badge bg-brand-tint text-brand me-3 p-2"><i class="fas fa-shirt"></i></span>
+                            <span class="badge bg-brand-tint text-brand me-3 p-2"><i data-lucide="shirt"></i></span>
                             <span class="font-semibold">Apparel category contributed <span class="text-brand">32%</span> of total sales.</span>
                         </a>
                         <a href="#"
                             class="flex items-center px-0 py-2 border-b border-border flex flex-col-item-action border-0 py-2 flex items-center">
-                            <span class="badge bg-amber-50 text-feedback-warning me-3 p-2"><i class="fas fa-repeat"></i></span>
+                            <span class="badge bg-amber-50 text-feedback-warning me-3 p-2"><i data-lucide="repeat"></i></span>
                             <span class="font-semibold">Returning customers spent <span class="text-feedback-warning">18%</span> more.</span>
                         </a>
                         <a href="#"
                             class="flex items-center px-0 py-2 border-b border-border flex flex-col-item-action border-0 py-2 flex items-center">
-                            <span class="badge bg-red-50 text-feedback-danger me-3 p-2"><i class="fas fa-boxes-packing"></i></span>
+                            <span class="badge bg-red-50 text-feedback-danger me-3 p-2"><i data-lucide="package"></i></span>
                             <span class="font-semibold">High stock alert in Electronics. Review turnover.</span>
                         </a>
                     </div>
@@ -261,7 +261,7 @@
                     <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3" style="border-radius: 12px; width: 18rem;">
                         <div class="flex justify-between items-center">
                             <p class="mb-0 font-semibold">Weekly Performance Summary</p>
-                            <a href="#" class="text-brand" title="Download"><i class="fas fa-download"></i></a>
+                            <a href="#" class="text-brand" title="Download"><i data-lucide="download"></i></a>
                         </div>
                         <small class="text-ink-tertiary">Generated Nov 15, 2025</small>
                     </div>
@@ -269,7 +269,7 @@
                     <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3" style="border-radius: 12px; width: 18rem;">
                         <div class="flex justify-between items-center">
                             <p class="mb-0 font-semibold">Sales vs Target - October</p>
-                            <a href="#" class="text-brand" title="Export"><i class="fas fa-file-export"></i></a>
+                            <a href="#" class="text-brand" title="Export"><i data-lucide="file-output"></i></a>
                         </div>
                         <small class="text-ink-tertiary">Generated Nov 1, 2025</small>
                     </div>
@@ -277,7 +277,7 @@
                     <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3" style="border-radius: 12px; width: 18rem;">
                         <div class="flex justify-between items-center">
                             <p class="mb-0 font-semibold">Customer Segment Analysis</p>
-                            <a href="#" class="text-brand" title="Export"><i class="fas fa-file-export"></i></a>
+                            <a href="#" class="text-brand" title="Export"><i data-lucide="file-output"></i></a>
                         </div>
                         <small class="text-ink-tertiary">Generated Nov 18, 2025</small>
                     </div>

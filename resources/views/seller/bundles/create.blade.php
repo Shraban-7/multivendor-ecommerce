@@ -5,7 +5,7 @@
 <div class="flex justify-between items-center mb-3">
     <h4 class="font-bold mb-0 text-ink">Create Bundle</h4>
     <a href="{{ route('seller.bundles.index') }}" class="btn btn-light btn-sm">
-        <i data-feather="arrow-left" class="icon-xs me-1"></i> Back
+        <i data-lucide="arrow-left" class="icon-xs me-1"></i> Back
     </a>
 </div>
 
@@ -60,7 +60,7 @@
                     <div class="flex justify-between items-center mb-3">
                         <h5 class="text-lg font-semibold mb-0">Bundle Items</h5>
                         <button type="button" class="btn btn-outline-primary btn-sm" id="addItemBtn">
-                            <i data-feather="plus" class="icon-xs"></i> Add Product
+                            <i data-lucide="plus" class="icon-xs"></i> Add Product
                         </button>
                     </div>
                     @error('items')<div class="p-4 rounded-sm bg-red-50 border border-red-200 text-feedback-danger text-sm flex items-start gap-3 py-2 text-sm">{!! $message !!}</div>@enderror
@@ -69,7 +69,7 @@
                     </div>
 
                     <div id="noItemsMsg" class="text-center text-ink-tertiary py-4 border rounded">
-                        <i data-feather="package" style="width:32px;height:32px;"></i>
+                        <i data-lucide="package" style="width:32px;height:32px;"></i>
                         <p class="mt-2 mb-0">Click "Add Product" to add items to this bundle</p>
                         <p class="text-sm mb-0">A bundle must contain at least 2 products</p>
                     </div>
@@ -150,7 +150,7 @@
                     <h5 class="text-lg font-semibold mb-3">Thumbnail</h5>
                     <div class="upload-zone border border-2 border-dashed rounded-md p-4 text-center"
                         style="cursor:pointer;background:#f8f9fa;" id="thumbZone">
-                        <i data-feather="image" style="width:32px;height:32px;color:var(--bs-primary)"></i>
+                        <i data-lucide="image" style="width:32px;height:32px;color:var(--bs-primary)"></i>
                         <p class="mt-2 mb-0 text-sm">Click to upload thumbnail</p>
                         <input type="file" name="thumbnail" id="thumbInput" class="d-none" accept="image/*">
                     </div>
@@ -165,7 +165,7 @@
     <div class="flex justify-end gap-2 mt-4">
         <a href="{{ route('seller.bundles.index') }}" class="btn btn-light">Cancel</a>
         <button type="submit" class="btn btn-primary">
-            <i data-feather="check" class="icon-xs me-1"></i> Create Bundle
+            <i data-lucide="check" class="icon-xs me-1"></i> Create Bundle
         </button>
     </div>
 </form>

@@ -5,7 +5,7 @@
     <div class="flex justify-between items-center mb-3">
         <h4 class="font-bold mb-0 text-ink">{{ $type ? ucfirst($type) : 'All' }} Orders </h4>
         <button class="btn btn-primary btn-sm" data-bs-toggle="offcanvas" data-bs-target="#filterOffcanvas">
-            <i data-feather="filter" class="icon-xs"></i> Filter
+            <i data-lucide="filter" class="icon-xs"></i> Filter
         </button>
     </div>
 
@@ -86,11 +86,11 @@
                         <td>
                             <a href="{{ route('seller.orders.details', $order->invoice_id) }}" title="Details"
                                 class="btn btn-light btn-sm me-1">
-                                <i data-feather="clipboard" class="icon-xs"></i> Details
+                                <i data-lucide="clipboard" class="icon-xs"></i> Details
                             </a>
                             <a href="{{ route('invoice', $order->invoice_id) }}" title="Invoice" target="__blank"
                                 class="btn btn-light btn-sm me-1">
-                                <i data-feather="download" class="icon-xs"></i> Invoice
+                                <i data-lucide="download" class="icon-xs"></i> Invoice
                             </a>
                         </td>
                     </tr>

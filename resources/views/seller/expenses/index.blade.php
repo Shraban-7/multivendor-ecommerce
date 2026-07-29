@@ -5,7 +5,7 @@
     <div class="flex justify-between items-center mb-3">
         <h4 class="font-bold mb-0 text-ink">Expenses</h4>
         <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createExpenseModal">
-            <i data-feather="plus" class="icon-xs"></i> Add Expense
+            <i data-lucide="plus" class="icon-xs"></i> Add Expense
         </button>
     </div>
 
@@ -34,12 +34,12 @@
                                 data-amount="{{ $expense->amount }}" data-description="{{ $expense->description }}"
                                 data-date="{{ date('Y-m-d') }}" data-bs-toggle="modal"
                                 data-bs-target="#editExpenseModal">
-                                <i data-feather="edit" class="icon-xs"></i> Edit
+                                <i data-lucide="edit" class="icon-xs"></i> Edit
                             </button>
                             
                             <button type="button" class="btn btn-danger btn-sm delete-expense-btn"
                                 data-id="{{ $expense->id }}" data-bs-toggle="modal" data-bs-target="#deleteExpenseModal">
-                                <i data-feather="trash" class="icon-xs"></i> Delete
+                                <i data-lucide="trash" class="icon-xs"></i> Delete
                             </button>
 
                         </td>

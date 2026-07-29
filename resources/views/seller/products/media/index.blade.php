@@ -32,7 +32,7 @@
     <div class="flex items-start gap-2">
         <a href="{{ route('seller.products.edit', $product->slug) }}"
             class="btn btn-light btn-sm mt-1">
-            <i data-feather="arrow-left" style="width:16px;height:16px;"></i>
+            <i data-lucide="arrow-left" style="width:16px;height:16px;"></i>
         </a>
         <div>
             <div class="flex items-center gap-2 mb-1">
@@ -51,7 +51,7 @@
     <div class="col-span-full">
         <div class="section-card">
             <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
-                <h5><i data-feather="upload-cloud" class="icon-xs me-1"></i> Upload Images</h5>
+                <h5><i data-lucide="upload-cloud" class="icon-xs me-1"></i> Upload Images</h5>
             </div>
             <div class="p-5">
                 <form id="mediaUploadForm" enctype="multipart/form-data" method="POST"
@@ -62,7 +62,7 @@
                             class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer" multiple
                             accept="image/png, image/jpeg, image/jpg, image/webp">
                         <div class="pointer-events-none">
-                            <i data-feather="image" class="mb-2" style="width:48px;height:48px;color:#0d6efd;"></i>
+                            <i data-lucide="image" class="mb-2" style="width:48px;height:48px;color:#0d6efd;"></i>
                             <h6 class="font-bold mb-1">Click or Drag images here</h6>
                             <p class="text-ink-tertiary text-sm mb-0">Max 4MB per file &bull; JPG, PNG, WEBP &bull;
                                 Auto-converted to WebP</p>
@@ -72,7 +72,7 @@
                     <div class="flex justify-end">
                         <button type="submit" class="btn btn-primary"
                             id="uploadBtn" disabled>
-                            <i data-feather="upload" style="width:16px;height:16px;"></i> Upload Selected
+                            <i data-lucide="upload" style="width:16px;height:16px;"></i> Upload Selected
                         </button>
                     </div>
                 </form>
@@ -83,7 +83,7 @@
     <div class="col-span-full">
         <div class="section-card">
             <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
-                <h5><i data-feather="grid" class="icon-xs me-1"></i> Gallery ({{ $product->images->count() }})</h5>
+                <h5><i data-lucide="grid" class="icon-xs me-1"></i> Gallery ({{ $product->images->count() }})</h5>
                 <span class="text-sm text-ink-tertiary">Drag to reorder</span>
             </div>
             <div class="p-5">
@@ -103,16 +103,16 @@
                                     @if (!$image->is_primary)
                                         <button type="button" class="btn btn-light btn-sm btn-round action-btn"
                                             data-action="primary" data-id="{{ $image->id }}" title="Set as Primary">
-                                            <i data-feather="star" style="width:16px;height:16px;color:#198754;"></i>
+                                            <i data-lucide="star" style="width:16px;height:16px;color:#198754;"></i>
                                         </button>
                                     @endif
                                     <button type="button" class="btn btn-light btn-sm btn-round action-btn"
                                         data-action="replace" data-id="{{ $image->id }}" title="Replace">
-                                        <i data-feather="refresh-cw" style="width:16px;height:16px;color:#0d6efd;"></i>
+                                        <i data-lucide="refresh-cw" style="width:16px;height:16px;color:#0d6efd;"></i>
                                     </button>
                                     <button type="button" class="btn btn-light btn-sm btn-round action-btn"
                                         data-action="delete" data-id="{{ $image->id }}" title="Delete">
-                                        <i data-feather="trash-2" style="width:16px;height:16px;color:#dc3545;"></i>
+                                        <i data-lucide="trash-2" style="width:16px;height:16px;color:#dc3545;"></i>
                                     </button>
                                 </div>
                             </div>
@@ -120,7 +120,7 @@
                     </div>
                 @else
                     <div class="text-center py-5">
-                        <i data-feather="image" style="width:48px;height:48px;color:#adb5bd;"></i>
+                        <i data-lucide="image" style="width:48px;height:48px;color:#adb5bd;"></i>
                         <p class="text-ink-tertiary mt-2 mb-0">No images in the gallery yet.</p>
                     </div>
                 @endif
@@ -202,11 +202,11 @@
                     col.dataset.previewId = id;
                     col.innerHTML = `<div class="border rounded overflow-hidden position-relative shadow-sm bg-white">
                     <div class="ratio ratio-1x1"><img src="${reader.result}" class="object-fit-cover w-100 h-100" alt="Preview"></div>
-                    <button type="button" class="remove-btn" data-preview-id="${id}"><i data-feather="x" style="width:14px;height:14px;"></i></button>
+                    <button type="button" class="remove-btn" data-preview-id="${id}"><i data-lucide="x" style="width:14px;height:14px;"></i></button>
                     <div class="p-1 bg-white border-top text-truncate small text-center text-muted">${escapeHtml(file.name)}</div>
                 </div>`;
                     previewContainer.appendChild(col);
-                    feather.replace();
+                    window.renderIcons && window.renderIcons();
                 }
             }
 
@@ -237,12 +237,12 @@
                 const count = dataTransfer.files.length;
                 if (count > 0) {
                     uploadBtn.removeAttribute('disabled');
-                    uploadBtn.innerHTML = `<i data-feather="upload" style="width:16px;height:16px;"></i> Upload ${count} Image${count > 1 ? 's' : ''}`;
+                    uploadBtn.innerHTML = `<i data-lucide="upload" style="width:16px;height:16px;"></i> Upload ${count} Image${count > 1 ? 's' : ''}`;
                 } else {
                     uploadBtn.setAttribute('disabled', 'true');
-                    uploadBtn.innerHTML = `<i data-feather="upload" style="width:16px;height:16px;"></i> Upload Selected`;
+                    uploadBtn.innerHTML = `<i data-lucide="upload" style="width:16px;height:16px;"></i> Upload Selected`;
                 }
-                feather.replace();
+                window.renderIcons && window.renderIcons();
             }
 
             uploadForm.addEventListener('submit', function (e) {

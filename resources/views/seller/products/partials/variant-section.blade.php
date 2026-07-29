@@ -4,7 +4,7 @@
 <div id="variantSection" class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 mb-4" style="border-radius: 12px;">
     <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
         <h5 class="font-semibold mb-0">
-            <i class="fas fa-layer-group me-2 text-brand"></i>Variants
+            <i data-lucide="layers" class="me-2 text-brand"></i>Variants
             @if($isEdit && $variantCount > 0)
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-surface-muted ms-2">{{ $variantCount }} existing</span>
             @endif
@@ -12,7 +12,7 @@
         @if($isEdit)
             <button type="button" class="btn btn-primary btn-sm"
                 data-bs-toggle="modal" data-bs-target="#addVariantModal">
-                <i class="fas fa-plus"></i> Add Variants
+                <i data-lucide="plus"></i> Add Variants
             </button>
         @endif
     </div>
@@ -59,19 +59,19 @@
                                 <div class="flex gap-1">
                                     <button class="btn btn-light btn-sm"
                                         data-bs-toggle="modal" data-bs-target="#editVariantModal{{ $variant->id }}">
-                                        <i data-feather="edit" class="icon-xs"></i>
+                                        <i data-lucide="edit" class="icon-xs"></i>
                                     </button>
                                     <form action="{{ route('seller.productVariants.toggleStatus', $variant->id) }}" method="POST" class="inline">
                                         @csrf
                                         <button type="submit" class="btn btn-outline-warning btn-sm"
                                             title="{{ $variant->status ? 'Disable' : 'Enable' }}">
-                                            <i data-feather="{{ $variant->status ? 'eye-off' : 'eye' }}" class="icon-xs"></i>
+                                            <i data-lucide="{{ $variant->status ? 'eye-off' : 'eye' }}" class="icon-xs"></i>
                                         </button>
                                     </form>
                                     @if($variant->stock_out <= 0)
                                     <button class="btn btn-danger btn-sm"
                                         data-bs-toggle="modal" data-bs-target="#deleteVariantModal{{ $variant->id }}">
-                                        <i data-feather="trash" class="icon-xs"></i>
+                                        <i data-lucide="trash" class="icon-xs"></i>
                                     </button>
                                     @endif
                                 </div>
@@ -153,7 +153,7 @@
                         </div>
                         <div class="text-center modal-body">
                             <div class="alert p-4 rounded-sm bg-amber-50 border border-amber-200 text-feedback-warning text-sm flex items-center justify-center gap-3" role="alert">
-                                <i class="bi bi-exclamation-circle-fill me-2 text-feedback-danger" style="font-size: 1.5rem;"></i>
+                                <i data-lucide="circle-alert" class="me-2 text-feedback-danger" style="font-size: 1.5rem;"></i>
                                 <p class="mb-0 text-ink-secondary">Are you sure you want to delete variant <strong>{{ $variant->sku }}</strong>?</p>
                             </div>
                         </div>

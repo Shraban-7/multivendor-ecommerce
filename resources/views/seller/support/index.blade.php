@@ -5,7 +5,7 @@
     <div class="flex justify-between items-center mb-3">
         <h4 class="font-bold mb-0">Support</h4>
         <a href="{{ route('seller.support.create') }}" class="btn btn-primary btn-sm">
-            <i data-feather="plus" class="icon-xs"></i> New Ticket
+            <i data-lucide="plus" class="icon-xs"></i> New Ticket
         </a>
     </div>
 
@@ -85,7 +85,7 @@
                                 <td class="text-sm">{{ optional($ticket->last_message_at)->diffForHumans() ?? '—' }}</td>
                                 <td class="text-right">
                                     <a href="{{ route('seller.support.show', $ticket) }}" class="btn btn-light btn-sm">
-                                        <i data-feather="eye" class="icon-xs"></i> Open
+                                        <i data-lucide="eye" class="icon-xs"></i> Open
                                     </a>
                                 </td>
                             </tr>

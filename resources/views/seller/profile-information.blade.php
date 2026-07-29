@@ -110,7 +110,8 @@
                         contentType: false,
                         beforeSend: function() {
                             btn.prop('disabled', true).html(
-                                '<i class="fa fa-spinner fa-spin"></i> Saving...');
+                                '<i data-lucide="loader-circle" class="animate-spin"></i> Saving...');
+                            if (window.renderIcons) { window.renderIcons(); }
                         },
                         success: function(res) {
                             btn.prop('disabled', false).html('Saved');

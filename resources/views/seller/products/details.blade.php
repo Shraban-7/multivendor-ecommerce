@@ -53,14 +53,14 @@
     </div>
     <div class="flex gap-2 flex-wrap">
         <a href="{{ route('seller.products.edit', $product->slug) }}" class="btn btn-primary btn-sm">
-            <i data-feather="edit" class="icon-xs"></i> Edit Product
+            <i data-lucide="edit" class="icon-xs"></i> Edit Product
         </a>
         <a href="{{ route('seller.products.edit', $product->slug) }}#variantSection" class="btn btn-outline-primary btn-sm">
-            <i data-feather="layers" class="icon-xs"></i> Manage Variants
+            <i data-lucide="layers" class="icon-xs"></i> Manage Variants
         </a>
         <button type="button" class="btn btn-outline-danger btn-sm"
             data-bs-toggle="modal" data-bs-target="#deleteModal-{{ $product->id }}">
-            <i data-feather="trash-2" class="icon-xs"></i> Delete
+            <i data-lucide="trash-2" class="icon-xs"></i> Delete
         </button>
     </div>
 </div>
@@ -157,7 +157,7 @@
     <div class="lg:col-span-5">
         <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card h-full">
             <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
-                <h5><i class="fas fa-chart-bar me-2 text-brand"></i>Pricing Summary</h5>
+                <h5><i data-lucide="chart-column" class="me-2 text-brand"></i>Pricing Summary</h5>
             </div>
             <div class="p-5 flex flex-col justify-center">
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-3 text-center">
@@ -205,27 +205,27 @@
 <ul class="nav nav-tabs mb-3" id="productTabs" role="tablist">
     <li class="nav-item" role="presentation">
         <button class="nav-link active" id="variants-tab" data-bs-toggle="tab" data-bs-target="#variants" type="button" role="tab">
-            <i class="fas fa-layer-group me-1"></i>Variants ({{ $variantCount }})
+            <i data-lucide="layers" class="me-1"></i>Variants ({{ $variantCount }})
         </button>
     </li>
     <li class="nav-item" role="presentation">
         <button class="nav-link" id="stock-tab" data-bs-toggle="tab" data-bs-target="#stock" type="button" role="tab">
-            <i class="fas fa-boxes me-1"></i>Stock History
+            <i data-lucide="boxes" class="me-1"></i>Stock History
         </button>
     </li>
     <li class="nav-item" role="presentation">
         <button class="nav-link" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab">
-            <i class="fas fa-align-left me-1"></i>Description
+            <i data-lucide="align-left" class="me-1"></i>Description
         </button>
     </li>
     <li class="nav-item" role="presentation">
         <button class="nav-link" id="shipping-tab" data-bs-toggle="tab" data-bs-target="#shipping" type="button" role="tab">
-            <i class="fas fa-truck me-1"></i>Shipping
+            <i data-lucide="truck" class="me-1"></i>Shipping
         </button>
     </li>
     <li class="nav-item" role="presentation">
         <button class="nav-link" id="seo-tab" data-bs-toggle="tab" data-bs-target="#seo" type="button" role="tab">
-            <i class="fas fa-search me-1"></i>SEO
+            <i data-lucide="search" class="me-1"></i>SEO
         </button>
     </li>
 </ul>
@@ -235,9 +235,9 @@
     <div class="tab-pane fade show active" id="variants" role="tabpanel">
         <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
             <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
-                <h5><i class="fas fa-layer-group me-2 text-brand"></i>All Variants</h5>
+                <h5><i data-lucide="layers" class="me-2 text-brand"></i>All Variants</h5>
                 <a href="{{ route('seller.products.edit', $product->slug) }}#variantSection" class="btn btn-primary btn-sm">
-                    <i class="fas fa-plus"></i> Add Variant
+                    <i data-lucide="plus"></i> Add Variant
                 </a>
             </div>
             <div class="p-0">
@@ -290,7 +290,7 @@
                 <div class="text-center text-ink-tertiary py-4">
                     <p class="mb-1">No variants configured for this product.</p>
                     <a href="{{ route('seller.products.edit', $product->slug) }}#variantSection" class="btn btn-primary btn-sm">
-                        <i class="fas fa-plus"></i> Add Variants
+                        <i data-lucide="plus"></i> Add Variants
                     </a>
                 </div>
                 @endif
@@ -302,10 +302,10 @@
     <div class="tab-pane fade" id="stock" role="tabpanel">
         <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
             <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
-                <h5><i class="fas fa-boxes me-2 text-brand"></i>Stock History</h5>
+                <h5><i data-lucide="boxes" class="me-2 text-brand"></i>Stock History</h5>
                 <button type="button" class="btn btn-outline-primary btn-sm"
                     data-bs-toggle="modal" data-bs-target="#stockUpdateModal">
-                    <i class="fas fa-plus-circle"></i> Update Stock
+                    <i data-lucide="circle-plus"></i> Update Stock
                 </button>
             </div>
             <div class="p-0">
@@ -359,7 +359,7 @@
     <div class="tab-pane fade" id="description" role="tabpanel">
         <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
             <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
-                <h5><i class="fas fa-align-left me-2 text-brand"></i>Description & Specifications</h5>
+                <h5><i data-lucide="align-left" class="me-2 text-brand"></i>Description & Specifications</h5>
             </div>
             <div class="p-5">
                 <h6 class="font-semibold text-ink-tertiary text-sm uppercase">Short Description</h6>
@@ -387,7 +387,7 @@
     <div class="tab-pane fade" id="shipping" role="tabpanel">
         <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
             <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
-                <h5><i class="fas fa-truck me-2 text-brand"></i>Shipping & Manufacturer</h5>
+                <h5><i data-lucide="truck" class="me-2 text-brand"></i>Shipping & Manufacturer</h5>
             </div>
             <div class="p-5">
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
@@ -430,7 +430,7 @@
     <div class="tab-pane fade" id="seo" role="tabpanel">
         <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
             <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
-                <h5><i class="fas fa-search me-2 text-brand"></i>SEO & Social Share</h5>
+                <h5><i data-lucide="search" class="me-2 text-brand"></i>SEO & Social Share</h5>
             </div>
             <div class="p-5">
                 @if($seo)
@@ -484,7 +484,7 @@
             </div>
             <div class="text-center modal-body">
                 <div class="p-4 rounded-sm bg-amber-50 border border-amber-200 text-feedback-warning text-sm flex items-start gap-3" role="alert">
-                    <i class="bi bi-exclamation-circle-fill me-2 text-feedback-danger" style="font-size: 1.5rem;"></i>
+                    <i data-lucide="circle-alert" class="me-2 text-feedback-danger" style="font-size: 1.5rem;"></i>
                     <p class="mt-1 text-ink-secondary">Are you sure you want to delete this Product?</p>
                 </div>
             </div>

@@ -5,7 +5,7 @@
     <div class="mb-3 d-flex justify-content-between align-items-end">
         <h4 class="mb-0">Products</h4>
         <a href="{{ route('seller.products.create') }}" class="btn btn-primary btn-sm">
-            <i data-feather="plus" class="icon-xs me-1"></i> Add Product
+            <i data-lucide="plus" class="icon-xs me-1"></i> Add Product
         </a>
     </div>
 
@@ -52,11 +52,11 @@
                             <div class="d-flex">
                                 <a href="{{ route('seller.products.show', $product->slug) }}"
                                     class="border btn btn-light btn-sm me-1" title="Details">
-                                    <i data-feather="eye" class="icon-xs"></i> Details
+                                    <i data-lucide="eye" class="icon-xs"></i> Details
                                 </a>
                                 <a href="{{ route('seller.products.edit', $product->slug) }}"
                                     class="btn btn-primary btn-sm w-lg-auto">
-                                    <i data-feather="edit" class="icon-xs me-1"></i> Edit
+                                    <i data-lucide="edit" class="icon-xs me-1"></i> Edit
                                 </a>
                             </div>
                         </td>

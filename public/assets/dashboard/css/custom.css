@@ -152,6 +152,24 @@ body {
   border-bottom: none !important;
 }
 
+/* Gap-based icon spacing. Scoped to the seller sidebar: the admin sidebar
+   shares this stylesheet but still spaces its icons with .me-2 margins, and
+   would end up double-spaced. */
+#sellerSidebar .navbar-nav .nav-item .nav-link {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.625rem !important;
+}
+
+/* Labels truncate instead of wrapping to a second line */
+#sellerSidebar .navbar-nav .nav-link > span {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .navbar-vertical .navbar-nav .nav-item .nav-link:hover {
   background-color: #F5F5F5 !important;
   color: #191919 !important;
@@ -180,6 +198,14 @@ body {
   /* theme.css dims icons to 0.6, which is too faint on a white surface */
   opacity: 1 !important;
   transition: color 0.15s ease !important;
+}
+
+/* Seller sidebar sets its own icon size; admin keeps .icon-xs (16px) */
+#sellerSidebar .navbar-nav .nav-link .nav-icon {
+  flex: 0 0 auto !important;
+  width: 18px !important;
+  height: 18px !important;
+  stroke-width: 2 !important;
 }
 
 .navbar-vertical .navbar-nav .nav-link:hover .nav-icon {
@@ -227,24 +253,52 @@ body {
   height: 12px !important;
 }
 
-/* ── Section headings ── */
-.sidebar-heading {
-  color: #9A9A9A !important;
-  font-size: 10px !important;
-  letter-spacing: 0.1em !important;
-  padding: 0.65rem 1rem 0.2rem !important;
-  margin: 0 !important;
+#sellerSidebar .navbar-nav .nav .nav-link {
+  gap: 0.5rem !important;
 }
 
-/* ── Chevron ── */
-.navbar-vertical .navbar-nav .nav-item .nav-link .chevron-icon {
-  color: #A8A8A8 !important;
-  transition: transform 0.25s ease !important;
+#sellerSidebar .navbar-nav .nav .nav-link .nav-icon {
   width: 14px !important;
   height: 14px !important;
 }
 
-[aria-expanded="true"] .nav-link .chevron-icon {
+/* ── Section headings (list items, so they are valid <ul> children) ── */
+.navbar-vertical .sidebar-heading {
+  display: block;
+  list-style: none;
+  color: #9A9A9A !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase;
+  padding: 0.85rem 1.25rem 0.25rem !important;
+  margin: 0 !important;
+}
+
+/* First heading sits directly under the brand and needs less top space */
+.navbar-vertical .sidebar-heading:first-child {
+  padding-top: 0.6rem !important;
+}
+
+/* ── Chevron ── */
+.navbar-vertical .navbar-nav .nav-item .nav-link .chevron-icon {
+  flex: 0 0 auto !important;
+  margin-left: auto !important;
+  width: 14px !important;
+  height: 14px !important;
+  color: #A8A8A8 !important;
+  transition: transform 0.2s ease, color 0.15s ease !important;
+}
+
+/* Group headers toggle on every click, so stop them selecting text */
+.navbar-vertical .navbar-nav .nav-link-toggle {
+  cursor: pointer;
+  user-select: none;
+}
+
+/* aria-expanded lives on the .nav-link itself, so it must be part of the
+   compound selector — as a descendant selector this never matched. */
+.navbar-vertical .navbar-nav .nav-link[aria-expanded="true"] .chevron-icon {
   transform: rotate(90deg) !important;
   color: #F85606 !important;
 }
@@ -267,6 +321,75 @@ body {
 
 .navbar-vertical .navbar-brand img {
   height: 1.5rem !important;
+}
+
+/* Defensive list reset — Bootstrap's .navbar-nav supplies these today, but the
+   sidebar must keep working once theme.css is dropped in Phase 4. */
+.navbar-vertical .navbar-nav,
+.navbar-vertical .navbar-nav .nav {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 0;
+}
+
+/* Nested submenu lists sit flush; indentation comes from the link padding */
+.navbar-vertical .navbar-nav .nav {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Tailwind CDN ships a `.collapse { visibility: collapse }` utility that
+   conflicts with Bootstrap's collapse plugin. Open panels get `.show` and
+   `display: block`, but stay invisible because of visibility. Restore
+   Bootstrap behavior for every collapse panel in the seller panel. */
+.collapse,
+.collapsing {
+  visibility: visible !important;
+}
+
+.collapse:not(.show) {
+  display: none;
+}
+
+/* ── Mobile: dim the page behind the open sidebar ── */
+#sidebarBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1039;
+  background: rgba(25, 25, 25, 0.45);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+@media (max-width: 767.98px) {
+  .navbar-vertical {
+    z-index: 1040;
+  }
+
+  #db-wrapper.toggled #sidebarBackdrop {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+/* ──────────────────────────
+   ICON SIZE UTILITIES
+   Mirrors theme.css so the 80+ .icon-xs call sites keep working after
+   Bootstrap's stylesheet is removed in Phase 4.
+   ────────────────────────── */
+
+.icon-xxs { width: 0.875rem; height: 0.875rem; }
+.icon-xs { width: 1rem; height: 1rem; }
+.icon-sm { width: 1.5rem; height: 1.5rem; }
+.icon-md { width: 2.5rem; height: 2.5rem; }
+.icon-lg { width: 3rem; height: 3rem; }
+
+/* Lucide renders <svg>; keep strokes crisp and prevent flex squashing */
+svg[class*="icon-"] {
+  flex-shrink: 0;
+  stroke-width: 2;
+  vertical-align: middle;
 }
 
 /* ──────────────────────────

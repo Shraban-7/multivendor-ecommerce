@@ -80,7 +80,36 @@
     <script src="{{ asset('assets/dashboard/libs/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('assets/dashboard/libs/jquery-slimscroll/jquery.slimscroll.min.js') }}"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    {{-- Lucide icons. theme.min.js still calls feather.replace(); the shim below absorbs it. --}}
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script>
+        (function () {
+            function renderIcons() {
+                if (window.lucide) {
+                    window.lucide.createIcons();
+                }
+            }
+
+            window.renderIcons = renderIcons;
+            window.feather = { replace: renderIcons };
+
+            document.addEventListener('DOMContentLoaded', renderIcons);
+
+            window.togglePassword = function (inputId, button) {
+                var input = document.getElementById(inputId);
+                if (!input) {
+                    return;
+                }
+
+                var showing = input.getAttribute('type') === 'password';
+                input.setAttribute('type', showing ? 'text' : 'password');
+
+                button.querySelectorAll('svg, [data-lucide]').forEach(function (el) {
+                    el.classList.toggle('hidden');
+                });
+            };
+        })();
+    </script>
 
     <script src="{{ asset('assets/dashboard/libs/prismjs/prism.js') }}"></script>
     <script src="{{ asset('assets/dashboard/libs/dropzone/dist/min/dropzone.min.js') }}"></script>
@@ -88,7 +117,6 @@
     
     <!-- Theme JS -->
     <script src="{{ asset('assets/dashboard/js/theme.min.js') }}"></script>
-    <script src="{{ asset('assets/dashboard/js/feather.js') }}"></script>
     @stack('footer')
 </body>
 

@@ -23,7 +23,7 @@
                             <div class="mb-3 flex justify-between items-center">
                                 <h5 class="font-semibold mb-0">Edit Options</h5>
                                 <button type="button" id="addOption" class="btn btn-primary btn-sm"><i
-                                        data-feather="plus"></i> Add Option</button>
+                                        data-lucide="plus"></i> Add Option</button>
                             </div>
                             @foreach ($productAttribute->options as $index => $option)
                                 <div class="mb-3 optionRow">

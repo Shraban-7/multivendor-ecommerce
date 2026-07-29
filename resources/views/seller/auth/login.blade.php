@@ -22,8 +22,8 @@
                             class="eq w-full pl-3 pr-10 py-2 border border-gray-300 rounded focus:ring-1 focus:ring-brand focus:border-brand-deep text-sm md:text-base" />
                         <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600"
                             onclick="togglePassword('login-password', this)">
-                            <i class="fa-solid fa-eye"></i>
-                            <i class="fa-solid fa-eye-slash hidden"></i>
+                            <i data-lucide="eye"></i>
+                            <i data-lucide="eye-off" class="hidden"></i>
                         </button>
                     </div>
                 </div>

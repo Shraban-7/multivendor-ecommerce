@@ -66,10 +66,10 @@
 
                     <div class="flex gap-2">
                         <button type="button" id="generate" class="btn btn-primary">
-                            <i data-feather="eye" class="icon-xs"></i> Preview Labels
+                            <i data-lucide="eye" class="icon-xs"></i> Preview Labels
                         </button>
                         <button type="button" id="printBtn" class="btn btn-dark disabled">
-                            <i data-feather="printer" class="icon-xs"></i> Print
+                            <i data-lucide="printer" class="icon-xs"></i> Print
                         </button>
                     </div>
                 </form>

@@ -19,7 +19,7 @@
     <div class="flex justify-between items-center mb-3">
         <h4 class="font-bold mb-0 text-ink">Add Product</h4>
         <button type="button" id="submitBtn" class="btn btn-primary">
-            <i class="fas fa-save"></i> Save Product
+            <i data-lucide="save"></i> Save Product
         </button>
     </div>
 
@@ -29,7 +29,7 @@
             {{-- Basic Information --}}
             <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
                 <div class="card-header">
-                    <h5><i class="fas fa-info-circle me-2 text-brand"></i>Basic Information</h5>
+                    <h5><i data-lucide="circle-info" class="me-2 text-brand"></i>Basic Information</h5>
                 </div>
                 <div class="card-body">
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
@@ -90,7 +90,7 @@
             {{-- Pricing & Inventory --}}
             <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
                 <div class="card-header">
-                    <h5><i class="fas fa-tags me-2 text-brand"></i>Pricing & Inventory</h5>
+                    <h5><i data-lucide="tags" class="me-2 text-brand"></i>Pricing & Inventory</h5>
                 </div>
                 <div class="card-body">
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
@@ -125,7 +125,7 @@
             {{-- Description & Specifications --}}
             <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
                 <div class="card-header">
-                    <h5><i class="fas fa-align-left me-2 text-brand"></i>Description & Specifications</h5>
+                    <h5><i data-lucide="align-left" class="me-2 text-brand"></i>Description & Specifications</h5>
                 </div>
                 <div class="card-body">
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
@@ -148,7 +148,7 @@
             {{-- Shipping & Manufacturer --}}
             <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
                 <div class="card-header">
-                    <h5><i class="fas fa-truck me-2 text-brand"></i>Shipping & Manufacturer</h5>
+                    <h5><i data-lucide="truck" class="me-2 text-brand"></i>Shipping & Manufacturer</h5>
                 </div>
                 <div class="card-body">
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
@@ -191,7 +191,7 @@
                 {{-- Product Thumbnail --}}
                 <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
                     <div class="card-header">
-                        <h5><i class="fas fa-camera me-2 text-brand"></i>Thumbnail</h5>
+                        <h5><i data-lucide="camera" class="me-2 text-brand"></i>Thumbnail</h5>
                     </div>
                     <div class="card-body text-center">
                         <x-image-input name="thumbnail" />

@@ -6,7 +6,7 @@
     <div class="flex flex-wrap justify-between items-center mb-3">
         <h4 class="font-bold mb-0 text-ink">Shipping Zones</h4>
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addZoneModal">
-            <i data-feather="plus" style="width: 16px; height: 16px;"></i> Add Zone
+            <i data-lucide="plus" style="width: 16px; height: 16px;"></i> Add Zone
         </button>
     </div>
 
@@ -64,14 +64,14 @@
                             </div>
                             <div class="mt-3 flex gap-2">
                                 <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#editZoneModal-{{ $zone->id }}">
-                                    <i data-feather="edit" style="width: 14px; height: 14px;"></i> Edit
+                                    <i data-lucide="edit" style="width: 14px; height: 14px;"></i> Edit
                                 </button>
                                 <form method="POST" action="{{ route('seller.shipping.zones.destroy', $zone) }}"
                                       onsubmit="return confirm('Delete this shipping zone?')">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-light btn-sm btn-danger-text">
-                                        <i data-feather="trash-2" style="width: 14px; height: 14px;"></i>
+                                        <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
                                     </button>
                                 </form>
                             </div>
@@ -109,11 +109,11 @@
     @else
         <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0" style="border-radius: 12px;">
             <div class="p-5 text-center py-5">
-                <i data-feather="truck" style="width: 64px; height: 64px;" class="text-ink-tertiary mb-3"></i>
+                <i data-lucide="truck" style="width: 64px; height: 64px;" class="text-ink-tertiary mb-3"></i>
                 <h5 class="font-semibold mb-2">No Shipping Zones</h5>
                 <p class="text-ink-tertiary mb-3">Create shipping zones to set delivery rates for different regions.</p>
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addZoneModal">
-                    <i data-feather="plus" class="me-1" style="width: 16px; height: 16px;"></i> Add Shipping Zone
+                    <i data-lucide="plus" class="me-1" style="width: 16px; height: 16px;"></i> Add Shipping Zone
                 </button>
             </div>
         </div>

@@ -5,7 +5,7 @@
 <div class="w-full px-0">
     <div class="flex items-center gap-2 mb-3">
         <a href="{{ route('seller.payouts.index') }}" class="btn btn-light btn-sm">
-            <i data-feather="arrow-left" style="width: 16px; height: 16px;"></i> Back
+            <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i> Back
         </a>
         <h4 class="font-bold mb-0 text-ink">Payout #{{ $payout->id }}</h4>
         <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-xs {{ $payout->statusBadge() }} ms-2">{{ $payout->statusLabel() }}</span>
@@ -118,25 +118,25 @@
                 <div class="p-5 text-center py-4">
                     @if ($payout->isPending())
                         <div class="text-feedback-warning">
-                            <i data-feather="clock" style="width: 48px; height: 48px;" class="mb-2"></i>
+                            <i data-lucide="clock" style="width: 48px; height: 48px;" class="mb-2"></i>
                             <p class="mb-0 font-semibold">Waiting for approval</p>
                             <small class="text-ink-tertiary">Your request is being reviewed</small>
                         </div>
                     @elseif ($payout->isProcessing())
                         <div class="text-feedback-info">
-                            <i data-feather="loader" style="width: 48px; height: 48px;" class="mb-2"></i>
+                            <i data-lucide="loader" style="width: 48px; height: 48px;" class="mb-2"></i>
                             <p class="mb-0 font-semibold">Processing</p>
                             <small class="text-ink-tertiary">Payout is being processed</small>
                         </div>
                     @elseif ($payout->isCompleted())
                         <div class="text-feedback-success">
-                            <i data-feather="check-circle" style="width: 48px; height: 48px;" class="mb-2"></i>
+                            <i data-lucide="check-circle" style="width: 48px; height: 48px;" class="mb-2"></i>
                             <p class="mb-0 font-semibold">Completed</p>
                             <small class="text-ink-tertiary">Funds have been sent</small>
                         </div>
                     @else
                         <div class="text-feedback-danger">
-                            <i data-feather="x-circle" style="width: 48px; height: 48px;" class="mb-2"></i>
+                            <i data-lucide="x-circle" style="width: 48px; height: 48px;" class="mb-2"></i>
                             <p class="mb-0 font-semibold">{{ $payout->statusLabel() }}</p>
                         </div>
                     @endif

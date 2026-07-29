@@ -24,7 +24,7 @@
 
         @if($hasPending)
             <div class="flex items-center gap-2 p-4 rounded-xs bg-feedback-warning/10 border border-feedback-warning text-feedback-warning text-sm">
-                <i data-feather="alert-triangle" class="icon-xs me-1"></i>
+                <i data-lucide="alert-triangle" class="icon-xs me-1"></i>
                 You have a pending import. Please wait for it to complete before uploading another file.
             </div>
         @else
@@ -32,19 +32,19 @@
             @csrf
             <div class="mb-3">
                 <div class="upload-zone border border-2 border-dashed rounded-md p-5 text-center" id="uploadZone" style="cursor:pointer; background: #f8f9fa;">
-                    <i data-feather="upload" style="width:48px;height:48px;color:var(--bs-primary)"></i>
+                    <i data-lucide="upload" style="width:48px;height:48px;color:var(--bs-primary)"></i>
                     <p class="mt-2 mb-1 font-semibold">Click to upload or drag & drop</p>
                     <p class="text-ink-tertiary text-sm mb-0">CSV or XLSX files up to 10MB</p>
                     <input type="file" name="file" id="fileInput" class="hidden" accept=".csv,.xlsx,.txt">
                 </div>
                 <div id="fileSelected" class="d-none mt-2 p-2 bg-surface-muted rounded-xs">
-                    <i data-feather="file-text" class="icon-xs me-1"></i>
+                    <i data-lucide="file-text" class="icon-xs me-1"></i>
                     <span id="fileName"></span>
                 </div>
                 @error('file')<div class="text-feedback-danger text-sm mt-1">{{ $message }}</div>@enderror
             </div>
             <button type="submit" class="btn btn-primary">
-                <i data-feather="upload" class="icon-xs me-1"></i> Upload & Preview
+                <i data-lucide="upload" class="icon-xs me-1"></i> Upload & Preview
             </button>
         </form>
         @endif
@@ -92,7 +92,7 @@ Example Product,Electronics,Mobile Phones,Samsung,25000,20000,30000,100,SP-001,a
                                 <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-xs badge-soft-secondary">Pending</span>
                             @elseif($import->status === 'processing')
                                 <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-xs badge-soft-warning">
-                                    <i data-feather="loader" class="icon-xs"></i> Processing
+                                    <i data-lucide="loader" class="icon-xs"></i> Processing
                                 </span>
                             @elseif($import->status === 'completed')
                                 <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-xs badge-soft-success">Completed</span>
@@ -105,7 +105,7 @@ Example Product,Electronics,Mobile Phones,Samsung,25000,20000,30000,100,SP-001,a
                         <td class="text-sm">{{ $import->created_at->format('d/m/Y h:ia') }}</td>
                         <td>
                             <a href="{{ route('seller.bulk-upload.show', $import) }}" class="btn btn-light btn-sm">
-                                <i data-feather="eye" class="icon-xs"></i>
+                                <i data-lucide="eye" class="icon-xs"></i>
                             </a>
                         </td>
                     </tr>

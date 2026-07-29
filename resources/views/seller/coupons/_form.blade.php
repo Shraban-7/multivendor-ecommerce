@@ -11,7 +11,7 @@
             <input type="text" name="code" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors @error('code') is-invalid @enderror"
                    value="{{ old('code', $c->code ?? '') }}" placeholder="e.g., SUMMER20" required>
             <button type="button" class="btn btn-light" onclick="generateCode()">
-                <i data-feather="refresh-cw" style="width: 16px; height: 16px;"></i>
+                <i data-lucide="refresh-cw" style="width: 16px; height: 16px;"></i>
             </button>
         </div>
         @error('code') <div class="invalid-feedback block">{{ $message }}</div> @enderror

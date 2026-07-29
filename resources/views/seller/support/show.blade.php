@@ -92,7 +92,7 @@
                             <div class="mt-2">
                                 @foreach ($message->attachments as $att)
                                     <a href="{{ $att->url() }}" target="_blank" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-surface-muted text-ink border border-border me-1">
-                                        <i data-feather="paperclip" class="icon-xs"></i> {{ $att->original_name }}
+                                        <i data-lucide="paperclip" class="icon-xs"></i> {{ $att->original_name }}
                                     </a>
                                 @endforeach
                             </div>

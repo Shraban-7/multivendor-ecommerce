@@ -44,7 +44,7 @@
             <div class="xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-1">
                 <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3 h-full" style="border-radius: 12px; border-left: 4px solid #F85606;">
                     <div class="flex items-center">
-                        <i class="fas fa-sack-dollar me-3 opacity-50" style="font-size: 1.5rem;"></i>
+                        <i data-lucide="wallet" class="me-3 opacity-50" style="font-size: 1.5rem;"></i>
                         <div>
                             <h5 class="font-bold mb-0 text-ink">{{ money($currentMetrics['total_revenue']) }}</h5>
                             <p class="text-ink-tertiary text-sm mb-0">Total Revenue</p>
@@ -52,7 +52,7 @@
                     </div>
                     <div class="mt-2">
                         <small class="{{ $changes['revenue'] >= 0 ? 'text-feedback-success' : 'text-feedback-danger' }}">
-                            <i class="fas {{ $changes['revenue'] >= 0 ? 'fa-arrow-up' : 'fa-arrow-down' }} me-1"></i>
+                            <i data-lucide="{{ $changes['revenue'] >= 0 ? 'arrow-up' : 'arrow-down' }}" class="me-1"></i>
                             {{ number_format(abs($changes['revenue']), 2) }}% Change
                         </small>
                     </div>
@@ -61,7 +61,7 @@
             <div class="xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-1">
                 <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3 h-full" style="border-radius: 12px; border-left: 4px solid #0ea5e9;">
                     <div class="flex items-center">
-                        <i class="fas fa-hand-holding-dollar me-3 opacity-50" style="font-size: 1.5rem;"></i>
+                        <i data-lucide="hand-coins" class="me-3 opacity-50" style="font-size: 1.5rem;"></i>
                         <div>
                             <h5 class="font-bold mb-0 text-ink">{{ money($currentMetrics['gross_profit']) }}</h5>
                             <p class="text-ink-tertiary text-sm mb-0">Gross Profit</p>
@@ -69,7 +69,7 @@
                     </div>
                     <div class="mt-2">
                         <small class="{{ $changes['gross_profit'] >= 0 ? 'text-feedback-success' : 'text-feedback-danger' }}">
-                            <i class="fas {{ $changes['gross_profit'] >= 0 ? 'fa-arrow-up' : 'fa-arrow-down' }} me-1"></i>
+                            <i data-lucide="{{ $changes['gross_profit'] >= 0 ? 'arrow-up' : 'arrow-down' }}" class="me-1"></i>
                             {{ number_format(abs($changes['gross_profit']), 2) }}% Change
                         </small>
                     </div>
@@ -78,7 +78,7 @@
             <div class="xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-1">
                 <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3 h-full" style="border-radius: 12px; border-left: 4px solid #1D8A45;">
                     <div class="flex items-center">
-                        <i class="fas fa-coins me-3 opacity-50" style="font-size: 1.5rem;"></i>
+                        <i data-lucide="coins" class="me-3 opacity-50" style="font-size: 1.5rem;"></i>
                         <div>
                             <h5 class="font-bold mb-0 text-ink">{{ money($currentMetrics['net_profit']) }}</h5>
                             <p class="text-ink-tertiary text-sm mb-0">Net Profit</p>
@@ -86,7 +86,7 @@
                     </div>
                     <div class="mt-2">
                         <small class="{{ $changes['net_profit'] >= 0 ? 'text-feedback-success' : 'text-feedback-danger' }}">
-                            <i class="fas {{ $changes['net_profit'] >= 0 ? 'fa-arrow-up' : 'fa-arrow-down' }} me-1"></i>
+                            <i data-lucide="{{ $changes['net_profit'] >= 0 ? 'arrow-up' : 'arrow-down' }}" class="me-1"></i>
                             {{ number_format(abs($changes['net_profit']), 2) }}% Change
                         </small>
                     </div>
@@ -95,7 +95,7 @@
             <div class="xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-1">
                 <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3 h-full" style="border-radius: 12px; border-left: 4px solid #D93025;">
                     <div class="flex items-center">
-                        <i class="fas fa-wallet me-3 opacity-50" style="font-size: 1.5rem;"></i>
+                        <i data-lucide="wallet" class="me-3 opacity-50" style="font-size: 1.5rem;"></i>
                         <div>
                             <h5 class="font-bold mb-0 text-ink">{{ money($currentMetrics['total_expense']) }}</h5>
                             <p class="text-ink-tertiary text-sm mb-0">Total Expenses</p>
@@ -103,7 +103,7 @@
                     </div>
                     <div class="mt-2">
                         <small class="{{ $changes['expense'] >= 0 ? 'text-feedback-success' : 'text-feedback-danger' }}">
-                            <i class="fas {{ $changes['expense'] >= 0 ? 'fa-arrow-up' : 'fa-arrow-down' }} me-1"></i>
+                            <i data-lucide="{{ $changes['expense'] >= 0 ? 'arrow-up' : 'arrow-down' }}" class="me-1"></i>
                             {{ number_format(abs($changes['expense']), 2) }}% Change
                         </small>
                     </div>
@@ -112,7 +112,7 @@
             <div class="xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-1">
                 <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3 h-full" style="border-radius: 12px; border-left: 4px solid #B7791A;">
                     <div class="flex items-center">
-                        <i class="fas fa-boxes-stacked me-3 opacity-50" style="font-size: 1.5rem;"></i>
+                        <i data-lucide="boxes" class="me-3 opacity-50" style="font-size: 1.5rem;"></i>
                         <div>
                             <h5 class="font-bold mb-0 text-ink">{{ money($inventory_value) }}</h5>
                             <p class="text-ink-tertiary text-sm mb-0">Inventory Value</p>
@@ -123,7 +123,7 @@
             <div class="xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-1">
                 <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3 h-full" style="border-radius: 12px; border-left: 4px solid #637381;">
                     <div class="flex items-center">
-                        <i class="fas fa-percent me-3 opacity-50" style="font-size: 1.5rem;"></i>
+                        <i data-lucide="percent" class="me-3 opacity-50" style="font-size: 1.5rem;"></i>
                         <div>
                             <h5 class="font-bold mb-0 text-ink">{{ number_format($currentMetrics['profit_margin'], 2) }}%</h5>
                             <p class="text-ink-tertiary text-sm mb-0">Profit Margin</p>
@@ -131,7 +131,7 @@
                     </div>
                     <div class="mt-2">
                         <small class="{{ $changes['profit_margin'] >= 0 ? 'text-feedback-success' : 'text-feedback-danger' }}">
-                            <i class="fas {{ $changes['profit_margin'] >= 0 ? 'fa-arrow-up' : 'fa-arrow-down' }} me-1"></i>
+                            <i data-lucide="{{ $changes['profit_margin'] >= 0 ? 'arrow-up' : 'arrow-down' }}" class="me-1"></i>
                             {{ number_format(abs($changes['profit_margin']), 2) }}% Change
                         </small>
                     </div>
@@ -141,16 +141,16 @@
 
         <ul class="nav nav-tabs mb-4" id="financialTabs" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="pnl-tab" data-bs-toggle="tab" data-bs-target="#pnl" type="button" role="tab" aria-controls="pnl" aria-selected="true"><i class="fas fa-chart-line me-2"></i>Profit & Loss</button>
+                <button class="nav-link active" id="pnl-tab" data-bs-toggle="tab" data-bs-target="#pnl" type="button" role="tab" aria-controls="pnl" aria-selected="true"><i data-lucide="chart-line" class="me-2"></i>Profit & Loss</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="income-tab" data-bs-toggle="tab" data-bs-target="#income" type="button" role="tab" aria-controls="income" aria-selected="false"><i class="fas fa-money-bill-transfer me-2"></i>Income Breakdown</button>
+                <button class="nav-link" id="income-tab" data-bs-toggle="tab" data-bs-target="#income" type="button" role="tab" aria-controls="income" aria-selected="false"><i data-lucide="banknote" class="me-2"></i>Income Breakdown</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="expenses-tab" data-bs-toggle="tab" data-bs-target="#expenses" type="button" role="tab" aria-controls="expenses" aria-selected="false"><i class="fas fa-hand-holding-usd me-2"></i>Expenses</button>
+                <button class="nav-link" id="expenses-tab" data-bs-toggle="tab" data-bs-target="#expenses" type="button" role="tab" aria-controls="expenses" aria-selected="false"><i data-lucide="hand-coins" class="me-2"></i>Expenses</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="inventory-tab" data-bs-toggle="tab" data-bs-target="#inventory" type="button" role="tab" aria-controls="inventory" aria-selected="false"><i class="fas fa-warehouse me-2"></i>Inventory Value</button>
+                <button class="nav-link" id="inventory-tab" data-bs-toggle="tab" data-bs-target="#inventory" type="button" role="tab" aria-controls="inventory" aria-selected="false"><i data-lucide="warehouse" class="me-2"></i>Inventory Value</button>
             </li>
         </ul>
 
@@ -275,7 +275,7 @@
                         <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3 h-full" style="border-radius: 12px; border-left: 4px solid #637381;">
                             <p class="text-ink-tertiary mb-0">Expense Growth %</p>
                             <h4 class="font-bold mb-0 text-{{ $expenseGrowth >= 0 ? 'danger' : 'success' }}">
-                                <i class="fas fa-arrow-{{ $expenseGrowth >= 0 ? 'up' : 'down' }} me-1"></i>
+                                <i data-lucide="{{ $expenseGrowth >= 0 ? 'arrow-up' : 'arrow-down' }}" class="me-1"></i>
                                 {{ number_format($expenseGrowth, 2) }}%
                             </h4>
                         </div>
@@ -338,7 +338,7 @@
                     <div class="flex justify-between items-center flex-wrap gap-2">
                         <h4 class="font-bold mb-0">Total Inventory Value: <span class="text-ink">{{ money($inventory_value) }}</span></h4>
                         <span class="badge p-2 badge-soft-danger">
-                            <i class="fas fa-triangle-exclamation me-1"></i> Low Turnover Warning: {{ $lowTurnoverDays }} Days ({{ $lowTurnoverCount }} SKUs)
+                            <i data-lucide="triangle-alert" class="me-1"></i> Low Turnover Warning: {{ $lowTurnoverDays }} Days ({{ $lowTurnoverCount }} SKUs)
                         </span>
                     </div>
                 </div>

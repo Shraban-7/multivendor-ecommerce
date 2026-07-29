@@ -6,7 +6,7 @@
         <h4 class="font-bold mb-0 text-ink">Stock History</h4>
         <div>
             <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#stockUpdateModal">
-                <i data-feather="package" style="width:16px;height:16px;"></i> Update Stock
+                <i data-lucide="package" style="width:16px;height:16px;"></i> Update Stock
             </button>
         </div>
     </div>

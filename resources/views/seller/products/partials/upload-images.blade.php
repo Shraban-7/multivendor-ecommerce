@@ -15,10 +15,10 @@
         </div>
         <div class="flex gap-2">
             <a href="{{ route('seller.products.media.index', $product) }}" class="btn btn-outline-primary">
-                <i data-feather="grid" style="width:14px;height:14px;"></i> Full Gallery
+                <i data-lucide="grid" style="width:14px;height:14px;"></i> Full Gallery
             </a>
             <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#uploadModal">
-                <i data-feather="upload-cloud" style="width:14px;height:14px;"></i> Upload
+                <i data-lucide="upload-cloud" style="width:14px;height:14px;"></i> Upload
             </button>
         </div>
     </div>
@@ -38,7 +38,7 @@
                         <form action="{{ route('seller.products.image.delete', $image->id) }}" method="POST">
                             @csrf @method('DELETE')
                             <button type="submit" class="btn btn-light btn-sm btn-round" title="Delete Image" onclick="return confirm('Permanently delete this image?')">
-                                <i data-feather="trash-2" style="width:14px;height:14px;color:#dc3545;"></i>
+                                <i data-lucide="trash-2" style="width:14px;height:14px;color:#dc3545;"></i>
                             </button>
                         </form>
                     </div>
@@ -48,7 +48,7 @@
         </div>
         @else
         <div class="text-center py-5 bg-surface-muted rounded-md border border-dashed">
-            <i data-feather="image" style="width:48px;height:48px;color:#adb5bd;"></i>
+            <i data-lucide="image" style="width:48px;height:48px;color:#adb5bd;"></i>
             <p class="text-ink-tertiary mb-0 mt-2">No images added yet.</p>
             <button class="inline-flex items-center text-sm text-brand hover:text-brand-deep transition-colors no-underline font-semibold" data-bs-toggle="modal" data-bs-target="#uploadModal">
                 Upload your first image
@@ -72,7 +72,7 @@
                     <div class="upload-zone text-center p-5 border-2 border-dashed rounded-md bg-surface-muted cursor-pointer relative mb-3" id="dropZone">
                         <input type="file" name="images[]" id="imageInput" class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer" multiple accept="image/png, image/jpeg, image/jpg, image/webp">
                         <div class="pointer-events-none">
-                            <i data-feather="upload-cloud" class="mb-3" style="width:48px;height:48px;color:#0d6efd;"></i>
+                            <i data-lucide="upload-cloud" class="mb-3" style="width:48px;height:48px;color:#0d6efd;"></i>
                             <h6 class="font-bold mb-1">Click or Drag images here</h6>
                             <p class="text-ink-tertiary text-sm mb-0">Max 4MB per file &bull; JPG, PNG, WEBP &bull; Auto-converted to WebP</p>
                         </div>
@@ -82,7 +82,7 @@
                 <div class="modal-footer border-t-0 pt-0">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-primary" id="uploadBtn" disabled>
-                        <i data-feather="upload" style="width:16px;height:16px;"></i> Upload Selected
+                        <i data-lucide="upload" style="width:16px;height:16px;"></i> Upload Selected
                     </button>
                 </div>
             </form>
@@ -147,11 +147,11 @@
                 col.dataset.previewId = id;
                 col.innerHTML = `<div class="border rounded overflow-hidden position-relative shadow-sm bg-white">
                     <div class="ratio ratio-1x1"><img src="${reader.result}" class="object-fit-cover w-100 h-100" alt="Preview"></div>
-                    <button type="button" class="preview-remove shadow-sm" data-preview-id="${id}"><i data-feather="x" style="width:14px;height:14px;"></i></button>
+                    <button type="button" class="preview-remove shadow-sm" data-preview-id="${id}"><i data-lucide="x" style="width:14px;height:14px;"></i></button>
                     <div class="p-1 bg-white border-top text-truncate small text-center text-muted">${escapeHtml(file.name)}</div>
                 </div>`;
                 previewContainer.appendChild(col);
-                feather.replace();
+                window.renderIcons && window.renderIcons();
             }
         }
 
@@ -182,12 +182,12 @@
             const count = dataTransfer.files.length;
             if (count > 0) {
                 uploadBtn.removeAttribute('disabled');
-                uploadBtn.innerHTML = `<i data-feather="upload" style="width:16px;height:16px;"></i> Upload ${count} Image${count > 1 ? 's' : ''}`;
+                uploadBtn.innerHTML = `<i data-lucide="upload" style="width:16px;height:16px;"></i> Upload ${count} Image${count > 1 ? 's' : ''}`;
             } else {
                 uploadBtn.setAttribute('disabled', 'true');
-                uploadBtn.innerHTML = `<i data-feather="upload" style="width:16px;height:16px;"></i> Upload Selected`;
+                uploadBtn.innerHTML = `<i data-lucide="upload" style="width:16px;height:16px;"></i> Upload Selected`;
             }
-            feather.replace();
+            window.renderIcons && window.renderIcons();
         }
     });
 </script>

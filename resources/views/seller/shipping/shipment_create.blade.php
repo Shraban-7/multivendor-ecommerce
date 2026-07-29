@@ -5,7 +5,7 @@
 <div class="w-full px-0">
     <div class="flex items-center gap-2 mb-3">
         <a href="{{ route('seller.orders.details', $order->invoice_id) }}" class="btn btn-light btn-sm">
-            <i data-feather="arrow-left" style="width: 16px; height: 16px;"></i> Back
+            <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i> Back
         </a>
         <h4 class="font-bold mb-0 text-ink">Create Shipment</h4>
         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold badge-soft-primary">#{{ $order->invoice_id }}</span>
@@ -55,7 +55,7 @@
                     </div>
                     <div class="px-5 py-3 border-t border-border bg-white text-right">
                         <button type="submit" class="btn btn-primary">
-                            <i data-feather="package" style="width: 16px; height: 16px;"></i> Create Shipment
+                            <i data-lucide="package" style="width: 16px; height: 16px;"></i> Create Shipment
                         </button>
                     </div>
                 </form>

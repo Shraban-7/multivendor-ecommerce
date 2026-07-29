@@ -16,7 +16,7 @@
                     <div class="flex">
                         <button type="button" class="btn btn-light btn-sm me-1"
                             onclick="printReceipt('{{ route('invoice', $order->invoice_id) }}')">
-                            <i data-feather="download" class="icon-xs"></i>Invoice
+                            <i data-lucide="download" class="icon-xs"></i>Invoice
                         </button>
                     </div>
                 </div>
@@ -68,7 +68,7 @@
 
                                 <button class="btn btn-light btn-sm"
                                     data-bs-toggle="modal" data-bs-target="#changeStatusModal">
-                                    <i class="bi bi-arrow-repeat text-ink-secondary"></i>
+                                    <i data-lucide="refresh-cw" class="text-ink-secondary"></i>
                                     Update
                                 </button>
                             </div>
@@ -115,11 +115,11 @@
                             }
                         @endphp
                         <h6 class="font-bold">{{ $userName }}</h6>
-                        <p class="mb-1"><i data-feather="phone" class="icon-xs me-1"></i>
+                        <p class="mb-1"><i data-lucide="phone" class="icon-xs me-1"></i>
                             {{ $userPhone }}
                         </p>
                         <p class="mb-0">
-                            <i data-feather="user" class="icon-xs me-1"></i>
+                            <i data-lucide="user" class="icon-xs me-1"></i>
                             Customer since {{ $createdAt }}
                         </p>
                     @endif
@@ -133,21 +133,21 @@
                     <div class="flex gap-2">
                         <a href="{{ route('seller.shipping.shipments.create', $order) }}"
                            class="btn btn-outline-primary btn-sm">
-                            <i data-feather="package" style="width: 14px; height: 14px;"></i> Create Shipment
+                            <i data-lucide="package" style="width: 14px; height: 14px;"></i> Create Shipment
                         </a>
                         <a href="{{ route('seller.orders.tracking', $order) }}"
                            class="btn btn-light btn-sm">
-                            <i data-feather="truck" style="width: 14px; height: 14px;"></i> Add Tracking
+                            <i data-lucide="truck" style="width: 14px; height: 14px;"></i> Add Tracking
                         </a>
                     </div>
                 </div>
                 <div class="p-5">
                     <address class="mb-0">
                         <h6 class="font-bold">{{ $order->billing_address->customer_name }}</h6>
-                        <p class="mb-1"><i data-feather="phone" class="icon-xs me-1"></i>
+                        <p class="mb-1"><i data-lucide="phone" class="icon-xs me-1"></i>
                             {{ $order->billing_address->customer_phone }}
                         </p>
-                        <p class="mb-1"><i data-feather="home" class="icon-xs me-1"></i>
+                        <p class="mb-1"><i data-lucide="home" class="icon-xs me-1"></i>
                             {{ $order->billing_address->address }}
                         </p>
                     </address>
@@ -157,7 +157,7 @@
                         <h6 class="font-semibold mb-2">Tracking Info</h6>
                         @foreach ($order->trackings as $tracking)
                             <div class="flex items-center gap-2 mb-1">
-                                <i data-feather="package" style="width: 14px; height: 14px;" class="text-brand"></i>
+                                <i data-lucide="package" style="width: 14px; height: 14px;" class="text-brand"></i>
                                 <span class="small">
                                     <strong>{{ $tracking->carrier->name ?? $tracking->courier_name ?? 'Carrier' }}:</strong>
                                     <code>{{ $tracking->tracking_number }}</code>
@@ -279,10 +279,10 @@
                             <span class="font-medium">Rating:</span>
                             <span class="text-feedback-warning">
                                 @for ($i = 1; $i <= $order->review->rating; $i++)
-                                    <i data-feather="star" class="text-feedback-warning"></i>
+                                    <i data-lucide="star" class="text-feedback-warning"></i>
                                 @endfor
                                 @for ($i = $order->review->rating + 1; $i <= 5; $i++)
-                                    <i data-feather="star" class="text-ink-tertiary"></i>
+                                    <i data-lucide="star" class="text-ink-tertiary"></i>
                                 @endfor
                             </span>
                         </div>

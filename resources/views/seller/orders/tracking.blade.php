@@ -5,7 +5,7 @@
 <div class="container-fluid px-0">
     <div class="flex items-center gap-2 mb-3">
         <a href="{{ route('seller.orders.details', $order->invoice_id) }}" class="btn btn-light btn-sm">
-            <i data-feather="arrow-left" style="width: 16px; height: 16px;"></i> Back
+            <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i> Back
         </a>
         <h4 class="font-bold mb-0 text-ink">Shipping & Tracking</h4>
         <span class="badge badge-soft-primary">#{{ $order->invoice_id }}</span>
@@ -40,7 +40,7 @@
                     </div>
                     <div class="px-5 py-3 border-t border-border bg-surface-muted bg-white border-t text-right">
                         <button type="submit" class="btn btn-primary">
-                            <i data-feather="truck" style="width: 16px; height: 16px;"></i> Add Tracking
+                            <i data-lucide="truck" style="width: 16px; height: 16px;"></i> Add Tracking
                         </button>
                     </div>
                 </form>
@@ -74,7 +74,7 @@
                         </div>
                     @else
                         <div class="text-center py-5 text-ink-tertiary">
-                            <i data-feather="package" style="width: 48px; height: 48px;" class="mb-3"></i>
+                            <i data-lucide="package" style="width: 48px; height: 48px;" class="mb-3"></i>
                             <p class="mb-0">No tracking information added yet.</p>
                         </div>
                     @endif

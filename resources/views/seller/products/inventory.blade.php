@@ -42,13 +42,13 @@
 
                 <div class="toggle-group flex gap-2">
                     <span class="toggle-btn" id="toggleImages" data-active="false" style="display: none;">
-                        <i data-feather="image" style="width:16px;height:16px;"></i>
+                        <i data-lucide="image" style="width:16px;height:16px;"></i>
                         Show Images
                     </span>
 
                     <div class="dropdown">
                         <span class="toggle-btn" id="toggleContextMenu" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i data-feather="columns" style="width:14px;height:14px;"></i> Columns <i data-feather="chevron-down" style="width:14px;height:14px;"></i>
+                            <i data-lucide="columns" style="width:14px;height:14px;"></i> Columns <i data-lucide="chevron-down" style="width:14px;height:14px;"></i>
                         </span>
                         <div class="dropdown-menu p-2" aria-labelledby="toggleContextMenu" style="min-width:200px;">
                             <div class="grid grid-cols-2 gap-x-2 gap-y-1">
@@ -86,7 +86,7 @@
 
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', () => feather.replace());
+document.addEventListener('DOMContentLoaded', () => window.renderIcons && window.renderIcons());
 
 const products = @json($products);
 const productList = document.getElementById('productList');

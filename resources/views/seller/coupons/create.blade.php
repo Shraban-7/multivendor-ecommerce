@@ -5,7 +5,7 @@
 <div class="container-fluid px-0">
     <div class="flex items-center gap-2 mb-3">
         <a href="{{ route('seller.coupons.index') }}" class="btn btn-light btn-sm">
-            <i data-feather="arrow-left" style="width: 16px; height: 16px;"></i> Back
+            <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i> Back
         </a>
         <h4 class="font-bold mb-0 text-ink">Create Coupon</h4>
     </div>
@@ -33,19 +33,19 @@
                 <div class="p-5 text-sm">
                     <ul class="list-unstyled mb-0">
                         <li class="mb-2 flex gap-2">
-                            <i data-feather="info" style="width: 16px; height: 16px;" class="text-brand shrink-0 mt-1"></i>
+                            <i data-lucide="info" style="width: 16px; height: 16px;" class="text-brand shrink-0 mt-1"></i>
                             <span>Use a unique, memorable coupon code.</span>
                         </li>
                         <li class="mb-2 flex gap-2">
-                            <i data-feather="info" style="width: 16px; height: 16px;" class="text-brand shrink-0 mt-1"></i>
+                            <i data-lucide="info" style="width: 16px; height: 16px;" class="text-brand shrink-0 mt-1"></i>
                             <span>Set a usage limit to control redemptions.</span>
                         </li>
                         <li class="mb-2 flex gap-2">
-                            <i data-feather="info" style="width: 16px; height: 16px;" class="text-brand shrink-0 mt-1"></i>
+                            <i data-lucide="info" style="width: 16px; height: 16px;" class="text-brand shrink-0 mt-1"></i>
                             <span>Limit to specific products for targeted promotions.</span>
                         </li>
                         <li class="flex gap-2">
-                            <i data-feather="info" style="width: 16px; height: 16px;" class="text-brand shrink-0 mt-1"></i>
+                            <i data-lucide="info" style="width: 16px; height: 16px;" class="text-brand shrink-0 mt-1"></i>
                             <span>Set a minimum purchase amount to increase average order value.</span>
                         </li>
                     </ul>

@@ -2,14 +2,14 @@
 
 <nav class="navbar-classic flex flex-row items-center justify-between relative">
     <a id="nav-toggle" href="#" class="flex items-center justify-center shrink-0 rounded-xs hover:bg-surface-muted transition-colors" style="width: 36px; height: 36px;">
-        <i data-feather="menu" style="width: 20px; height: 20px; color: #454f5b;"></i>
+        <i data-lucide="menu" style="width: 20px; height: 20px; color: #454f5b;"></i>
     </a>
 
     <ul class="nav-top-wrap flex flex-row items-center gap-2 list-none mb-0 pl-0 ml-auto">
         <li class="relative">
             <a class="flex items-center justify-center relative rounded-xs hover:bg-surface-muted transition-colors"
                 href="{{ route('seller.notifications.index') }}" style="width: 40px; height: 40px;">
-                <i data-feather="bell" style="width: 20px; height: 20px; color: #637381;"></i>
+                <i data-lucide="bell" style="width: 20px; height: 20px; color: #637381;"></i>
                 @if ($notificationCount > 0)
                     <span class="absolute rounded-full text-center" style="top: 2px; right: 2px; font-size: 9px; line-height: 12px; padding: 2px 5px; min-width: 16px; background: #D93025; color: #fff;">
                         {{ $notificationCount }}
@@ -46,12 +46,12 @@
                         <li>
                             @if (auth('seller')->check())
                                 <a class="dropdown-item py-2 flex items-center gap-2" href="{{ route('seller.profile') }}">
-                                    <i data-feather="settings" style="width: 16px; height: 16px;" class="text-ink-tertiary"></i>
+                                    <i data-lucide="settings" style="width: 16px; height: 16px;" class="text-ink-tertiary"></i>
                                     Account Settings
                                 </a>
                             @elseif (auth('employee')->check())
                                 <a class="dropdown-item py-2 flex items-center gap-2" href="{{ route('seller.employees.profile') }}">
-                                    <i data-feather="settings" style="width: 16px; height: 16px;" class="text-ink-tertiary"></i>
+                                    <i data-lucide="settings" style="width: 16px; height: 16px;" class="text-ink-tertiary"></i>
                                     Account Settings
                                 </a>
                             @endif
@@ -60,7 +60,7 @@
                             <form action="{{ route('logout') }}" method="POST">
                                 @csrf
                                 <button type="submit" class="dropdown-item py-2 flex items-center gap-2 w-full text-start">
-                                    <i data-feather="power" style="width: 16px; height: 16px;" class="text-ink-tertiary"></i>
+                                    <i data-lucide="power" style="width: 16px; height: 16px;" class="text-ink-tertiary"></i>
                                     Sign Out
                                 </button>
                             </form>

@@ -6,10 +6,10 @@
     <h4 class="font-bold mb-0 text-ink">{{ $bundle->name }}</h4>
     <div class="flex gap-2">
         <a href="{{ route('seller.bundles.edit', $bundle) }}" class="btn btn-primary btn-sm">
-            <i data-feather="edit" class="icon-xs me-1"></i> Edit
+            <i data-lucide="edit" class="icon-xs me-1"></i> Edit
         </a>
         <a href="{{ route('seller.bundles.index') }}" class="btn btn-light btn-sm">
-            <i data-feather="arrow-left" class="icon-xs me-1"></i> Back
+            <i data-lucide="arrow-left" class="icon-xs me-1"></i> Back
         </a>
     </div>
 </div>
@@ -199,14 +199,14 @@
                     <form action="{{ route('seller.bundles.duplicate', $bundle) }}" method="POST">
                         @csrf
                         <button type="submit" class="btn btn-light w-full btn-sm">
-                            <i data-feather="copy" class="icon-xs me-1"></i> Duplicate Bundle
+                            <i data-lucide="copy" class="icon-xs me-1"></i> Duplicate Bundle
                         </button>
                     </form>
                     <form action="{{ route('seller.bundles.destroy', $bundle) }}" method="POST"
                         onsubmit="return confirm('Delete this bundle permanently?')">
                         @csrf @method('DELETE')
                         <button type="submit" class="btn btn-outline-danger w-full btn-sm">
-                            <i data-feather="trash-2" class="icon-xs me-1"></i> Delete Bundle
+                            <i data-lucide="trash-2" class="icon-xs me-1"></i> Delete Bundle
                         </button>
                     </form>
                 </div>

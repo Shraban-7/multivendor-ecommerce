@@ -5,7 +5,7 @@
 <div class="flex justify-between items-center mb-3">
     <h4 class="font-bold mb-0 text-ink">Import Details</h4>
     <a href="{{ route('seller.bulk-upload.index') }}" class="btn btn-light btn-sm">
-        <i data-feather="arrow-left" class="icon-xs me-1"></i> Back to Imports
+        <i data-lucide="arrow-left" class="icon-xs me-1"></i> Back to Imports
     </a>
 </div>
 
@@ -43,7 +43,7 @@
                         <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-xs badge-soft-secondary">Pending</span>
                     @elseif($bulkUpload->status === 'processing')
                         <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-xs badge-soft-warning">
-                            <i data-feather="loader" class="icon-xs"></i> Processing...
+                            <i data-lucide="loader" class="icon-xs"></i> Processing...
                         </span>
                     @elseif($bulkUpload->status === 'completed')
                         <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-xs badge-soft-success">Completed</span>
@@ -64,7 +64,7 @@
 
         @if($bulkUpload->status === 'processing')
         <div class="flex items-center gap-2 p-4 rounded-xs bg-feedback-info/10 border border-feedback-info text-feedback-info text-sm">
-            <i data-feather="loader" class="icon-xs me-1"></i>
+            <i data-lucide="loader" class="icon-xs me-1"></i>
             Import is currently processing. Refresh the page to see updated results.
         </div>
 
@@ -77,7 +77,7 @@
 
         @if($bulkUpload->status === 'failed' && isset($bulkUpload->summary['error']))
         <div class="flex items-center gap-2 p-4 rounded-xs bg-feedback-danger/10 border border-feedback-danger text-feedback-danger text-sm">
-            <i data-feather="alert-circle" class="icon-xs me-1"></i>
+            <i data-lucide="alert-circle" class="icon-xs me-1"></i>
             Import failed: {{ $bulkUpload->summary['error'] }}
         </div>
         @endif
@@ -86,7 +86,7 @@
         <div class="flex justify-between items-center mb-3">
             <h6 class="font-semibold mb-0">Failed Rows ({{ $bulkUpload->fail_count }})</h6>
             <a href="{{ route('seller.bulk-upload.downloadErrors', $bulkUpload) }}" class="btn btn-light btn-sm">
-                <i data-feather="download" class="icon-xs me-1"></i> Download Error Report
+                <i data-lucide="download" class="icon-xs me-1"></i> Download Error Report
             </a>
         </div>
 
@@ -122,7 +122,7 @@
         @if($bulkUpload->success_count > 0)
         <div class="mt-3">
             <a href="{{ route('seller.products.index') }}" class="btn btn-primary btn-sm">
-                <i data-feather="eye" class="icon-xs me-1"></i> View Products
+                <i data-lucide="eye" class="icon-xs me-1"></i> View Products
             </a>
         </div>
         @endif

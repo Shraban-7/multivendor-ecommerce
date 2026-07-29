@@ -14,7 +14,7 @@
                     @endforeach
                 </select>
                 <input type="text" name="tracking_number" class="w-full px-2.5 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" style="width:160px;" placeholder="Tracking #" value="{{ request('tracking_number') }}">
-                <button class="btn btn-primary btn-sm"><i data-feather="search" style="width:14px;height:14px;"></i></button>
+                <button class="btn btn-primary btn-sm"><i data-lucide="search" style="width:14px;height:14px;"></i></button>
             </form>
         </div>
     </div>
@@ -69,7 +69,7 @@
                                 <td>
                                     <a href="{{ route('seller.shipping.shipments.show', $shipment->id) }}"
                                        class="btn btn-light btn-sm">
-                                        <i data-feather="eye" style="width:14px;height:14px;"></i>
+                                        <i data-lucide="eye" style="width:14px;height:14px;"></i>
                                     </a>
                                 </td>
                             </tr>
@@ -84,7 +84,7 @@
     @else
         <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0" style="border-radius: 12px;">
             <div class="p-5 text-center py-5">
-                <i data-feather="package" style="width: 64px; height: 64px;" class="text-ink-tertiary mb-3"></i>
+                <i data-lucide="package" style="width: 64px; height: 64px;" class="text-ink-tertiary mb-3"></i>
                 <h5 class="font-semibold mb-2">No Shipments</h5>
                 <p class="text-ink-tertiary mb-0">Shipments will appear here after you create them from order details.</p>
             </div>

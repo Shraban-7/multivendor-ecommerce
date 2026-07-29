@@ -10,7 +10,7 @@
         <h4 class="font-bold mb-0 text-ink">Customers</h4>
         <button class="btn btn-primary btn-sm" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas"
             aria-controls="filterCanvas">
-            <i data-feather="filter" class="icon-xs"></i> Filter
+            <i data-lucide="filter" class="icon-xs"></i> Filter
         </button>
     </div>
 

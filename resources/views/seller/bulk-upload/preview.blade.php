@@ -5,7 +5,7 @@
 <div class="flex justify-between items-center mb-3">
     <h4 class="font-bold mb-0 text-ink">Preview Import</h4>
     <a href="{{ route('seller.bulk-upload.index') }}" class="btn btn-light btn-sm">
-        <i data-feather="arrow-left" class="icon-xs me-1"></i> Back
+        <i data-lucide="arrow-left" class="icon-xs me-1"></i> Back
     </a>
 </div>
 
@@ -81,7 +81,7 @@
             <form action="{{ route('seller.bulk-upload.confirm', $bulkUpload) }}" method="POST">
                 @csrf
                 <button type="submit" class="btn btn-primary">
-                    <i data-feather="play" class="icon-xs me-1"></i> Start Import
+                    <i data-lucide="play" class="icon-xs me-1"></i> Start Import
                 </button>
             </form>
             <a href="{{ route('seller.bulk-upload.index') }}" class="btn btn-light">

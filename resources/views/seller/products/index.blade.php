@@ -7,7 +7,7 @@
     <div class="flex gap-2">
         <input type="text" id="tableSearch" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="Search products..." style="width:200px;">
         <a href="{{ route('seller.products.create') }}" class="btn btn-primary btn-sm">
-            <i data-feather="plus" class="icon-xs"></i> Add Product
+            <i data-lucide="plus" class="icon-xs"></i> Add Product
         </a>
     </div>
 </div>
@@ -80,27 +80,27 @@
                     @endif
                     <br>
                     @if ($product->is_visible && $product->status == $product::STATUS_ACTIVE)
-                    <span class="text-sm text-feedback-success"><i data-feather="eye" class="icon-xs"></i> Visible</span>
+                    <span class="text-sm text-feedback-success"><i data-lucide="eye" class="icon-xs"></i> Visible</span>
                     @elseif (!$product->is_visible && $product->status != $product::STATUS_DELETED)
-                    <span class="text-sm text-ink-tertiary"><i data-feather="eye-off" class="icon-xs"></i> Hidden</span>
+                    <span class="text-sm text-ink-tertiary"><i data-lucide="eye-off" class="icon-xs"></i> Hidden</span>
                     @endif
                 </td>
                 <td class="text-sm whitespace-nowrap">{{ $product->created_at->format('d/m/y') }}<br><span class="text-ink-tertiary">{{ $product->created_at->format('h:ia') }}</span></td>
                 <td class="text-center">
                     <div class="dropdown">
                         <button class="btn btn-light btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i data-feather="more-vertical" class="icon-xs"></i>
+                            <i data-lucide="more-vertical" class="icon-xs"></i>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 py-1" style="min-width:150px;">
-                            <li><a class="dropdown-item py-1.5" href="{{ route('seller.products.show', $product->slug) }}" target="__blank"><i data-feather="eye" class="icon-xs me-2"></i>View Details</a></li>
-                            <li><a class="dropdown-item py-1.5" href="{{ route('seller.products.edit', $product->slug) }}" target="__blank"><i data-feather="edit" class="icon-xs me-2"></i>Edit</a></li>
-                            <li><a class="dropdown-item py-1.5" href="{{ route('seller.products.media.index', $product) }}"><i data-feather="image" class="icon-xs me-2"></i>Media</a></li>
+                            <li><a class="dropdown-item py-1.5" href="{{ route('seller.products.show', $product->slug) }}" target="__blank"><i data-lucide="eye" class="icon-xs me-2"></i>View Details</a></li>
+                            <li><a class="dropdown-item py-1.5" href="{{ route('seller.products.edit', $product->slug) }}" target="__blank"><i data-lucide="edit" class="icon-xs me-2"></i>Edit</a></li>
+                            <li><a class="dropdown-item py-1.5" href="{{ route('seller.products.media.index', $product) }}"><i data-lucide="image" class="icon-xs me-2"></i>Media</a></li>
                             @if ($product->status != $product::STATUS_DELETED)
                             <li><hr class="dropdown-divider my-1"></li>
                             <li>
                                 <form action="{{ route('seller.products.duplicate', $product) }}" method="POST" class="inline">
                                     @csrf
-                                    <button type="submit" class="dropdown-item py-1.5"><i data-feather="copy" class="icon-xs me-2"></i>Clone</button>
+                                    <button type="submit" class="dropdown-item py-1.5"><i data-lucide="copy" class="icon-xs me-2"></i>Clone</button>
                                 </form>
                             </li>
                             <li>
@@ -108,9 +108,9 @@
                                     @csrf
                                     <button type="submit" class="dropdown-item py-1.5">
                                         @if ($product->is_visible)
-                                        <i data-feather="eye-off" class="icon-xs me-2"></i>Hide
+                                        <i data-lucide="eye-off" class="icon-xs me-2"></i>Hide
                                         @else
-                                        <i data-feather="eye" class="icon-xs me-2"></i>Show
+                                        <i data-lucide="eye" class="icon-xs me-2"></i>Show
                                         @endif
                                     </button>
                                 </form>
@@ -119,7 +119,7 @@
                             <li><hr class="dropdown-divider my-1"></li>
                             <li>
                                 <button type="button" class="dropdown-item py-1.5 text-feedback-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-{{ $product->id }}">
-                                    <i data-feather="trash-2" class="icon-xs me-2"></i>Delete
+                                    <i data-lucide="trash-2" class="icon-xs me-2"></i>Delete
                                 </button>
                             </li>
                         </ul>
@@ -202,7 +202,7 @@
 
 @push('scripts')
 <script>
-    feather.replace();
+    window.renderIcons && window.renderIcons();
     document.getElementById('tableSearch')?.addEventListener('keyup', function() {
         const q = this.value.toLowerCase();
         document.querySelectorAll('.product-row').forEach(row => {
