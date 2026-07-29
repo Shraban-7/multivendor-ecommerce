@@ -11,8 +11,9 @@ class SubcategoryController extends Controller
     public function index()
     {
         $subcategories = Category::subcategory()->with('subcategories')->latest()->paginate(15);
+        $categories = Category::category()->with('subcategories')->latest()->get();
 
-        return view('admin.subcategories.index', compact('subcategories'));
+        return view('admin.subcategories.index', compact('subcategories', 'categories'));
     }
 
     public function create()

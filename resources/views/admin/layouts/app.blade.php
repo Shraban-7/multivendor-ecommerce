@@ -300,7 +300,8 @@
                 });
             });
         })();
-    </script>
+    @stack('scripts')
+    @stack('modals')
 
     <script>
         function confirmDelete(url) {

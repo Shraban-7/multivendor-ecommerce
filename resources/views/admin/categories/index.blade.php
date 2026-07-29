@@ -2,9 +2,14 @@
 @section('title', 'Categories')
 @section('content')
 
-<div class="flex justify-between items-end mb-3">
-    <h3 class="mb-0">Categories</h3>
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#categoryModal">+ Add Category</button>
+<div class="flex justify-between items-start mb-4">
+    <div>
+        <h1 class="text-xl font-semibold text-ink">Categories</h1>
+        <p class="text-sm text-ink-secondary mt-1">Organise your product catalog</p>
+    </div>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#categoryModal">
+        <i data-lucide="plus" class="icon-xs"></i> Add Category
+    </button>
 </div>
 
 <table class="w-full text-left text-sm text-ink border-collapse">
@@ -12,7 +17,6 @@
         <tr>
             <th>Image</th>
             <th>Name</th>
-            <th>Icon</th>
             <th>Status</th>
             <th>Actions</th>
         </tr>
@@ -20,24 +24,35 @@
     <tbody>
         @foreach($categories as $category)
         <tr>
-            <td><img src="{{ storage_url($category->image) }}" width="50"></td>
-            <td><strong>{{ $category->name }}</strong></td>
-            <td>{{ $category->icon }}</td>
-            <td>@if($category->status)<span class="badge bg-brand-deep">Active</span> @else <span class="badge bg-surface-muted">Inactive</span> @endif</td>
+            <td><img src="{{ storage_url($category->image) }}" width="50" class="border rounded-xs"></td>
+            <td class="font-semibold text-ink">{{ $category->name }}</td>
+            <td>
+                @if($category->status)
+                    <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium text-white bg-brand-deep rounded-full">Active</span>
+                @else
+                    <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium text-ink-tertiary bg-surface-muted rounded-full">Inactive</span>
+                @endif
+            </td>
             <td>
                 <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#editModal{{ $category->id }}">
-                    Edit
+                    <i data-lucide="edit" class="icon-xs"></i> Edit
                 </button>
             </td>
         </tr>
         @foreach($category->subcategories as $sub)
         <tr>
             <td></td>
-            <td><span class="text-ink-tertiary ms-4">— {{ $sub->name }}</span></td>
-            <td>@if($sub->status)<span class="badge bg-brand-deep">Active</span> @else <span class="badge bg-surface-muted">Inactive</span> @endif</td>
+            <td><span class="text-ink-tertiary pl-4">— {{ $sub->name }}</span></td>
+            <td>
+                @if($sub->status)
+                    <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium text-white bg-brand-deep rounded-full">Active</span>
+                @else
+                    <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium text-ink-tertiary bg-surface-muted rounded-full">Inactive</span>
+                @endif
+            </td>
             <td>
                 <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#editModal{{ $sub->id }}">
-                    Edit
+                    <i data-lucide="edit" class="icon-xs"></i> Edit
                 </button>
             </td>
         </tr>
@@ -54,21 +69,22 @@
 @endforeach
 
 <div class="modal fade" id="categoryModal" tabindex="-1">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <form action="{{ route('admin.categories.store') }}" method="POST" enctype="multipart/form-data" id="categoryForm">
             @csrf
             <input type="hidden" name="_method" id="formMethod" value="POST">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalTitle">Add Category</h5>
+                <div class="modal-header border-b border-border">
+                    <h5 class="modal-title text-sm font-semibold text-ink" id="modalTitle">Add Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label>Name</label>
+                        <label class="block text-xs font-medium text-ink-secondary mb-1">Name</label>
                         <input type="text" name="name" id="cat_name" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
                     </div>
                     <div class="mb-3">
-                        <label>Parent Category (Optional)</label>
+                        <label class="block text-xs font-medium text-ink-secondary mb-1">Parent Category (Optional)</label>
                         <select name="category_id" id="cat_parent" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
                             <option value="">None (Main)</option>
                             @foreach($categories as $cat)
@@ -77,15 +93,15 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label>Image</label>
+                        <label class="block text-xs font-medium text-ink-secondary mb-1">Image</label>
                         <input type="file" name="image" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
                     </div>
-                    <div class="flex items-center gap-2 form-switch">
+                    <div class="flex items-center gap-2">
                         <input class="h-4 w-4 rounded border-border text-brand focus:ring-brand" type="checkbox" name="status" value="1" id="cat_status" checked>
-                        <label class="text-sm text-ink">Is Active</label>
+                        <label class="text-sm text-ink" for="cat_status">Is Active</label>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer border-t border-border">
                     <button type="submit" class="btn btn-primary">Save Changes</button>
                 </div>
             </div>

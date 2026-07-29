@@ -1,107 +1,75 @@
 @extends('admin.layouts.app')
 @section('title', 'Add Category')
 @section('content')
-    <div class="mb-3 flex justify-between items-end">
-        <h4 class="mb-0">Add Category</h4>
+    <div class="flex justify-between items-start mb-4">
+        <div>
+            <h1 class="text-xl font-semibold text-ink">Add Category</h1>
+            <p class="text-sm text-ink-secondary mt-1">Create a new product category</p>
+        </div>
     </div>
 
-    <div class="grid grid-cols-1">
-        <div class="col-span-2">
-            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden p-5">
-                <form id="form" action="{{ route('admin.categories.store') }}" method="POST"
-                    enctype="multipart/form-data">
-                    @CSRF
-                    <div class="grid grid-cols-1">
-                        <div class="mb-3 md:col-span-1">
-                            <label class="block text-xs font-medium text-ink-secondary mb-1">Name</label>
-                            <input name="name" type="text" value="" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
-                        </div>
-                        <div class="mb-3 md:col-span-1">
-                            <label class="block text-xs font-medium text-ink-secondary mb-1">Icon (FontAwesome)</label>
-
-                            <div class="flex">
-                                <span class="inline-flex items-center px-3 py-2 text-sm text-ink-tertiary bg-surface-muted border border-border">
-                                    <i  id="iconPreview" data-lucide="circle-help"></i>
-                                </span>
-
-                                <input type="text" name="icon" id="iconInput" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors"
-                                    placeholder="e.g. fa-brands fa-facebook" required>
-
-                                <!-- FontAwesome Link Button -->
-                                <a href="https://fontawesome.com/icons" target="_blank" class="btn btn-light">
-                                    <i data-lucide="square-arrow-out-up-right"></i>
-                                </a>
-                            </div>
-
-
-                            <small class="text-ink-tertiary">
-                                Example: <b>fas fa-facebook</b>, <b>fas fa-youtube</b>
-                            </small>
-                        </div>
-
-                        {{-- <div class="mb-3 md:col-span-1">
-                            <label class="block text-xs font-medium text-ink-secondary mb-1">Cover Title</label>
-                            <input name="cover_title" type="text" value="" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
-                        </div>
-                        <div class="mb-3 md:col-span-full">
-                            <label class="block text-xs font-medium text-ink-secondary mb-1">Cover Description</label>
-                            <x-textarea-input name="cover_description" value="" />
-                        </div>
-                         <div class="mb-3 md:col-span-1">
-                            <label class="block text-xs font-medium text-ink-secondary mb-1">Cover Background Color</label>
-                            <input name="cover_bg_color" type="color" value="" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" >
-                        </div>
-                         <div class="mb-3 md:col-span-1">
-                            <label class="block text-xs font-medium text-ink-secondary mb-1">Cover Text Color</label>
-                            <input name="cover_text_color" type="color" value="" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
-                        </div>
-                         <div class="mb-3 md:col-span-1">
-                            <label class="block text-xs font-medium text-ink-secondary mb-1">Cover Button Color</label>
-                            <input name="cover_button_color" type="color" value="" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
-                        </div> --}}
-                        <div class="mb-3 md:col-span-full">
-                            <div class="gap-3 flex items-center">
-                                <div class="flex items-center gap-2 form-switch">
-                                    <input type="hidden" name="is_trending" value="0">
-                                    <input class="h-4 w-4 rounded border-border text-brand focus:ring-brand" type="checkbox" name="is_nav" value="1"
-                                        role="switch" id="flexSwitchCheckDefault">
-                                    <label class="text-sm text-ink" for="flexSwitchCheckDefault">Show Top Navbar</label>
-                                </div>
-                                <div class="flex items-center gap-2 form-switch">
-                                    <input type="hidden" name="best_selling" value="0">
-                                    <input class="h-4 w-4 rounded border-border text-brand focus:ring-brand" type="checkbox" name="is_special" value="1"
-                                        role="switch" id="flexSwitchCheckDefault">
-                                    <label class="text-sm text-ink" for="flexSwitchCheckDefault">Special</label>
-                                </div>
-                                <div class="flex items-center gap-2 form-switch">
-                                    <input type="hidden" name="is_featured" value="0">
-                                    <input class="h-4 w-4 rounded border-border text-brand focus:ring-brand" type="checkbox" name="is_slider" value="1"
-                                        role="switch" id="flexSwitchCheckDefault">
-                                    <label class="text-sm text-ink" for="flexSwitchCheckDefault">Slider Category</label>
-                                </div>
-                            </div>
-                        </div>
-                        {{-- <div class="mb-3 col-span-1">
-                            <label class="block text-xs font-medium text-ink-secondary mb-1">Image</label>
-                            <x-image-input name="image" />
-                        </div> --}}
-                        <div class="mb-3 col-span-1">
-                            <label class="block text-xs font-medium text-ink-secondary mb-1 font-semibold mb-1">
-                                App Icon
-                                <span class="text-feedback-danger">*</span>
-                                <small class="text-ink-tertiary">(Supported formats: PNG, SVG)</small>
-                            </label>
-
-                            <x-image-input name="app_icon" />
-                        </div>
-                        {{-- <div class="mb-3 col-span-1">
-                            <label class="block text-xs font-medium text-ink-secondary mb-1">Cover Photo</label>
-                            <x-image-input name="cover_image" />
-                        </div> --}}
+    <div class="max-w-2xl">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden p-5">
+            <form id="form" action="{{ route('admin.categories.store') }}" method="POST"
+                enctype="multipart/form-data">
+                @CSRF
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-xs font-medium text-ink-secondary mb-1">Name</label>
+                        <input name="name" type="text" value="" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
                     </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-ink-secondary mb-1">Icon (FontAwesome)</label>
+                        <div class="flex">
+                            <span class="inline-flex items-center px-3 py-2 text-sm text-ink-tertiary bg-surface-muted border border-border rounded-l-xs">
+                                <i id="iconPreview" data-lucide="circle-help"></i>
+                            </span>
+                            <input type="text" name="icon" id="iconInput" class="flex-1 px-3 py-2 text-sm text-ink bg-white border border-border rounded-r-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors"
+                                placeholder="e.g. fa-brands fa-facebook" required>
+                            <a href="https://fontawesome.com/icons" target="_blank" class="btn btn-light ms-2">
+                                <i data-lucide="square-arrow-out-up-right"></i>
+                            </a>
+                        </div>
+                        <small class="text-ink-tertiary mt-1 block">
+                            Example: <b>fas fa-facebook</b>, <b>fas fa-youtube</b>
+                        </small>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center gap-6">
+                            <div class="flex items-center gap-2">
+                                <input type="hidden" name="is_nav" value="0">
+                                <input class="h-4 w-4 rounded border-border text-brand focus:ring-brand" type="checkbox" name="is_nav" value="1" id="is_nav">
+                                <label class="text-sm text-ink" for="is_nav">Show Top Navbar</label>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <input type="hidden" name="is_special" value="0">
+                                <input class="h-4 w-4 rounded border-border text-brand focus:ring-brand" type="checkbox" name="is_special" value="1" id="is_special">
+                                <label class="text-sm text-ink" for="is_special">Special</label>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <input type="hidden" name="is_slider" value="0">
+                                <input class="h-4 w-4 rounded border-border text-brand focus:ring-brand" type="checkbox" name="is_slider" value="1" id="is_slider">
+                                <label class="text-sm text-ink" for="is_slider">Slider Category</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-ink-secondary mb-1">
+                            App Icon
+                            <span class="text-feedback-danger">*</span>
+                            <small class="text-ink-tertiary">(Supported formats: PNG, SVG)</small>
+                        </label>
+                        <x-image-input name="app_icon" />
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-border">
                     <button type="submit" id="submitBtn" class="btn btn-primary">Save</button>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -110,9 +78,8 @@
             document.getElementById('iconInput').addEventListener('input', function() {
                 const value = this.value.trim().toLowerCase();
                 const preview = document.getElementById('iconPreview');
-
                 if (value) {
-                    preview.className = `${value}`;
+                    preview.className = value;
                 } else {
                     preview.className = 'fa fa-question-circle';
                 }

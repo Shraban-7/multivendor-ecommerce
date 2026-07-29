@@ -2,8 +2,11 @@
 @section('title', 'Products')
 @section('content')
 
-    <div class="mb-3 flex justify-between items-end">
-        <h4 class="mb-0">Products</h4>
+    <div class="flex justify-between items-start mb-4">
+        <div>
+            <h1 class="text-xl font-semibold text-ink">Products</h1>
+            <p class="text-sm text-ink-secondary mt-1">Review and manage all marketplace products</p>
+        </div>
     </div>
 
     <div class="overflow-x-auto">
@@ -24,16 +27,16 @@
                     @php
                         $totalStockIn = $product->variants->sum('stock_in');
                         $totalStockOut = $product->variants->sum('stock_out');
-                        $totalStock = $totalStockIn = $totalStockOut;
+                        $totalStock = $totalStockIn - $totalStockOut;
                     @endphp
                     <tr>
                         <td>
-                            <div class="flex">
-                                <img src="{{ storage_url($product->thumbnail) }}" class="border rounded-full"
-                                    alt="Image" style="height:64px; width:64px">
-                                <div class="ms-3">
-                                    <div class="font-bold">{{ $product->name }}</div>
-                                    <div class="small">
+                            <div class="flex items-center gap-3">
+                                <img src="{{ storage_url($product->thumbnail) }}"
+                                    class="w-12 h-12 rounded-full border object-cover" alt="Image">
+                                <div>
+                                    <div class="font-semibold text-ink">{{ $product->name }}</div>
+                                    <div class="text-xs text-ink-tertiary leading-tight">
                                         Category: {{ $product->category->name }}
                                         @if ($product->brand)
                                             <br> Brand: {{ $product->brand->name }}
@@ -42,28 +45,23 @@
                                 </div>
                             </div>
                         </td>
-                        <td>
-                            {{ money($product->price) }}
-                        </td>
-                        <td>
-                            {{ $totalStock }} {{ $product->unit->short_name }}
-                        </td>
-                        <td>{{ $product->created_at->format('d/m/y h:i A') }} </td>
+                        <td>{{ money($product->price) }}</td>
+                        <td>{{ $totalStock }} {{ $product->unit->short_name }}</td>
+                        <td class="text-ink-tertiary text-xs">{{ $product->created_at->format('d/m/y h:i A') }}</td>
                         <td>
                             @if ($product->status == $product::STATUS_PENDING_APPROVAL)
-                                <span class="badge text-bg-surface-muted">Pending Approval</span>
+                                <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium text-ink-tertiary bg-surface-muted rounded-full">Pending Approval</span>
                             @elseif ($product->status == $product::STATUS_ACTIVE)
-                                <span class="badge text-bg-feedback-success">Active</span>
+                                <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium text-white bg-green-500 rounded-full">Active</span>
                             @elseif ($product->status == $product::STATUS_INACTIVE)
-                                <span class="badge text-bg-feedback-warning">Inactive</span>
+                                <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium text-ink bg-yellow-400 rounded-full">Inactive</span>
                             @elseif ($product->status == $product::STATUS_DELETED)
-                                <span class="badge text-bg-feedback-danger">Deleted</span>
+                                <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium text-white bg-red-500 rounded-full">Deleted</span>
                             @else
-                                <span class="badge text-bg-surface-muted">Unknown</span>
+                                <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium text-ink-tertiary bg-surface-muted rounded-full">Unknown</span>
                             @endif
-
                         </td>
-                        <td class="flex">
+                        <td>
                             <x-seller :seller="$product->seller" />
                         </td>
                         <td>
@@ -80,8 +78,8 @@
                                         <form action="{{ route('admin.products.updateStatus', $product->id) }}"
                                             method="POST">
                                             @csrf
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="statusModalLabel-{{ $product->id }}">
+                                            <div class="modal-header border-b border-border">
+                                                <h5 class="modal-title text-sm font-semibold text-ink" id="statusModalLabel-{{ $product->id }}">
                                                     Update Product Status
                                                 </h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -89,8 +87,7 @@
                                             </div>
                                             <div class="modal-body">
                                                 <div class="mb-3">
-                                                    <label for="status-{{ $product->id }}" class="block text-xs font-medium text-ink-secondary mb-1">Select
-                                                        Status</label>
+                                                    <label for="status-{{ $product->id }}" class="block text-xs font-medium text-ink-secondary mb-1">Select Status</label>
                                                     <select class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" id="status-{{ $product->id }}"
                                                         name="status">
                                                         <option value="{{ \App\Domain\Product\Models\Product::STATUS_PENDING_APPROVAL }}"
@@ -110,10 +107,9 @@
                                                             Deleted
                                                         </option>
                                                     </select>
-
                                                 </div>
                                             </div>
-                                            <div class="modal-footer">
+                                            <div class="modal-footer border-t border-border">
                                                 <button type="button" class="btn btn-light"
                                                     data-bs-dismiss="modal">Close</button>
                                                 <button type="submit" class="btn btn-primary">Update</button>
@@ -123,81 +119,10 @@
                                 </div>
                             </div>
                         </td>
-
                     </tr>
                 @endforeach
             </tbody>
         </table>
-    </div>
-
-    <div class="modal fade" id="addModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title text-base">Add Product</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form action="" method="post">
-                    @CSRF
-                    <div class="modal-body">
-                        <div class="grid grid-cols-1">
-                            <div class="mb-3 md:col-span-1">
-                                <label class="block text-xs font-medium text-ink-secondary mb-1">Category</label>
-                                <select name="game_id" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" id="gameSelect" required>
-                                    <option value="" selected disabled>--Choose--</option>
-                                    @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div class="mb-3 md:col-span-1">
-                                <label class="block text-xs font-medium text-ink-secondary mb-1">Subcategory</label>
-                                <select name="game_id" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" id="gameSelect" required>
-                                    <option value="" selected disabled>--Choose--</option>
-
-                                    <option value=""></option>
-
-                                </select>
-                            </div>
-
-                            <div class="mb-3 md:col-span-1">
-                                <label class="block text-xs font-medium text-ink-secondary mb-1">Brand</label>
-                                <select name="game_id" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" id="gameSelect" required>
-                                    <option value="" selected disabled>--Choose--</option>
-                                    @foreach ($brands as $brand)
-                                        <option value="{{ $brand->id }}">{{ $brand->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div class="mb-3 md:col-span-1">
-                                <label class="block text-xs font-medium text-ink-secondary mb-1">Name</label>
-                                <input name="name" type="text" value="" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
-                            </div>
-                            <div class="mb-3 md:col-span-1">
-                                <label class="block text-xs font-medium text-ink-secondary mb-1">Buying Price</label>
-                                <input name="name" type="text" value="" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
-                            </div>
-                            <div class="mb-3 md:col-span-1">
-                                <label class="block text-xs font-medium text-ink-secondary mb-1">Selling Price</label>
-                                <input name="name" type="text" value="" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
-                            </div>
-                            <div class="mb-3 md:col-span-1">
-                                <label class="block text-xs font-medium text-ink-secondary mb-1">Quantity</label>
-                                <input name="name" type="text" value="" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
-                            </div>
-                            <div class="mb-3 md:col-span-1">
-                                <label class="block text-xs font-medium text-ink-secondary mb-1">Stock in</label>
-                                <input name="name" type="text" value="" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
-                            </div>
-
-                        </div>
-                        <button type="submit" class="btn btn-primary">Save Contest</button>
-                    </div>
-                </form>
-            </div>
-        </div>
     </div>
 
     @push('scripts')
