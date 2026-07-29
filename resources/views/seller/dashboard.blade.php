@@ -373,11 +373,11 @@
             datasets: [{
                 label: 'Orders',
                 data: chartData.orders,
-                borderColor: getComputedStyle(document.documentElement).getPropertyValue('--bs-primary').trim() || '#F85606',
+                borderColor: getComputedStyle(document.documentElement).getPropertyValue('--brand-color').trim() || '#F85606',
                 backgroundColor: 'rgba(248, 86, 6, 0.08)',
                 tension: 0.4,
                 fill: true,
-                pointBackgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--bs-primary').trim() || '#F85606',
+                pointBackgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--brand-color').trim() || '#F85606',
                 pointBorderColor: '#fff',
                 pointBorderWidth: 2,
                 pointRadius: 4
@@ -395,11 +395,11 @@
             }, {
                 label: 'Profit',
                 data: chartData.profits,
-                borderColor: getComputedStyle(document.documentElement).getPropertyValue('--bs-success').trim() || '#1D8A45',
+                borderColor: getComputedStyle(document.documentElement).getPropertyValue('--brand-success').trim() || '#1D8A45',
                 backgroundColor: 'rgba(29, 138, 69, 0.08)',
                 tension: 0.4,
                 fill: true,
-                pointBackgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--bs-success').trim() || '#1D8A45',
+                pointBackgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--brand-success').trim() || '#1D8A45',
                 pointBorderColor: '#fff',
                 pointBorderWidth: 2,
                 pointRadius: 4

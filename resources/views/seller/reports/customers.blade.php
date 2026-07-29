@@ -41,6 +41,8 @@
 
         <div class="grid grid-cols-1 mb-5 g-4">
             @php
+                $colorMap = ['primary' => '#F85606', 'info' => '#0F6FC5', 'success' => '#1D8A45', 'warning' => '#B7791A', 'secondary' => '#767676', 'danger' => '#D93025'];
+                $textColorMap = ['primary' => 'text-brand', 'info' => 'text-feedback-info', 'success' => 'text-feedback-success', 'warning' => 'text-feedback-warning', 'secondary' => 'text-ink-secondary', 'danger' => 'text-feedback-danger'];
                 $kpis = [
                     ['label' => 'Total Customers', 'value' => $allTimeTotalCustomers, 'change' => 0, 'icon' => 'users', 'color' => 'primary', 'note' => 'all time'],
                     ['label' => 'New Customers', 'value' => $newCustomersCurrent, 'change' => $newCustomersChange, 'icon' => 'user-plus', 'color' => 'info', 'note' => 'this period'],
@@ -51,11 +53,11 @@
             @endphp
             @foreach ($kpis as $index => $kpi)
                 <div class="xl:col-span-1-{{ in_array($index, [2, 3, 4]) ? 2 : 3 }} lg:col-span-1 md:col-span-1">
-                    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3 h-full" style="border-radius: 12px; border-left: 5px solid var(--bs-{{ $kpi['color'] }});">
+                    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3 h-full" style="border-radius: 12px; border-left: 5px solid {{ $colorMap[$kpi['color']] }};">
                         <div class="flex justify-between items-start">
                             <div>
                                 <span class="text-ink-tertiary uppercase text-sm">{{ $kpi['label'] }}</span>
-                                <h5 class="font-bold text-{{ $kpi['color'] }} mb-0">{{ $kpi['value'] }}</h5>
+                                <h5 class="font-bold {{ $textColorMap[$kpi['color']] }} mb-0">{{ $kpi['value'] }}</h5>
                             </div>
                             <i data-lucide="{{ $kpi['icon'] }}" class="opacity-50 icon-sm"></i>
                         </div>

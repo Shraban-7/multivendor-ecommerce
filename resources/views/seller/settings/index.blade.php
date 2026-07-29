@@ -8,8 +8,8 @@
         color: #6c757d; font-weight: 500; border: none; padding: 0.75rem 1.25rem;
         border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.15s;
     }
-    .settings-tabs .nav-link:hover { color: var(--bs-primary); border-bottom-color: #dee2e6; }
-    .settings-tabs .nav-link.active { color: var(--bs-primary); border-bottom-color: var(--bs-primary); background: none; }
+    .settings-tabs .nav-link:hover { color: #F85606; border-bottom-color: #dee2e6; }
+    .settings-tabs .nav-link.active { color: #F85606; border-bottom-color: #F85606; background: none; }
     .settings-tabs .nav-link i { margin-right: 6px; }
 </style>
 @endpush

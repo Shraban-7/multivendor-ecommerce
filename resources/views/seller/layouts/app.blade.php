@@ -62,6 +62,7 @@
     </script>
     {{-- End Tailwind setup --}}
 
+    {{-- Bootstrap theme CSS retained — provides sidebar, navbar, layout, and component styling --}}
     <link rel="stylesheet" href="{{ asset('assets/dashboard/css/theme.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/dashboard/libs/bootstrap-icons/font/bootstrap-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/dashboard/libs/dropzone/dist/dropzone.css') }}">

@@ -13,9 +13,9 @@
     .or-separator { margin: 1.25rem 0; display: flex; align-items: center; color: #adb5bd; font-size: 0.8rem; text-transform: uppercase; font-weight: 600; }
     .or-separator::before, .or-separator::after { content: ''; flex-grow: 1; height: 1px; background: #e9ecef; margin: 0 1rem; }
     #connectDeviceModal .code-input-group { width: 100%; display: flex; align-items: center; padding: 0; border: 1px solid #9bbdff; background: #e9f2ff; border-radius: 6px; margin-bottom: 0.75rem; }
-    #deviceCode { flex-grow: 1; text-align: center; word-break: break-all; overflow-wrap: break-word; font-family: 'Space Mono', monospace; font-weight: 700; font-size: 1.5rem; letter-spacing: 1px; color: var(--bs-primary); padding: 0.5rem 0.75rem; user-select: all; background: transparent; border: none; }
-    #copyCodeButton { height: 100%; padding: 0.7rem 0.75rem; border-radius: 0 6px 6px 0; background-color: var(--bs-primary); border-color: var(--bs-primary); flex-shrink: 0; }
-    #copyCodeButton:hover { background-color: var(--bs-dark-primary); border-color: var(--bs-dark-primary); }
+    #deviceCode { flex-grow: 1; text-align: center; word-break: break-all; overflow-wrap: break-word; font-family: 'Space Mono', monospace; font-weight: 700; font-size: 1.5rem; letter-spacing: 1px; color: #F85606; padding: 0.5rem 0.75rem; user-select: all; background: transparent; border: none; }
+    #copyCodeButton { height: 100%; padding: 0.7rem 0.75rem; border-radius: 0 6px 6px 0; background-color: #F85606; border-color: #F85606; flex-shrink: 0; }
+    #copyCodeButton:hover { background-color: #C43D00; border-color: #C43D00; }
     #copyFeedback { font-size: 0.8rem; color: #198754; font-weight: 500; margin-top: 6px; min-height: 1rem; opacity: 0; transition: opacity 0.3s ease; }
     #copyFeedback.show { opacity: 1; }
     #connectDeviceModal .modal-footer { border-top: none; justify-content: center; padding: 0.5rem 0 0; }

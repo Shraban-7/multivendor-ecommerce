@@ -1,9 +1,9 @@
 <style>
     .border-dashed { border-style: dashed !important; }
-    .upload-zone:hover, .upload-zone.dragover { background-color: var(--bs-light-primary) !important; border-color: var(--bs-primary) !important; }
+    .upload-zone:hover, .upload-zone.dragover { background-color: #FFF1EA !important; border-color: #F85606 !important; }
     .preview-item { position: relative; animation: fadeIn 0.3s ease; }
     .preview-remove { position: absolute; top: 5px; right: 5px; background: rgba(255,255,255,0.9); border: none; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; }
-    .preview-remove:hover { background: var(--bs-danger); color: white; }
+    .preview-remove:hover { background: #D93025; color: white; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 

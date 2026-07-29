@@ -29,7 +29,7 @@
                         </div>
                         <div class="md:col-span-1">
                             <label class="text-ink-tertiary text-sm mb-1">Net Amount</label>
-                            <p class="font-semibold mb-0 text-xl" style="color: var(--bs-success);">{{ money($payout->net_amount) }}</p>
+                            <p class="font-semibold mb-0 text-xl" style="color: #1D8A45;">{{ money($payout->net_amount) }}</p>
                         </div>
                         <div class="md:col-span-1">
                             <label class="text-ink-tertiary text-sm mb-1">Currency</label>

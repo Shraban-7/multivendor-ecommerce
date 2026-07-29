@@ -150,7 +150,7 @@
                     <h5 class="text-lg font-semibold mb-3">Thumbnail</h5>
                     <div class="upload-zone border border-2 border-dashed rounded-md p-4 text-center"
                         style="cursor:pointer;background:#f8f9fa;" id="thumbZone">
-                        <i data-lucide="image" style="width:32px;height:32px;color:var(--bs-primary)"></i>
+                        <i data-lucide="image" style="width:32px;height:32px;color:#F85606"></i>
                         <p class="mt-2 mb-0 text-sm">Click to upload thumbnail</p>
                         <input type="file" name="thumbnail" id="thumbInput" class="d-none" accept="image/*">
                     </div>

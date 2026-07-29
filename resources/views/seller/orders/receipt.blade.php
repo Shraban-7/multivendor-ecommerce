@@ -122,7 +122,7 @@ $showCurrency = false;
                     <div>{{ $item->product->name }} @if($item->quantity > 1) {{ $item->quantity }}@endif</div>
 
                     @if ($item->variant)
-                    <small class="text-muted d-block">
+                    <small class="text-ink-tertiary block">
                         {{ $item->variant->label }}
                     </small>
                     @endif

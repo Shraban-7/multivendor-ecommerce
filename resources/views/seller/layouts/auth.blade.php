@@ -56,6 +56,7 @@
     </script>
     {{-- End Tailwind setup --}}
 
+    {{-- Bootstrap theme CSS retained — provides auth layout and component styling --}}
     <link rel="stylesheet" href="{{asset('assets/dashboard/css/theme.css')}}">
     <link rel="stylesheet" href="{{ asset_versioned('assets/dashboard/css/custom.css') }}">
     <link rel="stylesheet" href="{{asset('assets/dashboard/libs/bootstrap-icons/font/bootstrap-icons.css')}}">

@@ -19,10 +19,10 @@
                 <form method="POST" action="{{ route('seller.payouts.store') }}">
                     @csrf
                     <div class="p-5">
-                        <div class="mb-4 p-3 rounded-xs" style="background: var(--bs-light-primary);">
+                        <div class="mb-4 p-3 rounded-xs" style="background: #FFF1EA;">
                             <div class="flex justify-between items-center">
                                 <span class="text-ink-tertiary">Available Balance:</span>
-                                <span class="font-bold text-xl" style="color: var(--bs-primary);">{{ money($availableBalance) }}</span>
+                                <span class="font-bold text-xl" style="color: #F85606;">{{ money($availableBalance) }}</span>
                             </div>
                         </div>
 
@@ -73,7 +73,7 @@
                             @enderror
                         </div>
 
-                        <div class="p-3 rounded-xs mb-3 border" style="background: var(--bs-surface-muted);">
+                        <div class="p-3 rounded-xs mb-3 border" style="background: #F5F5F5;">
                             <h6 class="font-semibold mb-2">Fee Breakdown</h6>
                             <div class="flex justify-between text-sm mb-1">
                                 <span class="text-ink-tertiary">Requested Amount</span>
@@ -86,7 +86,7 @@
                             <hr class="my-1">
                             <div class="flex justify-between">
                                 <span class="font-semibold">You Will Receive</span>
-                                <span class="font-bold" style="color: var(--bs-success);" id="previewNet">৳0.00</span>
+                                <span class="font-bold" style="color: #1D8A45;" id="previewNet">৳0.00</span>
                             </div>
                         </div>
                     </div>

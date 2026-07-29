@@ -32,7 +32,7 @@
             @csrf
             <div class="mb-3">
                 <div class="upload-zone border border-2 border-dashed rounded-md p-5 text-center" id="uploadZone" style="cursor:pointer; background: #f8f9fa;">
-                    <i data-lucide="upload" style="width:48px;height:48px;color:var(--bs-primary)"></i>
+                    <i data-lucide="upload" style="width:48px;height:48px;color:#F85606"></i>
                     <p class="mt-2 mb-1 font-semibold">Click to upload or drag & drop</p>
                     <p class="text-ink-tertiary text-sm mb-0">CSV or XLSX files up to 10MB</p>
                     <input type="file" name="file" id="fileInput" class="hidden" accept=".csv,.xlsx,.txt">
