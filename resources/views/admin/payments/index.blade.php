@@ -76,11 +76,11 @@
                         <td>{{ money($payment->amount, $payment->currency) }}</td>
                         <td>
                             @if ($payment->status === Payment::SUCCESSFUL)
-                                <span class="badge bg-feedback-success">Paid</span>
+                                <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-feedback-success text-white">Paid</span>
                             @elseif ($payment->status === Payment::PENDING)
-                                <span class="badge bg-feedback-warning text-ink">Pending</span>
+                                <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-feedback-warning text-white">Pending</span>
                             @elseif ($payment->status === Payment::FAILED)
-                                <span class="badge bg-feedback-danger">Failed</span>
+                                <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-feedback-danger text-white">Failed</span>
                             @endif
                         </td>
                         <td>{{ ucfirst($payment->gateway) }}</td>
