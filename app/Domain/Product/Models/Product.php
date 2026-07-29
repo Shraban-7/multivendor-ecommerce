@@ -317,8 +317,10 @@ class Product extends Model
             get: function () {
                 $total = (int) $this->availableStock;
 
-                foreach ($this->variants as $variant) {
-                    $total += (int) $variant->availableStock;
+                if ($this->relationLoaded('variants')) {
+                    foreach ($this->variants as $variant) {
+                        $total += (int) $variant->availableStock;
+                    }
                 }
 
                 return $total;

@@ -22,7 +22,7 @@ class FlashSaleController extends Controller
             $q->where('seller_id', $seller->id);
         })->get();
 
-        return view('seller.flash-sales.index', compact('flashSales', 'sellerFlashSales'));
+        return view('seller.flash-sales.index', compact('flashSales', 'sellerFlashSales', 'seller'));
     }
 
     public function details($id)
@@ -37,7 +37,7 @@ class FlashSaleController extends Controller
             ->where('seller_id', $seller->id)
             ->get();
 
-        return view('seller.flash-sales.details', compact('flashSale', 'submitted', 'myProducts'));
+        return view('seller.flash-sales.details', compact('flashSale', 'submitted', 'myProducts', 'seller'));
     }
 
     public function submit(Request $request, $id)
