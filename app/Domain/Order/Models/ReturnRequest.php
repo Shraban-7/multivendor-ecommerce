@@ -199,11 +199,11 @@ class ReturnRequest extends Model
         }
 
         return match ($this->status) {
-            'pending' => 'warning',
-            'approved' => 'success',
-            'rejected' => 'danger',
-            'refunded' => 'info',
-            default => 'secondary',
+            'pending' => '#d97706',
+            'approved' => '#059669',
+            'rejected' => '#dc2626',
+            'refunded' => '#2563eb',
+            default => '#6b7280',
         };
     }
 

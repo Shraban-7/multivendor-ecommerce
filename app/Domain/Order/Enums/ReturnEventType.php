@@ -19,6 +19,19 @@ enum ReturnEventType: string
     case EXCHANGE_SHIPPED = 'exchange_shipped';
     case CANCELLED = 'cancelled';
 
+    public function color(): string
+    {
+        return match ($this) {
+            self::CREATED => '#d97706',
+            self::APPROVED, self::ITEM_RECEIVED => '#2563eb',
+            self::REJECTED, self::REFUND_FAILED, self::CANCELLED, self::DISPUTE_OPENED => '#dc2626',
+            self::ITEM_SHIPPED, self::EXCHANGE_SHIPPED => '#7c3aed',
+            self::REFUND_INITIATED, self::REFUND_COMPLETED, self::WALLET_CREDITED => '#059669',
+            self::DISPUTE_RESPONSE => '#0891b2',
+            self::DISPUTE_RESOLVED => '#059669',
+        };
+    }
+
     public function label(): string
     {
         return match ($this) {

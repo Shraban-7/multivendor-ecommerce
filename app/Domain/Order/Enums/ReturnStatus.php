@@ -34,12 +34,12 @@ enum ReturnStatus: string
     public function color(): string
     {
         return match ($this) {
-            self::PENDING, self::AWAITING_SHIPMENT => 'warning',
-            self::ITEM_RECEIVED, self::EXCHANGE_SHIPPED => 'info',
-            self::APPROVED => 'primary',
-            self::REFUND_INITIATED => 'primary',
-            self::REFUNDED, self::COMPLETED => 'success',
-            self::REJECTED, self::CANCELLED => 'danger',
+            self::PENDING, self::AWAITING_SHIPMENT => '#d97706',
+            self::ITEM_RECEIVED, self::EXCHANGE_SHIPPED => '#2563eb',
+            self::APPROVED => '#2563eb',
+            self::REFUND_INITIATED => '#7c3aed',
+            self::REFUNDED, self::COMPLETED => '#059669',
+            self::REJECTED, self::CANCELLED => '#dc2626',
         };
     }
 
