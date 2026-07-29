@@ -126,20 +126,26 @@
 
 <body>
 
-    <div id="print-area"></div>
-
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             printBarcodes();
         });
 
+        function escapeHtml(s) {
+            if (s === null || s === undefined) return '';
+            return String(s).replace(/[&<>"']/g, c => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            })[c]);
+        }
+
         function printBarcodes() {
-            const sellerName = "{{ $data['sellerName'] }}";
-            const productName = "{{ $data['productName'] }}";
-            const price = "{{ $data['price'] }}";
-            const barcodeData = "{{ $data['sku'] }}";
-            const variantName = "{{ $data['variantName'] }}"; // New variant name data
-            const labelCount = parseInt("{{ $data['quantity'] }}");
+            const sellerName = escapeHtml("{{ $data['sellerName'] }}");
+            const productName = escapeHtml("{{ $data['productName'] }}");
+            const price = escapeHtml("{{ $data['price'] }}");
+            // Prefer the dedicated barcode field; fall back to the SKU.
+            const barcodeData = escapeHtml("{{ $data['barcode'] ?? $data['sku'] }}");
+            const variantName = escapeHtml("{{ $data['variantName'] }}");
+            const labelCount = parseInt("{{ $data['quantity'] }}") || 1;
             const printArea = document.getElementById("print-area");
 
             printArea.innerHTML = "";
@@ -200,7 +206,8 @@
                 }
             }
             if (labelCount > 0) {
-                window.print();
+                // Auto-open print dialog once labels are rendered.
+                setTimeout(() => window.print(), 300);
             }
         }
     </script>

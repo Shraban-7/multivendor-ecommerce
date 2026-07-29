@@ -100,8 +100,17 @@
                                         <input type="text" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $variant->sku }}" disabled>
                                     </div>
                                     <div class="mb-3">
-                                        <label class="block text-xs font-medium text-ink-secondary mb-1">Barcode</label>
-                                        <input type="text" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" name="barcode" value="{{ $variant->barcode }}" placeholder="Optional barcode">
+                                        <label class="block text-xs font-medium text-ink-secondary mb-1">Barcode <span class="text-ink-tertiary text-xs">(auto-generated)</span></label>
+                                        <div class="flex gap-2">
+                                            <input type="text" class="flex-1 w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" name="barcode" value="{{ $variant->barcode }}" placeholder="Auto-generated if left blank">
+                                            <button type="button" class="btn btn-light btn-sm flex items-center gap-1 regen-variant-barcode-btn"
+                                                data-url="{{ route('seller.products.regenerate-variant-barcode', $variant) }}"
+                                                data-csrf="{{ csrf_token() }}"
+                                                data-input="input[name=barcode]"
+                                                title="Generate new barcode">
+                                                <i data-lucide="refresh-cw" style="width:14px;height:14px;"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                     <div class="mb-3">
                                         <label class="block text-xs font-medium text-ink-secondary mb-1">Cost Price</label>
@@ -205,6 +214,37 @@
 
 @push('scripts')
 <script>
+    // Variant barcode regenerate handler.
+    $(document).on('click', '.regen-variant-barcode-btn', function(e) {
+        e.preventDefault();
+        const btn = $(this);
+        const url = btn.data('url');
+        const inputSelector = btn.data('input');
+        if (!url) return;
+        if (!confirm('Generate a new barcode for this variant? The old one will stop working.')) return;
+        btn.prop('disabled', true).find('svg').css('animation', 'spin 0.7s linear infinite');
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: { _token: btn.data('csrf') },
+            success: function(resp) {
+                if (resp && resp.barcode) {
+                    const input = document.querySelector(inputSelector);
+                    if (input) input.value = resp.barcode;
+                    showSuccessToast?.(resp.message || 'Variant barcode regenerated.');
+                } else {
+                    showErrorToast?.('Unexpected response from server.');
+                }
+            },
+            error: function(xhr) {
+                showErrorToast?.(xhr.responseJSON?.message || 'Failed to regenerate barcode.');
+            },
+            complete: function() {
+                btn.prop('disabled', false).find('svg').css('animation', '');
+            }
+        });
+    });
+
     @if($isEdit)
     $('#saveVariantsBtn').click(function(e) {
         const variants = collectVariantsData();

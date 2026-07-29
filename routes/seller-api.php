@@ -42,6 +42,8 @@ Route::middleware('auth:sanctum')->prefix('seller')->group(function () {
     Route::post('/products/{slug}/update', [ProductController::class, 'update']);
     Route::post('/products/{slug}/update-seo', [ProductController::class, 'updateSeo']);
     Route::post('/products/{product}/stock-update', [ProductController::class, 'stockUpdate']);
+    Route::post('/products/{product}/regenerate-barcode', [ProductController::class, 'regenerateBarcode'])->name('seller.products.regenerate-barcode');
+    Route::post('/products/{variant}/regenerate-variant-barcode', [ProductController::class, 'regenerateVariantBarcode'])->name('seller.products.regenerate-variant-barcode');
     Route::post('/products/images/upload', [ProductController::class, 'uploadImage']);
     Route::delete('/products/images/{image}/delete', [ProductController::class, 'deleteImage']);
     Route::delete('/products/delete-variant/{variant}', [ProductController::class, 'deleteVariant']);

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
 
 class ProductVariant extends Model
 {
@@ -139,5 +140,39 @@ class ProductVariant extends Model
                     ? storage_url($this->variantImages->first()->image_path)
                     : asset('assets/frontend/images/default.png'))
         );
+    }
+
+    /**
+     * Generate a unique 12-digit numeric barcode for variants.
+     */
+    public static function generateBarcode(): string
+    {
+        for ($i = 0; $i < 12; $i++) {
+            $candidate = '200' . mt_rand(0, 999999999);
+            $candidate = str_pad($candidate, 12, '0', STR_PAD_LEFT);
+            $candidate .= Product::eanCheckDigit($candidate);
+
+            $existsOnProducts = DB::table('products')->where('barcode', $candidate)->exists();
+            $existsOnVariants = DB::table('product_variants')->where('barcode', $candidate)->exists();
+
+            if (! $existsOnProducts && ! $existsOnVariants) {
+                return $candidate;
+            }
+        }
+
+        return '200' . substr((string) (microtime(true) * 1000), -8) . mt_rand(10, 99);
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (ProductVariant $variant) {
+            if (empty($variant->barcode)) {
+                $variant->barcode = static::generateBarcode();
+            }
+        });
+
+        static::updating(function (ProductVariant $variant) {
+            // Preserve barcode unless explicitly cleared.
+        });
     }
 }

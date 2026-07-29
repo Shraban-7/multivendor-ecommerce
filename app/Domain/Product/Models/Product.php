@@ -358,5 +358,58 @@ class Product extends Model
             return $sku;
         });
     }
+
+    /**
+     * Generate a unique 12-digit numeric barcode (CODE-128-compatible).
+     * Used as default for `barcode` when none is provided.
+     */
+    public static function generateBarcode(): string
+    {
+        for ($i = 0; $i < 12; $i++) {
+            // 12-digit numeric range with leading prefix 200 (marketing-purpose range)
+            $candidate = '200' . mt_rand(0, 999999999);
+            $candidate = str_pad($candidate, 12, '0', STR_PAD_LEFT);
+            // Append EAN-13 check digit
+            $candidate .= static::eanCheckDigit($candidate);
+
+            $existsOnProducts = DB::table('products')->where('barcode', $candidate)->exists();
+            $existsOnVariants = DB::table('product_variants')->where('barcode', $candidate)->exists();
+
+            if (! $existsOnProducts && ! $existsOnVariants) {
+                return $candidate;
+            }
+        }
+
+        // Fallback: timestamp-based unique numeric string
+        return '200' . substr((string) (microtime(true) * 1000), -8) . mt_rand(10, 99);
+    }
+
+    /**
+     * EAN-13 check digit (mod-10) for nicer hardware compatibility.
+     */
+    public static function eanCheckDigit(string $twelveDigits): int
+    {
+        $sum = 0;
+        for ($i = 0; $i < 12; $i++) {
+            $digit = (int) $twelveDigits[$i];
+            $sum += ($i % 2 === 0) ? $digit : $digit * 3;
+        }
+        return (10 - ($sum % 10)) % 10;
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (Product $product) {
+            if (empty($product->barcode)) {
+                $product->barcode = static::generateBarcode();
+            }
+        });
+
+        static::updating(function (Product $product) {
+            if (empty($product->barcode)) {
+                $product->barcode = static::generateBarcode();
+            }
+        });
+    }
 }
 

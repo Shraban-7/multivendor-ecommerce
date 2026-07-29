@@ -125,7 +125,8 @@ class ProductVariantController extends Controller
         $variant->cost_price = $request->cost_price;
         $variant->price = $request->price;
         $variant->compare_price = $request->filled('compare_price') ? $request->compare_price : null;
-        $variant->barcode = $request->filled('barcode') ? $request->barcode : null;
+        // Preserve existing barcode unless the user explicitly submits a new one.
+        $variant->barcode = $request->filled('barcode') ? $request->barcode : ($variant->barcode ?: ProductVariant::generateBarcode());
         $variant->weight = $request->filled('weight') ? $request->weight : null;
 
         if ($request->has('status')) {

@@ -511,7 +511,7 @@ class ProductController extends Controller
     public function printBarcode(Request $request)
     {
         $products = Product::where('seller_id', get_seller_id())
-            ->with('variants.color', 'variants.size')
+            ->with(['variants.color', 'variants.size', 'unit', 'variants'])
             ->get();
 
         $seller = $this->sellerRepo->findById(get_seller_id());
@@ -534,6 +534,7 @@ class ProductController extends Controller
                 'productName' => $variant->product->name,
                 'variantName' => $variant->label,
                 'sku' => $variant->sku,
+                'barcode' => $variant->barcode ?? $variant->sku,
                 'price' => money($variant->price),
                 'quantity' => $request->quantity,
             ]]);
@@ -546,12 +547,49 @@ class ProductController extends Controller
                 'productName' => $product->name,
                 'variantName' => '',
                 'sku' => $product->sku,
+                'barcode' => $product->barcode ?? $product->sku,
                 'price' => money($product->price),
                 'quantity' => $request->quantity,
             ]]);
         }
 
         return redirect()->route('seller.products.printBarcode')->with('error', 'Product not found!');
+    }
+
+    public function regenerateBarcode(Product $product)
+    {
+        abort_unless($product->seller_id === get_seller_id(), 403);
+
+        $product->barcode = Product::generateBarcode();
+        $product->save();
+
+        if (request()->ajax() || request()->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'barcode' => $product->barcode,
+                'message' => 'Barcode regenerated successfully.',
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Barcode regenerated successfully.');
+    }
+
+    public function regenerateVariantBarcode(ProductVariant $variant)
+    {
+        abort_unless(optional($variant->product)->seller_id === get_seller_id(), 403);
+
+        $variant->barcode = ProductVariant::generateBarcode();
+        $variant->save();
+
+        if (request()->ajax() || request()->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'barcode' => $variant->barcode,
+                'message' => 'Variant barcode regenerated successfully.',
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Variant barcode regenerated successfully.');
     }
 
     public function inventory()

@@ -20,8 +20,9 @@
                                         data-sellingprice="{{ $product->price }}"
                                         data-discountedprice="{{ $product->compare_price ?? $product->price }}"
                                         data-stock="{{ $product->availableStock }}"
+                                        data-barcode="{{ $product->barcode ?? $product->sku }}"
                                         data-sku="{{ $product->sku }}">
-                                        {{ $product->name }} | {{ $product->availableStock }} {{ $product->unit->short_name }}
+                                        {{ $product->name }} | {{ $product->barcode ?? $product->sku }} | {{ $product->availableStock }} {{ $product->unit->short_name }}
                                     </option>
                                 @else
                                     @foreach ($product->variants as $variant)
@@ -31,8 +32,9 @@
                                         data-sellingprice="{{ $variant->price }}"
                                         data-discountedprice="{{ $variant->compare_price }}"
                                         data-stock="{{ $variant->availableStock }}"
+                                        data-barcode="{{ $variant->barcode ?? $variant->sku }}"
                                         data-sku="{{ $variant->sku }}">
-                                        {{ $product->name }} | {{ $variant->label }} | {{ $variant->availableStock }} {{ $product->unit->short_name }}
+                                        {{ $product->name }} | {{ $variant->label }} | {{ $variant->barcode ?? $variant->sku }} | {{ $variant->availableStock }} {{ $product->unit->short_name }}
                                     </option>
                                     @endforeach
                                 @endif
@@ -106,9 +108,11 @@
             if (opt) {
                 nameInput.value = opt.data('name');
                 variantInput.value = opt.data('variant');
-                skuInput.value = opt.data('sku');
-                const price = opt.data('sellingprice');
-                priceInput.value = price;
+                // Prefer the dedicated barcode field; fall back to the SKU.
+                const barcode = opt.data('barcode') || opt.data('sku');
+                skuInput.value = barcode;
+                skuInput.dataset.originalSku = opt.data('sku');
+                priceInput.value = opt.data('sellingprice');
                 qtyInput.value = opt.data('stock');
             }
         });

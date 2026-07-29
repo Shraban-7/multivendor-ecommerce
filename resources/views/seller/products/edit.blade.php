@@ -34,8 +34,19 @@
                 @endphp
                 <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full text-white {{ $statusPill }}">{{ $product->statusName }}</span>
             </div>
-            <div class="text-sm text-ink-tertiary flex items-center gap-3">
+            <div class="text-sm text-ink-tertiary flex items-center gap-3 flex-wrap">
                 <span>SKU: <strong>{{ $product->sku }}</strong></span>
+                <span>Barcode: <strong class="font-mono">{{ $product->barcode }}</strong>
+                    <button type="button" class="copy-btn text-ink-secondary hover:text-brand ms-1" data-copy="{{ $product->barcode }}" title="Copy">
+                        <i data-lucide="copy" style="width:12px;height:12px;"></i>
+                    </button>
+                    <button type="button" class="text-ink-secondary hover:text-brand ms-1 regen-barcode-btn" data-url="{{ route('seller.products.regenerate-barcode', $product) }}" data-csrf="{{ csrf_token() }}" title="Generate new barcode">
+                        <i data-lucide="refresh-cw" style="width:12px;height:12px;"></i>
+                    </button>
+                </span>
+                <a href="{{ route('seller.products.printBarcode') }}?sku={{ $product->sku }}" target="_blank" class="text-brand hover:text-brand-deep no-underline">
+                    <i data-lucide="barcode" style="width:14px;height:14px;"></i> Print labels
+                </a>
                 <span>Added: {{ $product->created_at->format('d M, Y') }}</span>
             </div>
         </div>
@@ -352,6 +363,51 @@
 <script src="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.js"></script>
 <script>
     window.renderIcons && window.renderIcons();
+
+    // Barcode copy-to-clipboard + regenerate handler.
+    $(document).on('click', '.copy-btn', function() {
+        const text = $(this).data('copy');
+        if (!text) return;
+        navigator.clipboard?.writeText(text);
+        const $icon = $(this).find('svg');
+        const original = $icon.attr('data-lucide');
+        $icon.attr('data-lucide', 'check');
+        window.renderIcons && window.renderIcons();
+        showSuccessToast?.('Copied ' + text);
+        setTimeout(() => {
+            $icon.attr('data-lucide', original);
+            window.renderIcons && window.renderIcons();
+        }, 1500);
+    });
+
+    $(document).on('click', '.regen-barcode-btn', function() {
+        const btn = $(this);
+        const url = btn.data('url');
+        const $container = btn.parent();
+        if (!url) return;
+        if (!confirm('Generate a new barcode for this product? The old one will stop working.')) return;
+        btn.prop('disabled', true).find('svg').css('animation', 'spin 0.6s linear infinite');
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: { _token: btn.data('csrf') },
+            success: function(resp) {
+                if (resp && resp.barcode) {
+                    $container.find('strong.font-mono').text(resp.barcode);
+                    btn.parent().find('.copy-btn').attr('data-copy', resp.barcode);
+                    showSuccessToast?.(resp.message || 'Barcode regenerated.');
+                } else {
+                    showErrorToast?.('Unexpected response.');
+                }
+            },
+            error: function(xhr) {
+                showErrorToast?.(xhr.responseJSON?.message || 'Failed to regenerate barcode.');
+            },
+            complete: function() {
+                btn.prop('disabled', false).find('svg').css('animation', '');
+            }
+        });
+    });
 
     $(".brand-select").select2({ tags: true, theme: "bootstrap-5" });
 
