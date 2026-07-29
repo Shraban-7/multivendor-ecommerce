@@ -1,448 +1,532 @@
+@php
+    $pageTitle = "Financial Report | {$seller->business_name}";
+    $rangeLabels = ['daily' => 'Today', 'weekly' => 'This Week', 'monthly' => 'This Month', 'yearly' => 'This Year', 'custom' => 'Custom Range'];
+    $rangeValue = $filter ?? 'monthly';
+    $rangeText = $rangeLabels[$rangeValue] ?? 'This Month';
+
+    $cm = $currentMetrics ?? [];
+    $lm = $lastMetrics ?? [];
+    $nm = $nextMetrics ?? [];
+    $changes = $changes ?? [];
+
+    $profitBar = max(0, min(100, (float)($cm['profit_margin'] ?? 0)));
+    $prevProfitBar = max(0, min(100, (float)($lm['profit_margin'] ?? 0)));
+
+    $totalIncome = (float) collect($incomeData ?? [])->sum('amount');
+@endphp
 @extends('seller.layouts.app')
-@section('title', 'Financial Reports')
-
+@section('title', $pageTitle)
 @section('content')
-    <div>
-        <header>
-            <div class="grid grid-cols-1 items-center mb-4">
-                <div class="md:col-span-1 mb-3 mb-md-0">
-                    <h2 class="font-bold mb-1 text-ink">Financial Reports</h2>
-                    <nav aria-label="flex items-center gap-2 text-sm">
-                        <ol class="flex items-center gap-2 text-sm mb-0 text-sm">
-                            <li class="text-ink-tertiary text-ink-tertiary">Reports</li>
-                            <li class="text-ink-tertiary active font-semibold" aria-current="page">Financial Reports</li>
-                        </ol>
-                    </nav>
-                </div>
-                <div class="md:col-span-1">
-                    <form method="GET" class="grid grid-cols-1 gap-2 justify-end">
-                        <div class="md:col-span-1 sm:col-span-1">
-                            <select name="range" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors-sm" onchange="toggleCustomDates(this.value)">
-                                <option disabled selected>--select--</option>
-                                <option value="daily" {{ request('range') == 'daily' ? 'selected' : '' }}>Daily</option>
-                                <option value="weekly" {{ request('range') == 'weekly' ? 'selected' : '' }}>Weekly</option>
-                                <option value="monthly" {{ request('range') == 'monthly' ? 'selected' : '' }}>Monthly</option>
-                                <option value="yearly" {{ request('range') == 'yearly' ? 'selected' : '' }}>Yearly</option>
-                                <option value="custom" {{ request('range') == 'custom' ? 'selected' : '' }}>Custom</option>
-                            </select>
-                        </div>
-                        <div class="md:col-span-1 sm:col-span-1" id="customDateRange" style="{{ request('range') == 'custom' ? '' : 'display:none;' }}">
-                            <div class="flex flex">
-                                <input type="date" name="date_from" value="{{ request('date_from') }}" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
-                                <input type="date" name="date_to" value="{{ request('date_to') }}" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
-                            </div>
-                        </div>
-                        <div class="md:col-span-1 sm:col-span-full flex items-end">
-                            <button class="btn btn-primary btn-sm w-full">Filter</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </header>
 
-        <div class="grid grid-cols-1 mb-5 g-3">
-            <div class="xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-1">
-                <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3 h-full" style="border-radius: 12px; border-left: 4px solid #F85606;">
-                    <div class="flex items-center">
-                        <i data-lucide="wallet" class="me-3 opacity-50" style="font-size: 1.5rem;"></i>
-                        <div>
-                            <h5 class="font-bold mb-0 text-ink">{{ money($currentMetrics['total_revenue']) }}</h5>
-                            <p class="text-ink-tertiary text-sm mb-0">Total Revenue</p>
-                        </div>
-                    </div>
-                    <div class="mt-2">
-                        <small class="{{ $changes['revenue'] >= 0 ? 'text-feedback-success' : 'text-feedback-danger' }}">
-                            <i data-lucide="{{ $changes['revenue'] >= 0 ? 'arrow-up' : 'arrow-down' }}" class="me-1"></i>
-                            {{ number_format(abs($changes['revenue']), 2) }}% Change
-                        </small>
-                    </div>
-                </div>
+@push('style')
+<style>
+    .fin-dash__filter-input { background-color: #fff; border-color: #E5E5E5; color: #191919; }
+    .fin-dash__filter-input:focus { border-color: #F85606; background-color: #fff; }
+    .fin-dash__filter-input::placeholder { color: #767676; }
+    .fin-dash__tile-color { width: 4px; height: 36px; border-radius: 2px; }
+</style>
+@endpush
+
+{{-- ═══ HERO ═══ --}}
+<section class="bg-white border border-border rounded-sm shadow-sm overflow-hidden mb-4">
+    <div class="p-5 lg:p-6">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+            <div class="min-w-0">
+                <nav class="flex items-center gap-1 mb-2 text-xs text-ink-tertiary">
+                    <i data-lucide="folder" style="width:12px;height:12px;"></i>
+                    <span>Reports</span>
+                    <i data-lucide="chevron-right" style="width:12px;height:12px;"></i>
+                    <span class="text-ink font-medium">Financial</span>
+                </nav>
+                <h1 class="text-xl font-bold text-ink mb-1">Financial Report</h1>
+                <p class="text-sm text-ink-secondary mb-0">Profit & loss, expenses, inventory value & income sources for <strong>{{ $rangeText }}</strong>.</p>
             </div>
-            <div class="xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-1">
-                <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3 h-full" style="border-radius: 12px; border-left: 4px solid #0ea5e9;">
-                    <div class="flex items-center">
-                        <i data-lucide="hand-coins" class="me-3 opacity-50" style="font-size: 1.5rem;"></i>
-                        <div>
-                            <h5 class="font-bold mb-0 text-ink">{{ money($currentMetrics['gross_profit']) }}</h5>
-                            <p class="text-ink-tertiary text-sm mb-0">Gross Profit</p>
-                        </div>
-                    </div>
-                    <div class="mt-2">
-                        <small class="{{ $changes['gross_profit'] >= 0 ? 'text-feedback-success' : 'text-feedback-danger' }}">
-                            <i data-lucide="{{ $changes['gross_profit'] >= 0 ? 'arrow-up' : 'arrow-down' }}" class="me-1"></i>
-                            {{ number_format(abs($changes['gross_profit']), 2) }}% Change
-                        </small>
-                    </div>
-                </div>
-            </div>
-            <div class="xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-1">
-                <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3 h-full" style="border-radius: 12px; border-left: 4px solid #1D8A45;">
-                    <div class="flex items-center">
-                        <i data-lucide="coins" class="me-3 opacity-50" style="font-size: 1.5rem;"></i>
-                        <div>
-                            <h5 class="font-bold mb-0 text-ink">{{ money($currentMetrics['net_profit']) }}</h5>
-                            <p class="text-ink-tertiary text-sm mb-0">Net Profit</p>
-                        </div>
-                    </div>
-                    <div class="mt-2">
-                        <small class="{{ $changes['net_profit'] >= 0 ? 'text-feedback-success' : 'text-feedback-danger' }}">
-                            <i data-lucide="{{ $changes['net_profit'] >= 0 ? 'arrow-up' : 'arrow-down' }}" class="me-1"></i>
-                            {{ number_format(abs($changes['net_profit']), 2) }}% Change
-                        </small>
-                    </div>
-                </div>
-            </div>
-            <div class="xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-1">
-                <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3 h-full" style="border-radius: 12px; border-left: 4px solid #D93025;">
-                    <div class="flex items-center">
-                        <i data-lucide="wallet" class="me-3 opacity-50" style="font-size: 1.5rem;"></i>
-                        <div>
-                            <h5 class="font-bold mb-0 text-ink">{{ money($currentMetrics['total_expense']) }}</h5>
-                            <p class="text-ink-tertiary text-sm mb-0">Total Expenses</p>
-                        </div>
-                    </div>
-                    <div class="mt-2">
-                        <small class="{{ $changes['expense'] >= 0 ? 'text-feedback-success' : 'text-feedback-danger' }}">
-                            <i data-lucide="{{ $changes['expense'] >= 0 ? 'arrow-up' : 'arrow-down' }}" class="me-1"></i>
-                            {{ number_format(abs($changes['expense']), 2) }}% Change
-                        </small>
-                    </div>
-                </div>
-            </div>
-            <div class="xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-1">
-                <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3 h-full" style="border-radius: 12px; border-left: 4px solid #B7791A;">
-                    <div class="flex items-center">
-                        <i data-lucide="boxes" class="me-3 opacity-50" style="font-size: 1.5rem;"></i>
-                        <div>
-                            <h5 class="font-bold mb-0 text-ink">{{ money($inventory_value) }}</h5>
-                            <p class="text-ink-tertiary text-sm mb-0">Inventory Value</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-1">
-                <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3 h-full" style="border-radius: 12px; border-left: 4px solid #637381;">
-                    <div class="flex items-center">
-                        <i data-lucide="percent" class="me-3 opacity-50" style="font-size: 1.5rem;"></i>
-                        <div>
-                            <h5 class="font-bold mb-0 text-ink">{{ number_format($currentMetrics['profit_margin'], 2) }}%</h5>
-                            <p class="text-ink-tertiary text-sm mb-0">Profit Margin</p>
-                        </div>
-                    </div>
-                    <div class="mt-2">
-                        <small class="{{ $changes['profit_margin'] >= 0 ? 'text-feedback-success' : 'text-feedback-danger' }}">
-                            <i data-lucide="{{ $changes['profit_margin'] >= 0 ? 'arrow-up' : 'arrow-down' }}" class="me-1"></i>
-                            {{ number_format(abs($changes['profit_margin']), 2) }}% Change
-                        </small>
-                    </div>
-                </div>
+            <div class="flex flex-wrap gap-2">
+                <a href="{{ route('seller.reports.overview') }}" class="btn btn-light btn-sm"><i data-lucide="layout-dashboard" style="width:14px;height:14px;"></i> Overview</a>
+                <a href="{{ route('seller.reports.sales') }}" class="btn btn-light btn-sm"><i data-lucide="shopping-cart" style="width:14px;height:14px;"></i> Sales</a>
+                <a href="{{ route('seller.reports.customers') }}" class="btn btn-light btn-sm"><i data-lucide="users" style="width:14px;height:14px;"></i> Customers</a>
             </div>
         </div>
+        <div class="mt-4 flex flex-wrap gap-2 text-sm items-center text-ink-secondary">
+            <i data-lucide="calendar" style="width:14px;height:14px;"></i>
+            <span class="mr-1 font-medium text-ink">Quick ranges:</span>
+            @foreach ($rangeLabels as $key => $label)
+                @if ($key === 'custom')
+                    <form method="GET" action="{{ route('seller.reports.financial') }}" class="flex items-center gap-2 flex-wrap">
+                        <input type="hidden" name="range" value="custom">
+                        <input type="date" name="date_from" value="{{ request('date_from') }}" class="fin-dash__filter-input px-2 py-1 text-sm border rounded-xs focus:outline-none transition-colors" placeholder="From">
+                        <span class="text-ink-tertiary">to</span>
+                        <input type="date" name="date_to" value="{{ request('date_to') }}" class="fin-dash__filter-input px-2 py-1 text-sm border rounded-xs focus:outline-none transition-colors" placeholder="To">
+                        <button type="submit" class="btn btn-primary btn-sm"><i data-lucide="funnel" style="width:12px;height:12px;"></i> Apply</button>
+                    </form>
+                @else
+                    <a href="{{ route('seller.reports.financial', ['range' => $key]) }}" class="px-2 py-0.5 rounded-xs transition-colors {{ $rangeValue == $key ? 'bg-brand-tint text-brand font-semibold' : 'hover:bg-surface-muted text-ink-secondary' }}">{{ $label }}</a>
+                @endif
+            @endforeach
+        </div>
+    </div>
+</section>
 
-        <ul class="nav nav-tabs mb-4" id="financialTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="pnl-tab" data-bs-toggle="tab" data-bs-target="#pnl" type="button" role="tab" aria-controls="pnl" aria-selected="true"><i data-lucide="chart-line" class="me-2"></i>Profit & Loss</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="income-tab" data-bs-toggle="tab" data-bs-target="#income" type="button" role="tab" aria-controls="income" aria-selected="false"><i data-lucide="banknote" class="me-2"></i>Income Breakdown</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="expenses-tab" data-bs-toggle="tab" data-bs-target="#expenses" type="button" role="tab" aria-controls="expenses" aria-selected="false"><i data-lucide="hand-coins" class="me-2"></i>Expenses</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="inventory-tab" data-bs-toggle="tab" data-bs-target="#inventory" type="button" role="tab" aria-controls="inventory" aria-selected="false"><i data-lucide="warehouse" class="me-2"></i>Inventory Value</button>
-            </li>
-        </ul>
+{{-- ═══ KPI ROW — 6 P&L TILES ═══ --}}
+@php
+    $finKpis = [
+        ['label' => 'Revenue',     'value' => money($cm['total_revenue'] ?? 0),  'sub' => 'Gross sales',       'icon' => 'wallet',         'tone' => 'brand',   'growth' => $changes['revenue'] ?? null, 'inverse' => false],
+        ['label' => 'Gross Profit','value' => money($cm['gross_profit'] ?? 0),  'sub' => 'Revenue − cost',    'icon' => 'trending-up',    'tone' => 'success', 'growth' => $changes['gross_profit'] ?? null, 'inverse' => false],
+        ['label' => 'Total Expenses','value' => money($cm['total_expense'] ?? 0),'sub' => 'Operating costs',  'icon' => 'receipt',        'tone' => 'warning', 'growth' => $changes['expense'] ?? null, 'inverse' => true],
+        ['label' => 'Net Profit',  'value' => money($cm['net_profit'] ?? 0),    'sub' => 'Bottom line',       'icon' => 'banknote',       'tone' => 'rating',  'growth' => $changes['net_profit'] ?? null, 'inverse' => false],
+        ['label' => 'Profit Margin','value' => number_format($cm['profit_margin'] ?? 0, 1).'%', 'sub' => 'Net / Revenue',  'icon' => 'percent',        'tone' => 'info',    'growth' => $changes['profit_margin'] ?? null, 'inverse' => false, 'useDiff' => true],
+        ['label' => 'Inventory Value','value' => money($inventory_value ?? 0), 'sub' => 'Cost × stock',       'icon' => 'package',        'tone' => 'muted',   'growth' => null, 'inverse' => false],
+    ];
+@endphp
+<section class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-4">
+    @foreach ($finKpis as $kpi)
+        <article class="bg-white border border-border rounded-sm shadow-sm p-4 transition-shadow hover:shadow-md relative overflow-hidden">
+            <div class="absolute top-0 left-0 right-0 h-1
+                {{ $kpi['tone'] === 'brand' ? 'bg-brand' : (
+                   $kpi['tone'] === 'success' ? 'bg-emerald-500' : (
+                   $kpi['tone'] === 'warning' ? 'bg-amber-500' : (
+                   $kpi['tone'] === 'rating' ? 'bg-purple-500' : (
+                   $kpi['tone'] === 'info' ? 'bg-blue-500' : 'bg-gray-500')))) }}"></div>
+            <div class="flex items-start justify-between gap-3 mb-2 mt-1">
+                <div class="min-w-0 flex-1">
+                    <p class="text-xs text-ink-tertiary mb-0 uppercase tracking-wider font-semibold">{{ $kpi['label'] }}</p>
+                    <h3 class="mb-0 font-bold text-lg text-ink mt-1">{{ $kpi['value'] }}</h3>
+                </div>
+                <span class="shrink-0 w-9 h-9 rounded-sm flex items-center justify-center
+                    {{ $kpi['tone'] === 'brand' ? 'bg-brand-tint text-brand' : (
+                       $kpi['tone'] === 'success' ? 'bg-emerald-50 text-feedback-success' : (
+                       $kpi['tone'] === 'warning' ? 'bg-amber-50 text-feedback-warning' : (
+                       $kpi['tone'] === 'rating' ? 'bg-purple-50 text-purple-600' : (
+                       $kpi['tone'] === 'info' ? 'bg-blue-50 text-feedback-info' : 'bg-surface-muted text-ink-tertiary')))) }}">
+                    <i data-lucide="{{ $kpi['icon'] }}" style="width:18px;height:18px;"></i>
+                </span>
+            </div>
+            <small class="text-ink-tertiary">{{ $kpi['sub'] }}</small>
+            @if (($kpi['growth'] ?? null) !== null)
+                @php
+                    $g = (float) $kpi['growth'];
+                    $inverse = $kpi['inverse'] ?? false;
+                    $useDiff = $kpi['useDiff'] ?? false;
+                    $isPositive = $useDiff ? ($g >= 0) : ($inverse ? ($g < 0) : ($g > 0));
+                    $isNegative = $useDiff ? ($g < 0) : ($inverse ? ($g > 0) : ($g < 0));
+                @endphp
+                <div class="mt-1 text-xs">
+                    <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full font-semibold {{ $isPositive ? 'bg-emerald-50 text-feedback-success' : ($isNegative ? 'bg-rose-50 text-rose-600' : 'bg-surface-muted text-ink-tertiary') }}">
+                        <i data-lucide="{{ $isPositive ? 'trending-up' : 'trending-down' }}" style="width:11px;height:11px;"></i>
+                        {{ $useDiff ? number_format($g, 1).' pts' : number_format(abs($g), 1).'%' }}
+                    </span>
+                </div>
+            @endif
+        </article>
+    @endforeach
+</section>
 
-        <div class="tab-content" id="financialTabsContent">
-            <div class="tab-pane fade show active" id="pnl" role="tabpanel" aria-labelledby="pnl-tab">
-                <div class="grid grid-cols-1 gap-4">
-                    <div class="lg:col-span-2">
-                        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-4 h-full" style="border-radius: 12px;">
-                            @php
-                                $filterText = match (request('range', 'monthly')) { 'daily' => 'Daily Profit Trend', 'weekly' => 'Weekly Profit Trend', 'monthly' => 'Monthly Profit Trend', 'yearly' => 'Yearly Profit Trend', 'custom' => 'Custom Profit Trend', default => 'Monthly Profit Trend' };
-                                $descriptionText = match (request('range', 'monthly')) { 'daily' => 'Net Profit Over the Last 7 Days', 'weekly' => 'Net Profit Over the Last 12 Weeks', 'monthly' => 'Net Profit Over the Last 12 Months', 'yearly' => 'Net Profit Over the Last 5 Years', 'custom' => 'Net Profit Over the Selected Date Range', default => 'Net Profit Over the Last 12 Months' };
-                            @endphp
-                            <h5 class="font-bold">{{ $filterText }}</h5>
-                            <p class="text-ink-tertiary">{{ $descriptionText }}</p>
-                            <div class="bg-surface-muted rounded-md border flex items-center justify-center py-5">
-                                <canvas id="profitChart" class="w-full" style="max-height: 300px;"></canvas>
-                            </div>
-                            <div class="alert {{ $currentMetrics['profit_margin'] >= 0 ? 'alert-success' : 'alert-danger' }} mt-3 font-bold text-center" role="alert">
-                                Net Profit Margin: {{ number_format($currentMetrics['profit_margin'], 2) }}%
-                            </div>
-                        </div>
-                    </div>
-                    <div class="lg:col-span-1">
-                        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-4 h-full" style="border-radius: 12px;">
-                            <h5 class="font-bold">P&L Summary</h5>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-left text-sm text-ink border-collapse">
-                                    <thead class="bg-surface-muted">
-                                        <tr>
-                                            <th scope="col" class="text-sm font-semibold text-ink-tertiary">Category</th>
-                                            <th scope="col" class="text-sm font-semibold text-ink-tertiary text-right">Amount</th>
-                                            <th scope="col" class="text-sm font-semibold text-ink-tertiary text-right">Change %</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="font-semibold">Total Sales</td>
-                                            <td class="text-right">{{ money($currentMetrics['total_revenue']) }}</td>
-                                            <td class="text-right {{ $changes['revenue'] >= 0 ? 'text-feedback-success' : 'text-feedback-danger' }}">{{ $changes['revenue'] >= 0 ? '+' : '' }}{{ number_format($changes['revenue'], 2) }}%</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="font-semibold">Cost of Goods Sold</td>
-                                            <td class="text-right">{{ money($currentMetrics['total_product_cost']) }}</td>
-                                            <td class="text-right {{ $changes['gross_profit'] >= 0 ? 'text-feedback-success' : 'text-feedback-danger' }}">{{ $changes['gross_profit'] >= 0 ? '+' : '' }}{{ number_format($changes['gross_profit'], 2) }}%</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="font-semibold">Gross Profit</td>
-                                            <td class="text-right">{{ money($currentMetrics['gross_profit']) }}</td>
-                                            <td class="text-right {{ $changes['gross_profit'] >= 0 ? 'text-feedback-success' : 'text-feedback-danger' }}">{{ $changes['gross_profit'] >= 0 ? '+' : '' }}{{ number_format($changes['gross_profit'], 2) }}%</td>
-                                        </tr>
-                                        <tr class="bg-emerald-50">
-                                            <td class="font-bold">Net Profit</td>
-                                            <td class="text-right font-bold">{{ money($currentMetrics['net_profit']) }}</td>
-                                            <td class="text-right font-bold {{ $changes['net_profit'] >= 0 ? 'text-feedback-success' : 'text-feedback-danger' }}">{{ $changes['net_profit'] >= 0 ? '+' : '' }}{{ number_format($changes['net_profit'], 2) }}%</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden {{ $currentMetrics['profit_margin'] >= 0 ? 'bg-feedback-success' : 'bg-feedback-danger' }} text-white p-3 mt-3 border-0">
-                                <div class="flex justify-between items-center">
-                                    <span class="font-bold">Current Profit Margin</span>
-                                    <span class="font-bold text-xl">{{ number_format($currentMetrics['profit_margin'], 2) }}%</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+{{-- ═══ CHART ROW — REV/PROFIT TREND + EXPENSE TREND ═══ --}}
+<section class="grid grid-cols-1 xl:grid-cols-2 gap-3 mb-4">
+    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden">
+        <div class="px-4 py-3 border-b border-border flex items-center justify-between bg-surface-muted">
+            <div class="flex items-center gap-2">
+                <i data-lucide="line-chart" class="text-brand" style="width:16px;height:16px;"></i>
+                <h5 class="mb-0 font-bold text-ink">Revenue & Profit Trend</h5>
             </div>
-            <div class="tab-pane fade" id="income" role="tabpanel" aria-labelledby="income-tab">
-                <div class="grid grid-cols-1 gap-4">
-                    <div class="lg:col-span-5">
-                        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-4 h-full" style="border-radius: 12px;">
-                            <h5 class="font-bold text-feedback-info">Income Source Proportions</h5>
-                            <p class="text-ink-tertiary">Visual breakdown of all income streams.</p>
-                            <div class="bg-surface-muted rounded-md border flex items-center justify-center py-5">
-                                <canvas id="incomePieChart" style="max-height: 300px;"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="lg:col-span-7">
-                        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-4 h-full" style="border-radius: 12px;">
-                            <h5 class="font-bold">Income Data Table</h5>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-left text-sm text-ink border-collapse">
-                                    <thead class="bg-surface-muted">
-                                        <tr>
-                                            <th scope="col" class="text-sm font-semibold text-ink-tertiary">Source</th>
-                                            <th scope="col" class="text-sm font-semibold text-ink-tertiary text-right">Amount</th>
-                                            <th scope="col" class="text-sm font-semibold text-ink-tertiary text-right">Contribution %</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($incomeData as $income)
-                                            <tr>
-                                                <td class="font-semibold">{{ $income['source'] }}</td>
-                                                <td class="text-right">{{ money($income['amount']) }}</td>
-                                                <td class="text-right">{{ number_format($income['percentage'], 2) }}%</td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="flex items-center gap-3 text-xs">
+                <span class="flex items-center gap-1 text-ink-secondary"><span class="inline-block w-2 h-2 rounded-full" style="background:#F85606"></span> Revenue</span>
+                <span class="flex items-center gap-1 text-ink-secondary"><span class="inline-block w-2 h-2 rounded-full" style="background:#16A34A"></span> Gross</span>
+                <span class="flex items-center gap-1 text-ink-secondary"><span class="inline-block w-2 h-2 rounded-full" style="background:#7c3aed"></span> Net</span>
             </div>
-            <div class="tab-pane fade" id="expenses" role="tabpanel" aria-labelledby="expenses-tab">
-                <div class="grid grid-cols-1 mb-4 g-3">
-                    <div class="lg:col-span-1 md:col-span-1">
-                        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3 h-full" style="border-radius: 12px; border-left: 4px solid #D93025;">
-                            <p class="text-ink-tertiary mb-0">Total Expense</p>
-                            <h4 class="font-bold mb-0 text-feedback-danger">{{ money($totalExpense) }}</h4>
-                        </div>
-                    </div>
-                    <div class="lg:col-span-1 md:col-span-1">
-                        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3 h-full" style="border-radius: 12px; border-left: 4px solid #B7791A;">
-                            <p class="text-ink-tertiary mb-0">Highest Expense Category</p>
-                            <h4 class="font-bold mb-0 text-feedback-warning">{{ $highestExpense->category->name ?? 'N/A' }} ({{ money($highestExpense->total ?? 0) }})</h4>
-                        </div>
-                    </div>
-                    <div class="lg:col-span-1 md:col-span-full">
-                        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3 h-full" style="border-radius: 12px; border-left: 4px solid #637381;">
-                            <p class="text-ink-tertiary mb-0">Expense Growth %</p>
-                            <h4 class="font-bold mb-0 text-{{ $expenseGrowth >= 0 ? 'danger' : 'success' }}">
-                                <i data-lucide="{{ $expenseGrowth >= 0 ? 'arrow-up' : 'arrow-down' }}" class="me-1"></i>
-                                {{ number_format($expenseGrowth, 2) }}%
-                            </h4>
-                        </div>
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 gap-4">
-                    <div class="lg:col-span-1">
-                        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-4 h-full" style="border-radius: 12px;">
-                            <h5 class="font-bold text-feedback-danger">Expense Trend</h5>
-                            <p class="text-ink-tertiary">{{ ucfirst(request('range')) }} expense comparison.</p>
-                            <div class="bg-surface-muted rounded-md border flex items-center justify-center py-5">
-                                <canvas id="expenseBarChart" class="w-full" style="max-height: 300px;"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="lg:col-span-1">
-                        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-4 h-full" style="border-radius: 12px;">
-                            <h5 class="font-bold">Expense Breakdown Table</h5>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-left text-sm text-ink border-collapse">
-                                    <thead class="bg-surface-muted">
-                                        <tr>
-                                            <th scope="col" class="text-sm font-semibold text-ink-tertiary">Category</th>
-                                            <th scope="col" class="text-sm font-semibold text-ink-tertiary text-right">Amount</th>
-                                            <th scope="col" class="text-sm font-semibold text-ink-tertiary text-right">Change</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($expenseCategories ?? [] as $expense)
-                                            @php
-                                                $lastAmount = \App\Domain\Vendor\Models\SellerExpense::where('seller_id', get_seller_id())->where('seller_expense_category_id', $expense['seller_expense_category_id'])->whereBetween('created_at', [$lastStart, $lastEnd])->sum('amount');
-                                                $change = $lastAmount > 0 ? (($expense['total'] - $lastAmount) / $lastAmount) * 100 : 100;
-                                                $categoryName = $expense['category']['name'] ?? 'N/A';
-                                            @endphp
-                                            <tr>
-                                                <td class="font-semibold">{{ $categoryName }}</td>
-                                                <td class="text-right">{{ money($expense['total']) }}</td>
-                                                <td class="text-right {{ $change >= 0 ? 'text-feedback-success' : 'text-feedback-danger' }}">{{ $change >= 0 ? '+' : '' }}{{ number_format($change, 2) }}%</td>
-                                            </tr>
-                                            <tr class="mb-2">
-                                                <td colspan="4" class="p-1">
-                                                    <div class="w-full h-2 bg-surface-muted rounded-full overflow-hidden" style="height: 5px;">
-                                                        <div class="h-full bg-brand-deep rounded-full transition-all bg-{{ $loop->index % 2 == 0 ? 'warning' : 'primary' }}" role="w-full h-2 bg-surface-muted rounded-full overflow-hiddenbar"
-                                                            style="width: {{ ($expense['total'] / ($totalExpense ?: 1)) * 100 }}%"
-                                                            aria-valuenow="{{ $expense['total'] }}" aria-valuemin="0" aria-valuemax="{{ $totalExpense }}">
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        </div>
+        <div class="p-4 relative" style="height: 280px;">
+            <canvas id="trendChart"></canvas>
+        </div>
+    </div>
+
+    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden">
+        <div class="px-4 py-3 border-b border-border flex items-center justify-between bg-surface-muted">
+            <div class="flex items-center gap-2">
+                <i data-lucide="bar-chart-3" class="text-feedback-warning" style="width:16px;height:16px;"></i>
+                <h5 class="mb-0 font-bold text-ink">Expense Trend</h5>
             </div>
-            <div class="tab-pane fade" id="inventory" role="tabpanel" aria-labelledby="inventory-tab">
-                <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-4 mb-4" style="border-radius: 12px; border-b: 4px solid #B7791A;">
-                    <div class="flex justify-between items-center flex-wrap gap-2">
-                        <h4 class="font-bold mb-0">Total Inventory Value: <span class="text-ink">{{ money($inventory_value) }}</span></h4>
-                        <span class="badge p-2 badge-soft-danger">
-                            <i data-lucide="triangle-alert" class="me-1"></i> Low Turnover Warning: {{ $lowTurnoverDays }} Days ({{ $lowTurnoverCount }} SKUs)
-                        </span>
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 gap-4">
-                    <div class="lg:col-span-1">
-                        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-4 h-full" style="border-radius: 12px;">
-                            <h5 class="font-bold text-feedback-warning">Value by Category</h5>
-                            <p class="text-ink-tertiary">Horizontal Bar Chart showing stock worth.</p>
-                            <div class="bg-surface-muted rounded-md border flex items-center justify-center py-5">
-                                <canvas id="inventoryChart" class="w-full" style="max-height: 300px;"></canvas>
+            <small class="text-ink-tertiary">Total this period: {{ money($totalExpense ?? 0) }}</small>
+        </div>
+        <div class="p-4 relative" style="height: 280px;">
+            <canvas id="expenseChart"></canvas>
+        </div>
+    </div>
+</section>
+
+{{-- ═══ INCOME × EXPENSE BREAKDOWN ═══ --}}
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-4">
+    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden">
+        <div class="px-4 py-3 border-b border-border flex items-center gap-2 bg-surface-muted">
+            <i data-lucide="arrow-down-circle" class="text-feedback-success" style="width:16px;height:16px;"></i>
+            <h5 class="mb-0 font-bold text-ink">Income Sources</h5>
+        </div>
+        <div class="p-4 space-y-3">
+            @forelse ($incomeData ?? [] as $src)
+                <div class="border border-border rounded-sm p-4 bg-surface-muted">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="shrink-0 w-9 h-9 rounded-sm flex items-center justify-center
+                                {{ $src['source'] === 'Product Sales' ? 'bg-brand text-white' : 'bg-feedback-info text-white' }}">
+                                <i data-lucide="{{ $src['source'] === 'Product Sales' ? 'shopping-bag' : 'store' }}" style="width:18px;height:18px;"></i>
+                            </span>
+                            <div>
+                                <h6 class="mb-0 font-bold text-ink">{{ $src['source'] }}</h6>
+                                <small class="text-ink-tertiary">{{ number_format((float)$src['percentage'], 1) }}% of total income</small>
                             </div>
                         </div>
-                    </div>
-                    <div class="lg:col-span-1">
-                        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-4 h-full" style="border-radius: 12px;">
-                            <h5 class="font-bold">Inventory Details</h5>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-left text-sm text-ink border-collapse">
-                                    <thead class="bg-surface-muted">
-                                        <tr>
-                                            <th scope="col" class="text-sm font-semibold text-ink-tertiary">Category</th>
-                                            <th scope="col" class="text-sm font-semibold text-ink-tertiary text-right">SKU Count</th>
-                                            <th scope="col" class="text-sm font-semibold text-ink-tertiary text-right">Stock Value</th>
-                                            <th scope="col" class="text-sm font-semibold text-ink-tertiary text-right">% of Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($inventoryByCategory as $item)
-                                            @php
-                                                $categoryName = $item->category->name ?? 'N/A';
-                                                $percent = $totalStockValue > 0 ? ($item->stock_value / $totalStockValue) * 100 : 0;
-                                            @endphp
-                                            <tr>
-                                                <td class="font-semibold">{{ $categoryName }}</td>
-                                                <td class="text-right">{{ $item->sku_count }}</td>
-                                                <td class="text-right">{{ money($item->stock_value) }}</td>
-                                                <td class="text-right">{{ number_format($percent, 2) }}%</td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
+                        <div class="text-right">
+                            <h5 class="mb-0 font-bold text-feedback-success">{{ money($src['amount']) }}</h5>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold
+                                {{ $src['source'] === 'Product Sales' ? 'bg-brand text-white' : 'bg-feedback-info text-white' }}">{{ $src['status'] }}</span>
                         </div>
                     </div>
+                    <div class="w-full h-2 bg-white rounded-full overflow-hidden border border-border">
+                        <div class="h-full rounded-full {{ $src['source'] === 'Product Sales' ? 'bg-brand' : 'bg-feedback-info' }}" style="width: {{ min(100, (float)$src['percentage']) }}%"></div>
+                    </div>
                 </div>
+            @empty
+                <div class="text-center py-6 text-sm text-ink-tertiary">No income recorded for this period.</div>
+            @endforelse
+            <div class="p-3 bg-emerald-50 rounded-sm border border-emerald-200 border-l-4 border-l-emerald-500">
+                <p class="text-xs text-ink-tertiary mb-1 uppercase font-semibold tracking-wider">Total Income</p>
+                <h4 class="mb-0 font-bold text-xl text-feedback-success">{{ money($totalIncome) }}</h4>
             </div>
         </div>
     </div>
-@endsection
+
+    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden">
+        <div class="px-4 py-3 border-b border-border flex items-center gap-2 bg-surface-muted">
+            <i data-lucide="arrow-up-circle" class="text-rose-500" style="width:16px;height:16px;"></i>
+            <h5 class="mb-0 font-bold text-ink">Expense Breakdown</h5>
+        </div>
+        <div class="p-4 space-y-3">
+            <div class="grid grid-cols-2 gap-3 mb-2">
+                <div class="p-3 bg-rose-50 rounded-sm border border-rose-200 border-l-4 border-l-rose-500">
+                    <p class="text-xs text-ink-tertiary mb-1 uppercase font-semibold tracking-wider">Total Expenses</p>
+                    <h4 class="mb-0 font-bold text-xl text-rose-600">{{ money($totalExpense ?? 0) }}</h4>
+                </div>
+                <div class="p-3 bg-amber-50 rounded-sm border border-amber-200 border-l-4 border-l-amber-500">
+                    <p class="text-xs text-ink-tertiary mb-1 uppercase font-semibold tracking-wider">Growth vs Last</p>
+                    <h4 class="mb-0 font-bold text-xl
+                        {{ ($expenseGrowth ?? 0) <= 0 ? 'text-feedback-success' : 'text-feedback-warning' }}">
+                        {{ number_format((float)($expenseGrowth ?? 0), 1) }}%
+                    </h4>
+                </div>
+            </div>
+            @php
+                $expenseTotal = (float) collect($expenseCategories ?? [])->sum('total');
+            @endphp
+            @forelse ($expenseCategories ?? [] as $cat)
+                <div class="flex items-center gap-3 py-2 {{ !$loop->last ? 'border-b border-border' : '' }}">
+                    <span class="shrink-0 w-9 h-9 rounded-sm flex items-center justify-center
+                        @if (isset($highestExpense) && $highestExpense->seller_expense_category_id == $cat->seller_expense_category_id)
+                            bg-rose-500 text-white
+                        @else
+                            bg-surface-muted text-ink-tertiary
+                        @endif">
+                        <i data-lucide="{{ isset($highestExpense) && $highestExpense->seller_expense_category_id == $cat->seller_expense_category_id ? 'flame' : 'tag' }}" style="width:18px;height:18px;"></i>
+                    </span>
+                    <div class="min-w-0 flex-1">
+                        <p class="mb-0 font-medium text-ink">{{ $cat->category?->name ?? 'Uncategorized' }}
+                            @if (isset($highestExpense) && $highestExpense->seller_expense_category_id == $cat->seller_expense_category_id)
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-rose-500 text-white ms-1">Highest</span>
+                            @endif
+                        </p>
+                        <div class="w-full h-1.5 bg-surface-muted rounded-full overflow-hidden mt-1">
+                            <div class="h-full rounded-full bg-rose-500" style="width: {{ $expenseTotal > 0 ? min(100, ($cat->total / $expenseTotal) * 100) : 0 }}%"></div>
+                        </div>
+                    </div>
+                    <div class="text-right shrink-0">
+                        <p class="mb-0 font-bold text-ink">{{ money((float) $cat->total) }}</p>
+                        <small class="text-ink-tertiary">{{ $expenseTotal > 0 ? number_format(($cat->total / $expenseTotal) * 100, 1) : 0 }}%</small>
+                    </div>
+                </div>
+            @empty
+                <div class="text-center py-6 text-sm text-ink-tertiary">
+                    <i data-lucide="circle-check" class="mx-auto mb-2 text-feedback-success" style="width:32px;height:32px;"></i>
+                    <p class="mb-2">No expenses recorded for this period.</p>
+                    <a href="{{ route('seller.expenses.index') }}" class="btn btn-light btn-sm">Manage expenses</a>
+                </div>
+            @endforelse
+        </div>
+    </div>
+</section>
+
+{{-- ═══ INVENTORY VALUE BREAKDOWN + LOW TURNOVER ═══ --}}
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-4">
+    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden">
+        <div class="px-4 py-3 border-b border-border flex items-center gap-2 bg-surface-muted">
+            <i data-lucide="package" class="text-brand" style="width:16px;height:16px;"></i>
+            <h5 class="mb-0 font-bold text-ink">Inventory Value</h5>
+        </div>
+        <div class="p-4">
+            <p class="text-xs text-ink-tertiary mb-1 uppercase font-semibold tracking-wider">Total Locked Capital</p>
+            <h3 class="mb-3 font-bold text-2xl text-ink">{{ money($inventory_value ?? 0) }}</h3>
+            <div class="mt-3 p-3 bg-amber-50 rounded-sm border border-amber-200 border-l-4 border-l-amber-500">
+                <div class="flex items-center justify-between gap-2">
+                    <span class="text-sm text-ink-secondary font-semibold">Low-turnover SKUs</span>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-amber-500 text-white">{{ number_format($lowTurnoverCount ?? 0) }}</span>
+                </div>
+                <small class="text-ink-tertiary mt-1 block">Not sold in the past {{ $lowTurnoverDays ?? 90 }} days.</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="lg:col-span-2 bg-white border border-border rounded-sm shadow-sm overflow-hidden">
+        <div class="px-4 py-3 border-b border-border flex items-center justify-between bg-surface-muted">
+            <div class="flex items-center gap-2">
+                <i data-lucide="layers" class="text-brand" style="width:16px;height:16px;"></i>
+                <h5 class="mb-0 font-bold text-ink">Inventory Value by Category</h5>
+            </div>
+            <small class="text-ink-tertiary">Total: {{ money($totalStockValue ?? 0) }}</small>
+        </div>
+        <div class="p-4 space-y-2">
+            @php
+                $invTotal = (float) collect($inventoryByCategory ?? [])->sum('stock_value');
+            @endphp
+            @forelse ($inventoryByCategory ?? [] as $row)
+                <div class="flex items-center gap-3 py-2 {{ !$loop->last ? 'border-b border-border' : '' }}">
+                    <span class="shrink-0 w-9 h-9 rounded-sm bg-brand-tint text-brand flex items-center justify-center">
+                        <i data-lucide="folder" style="width:18px;height:18px;"></i>
+                    </span>
+                    <div class="min-w-0 flex-1">
+                        <p class="mb-0 font-medium text-ink">{{ $row->category?->name ?? 'Uncategorized' }}</p>
+                        <div class="w-full h-1.5 bg-surface-muted rounded-full overflow-hidden mt-1">
+                            <div class="h-full rounded-full bg-brand" style="width: {{ $invTotal > 0 ? min(100, ($row->stock_value / $invTotal) * 100) : 0 }}%"></div>
+                        </div>
+                    </div>
+                    <div class="text-right shrink-0">
+                        <p class="mb-0 font-bold text-ink">{{ money((float) $row->stock_value) }}</p>
+                        <small class="text-ink-tertiary">{{ $row->sku_count }} SKUs</small>
+                    </div>
+                </div>
+            @empty
+                <div class="text-center py-6 text-sm text-ink-tertiary">No inventory value data available.</div>
+            @endforelse
+        </div>
+    </div>
+</section>
+
+{{-- ═══ PERIOD COMPARISON ═══ --}}
+<section class="bg-white border border-border rounded-sm shadow-sm overflow-hidden">
+    <div class="px-4 py-3 border-b border-border flex items-center gap-2 bg-surface-muted">
+        <i data-lucide="scale" class="text-brand" style="width:16px;height:16px;"></i>
+        <h5 class="mb-0 font-bold text-ink">Period Comparison</h5>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm text-ink border-collapse">
+            <thead class="bg-surface-muted border-b border-border text-xs font-semibold text-ink-tertiary uppercase tracking-wider">
+                <tr>
+                    <th class="px-4 py-2.5">Metric</th>
+                    <th class="px-4 py-2.5 text-right">Previous</th>
+                    <th class="px-4 py-2.5 text-right">Current · {{ $rangeText }}</th>
+                    <th class="px-4 py-2.5">Change</th>
+                    <th class="px-4 py-2.5 text-right">Upcoming</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-border">
+                @foreach ([
+                    ['label' => 'Revenue',         'prev' => $lm['total_revenue'] ?? 0, 'curr' => $cm['total_revenue'] ?? 0, 'next' => $nm['total_revenue'] ?? 0],
+                    ['label' => 'Total Cost',      'prev' => $lm['total_product_cost'] ?? 0, 'curr' => $cm['total_product_cost'] ?? 0, 'next' => $nm['total_product_cost'] ?? 0],
+                    ['label' => 'Gross Profit',    'prev' => $lm['gross_profit'] ?? 0, 'curr' => $cm['gross_profit'] ?? 0, 'next' => $nm['gross_profit'] ?? 0],
+                    ['label' => 'Operating Expense','prev' => $lm['total_expense'] ?? 0, 'curr' => $cm['total_expense'] ?? 0, 'next' => $nm['total_expense'] ?? 0],
+                    ['label' => 'Net Profit',      'prev' => $lm['net_profit'] ?? 0, 'curr' => $cm['net_profit'] ?? 0, 'next' => $nm['net_profit'] ?? 0],
+                ] as $row)
+                    <tr class="hover:bg-surface-muted/50 transition-colors">
+                        <td class="px-4 py-3 font-medium text-ink">{{ $row['label'] }}</td>
+                        <td class="px-4 py-3 text-right text-ink-secondary">{{ money((float) $row['prev']) }}</td>
+                        <td class="px-4 py-3 text-right">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-brand-tint text-brand">{{ money((float) $row['curr']) }}</span>
+                        </td>
+                        <td class="px-4 py-3">
+                            @php
+                                $diff = (float) $row['curr'] - (float) $row['prev'];
+                                $pct = ((float) $row['prev'] != 0) ? ($diff / (float) $row['prev']) * 100 : 0;
+                            @endphp
+                            @if ($pct > 0)
+                                <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-feedback-success">
+                                    <i data-lucide="trending-up" style="width:11px;height:11px;"></i> +{{ number_format($pct, 1) }}%
+                                </span>
+                            @elseif ($pct < 0)
+                                <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-600">
+                                    <i data-lucide="trending-down" style="width:11px;height:11px;"></i> {{ number_format($pct, 1) }}%
+                                </span>
+                            @else
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-surface-muted text-ink-tertiary">Flat</span>
+                            @endif
+                        </td>
+                        <td class="px-4 py-3 text-right text-ink-secondary">{{ $row['next'] !== null ? money((float) $row['next']) : '—' }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</section>
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
-    <script>
-        function toggleCustomDates(value) {
-            const custom = document.getElementById('customDateRange');
-            custom.style.display = (value === 'custom') ? 'block' : 'none';
-        }
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<script>
+    const brand = '#F85606';
+    const success = '#16A34A';
+    const rating = '#7c3aed';
+    const danger = '#EF4444';
 
-        const ctx = document.getElementById('profitChart').getContext('2d');
+    const trendLabels = @json(($trendData ?? collect())->pluck('label'));
+    const trendRevenue = @json(($trendData ?? collect())->pluck('total_revenue')->map(fn ($v) => (float) $v));
+    const trendGross = @json(($trendData ?? collect())->pluck('gross_profit')->map(fn ($v) => (float) $v));
+    const trendNet = @json(($trendData ?? collect())->pluck('net_profit')->map(fn ($v) => (float) $v));
+
+    const formatMoney = (v) => {
+        const n = Number(v) || 0;
+        if (Math.abs(n) >= 1000000) return (n / 1000000).toFixed(2).replace(/\.?0+$/, '') + 'M';
+        if (Math.abs(n) >= 1000)    return (n / 1000).toFixed(1).replace(/\.?0+$/, '') + 'k';
+        return n.toFixed(0);
+    };
+    const formatFullMoney = (v) => {
+        const n = Number(v) || 0;
+        return n.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+    };
+
+    if (document.getElementById('trendChart') && Array.isArray(trendLabels) && trendLabels.length > 0) {
+        const ctx = document.getElementById('trendChart').getContext('2d');
+        const chartHeight = 280;
+        const gradient = ctx.createLinearGradient(0, 0, 0, chartHeight);
+        gradient.addColorStop(0, 'rgba(248,86,6,0.32)');
+        gradient.addColorStop(1, 'rgba(248,86,6,0.02)');
+        const longXLabels = trendLabels.some(l => String(l).length > 8);
         new Chart(ctx, {
             type: 'line',
             data: {
-                labels: {!! json_encode($trendData->pluck('label')) !!},
+                labels: trendLabels,
                 datasets: [
-                    { label: 'Net Profit', data: {!! json_encode($trendData->pluck('net_profit')) !!}, backgroundColor: 'rgba(248, 86, 6, 0.1)', borderColor: '#F85606', borderWidth: 2, fill: true, tension: 0.3 },
-                    { label: 'Gross Profit', data: {!! json_encode($trendData->pluck('gross_profit')) !!}, backgroundColor: 'rgba(29, 138, 69, 0.1)', borderColor: '#1D8A45', borderWidth: 2, fill: true, tension: 0.3 },
-                    { label: 'Revenue', data: {!! json_encode($trendData->pluck('total_revenue')) !!}, backgroundColor: 'rgba(14, 165, 233, 0.1)', borderColor: '#0ea5e9', borderWidth: 2, fill: false, tension: 0.3 }
+                    {
+                        label: 'Revenue', data: trendRevenue,
+                        borderColor: brand, backgroundColor: gradient, tension: 0.35, fill: true,
+                        borderWidth: 2.5,
+                        pointRadius: trendLabels.length > 60 ? 0 : (trendLabels.length > 30 ? 1 : 2),
+                        pointHoverRadius: 6,
+                        pointBackgroundColor: brand,
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 1.5,
+                        pointHitRadius: 10
+                    },
+                    {
+                        label: 'Gross Profit', data: trendGross,
+                        borderColor: success, backgroundColor: 'transparent', tension: 0.35, fill: false,
+                        borderWidth: 2, pointRadius: 0, pointHoverRadius: 6
+                    },
+                    {
+                        label: 'Net Profit', data: trendNet,
+                        borderColor: rating, backgroundColor: 'transparent', tension: 0.35, fill: false,
+                        borderWidth: 2, borderDash: [4, 3], pointRadius: 0, pointHoverRadius: 6
+                    }
                 ]
             },
             options: {
-                responsive: true,
-                plugins: { legend: { position: 'top' } },
-                scales: { y: { beginAtZero: true } }
+                responsive: true, maintainAspectRatio: false,
+                layout: { padding: { top: 12, right: 16, left: 4, bottom: 4 } },
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(17, 24, 39, 0.95)',
+                        titleColor: '#fff', bodyColor: '#fff',
+                        padding: 10, cornerRadius: 6, displayColors: false,
+                        callbacks: {
+                            label: (c) => c.dataset.label + ': ' + formatFullMoney(c.parsed.y)
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(0,0,0,.05)', drawBorder: false },
+                        ticks: {
+                            font: { size: 10 },
+                            color: '#767676',
+                            maxTicksLimit: 6,
+                            callback: (v) => formatMoney(v)
+                        }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: {
+                            font: { size: 10 },
+                            color: '#767676',
+                            autoSkip: true,
+                            autoSkipPadding: 14,
+                            maxRotation: longXLabels ? 45 : 0,
+                            minRotation: 0
+                        }
+                    }
+                }
             }
         });
+    }
 
-        const incomeCtx = document.getElementById('incomePieChart').getContext('2d');
-        new Chart(incomeCtx, {
-            type: 'doughnut',
-            data: {
-                labels: {!! json_encode($incomeData->pluck('source')) !!},
-                datasets: [{ data: {!! json_encode($incomeData->pluck('amount')) !!}, backgroundColor: ['#F85606', '#637381', '#0ea5e9', '#B7791A', '#1D8A45'], borderColor: '#fff', borderWidth: 2 }]
-            },
-            options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
-        });
+    const expLabels = @json(($expenseTrend ?? collect())->pluck('label'));
+    const expAmounts = @json(($expenseTrend ?? collect())->pluck('amount')->map(fn ($v) => (float) $v));
 
-        const expenseCtx = document.getElementById('expenseBarChart').getContext('2d');
-        new Chart(expenseCtx, {
+    if (document.getElementById('expenseChart') && Array.isArray(expLabels) && expLabels.length > 0) {
+        const ctx = document.getElementById('expenseChart').getContext('2d');
+        const max = Math.max(1, ...expAmounts);
+        const longXLabels = expLabels.some(l => String(l).length > 8);
+        new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: {!! json_encode($expenseTrend->pluck('label')) !!},
-                datasets: [{ label: 'Expenses', data: {!! json_encode($expenseTrend->pluck('amount')) !!}, backgroundColor: '#D93025' }]
+                labels: expLabels,
+                datasets: [{
+                    label: 'Expenses',
+                    data: expAmounts,
+                    backgroundColor: expAmounts.map(v => v > 0 ? 'rgba(239,68,68,0.75)' : 'rgba(22,163,74,0.55)'),
+                    borderColor: expAmounts.map(v => v > 0 ? '#EF4444' : '#16A34A'),
+                    borderWidth: 1,
+                    borderRadius: { topLeft: 4, topRight: 4 },
+                    maxBarThickness: 36
+                }]
             },
-            options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                layout: { padding: { top: 12, right: 16, left: 4, bottom: 4 } },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(17, 24, 39, 0.95)',
+                        titleColor: '#fff', bodyColor: '#fff',
+                        padding: 10, cornerRadius: 6, displayColors: false,
+                        callbacks: {
+                            title: (items) => items[0].label,
+                            label: (c) => 'Expense: ' + formatFullMoney(c.parsed.y)
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(0,0,0,.05)', drawBorder: false },
+                        ticks: {
+                            font: { size: 10 },
+                            color: '#767676',
+                            maxTicksLimit: 6,
+                            callback: (v) => formatMoney(v)
+                        }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: {
+                            font: { size: 10 },
+                            color: '#767676',
+                            autoSkip: true,
+                            autoSkipPadding: 14,
+                            maxRotation: longXLabels ? 45 : 0,
+                            minRotation: 0
+                        }
+                    }
+                }
+            }
         });
-
-        const inventoryCtx = document.getElementById('inventoryChart').getContext('2d');
-        new Chart(inventoryCtx, {
-            type: 'bar',
-            data: {
-                labels: {!! json_encode($inventoryByCategory->pluck('category.name')) !!},
-                datasets: [{ label: "Stock Value", data: {!! json_encode($inventoryByCategory->pluck('stock_value')) !!}, backgroundColor: 'rgba(248, 86, 6, 0.7)' }]
-            },
-            options: { indexAxis: 'y', responsive: true, scales: { x: { beginAtZero: true } } }
-        });
-    </script>
+    }
+</script>
 @endpush
+@endsection

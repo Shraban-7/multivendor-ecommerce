@@ -40,7 +40,8 @@ class ReportController extends Controller
             $lastEnd = Carbon::parse($dateFrom)->subDay()->endOfDay();
             $lastStart = $lastEnd->copy()->subDays($days - 1)->startOfDay();
         } else {
-            $currentStart = Order::min('created_at') ?? now();
+            $minDate = Order::min('created_at');
+            $currentStart = $minDate ? Carbon::parse($minDate) : now();
             $currentEnd = now();
             $lastStart = null;
             $lastEnd = null;
@@ -162,7 +163,7 @@ class ReportController extends Controller
             );
         });
 
-        return view('seller.reports.financial', $data);
+        return view('seller.reports.financial', array_merge($data, ['seller' => $seller]));
     }
 
     public function sales()
@@ -388,13 +389,14 @@ class ReportController extends Controller
             );
         });
 
-        return view('seller.reports.sales', $data);
+        return view('seller.reports.sales', array_merge($data, ['seller' => $seller]));
     }
 
     public function customers(Request $request)
     {
         $filter = $request->get('filter', null);
-        $seller_id = get_seller_id();
+        $seller = Seller::find(get_seller_id());
+        $seller_id = $seller->id;
 
         if ($filter) {
             $dates = $this->getDateRange($filter);
@@ -403,7 +405,8 @@ class ReportController extends Controller
             $lastStart = $dates['lastStart'];
             $lastEnd = $dates['lastEnd'] ? $dates['lastEnd']->copy()->endOfDay() : null;
         } else {
-            $currentStart = Order::where('seller_id', $seller_id)->min('created_at');
+            $minDate = Order::where('seller_id', $seller_id)->min('created_at');
+            $currentStart = $minDate ? Carbon::parse($minDate) : now();
             $currentEnd = now()->endOfDay();
             $lastStart = null;
             $lastEnd = null;
@@ -536,7 +539,8 @@ class ReportController extends Controller
             'avgOrdersPerCustomerCurrent',
             'avgOrdersPerCustomerChange',
             'chartData',
-            'topCustomers'
+            'topCustomers',
+            'seller'
         ));
     }
 
@@ -881,7 +885,8 @@ class ReportController extends Controller
             $lastStart = $lastEnd->copy()->subDays($days - 1)->startOfDay();
 
         } else {
-            $currentStart = Order::min('created_at') ?? now();
+            $minDate = Order::min('created_at');
+            $currentStart = $minDate ? Carbon::parse($minDate) : now();
             $currentEnd = now();
             $lastStart = null;
             $lastEnd = null;
@@ -1088,6 +1093,6 @@ class ReportController extends Controller
                 ];
             });
 
-        return view('seller.reports.overview', compact('calculateMetrics', 'chartData', 'quickFacts', 'filter', 'topProducts'));
+        return view('seller.reports.overview', compact('calculateMetrics', 'chartData', 'quickFacts', 'filter', 'topProducts', 'seller'));
     }
 }
