@@ -5,9 +5,12 @@
     @php
         $deleted = \App\Domain\Vendor\Models\Seller::DELETED;
     @endphp
-    <div class="container-fluid">
-        <div class="flex justify-between items-center mb-2">
-            <h4 class="mb-0">Seller Profile</h4>
+    <div>
+        <div class="flex justify-between items-center mb-4">
+            <div>
+                <h4 class="font-semibold mb-0">Seller Profile</h4>
+                <p class="text-sm text-ink-secondary mt-1">{{ $seller->business_name }}</p>
+            </div>
             <div>
                 <a href="{{ route('admin.sellers.index') }}" class="btn btn-light btn-sm">
                     <i data-lucide="arrow-left" class="icon-xs me-1"></i> Back to Sellers
@@ -15,26 +18,28 @@
                 <a href="{{ route('admin.sellers.edit', $seller->username) }}" class="btn btn-light btn-sm">
                     <i data-lucide="edit" class="icon-xs me-1"></i> Edit
                 </a>
+</div>
             </div>
-        </div>
+
+            <!-- Right: Analytics -->
 
         <!-- Profile and Analytics Row -->
         <div class="grid grid-cols-1 mb-5">
 
             <!-- Left: Seller + Business Info -->
             <div class="md:col-span-1">
-                <div class="bg-white rounded-lg shadow-sm p-4 mb-4 relative">
+                <div class="bg-white border border-border rounded-sm shadow-sm p-4 mb-4 relative">
 
                     <!-- Seller Info -->
                     <div class="flex items-start mb-3">
-                        <img src="{{ storage_url($seller->image) }}" alt="{{ $seller->name }}" class="img-thumbnail me-3"
+                        <img src="{{ storage_url($seller->image) }}" alt="{{ $seller->name }}" class="border rounded-lg me-3"
                             style="width: 100px; height: 100px; object-fit: cover; border-radius: .5rem;">
                         <div>
                             <div class="flex items-center mb-2">
                                 <h5 class="font-bold mb-0">{{ $seller->name }}</h5>
 
                                 @if ($seller->status == $deleted)
-                                    <span class="badge bg-feedback-danger ms-2">Deleted</span>
+                                    <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-red-50 text-red-700 ms-2">Deleted</span>
                                 @endif
                             </div>
 
@@ -54,7 +59,7 @@
                         </div>
                     </div>
                     @if ($seller->status == $deleted)
-                        <div class="flex justify-end items-center mb-3 gap-2">
+<div class="flex justify-end items-center mb-3 gap-2">
                             <!-- Restore Button -->
                             <button type="button" class="btn btn-light btn-sm"
                                 onclick="restoreItem({{ $seller->id }})">
@@ -68,40 +73,13 @@
                                 Delete Permanently
                             </button>
                         </div>
-
-                        <!-- Confirmation Modal -->
-                        <div class="modal fade" id="permanentDeleteModal{{ $seller->id }}" tabindex="-1"
-                            aria-labelledby="permanentDeleteModalLabel{{ $seller->id }}" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="permanentDeleteModalLabel{{ $seller->id }}">Confirm
-                                            Permanent Deletion</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        Are you sure you want to permanently delete this seller? This action cannot be
-                                        undone.
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-light"
-                                            data-bs-dismiss="modal">Cancel</button>
-                                        <button type="button" class="btn btn-danger"
-                                            onclick="permanentlyDeleteSeller({{ $seller->id }})">
-                                            Yes, Delete
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-                    <hr class="my-3">
+                @endif
+                <hr class="my-3">
 
                     <!-- Business Info -->
                     <div class="flex items-start {{ $seller->status == $deleted ? '' : 'mb-3' }} ">
                         <img src="{{ storage_url($seller->business_logo) }}" alt="{{ $seller->business_name }}"
-                            class="img-thumbnail me-3"
+                            class="border rounded-lg me-3"
                             style="width: 100px; height: 100px; object-fit: cover; border-radius: .5rem;">
                         <div>
                             <h6 class="font-semibold mb-1">
@@ -126,38 +104,9 @@
                             data-bs-target="#blockSellerModal{{ $seller->id }}">
                             <i data-lucide="trash" class="icon-xs me-1"></i> Delete
                         </button>
-                    @endif
+@endif
 
-                    <!-- Confirmation Modal -->
-                    <div class="modal fade" id="blockSellerModal{{ $seller->id }}" tabindex="-1"
-                        aria-labelledby="blockSellerModalLabel{{ $seller->id }}" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="blockSellerModalLabel{{ $seller->id }}">Confirm Action
-                                    </h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    Are you sure you want to delete this seller? This action cannot be undone.
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-light"
-                                        data-bs-dismiss="modal">Cancel</button>
-                                    <form action="{{ route('admin.sellers.delete', $seller->id) }}" method="POST"
-                                        class="inline">
-                                        @csrf
-                                        <button type="submit" class="btn btn-danger">Yes, Delete</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
-            </div>
-
-            <!-- Right: Analytics -->
             <div class="md:col-span-2">
                 <div class="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-4 gap-3">
                     <div class="col">
@@ -226,7 +175,7 @@
                             <div class="p-5">
                                 <div class="flex justify-between">
                                     <span class="font-semibold">Revenue</span>
-                                    <span class="text-feedback-success text-xxl font-semibold">{{ currency() }}</span>
+                                    <span class="text-emerald-600 text-lg font-semibold">{{ currency() }}</span>
                                 </div>
                                 <h4 class="font-bold my-2">{{ money($total_revenue) }}</h4>
                                 <small>Total Revenue</small>
@@ -238,7 +187,7 @@
                             <div class="p-5">
                                 <div class="flex justify-between">
                                     <span class="font-semibold">Commission</span>
-                                    <span class="text-feedback-success text-xxl font-semibold">{{ currency() }}</span>
+                                    <span class="text-emerald-600 text-lg font-semibold">{{ currency() }}</span>
                                 </div>
                                 <h4 class="font-bold my-2">{{ money($total_commission) }}</h4>
                                 <small>Total Commission</small>
@@ -267,10 +216,10 @@
                 <div class="md:col-span-1 mb-4">
                     <a href="{{ route('products.details', $product->slug) }}" target="__blank"
                         class="no-underline text-ink">
-                        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden h-full shadow-sm border-0">
-                            <img src="{{ storage_url($product->thumbnail) }}" class="card-img-top"
-                                alt="{{ $product->name }}" style="height: 150px; object-fit: cover;">
-                            <div class="p-5 p-2">
+                        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden h-full">
+                            <img src="{{ storage_url($product->thumbnail) }}"
+                                alt="{{ $product->name }}" style="height: 150px; width: 100%; object-fit: cover;">
+                            <div class="p-2">
                                 <h6 class="font-semibold mb-1 truncate">{{ $product->name }}</h6>
                                 <p class="text-ink-tertiary text-sm mb-0">{{ money($product->compare_price) }}</p>
                             </div>
@@ -291,6 +240,50 @@
 
 
     </div>
+
+    @push('modals')
+        <div class="modal fade" id="permanentDeleteModal{{ $seller->id }}" tabindex="-1"
+            aria-labelledby="permanentDeleteModalLabel{{ $seller->id }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="permanentDeleteModalLabel{{ $seller->id }}">Confirm Permanent Deletion</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to permanently delete this seller? This action cannot be undone.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-danger" onclick="permanentlyDeleteSeller({{ $seller->id }})">
+                            Yes, Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="blockSellerModal{{ $seller->id }}" tabindex="-1"
+            aria-labelledby="blockSellerModalLabel{{ $seller->id }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="blockSellerModalLabel{{ $seller->id }}">Confirm Action</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete this seller? This action cannot be undone.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                        <form action="{{ route('admin.sellers.delete', $seller->id) }}" method="POST" class="inline">
+                            @csrf
+                            <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endpush
 
     @push('scripts')
         <script>

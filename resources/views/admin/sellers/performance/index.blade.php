@@ -16,9 +16,9 @@
     <div class="grid grid-cols-1 gap-3 mb-4">
         @foreach (\App\Domain\Vendor\Enums\PerformanceTier::cases() as $tier)
             <div class="xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-1">
-                <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3">
+                <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden p-3">
                     <span class="text-ink-tertiary text-sm">{{ $tier->label() }}</span>
-                    <h5 class="font-bold mb-0 text-{{ $tier->color() }}">{{ (int) ($stats[$tier->value] ?? 0) }}</h5>
+                    <h5 class="font-bold mb-0" style="color: {{ $tier->color() }}">{{ (int) ($stats[$tier->value] ?? 0) }}</h5>
                 </div>
             </div>
         @endforeach
@@ -26,18 +26,18 @@
 
     <div class="grid grid-cols-1 gap-3 mb-4">
         <div class="lg:col-span-7">
-            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm">
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden">
                 <div class="p-5">
                     <h5 class="font-bold mb-3">Top Performers</h5>
                     @forelse ($leaderboard as $i => $row)
                         <div class="flex justify-between items-center border-b py-2">
                             <div class="flex items-center gap-2">
-                                <span class="badge bg-{{ $i < 3 ? 'success' : 'secondary' }}">#{{ $i + 1 }}</span>
+                                <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full {{ $i < 3 ? 'bg-emerald-50 text-emerald-700' : 'bg-gray-100 text-gray-700' }}">#{{ $i + 1 }}</span>
                                 <span class="font-semibold">{{ $row->seller?->business_name ?? 'Seller #'.$row->seller_id }}</span>
                             </div>
                             <div class="text-right">
                                 <span class="font-bold">{{ number_format((float) $row->overall_score, 2) }}</span>
-                                <span class="badge bg-{{ $row->tierColor() }} ms-1">{{ $row->tierLabel() }}</span>
+                                <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full" style="background-color: {{ $row->tierColor() }}20; color: {{ $row->tierColor() }}">{{ $row->tierLabel() }}</span>
                             </div>
                         </div>
                     @empty
@@ -47,7 +47,7 @@
             </div>
         </div>
         <div class="lg:col-span-5">
-            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm">
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden">
                 <div class="p-5">
                     <h5 class="font-bold mb-3">Filters</h5>
                     <form method="GET" class="vstack gap-2">
@@ -66,7 +66,7 @@
         </div>
     </div>
 
-    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm">
+    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden">
         <div class="p-5">
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-sm text-ink border-collapse">
@@ -103,7 +103,7 @@
                                 <td class="text-right">{{ number_format((float) $row->avg_review_rating, 2) }}</td>
                                 <td class="text-right">{{ round($row->response_rate * 100, 1) }}%</td>
                                 <td class="text-right font-bold">{{ number_format((float) $row->overall_score, 2) }}</td>
-                                <td><span class="badge bg-{{ $row->tierColor() }}">{{ $row->tierLabel() }}</span></td>
+                                <td><span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full" style="background-color: {{ $row->tierColor() }}20; color: {{ $row->tierColor() }}">{{ $row->tierLabel() }}</span></td>
                                 <td class="text-right">
                                     <a href="{{ route('admin.seller-performance.show', $row->seller_id) }}" class="btn btn-light btn-sm">
                                         <i data-lucide="eye" class="icon-xs"></i> View

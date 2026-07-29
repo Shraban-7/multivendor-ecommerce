@@ -17,14 +17,32 @@ class EloquentSellerRepository implements SellerRepositoryInterface
         return Seller::where('username', $username)->first();
     }
 
-    public function getPaginated(int $perPage = 30): LengthAwarePaginator
+    public function getPaginated(int $perPage = 30, ?string $search = null, ?int $status = null): LengthAwarePaginator
     {
-        return Seller::with('plan')->latest('id')->paginate($perPage);
+        return Seller::with('plan')
+            ->when($search, fn($q) => $q->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%")
+                  ->orWhere('business_name', 'like', "%{$search}%");
+            }))
+            ->when($status !== null && $status !== '', fn($q) => $q->where('status', $status))
+            ->latest('id')
+            ->paginate($perPage);
     }
 
-    public function getPendingPaginated(int $perPage = 30): LengthAwarePaginator
+    public function getPendingPaginated(int $perPage = 30, ?string $search = null, ?int $status = null): LengthAwarePaginator
     {
-        return Seller::pending()->latest('id')->paginate($perPage);
+        return Seller::pending()
+            ->when($search, fn($q) => $q->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%")
+                  ->orWhere('business_name', 'like', "%{$search}%");
+            }))
+            ->when($status !== null && $status !== '', fn($q) => $q->where('status', $status))
+            ->latest('id')
+            ->paginate($perPage);
     }
 
     public function store(array $data): Seller

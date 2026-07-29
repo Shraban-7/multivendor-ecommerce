@@ -11,7 +11,7 @@ interface SellerRepositoryInterface
 
     public function findByUsername(string $username): ?Seller;
 
-    public function getPaginated(int $perPage = 30): LengthAwarePaginator;
+    public function getPaginated(int $perPage = 30, ?string $search = null, ?int $status = null): LengthAwarePaginator;
 
     public function getPendingPaginated(int $perPage = 30): LengthAwarePaginator;
 

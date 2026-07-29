@@ -24,11 +24,11 @@ enum PerformanceTier: string
     public function color(): string
     {
         return match ($this) {
-            self::EXCELLENT => 'success',
-            self::GOOD => 'primary',
-            self::AVERAGE => 'warning',
-            self::POOR => 'danger',
-            self::NEW => 'secondary',
+            self::EXCELLENT => '#059669',
+            self::GOOD => '#2563eb',
+            self::AVERAGE => '#d97706',
+            self::POOR => '#dc2626',
+            self::NEW => '#6b7280',
         };
     }
 

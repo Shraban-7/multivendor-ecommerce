@@ -26,15 +26,15 @@
     </div>
 
     @if (session('success'))
-        <div class="p-4 rounded-sm bg-emerald-50 border border-emerald-200 text-feedback-success text-sm flex items-start gap-3 alert-dismissible fade show py-2">{{ session('success') }}</div>
+        <div class="p-4 rounded-sm bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm flex items-start gap-3 py-2">{{ session('success') }}</div>
     @endif
 
     <div class="grid grid-cols-1 gap-3 mb-4">
         <div class="xl:col-span-1 lg:col-span-1">
-            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-4">
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden p-4">
                 <span class="text-ink-tertiary text-sm">Overall Score</span>
                 <h2 class="font-bold mb-1">{{ number_format((float) $score->overall_score, 2) }} <small class="text-ink-tertiary">/ 100</small></h2>
-                <span class="badge bg-{{ $score->tierColor() }}">{{ $score->tierLabel() }}</span>
+                <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full" style="background-color: {{ $score->tierColor() }}20; color: {{ $score->tierColor() }}">{{ $score->tierLabel() }}</span>
             </div>
         </div>
         @foreach ([
@@ -45,12 +45,12 @@
             ['Dispute rate', round($score->dispute_rate * 100, 1).'%', $score->dispute_score, $score->disputed_returns.' disputed'],
         ] as $card)
             <div class="xl:col-span-1 lg:col-span-1 md:col-span-1">
-                <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm p-3 h-full">
+                <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden p-3 h-full">
                     <span class="text-ink-tertiary text-sm">{{ $card[0] }}</span>
                     <h4 class="font-bold mb-1">{{ $card[1] }}</h4>
                     <div class="text-sm text-ink-tertiary">{{ $card[3] }}</div>
-                    <div class="w-full h-2 bg-surface-muted rounded-full overflow-hidden mt-2" style="height: 6px;">
-                        <div class="h-full bg-brand-deep rounded-full transition-all bg-{{ $card[2] >= 75 ? 'success' : ($card[2] >= 50 ? 'warning' : 'danger') }}" style="width: {{ $card[2] }}%"></div>
+                    <div class="w-full bg-surface-muted rounded-full overflow-hidden mt-2" style="height: 6px;">
+                        <div class="h-full rounded-full transition-all" style="width: {{ $card[2] }}%; background-color: {{ $card[2] >= 75 ? '#059669' : ($card[2] >= 50 ? '#d97706' : '#dc2626') }}"></div>
                     </div>
                 </div>
             </div>
@@ -59,7 +59,7 @@
 
     <div class="grid grid-cols-1 gap-3 mb-4">
         <div class="lg:col-span-2">
-            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm">
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden">
                 <div class="p-5">
                     <h5 class="font-bold mb-3">Score Trend (last 60 days)</h5>
                     <canvas id="trendChart" height="120"></canvas>
@@ -67,7 +67,7 @@
             </div>
         </div>
         <div class="lg:col-span-1">
-            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm">
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden">
                 <div class="p-5">
                     <h5 class="font-bold mb-3">By period</h5>
                     <table class="w-full text-left text-sm text-ink border-collapse">
@@ -80,7 +80,7 @@
                                 <tr>
                                     <td>{{ $p->label() }}</td>
                                     <td class="text-right font-semibold">{{ number_format((float) $row->overall_score, 2) }}</td>
-                                    <td class="text-right"><span class="badge bg-{{ $row->tierColor() }}">{{ $row->tierLabel() }}</span></td>
+                                    <td class="text-right"><span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full" style="background-color: {{ $row->tierColor() }}20; color: {{ $row->tierColor() }}">{{ $row->tierLabel() }}</span></td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -90,7 +90,7 @@
         </div>
     </div>
 
-    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm">
+    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden">
         <div class="p-5">
             <h5 class="font-bold mb-3">Score breakdown ({{ $period->label() }})</h5>
             <pre class="bg-surface-muted p-3 rounded text-sm mb-0">{{ json_encode($score->breakdown, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) }}</pre>

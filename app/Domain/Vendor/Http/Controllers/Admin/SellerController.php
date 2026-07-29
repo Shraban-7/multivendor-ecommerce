@@ -26,16 +26,24 @@ class SellerController extends Controller
         private readonly SellerRepositoryInterface $sellerRepo,
     ) {}
 
-    public function index()
+    public function index(Request $request)
     {
-        $sellers = $this->sellerRepo->getPaginated()->appends(request()->query());
+        $sellers = $this->sellerRepo->getPaginated(
+            perPage: 30,
+            search: $request->get('search'),
+            status: $request->get('status')
+        )->appends($request->query());
 
         return view('admin.sellers.index', compact('sellers'));
     }
 
-    public function pending()
+    public function pending(Request $request)
     {
-        $sellers = $this->sellerRepo->getPendingPaginated()->appends(request()->query());
+        $sellers = $this->sellerRepo->getPendingPaginated(
+            perPage: 30,
+            search: $request->get('search'),
+            status: $request->get('status')
+        )->appends($request->query());
 
         return view('admin.sellers.pending', compact('sellers'));
     }

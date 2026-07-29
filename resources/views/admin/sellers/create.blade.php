@@ -23,7 +23,7 @@
         }
     }
 
-    .w-full h-2 bg-surface-muted rounded-full overflow-hidden {
+    .progress-bar {
         background: #e5e7eb;
     }
 </style>
@@ -32,24 +32,22 @@
 
 <form id="sellerForm" enctype="multipart/form-data" class="needs-validation" novalidate>
     @csrf
-    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm mx-auto">
-        <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between bg-white py-3 border-b">
-            <div class="flex justify-between items-end">
-                <h4 class="font-semibold mb-0 text-center">
-                    <i data-lucide="user-check" class="me-2 text-brand"></i> Seller Registration Form
-                </h4>
-                <a href="{{ route('admin.sellers.index') }}" class="btn btn-light btn-sm">
-                    <i data-lucide="arrow-left" class="icon-xs"></i> Back to Sellers
-                </a>
-            </div>
+    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden mx-auto">
+        <div class="px-5 py-4 border-b border-border flex items-center justify-between">
+            <h4 class="font-semibold mb-0">
+                <i data-lucide="user-check" class="me-2 text-brand"></i> Seller Registration Form
+            </h4>
+            <a href="{{ route('admin.sellers.index') }}" class="btn btn-light btn-sm">
+                <i data-lucide="arrow-left" class="icon-xs"></i> Back to Sellers
+            </a>
         </div>
 
         <!-- Progress Bar -->
-        <div class="w-full h-2 bg-surface-muted rounded-full overflow-hidden rounded-0" style="height: 6px;">
-            <div class="h-full bg-brand-deep rounded-full transition-all bg-brand-deep" id="formProgress" style="width: 33%;"></div>
+        <div class="w-full" style="height: 6px; background: #e5e7eb;">
+            <div class="h-full bg-brand-deep transition-all" id="formProgress" style="width: 33%;"></div>
         </div>
 
-        <div class="p-5 p-4">
+        <div class="p-4">
             <!-- STEP 1 -->
             <div class="form-step form-step-active" id="step1">
                 <div class="grid grid-cols-1 gap-3">
@@ -142,12 +140,12 @@
         const nextBtns = document.querySelectorAll(".nextBtn");
         const prevBtns = document.querySelectorAll(".prevBtn");
         const steps = document.querySelectorAll(".form-step");
-        const w-full h-2 bg-surface-muted rounded-full overflow-hidden = document.querySelector("#formProgress");
+        const progressBar = document.querySelector("#formProgress");
         let actStep = 0;
 
         function showStep(index) {
             steps.forEach((step, i) => step.classList.toggle("form-step-active", i === index));
-            w-full h-2 bg-surface-muted rounded-full overflow-hidden.style.width = `${((index + 1) / steps.length) * 100}%`;
+            progressBar.style.width = `${((index + 1) / steps.length) * 100}%`;
         }
 
         nextBtns.forEach(btn => btn.addEventListener("click", () => {

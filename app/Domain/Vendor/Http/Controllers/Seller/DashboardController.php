@@ -31,7 +31,10 @@ class DashboardController extends Controller
                 'lowStockProducts' => $data['lowStockProducts'],
                 'pendingPayout' => $data['pendingPayout'],
                 'orderStatusDistribution' => $data['orderStatusDistribution'],
+                'recentReviews' => $data['recentReviews'],
                 'seller' => $seller,
+                'start_date' => $startDate,
+                'end_date' => $endDate,
             ]
         ));
     }
