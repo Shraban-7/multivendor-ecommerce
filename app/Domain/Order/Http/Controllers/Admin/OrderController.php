@@ -17,6 +17,10 @@ class OrderController extends Controller
             $query->where('invoice_id', 'like', "%{$search}%");
         }
 
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
         $orders = $query->latest()->paginate(25);
 
         return view('admin.orders.index', compact('orders'));

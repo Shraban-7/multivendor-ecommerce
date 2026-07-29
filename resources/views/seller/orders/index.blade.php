@@ -2,40 +2,77 @@
 @section('title', 'Orders')
 @section('content')
 
-    <div class="flex justify-between items-center mb-3">
-        <h4 class="font-bold mb-0 text-ink">{{ $type ? ucfirst($type) : 'All' }} Orders </h4>
-        <button class="btn btn-primary btn-sm" data-bs-toggle="offcanvas" data-bs-target="#filterOffcanvas">
-            <i data-lucide="filter" class="icon-xs"></i> Filter
-        </button>
+    <div class="flex justify-between items-start mb-4">
+        <div>
+            <h1 class="text-xl font-semibold text-ink">{{ $type ? ucfirst($type) : 'All' }} Orders</h1>
+            <p class="text-sm text-ink-secondary mt-1">View and manage your orders</p>
+        </div>
+    </div>
+
+    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden mb-4">
+        <div class="px-4 py-3 border-b border-border bg-surface-muted flex items-center justify-between">
+            <h6 class="text-xs font-semibold text-ink uppercase tracking-wider">Search & Filter</h6>
+        </div>
+        <div class="p-4">
+            <form action="{{ $type ? route('seller.orders.' . $type) : route('seller.orders.index') }}" method="GET">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                    <div>
+                        <input type="text" name="invoice_id" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors"
+                            placeholder="Invoice ID" value="{{ request('invoice_id') }}">
+                    </div>
+                    <div>
+                        <input type="text" name="customer_name" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors"
+                            placeholder="Customer Name" value="{{ request('customer_name') }}">
+                    </div>
+                    <div>
+                        <input type="text" name="customer_phone" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors"
+                            placeholder="Customer Phone" value="{{ request('customer_phone') }}">
+                    </div>
+                    <div>
+                        <input type="date" name="date_from" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors"
+                            value="{{ request('date_from') }}">
+                    </div>
+                    <div>
+                        <input type="date" name="date_to" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors"
+                            value="{{ request('date_to') }}">
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 mt-3">
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <i data-lucide="search" class="icon-xs"></i> Search
+                    </button>
+                    @if(request('invoice_id') || request('customer_name') || request('customer_phone') || request('date_from') || request('date_to'))
+                        <a href="{{ $type ? route('seller.orders.' . $type) : route('seller.orders.index') }}" class="btn btn-light btn-sm">Clear</a>
+                    @endif
+                </div>
+            </form>
+        </div>
     </div>
 
     <div class="overflow-x-auto">
-        <table id="order-table" class="w-full text-left text-sm text-ink border-collapse">
-            <thead class="bg-surface-muted">
+        <table class="w-full text-left text-sm text-ink border-collapse">
+            <thead>
                 <tr>
-                    <th scope="col" class="text-sm font-semibold text-ink-tertiary"># Order ID</th>
-                    <th scope="col" class="text-sm font-semibold text-ink-tertiary">Date</th>
-                    <th scope="col" class="text-sm font-semibold text-ink-tertiary">Customer</th>
-                    <th scope="col" class="text-sm font-semibold text-ink-tertiary">Subtotal</th>
-                    <th scope="col" class="text-sm font-semibold text-ink-tertiary">Due</th>
-                    <th scope="col" class="text-sm font-semibold text-ink-tertiary">Commission</th>
-                    <th scope="col" class="text-sm font-semibold text-ink-tertiary">Status</th>
-                    <th scope="col" class="text-sm font-semibold text-ink-tertiary">Action</th>
+                    <th scope="col"># Order ID</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Customer</th>
+                    <th scope="col">Subtotal</th>
+                    <th scope="col">Due</th>
+                    <th scope="col">Commission</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Action</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse ($orders as $order)
                     <tr>
                         <td>
-                            <a href="{{ route('seller.orders.details', $order->invoice_id) }}" target="__blank">#
-                                {{ $order->invoice_id }}
-                            </a>
+                            <a href="{{ route('seller.orders.details', $order->invoice_id) }}" class="font-medium text-ink">#{{ $order->invoice_id }}</a>
                         </td>
                         <td>
-                            {{ $order->created_at->format('d/m/Y h:i A') }}
+                            <div>{{ $order->created_at->format('d/m/Y h:i A') }}</div>
                             @if ($order->created_at != $order->updated_at)
-                                <p class="text-sm text-ink-tertiary mb-0">Updated: {{ $order->updated_at->format('d/m/Y h:i A') }}
-                                </p>
+                                <div class="text-xs text-ink-tertiary">Updated: {{ $order->updated_at->format('d/m/Y h:i A') }}</div>
                             @endif
                         </td>
                         <td>
@@ -47,8 +84,8 @@
                                 <span class="text-ink-tertiary">Guest</span>
                             @endif
                         </td>
-                        <td> <span class="text-ink">{{ money($order->payable) }}</span> </td>
-                        <td> <span class="text-feedback-danger"> {{ money($order->due) }}</span> </td>
+                        <td>{{ money($order->payable) }}</td>
+                        <td class="text-red-600">{{ money($order->due) }}</td>
                         <td>
                             @if ($order->total_commission != null)
                                 {{ money($order->total_commission) }}
@@ -58,94 +95,44 @@
                             @endif
                         </td>
                         <td>
-                            @php $label = $order->status->label(); @endphp
-                            @if ($label === 'pending')
-                                <span class="badge badge-soft-warning">Pending</span>
-                            @elseif ($label === 'accepted')
-                                <span class="badge badge-soft-secondary">Accepted</span>
-                            @elseif ($label === 'shipped')
-                                <span class="badge badge-soft-primary">Shipped</span>
-                            @elseif ($label === 'cancelled')
-                                <span class="badge badge-soft-danger">Cancelled</span>
-                            @elseif ($label === 'delivered')
-                                <span class="badge badge-soft-success">Delivered</span>
-                            @elseif ($label === 'returned')
-                                <span class="badge badge-soft-secondary">Returned</span>
-                            @elseif ($label === 'refunded')
-                                <span class="badge badge-soft-info">Refunded</span>
-                            @elseif ($label === 'completed')
-                                <span class="badge badge-soft-success">Completed</span>
-                            @elseif ($label === 'return_requested')
-                                <span class="badge badge-soft-warning">Return Requested</span>
-                            @elseif ($label === 'return_approved')
-                                <span class="badge badge-soft-info">Return Approved</span>
-                            @else
-                                <span class="badge badge-soft-secondary">{{ $order->status->title() }}</span>
-                            @endif
+                            @php
+                                $label = $order->status->label();
+                                $colors = [
+                                    'pending' => 'text-white bg-blue-500',
+                                    'accepted' => 'text-ink-tertiary bg-surface-muted',
+                                    'shipped' => 'text-white bg-indigo-500',
+                                    'delivered' => 'text-white bg-green-500',
+                                    'completed' => 'text-white bg-green-500',
+                                    'cancelled' => 'text-white bg-red-500',
+                                    'return_requested' => 'text-ink bg-yellow-400',
+                                    'return_approved' => 'text-white bg-blue-500',
+                                    'returned' => 'text-ink-tertiary bg-surface-muted',
+                                    'refunded' => 'text-white bg-indigo-500',
+                                ];
+                            @endphp
+                            <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full {{ $colors[$label] ?? 'text-ink-tertiary bg-surface-muted' }}">{{ $order->status->title() }}</span>
                         </td>
                         <td>
-                            <a href="{{ route('seller.orders.details', $order->invoice_id) }}" title="Details"
-                                class="btn btn-light btn-sm me-1">
-                                <i data-lucide="clipboard" class="icon-xs"></i> Details
-                            </a>
-                            <a href="{{ route('invoice', $order->invoice_id) }}" title="Invoice" target="__blank"
-                                class="btn btn-light btn-sm me-1">
-                                <i data-lucide="download" class="icon-xs"></i> Invoice
-                            </a>
+                            <div class="flex gap-1">
+                                <a href="{{ route('seller.orders.details', $order->invoice_id) }}" title="Details" class="btn btn-light btn-sm">
+                                    <i data-lucide="clipboard" class="icon-xs"></i> Details
+                                </a>
+                                <a href="{{ route('invoice', $order->invoice_id) }}" title="Invoice" target="__blank" class="btn btn-light btn-sm">
+                                    <i data-lucide="download" class="icon-xs"></i> Invoice
+                                </a>
+                            </div>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="8" class="text-center text-ink-tertiary py-4">No orders found.</td>
+                        <td colspan="8" class="text-center py-8 text-ink-tertiary">No orders found.</td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
 
-        <div class="flex justify-end">
+        <div class="flex justify-end mt-4">
             {{ $orders->links() }}
-        </div>
-    </div>
-
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="filterOffcanvas">
-        <div class="offcanvas-header">
-            <h5 class="offcanvas-title">Filter Orders</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-        </div>
-        <div class="offcanvas-body">
-            <form action="{{ $type ? route('seller.orders.' . $type) : route('seller.orders.index') }}" method="GET">
-                <div class="mb-3">
-                    <label for="invoice_id" class="block text-xs font-medium text-ink-secondary mb-1">Invoice ID</label>
-                    <input type="text" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" id="invoice_id" name="invoice_id"
-                        value="{{ request('invoice_id') }}">
-                </div>
-                <div class="mb-3">
-                    <label for="customer_name" class="block text-xs font-medium text-ink-secondary mb-1">Customer Name</label>
-                    <input type="text" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" id="customer_name" name="customer_name"
-                        value="{{ request('customer_name') }}">
-                </div>
-                <div class="mb-3">
-                    <label for="customer_phone" class="block text-xs font-medium text-ink-secondary mb-1">Customer Phone</label>
-                    <input type="text" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" id="customer_phone" name="customer_phone"
-                        value="{{ request('customer_phone') }}">
-                </div>
-                <div class="mb-3">
-                    <label for="date_from" class="block text-xs font-medium text-ink-secondary mb-1">Date From</label>
-                    <input type="date" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" id="date_from" name="date_from"
-                        value="{{ request('date_from') }}">
-                </div>
-                <div class="mb-3">
-                    <label for="date_to" class="block text-xs font-medium text-ink-secondary mb-1">Date To</label>
-                    <input type="date" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" id="date_to" name="date_to"
-                        value="{{ request('date_to') }}">
-                </div>
-
-                <div class="flex gap-2">
-                    <a href="{{ $type ? route('seller.orders.' . $type) : route('seller.orders.index') }}"
-                        class="btn btn-light w-full">Reset</a>
-                    <button type="submit" class="btn btn-primary w-full">Apply Filter</button>
-                </div>
-            </form>
         </div>
     </div>
 
