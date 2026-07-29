@@ -91,7 +91,7 @@
                         </div>
                         <div class="col-span-full">
                             <label class="block text-xs font-medium text-ink-secondary mb-1">Shop Description</label>
-                            <textarea name="business_description" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" rows="3">{{ $seller->business_description }}</textarea>
+                            <x-textarea-input name="business_description" :value="$seller->business_description" />
                         </div>
                         <div class="md:col-span-1">
                             <label class="block text-xs font-medium text-ink-secondary mb-1">Shop Type</label>

@@ -4,12 +4,7 @@
 @push('styles')
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <style>
-    .section-card { border-radius: 12px; border: 0; box-shadow: 0 1px 3px rgba(0,0,0,.08); margin-bottom: 1.25rem; }
-    .section-card .card-header { background: #fff; border-bottom: 1px solid #e9ecef; padding: .85rem 1.25rem; }
-    .section-card .card-header h5 { font-size: .95rem; font-weight: 600; margin: 0; }
-    .section-card .card-body { padding: 1.25rem; }
     .sticky-sidebar { position: sticky; top: 1.25rem; }
-    .attr-selects .select2-container { width: 100% !important; }
 </style>
 @endpush
 
@@ -17,21 +12,22 @@
 <form id="productForm" autocomplete="off" method="POST" action="{{ route('seller.products.store') }}" enctype="multipart/form-data">
     @csrf
     <div class="flex justify-between items-center mb-3">
-        <h4 class="font-bold mb-0 text-ink">Add Product</h4>
+        <div>
+            <h4 class="font-bold mb-0">Add Product</h4>
+            <small class="text-ink-tertiary">Create a new product listing</small>
+        </div>
         <button type="button" id="submitBtn" class="btn btn-primary">
             <i data-lucide="save"></i> Save Product
         </button>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {{-- LEFT COLUMN: Main form fields --}}
-        <div class="lg:col-span-2">
-            {{-- Basic Information --}}
-            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
-                <div class="card-header">
-                    <h5><i data-lucide="circle-info" class="me-2 text-brand"></i>Basic Information</h5>
+        <div class="lg:col-span-2 space-y-4">
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden">
+                <div class="bg-surface-muted px-4 py-2.5 border-b border-border">
+                    <h5 class="font-bold mb-0 text-sm"><i data-lucide="circle-info" class="me-2 text-brand" style="width:16px;height:16px;"></i>Basic Information</h5>
                 </div>
-                <div class="card-body">
+                <div class="p-5">
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
                         <div class="md:col-span-12">
                             <label class="block text-xs font-medium text-ink-secondary mb-1">Product Name</label>
@@ -87,12 +83,11 @@
                 </div>
             </div>
 
-            {{-- Pricing & Inventory --}}
-            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
-                <div class="card-header">
-                    <h5><i data-lucide="tags" class="me-2 text-brand"></i>Pricing & Inventory</h5>
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden">
+                <div class="bg-surface-muted px-4 py-2.5 border-b border-border">
+                    <h5 class="font-bold mb-0 text-sm"><i data-lucide="tags" class="me-2 text-brand" style="width:16px;height:16px;"></i>Pricing & Inventory</h5>
                 </div>
-                <div class="card-body">
+                <div class="p-5">
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
                         <div class="md:col-span-4">
                             <label class="block text-xs font-medium text-ink-secondary mb-1">Cost Price</label>
@@ -122,20 +117,19 @@
                 </div>
             </div>
 
-            {{-- Description & Specifications --}}
-            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
-                <div class="card-header">
-                    <h5><i data-lucide="align-left" class="me-2 text-brand"></i>Description & Specifications</h5>
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden">
+                <div class="bg-surface-muted px-4 py-2.5 border-b border-border">
+                    <h5 class="font-bold mb-0 text-sm"><i data-lucide="align-left" class="me-2 text-brand" style="width:16px;height:16px;"></i>Description & Specifications</h5>
                 </div>
-                <div class="card-body">
+                <div class="p-5">
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
                         <div class="md:col-span-12">
                             <label class="block text-xs font-medium text-ink-secondary mb-1">Short Description</label>
-                            <textarea name="short_description" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" rows="2" placeholder="Brief summary for search results"></textarea>
+                            <x-textarea-input name="short_description" value="" />
                         </div>
                         <div class="md:col-span-12">
                             <label class="block text-xs font-medium text-ink-secondary mb-1">Description</label>
-                            <textarea name="description" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" rows="4" placeholder="Full product description"></textarea>
+                            <x-textarea-input name="description" value="" />
                         </div>
                         <div class="md:col-span-12">
                             <label class="block text-xs font-medium text-ink-secondary mb-1">Specifications <span class="text-ink-tertiary text-sm">(key:value pairs, one per line)</span></label>
@@ -145,12 +139,11 @@
                 </div>
             </div>
 
-            {{-- Shipping & Manufacturer --}}
-            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
-                <div class="card-header">
-                    <h5><i data-lucide="truck" class="me-2 text-brand"></i>Shipping & Manufacturer</h5>
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden">
+                <div class="bg-surface-muted px-4 py-2.5 border-b border-border">
+                    <h5 class="font-bold mb-0 text-sm"><i data-lucide="truck" class="me-2 text-brand" style="width:16px;height:16px;"></i>Shipping & Manufacturer</h5>
                 </div>
-                <div class="card-body">
+                <div class="p-5">
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
                         <div class="md:col-span-3">
                             <label class="block text-xs font-medium text-ink-secondary mb-1">Weight (kg)</label>
@@ -185,20 +178,17 @@
             </div>
         </div>
 
-        {{-- RIGHT COLUMN: Thumbnail + Variants --}}
         <div class="lg:col-span-1">
             <div class="sticky-sidebar">
-                {{-- Product Thumbnail --}}
-                <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden section-card">
-                    <div class="card-header">
-                        <h5><i data-lucide="camera" class="me-2 text-brand"></i>Thumbnail</h5>
+                <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden">
+                    <div class="bg-surface-muted px-4 py-2.5 border-b border-border">
+                        <h5 class="font-bold mb-0 text-sm"><i data-lucide="camera" class="me-2 text-brand" style="width:16px;height:16px;"></i>Thumbnail</h5>
                     </div>
-                    <div class="card-body text-center">
+                    <div class="p-5 text-center">
                         <x-image-input name="thumbnail" />
                         <span class="text-ink-tertiary text-sm mt-2 block">JPG/PNG/WEBP, max 10MB</span>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>

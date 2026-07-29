@@ -7,14 +7,14 @@
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 
-<div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 mb-4" style="border-radius: 12px;">
-    <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between py-3">
+<div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden">
+    <div class="bg-surface-muted px-4 py-2.5 border-b border-border flex items-center justify-between">
         <div>
-            <h5 class="mb-0 font-bold text-ink">Product Gallery</h5>
+            <h5 class="mb-0 font-bold text-sm">Product Gallery</h5>
             <small class="text-ink-tertiary">Manage your product visuals</small>
         </div>
         <div class="flex gap-2">
-            <a href="{{ route('seller.products.media.index', $product) }}" class="btn btn-outline-primary">
+            <a href="{{ route('seller.products.media.index', $product) }}" class="btn btn-outline-primary btn-sm">
                 <i data-lucide="grid" style="width:14px;height:14px;"></i> Full Gallery
             </a>
             <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#uploadModal">
@@ -24,36 +24,38 @@
     </div>
     <div class="p-5">
         @if ($product->images->count())
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3" id="current-gallery">
-            @foreach ($product->images()->ordered()->get() as $image)
-            <div>
-                <div class="relative border rounded-xs overflow-hidden shadow-sm">
-                    <div class="aspect-square">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3" id="current-gallery">
+                @foreach ($product->images()->ordered()->get() as $image)
+                    <div class="group relative bg-surface-muted border border-border rounded-sm overflow-hidden aspect-square">
                         <img src="{{ storage_url($image->image) }}" alt="Product Image" class="w-full h-full object-cover" loading="lazy">
+                        @if ($image->is_primary)
+                            <span class="absolute top-2 left-2 inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-emerald-500 text-white shadow-sm">
+                                <i data-lucide="star" class="icon-xs me-1" style="width:12px;height:12px;"></i> Primary
+                            </span>
+                        @endif
+                        <div class="absolute inset-0 bg-ink bg-opacity-60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                            <form action="{{ route('seller.products.image.delete', $image->id) }}" method="POST" class="inline" onsubmit="return confirm('Permanently delete this image?')">
+                                @csrf @method('DELETE')
+                                <button type="submit" class="btn btn-light btn-sm btn-round" title="Delete Image">
+                                    <i data-lucide="trash-2" style="width:14px;height:14px; color: #dc3545;"></i>
+                                </button>
+                            </form>
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 px-2 py-1 bg-ink bg-opacity-70 text-white text-xs truncate opacity-0 group-hover:opacity-100 transition-opacity">
+                            Position #{{ $image->position }}
+                        </div>
                     </div>
-                    @if ($image->is_primary)
-                    <span class="absolute top-0 left-0 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-feedback-success m-1" style="font-size:.6rem;z-index:2;">Primary</span>
-                    @endif
-                    <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-ink bg-opacity-50 opacity-0 transition-all hover-opacity-100" style="z-index:1;">
-                        <form action="{{ route('seller.products.image.delete', $image->id) }}" method="POST">
-                            @csrf @method('DELETE')
-                            <button type="submit" class="btn btn-light btn-sm btn-round" title="Delete Image" onclick="return confirm('Permanently delete this image?')">
-                                <i data-lucide="trash-2" style="width:14px;height:14px;color:#dc3545;"></i>
-                            </button>
-                        </form>
-                    </div>
-                </div>
+                @endforeach
             </div>
-            @endforeach
-        </div>
         @else
-        <div class="text-center py-5 bg-surface-muted rounded-md border border-dashed">
-            <i data-lucide="image" style="width:48px;height:48px;color:#adb5bd;"></i>
-            <p class="text-ink-tertiary mb-0 mt-2">No images added yet.</p>
-            <button class="inline-flex items-center text-sm text-brand hover:text-brand-deep transition-colors no-underline font-semibold" data-bs-toggle="modal" data-bs-target="#uploadModal">
-                Upload your first image
-            </button>
-        </div>
+            <div class="text-center py-8 bg-surface-muted rounded-md border border-dashed">
+                <i data-lucide="image" style="width:48px;height:48px;color:#adb5bd;"></i>
+                <p class="text-ink-tertiary mb-1 mt-2">No images added yet.</p>
+                <p class="text-ink-tertiary text-sm mb-3">JPG, PNG, WEBP &bull; Max 4MB per file &bull; Auto-converted to WebP</p>
+                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#uploadModal">
+                    <i data-lucide="upload-cloud" style="width:14px;height:14px;"></i> Upload your first image
+                </button>
+            </div>
         @endif
     </div>
 </div>
@@ -61,7 +63,7 @@
 <div class="modal fade" id="uploadModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content border-0 shadow">
-            <div class="modal-header border-b-0 pb-0">
+            <div class="modal-header border-b border-border">
                 <h5 class="modal-title font-bold">Upload Gallery Images</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -77,9 +79,9 @@
                             <p class="text-ink-tertiary text-sm mb-0">Max 4MB per file &bull; JPG, PNG, WEBP &bull; Auto-converted to WebP</p>
                         </div>
                     </div>
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-2" id="previewContainer"></div>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2" id="previewContainer"></div>
                 </div>
-                <div class="modal-footer border-t-0 pt-0">
+                <div class="modal-footer border-t border-border">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-primary" id="uploadBtn" disabled>
                         <i data-lucide="upload" style="width:16px;height:16px;"></i> Upload Selected
@@ -117,10 +119,19 @@
 
         function handleFiles(files) {
             const newFiles = Array.from(files);
-            if (dataTransfer.items.length + newFiles.length > MAX_FILES) { showErrorToast?.(`Max ${MAX_FILES} files`) || alert(`Max ${MAX_FILES} files`); return; }
+            if (dataTransfer.items.length + newFiles.length > MAX_FILES) {
+                showErrorToast?.('Max ' + MAX_FILES + ' files') || alert('Max ' + MAX_FILES + ' files');
+                return;
+            }
             newFiles.forEach(file => {
-                if (!file.type.startsWith('image/')) { showErrorToast?.('Only image files allowed.') || alert('Only image files allowed.'); return; }
-                if (file.size > MAX_SIZE_BYTES) { showErrorToast?.(`File exceeds ${MAX_SIZE_MB}MB`) || alert(`File exceeds ${MAX_SIZE_MB}MB`); return; }
+                if (!file.type.startsWith('image/')) {
+                    showErrorToast?.('Only image files allowed.') || alert('Only image files allowed.');
+                    return;
+                }
+                if (file.size > MAX_SIZE_BYTES) {
+                    showErrorToast?.('File exceeds ' + MAX_SIZE_MB + 'MB') || alert('File exceeds ' + MAX_SIZE_MB + 'MB');
+                    return;
+                }
                 dataTransfer.items.add(file);
                 createPreview(file);
             });
@@ -143,16 +154,14 @@
             reader.onloadend = function() {
                 const id = ++previewIdCounter;
                 const col = document.createElement('div');
-                col.className = 'col-6 col-md-4 preview-item';
+                col.className = 'relative aspect-square border border-border rounded-sm overflow-hidden bg-surface-muted';
                 col.dataset.previewId = id;
-                col.innerHTML = `<div class="border rounded overflow-hidden position-relative shadow-sm bg-white">
-                    <div class="ratio ratio-1x1"><img src="${reader.result}" class="object-fit-cover w-100 h-100" alt="Preview"></div>
-                    <button type="button" class="preview-remove shadow-sm" data-preview-id="${id}"><i data-lucide="x" style="width:14px;height:14px;"></i></button>
-                    <div class="p-1 bg-white border-top text-truncate small text-center text-muted">${escapeHtml(file.name)}</div>
-                </div>`;
+                col.innerHTML = '<img src="' + reader.result + '" class="w-full h-full object-cover" alt="Preview">'
+                    + '<button type="button" class="preview-remove" data-preview-id="' + id + '"><i data-lucide="x" style="width:14px;height:14px;"></i></button>'
+                    + '<div class="absolute bottom-0 left-0 right-0 px-2 py-1 bg-white border-top text-xs text-center text-ink-tertiary truncate">' + escapeHtml(file.name) + '</div>';
                 previewContainer.appendChild(col);
                 window.renderIcons && window.renderIcons();
-            }
+            };
         }
 
         function escapeHtml(str) {
@@ -173,7 +182,7 @@
             }
             dataTransfer = newDT;
             syncInput();
-            const el = previewContainer.querySelector(`[data-preview-id="${id}"]`);
+            const el = previewContainer.querySelector('[data-preview-id="' + id + '"]');
             if (el) el.remove();
             updateButtonState();
         });
@@ -182,10 +191,10 @@
             const count = dataTransfer.files.length;
             if (count > 0) {
                 uploadBtn.removeAttribute('disabled');
-                uploadBtn.innerHTML = `<i data-lucide="upload" style="width:16px;height:16px;"></i> Upload ${count} Image${count > 1 ? 's' : ''}`;
+                uploadBtn.innerHTML = '<i data-lucide="upload" style="width:16px;height:16px;"></i> Upload ' + count + ' Image' + (count > 1 ? 's' : '');
             } else {
                 uploadBtn.setAttribute('disabled', 'true');
-                uploadBtn.innerHTML = `<i data-lucide="upload" style="width:16px;height:16px;"></i> Upload Selected`;
+                uploadBtn.innerHTML = '<i data-lucide="upload" style="width:16px;height:16px;"></i> Upload Selected';
             }
             window.renderIcons && window.renderIcons();
         }

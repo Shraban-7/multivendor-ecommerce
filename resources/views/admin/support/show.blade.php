@@ -163,7 +163,7 @@
                             <input type="checkbox" name="is_internal" value="1" class="h-4 w-4 rounded border-border text-brand focus:ring-brand" id="isInternal">
                             <label class="text-sm text-ink" for="isInternal">Internal note (not visible to seller)</label>
                         </div>
-                        <textarea name="body" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" rows="5" required maxlength="10000" placeholder="Reply to {{ $ticket->seller?->business_name ?? 'customer' }}..."></textarea>
+                        <x-textarea-input name="body" value="" required maxlength="10000" placeholder="Reply to {{ $ticket->seller?->business_name ?? 'customer' }}..." />
                         <div class="flex gap-2 mt-2 items-center">
                             <input type="file" name="attachments[]" multiple class="w-full px-2 py-1 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" style="max-width: 280px;">
                             <small class="text-ink-tertiary">Max 10MB per file.</small>

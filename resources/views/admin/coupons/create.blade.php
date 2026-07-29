@@ -67,7 +67,7 @@
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-ink-secondary mb-1">Description</label>
-                    <textarea name="description" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" rows="3"></textarea>
+                    <x-textarea-input name="description" value="" />
                 </div>
             </div>
             <div class="mt-6 pt-4 border-t border-border flex items-center gap-2">

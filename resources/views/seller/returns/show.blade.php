@@ -136,7 +136,7 @@
                             <form method="POST" action="{{ route('seller.returns.disputeRespond', $return->dispute) }}" class="p-4 rounded-sm bg-surface-muted">
                                 @csrf
                                 <label class="block text-sm font-medium text-ink-secondary mb-1">Submit / update your response</label>
-                                <textarea name="response" class="w-full px-2.5 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" rows="3" required>{{ old('response', $return->dispute->seller_response) }}</textarea>
+                                <x-textarea-input name="response" :value="old('response', $return->dispute->seller_response)" required rows="3" />
                                 <button class="btn btn-primary btn-sm mt-2">Send Response</button>
                             </form>
                         @endif

@@ -1,6 +1,6 @@
-<div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 mb-4 hidden" id="variantGenerator">
-    <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
-        <h5 class="font-semibold mb-0">Product Variant Generator</h5>
+<div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden mb-4 hidden" id="variantGenerator">
+    <div class="bg-surface-muted px-4 py-2.5 border-b border-border flex items-center justify-between">
+        <h5 class="font-bold mb-0 text-sm">Product Variant Generator</h5>
     </div>
     <div class="p-5">
         <div id="attributeRows" class="mb-3">

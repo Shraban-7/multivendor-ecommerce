@@ -324,7 +324,7 @@
                         <p class="text-sm text-ink-tertiary mb-3">Replying to review from: <span class="font-semibold" id="replyCustomer"></span></p>
                         <div class="mb-3">
                             <label class="block text-xs font-medium text-ink-secondary mb-1 font-semibold">Your Reply</label>
-                            <textarea name="reply" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" rows="4" placeholder="Write your response to this review..." id="replyTextarea"></textarea>
+                            <x-textarea-input name="reply" value="" rows="4" placeholder="Write your response to this review..." id="replyTextarea" />
                         </div>
                     </div>
                     <div class="modal-footer">

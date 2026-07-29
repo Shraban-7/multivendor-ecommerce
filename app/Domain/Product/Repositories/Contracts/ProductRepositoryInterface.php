@@ -16,7 +16,7 @@ interface ProductRepositoryInterface
 
     public function getActivePaginated(int $perPage = 25): LengthAwarePaginator;
 
-    public function getForSeller(int $sellerId, int $perPage = 25): LengthAwarePaginator;
+    public function getForSeller(int $sellerId, array $filters = [], int $perPage = 25): LengthAwarePaginator;
 
     public function store(array $data): Product;
 

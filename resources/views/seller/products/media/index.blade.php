@@ -3,10 +3,6 @@
 
 @push('styles')
 <style>
-    .section-card { border-radius: 12px; border: 0; box-shadow: 0 1px 3px rgba(0,0,0,.08); margin-bottom: 1rem; }
-    .section-card .card-header { background: #fff; border-bottom: 1px solid #e9ecef; padding: .75rem 1.1rem; }
-    .section-card .card-header h5 { font-size: .9rem; font-weight: 600; margin: 0; }
-    .section-card .card-body { padding: 1.1rem; }
     .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem; }
     .media-item { position: relative; border-radius: 10px; overflow: hidden; border: 2px solid #e9ecef; transition: border-color .2s, box-shadow .2s; background: #f8f9fa; }
     .media-item:hover { border-color: #0d6efd; box-shadow: 0 4px 12px rgba(13,110,253,.15); }
@@ -28,6 +24,12 @@
 @endpush
 
 @section('content')
+@php
+    $imgPlaceholder = '0';
+    $setPrimaryTemplate = route('seller.products.media.setPrimary', [$product, $imgPlaceholder]);
+    $destroyTemplate    = route('seller.products.media.destroy', [$product, $imgPlaceholder]);
+    $replaceTemplate    = route('seller.products.media.replace', [$product, $imgPlaceholder]);
+@endphp
 <div class="flex flex-wrap justify-between items-start gap-2 mb-3">
     <div class="flex items-start gap-2">
         <a href="{{ route('seller.products.edit', $product->slug) }}"
@@ -36,11 +38,11 @@
         </a>
         <div>
             <div class="flex items-center gap-2 mb-1">
-                <h4 class="font-bold mb-0 text-ink">Product Media</h4>
+                <h4 class="font-bold mb-0">Product Media</h4>
             </div>
             <div class="text-sm text-ink-tertiary flex items-center gap-3">
                 <span>{{ $product->name }}</span>
-                <span class="text-ink-tertiary">|</span>
+                <span>|</span>
                 <span>SKU: <strong>{{ $product->sku }}</strong></span>
             </div>
         </div>
@@ -48,83 +50,79 @@
 </div>
 
 <div class="grid grid-cols-1 gap-4">
-    <div class="col-span-full">
-        <div class="section-card">
-            <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
-                <h5><i data-lucide="upload-cloud" class="icon-xs me-1"></i> Upload Images</h5>
-            </div>
-            <div class="p-5">
-                <form id="mediaUploadForm" enctype="multipart/form-data" method="POST"
-                    action="{{ route('seller.products.media.upload', $product) }}">
-                    @csrf
-                    <div class="upload-zone text-center p-5 relative mb-3" id="dropZone">
-                        <input type="file" name="images[]" id="imageInput"
-                            class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer" multiple
-                            accept="image/png, image/jpeg, image/jpg, image/webp">
-                        <div class="pointer-events-none">
-                            <i data-lucide="image" class="mb-2" style="width:48px;height:48px;color:#0d6efd;"></i>
-                            <h6 class="font-bold mb-1">Click or Drag images here</h6>
-                            <p class="text-ink-tertiary text-sm mb-0">Max 4MB per file &bull; JPG, PNG, WEBP &bull;
-                                Auto-converted to WebP</p>
-                        </div>
+    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden">
+        <div class="bg-surface-muted px-4 py-2.5 border-b border-border flex items-center justify-between">
+            <h5 class="font-bold mb-0 text-sm"><i data-lucide="upload-cloud" class="icon-xs me-1"></i> Upload Images</h5>
+        </div>
+        <div class="p-5">
+            <form id="mediaUploadForm" enctype="multipart/form-data" method="POST"
+                action="{{ route('seller.products.media.upload', $product) }}">
+                @csrf
+                <div class="upload-zone text-center p-5 relative mb-3" id="dropZone">
+                    <input type="file" name="images[]" id="imageInput"
+                        class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer" multiple
+                        accept="image/png, image/jpeg, image/jpg, image/webp">
+                    <div class="pointer-events-none">
+                        <i data-lucide="image" class="mb-2" style="width:48px;height:48px;color:#0d6efd;"></i>
+                        <h6 class="font-bold mb-1">Click or Drag images here</h6>
+                        <p class="text-ink-tertiary text-sm mb-0">Max 4MB per file &bull; JPG, PNG, WEBP &bull;
+                            Auto-converted to WebP</p>
                     </div>
-                    <div class="grid grid-cols-1 gap-2 mb-3" id="previewContainer"></div>
-                    <div class="flex justify-end">
-                        <button type="submit" class="btn btn-primary"
-                            id="uploadBtn" disabled>
-                            <i data-lucide="upload" style="width:16px;height:16px;"></i> Upload Selected
-                        </button>
-                    </div>
-                </form>
-            </div>
+                </div>
+                <div class="grid grid-cols-1 gap-2 mb-3" id="previewContainer"></div>
+                <div class="flex justify-end">
+                    <button type="submit" class="btn btn-primary"
+                        id="uploadBtn" disabled>
+                        <i data-lucide="upload" style="width:16px;height:16px;"></i> Upload Selected
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
-    <div class="col-span-full">
-        <div class="section-card">
-            <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
-                <h5><i data-lucide="grid" class="icon-xs me-1"></i> Gallery ({{ $product->images->count() }})</h5>
-                <span class="text-sm text-ink-tertiary">Drag to reorder</span>
-            </div>
-            <div class="p-5">
-                @if ($product->images->count())
-                    <div class="media-grid" id="mediaGrid">
-                        @foreach ($product->images->sortBy('position') as $image)
-                            <div class="media-item {{ $image->is_primary ? 'primary' : '' }}" data-id="{{ $image->id }}"
-                                data-position="{{ $image->position }}">
-                                @if ($image->is_primary)
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-feedback-success badge-primary">Primary</span>
-                                @endif
-                                <div class="ratio ratio-1x1">
-                                    <img src="{{ $image->image_url }}" alt="Product Image" class="w-full h-full object-fit-cover"
-                                        loading="lazy">
-                                </div>
-                                <div class="overlay">
-                                    @if (!$image->is_primary)
-                                        <button type="button" class="btn btn-light btn-sm btn-round action-btn"
-                                            data-action="primary" data-id="{{ $image->id }}" title="Set as Primary">
-                                            <i data-lucide="star" style="width:16px;height:16px;color:#198754;"></i>
-                                        </button>
-                                    @endif
-                                    <button type="button" class="btn btn-light btn-sm btn-round action-btn"
-                                        data-action="replace" data-id="{{ $image->id }}" title="Replace">
-                                        <i data-lucide="refresh-cw" style="width:16px;height:16px;color:#0d6efd;"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-light btn-sm btn-round action-btn"
-                                        data-action="delete" data-id="{{ $image->id }}" title="Delete">
-                                        <i data-lucide="trash-2" style="width:16px;height:16px;color:#dc3545;"></i>
-                                    </button>
-                                </div>
+    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden">
+        <div class="bg-surface-muted px-4 py-2.5 border-b border-border flex items-center justify-between">
+            <h5 class="font-bold mb-0 text-sm"><i data-lucide="grid" class="icon-xs me-1"></i> Gallery ({{ $product->images->count() }})</h5>
+            <span class="text-sm text-ink-tertiary">Drag to reorder</span>
+        </div>
+        <div class="p-5">
+            @if ($product->images->count())
+                <div class="media-grid" id="mediaGrid">
+                    @foreach ($product->images->sortBy('position') as $image)
+                        <div class="media-item {{ $image->is_primary ? 'primary' : '' }}" data-id="{{ $image->id }}"
+                            data-position="{{ $image->position }}">
+                            @if ($image->is_primary)
+                                <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-emerald-500 text-white badge-primary">Primary</span>
+                            @endif
+                            <div class="ratio ratio-1x1">
+                                <img src="{{ $image->image_url }}" alt="Product Image" class="w-full h-full object-fit-cover"
+                                    loading="lazy">
                             </div>
-                        @endforeach
-                    </div>
-                @else
-                    <div class="text-center py-5">
-                        <i data-lucide="image" style="width:48px;height:48px;color:#adb5bd;"></i>
-                        <p class="text-ink-tertiary mt-2 mb-0">No images in the gallery yet.</p>
-                    </div>
-                @endif
-            </div>
+                            <div class="overlay">
+                                @if (!$image->is_primary)
+                                    <button type="button" class="btn btn-light btn-sm btn-round action-btn"
+                                        data-action="primary" data-id="{{ $image->id }}" title="Set as Primary">
+                                        <i data-lucide="star" style="width:16px;height:16px;color:#198754;"></i>
+                                    </button>
+                                @endif
+                                <button type="button" class="btn btn-light btn-sm btn-round action-btn"
+                                    data-action="replace" data-id="{{ $image->id }}" title="Replace">
+                                    <i data-lucide="refresh-cw" style="width:16px;height:16px;color:#0d6efd;"></i>
+                                </button>
+                                <button type="button" class="btn btn-light btn-sm btn-round action-btn"
+                                    data-action="delete" data-id="{{ $image->id }}" title="Delete">
+                                    <i data-lucide="trash-2" style="width:16px;height:16px;color:#dc3545;"></i>
+                                </button>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="text-center py-5">
+                    <i data-lucide="image" style="width:48px;height:48px;color:#adb5bd;"></i>
+                    <p class="text-ink-tertiary mt-2 mb-0">No images in the gallery yet.</p>
+                </div>
+            @endif
         </div>
     </div>
 </div>
@@ -136,6 +134,14 @@
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <script>
+        const mediaRoutes = {
+            setPrimary: @json($setPrimaryTemplate),
+            destroy: @json($destroyTemplate),
+            replace: @json($replaceTemplate),
+            reorder: @json(route('seller.products.media.reorder', $product))
+        };
+        const ROUTE_PLACEHOLDER = '/0';
+
         document.addEventListener('DOMContentLoaded', function () {
             const uploadForm = document.getElementById('mediaUploadForm');
             const input = document.getElementById('imageInput');
@@ -164,16 +170,16 @@
             function handleFiles(files) {
                 const newFiles = Array.from(files);
                 if (dataTransfer.items.length + newFiles.length > MAX_FILES) {
-                    showErrorToast?.(`Max ${MAX_FILES} files`) || alert(`Max ${MAX_FILES} files`);
+                    showErrorToast?.('Max ' + MAX_FILES + ' files') || alert('Max ' + MAX_FILES + ' files');
                     return;
                 }
                 newFiles.forEach(file => {
                     if (!file.type.startsWith('image/')) {
-                        showErrorToast?.(`"${file.name}" is not an image`) || alert(`"${file.name}" is not an image`);
+                        showErrorToast?.('"' + file.name + '" is not an image') || alert('"' + file.name + '" is not an image');
                         return;
                     }
                     if (file.size > MAX_SIZE_BYTES) {
-                        showErrorToast?.(`"${file.name}" exceeds ${MAX_SIZE_MB}MB`) || alert(`"${file.name}" exceeds ${MAX_SIZE_MB}MB`);
+                        showErrorToast?.('"' + file.name + '" exceeds ' + MAX_SIZE_MB + 'MB') || alert('"' + file.name + '" exceeds ' + MAX_SIZE_MB + 'MB');
                         return;
                     }
                     dataTransfer.items.add(file);
@@ -200,14 +206,14 @@
                     const col = document.createElement('div');
                     col.className = 'col-6 col-md-3 col-lg-2 preview-item';
                     col.dataset.previewId = id;
-                    col.innerHTML = `<div class="border rounded overflow-hidden position-relative shadow-sm bg-white">
-                    <div class="ratio ratio-1x1"><img src="${reader.result}" class="object-fit-cover w-100 h-100" alt="Preview"></div>
-                    <button type="button" class="remove-btn" data-preview-id="${id}"><i data-lucide="x" style="width:14px;height:14px;"></i></button>
-                    <div class="p-1 bg-white border-top text-truncate small text-center text-muted">${escapeHtml(file.name)}</div>
-                </div>`;
+                    col.innerHTML = '<div class="border rounded overflow-hidden position-relative shadow-sm bg-white">'
+                        + '<div class="ratio ratio-1x1"><img src="' + reader.result + '" class="object-fit-cover w-100 h-100" alt="Preview"></div>'
+                        + '<button type="button" class="remove-btn" data-preview-id="' + id + '"><i data-lucide="x" style="width:14px;height:14px;"></i></button>'
+                        + '<div class="p-1 bg-white border-top text-truncate small text-center text-muted">' + escapeHtml(file.name) + '</div>'
+                        + '</div>';
                     previewContainer.appendChild(col);
                     window.renderIcons && window.renderIcons();
-                }
+                };
             }
 
             previewContainer.addEventListener('click', function (e) {
@@ -222,7 +228,7 @@
                 }
                 dataTransfer = newDT;
                 syncInput();
-                const el = previewContainer.querySelector(`[data-preview-id="${id}"]`);
+                const el = previewContainer.querySelector('[data-preview-id="' + id + '"]');
                 if (el) el.remove();
                 updateButtonState();
             });
@@ -237,10 +243,10 @@
                 const count = dataTransfer.files.length;
                 if (count > 0) {
                     uploadBtn.removeAttribute('disabled');
-                    uploadBtn.innerHTML = `<i data-lucide="upload" style="width:16px;height:16px;"></i> Upload ${count} Image${count > 1 ? 's' : ''}`;
+                    uploadBtn.innerHTML = '<i data-lucide="upload" style="width:16px;height:16px;"></i> Upload ' + count + ' Image' + (count > 1 ? 's' : '');
                 } else {
                     uploadBtn.setAttribute('disabled', 'true');
-                    uploadBtn.innerHTML = `<i data-lucide="upload" style="width:16px;height:16px;"></i> Upload Selected`;
+                    uploadBtn.innerHTML = '<i data-lucide="upload" style="width:16px;height:16px;"></i> Upload Selected';
                 }
                 window.renderIcons && window.renderIcons();
             }
@@ -251,7 +257,7 @@
                 const formData = new FormData(this);
                 const btn = this.querySelector('button[type="submit"]');
                 btn.disabled = true;
-                btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1" role="status"></span> Uploading...`;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span> Uploading...';
 
                 fetch(this.action, {
                     method: 'POST',
@@ -272,9 +278,7 @@
                 });
             });
         });
-    </script>
 
-    <script>
         document.addEventListener('DOMContentLoaded', function () {
             const grid = document.getElementById('mediaGrid');
             if (!grid) return;
@@ -286,7 +290,7 @@
                 handle: '.ratio',
                 onEnd: function () {
                     const order = Array.from(grid.children).map(el => parseInt(el.dataset.id));
-                    fetch('{{ route("seller.products.media.reorder", $product) }}', {
+                    fetch(mediaRoutes.reorder, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -303,6 +307,10 @@
             const replaceInput = document.getElementById('replaceFileInput');
             let replaceId = null;
 
+            function urlFor(template, id) {
+                return template.replace(ROUTE_PLACEHOLDER, '/' + id);
+            }
+
             grid.addEventListener('click', function (e) {
                 const btn = e.target.closest('.action-btn');
                 if (!btn) return;
@@ -311,7 +319,7 @@
                 const action = btn.dataset.action;
 
                 if (action === 'primary') {
-                    fetch(`{{ route("seller.products.media.setPrimary", [$product, '__ID__']) }}`.replace('__ID__', id), {
+                    fetch(urlFor(mediaRoutes.setPrimary, id), {
                         method: 'POST',
                         headers: {
                             'X-Requested-With': 'XMLHttpRequest',
@@ -325,7 +333,7 @@
 
                 if (action === 'delete') {
                     if (!confirm('Permanently delete this image?')) return;
-                    fetch(`{{ route("seller.products.media.destroy", [$product, '__ID__']) }}`.replace('__ID__', id), {
+                    fetch(urlFor(mediaRoutes.destroy, id), {
                         method: 'DELETE',
                         headers: {
                             'X-Requested-With': 'XMLHttpRequest',
@@ -349,7 +357,7 @@
                 formData.append('image', this.files[0]);
                 formData.append('_token', document.querySelector('input[name="_token"]').value);
 
-                fetch(`{{ route("seller.products.media.replace", [$product, '__ID__']) }}`.replace('__ID__', replaceId), {
+                fetch(urlFor(mediaRoutes.replace, replaceId), {
                     method: 'POST',
                     headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
                     body: formData,

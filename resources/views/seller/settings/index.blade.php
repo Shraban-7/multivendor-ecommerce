@@ -76,7 +76,7 @@
                     <div class="grid grid-cols-1 gap-3 mt-2">
                         <div class="col-span-full">
                             <label for="business_description" class="block text-xs font-medium text-ink-secondary mb-1">Shop Description</label>
-                            <textarea name="business_description" id="business_description" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" rows="4" maxlength="5000">{{ old('business_description', $seller->business_description) }}</textarea>
+                            <x-textarea-input name="business_description" :value="old('business_description', $seller->business_description)" rows="4" maxlength="5000" />
                             <small class="text-ink-tertiary">Tell customers about your shop (max 5000 characters).</small>
                         </div>
                     </div>

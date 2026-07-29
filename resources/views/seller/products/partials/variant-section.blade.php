@@ -1,12 +1,12 @@
 @php $isEdit = isset($product) && $product->id; @endphp
 @php $variantCount = $isEdit ? $product->variants->count() : 0; @endphp
 
-<div id="variantSection" class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 mb-4" style="border-radius: 12px;">
-    <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
-        <h5 class="font-semibold mb-0">
-            <i data-lucide="layers" class="me-2 text-brand"></i>Variants
+<div id="variantSection" class="bg-white border border-border rounded-sm shadow-sm overflow-hidden mb-4">
+    <div class="bg-surface-muted px-4 py-2.5 border-b border-border flex items-center justify-between">
+        <h5 class="font-bold mb-0 text-sm">
+            <i data-lucide="layers" class="me-2 text-brand" style="width:16px;height:16px;"></i>Variants
             @if($isEdit && $variantCount > 0)
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-surface-muted ms-2">{{ $variantCount }} existing</span>
+                <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-surface-muted text-ink-secondary ms-2">{{ $variantCount }} existing</span>
             @endif
         </h5>
         @if($isEdit)
@@ -42,7 +42,7 @@
                             <td><img src="{{ $variant->imageUrl }}" class="border border-border rounded-xs p-1" style="width:40px;height:40px;object-fit:cover;"></td>
                             <td class="font-mono text-sm">{{ $variant->sku }}</td>
                             <td class="text-sm">{{ $variant->barcode ?? '—' }}</td>
-                            <td><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold badge-soft-secondary">{{ $variant->label }}</span></td>
+                            <td><span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-surface-muted text-ink-secondary">{{ $variant->label }}</span></td>
                             <td class="text-sm">{{ money($variant->cost_price) }}</td>
                             <td class="text-sm">{{ money($variant->price) }}</td>
                             <td class="text-sm">{{ $variant->compare_price ? money($variant->compare_price) : '—' }}</td>
@@ -50,9 +50,9 @@
                             <td class="text-sm">{{ $variant->availableStock }}</td>
                             <td>
                                 @if($variant->status)
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold badge-soft-success">Active</span>
+                                    <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-emerald-500 text-white">Active</span>
                                 @else
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold badge-soft-secondary">Disabled</span>
+                                    <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-gray-500 text-white">Disabled</span>
                                 @endif
                             </td>
                             <td>
@@ -125,7 +125,7 @@
                                     </div>
                                     <div class="mb-3">
                                         <label class="block text-xs font-medium text-ink-secondary mb-1">Status</label>
-                                        <div class="flex items-center gap-2 form-switch mt-2">
+                                        <div class="flex items-center gap-2 mt-2">
                                             <input class="h-4 w-4 rounded border-border text-brand focus:ring-brand" type="checkbox" name="status" role="switch" value="1" {{ $variant->status ? 'checked' : '' }}>
                                             <label class="text-sm text-ink">{{ $variant->status ? 'Active' : 'Disabled' }}</label>
                                         </div>

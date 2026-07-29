@@ -3,69 +3,76 @@
 
 @section('content')
     <div class="flex justify-between items-end mb-3">
-        <h4 class="font-bold mb-0 text-ink">Stock History</h4>
         <div>
-            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#stockUpdateModal">
-                <i data-lucide="package" style="width:16px;height:16px;"></i> Update Stock
-            </button>
+            <h4 class="font-bold mb-0">Stock History</h4>
+            <small class="text-ink-tertiary">Audit trail of inventory adjustments</small>
+        </div>
+        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#stockUpdateModal">
+            <i data-lucide="package" style="width:16px;height:16px;"></i> Update Stock
+        </button>
+    </div>
+
+    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm text-ink border-collapse" id="stock-history-table">
+                <thead class="bg-surface-muted">
+                    <tr>
+                        <th class="px-4 py-2.5">Product</th>
+                        <th class="px-4 py-2.5">SKU</th>
+                        <th class="px-4 py-2.5">Type</th>
+                        <th class="px-4 py-2.5">Quantity</th>
+                        <th class="px-4 py-2.5">Note</th>
+                        <th class="px-4 py-2.5">Date</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-border">
+                    @forelse ($stockHistories as $history)
+                        <tr class="hover:bg-surface-muted/50 transition-colors">
+                            <td class="px-4 py-3">
+                                <p class="font-bold mb-0">{{ $history->product?->name ?? '—' }}</p>
+                                <span class="text-sm text-ink-tertiary">{{ $history->variant?->label ?: 'Simple product' }}</span>
+                            </td>
+                            <td class="px-4 py-3"><span class="text-sm">{{ $history->variant?->sku ?? $history->product?->sku ?? '—' }}</span></td>
+                            <td class="px-4 py-3">
+                                @switch($history->type)
+                                    @case(\App\Domain\Product\Enums\StockType::ADD_STOCK)
+                                        <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-emerald-500 text-white">Add</span>
+                                    @break
+                                    @case(\App\Domain\Product\Enums\StockType::REMOVE_STOCK)
+                                        <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-red-500 text-white">Remove</span>
+                                    @break
+                                    @case(\App\Domain\Product\Enums\StockType::SET_EXACT_STOCK)
+                                        <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-amber-500 text-white">Set</span>
+                                    @break
+                                @endswitch
+                            </td>
+                            <td class="px-4 py-3">
+                                @switch($history->type)
+                                    @case(\App\Domain\Product\Enums\StockType::ADD_STOCK)
+                                        <span class="text-feedback-success font-semibold">+{{ $history->quantity }}</span>
+                                    @break
+                                    @case(\App\Domain\Product\Enums\StockType::REMOVE_STOCK)
+                                        <span class="text-feedback-danger font-semibold">-{{ $history->quantity }}</span>
+                                    @break
+                                    @case(\App\Domain\Product\Enums\StockType::SET_EXACT_STOCK)
+                                        <span class="font-semibold">{{ $history->quantity }}</span>
+                                    @break
+                                @endswitch
+                            </td>
+                            <td class="px-4 py-3">{{ $history->note ?? '-' }}</td>
+                            <td class="px-4 py-3">{{ $history->created_at->format('d/m/y, h:i A') }}</td>
+                        </tr>
+                    @empty
+                        <tr><td colspan="6" class="text-center py-8 text-ink-tertiary">No stock history yet.</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        <div class="flex justify-end px-4 py-3 border-t border-border">
+            {{ $stockHistories->links() }}
         </div>
     </div>
-
-    <div class="overflow-x-auto">
-        <table class="w-full text-left text-sm text-ink border-collapse" id="stock-history-table">
-            <thead class="bg-surface-muted">
-                <tr>
-                    <th scope="col" class="text-sm font-semibold text-ink-tertiary">Product</th>
-                    <th scope="col" class="text-sm font-semibold text-ink-tertiary">SKU</th>
-                    <th scope="col" class="text-sm font-semibold text-ink-tertiary">Type</th>
-                    <th scope="col" class="text-sm font-semibold text-ink-tertiary">Quantity</th>
-                    <th scope="col" class="text-sm font-semibold text-ink-tertiary">Note</th>
-                    <th scope="col" class="text-sm font-semibold text-ink-tertiary">Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($stockHistories as $history)
-                    <tr>
-                        <td>
-                            <p class="font-bold mb-0">{{ $history->product?->name ?? '—' }}</p>
-                            <span class="text-sm text-ink-tertiary">{{ $history->variant?->label ?: 'Simple product' }}</span>
-                        </td>
-                        <td><span class="text-sm">{{ $history->variant?->sku ?? $history->product?->sku ?? '—' }}</span></td>
-                        <td>
-                            @switch($history->type)
-                                @case(\App\Domain\Product\Enums\StockType::ADD_STOCK)
-                                    <span class="badge badge-soft-success">Add</span>
-                                @break
-                                @case(\App\Domain\Product\Enums\StockType::REMOVE_STOCK)
-                                    <span class="badge badge-soft-danger">Remove</span>
-                                @break
-                                @case(\App\Domain\Product\Enums\StockType::SET_EXACT_STOCK)
-                                    <span class="badge badge-soft-warning">Set</span>
-                                @break
-                            @endswitch
-                        </td>
-                        <td>
-                            @switch($history->type)
-                                @case(\App\Domain\Product\Enums\StockType::ADD_STOCK)
-                                    <span class="text-feedback-success font-semibold">+{{ $history->quantity }}</span>
-                                @break
-                                @case(\App\Domain\Product\Enums\StockType::REMOVE_STOCK)
-                                    <span class="text-feedback-danger font-semibold">-{{ $history->quantity }}</span>
-                                @break
-                                @case(\App\Domain\Product\Enums\StockType::SET_EXACT_STOCK)
-                                    <span class="font-semibold">{{ $history->quantity }}</span>
-                                @break
-                            @endswitch
-                        </td>
-                        <td>{{ $history->note ?? '-' }}</td>
-                        <td>{{ $history->created_at->format('d/m/y, h:i A') }}</td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-
-    {{ $stockHistories->links() }}
 
     <div class="modal fade" id="stockUpdateModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">

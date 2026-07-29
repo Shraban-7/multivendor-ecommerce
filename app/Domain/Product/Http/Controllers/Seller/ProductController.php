@@ -34,11 +34,14 @@ class ProductController extends Controller
         private readonly SellerRepositoryInterface $sellerRepo,
     ) {}
 
-    public function index()
+    public function index(Request $request)
     {
         $categories = $this->categoryRepo->getAllWithSubcategories();
         $brands = $this->brandRepo->getAll();
-        $products = $this->productRepo->getForSeller(get_seller_id());
+        $products = $this->productRepo->getForSeller(get_seller_id(), [
+            'search' => $request->search,
+            'status' => $request->status,
+        ]);
 
         return view('seller.products.index', compact('products', 'categories', 'brands'));
     }

@@ -34,13 +34,41 @@ class EloquentProductRepository implements ProductRepositoryInterface
             ->paginate($perPage);
     }
 
-    public function getForSeller(int $sellerId, int $perPage = 25): LengthAwarePaginator
+    public function getForSeller(int $sellerId, array $filters = [], int $perPage = 25): LengthAwarePaginator
     {
-        return Product::with(['category', 'variants.color', 'variants.size', 'unit'])
-            ->where('seller_id', $sellerId)
-            ->where('status', '!=', Product::STATUS_DELETED)
-            ->latest('id')
-            ->paginate($perPage);
+        $query = Product::with(['category', 'variants.color', 'variants.size', 'unit'])
+            ->where('seller_id', $sellerId);
+
+        if (! empty($filters['search'])) {
+            $term = '%'.$filters['search'].'%';
+            $query->where(function ($q) use ($term) {
+                $q->where('name', 'like', $term)
+                    ->orWhere('sku', 'like', $term);
+            });
+        }
+
+        if (isset($filters['status']) && $filters['status'] !== '' && $filters['status'] !== null) {
+            $status = match ($filters['status']) {
+                'pending' => Product::STATUS_PENDING_APPROVAL,
+                'active' => Product::STATUS_ACTIVE,
+                'draft' => Product::STATUS_DRAFT,
+                'inactive' => Product::STATUS_INACTIVE,
+                'deleted' => Product::STATUS_DELETED,
+                default => null,
+            };
+
+            if ($status === null) {
+                $query->where('status', '!=', Product::STATUS_DELETED);
+            } elseif ($filters['status'] === 'deleted') {
+                $query->where('status', Product::STATUS_DELETED);
+            } else {
+                $query->where('status', $status);
+            }
+        } else {
+            $query->where('status', '!=', Product::STATUS_DELETED);
+        }
+
+        return $query->latest('id')->paginate($perPage);
     }
 
     public function store(array $data): Product

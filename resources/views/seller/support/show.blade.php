@@ -53,7 +53,7 @@
                 <h6 class="font-bold mb-3">Reply</h6>
                 <form method="POST" action="{{ route('seller.support.reply', $ticket) }}" enctype="multipart/form-data">
                     @csrf
-                    <textarea name="body" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" rows="4" required maxlength="10000" placeholder="Type your reply..."></textarea>
+                    <x-textarea-input name="body" value="" required rows="4" maxlength="10000" placeholder="Type your reply..." />
                     <div class="flex gap-2 mt-2 items-center">
                         <input type="file" name="attachments[]" multiple class="w-full px-2.5 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" style="max-width: 280px;">
                         <small class="text-ink-tertiary text-sm">Max 10MB per file.</small>

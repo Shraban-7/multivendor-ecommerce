@@ -48,8 +48,7 @@
 
                     <div class="mb-3">
                         <label class="block text-xs font-medium text-ink-secondary mb-1 text-sm font-semibold">Description</label>
-                        <textarea name="description" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors @error('description') is-invalid @enderror"
-                            rows="4">{{ old('description') }}</textarea>
+                        <x-textarea-input name="description" :value="old('description')" />
                         @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                 </div>

@@ -127,7 +127,7 @@
                             </div>
                             <div>
                                 <label class="block text-xs font-medium text-ink-secondary mb-1">Cover Description</label>
-                                <textarea name="cover_description" rows="3" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">{{ old('description', $subcategory->cover_description) }}</textarea>
+                                <x-textarea-input name="cover_description" :value="old('description', $subcategory->cover_description)" />
                             </div>
                             <div class="grid grid-cols-3 gap-3">
                                 <div>
@@ -228,7 +228,7 @@
                             </div>
                             <div>
                                 <label class="block text-xs font-medium text-ink-secondary mb-1">Cover Description</label>
-                                <textarea name="cover_description" rows="3" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">{{ old('description', $subcategory->cover_description) }}</textarea>
+                                <x-textarea-input name="cover_description" :value="old('description', $subcategory->cover_description)" />
                             </div>
                             <div class="grid grid-cols-3 gap-3">
                                 <div>
@@ -300,7 +300,7 @@
                             </div>
                             <div>
                                 <label class="block text-xs font-medium text-ink-secondary mb-1">Cover Description</label>
-                                <textarea name="cover_description" rows="3" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors"></textarea>
+                                <x-textarea-input name="cover_description" value="" />
                             </div>
                             <div class="grid grid-cols-3 gap-3">
                                 <div>
