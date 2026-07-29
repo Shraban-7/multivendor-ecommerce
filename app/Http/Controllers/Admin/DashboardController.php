@@ -132,7 +132,43 @@ class DashboardController extends Controller
                 return [$label => $style];
             });
 
-            return compact('stats', 'recent_orders', 'top_vendors', 'monthly_revenue', 'pending_sellers', 'pending_sellers_count', 'data', 'revenue_growth', 'order_status_distribution', 'status_styles');
+            // Today's snapshot
+            $today = Order::whereDate('created_at', now()->toDateString())
+                ->selectRaw('COUNT(*) as cnt, COALESCE(SUM(CASE WHEN status IN (?,?) THEN payable ELSE 0 END), 0) as revenue', [$delivered, $completed])
+                ->first();
+            $today_new_customers = User::whereDate('created_at', now()->toDateString())->count();
+
+            // 7-day daily series for orders + revenue (current vs previous week comparison)
+            $dailySeries = Order::where('created_at', '>=', now()->subDays(13))
+                ->selectRaw('DATE(created_at) as date, COUNT(*) as orders, COALESCE(SUM(CASE WHEN status IN (?,?) THEN payable ELSE 0 END), 0) as revenue', [$delivered, $completed])
+                ->groupBy('date')
+                ->orderBy('date')
+                ->get();
+
+            // Top categories by product count and order activity (best-effort without eager-loading joins)
+            $top_categories = DB::table('categories')
+                ->leftJoin('products', 'products.category_id', '=', 'categories.id')
+                ->select('categories.id', 'categories.name',
+                    DB::raw('COUNT(products.id) as product_count'),
+                    DB::raw('SUM(CASE WHEN products.status = 1 THEN 1 ELSE 0 END) as active_count'),
+                )
+                ->groupBy('categories.id', 'categories.name')
+                ->orderByDesc('product_count')
+                ->limit(6)
+                ->get();
+
+            // Activity timeline: last 7 days, volume per day for new orders
+            $activity = Order::where('created_at', '>=', now()->subDays(6))
+                ->selectRaw('DATE(created_at) as date, COUNT(*) as orders')
+                ->groupBy('date')
+                ->orderBy('date')
+                ->pluck('orders', 'date');
+
+            return compact(
+                'stats', 'recent_orders', 'top_vendors', 'monthly_revenue', 'pending_sellers', 'pending_sellers_count',
+                'data', 'revenue_growth', 'order_status_distribution', 'status_styles',
+                'today', 'today_new_customers', 'dailySeries', 'top_categories', 'activity'
+            );
         });
 
         return view('admin.dashboard', $data);

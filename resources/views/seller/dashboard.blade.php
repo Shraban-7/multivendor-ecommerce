@@ -3,411 +3,504 @@
     $hour = (int) now()->format('G');
     $greeting = $hour < 12 ? 'Good morning' : ($hour < 18 ? 'Good afternoon' : 'Good evening');
     $periodLabel = \Carbon\Carbon::parse($start_date)->format('M j').' – '.\Carbon\Carbon::parse($end_date)->format('M j, Y');
+    $marginPct = $total_sales > 0 ? round((($profit ?? 0) / $total_sales) * 100, 1) : 0;
+    $avgTicket = $total_orders > 0 ? round($total_sales / $total_orders, 0) : 0;
 @endphp
 @extends('seller.layouts.app')
 @section('title', $pageTitle)
 @section('content')
 
-<div class="seller-dash">
-
 @if (!$seller->profile_completed)
-    <div class="seller-dash__alert" role="alert">
-        <div class="flex items-start gap-3">
-            <span class="seller-dash__alert-icon">
-                <i data-lucide="triangle-alert" style="width:18px;height:18px;"></i>
-            </span>
-            <div>
-                <strong class="text-ink">Your profile is incomplete.</strong>
-                <p class="mb-0 text-sm text-ink-tertiary">Complete your profile to unlock full platform access.</p>
-            </div>
-        </div>
-        <a href="{{ route('seller.profile') }}" class="btn btn-sm" style="background:#B7791A;color:#fff;border:none;white-space:nowrap;">Complete Profile</a>
+<div class="mb-4 p-4 rounded-sm bg-amber-50 border border-amber-200 flex items-start gap-3" role="alert">
+    <span class="shrink-0 w-9 h-9 rounded-full bg-amber-100 text-feedback-warning flex items-center justify-center">
+        <i data-lucide="triangle-alert" style="width:18px;height:18px;"></i>
+    </span>
+    <div class="flex-1">
+        <h5 class="mb-1 text-ink font-semibold">Your profile is incomplete</h5>
+        <p class="mb-2 text-sm text-ink-secondary">Complete your profile to unlock full platform access and increase buyer trust.</p>
+        <a href="{{ route('seller.profile') }}" class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs bg-feedback-warning text-white hover:bg-amber-700 transition-colors no-underline">Complete Profile →</a>
     </div>
+</div>
 @endif
 
-{{-- Hero --}}
-<section class="seller-dash__hero">
-    <div class="seller-dash__hero-main">
-        <p class="seller-dash__eyebrow">{{ $greeting }}</p>
-        <h1 class="seller-dash__title">{{ $seller->business_name }}</h1>
-        <p class="seller-dash__subtitle">Store pulse for <span>{{ $periodLabel }}</span></p>
+{{-- ═══ HERO ═══ --}}
+<section class="bg-white border border-border rounded-sm shadow-sm overflow-hidden mb-4">
+    <div class="p-5 lg:p-6">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+            <div class="min-w-0">
+                <small class="text-ink-tertiary">{{ $greeting }},</small>
+                <h1 class="text-xl font-semibold text-ink mb-1">{{ $seller->business_name }}</h1>
+                <p class="text-sm text-ink-secondary">Performance for <strong>{{ $periodLabel }}</strong></p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                <a href="{{ route('seller.products.create') }}" class="btn btn-primary btn-sm"><i data-lucide="plus" style="width:14px;height:14px;"></i> Add Product</a>
+                <a href="{{ route('seller.orders.pending') }}" class="btn btn-light btn-sm"><i data-lucide="inbox" style="width:14px;height:14px;"></i> Pending Orders</a>
+                <a href="{{ route('seller.performance.dashboard') }}" class="btn btn-light btn-sm"><i data-lucide="gauge" style="width:14px;height:14px;"></i> Performance</a>
+            </div>
+        </div>
+        <div class="mt-4 flex flex-wrap gap-2 text-sm text-ink-secondary items-center">
+            <i data-lucide="calendar" style="width:14px;height:14px;"></i>
+            <span>Custom range:</span>
+            <form method="GET" action="{{ route('seller.dashboard') }}" class="flex items-center gap-2 flex-wrap">
+                <input type="date" name="start_date" value="{{ $start_date }}" class="px-2 py-1 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors">
+                <span class="text-ink-tertiary">to</span>
+                <input type="date" name="end_date" value="{{ $end_date }}" class="px-2 py-1 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors">
+                <button type="submit" class="btn btn-primary btn-sm"><i data-lucide="funnel" style="width:14px;height:14px;"></i> Apply</button>
+            </form>
+            <span class="text-ink-tertiary mx-1">·</span>
+            <a href="{{ route('seller.dashboard', ['start_date' => now()->toDateString(), 'end_date' => now()->toDateString()]) }}" class="px-2 py-0.5 rounded-xs bg-surface-muted text-ink hover:bg-brand-tint hover:text-brand transition-colors">Today</a>
+            <a href="{{ route('seller.dashboard', ['start_date' => now()->copy()->startOfWeek()->toDateString(), 'end_date' => now()->toDateString()]) }}" class="px-2 py-0.5 rounded-xs bg-surface-muted text-ink hover:bg-brand-tint hover:text-brand transition-colors">This Week</a>
+            <a href="{{ route('seller.dashboard', ['start_date' => now()->copy()->startOfMonth()->toDateString(), 'end_date' => now()->toDateString()]) }}" class="px-2 py-0.5 rounded-xs bg-surface-muted text-ink hover:bg-brand-tint hover:text-brand transition-colors">This Month</a>
+            <a href="{{ route('seller.dashboard', ['start_date' => now()->copy()->subDays(30)->toDateString(), 'end_date' => now()->toDateString()]) }}" class="px-2 py-0.5 rounded-xs bg-surface-muted text-ink hover:bg-brand-tint hover:text-brand transition-colors">Last 30d</a>
+        </div>
+    </div>
+</section>
 
-        <div class="seller-dash__hero-metrics">
-            <div>
-                <span class="seller-dash__metric-label">Sales</span>
-                <strong class="seller-dash__metric-value">{{ money($total_sales) }}</strong>
+{{-- ═══ ATTENTION ROW — 4 CARDS ═══ --}}
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+    <a href="{{ route('seller.orders.pending') }}" class="bg-white border border-border rounded-sm shadow-sm p-4 transition-shadow hover:shadow-md border-l-4 no-underline" style="border-left-color: #f59e0b">
+        <div class="flex items-center gap-3">
+            <span class="shrink-0 w-10 h-10 rounded-sm bg-amber-50 flex items-center justify-center">
+                <i data-lucide="clock" class="text-feedback-warning" style="width:20px;height:20px;"></i>
+            </span>
+            <div class="min-w-0 flex-1">
+                <p class="text-xs text-ink-tertiary mb-0">Pending orders</p>
+                <h4 class="mb-0 font-bold text-lg text-ink">{{ number_format($pending_orders) }}</h4>
+                <small class="text-ink-tertiary">Act quickly on these</small>
             </div>
-            <div class="seller-dash__metric-divider" aria-hidden="true"></div>
-            <div>
-                <span class="seller-dash__metric-label">Earnings</span>
-                <strong class="seller-dash__metric-value">{{ money($total_earnings) }}</strong>
+        </div>
+    </a>
+    <a href="{{ route('seller.returns.index') }}" class="bg-white border border-border rounded-sm shadow-sm p-4 transition-shadow hover:shadow-md border-l-4 no-underline" style="border-left-color: #ef4444">
+        <div class="flex items-center gap-3">
+            <span class="shrink-0 w-10 h-10 rounded-sm bg-rose-50 flex items-center justify-center">
+                <i data-lucide="rotate-ccw" class="text-rose-500" style="width:20px;height:20px;"></i>
+            </span>
+            <div class="min-w-0 flex-1">
+                <p class="text-xs text-ink-tertiary mb-0">Open returns</p>
+                <h4 class="mb-0 font-bold text-lg text-ink">{{ number_format($open_returns) }}</h4>
+                <small class="text-ink-tertiary">Awaiting decision</small>
             </div>
-            <div class="seller-dash__metric-divider" aria-hidden="true"></div>
-            <div>
-                <span class="seller-dash__metric-label">Orders</span>
-                <strong class="seller-dash__metric-value">{{ number_format($total_orders) }}</strong>
+        </div>
+    </a>
+    <a href="{{ route('seller.reviews.index') }}" class="bg-white border border-border rounded-sm shadow-sm p-4 transition-shadow hover:shadow-md border-l-4 no-underline" style="border-left-color: #2563eb">
+        <div class="flex items-center gap-3">
+            <span class="shrink-0 w-10 h-10 rounded-sm bg-blue-50 flex items-center justify-center">
+                <i data-lucide="message-square" class="text-feedback-info" style="width:20px;height:20px;"></i>
+            </span>
+            <div class="min-w-0 flex-1">
+                <p class="text-xs text-ink-tertiary mb-0">Unreplied reviews</p>
+                <h4 class="mb-0 font-bold text-lg text-ink">{{ number_format($unreplied_reviews) }}</h4>
+                <small class="text-ink-tertiary">Engage buyers faster</small>
             </div>
+        </div>
+    </a>
+    <a href="{{ route('seller.products.index') }}" class="bg-white border border-border rounded-sm shadow-sm p-4 transition-shadow hover:shadow-md border-l-4 no-underline" style="border-left-color: #7c3aed">
+        <div class="flex items-center gap-3">
+            <span class="shrink-0 w-10 h-10 rounded-sm bg-purple-50 flex items-center justify-center">
+                <i data-lucide="package-x" class="text-purple-600" style="width:20px;height:20px;"></i>
+            </span>
+            <div class="min-w-0 flex-1">
+                <p class="text-xs text-ink-tertiary mb-0">Low stock items</p>
+                <h4 class="mb-0 font-bold text-lg text-ink">{{ number_format($lowStockProducts->count()) }}</h4>
+                <small class="text-ink-tertiary">Restock critical SKUs</small>
+            </div>
+        </div>
+    </a>
+</section>
+
+{{-- ═══ KPI ROW — SALES / ORDERS / CUSTOMERS / PROFIT ═══ --}}
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+    <article class="bg-white border border-border rounded-sm shadow-sm p-5 transition-shadow hover:shadow-md">
+        <div class="flex items-center justify-between mb-3">
+            <div>
+                <p class="text-xs text-ink-tertiary mb-0 uppercase tracking-wider font-semibold">Total Sales</p>
+                <h3 class="mb-0 font-bold text-2xl text-ink leading-tight">{{ money($total_sales) }}</h3>
+            </div>
+            <span class="shrink-0 w-12 h-12 rounded-sm bg-brand-tint flex items-center justify-center">
+                <i data-lucide="wallet" class="text-brand" style="width:24px;height:24px;"></i>
+            </span>
+        </div>
+        <div class="flex items-center justify-between text-xs">
+            <span class="text-ink-tertiary">Avg ticket <strong class="text-ink">{{ money($avgTicket) }}</strong></span>
+            <span class="text-ink-tertiary">{{ money($total_earnings) }} earned</span>
+        </div>
+    </article>
+
+    <article class="bg-white border border-border rounded-sm shadow-sm p-5 transition-shadow hover:shadow-md">
+        <div class="flex items-center justify-between mb-3">
+            <div>
+                <p class="text-xs text-ink-tertiary mb-0 uppercase tracking-wider font-semibold">Orders</p>
+                <h3 class="mb-0 font-bold text-2xl text-ink leading-tight">{{ number_format($total_orders) }}</h3>
+            </div>
+            <span class="shrink-0 w-12 h-12 rounded-sm bg-emerald-50 flex items-center justify-center">
+                <i data-lucide="shopping-cart" class="text-feedback-success" style="width:24px;height:24px;"></i>
+            </span>
+        </div>
+        <div class="flex items-center justify-between text-xs">
+            <span class="text-ink-tertiary">Delivered <strong class="text-ink">{{ number_format($delivered_orders) }}</strong></span>
+            <span class="text-ink-tertiary">Cancelled <strong class="text-ink">{{ number_format($cancelled_orders) }}</strong></span>
+        </div>
+    </article>
+
+    <article class="bg-white border border-border rounded-sm shadow-sm p-5 transition-shadow hover:shadow-md">
+        <div class="flex items-center justify-between mb-3">
+            <div>
+                <p class="text-xs text-ink-tertiary mb-0 uppercase tracking-wider font-semibold">Profit</p>
+                <h3 class="mb-0 font-bold text-2xl text-ink leading-tight">{{ money($profit) }}</h3>
+            </div>
+            <span class="shrink-0 w-12 h-12 rounded-sm bg-purple-50 flex items-center justify-center">
+                <i data-lucide="trending-up" class="text-purple-600" style="width:24px;height:24px;"></i>
+            </span>
+        </div>
+        <div class="flex items-center gap-2">
+            <div class="flex-1 bg-surface-muted rounded-full h-2 overflow-hidden">
+                <div class="bg-purple-500 h-2 rounded-full" style="width: {{ min(100, max(0, $marginPct)) }}%"></div>
+            </div>
+            <span class="text-xs font-semibold text-purple-700">{{ $marginPct }}% margin</span>
+        </div>
+    </article>
+
+    <article class="bg-white border border-border rounded-sm shadow-sm p-5 transition-shadow hover:shadow-md">
+        <div class="flex items-center justify-between mb-3">
+            <div>
+                <p class="text-xs text-ink-tertiary mb-0 uppercase tracking-wider font-semibold">Customers</p>
+                <h3 class="mb-0 font-bold text-2xl text-ink leading-tight">{{ number_format($total_customers) }}</h3>
+            </div>
+            <span class="shrink-0 w-12 h-12 rounded-sm bg-blue-50 flex items-center justify-center">
+                <i data-lucide="users" class="text-feedback-info" style="width:24px;height:24px;"></i>
+            </span>
+        </div>
+        <div class="flex items-center justify-between text-xs">
+            <span class="text-ink-tertiary">Rating <strong class="text-ink">{{ number_format((float) $avg_rating, 1) }}/5</strong></span>
+            <span class="text-ink-tertiary">{{ $review_count }} reviews</span>
+        </div>
+    </article>
+</section>
+
+{{-- ═══ CHARTS ROW — SALES TREND + STATUS MIX ═══ --}}
+<section class="grid grid-cols-1 xl:grid-cols-3 gap-3 mb-4">
+    <div class="xl:col-span-2 bg-white border border-border rounded-sm shadow-sm overflow-hidden">
+        <div class="px-4 py-3 border-b border-border flex items-center justify-between bg-surface-muted">
+            <div class="flex items-center gap-2">
+                <i data-lucide="line-chart" class="text-brand" style="width:16px;height:16px;"></i>
+                <h5 class="mb-0 font-bold text-ink">Sales, Orders & Profit</h5>
+            </div>
+            <div class="flex items-center gap-3 text-xs">
+                <span class="flex items-center gap-1 text-ink-secondary"><span class="inline-block w-2 h-2 rounded-full" style="background:#F85606"></span> Sales</span>
+                <span class="flex items-center gap-1 text-ink-secondary"><span class="inline-block w-2 h-2 rounded-full" style="background:#0ea5e9"></span> Orders</span>
+                <span class="flex items-center gap-1 text-ink-secondary"><span class="inline-block w-2 h-2 rounded-full" style="background:#16A34A"></span> Profit</span>
+            </div>
+        </div>
+        <div class="p-4">
+            <canvas id="salesOrderChart" height="120"></canvas>
         </div>
     </div>
 
-    <form method="GET" action="{{ route('seller.dashboard') }}" class="seller-dash__filter">
-        <label class="seller-dash__filter-label">Date range</label>
-        <div class="seller-dash__filter-row">
-            <input type="date" name="start_date" value="{{ $start_date }}" class="seller-dash__date">
-            <span class="text-ink-tertiary text-xs">to</span>
-            <input type="date" name="end_date" value="{{ $end_date }}" class="seller-dash__date">
-            <button type="submit" class="btn btn-primary btn-sm">
-                <i data-lucide="funnel" style="width:14px;height:14px;"></i> Apply
-            </button>
+    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden">
+        <div class="px-4 py-3 border-b border-border flex items-center gap-2 bg-surface-muted">
+            <i data-lucide="pie-chart" class="text-brand" style="width:16px;height:16px;"></i>
+            <h5 class="mb-0 font-bold text-ink">Order Status Mix</h5>
         </div>
-        <div class="seller-dash__presets">
-            <a href="{{ route('seller.dashboard', ['start_date' => now()->toDateString(), 'end_date' => now()->toDateString()]) }}" class="seller-dash__chip">Today</a>
-            <a href="{{ route('seller.dashboard', ['start_date' => now()->copy()->startOfWeek()->toDateString(), 'end_date' => now()->toDateString()]) }}" class="seller-dash__chip">This week</a>
-            <a href="{{ route('seller.dashboard', ['start_date' => now()->copy()->startOfMonth()->toDateString(), 'end_date' => now()->toDateString()]) }}" class="seller-dash__chip">This month</a>
-        </div>
-    </form>
-</section>
-
-{{-- Primary KPIs --}}
-<section class="seller-dash__kpi-grid">
-    <article class="seller-dash__kpi seller-dash__kpi--sales">
-        <div class="seller-dash__kpi-top">
-            <span>Total sales</span>
-            <span class="seller-dash__kpi-icon"><i data-lucide="trending-up" style="width:16px;height:16px;"></i></span>
-        </div>
-        <strong>{{ money($total_sales) }}</strong>
-        <small>Avg order {{ money($average_order_value) }}</small>
-    </article>
-    <article class="seller-dash__kpi seller-dash__kpi--profit">
-        <div class="seller-dash__kpi-top">
-            <span>Profit</span>
-            <span class="seller-dash__kpi-icon"><i data-lucide="wallet" style="width:16px;height:16px;"></i></span>
-        </div>
-        <strong>{{ money($profit) }}</strong>
-        <small>After product cost</small>
-    </article>
-    <article class="seller-dash__kpi seller-dash__kpi--orders">
-        <div class="seller-dash__kpi-top">
-            <span>Orders</span>
-            <span class="seller-dash__kpi-icon"><i data-lucide="shopping-cart" style="width:16px;height:16px;"></i></span>
-        </div>
-        <strong>{{ number_format($total_orders) }}</strong>
-        <small>{{ $delivery_rate }}% delivered / completed</small>
-    </article>
-    <article class="seller-dash__kpi seller-dash__kpi--customers">
-        <div class="seller-dash__kpi-top">
-            <span>Customers</span>
-            <span class="seller-dash__kpi-icon"><i data-lucide="users" style="width:16px;height:16px;"></i></span>
-        </div>
-        <strong>{{ number_format($total_customers) }}</strong>
-        <small><a href="{{ route('seller.customers') }}">View customers</a></small>
-    </article>
-</section>
-
-{{-- Attention + pipeline --}}
-<section class="seller-dash__split">
-    <div class="seller-dash__panel">
-        <div class="seller-dash__panel-head">
-            <h2>Needs attention</h2>
-            <span class="seller-dash__hint">Act on these first</span>
-        </div>
-        <div class="seller-dash__attention">
-            <a href="{{ route('seller.orders.pending') }}" class="seller-dash__attn seller-dash__attn--warn">
-                <i data-lucide="clock" style="width:18px;height:18px;"></i>
-                <div>
-                    <strong>{{ $pending_orders }}</strong>
-                    <span>Pending orders</span>
-                </div>
-            </a>
-            <a href="{{ route('seller.returns.index') }}" class="seller-dash__attn seller-dash__attn--danger">
-                <i data-lucide="rotate-ccw" style="width:18px;height:18px;"></i>
-                <div>
-                    <strong>{{ $open_returns }}</strong>
-                    <span>Open returns</span>
-                </div>
-            </a>
-            <a href="{{ route('seller.reviews.index', ['status' => 'unreplied']) }}" class="seller-dash__attn seller-dash__attn--info">
-                <i data-lucide="message-square" style="width:18px;height:18px;"></i>
-                <div>
-                    <strong>{{ $unreplied_reviews }}</strong>
-                    <span>Unreplied reviews</span>
-                </div>
-            </a>
-            <a href="{{ route('seller.products.index') }}" class="seller-dash__attn seller-dash__attn--stock">
-                <i data-lucide="package-x" style="width:18px;height:18px;"></i>
-                <div>
-                    <strong>{{ $lowStockProducts->count() }}</strong>
-                    <span>Low stock items</span>
-                </div>
-            </a>
+        <div class="p-4">
+            <canvas id="statusDonutChart" height="160"></canvas>
         </div>
     </div>
+</section>
 
-    <div class="seller-dash__panel">
-        <div class="seller-dash__panel-head">
-            <h2>Order pipeline</h2>
-            <a href="{{ route('seller.orders.index') }}" class="text-sm">All orders</a>
+{{-- ═══ ORDER PIPELINE — FUNNEL ═══ --}}
+<section class="bg-white border border-border rounded-sm shadow-sm overflow-hidden mb-4">
+    <div class="px-4 py-3 border-b border-border flex items-center justify-between bg-surface-muted">
+        <div class="flex items-center gap-2">
+            <i data-lucide="workflow" class="text-brand" style="width:16px;height:16px;"></i>
+            <h5 class="mb-0 font-bold text-ink">Order Pipeline — conversion funnel</h5>
         </div>
-        <div class="seller-dash__pipeline">
+        <a href="{{ route('seller.orders.index') }}" class="text-xs text-brand hover:text-brand-deep no-underline">All orders →</a>
+    </div>
+    <div class="p-5">
+        <div class="grid grid-cols-1 md:grid-cols-6 gap-2">
             @foreach ([
-                ['label' => 'Pending', 'value' => $pending_orders, 'tone' => 'warn', 'href' => route('seller.orders.pending')],
-                ['label' => 'Accepted', 'value' => $accepted_orders, 'tone' => 'info', 'href' => route('seller.orders.index')],
-                ['label' => 'Shipped', 'value' => $shipped_orders, 'tone' => 'primary', 'href' => route('seller.orders.index')],
-                ['label' => 'Delivered', 'value' => $delivered_orders, 'tone' => 'success', 'href' => route('seller.orders.delivered')],
-                ['label' => 'Cancelled', 'value' => $cancelled_orders, 'tone' => 'danger', 'href' => route('seller.orders.index')],
-                ['label' => 'Refunded', 'value' => $refunded_orders, 'tone' => 'muted', 'href' => route('seller.orders.index')],
+                ['label' => 'Pending',     'value' => $pending_orders,    'icon' => 'clock',         'color' => '#d97706'],
+                ['label' => 'Accepted',    'value' => $accepted_orders,   'icon' => 'check',         'color' => '#2563eb'],
+                ['label' => 'Shipped',     'value' => $shipped_orders,    'icon' => 'truck',         'color' => '#0ea5e9'],
+                ['label' => 'Delivered',   'value' => $delivered_orders,  'icon' => 'package-check', 'color' => '#059669'],
+                ['label' => 'Cancelled',   'value' => $cancelled_orders,  'icon' => 'x-circle',     'color' => '#dc2626'],
+                ['label' => 'Refunded',    'value' => $refunded_orders,   'icon' => 'undo-2',       'color' => '#7c3aed'],
             ] as $step)
-                <a href="{{ $step['href'] }}" class="seller-dash__pipe seller-dash__pipe--{{ $step['tone'] }}">
-                    <span>{{ $step['label'] }}</span>
-                    <strong>{{ $step['value'] }}</strong>
-                </a>
+                <div class="bg-surface-muted rounded-sm p-3 text-center">
+                    <div class="w-10 h-10 rounded-full bg-white mx-auto mb-2 flex items-center justify-center" style="color: {{ $step['color'] }}">
+                        <i data-lucide="{{ $step['icon'] }}" style="width:20px;height:20px;"></i>
+                    </div>
+                    <p class="mb-0 font-bold text-xl text-ink">{{ number_format($step['value']) }}</p>
+                    <small class="text-ink-tertiary">{{ $step['label'] }}</small>
+                </div>
             @endforeach
         </div>
-        <div class="seller-dash__rates">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
             <div>
-                <span>Delivery rate</span>
-                <div class="seller-dash__bar"><i style="width:{{ min(100, $delivery_rate) }}%"></i></div>
-                <em>{{ $delivery_rate }}%</em>
+                <div class="flex items-center justify-between text-sm mb-1">
+                    <span class="text-ink-secondary">Delivery rate</span>
+                    <strong class="text-ink">{{ $delivery_rate }}%</strong>
+                </div>
+                <div class="w-full bg-surface-muted rounded-full h-2 overflow-hidden">
+                    <div class="h-2 rounded-full" style="width: {{ min(100, $delivery_rate) }}%; background: #059669"></div>
+                </div>
             </div>
             <div>
-                <span>Cancel rate</span>
-                <div class="seller-dash__bar seller-dash__bar--danger"><i style="width:{{ min(100, $cancel_rate) }}%"></i></div>
-                <em>{{ $cancel_rate }}%</em>
+                <div class="flex items-center justify-between text-sm mb-1">
+                    <span class="text-ink-secondary">Cancel rate</span>
+                    <strong class="text-ink">{{ $cancel_rate }}%</strong>
+                </div>
+                <div class="w-full bg-surface-muted rounded-full h-2 overflow-hidden">
+                    <div class="h-2 rounded-full" style="width: {{ min(100, $cancel_rate) }}%; background: #dc2626"></div>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
-{{-- Charts --}}
-<section class="seller-dash__charts">
-    <div class="seller-dash__panel seller-dash__panel--chart">
-        <div class="seller-dash__panel-head">
-            <h2>Sales & orders</h2>
-        </div>
-        <div class="seller-dash__chart-box">
-            <canvas id="salesOrderChart"></canvas>
-        </div>
-    </div>
-    <div class="seller-dash__panel seller-dash__panel--donut">
-        <div class="seller-dash__panel-head">
-            <h2>Status mix</h2>
-        </div>
-        <div class="seller-dash__donut-wrap">
-            <canvas id="statusDonutChart"></canvas>
-        </div>
-    </div>
-</section>
-
-{{-- Finance + catalog --}}
-<section class="seller-dash__stat-row">
-    @foreach ([
-        ['label' => 'Seller earnings', 'value' => money($total_earnings), 'icon' => 'banknote', 'tone' => 'success', 'sub' => 'After commission'],
-        ['label' => 'Commission paid', 'value' => money($total_commission), 'icon' => 'percent', 'tone' => 'primary', 'sub' => 'Platform fee'],
-        ['label' => 'Pending payout', 'value' => money($pendingPayout), 'icon' => 'credit-card', 'tone' => 'warn', 'sub' => 'Awaiting transfer', 'href' => route('seller.payouts.index')],
-        ['label' => 'Expenses', 'value' => money($total_expense), 'icon' => 'receipt', 'tone' => 'muted', 'sub' => 'Period spend', 'href' => route('seller.expenses.index')],
-        ['label' => 'Products', 'value' => number_format($total_products), 'icon' => 'package', 'tone' => 'info', 'sub' => $active_products.' active · stock '.money($total_stock_value), 'href' => route('seller.products.index')],
-        ['label' => 'Shop rating', 'value' => number_format($avg_rating, 1).' / 5', 'icon' => 'star', 'tone' => 'rating', 'sub' => $review_count.' reviews', 'href' => route('seller.reviews.index')],
-    ] as $stat)
-        @if (isset($stat['href']))
-            <a href="{{ $stat['href'] }}" class="seller-dash__stat seller-dash__stat--{{ $stat['tone'] }}">
-                <span class="seller-dash__stat-icon"><i data-lucide="{{ $stat['icon'] }}" style="width:16px;height:16px;"></i></span>
-                <div>
-                    <span class="seller-dash__stat-label">{{ $stat['label'] }}</span>
-                    <strong>{{ $stat['value'] }}</strong>
-                    <small>{{ $stat['sub'] }}</small>
-                </div>
-            </a>
-        @else
-            <div class="seller-dash__stat seller-dash__stat--{{ $stat['tone'] }}">
-                <span class="seller-dash__stat-icon"><i data-lucide="{{ $stat['icon'] }}" style="width:16px;height:16px;"></i></span>
-                <div>
-                    <span class="seller-dash__stat-label">{{ $stat['label'] }}</span>
-                    <strong>{{ $stat['value'] }}</strong>
-                    <small>{{ $stat['sub'] }}</small>
+{{-- ═══ FINANCE + CATALOG — 6 METRIC TILES ═══ --}}
+<section class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-4">
+    @php
+        $metrics = [
+            ['label' => 'Seller earnings',  'value' => money($total_earnings),   'icon' => 'banknote',     'tone' => 'success',  'sub' => 'After commission',         'href' => route('seller.payouts.index')],
+            ['label' => 'Commission paid',  'value' => money($total_commission),'icon' => 'percent',     'tone' => 'primary',  'sub' => 'Platform fee'],
+            ['label' => 'Pending payout',   'value' => money($pendingPayout),   'icon' => 'credit-card', 'tone' => 'warning',  'sub' => 'Awaiting transfer',       'href' => route('seller.payouts.index')],
+            ['label' => 'Expenses',         'value' => money($total_expense),   'icon' => 'receipt',     'tone' => 'muted',    'sub' => 'Period spend',            'href' => route('seller.expenses.index')],
+            ['label' => 'Stock value',      'value' => money($total_stock_value),'icon' => 'package',    'tone' => 'info',     'sub' => $active_products.' active of '.number_format($total_products).' products', 'href' => route('seller.products.index')],
+            ['label' => 'Shop rating',      'value' => number_format((float) $avg_rating, 1).'/5','icon' => 'star','tone' => 'rating','sub' => $review_count.' reviews',     'href' => route('seller.reviews.index')],
+        ];
+    @endphp
+    @foreach ($metrics as $metric)
+        <a href="{{ $metric['href'] ?? '#' }}" class="bg-white border border-border rounded-sm shadow-sm p-4 transition-shadow hover:shadow-md no-underline">
+            <div class="flex items-center gap-3">
+                <span class="shrink-0 w-10 h-10 rounded-sm flex items-center justify-center
+                    {{ $metric['tone'] === 'success' ? 'bg-emerald-50' : (
+                       $metric['tone'] === 'primary' ? 'bg-brand-tint' : (
+                       $metric['tone'] === 'warning' ? 'bg-amber-50' : (
+                       $metric['tone'] === 'info' ? 'bg-blue-50' : (
+                       $metric['tone'] === 'rating' ? 'bg-purple-50' : 'bg-surface-muted')))) }}
+                    {{ $metric['tone'] === 'success' ? 'text-feedback-success' : (
+                       $metric['tone'] === 'primary' ? 'text-brand' : (
+                       $metric['tone'] === 'warning' ? 'text-feedback-warning' : (
+                       $metric['tone'] === 'info' ? 'text-feedback-info' : (
+                       $metric['tone'] === 'rating' ? 'text-purple-600' : 'text-ink-tertiary')))) }}">
+                    <i data-lucide="{{ $metric['icon'] }}" style="width:18px;height:18px;"></i>
+                </span>
+                <div class="min-w-0 flex-1">
+                    <p class="text-xs text-ink-tertiary mb-0">{{ $metric['label'] }}</p>
+                    <strong class="text-ink font-bold text-sm block truncate">{{ $metric['value'] }}</strong>
+                    <small class="text-ink-tertiary">{{ $metric['sub'] }}</small>
                 </div>
             </div>
-        @endif
+        </a>
     @endforeach
 </section>
 
-{{-- Quick actions --}}
-<section class="seller-dash__panel seller-dash__actions-panel">
-    <div class="seller-dash__panel-head">
-        <h2>Quick actions</h2>
+{{-- ═══ 3-COLUMN: TOP PRODUCTS · LOW STOCK · REVIEWS ═══ --}}
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-4">
+    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden">
+        <div class="px-4 py-3 border-b border-border flex items-center justify-between bg-surface-muted">
+            <div class="flex items-center gap-2">
+                <i data-lucide="crown" class="text-feedback-warning" style="width:16px;height:16px;"></i>
+                <h5 class="mb-0 font-bold text-ink">Top Selling Products</h5>
+            </div>
+            <a href="{{ route('seller.products.index') }}" class="text-xs text-brand hover:text-brand-deep no-underline">Catalog →</a>
+        </div>
+        <div class="p-4">
+            @forelse ($top_selling_products->take(6) as $index => $product)
+            <div class="flex items-center gap-3 py-2 {{ !$loop->last ? 'border-b border-border' : '' }}">
+                <span class="shrink-0 w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs
+                    {{ $index === 0 ? 'bg-amber-100 text-feedback-warning' : ($index < 3 ? 'bg-brand-tint text-brand' : 'bg-surface-muted text-ink-tertiary') }}">
+                    {{ $index + 1 }}
+                </span>
+                <img src="{{ storage_url($product->thumbnail) }}" alt="{{ $product->name }}" class="w-9 h-9 rounded-sm object-cover border border-border shrink-0">
+                <div class="min-w-0 flex-1">
+                    <p class="mb-0 text-sm font-medium text-ink truncate">{{ $product->name }}</p>
+                    <small class="text-ink-tertiary">{{ money($product->price) }}</small>
+                </div>
+                <span class="shrink-0 text-xs font-semibold px-2 py-0.5 bg-emerald-50 text-feedback-success rounded-full">{{ $product->sales_count }} sold</span>
+            </div>
+            @empty
+            <div class="text-center py-6 text-sm text-ink-tertiary">
+                <i data-lucide="shopping-bag" style="width:24px;height:24px;" class="mx-auto"></i>
+                <p class="mt-2 mb-0">No sales in this period yet.</p>
+            </div>
+            @endforelse
+        </div>
     </div>
-    <div class="seller-dash__actions">
-        @foreach ([
-            ['label' => 'Add product', 'href' => route('seller.products.create'), 'icon' => 'plus-circle'],
-            ['label' => 'Pending orders', 'href' => route('seller.orders.pending'), 'icon' => 'inbox'],
-            ['label' => 'Inventory', 'href' => route('seller.products.index'), 'icon' => 'boxes'],
-            ['label' => 'Create payout', 'href' => route('seller.payouts.create'), 'icon' => 'landmark'],
-            ['label' => 'Coupons', 'href' => route('seller.coupons.index'), 'icon' => 'ticket'],
-            ['label' => 'Performance', 'href' => route('seller.performance.dashboard'), 'icon' => 'gauge'],
-            ['label' => 'Support', 'href' => route('seller.support.index'), 'icon' => 'life-buoy'],
-            ['label' => 'Settings', 'href' => route('seller.settings.index'), 'icon' => 'settings'],
-        ] as $action)
-            <a href="{{ $action['href'] }}" class="seller-dash__action">
-                <i data-lucide="{{ $action['icon'] }}" style="width:18px;height:18px;"></i>
-                <span>{{ $action['label'] }}</span>
-            </a>
-        @endforeach
+
+    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden">
+        <div class="px-4 py-3 border-b border-border flex items-center justify-between bg-surface-muted">
+            <div class="flex items-center gap-2">
+                <i data-lucide="package-x" class="text-feedback-warning" style="width:16px;height:16px;"></i>
+                <h5 class="mb-0 font-bold text-ink">Low Stock Alerts</h5>
+            </div>
+            <a href="{{ route('seller.products.index') }}" class="text-xs text-brand hover:text-brand-deep no-underline">Inventory →</a>
+        </div>
+        <div class="p-4">
+            @forelse ($lowStockProducts->take(6) as $product)
+            <div class="flex items-center gap-3 py-2 {{ !$loop->last ? 'border-b border-border' : '' }}">
+                <img src="{{ storage_url($product->thumbnail) }}" alt="{{ $product->name }}" class="w-9 h-9 rounded-sm object-cover border border-border shrink-0">
+                <div class="min-w-0 flex-1">
+                    <p class="mb-0 text-sm font-medium text-ink truncate">{{ Str::limit($product->name, 30) }}</p>
+                    <small class="text-ink-tertiary">Threshold: {{ $product->low_stock_quantity }}</small>
+                </div>
+                <span class="shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full
+                    {{ $product->available_stock <= $product->low_stock_quantity / 2 ? 'bg-rose-50 text-rose-600' : 'bg-amber-50 text-feedback-warning' }}">
+                    {{ $product->available_stock }} left
+                </span>
+            </div>
+            @empty
+            <div class="text-center py-6 text-sm text-feedback-success">
+                <i data-lucide="check-circle" style="width:24px;height:24px;" class="mx-auto"></i>
+                <p class="mt-2 mb-0">All products are well stocked.</p>
+            </div>
+            @endforelse
+            @if($lowStockProducts->count() > 0)
+            <a href="{{ route('seller.products.index') }}" class="btn btn-outline-primary btn-sm w-full mt-3"><i data-lucide="package" style="width:14px;height:14px;"></i> Manage Inventory</a>
+            @endif
+        </div>
+    </div>
+
+    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden">
+        <div class="px-4 py-3 border-b border-border flex items-center justify-between bg-surface-muted">
+            <div class="flex items-center gap-2">
+                <i data-lucide="star" class="text-feedback-warning" style="width:16px;height:16px;"></i>
+                <h5 class="mb-0 font-bold text-ink">Latest Reviews</h5>
+            </div>
+            <a href="{{ route('seller.reviews.index') }}" class="text-xs text-brand hover:text-brand-deep no-underline">All reviews →</a>
+        </div>
+        <div class="p-4">
+            @forelse ($recentReviews->take(4) as $review)
+            <div class="py-2 {{ !$loop->last ? 'border-b border-border' : '' }}">
+                <div class="flex items-center justify-between mb-1">
+                    <strong class="text-sm text-ink">{{ $review->user?->name ?? 'Customer' }}</strong>
+                    <div class="flex items-center gap-0.5">
+                        @for ($i = 1; $i <= 5; $i++)
+                            <i data-lucide="star" style="width:11px;height:11px;" class="{{ $i <= (int) $review->rating ? 'fill-current text-feedback-warning' : 'text-ink-tertiary' }}"></i>
+                        @endfor
+                    </div>
+                </div>
+                <p class="text-sm text-ink-secondary mb-1">{{ Str::limit($review->description ?? 'No comment.', 80) }}</p>
+                <small class="text-xs text-ink-tertiary">{{ optional($review->created_at)->diffForHumans() }} · {{ Str::limit($review->product?->name ?? 'Product', 26) }}</small>
+            </div>
+            @empty
+            <div class="text-center py-6 text-sm text-ink-tertiary">
+                <i data-lucide="star" style="width:24px;height:24px;" class="mx-auto"></i>
+                <p class="mt-2 mb-0">No reviews yet.</p>
+            </div>
+            @endforelse
+        </div>
     </div>
 </section>
 
-{{-- Products / stock / reviews --}}
-<section class="seller-dash__three">
-    <div class="seller-dash__panel">
-        <div class="seller-dash__panel-head">
-            <h2>Top selling products</h2>
-            <a href="{{ route('seller.products.index') }}" class="text-sm">Catalog</a>
+{{-- ═══ QUICK ACTIONS ═══ --}}
+<section class="bg-white border border-border rounded-sm shadow-sm overflow-hidden mb-4">
+    <div class="px-4 py-3 border-b border-border bg-surface-muted">
+        <div class="flex items-center gap-2">
+            <i data-lucide="zap" class="text-brand" style="width:16px;height:16px;"></i>
+            <h5 class="mb-0 font-bold text-ink">Quick Actions</h5>
         </div>
-        @if ($top_selling_products->count() > 0)
-            <ul class="seller-dash__list">
-                @foreach ($top_selling_products as $index => $product)
-                    <li>
-                        <span class="seller-dash__rank">{{ $index + 1 }}</span>
-                        <img src="{{ storage_url($product->thumbnail) }}" alt="{{ $product->name }}" width="40" height="40">
-                        <div class="seller-dash__list-body">
-                            <span>{{ $product->name }}</span>
-                        </div>
-                        <span class="seller-dash__pill">{{ $product->sales_count }} sold</span>
-                    </li>
-                @endforeach
-            </ul>
-        @else
-            <div class="seller-dash__empty">
-                <i data-lucide="shopping-bag" style="width:28px;height:28px;"></i>
-                <p>No sales in this period yet.</p>
-            </div>
-        @endif
     </div>
-
-    <div class="seller-dash__panel">
-        <div class="seller-dash__panel-head">
-            <h2>Low stock alerts</h2>
-            <a href="{{ route('seller.products.index') }}" class="text-sm">Inventory</a>
+    <div class="p-4">
+        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+            @foreach ([
+                ['label' => 'Add product',     'href' => route('seller.products.create'),     'icon' => 'plus-circle', 'tone' => 'brand'],
+                ['label' => 'Pending orders', 'href' => route('seller.orders.pending'),    'icon' => 'inbox',       'tone' => 'warning'],
+                ['label' => 'Inventory',      'href' => route('seller.products.index'),     'icon' => 'boxes',       'tone' => 'info'],
+                ['label' => 'Coupons',        'href' => route('seller.coupons.index'),      'icon' => 'ticket-percent','tone' => 'success'],
+                ['label' => 'Payout',         'href' => route('seller.payouts.create'),    'icon' => 'landmark',    'tone' => 'primary'],
+                ['label' => 'Performance',    'href' => route('seller.performance.dashboard'),'icon' => 'gauge','tone' => 'rating'],
+                ['label' => 'Support',        'href' => route('seller.support.index'),     'icon' => 'life-buoy',   'tone' => 'muted'],
+                ['label' => 'Settings',       'href' => route('seller.settings.index'),     'icon' => 'settings',    'tone' => 'ink'],
+            ] as $action)
+                <a href="{{ $action['href'] }}" class="flex flex-col items-center gap-2 p-4 bg-surface-muted hover:bg-brand-tint rounded-sm transition-colors no-underline text-center border border-border hover:border-brand">
+                    <span class="w-12 h-12 rounded-full flex items-center justify-center
+                        {{ $action['tone'] === 'warning' ? 'bg-amber-100 text-feedback-warning' : (
+                           $action['tone'] === 'success' ? 'bg-emerald-100 text-feedback-success' : (
+                           $action['tone'] === 'info' ? 'bg-blue-100 text-feedback-info' : (
+                           $action['tone'] === 'rating' ? 'bg-purple-100 text-purple-600' : (
+                           $action['tone'] === 'primary' ? 'bg-brand-tint text-brand' : (
+                           $action['tone'] === 'brand' ? 'bg-brand-tint text-brand' :
+                           'bg-surface-muted text-ink-tertiary'))))) }}">
+                        <i data-lucide="{{ $action['icon'] }}" style="width:24px;height:24px;"></i>
+                    </span>
+                    <span class="text-sm text-ink font-medium">{{ $action['label'] }}</span>
+                </a>
+            @endforeach
         </div>
-        @if ($lowStockProducts->count() > 0)
-            <ul class="seller-dash__list">
-                @foreach ($lowStockProducts as $product)
-                    <li>
-                        <img src="{{ storage_url($product->thumbnail) }}" alt="{{ $product->name }}" width="40" height="40">
-                        <div class="seller-dash__list-body">
-                            <span>{{ Str::limit($product->name, 36) }}</span>
-                        </div>
-                        <span class="seller-dash__pill seller-dash__pill--{{ $product->available_stock <= $product->low_stock_quantity / 2 ? 'danger' : 'warn' }}">
-                            {{ $product->available_stock }} left
-                        </span>
-                    </li>
-                @endforeach
-            </ul>
-            <a href="{{ route('seller.products.index') }}" class="btn btn-outline-primary btn-sm w-full mt-3">Manage inventory</a>
-        @else
-            <div class="seller-dash__empty seller-dash__empty--ok">
-                <i data-lucide="check-circle" style="width:28px;height:28px;"></i>
-                <p>All products are well stocked.</p>
-            </div>
-        @endif
-    </div>
-
-    <div class="seller-dash__panel">
-        <div class="seller-dash__panel-head">
-            <h2>Latest reviews</h2>
-            <a href="{{ route('seller.reviews.index') }}" class="text-sm">All reviews</a>
-        </div>
-        @if ($recentReviews->count() > 0)
-            <ul class="seller-dash__reviews">
-                @foreach ($recentReviews as $review)
-                    <li>
-                        <div class="seller-dash__review-top">
-                            <strong>{{ $review->user->name ?? 'Customer' }}</strong>
-                            <span class="seller-dash__stars" aria-label="{{ $review->rating }} stars">
-                                @for ($i = 1; $i <= 5; $i++)
-                                    <i data-lucide="star" class="{{ $i <= (int) $review->rating ? 'is-on' : '' }}" style="width:12px;height:12px;"></i>
-                                @endfor
-                            </span>
-                        </div>
-                        <p>{{ Str::limit($review->description ?? 'No comment', 90) }}</p>
-                        <small>{{ optional($review->created_at)->diffForHumans() }} · {{ Str::limit($review->product->name ?? 'Product', 28) }}</small>
-                    </li>
-                @endforeach
-            </ul>
-        @else
-            <div class="seller-dash__empty">
-                <i data-lucide="star" style="width:28px;height:28px;"></i>
-                <p>No reviews yet.</p>
-            </div>
-        @endif
     </div>
 </section>
 
-{{-- Latest orders --}}
-<section class="seller-dash__panel seller-dash__orders">
-    <div class="seller-dash__panel-head">
-        <h2>Latest orders</h2>
+{{-- ═══ LATEST ORDERS ═══ --}}
+<section class="bg-white border border-border rounded-sm shadow-sm overflow-hidden mb-4">
+    <div class="px-4 py-3 border-b border-border flex items-center justify-between bg-surface-muted">
+        <div class="flex items-center gap-2">
+            <i data-lucide="receipt" class="text-brand" style="width:16px;height:16px;"></i>
+            <h5 class="mb-0 font-bold text-ink">Latest Orders</h5>
+        </div>
         <a href="{{ route('seller.orders.index') }}" class="btn btn-outline-primary btn-sm">View all orders</a>
     </div>
     <div class="overflow-x-auto">
         <table class="w-full text-left text-sm text-ink border-collapse">
             <thead class="bg-surface-muted border-b border-border text-xs font-semibold text-ink-tertiary uppercase tracking-wider">
                 <tr>
-                    <th scope="col">Order ID</th>
-                    <th scope="col">Customer</th>
-                    <th scope="col">Total</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">Action</th>
+                    <th scope="col" class="px-4 py-2.5">Order ID</th>
+                    <th scope="col" class="px-4 py-2.5">Customer</th>
+                    <th scope="col" class="px-4 py-2.5 text-right">Total</th>
+                    <th scope="col" class="px-4 py-2.5 text-center">Status</th>
+                    <th scope="col" class="px-4 py-2.5">Date</th>
+                    <th scope="col" class="px-4 py-2.5 text-right">Action</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="divide-y divide-border">
                 @forelse ($latest_orders as $order)
-                    <tr>
-                        <td class="font-medium">{{ $order->invoice_id }}</td>
-                        <td>{{ $order->user->name ?? 'N/A' }}</td>
-                        <td class="font-medium">{{ money($order->total) }}</td>
-                        <td>
+                    <tr class="hover:bg-surface-muted/50 transition-colors">
+                        <td class="px-4 py-3 font-mono font-medium">{{ $order->invoice_id }}</td>
+                        <td class="px-4 py-3">
+                            <div class="flex items-center gap-2">
+                                <span class="shrink-0 w-7 h-7 rounded-full bg-surface-muted text-ink-tertiary flex items-center justify-center text-xs font-semibold uppercase">{{ substr($order->user?->name ?? 'N', 0, 1) }}</span>
+                                <span>{{ $order->user?->name ?? 'N/A' }}</span>
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 text-right font-semibold">{{ money($order->total) }}</td>
+                        <td class="px-4 py-3 text-center">
                             @php $label = $order->status->label(); @endphp
                             @if ($label === 'pending')
-                                <span class="inline-flex items-center px-3 py-0.5 rounded-full text-xs font-semibold badge-soft-warning">Pending</span>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-500 text-white">Pending</span>
                             @elseif ($label === 'shipped')
-                                <span class="inline-flex items-center px-3 py-0.5 rounded-full text-xs font-semibold badge-soft-primary">Shipped</span>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-500 text-white">Shipped</span>
                             @elseif ($label === 'cancelled')
-                                <span class="inline-flex items-center px-3 py-0.5 rounded-full text-xs font-semibold badge-soft-danger">Cancelled</span>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500 text-white">Cancelled</span>
                             @elseif ($label === 'delivered' || $label === 'completed')
-                                <span class="inline-flex items-center px-3 py-0.5 rounded-full text-xs font-semibold badge-soft-success">{{ ucfirst($label) }}</span>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500 text-white">{{ ucfirst($label) }}</span>
                             @elseif ($label === 'refunded')
-                                <span class="inline-flex items-center px-3 py-0.5 rounded-full text-xs font-semibold badge-soft-info">Refunded</span>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-500 text-white">Refunded</span>
                             @else
-                                <span class="inline-flex items-center px-3 py-0.5 rounded-full text-xs font-semibold badge-soft-secondary">{{ ucfirst($label) }}</span>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-500 text-white">{{ ucfirst($label) }}</span>
                             @endif
                         </td>
-                        <td class="text-sm text-ink-tertiary">{{ optional($order->created_at)->format('Y-m-d H:i') ?? 'N/A' }}</td>
-                        <td>
+                        <td class="px-4 py-3 text-sm text-ink-tertiary">{{ optional($order->created_at)->format('Y-m-d H:i') ?? 'N/A' }}</td>
+                        <td class="px-4 py-3 text-right">
                             <a href="{{ route('seller.orders.details', $order->invoice_id) }}" class="btn btn-outline-primary btn-sm">
                                 <i data-lucide="eye" style="width:14px;height:14px;"></i> View
                             </a>
                         </td>
                     </tr>
                 @empty
-                    <tr>
-                        <td colspan="6" class="text-center py-4 text-ink-tertiary">No orders in this period.</td>
-                    </tr>
+                    <tr><td colspan="6" class="text-center py-6 text-ink-tertiary">No orders in this period.</td></tr>
                 @endforelse
             </tbody>
         </table>
     </div>
 </section>
 
-</div>
-
-@endsection
-
 @push('scripts')
 <script>
     const chartData = @json($chartData);
     const statusData = @json($orderStatusDistribution);
-    const brand = getComputedStyle(document.documentElement).getPropertyValue('--bs-primary').trim() || '#F85606';
-    const success = getComputedStyle(document.documentElement).getPropertyValue('--bs-success').trim() || '#1D8A45';
+    const brand = '#F85606';
+    const success = '#16A34A';
 
     const statusLabels = {
         0: 'Pending', 1: 'Accepted', 2: 'Shipped', 3: 'Delivered',
@@ -422,7 +515,7 @@
     };
 
     const ctx = document.getElementById('salesOrderChart').getContext('2d');
-    const salesGradient = ctx.createLinearGradient(0, 0, 0, 140);
+    const salesGradient = ctx.createLinearGradient(0, 0, 0, 160);
     salesGradient.addColorStop(0, 'rgba(248, 86, 6, 0.28)');
     salesGradient.addColorStop(1, 'rgba(248, 86, 6, 0)');
 
@@ -431,35 +524,38 @@
         data: {
             labels: chartData.labels,
             datasets: [{
-                label: 'Orders',
-                data: chartData.orders,
+                label: 'Sales',
+                data: chartData.sales,
                 borderColor: brand,
                 backgroundColor: salesGradient,
                 tension: 0.4,
                 fill: true,
-                borderWidth: 2,
+                borderWidth: 2.5,
                 pointRadius: 0,
-                pointHoverRadius: 3
+                pointHoverRadius: 5,
+                pointBackgroundColor: brand,
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2
             }, {
-                label: 'Sales',
-                data: chartData.sales,
+                label: 'Orders',
+                data: chartData.orders,
                 borderColor: '#0ea5e9',
                 backgroundColor: 'transparent',
                 tension: 0.4,
                 fill: false,
                 borderWidth: 2,
                 pointRadius: 0,
-                pointHoverRadius: 3
+                pointHoverRadius: 5
             }, {
                 label: 'Profit',
-                data: chartData.profits,
+                data: chartData.profits || chartData.sales,
                 borderColor: success,
                 backgroundColor: 'transparent',
                 tension: 0.4,
                 fill: false,
                 borderWidth: 2,
                 pointRadius: 0,
-                pointHoverRadius: 3
+                pointHoverRadius: 5
             }]
         },
         options: {
@@ -467,45 +563,51 @@
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    labels: { usePointStyle: true, boxWidth: 5, padding: 10, font: { size: 10, family: 'Noto Sans' } }
+                    labels: { usePointStyle: true, boxWidth: 6, padding: 12, font: { size: 11 } }
                 }
             },
             interaction: { mode: 'index', intersect: false },
             scales: {
                 y: {
                     beginAtZero: true,
-                    grid: { color: 'rgba(0,0,0,0.04)', drawBorder: false },
-                    ticks: { callback: function(value) { return '৳' + value; }, font: { size: 9 }, maxTicksLimit: 4 }
+                    grid: { color: 'rgba(0,0,0,.04)', drawBorder: false },
+                    ticks: { font: { size: 10 }, maxTicksLimit: 5 }
                 },
-                x: { grid: { display: false }, ticks: { font: { size: 9 }, maxTicksLimit: 6 } }
+                x: { grid: { display: false }, ticks: { font: { size: 10 }, maxTicksLimit: 8 } }
             }
         }
     });
 
     const statusCtx = document.getElementById('statusDonutChart').getContext('2d');
     const filteredStatuses = Object.entries(statusData).filter(([_, count]) => parseInt(count) > 0);
-    new Chart(statusCtx, {
-        type: 'doughnut',
-        data: {
-            labels: filteredStatuses.map(([key]) => statusLabels[key] || 'Unknown'),
-            datasets: [{
-                data: filteredStatuses.map(([_, count]) => count),
-                backgroundColor: filteredStatuses.map(([key]) => statusColors[key] || '#6B7280'),
-                borderWidth: 0,
-                hoverOffset: 3
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            cutout: '72%',
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: { boxWidth: 8, padding: 6, font: { size: 9, family: 'Noto Sans' } }
+    if (filteredStatuses.length === 0) {
+        statusCtx.canvas.parentElement.innerHTML += '<div class="text-center py-4 text-sm text-ink-tertiary">No order data yet.</div>';
+    } else {
+        new Chart(statusCtx, {
+            type: 'doughnut',
+            data: {
+                labels: filteredStatuses.map(([key]) => statusLabels[key] || 'Unknown'),
+                datasets: [{
+                    data: filteredStatuses.map(([_, count]) => count),
+                    backgroundColor: filteredStatuses.map(([key]) => statusColors[key] || '#6B7280'),
+                    borderWidth: 2,
+                    borderColor: '#FFFFFF',
+                    hoverOffset: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '68%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { boxWidth: 8, padding: 8, font: { size: 10 } }
+                    }
                 }
             }
-        }
-    });
+        });
+    }
 </script>
 @endpush
+@endsection
